@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -24,8 +25,10 @@ public class IndexModelTest
 
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
+        var mockFtsUrlService = new Mock<IFtsUrlService>();
+        mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
         var mockLogger = new Mock<ILogger<IndexModel>>();
-        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockLogger.Object);
+        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockFtsUrlService.Object, mockLogger.Object);
 
         var mockHttpContext = new Mock<HttpContext>();
         var mockRequest = new Mock<HttpRequest>();
@@ -43,9 +46,9 @@ public class IndexModelTest
     {
         var searchResults = new List<SearchResult>
         {
-            new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
+            new("003033-2025", "Test Result", "Test Caption", "Test Tool", CommercialToolStatus.Active, "1%", "Yes",
                 "2025-01-01",
-                "2025-01-01 to 2025-12-31", "Direct Award", null)
+                "2025-01-01 to 2025-12-31", "Direct Award", "https://fts.test/")
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
             .ReturnsAsync((searchResults, 1));
@@ -173,7 +176,7 @@ public class IndexModelTest
     {
         var searchResults = new List<SearchResult>
         {
-            new("003033-2025", "Test Result", "Test Caption", "Test Tool", SearchResultStatus.Active, "1%", "Yes",
+            new("003033-2025", "Test Result", "Test Caption", "Test Tool", CommercialToolStatus.Active, "1%", "Yes",
                 "2025-01-01",
                 "2025-01-01 to 2025-12-31", "Direct Award", null)
         };
@@ -188,7 +191,6 @@ public class IndexModelTest
     [Fact]
     public async Task OnGet_ShouldSetDefaultOpenAccordionsWhenNoAccParam()
     {
-        // Arrange
         var mockHttpContext = new Mock<HttpContext>();
         var mockRequest = new Mock<HttpRequest>();
         mockRequest.Setup(r => r.Path).Returns("/");
@@ -199,10 +201,8 @@ public class IndexModelTest
         var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
         _model.PageContext = pageContext;
 
-        // Act
         await _model.OnGetAsync();
 
-        // Assert
         var expectedOpenAccordions = new[]
         {
             "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",

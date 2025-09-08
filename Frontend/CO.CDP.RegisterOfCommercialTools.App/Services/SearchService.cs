@@ -35,8 +35,6 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
 
     private static SearchResult MapToSearchResult(SearchResultDto dto)
     {
-        var otherContractingAuthorityCanUse = GetOtherContractingAuthorityCanUse(dto);
-        
         return new SearchResult
         (
             Id: dto.Id ?? "Unknown",
@@ -45,23 +43,11 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             CommercialTool: dto.Title ?? "Unknown",
             Status: dto.Status ?? CommercialToolStatus.Unknown,
             MaximumFee: dto.Fees.HasValue && dto.Fees > 0 ? $"{dto.Fees.Value * 100:0.##}%" : "Unknown",
-            OtherContractingAuthorityCanUse: otherContractingAuthorityCanUse,
+            OtherContractingAuthorityCanUse: dto.OtherContractingAuthorityCanUse ?? "Unknown",
             SubmissionDeadline: dto.SubmissionDeadline?.ToShortDateString() ?? "Unknown",
-            ContractDates: "Unknown",
+            ContractDates: dto.ContractDates ?? "Unknown",
             AwardMethod: dto.AwardMethod ?? "Unknown",
             Url: null
         );
-    }
-    
-    private static string GetOtherContractingAuthorityCanUse(SearchResultDto dto)
-    {
-        var isOpenFramework = dto.Techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
-        
-        return isOpenFramework switch
-        {
-            true => "Yes",
-            false => "No",
-            null => dto.ReservedParticipation ?? "Unknown"
-        };
     }
 }

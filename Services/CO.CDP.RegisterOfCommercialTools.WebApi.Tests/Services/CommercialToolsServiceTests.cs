@@ -29,11 +29,12 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialTools_ShouldReturnMappedResults()
+    public async Task SearchCommercialToolsWithCount_ShouldReturnMappedResults()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
         {
+            "@odata.count": 1,
             "data": [
                 {
                     "name": "IT Services Framework",
@@ -65,7 +66,8 @@ public class CommercialToolsServiceTests
                         "techniques": {
                             "hasFrameworkAgreement": true,
                             "frameworkAgreement": {
-                                "method": "open"
+                                "method": "open",
+                                "isOpenFrameworkScheme": true
                             }
                         }
                     }
@@ -76,10 +78,11 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var result = await _service.SearchCommercialTools(queryUrl);
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var resultList = result.ToList();
+        var resultList = results.ToList();
         resultList.Should().HaveCount(1);
+        totalCount.Should().Be(1);
 
         var searchResult = resultList.First();
         searchResult.Id.Should().Be("003033-2025");
@@ -88,22 +91,24 @@ public class CommercialToolsServiceTests
         searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
         searchResult.SubmissionDeadline.Should().Be(new DateTime(2025, 3, 15, 23, 59, 59, DateTimeKind.Utc));
         searchResult.Fees.Should().Be(5.0m);
-        searchResult.AwardMethod.Should().Be("Unknown");
+        searchResult.AwardMethod.Should().Be("With competition");
         searchResult.Status.Should().Be(CommercialToolStatus.Active);
+        searchResult.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
 
     [Fact]
-    public async Task SearchCommercialTools_WhenReleasesEmpty_ShouldUseFallbackId()
+    public async Task SearchCommercialToolsWithCount_WhenProcurementIdMissing_ShouldUseTenderIdFallback()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
         {
+            "@odata.count": 1,
             "data": [
                 {
                     "name": "Test Framework",
                     "status": "active",
                     "additionalProperties": {
-                        "procurementId": "test-procurement-id"
+                        "tenderId": "fallback-tender-id"
                     }
                 }
             ]
@@ -112,11 +117,12 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var result = await _service.SearchCommercialTools(queryUrl);
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var resultList = result.ToList();
+        var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        resultList.First().Id.Should().Be("test-procurement-id");
+        totalCount.Should().Be(1);
+        resultList.First().Id.Should().Be("fallback-tender-id");
     }
 
     [Fact]
@@ -147,9 +153,9 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var result = await _service.SearchCommercialTools(queryUrl);
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var resultList = result.ToList();
+        var resultList = results.ToList();
         resultList.Should().HaveCount(2);
 
         resultList[0].Status.Should().Be(CommercialToolStatus.Closed);
@@ -158,7 +164,7 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialTools_WhenStatusIsUnknown_ShouldSetUnknownStatusToActive()
+    public async Task SearchCommercialTools_WhenStatusIsUnknown_ShouldSetUnknownStatus()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
@@ -177,11 +183,11 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var result = await _service.SearchCommercialTools(queryUrl);
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var resultList = result.ToList();
+        var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        resultList.First().Status.Should().Be(CommercialToolStatus.Active);
+        resultList.First().Status.Should().Be(CommercialToolStatus.Unknown);
     }
 
     [Fact]
@@ -190,7 +196,7 @@ public class CommercialToolsServiceTests
         var queryUrl = "https://api.example.com/tenders?filter=test";
         SetupHttpResponse(HttpStatusCode.InternalServerError, "Server Error");
 
-        var action = async () => await _service.SearchCommercialTools(queryUrl);
+        var action = async () => await _service.SearchCommercialToolsWithCount(queryUrl);
         await action.Should().ThrowAsync<HttpRequestException>();
     }
 
@@ -201,9 +207,9 @@ public class CommercialToolsServiceTests
         var queryUrl = "https://api.example.com/tenders?filter=test";
         SetupHttpResponse(HttpStatusCode.OK, "{\"data\": []}");
 
-        var result = await _service.SearchCommercialTools(queryUrl);
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        result.Should().BeEmpty();
+        results.Should().BeEmpty();
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)

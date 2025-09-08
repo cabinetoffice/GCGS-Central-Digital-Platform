@@ -81,7 +81,7 @@ public class SearchResultDtoTests
             Status = CommercialToolStatus.Active,
             Fees = 1000m,
             AwardMethod = "Open",
-            ReservedParticipation = "Yes"
+            OtherContractingAuthorityCanUse = "Yes"
         };
 
         result.Id.Should().Be("test-id");
@@ -92,7 +92,7 @@ public class SearchResultDtoTests
         result.Status.Should().Be(CommercialToolStatus.Active);
         result.Fees.Should().Be(1000m);
         result.AwardMethod.Should().Be("Open");
-        result.ReservedParticipation.Should().Be("Yes");
+        result.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
 
     [Fact]
@@ -108,11 +108,11 @@ public class SearchResultDtoTests
             Fees = 0m,
             AwardMethod = "Open",
             SubmissionDeadline = null,
-            ReservedParticipation = null
+            OtherContractingAuthorityCanUse = null
         };
 
         result.SubmissionDeadline.Should().BeNull();
-        result.ReservedParticipation.Should().BeNull();
+        result.OtherContractingAuthorityCanUse.Should().BeNull();
     }
 }
 

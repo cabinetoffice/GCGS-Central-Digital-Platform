@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
 
 public static class FeeConverter
@@ -38,13 +40,13 @@ public static class FeeConverter
         if (minPercentage.HasValue)
         {
             var minProportion = PercentageToProportion(minPercentage.Value);
-            filters.Add($"participationFees/any(fee: fee/relativeValue/proportion ge {minProportion})");
+            filters.Add($"participationFees/any(fee: fee/relativeValue/proportion ge {minProportion.ToString(CultureInfo.InvariantCulture)})");
         }
 
         if (maxPercentage.HasValue)
         {
             var maxProportion = PercentageToProportion(maxPercentage.Value);
-            filters.Add($"participationFees/any(fee: fee/relativeValue/proportion le {maxProportion})");
+            filters.Add($"participationFees/any(fee: fee/relativeValue/proportion le {maxProportion.ToString(CultureInfo.InvariantCulture)})");
         }
 
         return string.Join(" and ", filters);

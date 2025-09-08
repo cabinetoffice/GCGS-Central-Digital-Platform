@@ -14,80 +14,6 @@ public class CommercialToolsService : ICommercialToolsService
         _httpClient.DefaultRequestHeaders.Add("x-api-key", configuration.GetValue<string>("ODataApi:ApiKey"));
     }
 
-    public async Task<IEnumerable<SearchResultDto>> SearchCommercialTools(string queryUrl)
-    {
-        var response = await _httpClient.GetAsync(queryUrl);
-
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-            return [];
-        }
-
-        if (!response.IsSuccessStatusCode)
-        {
-            var errorContent = await response.Content.ReadAsStringAsync();
-            throw new HttpRequestException($"OData API returned {response.StatusCode}: {errorContent}");
-        }
-
-        var content = await response.Content.ReadAsStringAsync();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-        var rawJsonResponse = JsonSerializer.Deserialize<JsonElement>(content, options);
-        var tenderInfoList = new List<TenderInfoDto>();
-
-        if (rawJsonResponse.TryGetProperty("data", out var dataArray))
-        {
-            foreach (var tenderElement in dataArray.EnumerateArray())
-            {
-                var tenderInfo = new TenderInfoDto
-                {
-                    Name = tenderElement.TryGetProperty("name", out var nameElement) ? nameElement.GetString() ?? "" : "",
-                    Status = tenderElement.TryGetProperty("status", out var statusElement) ? statusElement.GetString() ?? "" : "",
-                    PublishedDate = ExtractPublishedDate(tenderElement),
-                    AdditionalProperties = ExtractAdditionalProperties(tenderElement),
-                    ParticipationFees = ExtractParticipationFees(tenderElement)
-                };
-                tenderInfoList.Add(tenderInfo);
-            }
-        }
-        else
-        {
-            Console.WriteLine("No 'data' property found in response; returning no results.");
-            return [];
-        }
-
-        var processedResults = new List<SearchResultDto>();
-        foreach (var tenderInfo in tenderInfoList)
-        {
-            var procurementId = tenderInfo.AdditionalProperties?.GetValueOrDefault("procurementId");
-            if (string.IsNullOrWhiteSpace(procurementId))
-            {
-                Console.WriteLine($"Skipping tender without procurementId: '{tenderInfo.Name}'");
-                continue;
-            }
-
-            var dto = new SearchResultDto
-            {
-                Id = procurementId,
-                Title = tenderInfo.Name,
-                Description = tenderInfo.AdditionalProperties?.GetValueOrDefault("procuringEntity") ?? "Unknown",
-                PublishedDate = tenderInfo.PublishedDate?.DateTime ?? DateTime.UtcNow,
-                SubmissionDeadline = tenderInfo.AdditionalProperties?.TryGetValue("effectiveEndDateUtc", out var property) is true
-                    ? DateTime.TryParse(property, out var endDate)
-                        ? endDate
-                        : null
-                    : null,
-                Fees = FeeConverter.GetMaxFeePercentage(tenderInfo.ParticipationFees) ?? 0,
-                AwardMethod = ExtractAwardMethod(tenderInfo),
-                Status = DetermineCommercialToolStatus(tenderInfo.Status),
-                AdditionalProperties = tenderInfo.AdditionalProperties
-            };
-
-            processedResults.Add(dto);
-        }
-
-        return processedResults;
-    }
 
     public async Task<(IEnumerable<SearchResultDto> results, int totalCount)> SearchCommercialToolsWithCount(string queryUrl)
     {
@@ -155,17 +81,11 @@ public class CommercialToolsService : ICommercialToolsService
         var processedResults = new List<SearchResultDto>();
         foreach (var tenderInfo in tenderInfoList)
         {
-            // silently skip items that don't include procurementId instead of failing the whole request
-            var procurementId = tenderInfo.AdditionalProperties?.GetValueOrDefault("procurementId");
-            if (string.IsNullOrWhiteSpace(procurementId))
-            {
-                Console.WriteLine($"Skipping tender without procurementId: '{tenderInfo.Name}'");
-                continue;
-            }
+            var id = GetResultId(tenderInfo);
 
             var dto = new SearchResultDto
             {
-                Id = procurementId,
+                Id = id,
                 Title = tenderInfo.Name,
                 Description = tenderInfo.AdditionalProperties?.GetValueOrDefault("procuringEntity") ?? "Unknown",
                 PublishedDate = tenderInfo.PublishedDate?.DateTime ?? DateTime.UtcNow,
@@ -177,6 +97,9 @@ public class CommercialToolsService : ICommercialToolsService
                 Fees = FeeConverter.GetMaxFeePercentage(tenderInfo.ParticipationFees) ?? 0,
                 AwardMethod = ExtractAwardMethod(tenderInfo),
                 Status = DetermineCommercialToolStatus(tenderInfo.Status),
+                OtherContractingAuthorityCanUse = GetOtherContractingAuthorityCanUse(tenderInfo),
+                ContractDates = GetContractDates(tenderInfo),
+                Techniques = tenderInfo.Techniques,
                 AdditionalProperties = tenderInfo.AdditionalProperties
             };
 
@@ -442,7 +365,42 @@ public class CommercialToolsService : ICommercialToolsService
             "active" or "planned" => CommercialToolStatus.Active,
             "awarded" or "complete" => CommercialToolStatus.Awarded,
             "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Closed,
-            _ => CommercialToolStatus.Active
+            _ => CommercialToolStatus.Unknown
         };
+    }
+
+    private static string GetResultId(TenderInfoDto tenderInfo)
+    {
+        return tenderInfo.AdditionalProperties?.GetValueOrDefault("procurementId") 
+               ?? tenderInfo.AdditionalProperties?.GetValueOrDefault("tenderId") 
+               ?? Guid.NewGuid().ToString();
+    }
+
+    private static string GetOtherContractingAuthorityCanUse(TenderInfoDto tenderInfo)
+    {
+        var isOpenFramework = tenderInfo.Techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
+        
+        return isOpenFramework switch
+        {
+            true => "Yes",
+            false => "No",
+            null => "Unknown"
+        };
+    }
+
+    private static string GetContractDates(TenderInfoDto tenderInfo)
+    {
+        var startDate = tenderInfo.Techniques?.FrameworkAgreement?.Period?.StartDate;
+        var endDate = tenderInfo.Techniques?.FrameworkAgreement?.Period?.EndDate;
+        
+        if (startDate == null && endDate == null)
+        {
+            return "Unknown";
+        }
+        
+        var start = startDate?.ToShortDateString() ?? "Unknown";
+        var end = endDate?.ToShortDateString() ?? "Unknown";
+        
+        return $"{start} - {end}";
     }
 }
