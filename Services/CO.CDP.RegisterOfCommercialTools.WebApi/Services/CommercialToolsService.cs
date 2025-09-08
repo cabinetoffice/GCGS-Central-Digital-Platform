@@ -7,10 +7,12 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 public class CommercialToolsService : ICommercialToolsService
 {
     private readonly HttpClient _httpClient;
+    private readonly ILogger<CommercialToolsService> _logger;
 
-    public CommercialToolsService(HttpClient httpClient, IConfiguration configuration)
+    public CommercialToolsService(HttpClient httpClient, IConfiguration configuration, ILogger<CommercialToolsService> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
         _httpClient.DefaultRequestHeaders.Add("x-api-key", configuration.GetValue<string>("ODataApi:ApiKey"));
     }
 
@@ -40,29 +42,28 @@ public class CommercialToolsService : ICommercialToolsService
         if (rawJsonResponse.TryGetProperty("@odata.count", out var odataCount))
         {
             totalCount = odataCount.GetInt32();
-            Console.WriteLine($"Found @odata.count: {totalCount}");
+            _logger.LogInformation("Found @odata.count: {TotalCount}", totalCount);
         }
         else if (rawJsonResponse.TryGetProperty("metadata", out var metadata) &&
                  metadata.TryGetProperty("count", out var metadataCount))
         {
             totalCount = metadataCount.GetInt32();
-            Console.WriteLine($"Found metadata.count: {totalCount}");
+            _logger.LogInformation("Found metadata.count: {TotalCount}", totalCount);
         }
         else
         {
-            Console.WriteLine("No @odata.count or metadata.count property found in response");
+            _logger.LogWarning("No @odata.count or metadata.count property found in response");
         }
 
         var tenderInfoList = new List<TenderInfoDto>();
 
-        // Expect 'data' array only; do not use 'value'. If missing, return no results.
         if (!rawJsonResponse.TryGetProperty("data", out var dataArray))
         {
-            Console.WriteLine("No 'data' property found in response; returning no results.");
+            _logger.LogWarning("No 'data' property found in response; returning no results");
             return (Enumerable.Empty<SearchResultDto>(), totalCount);
         }
 
-        Console.WriteLine($"Found 'data' array with {dataArray.GetArrayLength()} items");
+        _logger.LogInformation("Found 'data' array with {ItemCount} items", dataArray.GetArrayLength());
         foreach (var tenderElement in dataArray.EnumerateArray())
         {
             var tenderInfo = new TenderInfoDto
@@ -74,7 +75,7 @@ public class CommercialToolsService : ICommercialToolsService
                 ParticipationFees = ExtractParticipationFees(tenderElement),
                 Techniques = ExtractTechniquesInfo(tenderElement)
             };
-            Console.WriteLine($"Processing tender: {tenderInfo.Name}, Status: {tenderInfo.Status}");
+            _logger.LogDebug("Processing tender: {TenderName}, Status: {TenderStatus}", tenderInfo.Name, tenderInfo.Status);
             tenderInfoList.Add(tenderInfo);
         }
 
@@ -106,58 +107,8 @@ public class CommercialToolsService : ICommercialToolsService
             processedResults.Add(dto);
         }
 
-        Console.WriteLine($"Processed {processedResults.Count} results, total count: {totalCount}");
+        _logger.LogInformation("Processed {ProcessedCount} results, total count: {TotalCount}", processedResults.Count, totalCount);
         return (processedResults, totalCount);
-    }
-
-    public async Task<int> GetCommercialToolsCount(string queryUrl)
-    {
-        try
-        {
-            var countUrl = AddCountParameter(queryUrl);
-            var response = await _httpClient.GetAsync(countUrl);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                return 0;
-            }
-
-            response.EnsureSuccessStatusCode();
-
-            var content = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-
-            var result = JsonSerializer.Deserialize<JsonElement>(content, options);
-
-            if (result.TryGetProperty("@odata.count", out var odataCount))
-            {
-                return odataCount.GetInt32();
-            }
-
-            if (result.TryGetProperty("totalCount", out var totalCountProperty))
-            {
-                return totalCountProperty.GetInt32();
-            }
-
-            if (result.TryGetProperty("meta", out var meta) &&
-                meta.TryGetProperty("count", out var metaCount))
-            {
-                return metaCount.GetInt32();
-            }
-
-            var rawResults = JsonSerializer.Deserialize<IEnumerable<JsonElement>>(content, options);
-            return rawResults?.Count() ?? 0;
-        }
-        catch
-        {
-            return 0;
-        }
-    }
-
-    private static string AddCountParameter(string queryUrl)
-    {
-        var separator = queryUrl.Contains("?") ? "&" : "?";
-        return $"{queryUrl}{separator}$count=true";
     }
 
 
@@ -371,15 +322,15 @@ public class CommercialToolsService : ICommercialToolsService
 
     private static string GetResultId(TenderInfoDto tenderInfo)
     {
-        return tenderInfo.AdditionalProperties?.GetValueOrDefault("procurementId") 
-               ?? tenderInfo.AdditionalProperties?.GetValueOrDefault("tenderId") 
+        return tenderInfo.AdditionalProperties?.GetValueOrDefault("procurementId")
+               ?? tenderInfo.AdditionalProperties?.GetValueOrDefault("tenderId")
                ?? Guid.NewGuid().ToString();
     }
 
     private static string GetOtherContractingAuthorityCanUse(TenderInfoDto tenderInfo)
     {
         var isOpenFramework = tenderInfo.Techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
-        
+
         return isOpenFramework switch
         {
             true => "Yes",
@@ -392,15 +343,15 @@ public class CommercialToolsService : ICommercialToolsService
     {
         var startDate = tenderInfo.Techniques?.FrameworkAgreement?.Period?.StartDate;
         var endDate = tenderInfo.Techniques?.FrameworkAgreement?.Period?.EndDate;
-        
+
         if (startDate == null && endDate == null)
         {
             return "Unknown";
         }
-        
+
         var start = startDate?.ToShortDateString() ?? "Unknown";
         var end = endDate?.ToShortDateString() ?? "Unknown";
-        
+
         return $"{start} - {end}";
     }
 }

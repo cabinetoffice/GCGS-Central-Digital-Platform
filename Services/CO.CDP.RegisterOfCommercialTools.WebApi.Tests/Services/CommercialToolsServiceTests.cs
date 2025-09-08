@@ -1,11 +1,12 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using System.Net;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Services;
 
@@ -25,7 +26,9 @@ public class CommercialToolsServiceTests
         var mockODataApiSection = new Mock<IConfigurationSection>();
         mockODataApiSection.Setup(s => s.Value).Returns("test-api-key");
         mockConfiguration.Setup(c => c.GetSection("ODataApi:ApiKey")).Returns(mockODataApiSection.Object);
-        _service = new CommercialToolsService(httpClient, mockConfiguration.Object);
+
+        var mockLogger = new Mock<ILogger<CommercialToolsService>>();
+        _service = new CommercialToolsService(httpClient, mockConfiguration.Object, mockLogger.Object);
     }
 
     [Fact]
@@ -153,7 +156,7 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(2);
@@ -183,7 +186,7 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
@@ -207,7 +210,7 @@ public class CommercialToolsServiceTests
         var queryUrl = "https://api.example.com/tenders?filter=test";
         SetupHttpResponse(HttpStatusCode.OK, "{\"data\": []}");
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
         results.Should().BeEmpty();
     }
