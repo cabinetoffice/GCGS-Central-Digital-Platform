@@ -115,11 +115,14 @@ public class OidcEvents(
     private static string? SanitiseForLogging(string? input)
     {
         if (string.IsNullOrEmpty(input))
-            return input;
+            return "\"\"";
 
-        var sanitised = new string(input.Where(c => !char.IsControl(c)).ToArray())
+        var sanitised = new string(input.Where(c => !char.IsControl(c) && c != '\t').ToArray())
             .Replace("\r", "")
-            .Replace("\n", "");
-        return sanitised.Length > 500 ? sanitised[..500] + "..." : sanitised;
+            .Replace("\n", "")
+            .Replace("\t", "");
+
+        var output = sanitised.Length > 500 ? sanitised[..500] + "..." : sanitised;
+        return $"\"{output}\"";
     }
 }
