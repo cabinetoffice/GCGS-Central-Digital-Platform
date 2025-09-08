@@ -139,7 +139,8 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.FeeFrom(123.45m).Build(BaseUrl);
 
-        result.Should().Contain($"filter[tender.participationFees.relativeValue.proportion.value.from]={123.45m.ToString(CultureInfo.InvariantCulture)}");
+        var expectedProportion = (123.45m / 100).ToString(CultureInfo.InvariantCulture);
+        result.Should().Contain($"filter[tender.participationFees.relativeValue.proportion.from]={expectedProportion}");
     }
 
     [Fact]
@@ -149,7 +150,8 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.FeeTo(999.99m).Build(BaseUrl);
 
-        result.Should().Contain($"filter[tender.participationFees.relativeValue.proportion.value.to]={999.99m.ToString(CultureInfo.InvariantCulture)}");
+        var expectedProportion = (999.99m / 100).ToString(CultureInfo.InvariantCulture);
+        result.Should().Contain($"filter[tender.participationFees.relativeValue.proportion.to]={expectedProportion}");
     }
 
     [Fact]
@@ -351,8 +353,8 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("$search=IT%20services");
         result.Should().Contain("filter[tender.name]=IT%20services");
         result.Should().Contain("filter[tender.status]=Active");
-        result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.value.from]=100.5");
-        result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.value.to]=999.99");
+        result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.from]=1.005");
+        result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.to]=9.9999");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.from]=2025-01-01");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.to]=2025-12-31");
         result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
@@ -418,6 +420,46 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.ExcludeBuyerClassificationRestrictions("");
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithAwardMethod_WhenWithCompetition_ShouldMapToOpenFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithAwardMethod("with-competition").Build(BaseUrl);
+
+        result.Should().Contain("filter[tender.awardCriteria.method]=open");
+    }
+
+    [Fact]
+    public void WithAwardMethod_WhenWithoutCompetition_ShouldMapToDirectFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithAwardMethod("without-competition").Build(BaseUrl);
+
+        result.Should().Contain("filter[tender.awardCriteria.method]=direct");
+    }
+
+    [Fact]
+    public void WithAwardMethod_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithAwardMethod("");
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithAwardMethod_WhenNull_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithAwardMethod(null!);
 
         result.Should().BeSameAs(builder);
     }

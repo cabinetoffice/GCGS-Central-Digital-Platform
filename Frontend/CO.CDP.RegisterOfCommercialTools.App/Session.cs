@@ -5,8 +5,6 @@ namespace CO.CDP.RegisterOfCommercialTools.App;
 public class Session(IHttpContextAccessor httpContextAccessor) : ISession
 {
     public const string UserDetailsKey = "UserDetails";
-    public const string FtsServiceOrigin = "FtsServiceOrigin";
-    public const string SirsiServiceOrigin = "SirsiServiceOrigin";
     public const string UserAuthTokens = "UserAuthTokens";
 
     public T? Get<T>(string key)

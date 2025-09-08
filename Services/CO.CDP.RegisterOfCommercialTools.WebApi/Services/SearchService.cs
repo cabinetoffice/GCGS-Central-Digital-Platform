@@ -1,10 +1,11 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public class SearchService(
     ICommercialToolsQueryBuilder builder,
-    ICommercialToolsRepository repository,
+    ICommercialToolsService service,
     IConfiguration configuration)
     : ISearchService
 {
@@ -17,10 +18,17 @@ public class SearchService(
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithStatus(request.Status ?? string.Empty)
-            .FeeFrom(request.MinFees ?? 0)
-            .FeeTo(request.MaxFees ?? decimal.MaxValue)
             .WithPageSize(request.PageSize)
             .WithPageNumber(request.PageNumber);
+
+        if (request.MinFees.HasValue || request.MaxFees.HasValue)
+        {
+            var feeFilter = FeeConverter.CreateProportionFilter(request.MinFees, request.MaxFees);
+            if (!string.IsNullOrEmpty(feeFilter))
+            {
+                queryBuilder = queryBuilder.WithCustomFilter(feeFilter);
+            }
+        }
 
         if (request.SubmissionDeadlineFrom.HasValue)
             queryBuilder = queryBuilder.SubmissionDeadlineFrom(request.SubmissionDeadlineFrom.Value);
@@ -69,10 +77,14 @@ public class SearchService(
             queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
         }
 
-        var queryUrl = queryBuilder.Build(_odataBaseUrl);
+        if (!string.IsNullOrWhiteSpace(request.AwardMethod))
+        {
+            queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod);
+        }
 
-        var results = await repository.SearchCommercialTools(queryUrl);
-        var totalCount = await repository.GetCommercialToolsCount(queryUrl);
+        var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/Tender");
+
+        var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
 
         return new SearchResponse
         {
@@ -83,8 +95,4 @@ public class SearchService(
         };
     }
 
-    public async Task<SearchResultDto?> GetById(string id)
-    {
-        return await repository.GetCommercialToolById(id);
-    }
 }
