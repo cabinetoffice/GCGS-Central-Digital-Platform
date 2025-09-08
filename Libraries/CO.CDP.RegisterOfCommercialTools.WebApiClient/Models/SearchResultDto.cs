@@ -1,3 +1,5 @@
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
+
 namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 public class SearchResultDto
@@ -11,6 +13,6 @@ public class SearchResultDto
     public decimal Fees { get; set; }
     public string AwardMethod { get; set; } = null!;
     public string? ReservedParticipation { get; set; }
+    public TechniquesInfo? Techniques { get; set; }
     public Dictionary<string, string>? AdditionalProperties { get; set; }
-    public string? Url { get; set; }
 }
