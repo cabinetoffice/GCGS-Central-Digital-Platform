@@ -257,12 +257,6 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      commercial-tools-api:
-        condition: service_healthy
-      authority:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
       redis:
         condition: service_healthy
     environment:
