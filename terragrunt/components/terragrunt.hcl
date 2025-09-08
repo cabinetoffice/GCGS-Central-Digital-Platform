@@ -455,8 +455,8 @@ locals {
     cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
     cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
     cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
-    commercial_tools_app                 = { port = 8192, port_host = 8180, name = "commercial-tools-app"}
-    commercial_tools_api                 = { port = 8194, port_host = null, name = "commercial-tools-api"}
+    commercial_tools_app                 = { port = 8192, port_host = 8192, name = "commercial-tools-app"}
+    commercial_tools_api                 = { port = 8184, port_host = 8184, name = "commercial-tools-api"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
