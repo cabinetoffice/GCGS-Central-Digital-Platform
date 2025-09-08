@@ -112,7 +112,7 @@ public class OidcEvents(
         return tokenHandler.WriteToken(token);
     }
 
-    private static string? SanitiseForLogging(string? input)
+    private static string SanitiseForLogging(string? input)
     {
         if (string.IsNullOrEmpty(input))
             return "\"\"";
