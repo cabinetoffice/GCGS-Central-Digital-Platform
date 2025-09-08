@@ -1,5 +1,7 @@
 data "aws_caller_identity" "current" {}
+
 data "aws_region" "current" {}
+
 # Configure the provider to assume the role in the orchestrator account and fetch the latest service version
 provider "aws" {
   alias  = "orchestrator"

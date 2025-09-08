@@ -4,23 +4,23 @@ module "ecs_service_commercial_tools_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.commercial_tools_app.name}.json.tftpl",
     {
-      aspcore_environment                 = local.aspcore_environment
-      container_port                      = var.service_configs.commercial_tools_app.port
-      cpu                                 = var.service_configs.commercial_tools_app.cpu
-      host_port                           = var.service_configs.commercial_tools_app.port
-      image                               = local.ecr_urls[var.service_configs.commercial_tools_app.name]
-      lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
-      lg_prefix                           = "app"
-      lg_region                           = data.aws_region.current.name
-      memory                              = var.service_configs.commercial_tools_app.memory
-      name                                = var.service_configs.commercial_tools_app.name     
-      public_domain                       = var.public_domain
-      redis_auth_token_arn                = var.redis_auth_token_arn
-      redis_port                          = var.redis_port
-      redis_primary_endpoint_address      = var.redis_primary_endpoint      
-      service_version                     = local.service_version_sirsi   
-      sessiontimeoutinminutes             = var.sessiontimeoutinminutes        
-      vpc_cidr                            = var.vpc_cider
+      aspcore_environment            = local.aspcore_environment
+      container_port                 = var.service_configs.commercial_tools_app.port
+      cpu                            = var.service_configs.commercial_tools_app.cpu
+      host_port                      = var.service_configs.commercial_tools_app.port
+      image                          = local.ecr_urls[var.service_configs.commercial_tools_app.name]
+      lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
+      lg_prefix                      = "app"
+      lg_region                      = data.aws_region.current.name
+      memory                         = var.service_configs.commercial_tools_app.memory
+      name                           = var.service_configs.commercial_tools_app.name
+      public_domain                  = var.public_domain
+      redis_auth_token_arn           = var.redis_auth_token_arn
+      redis_port                     = var.redis_port
+      redis_primary_endpoint_address = var.redis_primary_endpoint
+      service_version                = local.service_version_sirsi
+      sessiontimeoutinminutes        = var.commercial_tools_session_timeout
+      vpc_cidr                       = var.vpc_cider
     }
   )
 
