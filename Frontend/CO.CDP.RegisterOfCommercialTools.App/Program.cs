@@ -40,13 +40,15 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
-builder.Services.AddHttpClient<ISearchService, CommercialToolsApiClient>(client =>
+builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICommercialToolsApiClient, CO.CDP.RegisterOfCommercialTools.WebApiClient.CommercialToolsApiClient>(client =>
 {
     var url = builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl")
               ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
     client.BaseAddress = new Uri(url);
 })
 .AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
+
+builder.Services.AddScoped<ISearchService, SearchService>();
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;

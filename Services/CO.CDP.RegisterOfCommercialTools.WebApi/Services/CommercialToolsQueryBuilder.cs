@@ -1,25 +1,28 @@
 using System.Collections.Immutable;
 using System.Globalization;
-using System.Text;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 {
     private readonly ImmutableDictionary<string, string> _params;
+    private readonly int? _pageNumber;
+    private readonly int? _pageSize;
 
     public CommercialToolsQueryBuilder() : this(
         ImmutableDictionary.Create<string, string>(StringComparer.OrdinalIgnoreCase))
     {
     }
 
-    private CommercialToolsQueryBuilder(ImmutableDictionary<string, string> parameters)
+    private CommercialToolsQueryBuilder(ImmutableDictionary<string, string> parameters, int? pageNumber = null, int? pageSize = null)
     {
         _params = parameters;
+        _pageNumber = pageNumber;
+        _pageSize = pageSize;
     }
 
     private ICommercialToolsQueryBuilder WithParameter(string key, string value) =>
-        new CommercialToolsQueryBuilder(_params.SetItem(key, value));
+        new CommercialToolsQueryBuilder(_params.SetItem(key, value), _pageNumber, _pageSize);
 
     private ICommercialToolsQueryBuilder WithParameterIf(bool condition, string key, string value) =>
         condition ? WithParameter(key, value) : this;
@@ -36,7 +39,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             .SetItem("filter[tender.name]", keywords)
             .SetItem("filter[tender.techniques.frameworkAgreement.description]", keywords)
             .SetItem("filter[parties.identifier.id]", keywords)
-            .SetItem("filter[parties.name]", keywords));
+            .SetItem("filter[parties.name]", keywords), _pageNumber, _pageSize);
     }
 
     private static string ParseKeywordsForOData(string keywords)
@@ -63,13 +66,19 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder WithStatus(string status) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(status), "filter[tender.status]", status);
 
-    public ICommercialToolsQueryBuilder FeeFrom(decimal from) =>
-        WithParameter("filter[tender.participationFees.relativeValue.proportion.value.from]",
-            from.ToString(CultureInfo.InvariantCulture));
+    public ICommercialToolsQueryBuilder FeeFrom(decimal from)
+    {
+        var proportion = from / 100;
+        return WithParameter("filter[tender.participationFees.relativeValue.proportion.from]",
+            proportion.ToString(CultureInfo.InvariantCulture));
+    }
 
-    public ICommercialToolsQueryBuilder FeeTo(decimal to) =>
-        WithParameter("filter[tender.participationFees.relativeValue.proportion.value.to]",
-            to.ToString(CultureInfo.InvariantCulture));
+    public ICommercialToolsQueryBuilder FeeTo(decimal to)
+    {
+        var proportion = to / 100;
+        return WithParameter("filter[tender.participationFees.relativeValue.proportion.to]",
+            proportion.ToString(CultureInfo.InvariantCulture));
+    }
 
     public ICommercialToolsQueryBuilder SubmissionDeadlineFrom(DateTime from) =>
         WithParameter("filter[tender.tenderPeriod.endDate.from]", from.ToString("yyyy-MM-dd"));
@@ -95,6 +104,21 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder WithCpv(string cpv) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(cpv), "filter[tender.items.additionalClassifications.id]", cpv);
 
+    public ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod)
+    {
+        if (string.IsNullOrWhiteSpace(awardMethod))
+            return this;
+
+        var filterValue = awardMethod.ToLowerInvariant() switch
+        {
+            "with-competition" => "open",
+            "without-competition" => "direct",
+            _ => awardMethod
+        };
+
+        return WithParameter("filter[tender.awardCriteria.method]", filterValue);
+    }
+
     public ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(frameworkType), "filter[tender.techniques.frameworkAgreement.type]",
             frameworkType);
@@ -108,22 +132,59 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             "filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id ne]", restrictionId);
 
     public ICommercialToolsQueryBuilder WithPageSize(int size) =>
-        WithParameter("page[size]", size.ToString());
+        new CommercialToolsQueryBuilder(_params, _pageNumber, size);
 
     public ICommercialToolsQueryBuilder WithPageNumber(int number) =>
-        WithParameter("page[number]", number.ToString());
+        new CommercialToolsQueryBuilder(_params, number, _pageSize);
+
+    public ICommercialToolsQueryBuilder WithCustomFilter(string filter)
+    {
+        if (string.IsNullOrWhiteSpace(filter))
+            return this;
+
+        var existingFilter = _params.GetValueOrDefault("$filter");
+        var newFilter = string.IsNullOrEmpty(existingFilter)
+            ? filter
+            : $"({existingFilter}) and ({filter})";
+
+        return new CommercialToolsQueryBuilder(_params.SetItem("$filter", newFilter), _pageNumber, _pageSize);
+    }
 
     public string Build(string baseUrl)
     {
         if (string.IsNullOrWhiteSpace(baseUrl))
             throw new ArgumentNullException(nameof(baseUrl));
 
-        var sb = new StringBuilder(baseUrl);
-        var sep = baseUrl.Contains('?') ? '&' : '?';
-        if (_params.Any())
-            sb.Append(sep)
-                .Append(string.Join('&', _params.Select(kvp => $"{kvp.Key}={Uri.EscapeDataString(kvp.Value)}")));
+        var odataParams = new List<string>();
 
-        return sb.ToString();
+        // Add pagination parameters
+        if (_pageSize.HasValue)
+        {
+            odataParams.Add($"page[size]={_pageSize.Value}");
+        }
+
+        if (_pageNumber.HasValue)
+        {
+            odataParams.Add($"page[number]={_pageNumber.Value}");
+        }
+
+        // Add other OData parameters
+        foreach (var param in _params)
+        {
+            odataParams.Add($"{param.Key}={Uri.EscapeDataString(param.Value)}");
+        }
+
+        // Only add queryOptions if we have parameters or pagination
+        if (odataParams.Any() || _pageNumber.HasValue || _pageSize.HasValue)
+        {
+            // Always include count when we have other params
+            odataParams.Insert(0, "$count=true");
+
+            var queryOptionsValue = string.Join("&", odataParams);
+            var separator = baseUrl.Contains('?') ? '&' : '?';
+            return $"{baseUrl}{separator}queryOptions={queryOptionsValue}";
+        }
+
+        return baseUrl;
     }
 }

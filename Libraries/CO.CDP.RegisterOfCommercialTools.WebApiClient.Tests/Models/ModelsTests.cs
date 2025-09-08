@@ -76,25 +76,23 @@ public class SearchResultDtoTests
             Id = "test-id",
             Title = "Test Tool",
             Description = "Test Description",
-            Link = "https://example.com",
             PublishedDate = testDate,
             SubmissionDeadline = testDate.AddDays(30),
             Status = CommercialToolStatus.Active,
             Fees = 1000m,
             AwardMethod = "Open",
-            ReservedParticipation = "Yes"
+            OtherContractingAuthorityCanUse = "Yes"
         };
 
         result.Id.Should().Be("test-id");
         result.Title.Should().Be("Test Tool");
         result.Description.Should().Be("Test Description");
-        result.Link.Should().Be("https://example.com");
         result.PublishedDate.Should().Be(testDate);
         result.SubmissionDeadline.Should().Be(testDate.AddDays(30));
         result.Status.Should().Be(CommercialToolStatus.Active);
         result.Fees.Should().Be(1000m);
         result.AwardMethod.Should().Be("Open");
-        result.ReservedParticipation.Should().Be("Yes");
+        result.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
 
     [Fact]
@@ -105,17 +103,16 @@ public class SearchResultDtoTests
             Id = "test-id",
             Title = "Test Tool",
             Description = "Test Description",
-            Link = "https://example.com",
             PublishedDate = DateTime.UtcNow,
             Status = CommercialToolStatus.Active,
             Fees = 0m,
             AwardMethod = "Open",
             SubmissionDeadline = null,
-            ReservedParticipation = null
+            OtherContractingAuthorityCanUse = null
         };
 
         result.SubmissionDeadline.Should().BeNull();
-        result.ReservedParticipation.Should().BeNull();
+        result.OtherContractingAuthorityCanUse.Should().BeNull();
     }
 }
 
@@ -143,7 +140,6 @@ public class SearchResponseTests
                 Id = "1",
                 Title = "Tool 1",
                 Description = "Description 1",
-                Link = "https://example.com/1",
                 PublishedDate = DateTime.UtcNow,
                 Status = CommercialToolStatus.Active,
                 Fees = 1000m,
@@ -154,7 +150,6 @@ public class SearchResponseTests
                 Id = "2",
                 Title = "Tool 2",
                 Description = "Description 2",
-                Link = "https://example.com/2",
                 PublishedDate = DateTime.UtcNow,
                 Status = CommercialToolStatus.Closed,
                 Fees = 2000m,

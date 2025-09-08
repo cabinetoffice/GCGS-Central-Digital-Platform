@@ -100,7 +100,7 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.3"
+      pinned_service_version_cfs        = "1.0.4"
       pinned_service_version_fts        = "1.0.15"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
@@ -404,6 +404,8 @@ locals {
     cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
+    commercial_tools_app                 = {}
+    commercial_tools_api                 = {}
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
@@ -453,6 +455,8 @@ locals {
     cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
     cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
     cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
+    commercial_tools_app                 = { port = 8192, port_host = 8192, name = "commercial-tools-app"}
+    commercial_tools_api                 = { port = 8184, port_host = 8184, name = "commercial-tools-api"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}

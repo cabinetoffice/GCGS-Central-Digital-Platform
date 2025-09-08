@@ -24,6 +24,12 @@ variable "cfs_service_allowed_origins" {
   type        = list(string)
 }
 
+variable "commercial_tools_session_timeout" {
+  description = "Session timeout in minutes"
+  type        = string
+  default     = 30
+}
+
 variable "db_cfs_cluster_address" {
   description = "CFS DB address"
   type        = string
