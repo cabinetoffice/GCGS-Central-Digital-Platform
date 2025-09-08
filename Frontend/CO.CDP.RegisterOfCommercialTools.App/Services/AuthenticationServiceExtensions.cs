@@ -112,7 +112,6 @@ public static class AuthenticationServiceExtensions
             var domain = configuration.GetValue<string>("AWS:CognitoAuthentication:Domain");
             var region = configuration.GetValue<string>("AWS:Region");
 
-
             options.ResponseType = OpenIdConnectResponseType.Code;
             options.MetadataAddress =
                 $"https://cognito-idp.{region}.amazonaws.com/{userPoolId}/.well-known/openid-configuration";
