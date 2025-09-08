@@ -4,7 +4,6 @@ using Moq;
 using Moq.Protected;
 using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests;
 
@@ -23,7 +22,6 @@ public class CommercialToolsApiClientTests
                     Id = "1",
                     Title = "Test Tool",
                     Description = "Test Description",
-                    Link = "https://example.com",
                     PublishedDate = DateTime.UtcNow,
                     Status = CommercialToolStatus.Active,
                     Fees = 1000m,
@@ -72,7 +70,7 @@ public class CommercialToolsApiClientTests
     public async Task SearchAsync_ReturnsNull_WhenApiCallFails()
     {
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        
+
         mockHttpMessageHandler
             .Protected()
             .Setup<Task<HttpResponseMessage>>(

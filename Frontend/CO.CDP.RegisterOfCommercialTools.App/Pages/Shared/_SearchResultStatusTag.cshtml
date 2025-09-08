@@ -1,21 +1,21 @@
-@using CO.CDP.RegisterOfCommercialTools.App.Models
-@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResultStatus
+@using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
+@model CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.CommercialToolStatus
 
 @switch (Model)
 {
-    case SearchResultStatus.Active:
+    case CommercialToolStatus.Active:
         <strong class="govuk-tag govuk-tag--turquoise">Active</strong>
         break;
-    case SearchResultStatus.Upcoming:
+    case CommercialToolStatus.Upcoming:
         <strong class="govuk-tag govuk-tag--yellow">Upcoming</strong>
         break;
-    case SearchResultStatus.Closed:
+    case CommercialToolStatus.Closed:
         <strong class="govuk-tag govuk-tag--red">Closed</strong>
         break;
-    case SearchResultStatus.Awarded:
+    case CommercialToolStatus.Awarded:
         <strong class="govuk-tag govuk-tag--blue">Awarded</strong>
         break;
-    case SearchResultStatus.Unknown:
+    case CommercialToolStatus.Unknown:
     default:
         <strong class="govuk-tag govuk-tag--grey">Unknown</strong>
         break;

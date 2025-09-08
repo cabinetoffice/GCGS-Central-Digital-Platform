@@ -38,6 +38,7 @@ locals {
 
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
+  ssm_commercial_tools_data_protection_prefix = "${local.name_prefix}-ec-ct-sessions"
 
   migrations_sirsi = ["organisation-information-migrations", "entity-verification-migrations"]
 

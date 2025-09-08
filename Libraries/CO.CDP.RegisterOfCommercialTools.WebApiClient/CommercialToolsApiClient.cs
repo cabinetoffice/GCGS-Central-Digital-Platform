@@ -29,7 +29,7 @@ public class CommercialToolsApiClient : ICommercialToolsApiClient
     {
         var properties = from p in dto.GetType().GetProperties()
                          where p.GetValue(dto, null) != null
-                         select $"{p.Name}={Uri.EscapeDataString(p.GetValue(dto, null)!.ToString()!)}";
+                         select $"{p.Name}={Uri.EscapeDataString(p.GetValue(dto, null)?.ToString() ?? string.Empty)}";
 
         return string.Join("&", properties);
     }

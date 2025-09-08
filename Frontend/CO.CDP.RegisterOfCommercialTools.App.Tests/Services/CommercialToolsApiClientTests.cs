@@ -1,29 +1,21 @@
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using FluentAssertions;
 using Moq;
-using Moq.Protected;
-using System.Net;
-using System.Text;
-using System.Text.Json;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Services;
 
-public class CommercialToolsApiClientTests
+public class SearchServiceTests
 {
-    private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
-    private readonly HttpClient _httpClient;
-    private readonly CommercialToolsApiClient _apiClient;
+    private readonly Mock<ICommercialToolsApiClient> _mockApiClient;
+    private readonly SearchService _searchService;
 
-    public CommercialToolsApiClientTests()
+    public SearchServiceTests()
     {
-        _mockHttpMessageHandler = new Mock<HttpMessageHandler>();
-        _httpClient = new HttpClient(_mockHttpMessageHandler.Object)
-        {
-            BaseAddress = new Uri("https://api.test.com/")
-        };
-        _apiClient = new CommercialToolsApiClient(_httpClient);
+        _mockApiClient = new Mock<ICommercialToolsApiClient>();
+        _searchService = new SearchService(_mockApiClient.Object);
     }
 
     [Fact]
@@ -33,8 +25,8 @@ public class CommercialToolsApiClientTests
         {
             Keywords = "IT services",
             Status = ["Active"],
-            FeeMin = 100.50m,
-            FeeMax = 999.99m,
+            FeeMin = 1m,
+            FeeMax = 5m,
             AwardMethod = "Competitive"
         };
 
@@ -61,11 +53,10 @@ public class CommercialToolsApiClientTests
                     Id = "003033-2025",
                     Title = "Test Framework",
                     Description = "Test Description",
-                    Link = "https://test.com/framework",
                     PublishedDate = DateTime.UtcNow,
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30),
                     Status = CommercialToolStatus.Active,
-                    Fees = 500.00m,
+                    Fees = 0.025m,
                     AwardMethod = "Competitive"
                 }
             },
@@ -74,34 +65,28 @@ public class CommercialToolsApiClientTests
             PageSize = 10
         };
 
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
 
-        var (results, totalCount) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(1);
         var result = results.First();
         result.Id.Should().Be("003033-2025");
         result.Title.Should().Be("Test Framework");
         result.Caption.Should().Be("Test Description");
-        result.Status.Should().Be(SearchResultStatus.Active);
+        result.Status.Should().Be(CommercialToolStatus.Active);
         totalCount.Should().Be(25);
 
-        VerifyHttpRequest(HttpMethod.Get, req =>
-        {
-            var query = req.RequestUri!.Query;
-            return query.Contains("Keyword=IT%20services") &&
-
-                   query.Contains("MinFees=100.5") &&
-                   query.Contains("MaxFees=999.99") &&
-                   query.Contains("AwardMethod=Competitive") &&
-                   query.Contains("SubmissionDeadlineFrom=") &&
-                   query.Contains("SubmissionDeadlineTo=") &&
-                   query.Contains("ContractStartDateFrom=") &&
-                   query.Contains("ContractStartDateTo=") &&
-                   query.Contains("PageNumber=1") &&
-                   query.Contains("PageSize=10");
-        });
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.Keyword == "IT services" &&
+            dto.MinFees == 0.01m &&
+            dto.MaxFees == 0.05m &&
+            dto.AwardMethod == "Competitive" &&
+            dto.PageNumber == 1 &&
+            dto.PageSize == 10
+        )), Times.Once);
     }
 
     [Fact]
@@ -111,8 +96,8 @@ public class CommercialToolsApiClientTests
         {
             Keywords = "test",
             NoFees = "true",
-            FeeMin = 100m,
-            FeeMax = 500m
+            FeeMin = 2m,
+            FeeMax = 8m
         };
 
         var responseDto = new SearchResponse
@@ -122,19 +107,19 @@ public class CommercialToolsApiClientTests
             PageNumber = 1,
             PageSize = 10
         };
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
+
+        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().BeEmpty();
         totalCount.Should().Be(0);
 
-        VerifyHttpRequest(HttpMethod.Get, req =>
-        {
-            var query = req.RequestUri!.Query;
-            return query.Contains("MinFees=0") && query.Contains("MaxFees=0");
-        });
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.MinFees == 0 && dto.MaxFees == 0
+        )), Times.Once);
     }
 
     [Fact]
@@ -152,19 +137,19 @@ public class CommercialToolsApiClientTests
             PageNumber = 1,
             PageSize = 10
         };
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
+
+        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().BeEmpty();
 
-        VerifyHttpRequest(HttpMethod.Get, req =>
-        {
-            var query = req.RequestUri!.Query;
-            return !query.Contains("SubmissionDeadlineFrom=") ||
-                   query.Contains("SubmissionDeadlineFrom=&");
-        });
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.SubmissionDeadlineFrom == null &&
+            dto.SubmissionDeadlineTo == null
+        )), Times.Once);
     }
 
     [Fact]
@@ -185,16 +170,17 @@ public class CommercialToolsApiClientTests
             PageSize = 10
         };
 
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
 
-        var (results, _) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(4);
-        results.ElementAt(0).Status.Should().Be(SearchResultStatus.Active);
-        results.ElementAt(1).Status.Should().Be(SearchResultStatus.Closed);
-        results.ElementAt(2).Status.Should().Be(SearchResultStatus.Upcoming);
-        results.ElementAt(3).Status.Should().Be(SearchResultStatus.Awarded);
+        results.ElementAt(0).Status.Should().Be(CommercialToolStatus.Active);
+        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Closed);
+        results.ElementAt(2).Status.Should().Be(CommercialToolStatus.Upcoming);
+        results.ElementAt(3).Status.Should().Be(CommercialToolStatus.Awarded);
     }
 
     [Fact]
@@ -210,10 +196,9 @@ public class CommercialToolsApiClientTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 1250.75m,
+                    Fees = 0.025m,
                     AwardMethod = "Open",
-                    Description = "Test",
-                    Link = "https://test.com"
+                    Description = "Test"
                 }
             },
             TotalCount = 1,
@@ -221,13 +206,14 @@ public class CommercialToolsApiClientTests
             PageSize = 10
         };
 
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
 
-        var (results, _) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(1);
-        results.First().MaximumFee.Should().Be("£1,250.75");
+        results.First().MaximumFee.Should().Be("2.5%");
     }
 
     [Fact]
@@ -247,7 +233,6 @@ public class CommercialToolsApiClientTests
                     Fees = 0,
                     AwardMethod = "Open",
                     Description = "Test",
-                    Link = "https://test.com",
                     SubmissionDeadline = submissionDeadline
                 }
             },
@@ -256,39 +241,13 @@ public class CommercialToolsApiClientTests
             PageSize = 10
         };
 
-        var jsonResponse = JsonSerializer.Serialize(responseDto);
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
 
-        var (results, _) = await _apiClient.SearchAsync(searchModel, 1, 10);
+        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(1);
         results.First().SubmissionDeadline.Should().Be(submissionDeadline.ToShortDateString());
-    }
-
-    private void SetupHttpResponse(HttpStatusCode statusCode, string content)
-    {
-        var response = new HttpResponseMessage(statusCode)
-        {
-            Content = new StringContent(content, Encoding.UTF8, "application/json")
-        };
-
-        _mockHttpMessageHandler
-            .Protected()
-            .Setup<Task<HttpResponseMessage>>(
-                "SendAsync",
-                ItExpr.IsAny<HttpRequestMessage>(),
-                ItExpr.IsAny<CancellationToken>())
-            .ReturnsAsync(response);
-    }
-
-    private void VerifyHttpRequest(HttpMethod method, Func<HttpRequestMessage, bool> requestValidator)
-    {
-        _mockHttpMessageHandler
-            .Protected()
-            .Verify(
-                "SendAsync",
-                Times.Once(),
-                ItExpr.Is<HttpRequestMessage>(req => req.Method == method && requestValidator(req)),
-                ItExpr.IsAny<CancellationToken>());
     }
 }

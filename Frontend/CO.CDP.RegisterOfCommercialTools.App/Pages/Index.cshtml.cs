@@ -8,7 +8,7 @@ using CO.CDP.UI.Foundation.Utilities;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
-public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, ILogger<IndexModel> logger)
+public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, IFtsUrlService ftsUrlService, ILogger<IndexModel> logger)
     : PageModel
 {
     [BindProperty(SupportsGet = true, Name = "sort")] public SearchModel SearchParams { get; set; } = new();
@@ -47,7 +47,10 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-            SearchResults = results;
+            SearchResults = results.Select(result => result with 
+            { 
+                Url = !string.IsNullOrEmpty(result.Id) && result.Id != "Unknown" ? ftsUrlService.BuildUrl($"/procurement/{result.Id}") : null 
+            }).ToList();
             TotalCount = totalCount;
 
             logger.LogInformation("Search completed successfully. Found {TotalCount} results for page {PageNumber}", 
