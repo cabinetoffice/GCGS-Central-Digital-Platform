@@ -158,7 +158,7 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialTools_WhenStatusIsUnknown_ShouldSetUnknownStatus()
+    public async Task SearchCommercialTools_WhenStatusIsUnknown_ShouldSetUnknownStatusToActive()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
