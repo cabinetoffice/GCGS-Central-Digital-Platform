@@ -8,10 +8,13 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public static class AuthenticationServiceExtensions
 {
-    public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services,
+        IConfiguration configuration, IWebHostEnvironment hostEnvironment)
     {
         var sessionTimeoutInMinutes = configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
-        var cookieSecurePolicy = hostEnvironment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+        var cookieSecurePolicy = hostEnvironment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
 
 
         services.AddAuthentication(options =>
@@ -41,10 +44,13 @@ public static class AuthenticationServiceExtensions
         return services;
     }
 
-    public static IServiceCollection AddOneLoginAuthentication(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    public static IServiceCollection AddOneLoginAuthentication(this IServiceCollection services,
+        IConfiguration configuration, IWebHostEnvironment hostEnvironment)
     {
         var sessionTimeoutInMinutes = configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
-        var cookieSecurePolicy = hostEnvironment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+        var cookieSecurePolicy = hostEnvironment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
 
         var oneLoginAuthority = configuration.GetValue<string>("OneLogin:Authority")!;
         var oneLoginClientId = configuration.GetValue<string>("OneLogin:ClientId")!;
@@ -95,7 +101,8 @@ public static class AuthenticationServiceExtensions
         return services;
     }
 
-    private static Action<OpenIdConnectOptions> SetupOpenIdConnect(IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    private static Action<OpenIdConnectOptions> SetupOpenIdConnect(IConfiguration configuration,
+        IWebHostEnvironment hostEnvironment)
     {
         return options =>
         {
@@ -130,7 +137,9 @@ public static class AuthenticationServiceExtensions
                     var host = request.Host.Value;
                     var callbackPath = "/signin-oidc";
 
-                    string scheme = host.StartsWith("localhost:", StringComparison.OrdinalIgnoreCase) ? "http" : "https";
+                    string scheme = host.StartsWith("localhost:", StringComparison.OrdinalIgnoreCase)
+                        ? "http"
+                        : "https";
 
                     var redirectUri = $"{scheme}://{host}{callbackPath}";
                     context.ProtocolMessage.RedirectUri = redirectUri;
@@ -143,7 +152,9 @@ public static class AuthenticationServiceExtensions
                     var request = context.HttpContext.Request;
                     var host = request.Host.Value;
 
-                    string scheme = host.StartsWith("localhost:", StringComparison.OrdinalIgnoreCase) ? "http" : "https";
+                    string scheme = host.StartsWith("localhost:", StringComparison.OrdinalIgnoreCase)
+                        ? "http"
+                        : "https";
 
                     var signedOutUrl = $"{scheme}://{host}/signout-callback-oidc";
 
