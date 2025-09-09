@@ -56,11 +56,9 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(60);
-    options.Cookie.Name = "CommercialTools.Session";
-    options.Cookie.HttpOnly = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
-    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
