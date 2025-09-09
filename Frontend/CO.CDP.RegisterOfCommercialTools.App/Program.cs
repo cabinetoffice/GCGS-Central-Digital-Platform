@@ -81,8 +81,7 @@ builder.Services.AddHsts(options =>
     options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
 });
 
-var dataProtectionBuilder = builder.Services.AddDataProtection()
-    .SetApplicationName("CO.CDP.RegisterOfCommercialTools.App");
+var dataProtectionBuilder = builder.Services.AddDataProtection();
 
 var dataProtectionPrefix = builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix");
 if (!string.IsNullOrEmpty(dataProtectionPrefix))
