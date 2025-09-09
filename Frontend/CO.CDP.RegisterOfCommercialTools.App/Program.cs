@@ -96,8 +96,7 @@ builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration)
-    .AddSharedSessions(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration);
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
