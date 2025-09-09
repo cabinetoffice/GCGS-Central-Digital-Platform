@@ -264,11 +264,6 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: "us-east-1"
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
       Aws__SystemManager__DataProtectionPrefix: "/cdp/commercial-tools-app/data-protection"
       Aws__ElastiCache__Hostname: "redis"
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
@@ -298,11 +293,6 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: ""
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
       CloudWatch__LogGroup: "/ecs/commercial-tools-api"
       ODataApi__BaseUrl: ""
       ODataApi__ApiKey: ""
