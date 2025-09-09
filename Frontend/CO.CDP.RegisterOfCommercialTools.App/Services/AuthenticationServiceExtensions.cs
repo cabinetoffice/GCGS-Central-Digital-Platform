@@ -54,6 +54,7 @@ public static class AuthenticationServiceExtensions
         var oneLoginAuthority = configuration.GetValue<string>("OneLogin:Authority")!;
         var oneLoginClientId = configuration.GetValue<string>("OneLogin:ClientId")!;
         var oneLoginCallback = configuration.GetValue<string>("OneLogin:CallbackPath") ?? "/signin-oidc";
+        var oneLoginSignedOutCallback = configuration.GetValue<string>("OneLogin:SignedOutCallbackPath") ?? "/signout-callback-oidc";
 
         services.AddTransient<OidcEvents>();
 
@@ -82,6 +83,7 @@ public static class AuthenticationServiceExtensions
                 options.Authority = oneLoginAuthority;
                 options.ClientId = oneLoginClientId;
                 options.CallbackPath = oneLoginCallback;
+                options.SignedOutCallbackPath = oneLoginSignedOutCallback;
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.ResponseMode = OpenIdConnectResponseMode.Query;
                 options.Scope.Clear();
