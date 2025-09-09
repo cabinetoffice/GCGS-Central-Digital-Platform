@@ -56,8 +56,6 @@ public static class AuthenticationServiceExtensions
         var oneLoginCallback = configuration.GetValue<string>("OneLogin:CallbackPath") ?? "/signin-oidc";
         var oneLoginSignedOutCallback = configuration.GetValue<string>("OneLogin:SignedOutCallbackPath") ?? "/signout-callback-oidc";
 
-        services.AddTransient<OidcEvents>();
-
         services.AddAuthentication(options =>
             {
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;

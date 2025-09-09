@@ -107,6 +107,7 @@ if (useOneLogin)
     {
         throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
     }
+    builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
     builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 }
 else if (useCognito)
