@@ -20,6 +20,7 @@ module "ecs_service_commercial_tools_app" {
       redis_primary_endpoint_address = var.redis_primary_endpoint
       service_version                = local.service_version_sirsi
       sessiontimeoutinminutes        = var.commercial_tools_session_timeout
+      ssm_data_protection_prefix     = local.ssm_data_protection_prefix
       vpc_cidr                       = var.vpc_cider
       onelogin_account_url              = local.one_login.credential_locations.account_url
       onelogin_authority                = local.one_login.credential_locations.authority
