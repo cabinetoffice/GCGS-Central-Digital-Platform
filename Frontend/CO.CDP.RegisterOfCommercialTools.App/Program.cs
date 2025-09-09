@@ -125,7 +125,6 @@ else
         options.LoginPath = "/";
         options.LogoutPath = "/";
         options.AccessDeniedPath = "/";
-        options.Cookie.Name = "CommercialTools.Auth";
         options.Cookie.SameSite = SameSiteMode.Lax;
         options.Cookie.SecurePolicy = cookieSecurePolicy;
     });
