@@ -264,12 +264,10 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__SystemManager__DataProtectionPrefix: "/cdp/commercial-tools-app/data-protection"
       Aws__ElastiCache__Hostname: "redis"
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
       CommercialToolsApi__ServiceUrl: '${CommercialToolsApi:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
       SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
-      SessionTimeoutInMinutes: "30"
       Organisation__Authority: *organisation-authority
 
   commercial-tools-api:
