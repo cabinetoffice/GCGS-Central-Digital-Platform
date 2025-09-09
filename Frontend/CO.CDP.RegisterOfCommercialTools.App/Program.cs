@@ -4,6 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 using Microsoft.FeatureManagement;
@@ -100,8 +101,8 @@ builder.Services
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
-
 var useOneLogin = builder.Configuration.GetValue("Features:UseOneLogin", false);
+var useCognito = builder.Configuration.GetValue("Features:UseCognito", false);
 
 if (useOneLogin)
 {
@@ -111,9 +112,26 @@ if (useOneLogin)
     }
     builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 }
-else
+else if (useCognito)
 {
     builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+}
+else
+{
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/";
+        options.LogoutPath = "/";
+        options.AccessDeniedPath = "/";
+        options.Cookie.Name = "CommercialTools.Auth";
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = cookieSecurePolicy;
+    });
 }
 
 builder.Services.AddAuthorization();

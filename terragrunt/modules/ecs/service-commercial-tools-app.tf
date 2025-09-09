@@ -48,7 +48,7 @@ module "ecs_service_commercial_tools_app" {
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags
-  allowed_unauthenticated_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
+  allowed_unauthenticated_paths = ["/", "/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
   user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
   user_pool_client_id           = local.cognito_enabled ? var.user_pool_client_id : null
   user_pool_domain              = local.cognito_enabled ? var.user_pool_domain : null
