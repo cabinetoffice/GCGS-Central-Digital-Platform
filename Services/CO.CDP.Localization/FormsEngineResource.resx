@@ -1537,7 +1537,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <!-- Welsh Exclusions -->
   <data name="WelshExclusions_SectionTitle" xml:space="preserve">
-    <value>Welsh Exclusions</value>
+    <value>Exclusions</value>
   </data>
   <data name="WelshExclusions_01_Title" xml:space="preserve">
     <value>Submitting your 'blacklisting' information</value>
@@ -1566,7 +1566,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     </value>
   </data>
   <data name="WelshExclusions_02_Title" xml:space="preserve">
-    <value>Has your organisation been found to conduct 'blacklisting' in the last three years?</value>
+    <value>Have you, or has has your organisation, been found to have employed the practise of 'blacklisting' in the last three years?</value>
   </data>
   <data name="WelshExclusions_02_SummaryTitle" xml:space="preserve">
     <value>Blacklisting within the last three years</value>
@@ -1604,7 +1604,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     <value>Judicial decision</value>
   </data>
   <data name="WelshExclusions_04_Description" xml:space="preserve">
-    <value>This means the conviction has been confirmed in court with final and binding effect</value>
+    <value>&lt;p class="govuk-body"&gt;This means the conviction has been confirmed in court with final and binding effect.&lt;/p&gt;</value>
   </data>
   <data name="WelshExclusions_05_Title" xml:space="preserve">
     <value>What steps are you taking to show that you are reliable?</value>

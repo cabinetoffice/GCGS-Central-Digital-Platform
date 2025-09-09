@@ -212,11 +212,14 @@
                 $"/organisation/{Model.Id}/forms/{FormsEngine.OrganisationSupplierInfoFormId}/sections/{section.SectionId}";
 
             <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                <a class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
-                   href="@redirectLink"
-                   aria-describedby="form-section-@(section.SectionId)-status">
-                    @(section.SectionName)
-                </a>
+
+                <div class="govuk-task-list__name-and-hint">
+                    <a class="govuk-link govuk-task-list__link govuk-link--no-visited-state"
+                       href="@redirectLink"
+                       aria-describedby="form-section-@(section.SectionId)-status">
+                        @(section.SectionName)
+                    </a>
+                </div>
                 <div class="govuk-task-list__status" id="form-section-@(section.SectionId)-status">
                     @if (section.AnswerSetCount > 0)
                     {

@@ -21,8 +21,6 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             v_question4_id INTEGER;
             v_question5_id INTEGER;
             v_question6_id INTEGER;
-            debug_next_id INTEGER;
-            debug_alt_id INTEGER;
         BEGIN
             SELECT id INTO v_form_id FROM forms WHERE name = 'Standard Questions';
 
@@ -30,8 +28,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 RAISE EXCEPTION 'Form ""Standard Questions"" not found. Migration cannot proceed.';
             END IF;
 
-	        INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, ""type"",display_order, configuration)
-            VALUES ('{Guid.NewGuid()}', 'WelshExclusions_SectionTitle', v_form_id, FALSE, FALSE, 4,1, '{{""AddAnotherAnswerLabel"": ""WelshExclusions_Configuration_AddAnotherAnswerLabel"", ""SingularSummaryHeading"": ""WelshExclusions_Configuration_SingularSummaryHeading"", ""SummaryRenderFormatter"": {{""KeyParams"": [""_WelshExclusions02"", ""_WelshExclusions04""], ""ValueParams"": [""_WelshExclusions02"", ""_WelshExclusions04""], ""KeyExpression"": ""{{0}}"", ""ValueExpression"": ""{{1}}"", ""KeyExpressionOperation"": ""StringFormat"", ""ValueExpressionOperation"": ""StringFormat""}}, ""RemoveConfirmationCaption"": ""WelshExclusions_SectionTitle"", ""RemoveConfirmationHeading"": ""WelshExclusions_Configuration_RemoveConfirmationHeading"", ""PluralSummaryHeadingFormat"": ""WelshExclusions_Configuration_PluralSummaryHeadingFormat"", ""SingularSummaryHeadingHint"": ""WelshExclusions_Configuration_SingularSummaryHeadingHint"", ""FurtherQuestionsExemptedHint"": ""WelshExclusions_Configuration_FurtherQuestionsExemptedHint"", ""PluralSummaryHeadingHintFormat"": ""WelshExclusions_Configuration_PluralSummaryHeadingHintFormat"", ""FurtherQuestionsExemptedHeading"": ""WelshExclusions_Configuration_FurtherQuestionsExemptedHeading""}}')
+            INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type, display_order, configuration)
+            VALUES ('{Guid.NewGuid()}', 'WelshExclusions_SectionTitle', v_form_id, FALSE, FALSE, 4, 1, '{{}}')
             RETURNING id INTO v_section_id;
 
             INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
@@ -47,7 +45,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             RETURNING id INTO v_question3_id;
 
             INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-            VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, false, 'WelshExclusions_04_Title', NULL, '{{}}', NULL, 'WelshExclusions_04_SummaryTitle', '_WelshExclusions04', 4)
+            VALUES('{Guid.NewGuid()}', NULL, NULL, v_section_id, 3, false, 'WelshExclusions_04_Title', 'WelshExclusions_04_Description', '{{}}', NULL, 'WelshExclusions_04_SummaryTitle', '_WelshExclusions04', 4)
             RETURNING id INTO v_question4_id;
 
             INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
