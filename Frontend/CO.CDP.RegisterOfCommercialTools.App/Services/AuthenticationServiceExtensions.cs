@@ -30,7 +30,6 @@ public static class AuthenticationServiceExtensions
                 options.LoginPath = "/Auth/Login";
                 options.LogoutPath = "/Auth/Logout";
                 options.AccessDeniedPath = "/Auth/AccessDenied";
-                options.Cookie.Name = "CommercialTools.Auth";
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = cookieSecurePolicy;
 
