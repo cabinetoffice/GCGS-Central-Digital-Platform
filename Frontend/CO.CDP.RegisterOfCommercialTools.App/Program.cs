@@ -5,7 +5,6 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 using Microsoft.FeatureManagement;
 using CO.CDP.RegisterOfCommercialTools.App.Constants;
