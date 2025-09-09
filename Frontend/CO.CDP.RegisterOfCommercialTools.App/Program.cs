@@ -4,6 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 using Microsoft.FeatureManagement;
@@ -12,11 +13,12 @@ using CO.CDP.UI.Foundation.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddFeatureManagement();
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
@@ -55,8 +57,9 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+    options.IdleTimeout = TimeSpan.FromMinutes(60);
     options.Cookie.Name = "CommercialTools.Session";
+    options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
@@ -94,10 +97,44 @@ builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration)
-    .AddSharedSessions(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration);
 
-builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
+var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
+var useOneLogin = builder.Configuration.GetValue("Features:UseOneLogin", false);
+var useCognito = builder.Configuration.GetValue("Features:UseCognito", false);
+
+if (useOneLogin)
+{
+    if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
+    {
+        throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
+    }
+    builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+}
+else if (useCognito)
+{
+    builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+}
+else
+{
+    builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/";
+        options.LogoutPath = "/";
+        options.AccessDeniedPath = "/";
+        options.Cookie.Name = "CommercialTools.Auth";
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = cookieSecurePolicy;
+    });
+}
+
+builder.Services.AddAuthorization();
 
 builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();
