@@ -19,8 +19,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                 BEGIN
                     SELECT id INTO form_id FROM forms WHERE name = 'Standard Questions';
 
-	                INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type,display_order, configuration)
-                    VALUES ('{Guid.NewGuid()}', 'QualityManagement_SectionTitle', form_id, FALSE, FALSE, 3,1, '{{""AddAnotherAnswerLabel"": ""QualityManagement_Configuration_AddAnotherAnswerLabel"", ""SingularSummaryHeading"": ""QualityManagement_Configuration_SingularSummaryHeading"", ""SummaryRenderFormatter"": {{""KeyParams"": [""_QualityManagementQuestion02"", ""_QualityManagementQuestion04""], ""ValueParams"": [""_QualityManagementQuestion02"", ""_QualityManagementQuestion04""], ""KeyExpression"": ""{{0}}"", ""ValueExpression"": ""{{1}}"", ""KeyExpressionOperation"": ""StringFormat"", ""ValueExpressionOperation"": ""StringFormat""}}, ""RemoveConfirmationCaption"": ""QualityManagement_SectionTitle"", ""RemoveConfirmationHeading"": ""QualityManagement_Configuration_RemoveConfirmationHeading"", ""PluralSummaryHeadingFormat"": ""QualityManagement_Configuration_PluralSummaryHeadingFormat"", ""SingularSummaryHeadingHint"": ""QualityManagement_Configuration_SingularSummaryHeadingHint"", ""FurtherQuestionsExemptedHint"": ""QualityManagement_Configuration_FurtherQuestionsExemptedHint"", ""PluralSummaryHeadingHintFormat"": ""QualityManagement_Configuration_PluralSummaryHeadingHintFormat"", ""FurtherQuestionsExemptedHeading"": ""QualityManagement_Configuration_FurtherQuestionsExemptedHeading""}}');
+	                INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type, display_order, configuration)
+                    VALUES ('{Guid.NewGuid()}', 'QualityManagement_SectionTitle', form_id, FALSE, FALSE, 4, 1, '{{}}');
 
                     SELECT id INTO sectionId FROM form_sections where title = 'QualityManagement_SectionTitle';
 
