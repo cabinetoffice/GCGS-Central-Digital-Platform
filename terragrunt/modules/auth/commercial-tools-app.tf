@@ -4,7 +4,7 @@ resource "aws_cognito_user_pool_client" "commercial_tools_app" {
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_scopes                 = ["openid"]
-  callback_urls                        = ["${local.commercial_tools_app_url}/oauth2/idpresponse"]
+  callback_urls                        = ["${local.commercial_tools_app_url}/signin-oidc"]
   explicit_auth_flows = [
     "ALLOW_ADMIN_USER_PASSWORD_AUTH",
     "ALLOW_CUSTOM_AUTH",
@@ -13,7 +13,7 @@ resource "aws_cognito_user_pool_client" "commercial_tools_app" {
     "ALLOW_REFRESH_TOKEN_AUTH"
   ]
   generate_secret = true
-  logout_urls     = ["${local.commercial_tools_app_url}/one-login/back-channel-sign-out"]
+  logout_urls     = ["${local.commercial_tools_app_url}/signout-callback-oidc"]
 
   supported_identity_providers = ["COGNITO"]
   user_pool_id                 = aws_cognito_user_pool.auth.id
