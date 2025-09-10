@@ -43,6 +43,15 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             if (child == null)
                 throw new ArgumentException($"Child organisation with ID {childId} does not exist", nameof(childId));
 
+            var inverseRelationship = await _context.OrganisationHierarchies
+                .Where(h => h.ParentOrganisationId == child.Id &&
+                            h.ChildOrganisationId == parent.Id &&
+                            h.SupersededOn == null)
+                .FirstOrDefaultAsync();
+
+            if (inverseRelationship != null)
+                throw new ArgumentException($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+
             var existingRelationship = await _context.OrganisationHierarchies
                 .Where(h => h.ParentOrganisationId == parent.Id &&
                             h.ChildOrganisationId == child.Id &&
@@ -105,6 +114,26 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<OrganisationHierarchy>> GetParentsAsync(Guid childId)
+        {
+            if (childId == Guid.Empty)
+                throw new ArgumentException("Child ID cannot be empty", nameof(childId));
+
+            var child = await _context.Organisations
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Guid == childId);
+
+            if (child == null)
+                return [];
+
+            return await _context.OrganisationHierarchies
+                .Include(h => h.Parent)
+                .ThenInclude(p => p!.Identifiers)
+                .Where(h => h.ChildOrganisationId == child.Id && h.SupersededOn == null)
+                .ToListAsync();
         }
     }
 }

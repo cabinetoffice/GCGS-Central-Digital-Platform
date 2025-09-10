@@ -430,7 +430,8 @@ public record OrganisationSearchQuery
     public PartyRole? Role { get; }
     public int? Limit { get; }
     public double Threshold { get; }
-    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null)
+    public bool IncludePendingRoles { get; }
+    public OrganisationSearchQuery(string name, int? limit, double? threshold, string? role = null, bool includePendingRoles = false)
     {
         Name = name;
 
@@ -445,6 +446,8 @@ public record OrganisationSearchQuery
         {
             Threshold = threshold.Value;
         }
+
+        IncludePendingRoles = includePendingRoles;
     }
 }
 
@@ -455,8 +458,9 @@ public record OrganisationSearchByPponQuery
     public int Skip { get; }
     public string OrderBy { get; } = "rel";
     public double Threshold { get; }
+    public OrganisationSearchFilter? Filters { get; }
 
-    public OrganisationSearchByPponQuery(string searchText, int? limit, int skip, string orderBy, double? threshold)
+    public OrganisationSearchByPponQuery(string searchText, int? limit, int skip, string orderBy, double? threshold, OrganisationSearchFilter? filters = null)
     {
         SearchText = searchText;
         Limit = limit;
@@ -470,6 +474,8 @@ public record OrganisationSearchByPponQuery
         {
             Threshold = threshold.Value;
         }
+
+        Filters = filters;
     }
 }
 

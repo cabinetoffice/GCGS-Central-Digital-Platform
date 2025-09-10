@@ -1,13 +1,11 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
-using System.Linq;
-using System.Net;
 using DevolvedRegulation = CO.CDP.OrganisationApp.Constants.DevolvedRegulation;
 
 namespace CO.CDP.OrganisationApp.WebApiClients;
 
-internal static class OrganisationClientExtensions
+public static class OrganisationClientExtensions
 {
     internal static async Task<ComposedOrganisation> GetComposedOrganisation(this IOrganisationClient organisationClient, Guid organisationId)
     {
@@ -224,24 +222,6 @@ internal static class OrganisationClientExtensions
         }
     }
 
-    internal static async Task<ICollection<OrganisationSearchResult>> SearchOrganisationAsync(
-        this IOrganisationClient organisationClient,
-        string name,
-        string role,
-        int limit,
-        double threshold)
-    {
-        try
-        {
-            var searchResults = await organisationClient.SearchOrganisationAsync(name, role, limit, threshold);
-            return searchResults ?? new List<OrganisationSearchResult>();
-        }
-        catch (ApiException ex) when (ex.StatusCode == 404)
-        {
-            return new List<OrganisationSearchResult>();
-        }
-    }
-
     internal static async Task<Organisation.WebApiClient.Organisation?> LookupOrganisationAsync(
         this IOrganisationClient organisationClient,
         string? name,
@@ -257,16 +237,17 @@ internal static class OrganisationClientExtensions
         }
     }
 
-    internal static async Task<(ICollection<OrganisationSearchByPponResult>,int)> SearchOrganisationByNameOrPpon(
+    internal static async Task<(ICollection<OrganisationSearchByPponResult>, int)> SearchOrganisationByNameOrPpon(
         this IOrganisationClient organisationClient,
         string searchText,
         int pageSize,
         int skip,
         string orderBy,
-        double threshold) {
+        double threshold,
+        OrganisationSearchFilter? filters = null) {
         try
         {
-            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize, skip, orderBy, threshold);
+            var searchResults =  await organisationClient.SearchByNameOrPponAsync(searchText, pageSize, skip, orderBy, threshold, filters);
             if (searchResults.Results.Count > 0)
             {
                 return (searchResults.Results, searchResults.TotalCount);
@@ -275,8 +256,19 @@ internal static class OrganisationClientExtensions
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return (new List<OrganisationSearchByPponResult>(),0);
+            return (new List<OrganisationSearchByPponResult>(), 0);
         }
+    }
+
+    internal static async Task<OrganisationSearchByPponResponse> SearchByNameOrPponAsync(
+        this IOrganisationClient organisationClient,
+        string searchText,
+        int limit,
+        int skip,
+        string sortOrder,
+        double? threshold = null)
+    {
+        return await organisationClient.SearchByNameOrPponAsync(searchText, limit, skip, sortOrder, threshold, null);
     }
 }
 

@@ -319,6 +319,12 @@
   <data name="Global_Back" xml:space="preserve">
     <value>Back</value>
   </data>
+  <data name="Global_NotProvided" xml:space="preserve">
+    <value>Not provided</value>
+  </data>
+  <data name="Global_NoInformationProvided" xml:space="preserve">
+    <value>No information has been provided for this section yet.</value>
+  </data>
   <data name="Global_Download" xml:space="preserve">
     <value>Download</value>
   </data>
@@ -2071,6 +2077,24 @@
   </data>
   <data name="BuyerParentChildRelationship_ConfirmPage_Title" xml:space="preserve">
     <value>Confirm your child organisation details</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ApprovalPending" xml:space="preserve">
+    <value>The selected organisation is pending approval.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ApprovalPending" xml:space="preserve">
+    <value>Pending approval</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent" xml:space="preserve">
+    <value>The selected organisation is already a parent of this organisation.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsParent" xml:space="preserve">
+    <value>Parent organisation</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild" xml:space="preserve">
+    <value>The selected organisation is already connected as a child to this organisation.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild" xml:space="preserve">
+    <value>Already added</value>
   </data>
   <data name="Global_NoAddressAvailable" xml:space="preserve">
     <value>No address information available</value>
@@ -4199,6 +4223,9 @@
   <data name="Supplier_AdditionalModulesInformation_Hint" xml:space="preserve">
     <value>These are policy specific questions that you may be asked to complete for some bids. You can add this information at any time and the contracting authority you are working with will tell you if they are needed for a specific bid. The questions in this section are all optional and are not needed to be completed to create a sharecode.</value>
   </data>
+  <data name="Supplier_WelshProcurementAdditionalModulesInformation_Heading" xml:space="preserve">
+    <value>Welsh government additional modules</value>
+  </data>
   <data name="SessionTimeoutWarningDialog_Header" xml:space="preserve">
     <value>Session timeout</value>
   </data>
@@ -4224,13 +4251,13 @@
     <value>only a parent organisation can add its child organisations</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_ListItem2" xml:space="preserve">
-    <value>a child organisation can only be added if they are registered in the &lt;a href="https://www.find-tender.service.gov.uk/Search" target="_blank" class="govuk-link"&gt;Central Digital Platform&lt;/a&gt; (opens in a new tab)</value>
+    <value>a child organisation can only be added if it is registered on &lt;a href="https://www.find-tender.service.gov.uk/Search" target="_blank" class="govuk-link"&gt;Find a Tender&lt;/a&gt; (opens in a new tab)</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_DetailsSummary" xml:space="preserve">
     <value>What is a child organisation?</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_DetailsText" xml:space="preserve">
-    <value>Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation sponsors one or more child organisations, which report directly to them.</value>
+    <value>Some organisations are arranged in a hierarchical structure that connects them together. A parent organisation can manage, own or sponsor one or more child organisations.</value>
   </data>
   <data name="OrganisationOverview_ChildOrganisations_ButtonText" xml:space="preserve">
     <value>Add</value>
@@ -4319,6 +4346,12 @@
       &lt;/p&gt;
     </value>
   </data>
+  <data name="PponSearch_Tenderer_Details_Summary" xml:space="preserve">
+    <value>What does 'Tenderer' mean?</value>
+  </data>
+  <data name="PponSearch_Tenderer_Details_Content" xml:space="preserve">
+    <value>Tenderer means a supplier registered on Find a Tender.</value>
+  </data>
   <data name="Global_Search" xml:space="preserve">
     <value>Search</value>
   </data>
@@ -4365,7 +4398,7 @@
     <value>View your organisation details</value>
   </data>
   <data name="BuyerView_TileOne_Body">
-    <value>View and manage the details of your organisation.</value>
+    <value>View and manage the details of your organisation. Supplier organisations can view and manage supplier information.</value>
   </data>
   <data name="BuyerView_TileTwo_Title">
     <value>Public procurement organisation number (PPON) register</value>

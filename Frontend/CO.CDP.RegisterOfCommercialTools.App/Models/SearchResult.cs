@@ -1,3 +1,5 @@
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+
 namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public record SearchResult(
@@ -5,10 +7,11 @@ public record SearchResult(
     string Title,
     string Caption,
     string CommercialTool,
-    SearchResultStatus Status,
+    CommercialToolStatus Status,
     string MaximumFee,
-    string OtherContractingAuthorityCanUse, // In the future, this should be a Yes/No field derived from ReservedParticipation
+    string OtherContractingAuthorityCanUse,
     string SubmissionDeadline,
     string ContractDates,
-    string AwardMethod
+    string AwardMethod,
+    string? Url
 );

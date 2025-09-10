@@ -1,13 +1,15 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
 @using CO.CDP.RegisterOfCommercialTools.App.Models
-@using CO.CDP.UI.Foundation.Services
-@inject IFtsUrlService FtsUrlService
+@using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
 
 <div class="search-result" data-result-id="@Model.Id">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
-                <a class="govuk-link" href="@FtsUrlService.BuildUrl($"/Notice/{Model.Id}")">@Model.Title</a>
+                @if (!string.IsNullOrEmpty(Model.Url))
+                {
+                    <a class="govuk-link" href="@Model.Url">@Model.Title</a>
+                }
             </h2>
         </div>
         <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">
@@ -24,17 +26,20 @@
         <span class="govuk-!-font-weight-bold">Status:</span>
         @switch (Model.Status)
         {
-            case SearchResultStatus.Active:
+            case CommercialToolStatus.Active:
                 <span>Applications window is open</span>
                 break;
-            case SearchResultStatus.Upcoming:
+            case CommercialToolStatus.Upcoming:
                 <span>Applications window opening soon</span>
                 break;
-            case SearchResultStatus.Closed:
+            case CommercialToolStatus.Closed:
                 <span>Applications window has closed</span>
                 break;
-            case SearchResultStatus.Awarded:
+            case CommercialToolStatus.Awarded:
                 <span>Awarded</span>
+                break;
+            case CommercialToolStatus.Unknown:
+                <span>Unknown</span>
                 break;
         }
     </p>

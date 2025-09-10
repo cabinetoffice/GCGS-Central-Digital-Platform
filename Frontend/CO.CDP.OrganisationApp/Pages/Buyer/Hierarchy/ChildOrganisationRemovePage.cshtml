@@ -12,168 +12,164 @@
        class="govuk-back-link">@StaticTextResource.Global_Back</a>
 }
 
-<div class="govuk-width-container">
-    <main class="govuk-main-wrapper " id="main-content" role="main">
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                @if (Model.HasValidationErrors)
-                {
-                    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
-                         data-module="govuk-error-summary">
-                        <h2 class="govuk-error-summary__title" id="error-summary-title">
-                            @StaticTextResource.Global_ErrorSummary_Heading
-                        </h2>
-                        <div class="govuk-error-summary__body">
-                            <ul class="govuk-list govuk-error-summary__list">
-                                @foreach (var modelStateEntry in ViewContext.ModelState.Where(x => x.Value?.Errors.Any() == true))
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (Model.HasValidationErrors)
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    @StaticTextResource.Global_ErrorSummary_Heading
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        @foreach (var modelStateEntry in ViewContext.ModelState.Where(x => x.Value?.Errors.Any() == true))
+                        {
+                            if (modelStateEntry.Value?.Errors != null)
+                            {
+                                foreach (var error in modelStateEntry.Value.Errors)
                                 {
-                                    if (modelStateEntry.Value?.Errors != null)
-                                    {
-                                        foreach (var error in modelStateEntry.Value.Errors)
-                                        {
-                                            <li>
-                                                <a href="#@modelStateEntry.Key-error">@error.ErrorMessage</a>
-                                            </li>
-                                        }
-                                    }
+                                    <li>
+                                        <a href="#@modelStateEntry.Key-error">@error.ErrorMessage</a>
+                                    </li>
                                 }
-                            </ul>
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
+
+        <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Heading</h1>
+        <h2 class="govuk-heading-m">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Confirmation</h2>
+
+        <div class="table-header">
+            <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? StaticTextResource.Global_Unknown)</p>
+        </div>
+        <div class="table-content">
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                <tr class="govuk-table__row">
+                    <th scope="row"
+                        class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.Global_PPON</th>
+                    <td class="govuk-table__cell govuk-!-width-two-thirds">
+                        @{
+                            var pponValue = Model.GetChildOrganisationPpon();
+                            @(string.IsNullOrEmpty(pponValue) ? StaticTextResource.Global_Unknown : pponValue)
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row"
+                        class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationType</th>
+                    <td class="govuk-table__cell govuk-!-width-two-thirds">
+                        @if (Model.ChildOrganisation?.Roles?.Any() == true)
+                        {
+                            @Model.ChildOrganisation.Roles.GetDisplayText()
+                        }
+                        else
+                        {
+                            @StaticTextResource.Global_Unknown
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row"
+                        class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationAddress
+                    </th>
+                    <td class="govuk-table__cell govuk-!-width-two-thirds">
+                        @if (Model.HasChildOrganisationAddress && Model.ChildOrganisationAddress != null)
+                        {
+                            @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.StreetAddress))
+                            {
+                                @Model.ChildOrganisationAddress.StreetAddress<br/>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
+                            {
+                                @Model.ChildOrganisationAddress.Locality<br/>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
+                            {
+                                @Model.ChildOrganisationAddress.Region<br/>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
+                            {
+                                @Model.ChildOrganisationAddress.PostalCode<br/>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
+                            {
+                                @Model.ChildOrganisationAddress.CountryName
+                            }
+                        }
+                        else
+                        {
+                            @StaticTextResource.Global_NoAddressAvailable
+                        }
+                    </td>
+                </tr>
+                <tr class="govuk-table__row">
+                    <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
+                        @StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationEmail
+                    </th>
+                    <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
+                        @(string.IsNullOrEmpty(Model.ChildOrganisation?.ContactPoint?.Email)
+                            ? StaticTextResource.Global_NoEmailAvailable
+                            : Model.ChildOrganisation.ContactPoint.Email)
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="govuk-inset-text">
+            @StaticTextResource.BuyerParentChildRelationship_RemovePage_InfoText
+        </div>
+
+        <form method="post">
+            <div
+                class="govuk-form-group @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset"
+                          aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
+                    <legend class="govuk-fieldset__legend">
+                        <span
+                            class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend</span>
+                    </legend>
+                    @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
+                    {
+                        <p id="RemoveConfirmation-error" class="govuk-error-message">
+                            <span
+                                class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Error</span> @ViewData.ModelState["RemoveConfirmation"]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="remove-yes" name="RemoveConfirmation"
+                                   type="radio"
+                                   value="True">
+                            <label class="govuk-label govuk-radios__label" for="remove-yes">
+                                @StaticTextResource.BuyerParentChildRelationship_RemovePage_YesRemove
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="remove-no"
+                                   name="RemoveConfirmation"
+                                   type="radio"
+                                   value="False">
+                            <label class="govuk-label govuk-radios__label" for="remove-no">
+                                @StaticTextResource.BuyerParentChildRelationship_RemovePage_NoDoNotRemove
+                            </label>
                         </div>
                     </div>
-                }
-
-                <h1 class="govuk-heading-l">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Heading</h1>
-                <h2 class="govuk-heading-m">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Confirmation</h2>
-
-                <div class="table-header">
-                    <p class="govuk-body govuk-!-font-weight-bold">@(Model.ChildOrganisation?.Name ?? StaticTextResource.Global_Unknown)</p>
-                </div>
-                <div class="table-content">
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.Global_PPON</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                @{
-                                    var pponValue = Model.GetChildOrganisationPpon();
-                                    @(string.IsNullOrEmpty(pponValue) ? StaticTextResource.Global_Unknown : pponValue)
-                                }
-                            </td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationType</th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                @if (Model.ChildOrganisation?.Roles?.Any() == true)
-                                {
-                                    @Model.ChildOrganisation.Roles.GetDisplayText()
-                                }
-                                else
-                                {
-                                    @StaticTextResource.Global_Unknown
-                                }
-                            </td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row"
-                                class="govuk-table__header govuk-!-width-one-third">@StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationAddress
-                            </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds">
-                                @if (Model.HasChildOrganisationAddress && Model.ChildOrganisationAddress != null)
-                                {
-                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.StreetAddress))
-                                    {
-                                        @Model.ChildOrganisationAddress.StreetAddress<br/>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Locality))
-                                    {
-                                        @Model.ChildOrganisationAddress.Locality<br/>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.Region))
-                                    {
-                                        @Model.ChildOrganisationAddress.Region<br/>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.PostalCode))
-                                    {
-                                        @Model.ChildOrganisationAddress.PostalCode<br/>
-                                    }
-
-                                    @if (!string.IsNullOrEmpty(Model.ChildOrganisationAddress.CountryName))
-                                    {
-                                        @Model.ChildOrganisationAddress.CountryName
-                                    }
-                                }
-                                else
-                                {
-                                    @StaticTextResource.Global_NoAddressAvailable
-                                }
-                            </td>
-                        </tr>
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-width-one-third no-border">
-                                @StaticTextResource.BuyerParentChildRelationship_RemovePage_OrganisationEmail
-                            </th>
-                            <td class="govuk-table__cell govuk-!-width-two-thirds no-border">
-                                @(string.IsNullOrEmpty(Model.ChildOrganisation?.ContactPoint?.Email)
-                                    ? StaticTextResource.Global_NoEmailAvailable
-                                    : Model.ChildOrganisation.ContactPoint.Email)
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="govuk-inset-text">
-                    @StaticTextResource.BuyerParentChildRelationship_RemovePage_InfoText
-                </div>
-
-                <form method="post">
-                    <div
-                        class="govuk-form-group @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "govuk-form-group--error" : "")">
-                        <fieldset class="govuk-fieldset"
-                                  aria-describedby="remove-organisation-hint @(ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0 ? "RemoveConfirmation-error" : "")">
-                            <legend class="govuk-fieldset__legend">
-                                <span
-                                    class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_VisuallyHiddenLegend</span>
-                            </legend>
-                            @if (ViewData.ModelState["RemoveConfirmation"]?.Errors.Count > 0)
-                            {
-                                <p id="RemoveConfirmation-error" class="govuk-error-message">
-                                    <span
-                                        class="govuk-visually-hidden">@StaticTextResource.BuyerParentChildRelationship_RemovePage_Error</span> @ViewData.ModelState["RemoveConfirmation"]?.Errors.FirstOrDefault()?.ErrorMessage
-                                </p>
-                            }
-                            <div class="govuk-radios" data-module="govuk-radios">
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="remove-yes" name="RemoveConfirmation"
-                                           type="radio"
-                                           value="True">
-                                    <label class="govuk-label govuk-radios__label" for="remove-yes">
-                                        @StaticTextResource.BuyerParentChildRelationship_RemovePage_YesRemove
-                                    </label>
-                                </div>
-                                <div class="govuk-radios__item">
-                                    <input class="govuk-radios__input" id="remove-no"
-                                           name="RemoveConfirmation"
-                                           type="radio"
-                                           value="False">
-                                    <label class="govuk-label govuk-radios__label" for="remove-no">
-                                        @StaticTextResource.BuyerParentChildRelationship_RemovePage_NoDoNotRemove
-                                    </label>
-                                </div>
-                            </div>
-                        </fieldset>
-                    </div>
-                    <div class="govuk-button-group">
-                        <button type="submit"
-                                class="govuk-button">@StaticTextResource.Global_Confirm</button>
-                    </div>
-                </form>
+                </fieldset>
             </div>
-        </div>
-    </main>
+            <div class="govuk-button-group">
+                <button type="submit"
+                        class="govuk-button">@StaticTextResource.Global_Confirm</button>
+            </div>
+        </form>
+    </div>
 </div>

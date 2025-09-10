@@ -18,7 +18,7 @@
 }
 
 @section BeforeContent {
-    <a class="govuk-back-link" href="/organisation-selection">@StaticTextResource.Global_Back</a>
+    <a class="govuk-back-link" href="@Model.BackLinkUrl">@StaticTextResource.Global_Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -345,7 +345,7 @@
             @if (organisationDetails.IsBuyer() && Model.SearchRegistryPponEnabled)
             {
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
-                    <a class="govuk-link" href="/organisation/@Model.Id/buyer/search">@StaticTextResource.Organisation_SearchOrganisations</a>
+                    <a class="govuk-link" href="/organisation/@Model.Id/buyer/search?origin=overview">@StaticTextResource.Organisation_SearchOrganisations</a>
                 </h3>
 
                 <p class="govuk-body">@StaticTextResource.Organisation_SearchOrganisationsHint</p>

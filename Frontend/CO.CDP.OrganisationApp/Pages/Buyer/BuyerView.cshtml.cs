@@ -7,7 +7,6 @@ using CO.CDP.Localization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement.Mvc;
 using CO.CDP.UI.Foundation.Services;
-using CO.CDP.UI.Foundation.Cookies;
 
 namespace CO.CDP.OrganisationApp.Pages.Buyer;
 [FeatureGate(FeatureFlags.BuyerView)]
@@ -35,7 +34,7 @@ public class BuyerView(
             {
                 Title = StaticTextResource.BuyerView_TileOne_Title,
                 Body = StaticTextResource.BuyerView_TileOne_Body,
-                Href = $"/organisation/{Id}"
+                Href = $"/organisation/{Id}?origin=buyer-view"
             }
         };
 
@@ -45,7 +44,7 @@ public class BuyerView(
             {
                 Title = StaticTextResource.BuyerView_TileTwo_Title,
                 Body = StaticTextResource.BuyerView_TileTwo_Body,
-                Href = $"/organisation/{Id}/buyer/search"
+                Href = $"/organisation/{Id}/buyer/search?origin=buyer-view"
             });
         }
 
@@ -64,7 +63,7 @@ public class BuyerView(
         if (commercialToolsEnabled)
         {
             var cookiesAccepted = cookiePreferencesService.IsAccepted();
-            
+
             tiles.Add(new Tile
             {
                 Title = StaticTextResource.BuyerView_TileFour_Title,

@@ -156,7 +156,7 @@ services:
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       DataSharingService: '${DataSharingService:-http://gateway:${CDP_DATA_SHARING_PORT:-8088}}'
       EntityVerificationService: '${EntityVerificationService:-http://gateway:${CDP_ENTITY_VERIFICATION_PORT:-8094}}'
-      CommercialToolsService__ServiceBaseUrl: '${CommercialToolsService:-http://gateway:${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}}'
+      CommercialToolsApp__ServiceBaseUrl: '${CommercialToolsApp:-http://gateway:${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}}'
       CompaniesHouse__Url: ""
       CompaniesHouse__User: ""
       CompaniesHouse__Password: ""
@@ -257,10 +257,6 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
-      commercial-tools-api:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
       redis:
         condition: service_healthy
     environment:
@@ -268,16 +264,13 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: "us-east-1"
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
       Aws__SystemManager__DataProtectionPrefix: "/cdp/commercial-tools-app/data-protection"
       Aws__ElastiCache__Hostname: "redis"
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
-      CommercialToolsApi__ServiceUrl: '${CommercialToolsApi__ServiceUrl:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
+      CommercialToolsApi__ServiceUrl: '${CommercialToolsApi:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
+      SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
       SessionTimeoutInMinutes: "30"
+      Organisation__Authority: *organisation-authority
 
   commercial-tools-api:
     container_name: co-cdp-commercial-tools-api
@@ -300,11 +293,6 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__Region: ""
-      Aws__CognitoAuthentication__Domain: ""
-      Aws__CognitoAuthentication__UserPoolId: ""
-      Aws__CognitoAuthentication__UserPoolClientId: ""
-      Aws__CognitoAuthentication__UserPoolClientSecret: ""
       CloudWatch__LogGroup: "/ecs/commercial-tools-api"
       ODataApi__BaseUrl: ""
       ODataApi__ApiKey: ""
