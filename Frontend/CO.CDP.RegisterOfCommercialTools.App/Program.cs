@@ -4,12 +4,11 @@ using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.DataProtection;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 using Microsoft.FeatureManagement;
 using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,10 +56,9 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(60);
-    options.Cookie.Name = "CommercialTools.Session";
-    options.Cookie.HttpOnly = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
+    options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
@@ -84,20 +82,18 @@ builder.Services.AddHsts(options =>
     options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
 });
 
-var dataProtectionBuilder = builder.Services.AddDataProtection()
-    .SetApplicationName("CO.CDP.RegisterOfCommercialTools.App");
-
-var dataProtectionPrefix = builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix");
-if (!string.IsNullOrEmpty(dataProtectionPrefix))
-{
-    dataProtectionBuilder.PersistKeysToAWSSystemsManager(dataProtectionPrefix);
-}
+builder.Services.AddDataProtection()
+   .SetApplicationName("CDP-Frontends")
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
+       ?? throw new Exception("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."));
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
@@ -110,6 +106,7 @@ if (useOneLogin)
     {
         throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
     }
+    builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
     builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 }
 else if (useCognito)
@@ -118,20 +115,7 @@ else if (useCognito)
 }
 else
 {
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    })
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/";
-        options.LogoutPath = "/";
-        options.AccessDeniedPath = "/";
-        options.Cookie.Name = "CommercialTools.Auth";
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = cookieSecurePolicy;
-    });
+    builder.Services.AddFallbackAuthentication(builder.Configuration, builder.Environment);
 }
 
 builder.Services.AddAuthorization();

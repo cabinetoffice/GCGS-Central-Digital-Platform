@@ -8,6 +8,37 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public static class AuthenticationServiceExtensions
 {
+    public static IServiceCollection AddFallbackAuthentication(this IServiceCollection services,
+        IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    {
+        var sessionTimeoutInMinutes = configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
+        var cookieSecurePolicy = hostEnvironment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+            options.SlidingExpiration = true;
+            options.LoginPath = "/Auth/Login";
+            options.LogoutPath = "/Auth/Logout";
+            options.AccessDeniedPath = "/Auth/AccessDenied";
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = cookieSecurePolicy;
+
+            if (hostEnvironment.IsDevelopment())
+            {
+                options.Cookie.Domain = "localhost";
+            }
+        });
+
+        return services;
+    }
     public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services,
         IConfiguration configuration, IWebHostEnvironment hostEnvironment)
     {
@@ -30,7 +61,6 @@ public static class AuthenticationServiceExtensions
                 options.LoginPath = "/Auth/Login";
                 options.LogoutPath = "/Auth/Logout";
                 options.AccessDeniedPath = "/Auth/AccessDenied";
-                options.Cookie.Name = "CommercialTools.Auth";
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = cookieSecurePolicy;
 
@@ -55,8 +85,7 @@ public static class AuthenticationServiceExtensions
         var oneLoginAuthority = configuration.GetValue<string>("OneLogin:Authority")!;
         var oneLoginClientId = configuration.GetValue<string>("OneLogin:ClientId")!;
         var oneLoginCallback = configuration.GetValue<string>("OneLogin:CallbackPath") ?? "/signin-oidc";
-
-        services.AddTransient<OidcEvents>();
+        var oneLoginSignedOutCallback = configuration.GetValue<string>("OneLogin:SignedOutCallbackPath") ?? "/signout-callback-oidc";
 
         services.AddAuthentication(options =>
             {
@@ -70,7 +99,6 @@ public static class AuthenticationServiceExtensions
                 options.LoginPath = "/Auth/Login";
                 options.LogoutPath = "/Auth/Logout";
                 options.AccessDeniedPath = "/Auth/AccessDenied";
-                options.Cookie.Name = "CommercialTools.Auth";
                 options.Cookie.SameSite = SameSiteMode.Lax;
                 options.Cookie.SecurePolicy = cookieSecurePolicy;
 
@@ -84,6 +112,7 @@ public static class AuthenticationServiceExtensions
                 options.Authority = oneLoginAuthority;
                 options.ClientId = oneLoginClientId;
                 options.CallbackPath = oneLoginCallback;
+                options.SignedOutCallbackPath = oneLoginSignedOutCallback;
                 options.ResponseType = OpenIdConnectResponseType.Code;
                 options.ResponseMode = OpenIdConnectResponseMode.Query;
                 options.Scope.Clear();

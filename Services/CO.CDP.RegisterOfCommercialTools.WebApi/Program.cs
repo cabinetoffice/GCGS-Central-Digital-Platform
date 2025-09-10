@@ -16,8 +16,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.DocumentCommercialToolsApi(builder.Configuration));
 builder.Services.AddHealthChecks();
 
-builder.Services.AddAuthorization();
-builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddPassThroughAuthentication();
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 

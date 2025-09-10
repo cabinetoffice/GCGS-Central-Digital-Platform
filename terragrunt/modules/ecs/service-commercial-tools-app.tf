@@ -20,6 +20,7 @@ module "ecs_service_commercial_tools_app" {
       redis_primary_endpoint_address = var.redis_primary_endpoint
       service_version                = local.service_version_sirsi
       sessiontimeoutinminutes        = var.commercial_tools_session_timeout
+      ssm_data_protection_prefix     = local.ssm_data_protection_prefix
       vpc_cidr                       = var.vpc_cider
       onelogin_account_url              = local.one_login.credential_locations.account_url
       onelogin_authority                = local.one_login.credential_locations.authority
@@ -48,7 +49,7 @@ module "ecs_service_commercial_tools_app" {
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags
-  allowed_unauthenticated_paths = ["/", "/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
+  allowed_unauthenticated_paths = ["/signout-callback-oidc", "/assets/*", "/css/*", "/manifest.json"]
   user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
   user_pool_client_id           = local.cognito_enabled ? var.user_pool_client_id : null
   user_pool_domain              = local.cognito_enabled ? var.user_pool_domain : null

@@ -24,7 +24,16 @@ public class SearchIntegrationTests
             {
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    { "Aws:ServiceURL", "http://localhost:4566" }
+                    { "AWS:Region", "eu-west-2" },
+                    { "AWS:ServiceURL", "http://localhost:4566" },
+                    { "AWS:Credentials:AccessKeyId", "test" },
+                    { "AWS:Credentials:SecretAccessKey", "test" },
+                    { "AWS:CognitoAuthentication:UserPoolId", "test-pool" },
+                    { "AWS:CognitoAuthentication:UserPoolClientId", "test-client" },
+                    { "AWS:CognitoAuthentication:UserPoolClientSecret", "test-secret" },
+                    { "AWS:CognitoAuthentication:Domain", "test-domain" },
+                    { "Aws:CloudWatch:LogGroup", "/test/commercial-tools-api" },
+                    { "Aws:CloudWatch:LogStream", "test-serilog" }
                 });
             });
             builder.ConfigureServices(services =>

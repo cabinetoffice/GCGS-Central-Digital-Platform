@@ -1,32 +1,28 @@
-using CO.CDP.RegisterOfCommercialTools.WebApi.Models;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Options;
+using System.Text.Encodings.Web;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi;
 
 public static class AuthenticationServiceExtensions
 {
-    public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    public static void AddPassThroughAuthentication(this IServiceCollection services)
     {
-        services.Configure<AwsSettings>(configuration.GetSection("AWS"));
-        services.Configure<CognitoAuthenticationSettings>(configuration.GetSection("AWS:CognitoAuthentication"));
+        services.AddAuthentication("PassThrough")
+            .AddScheme<AuthenticationSchemeOptions, PassThroughAuthHandler>("PassThrough", _ => { });
 
-        var awsSettings = configuration.GetSection("AWS").Get<AwsSettings>();
-        var cognitoSettings = configuration.GetSection("AWS:CognitoAuthentication").Get<CognitoAuthenticationSettings>();
+        services.AddAuthorization();
+    }
+}
 
-        services.AddAuthentication("Bearer")
-            .AddJwtBearer("Bearer", options =>
-            {
-                options.Authority = $"https://cognito-idp.{awsSettings?.Region}.amazonaws.com/{cognitoSettings?.UserPoolId}";
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidIssuer = $"https://cognito-idp.{awsSettings?.Region}.amazonaws.com/{cognitoSettings?.UserPoolId}",
-                    ValidateAudience = true,
-                    ValidAudience = cognitoSettings?.UserPoolClientId,
-                    ValidateLifetime = true
-                };
-            });
-
-        return services;
+public class PassThroughAuthHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+{
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        return Task.FromResult(AuthenticateResult.NoResult());
     }
 }
