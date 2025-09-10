@@ -20,7 +20,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     SELECT id INTO form_id FROM forms WHERE name = 'Standard Questions';
 
 	                INSERT INTO form_sections (guid, title, form_id, allows_multiple_answer_sets, check_further_questions_exempted, type, display_order, configuration)
-                    VALUES ('{Guid.NewGuid()}', 'QualityManagement_SectionTitle', form_id, FALSE, FALSE, 4, 1, '{{}}');
+                    VALUES ('{Guid.NewGuid()}', 'QualityManagement_SectionTitle', form_id, FALSE, FALSE, 4, 2, '{{}}');
 
                     SELECT id INTO sectionId FROM form_sections where title = 'QualityManagement_SectionTitle';
 
