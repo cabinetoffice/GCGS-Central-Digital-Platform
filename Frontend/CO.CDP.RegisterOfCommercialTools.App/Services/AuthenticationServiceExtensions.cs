@@ -8,6 +8,37 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public static class AuthenticationServiceExtensions
 {
+    public static IServiceCollection AddFallbackAuthentication(this IServiceCollection services,
+        IConfiguration configuration, IWebHostEnvironment hostEnvironment)
+    {
+        var sessionTimeoutInMinutes = configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
+        var cookieSecurePolicy = hostEnvironment.IsDevelopment()
+            ? CookieSecurePolicy.SameAsRequest
+            : CookieSecurePolicy.Always;
+
+        services.AddAuthentication(options =>
+        {
+            options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        })
+        .AddCookie(options =>
+        {
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+            options.SlidingExpiration = true;
+            options.LoginPath = "/Auth/Login";
+            options.LogoutPath = "/Auth/Logout";
+            options.AccessDeniedPath = "/Auth/AccessDenied";
+            options.Cookie.SameSite = SameSiteMode.Lax;
+            options.Cookie.SecurePolicy = cookieSecurePolicy;
+
+            if (hostEnvironment.IsDevelopment())
+            {
+                options.Cookie.Domain = "localhost";
+            }
+        });
+
+        return services;
+    }
     public static IServiceCollection AddAwsCognitoAuthentication(this IServiceCollection services,
         IConfiguration configuration, IWebHostEnvironment hostEnvironment)
     {

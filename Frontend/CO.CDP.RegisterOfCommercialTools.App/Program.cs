@@ -4,11 +4,11 @@ using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 using Microsoft.FeatureManagement;
 using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +59,7 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
     options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
 });
 
@@ -81,7 +82,8 @@ builder.Services.AddHsts(options =>
     options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
 });
 
-var dataProtectionBuilder = builder.Services.AddDataProtection();
+var dataProtectionBuilder = builder.Services.AddDataProtection()
+    .SetApplicationName("CDP-Frontends");
 
 var dataProtectionPrefix = builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix");
 if (!string.IsNullOrEmpty(dataProtectionPrefix))
@@ -116,19 +118,7 @@ else if (useCognito)
 }
 else
 {
-    builder.Services.AddAuthentication(options =>
-    {
-        options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-    })
-    .AddCookie(options =>
-    {
-        options.LoginPath = "/";
-        options.LogoutPath = "/";
-        options.AccessDeniedPath = "/";
-        options.Cookie.SameSite = SameSiteMode.Lax;
-        options.Cookie.SecurePolicy = cookieSecurePolicy;
-    });
+    builder.Services.AddFallbackAuthentication(builder.Configuration, builder.Environment);
 }
 
 builder.Services.AddAuthorization();

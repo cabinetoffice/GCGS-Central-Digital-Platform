@@ -21,8 +21,6 @@ using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
-using CO.CDP.UI.Foundation.Services;
-using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
@@ -34,9 +32,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
-using System.Net;
-using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.UI.Foundation;
+using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using CookiePreferencesService = CO.CDP.OrganisationApp.CookiePreferencesService;
@@ -314,6 +311,7 @@ builder.Services.AddHealthChecks();
 
 // @see DP-723 for details: https://noticingsystem.atlassian.net/browse/DP-723?focusedCommentId=27796
 builder.Services.AddDataProtection()
+   .SetApplicationName("CDP-Frontends")
    .PersistKeysToAWSSystemsManager(
        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
