@@ -19,7 +19,8 @@ public enum FormSectionType
     Standard,
     Declaration,
     Exclusions,
-    AdditionalSection
+    AdditionalSection,
+    WelshAdditionalSection
 }
 
 public record FormSectionConfiguration
