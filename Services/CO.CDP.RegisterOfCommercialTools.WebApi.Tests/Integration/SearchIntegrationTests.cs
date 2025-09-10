@@ -26,6 +26,8 @@ public class SearchIntegrationTests
                 {
                     { "AWS:Region", "eu-west-2" },
                     { "AWS:ServiceURL", "http://localhost:4566" },
+                    { "AWS:Credentials:AccessKeyId", "test-access-key" },
+                    { "AWS:Credentials:SecretAccessKey", "test-secret-key" },
                     { "AWS:CognitoAuthentication:UserPoolId", "test-pool" },
                     { "AWS:CognitoAuthentication:UserPoolClientId", "test-client" },
                     { "AWS:CognitoAuthentication:UserPoolClientSecret", "test-secret" },
