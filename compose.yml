@@ -260,7 +260,7 @@ services:
       redis:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
@@ -287,7 +287,7 @@ services:
       localstack:
         condition: service_healthy
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
