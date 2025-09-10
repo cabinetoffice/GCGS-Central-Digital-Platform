@@ -268,7 +268,10 @@ services:
       CloudWatch__LogGroup: "/ecs/commercial-tools-app"
       CommercialToolsApi__ServiceUrl: '${CommercialToolsApi:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
       SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
-      Organisation__Authority: *organisation-authority
+      OneLogin__Authority: "test"
+      OneLogin__ClientId: "test"
+      OneLogin__PrivateKey: "test"
+      OneLogin:AccountUrl: "test"
 
   commercial-tools-api:
     container_name: co-cdp-commercial-tools-api
