@@ -14,8 +14,8 @@ module "ecs_service_commercial_tools_api" {
       lg_region           = data.aws_region.current.name
       memory              = var.service_configs.commercial_tools_api.memory
       name                = var.service_configs.commercial_tools_api.name
-      odataapi_baseurl    = "${data.aws_secretsmanager_secret.odi_data_platform_secret.arn}:BaseUrl::"
-      odataapi_apikey     = "${data.aws_secretsmanager_secret.odi_data_platform_secret.arn}:ApiKey::"
+      odataapi_url    = "${data.aws_secretsmanager_secret.odi_data_platform.arn}:Url::"
+      odataapi_apikey     = "${data.aws_secretsmanager_secret.odi_data_platform.arn}:ApiKey::"
       public_domain       = var.public_domain
       service_version     = local.service_version_sirsi
       vpc_cidr            = var.vpc_cider

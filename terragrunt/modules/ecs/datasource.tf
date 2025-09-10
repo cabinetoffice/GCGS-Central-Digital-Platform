@@ -38,8 +38,8 @@ data "aws_secretsmanager_secret" "charity_commission" {
   name = "${local.name_prefix}-charity-commission-credentials"
 }
 
-data "aws_secretsmanager_secret" "odi_data_platform_secret" {
-  name = "${local.name_prefix}-odi-data-platform-secret"
+data "aws_secretsmanager_secret" "odi_data_platform" {
+  name = "${local.name_prefix}-odi-data-platform"
 }
 
 data "aws_secretsmanager_secret" "companies_house" {
