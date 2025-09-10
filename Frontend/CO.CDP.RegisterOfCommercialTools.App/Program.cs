@@ -82,14 +82,11 @@ builder.Services.AddHsts(options =>
     options.MaxAge = TimeSpan.FromDays(365); // see https://aka.ms/aspnetcore-hsts
 });
 
-var dataProtectionBuilder = builder.Services.AddDataProtection()
-    .SetApplicationName("CDP-Frontends");
-
-var dataProtectionPrefix = builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix");
-if (!string.IsNullOrEmpty(dataProtectionPrefix))
-{
-    dataProtectionBuilder.PersistKeysToAWSSystemsManager(dataProtectionPrefix);
-}
+builder.Services.AddDataProtection()
+   .SetApplicationName("CDP-Frontends")
+   .PersistKeysToAWSSystemsManager(
+       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
+       ?? throw new Exception("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."));
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
