@@ -39,6 +39,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
+    uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
 });
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
@@ -167,6 +168,13 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.MapRazorPages();
+
+var diagnosticPage = builder.Configuration.GetValue<string?>("Features:DiagnosticPage:Path", null);
+if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
+    && !string.IsNullOrWhiteSpace(diagnosticPage))
+{
+    app.MapGet(diagnosticPage, async (CO.CDP.UI.Foundation.Pages.IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
+}
 
 app.MapFallback(ctx =>
 {
