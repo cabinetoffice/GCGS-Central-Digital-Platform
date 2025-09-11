@@ -25,7 +25,8 @@
         { "name" : "AWS_REGION", "value" : "eu-west-2"},
         { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
         { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
-        { "name" : "CommercialToolsApi__ServiceUrl", "value" : "https://commercial-tools-api.${public_domain}"}        
+        { "name" : "CommercialToolsApi__ServiceUrl", "value" : "https://commercial-tools-api.${public_domain}"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"}
     ],
     "secrets": [
         { "name" : "ODataApi__ApiKey", "valueFrom" : "${odataapi_apikey}"}
