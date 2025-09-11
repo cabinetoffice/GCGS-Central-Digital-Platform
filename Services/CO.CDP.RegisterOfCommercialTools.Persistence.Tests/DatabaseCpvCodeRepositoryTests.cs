@@ -99,7 +99,7 @@ public class DatabaseCpvCodeRepositoryTests(PostgreSqlFixture postgreSql)
             var result = await repository.SearchAsync("construction");
 
             result.Should().HaveCount(2);
-            result.Should().OnlyContain(c => c.Description.ToLower().Contains("construction"));
+            result.Should().OnlyContain(c => c.GetDescription(Culture.English).ToLower().Contains("construction"));
             result.Should().BeInAscendingOrder(c => c.Code);
         });
     }
@@ -178,7 +178,7 @@ public class DatabaseCpvCodeRepositoryTests(PostgreSqlFixture postgreSql)
 
             result.Should().NotBeNull();
             result!.Code.Should().Be(codes[0].Code);
-            result.Description.Should().Be(codes[0].Description);
+            result.GetDescription().Should().Be(codes[0].GetDescription());
         });
     }
 
@@ -317,6 +317,48 @@ public class DatabaseCpvCodeRepositoryTests(PostgreSqlFixture postgreSql)
             result.Should().HaveCount(3);
             result.Should().OnlyContain(c => c.IsActive);
             result.Should().BeInAscendingOrder(c => c.Code);
+        });
+    }
+
+    [Fact]
+    public async Task GetDescription_ReturnsWelshWhenCultureIsWelsh()
+    {
+        await GetDbContext().InvokeIsolated(async () =>
+        {
+            var repository = CpvCodeRepository();
+            var codes = GivenMultipleRootCodes();
+
+            await SeedCpvCodes(codes);
+
+            var result = await repository.GetByCodeAsync(codes[0].Code);
+
+            result.Should().NotBeNull();
+            result!.GetDescription().Should().Be(codes[0].DescriptionEn);
+            result.GetDescription(Culture.Welsh).Should().Be(codes[0].DescriptionCy);
+        });
+    }
+
+    [Fact]
+    public async Task SearchAsync_SearchesBothLanguages()
+    {
+        await GetDbContext().InvokeIsolated(async () =>
+        {
+            var repository = CpvCodeRepository();
+            var codes = new List<CpvCode>
+            {
+                GivenCpvCode("15000000", "Construction work", null, 1, true, "Gwaith adeiladu"),
+                GivenCpvCode("25000000", "Transport services", null, 1, true, "Gwasanaethau cludiant"),
+            };
+
+            await SeedCpvCodes(codes);
+
+            var welshResult = await repository.SearchAsync("Gwaith");
+            welshResult.Should().HaveCount(1);
+            welshResult[0].Code.Should().Be("15000000");
+
+            var englishResult = await repository.SearchAsync("Transport");
+            englishResult.Should().HaveCount(1);
+            englishResult[0].Code.Should().Be("25000000");
         });
     }
 

@@ -4,7 +4,7 @@ namespace CO.CDP.RegisterOfCommercialTools.Persistence;
 
 public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context) : ICpvCodeRepository
 {
-    public async Task<List<CpvCode>> GetRootCodesAsync()
+    public async Task<List<CpvCode>> GetRootCodesAsync(Culture culture = Culture.English)
     {
         return await context.CpvCodes
             .Where(c => c.ParentCode == null && c.IsActive)
@@ -12,7 +12,7 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
             .ToListAsync();
     }
 
-    public async Task<List<CpvCode>> GetChildrenAsync(string parentCode)
+    public async Task<List<CpvCode>> GetChildrenAsync(string parentCode, Culture culture = Culture.English)
     {
         return await context.CpvCodes
             .Where(c => c.ParentCode == parentCode && c.IsActive)
@@ -20,7 +20,7 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
             .ToListAsync();
     }
 
-    public async Task<List<CpvCode>> SearchAsync(string query)
+    public async Task<List<CpvCode>> SearchAsync(string query, Culture culture = Culture.English)
     {
         if (string.IsNullOrWhiteSpace(query))
             return [];
@@ -30,7 +30,8 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
         return await context.CpvCodes
             .Where(c => c.IsActive && searchTerms.All(term =>
                 c.Code.ToLower().Contains(term) ||
-                c.Description.ToLower().Contains(term)))
+                c.DescriptionEn.ToLower().Contains(term) ||
+                c.DescriptionCy.ToLower().Contains(term)))
             .OrderBy(c => c.Code)
             .ToListAsync();
     }
@@ -71,7 +72,7 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
         return hierarchy;
     }
 
-    public async Task<List<CpvCode>> GetAllAsync()
+    public async Task<List<CpvCode>> GetAllAsync(Culture culture = Culture.English)
     {
         return await context.CpvCodes
             .Where(c => c.IsActive)

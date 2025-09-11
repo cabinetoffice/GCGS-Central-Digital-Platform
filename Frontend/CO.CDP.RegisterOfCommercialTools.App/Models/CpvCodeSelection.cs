@@ -18,12 +18,17 @@ public class CpvCodeSelection : IValidatableObject
 
     public int RemainingSelections => Math.Max(0, MaxSelections - SelectedCodes.Count);
 
-    public void AddSelection(string code, string description)
+    public void AddSelection(string code, string descriptionEn, string descriptionCy)
     {
         if (!SelectedCodes.Contains(code) && !IsAtMaxSelections)
         {
             SelectedCodes.Add(code);
-            SelectedItems.Add(new CpvCode { Code = code, Description = description, IsSelected = true });
+            SelectedItems.Add(new CpvCode { 
+                Code = code, 
+                DescriptionEn = descriptionEn, 
+                DescriptionCy = descriptionCy, 
+                IsSelected = true 
+            });
         }
     }
 

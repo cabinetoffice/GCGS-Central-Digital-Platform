@@ -11,9 +11,13 @@ public class CpvCode
     [StringLength(8)]
     public required string Code { get; set; }
 
-    [Column("description")]
+    [Column("description_en")]
     [StringLength(250)]
-    public required string Description { get; set; }
+    public required string DescriptionEn { get; set; }
+
+    [Column("description_cy")]
+    [StringLength(250)]
+    public required string DescriptionCy { get; set; }
 
     [Column("parent_code")]
     [StringLength(8)]
@@ -35,4 +39,9 @@ public class CpvCode
     public CpvCode? Parent { get; set; }
 
     public ICollection<CpvCode> Children { get; set; } = [];
+
+    public string GetDescription(Culture culture = Culture.English)
+    {
+        return culture.IsWelsh() ? DescriptionCy : DescriptionEn;
+    }
 }

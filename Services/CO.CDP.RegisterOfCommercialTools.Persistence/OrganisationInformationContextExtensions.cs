@@ -14,7 +14,11 @@ public static class OrganisationInformationContextExtensions
             .IsRequired()
             .HasMaxLength(8);
 
-        entity.Property(e => e.Description)
+        entity.Property(e => e.DescriptionEn)
+            .IsRequired()
+            .HasMaxLength(250);
+
+        entity.Property(e => e.DescriptionCy)
             .IsRequired()
             .HasMaxLength(250);
 
