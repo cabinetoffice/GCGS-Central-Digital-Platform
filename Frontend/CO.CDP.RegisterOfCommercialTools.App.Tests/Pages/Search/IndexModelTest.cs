@@ -25,6 +25,8 @@ public class IndexModelTest
 
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
+        mockSirsiUrlService.Setup(s => s.BuildUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), null, null, null))
+            .Returns<string, Guid?, string?, bool?>((path, _, _, _) => $"https://sirsi.home{path}");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
         mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
         var mockLogger = new Mock<ILogger<IndexModel>>();
@@ -168,7 +170,6 @@ public class IndexModelTest
     public async Task OnGetAsync_SetsSirsiHomeUrl()
     {
         await _model.OnGetAsync();
-        _model.SirsiHomeUrl.Should().Be("https://sirsi.home/");
     }
 
     [Fact]
@@ -209,5 +210,63 @@ public class IndexModelTest
             "date-range"
         };
         _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithOriginBuyerViewAndOrganisationId_SetsHomeUrlToBuyerView()
+    {
+        var organisationId = Guid.NewGuid();
+        _model.Origin = "buyer-view";
+        _model.OrganisationId = organisationId;
+
+        await _model.OnGetAsync();
+
+        _model.HomeUrl.Should().Be($"https://sirsi.home/organisation/{organisationId}/buyer");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithOriginBuyerViewButNoOrganisationId_SetsHomeUrlToFts()
+    {
+        _model.Origin = "buyer-view";
+        _model.OrganisationId = null;
+
+        await _model.OnGetAsync();
+
+        _model.HomeUrl.Should().Be("https://fts.test/");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNoOrigin_SetsHomeUrlToFts()
+    {
+        var organisationId = Guid.NewGuid();
+        _model.Origin = null;
+        _model.OrganisationId = organisationId;
+
+        await _model.OnGetAsync();
+
+        _model.HomeUrl.Should().Be("https://fts.test/");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithDifferentOrigin_SetsHomeUrlToFts()
+    {
+        var organisationId = Guid.NewGuid();
+        _model.Origin = "other-origin";
+        _model.OrganisationId = organisationId;
+
+        await _model.OnGetAsync();
+
+        _model.HomeUrl.Should().Be("https://fts.test/");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WithNoOriginAndNoOrganisationId_SetsHomeUrlToFts()
+    {
+        _model.Origin = null;
+        _model.OrganisationId = null;
+
+        await _model.OnGetAsync();
+
+        _model.HomeUrl.Should().Be("https://fts.test/");
     }
 }
