@@ -9,8 +9,11 @@ using Microsoft.FeatureManagement;
 using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using CO.CDP.Configuration.ForwardedHeaders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.ConfigureForwardedHeaders();
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
@@ -142,6 +145,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 app.UseMiddleware<ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 
