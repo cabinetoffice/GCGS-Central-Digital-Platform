@@ -409,8 +409,7 @@ public abstract class DiagnosticPageBase(IHttpContextAccessor httpContextAccesso
                 sb.Append($"<div class=\"token\">{oneLoginToken}</div>");
                 sb.Append($"<p class=\"body-s\">");
                 sb.Append(
-                    $"<a href=\"https://jwt.io/#debugger-io?token={oneLoginToken}\" target=\"_blank\" class=\"link\">Decode token</a> | ");
-                sb.Append($"<a href=\"#\" data-token-id=\"oat\" class=\"link\">📄 Copy</a>");
+                    $"<a href=\"https://jwt.io/#debugger-io?token={oneLoginToken}\" target=\"_blank\" class=\"link\">Decode token</a>");
                 sb.Append("</p>");
                 sb.Append("</dd>");
                 sb.Append("</div>");
@@ -426,7 +425,6 @@ public abstract class DiagnosticPageBase(IHttpContextAccessor httpContextAccesso
             }
 
             sb.Append("</dl>");
-            sb.Append($"<span id=\"oat\" style=\"display:none;\">{oneLoginToken}</span>");
         }
     }
 
