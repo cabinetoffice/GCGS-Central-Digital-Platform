@@ -24,12 +24,11 @@ public class DiagnosticPage(
         {
             sb.Append("<strong class=\"tag tag--red\">Not configured</strong>");
         }
+
         sb.Append("</dd>");
         sb.Append("</div>");
-
         sb.Append("</dl>");
 
         return Task.CompletedTask;
     }
-
 }
