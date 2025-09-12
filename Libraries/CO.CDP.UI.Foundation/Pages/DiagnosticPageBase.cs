@@ -334,49 +334,6 @@ public abstract class DiagnosticPageBase(IHttpContextAccessor httpContextAccesso
         sb.Append("</div>");
 
         sb.Append("</dl>");
-
-        var connectionStrings = Configuration.GetSection("ConnectionStrings");
-        if (connectionStrings.Exists())
-        {
-            sb.Append("<h3 class=\"heading-m\">Connection Strings</h3>");
-            sb.Append("<dl class=\"summary-list\">");
-            foreach (var connectionString in connectionStrings.GetChildren())
-            {
-                var maskedValue = MaskConnectionString(connectionString.Value ?? "");
-                sb.Append("<div class=\"summary-list__row\">");
-                sb.Append($"<dt class=\"summary-list__key\">{connectionString.Key}</dt>");
-                sb.Append($"<dd class=\"summary-list__value\"><code>{maskedValue}</code></dd>");
-                sb.Append("</div>");
-            }
-
-            sb.Append("</dl>");
-        }
-    }
-
-    private static string MaskConnectionString(string connectionString)
-    {
-        if (string.IsNullOrEmpty(connectionString))
-            return "Not configured";
-
-        var parts = connectionString.Split(';');
-        var maskedParts = new List<string>();
-
-        foreach (var part in parts)
-        {
-            var trimmedPart = part.Trim();
-            if (trimmedPart.StartsWith("Password=", StringComparison.OrdinalIgnoreCase) ||
-                trimmedPart.StartsWith("Pwd=", StringComparison.OrdinalIgnoreCase))
-            {
-                var keyValuePair = trimmedPart.Split('=', 2);
-                maskedParts.Add($"{keyValuePair[0]}=***");
-            }
-            else
-            {
-                maskedParts.Add(trimmedPart);
-            }
-        }
-
-        return string.Join("; ", maskedParts);
     }
 
     private static string GetStatusTag(string? value)
