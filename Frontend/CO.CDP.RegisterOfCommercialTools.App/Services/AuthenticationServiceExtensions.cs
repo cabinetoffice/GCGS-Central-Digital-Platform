@@ -121,7 +121,7 @@ public static class AuthenticationServiceExtensions
                 options.Scope.Add("phone");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
-                options.UsePkce = false;
+                options.UsePkce = true;
                 options.ClientSecret = null;
                 options.EventsType = typeof(OidcEvents);
                 options.ClaimActions.MapAll();
