@@ -63,12 +63,13 @@ public class BuyerView(
         if (commercialToolsEnabled)
         {
             var cookiesAccepted = cookiePreferencesService.IsAccepted();
+            var originParams = new Dictionary<string, string?> { { "origin", "buyer-view" } };
 
             tiles.Add(new Tile
             {
                 Title = StaticTextResource.BuyerView_TileFour_Title,
                 Body = StaticTextResource.BuyerView_TileFour_Body,
-                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAccepted)
+                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAccepted, originParams)
             });
         }
 
