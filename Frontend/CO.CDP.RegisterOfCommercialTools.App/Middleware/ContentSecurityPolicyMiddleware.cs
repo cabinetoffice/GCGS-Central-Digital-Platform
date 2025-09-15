@@ -31,9 +31,9 @@ public class ContentSecurityPolicyMiddleware
 
     private string GenerateNonce()
     {
-        var nonceBytes = new byte[16];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(nonceBytes);
+        var nonceBytes = new byte[18];
+        using var range = RandomNumberGenerator.Create();
+        range.GetBytes(nonceBytes);
         return Convert.ToBase64String(nonceBytes);
     }
 }
