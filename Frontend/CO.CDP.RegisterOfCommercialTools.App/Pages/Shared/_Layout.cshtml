@@ -68,7 +68,7 @@
                         Menu
                     </button>
                     <ul id="navigation" class="govuk-header__navigation-list">
-                        @RenderSection("HeaderNavigation", required: false)
+                        @await RenderSectionAsync("HeaderNavigation", required: false)
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="govuk-header__navigation-item">
