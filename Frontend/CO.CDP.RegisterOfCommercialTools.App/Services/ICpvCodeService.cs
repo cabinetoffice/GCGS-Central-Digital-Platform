@@ -1,13 +1,13 @@
-using CO.CDP.RegisterOfCommercialTools.App.Models;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public interface ICpvCodeService
 {
-    Task<List<CpvCode>> GetRootCpvCodesAsync();
-    Task<List<CpvCode>> GetChildrenAsync(string parentCode);
-    Task<List<CpvCode>> SearchAsync(string query);
-    Task<CpvCode?> GetByCodeAsync(string code);
-    Task<List<CpvCode>> GetByCodesAsync(List<string> codes);
-    Task<List<CpvCode>> GetHierarchyAsync(string code);
+    Task<List<CpvCodeDto>> GetRootCpvCodesAsync();
+    Task<List<CpvCodeDto>> GetChildrenAsync(string parentCode);
+    Task<List<CpvCodeDto>> SearchAsync(string query);
+    Task<CpvCodeDto?> GetByCodeAsync(string code);
+    Task<List<CpvCodeDto>> GetByCodesAsync(List<string> codes);
+    Task<List<CpvCodeDto>> GetHierarchyAsync(string code);
 }
