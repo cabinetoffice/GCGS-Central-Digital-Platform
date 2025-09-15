@@ -58,6 +58,7 @@ button[aria-expanded="true"] .custom-chevron-icon {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #D3D3D3;
 }
 
 .govuk-modal__close {
