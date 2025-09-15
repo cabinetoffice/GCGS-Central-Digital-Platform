@@ -19,6 +19,15 @@ public class CpvCodeSelection : IValidatableObject
 
     public int RemainingSelections => Math.Max(0, MaxSelections - SelectedCodes.Count);
 
+    public bool HasSelections => SelectedCodes.Count > 0;
+
+    public string SelectionSummary => $"Selected ({SelectedCodes.Count} of {MaxSelections})";
+
+    public string BrowseLinkText => HasSelections ? "Edit CPV code selection" : "Browse CPV codes";
+
+    public IEnumerable<(string Name, string Value)> GetHiddenInputs() => 
+        SelectedCodes.Select(code => ("cpv", code));
+
     public void AddSelection(string code, string descriptionEn, string descriptionCy)
     {
         if (!SelectedCodes.Contains(code) && !IsAtMaxSelections)
