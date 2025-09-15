@@ -164,9 +164,9 @@
         </div>
     </footer>
 
-    <script src="/js/govuk-frontend-5.7.1.min.js" nonce-csp></script>
-    <script nonce-csp>
-        window.GOVUKFrontend.initAll()
+    <script nonce-csp type="module">
+        import { initAll } from '/js/govuk-frontend-5.7.1.min.js';
+        initAll();
     </script>
 </body>
 </html>
