@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
@@ -6,7 +7,7 @@ public class CpvCodeSelection : IValidatableObject
 {
     public List<string> SelectedCodes { get; set; } = [];
 
-    public List<CpvCode> SelectedItems { get; set; } = [];
+    public List<CpvCodeDto> SelectedItems { get; set; } = [];
 
     public string? SearchQuery { get; set; }
 
@@ -23,11 +24,10 @@ public class CpvCodeSelection : IValidatableObject
         if (!SelectedCodes.Contains(code) && !IsAtMaxSelections)
         {
             SelectedCodes.Add(code);
-            SelectedItems.Add(new CpvCode { 
+            SelectedItems.Add(new CpvCodeDto { 
                 Code = code, 
                 DescriptionEn = descriptionEn, 
-                DescriptionCy = descriptionCy, 
-                IsSelected = true 
+                DescriptionCy = descriptionCy
             });
         }
     }
