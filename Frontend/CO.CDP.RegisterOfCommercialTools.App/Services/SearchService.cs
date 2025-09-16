@@ -39,7 +39,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             Id: dto.Id ?? "Unknown",
             Title: dto.Title ?? "Unknown",
             Caption: dto.Description ?? "Unknown",
-            CommercialTool: dto.Title ?? "Unknown",
+            CommercialTool: dto.CommercialTool ?? "Unknown",
             Status: dto.Status ?? CommercialToolStatus.Unknown,
             MaximumFee: dto.Fees.HasValue && dto.Fees > 0 ? $"{dto.Fees.Value * 100:0.##}%" : "Unknown",
             OtherContractingAuthorityCanUse: dto.OtherContractingAuthorityCanUse ?? "Unknown",
