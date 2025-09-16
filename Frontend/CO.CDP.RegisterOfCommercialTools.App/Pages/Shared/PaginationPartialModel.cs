@@ -19,14 +19,25 @@ public class PaginationPartialModel
 
     public int TotalPages => (int)Math.Ceiling((double)TotalItems / PageSize);
 
-    public Func<int, string> GetPageUrl => (page) =>
+    public Func<int, string> GetPageUrl => page =>
     {
-        var queryParams = new Dictionary<string, string?>
+        if (!Url.Contains('?'))
         {
-            ["pageNumber"] = page.ToString(),
-            ["pageSize"] = PageSize.ToString()
-        };
+            return QueryHelpers.AddQueryString(Url, "pageNumber", page.ToString());
+        }
 
-        return QueryHelpers.AddQueryString(Url, queryParams);
+        var parts = Url.Split('?', 2);
+        var basePath = parts[0];
+        var existingQuery = parts[1];
+
+        var existingParams = new Dictionary<string, string?>();
+        foreach (var kvp in QueryHelpers.ParseQuery(existingQuery))
+        {
+            existingParams[kvp.Key] = kvp.Value.ToString();
+        }
+
+        existingParams["pageNumber"] = page.ToString();
+
+        return QueryHelpers.AddQueryString(basePath, existingParams);
     };
 }

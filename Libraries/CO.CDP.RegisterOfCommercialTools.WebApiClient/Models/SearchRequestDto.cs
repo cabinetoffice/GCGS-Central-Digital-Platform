@@ -18,5 +18,6 @@ public class SearchRequestDto
     public string? ContractingAuthorityUsage { get; set; }
     public string? SortBy { get; set; }
     public int PageNumber { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
+    public int? Skip { get; set; }
+    public int? Top { get; set; }
 }

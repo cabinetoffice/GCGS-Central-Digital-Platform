@@ -19,8 +19,8 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder ContractLocation(string region);
     ICommercialToolsQueryBuilder WithCpv(string cpv);
     ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod);
-    ICommercialToolsQueryBuilder WithPageSize(int size);
-    ICommercialToolsQueryBuilder WithPageNumber(int number);
+    ICommercialToolsQueryBuilder WithSkip(int skip);
+    ICommercialToolsQueryBuilder WithTop(int top);
     ICommercialToolsQueryBuilder WithCustomFilter(string filter);
     string Build(string baseUrl);
 }

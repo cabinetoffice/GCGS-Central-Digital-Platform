@@ -25,7 +25,6 @@ public class SearchControllerTests
         {
             Keyword = "IT services",
             Status = "Active",
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -38,7 +37,6 @@ public class SearchControllerTests
             },
             TotalCount = 2,
             PageNumber = 1,
-            PageSize = 10
         };
 
         _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(expectedResponse);
@@ -57,7 +55,6 @@ public class SearchControllerTests
         var request = new SearchRequestDto
         {
             Keyword = "nonexistent",
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -66,7 +63,6 @@ public class SearchControllerTests
             Results = new List<SearchResultDto>(),
             TotalCount = 0,
             PageNumber = 1,
-            PageSize = 10
         };
         _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(expectedResponse);
 
@@ -110,7 +106,6 @@ public class SearchControllerTests
             AwardMethod = "Competitive",
             SortBy = "title",
             PageNumber = 3,
-            PageSize = 25
         };
 
         var expectedResponse = new SearchResponse
@@ -121,7 +116,6 @@ public class SearchControllerTests
             },
             TotalCount = 50,
             PageNumber = 3,
-            PageSize = 25
         };
 
         _mockSearchService.Setup(x => x.Search(It.Is<SearchRequestDto>(r =>
@@ -137,8 +131,7 @@ public class SearchControllerTests
             r.MaxFees == request.MaxFees &&
             r.AwardMethod == request.AwardMethod &&
             r.SortBy == request.SortBy &&
-            r.PageNumber == request.PageNumber &&
-            r.PageSize == request.PageSize)))
+            r.PageNumber == request.PageNumber)))
             .ReturnsAsync(expectedResponse);
 
         var result = await _controller.Search(request);

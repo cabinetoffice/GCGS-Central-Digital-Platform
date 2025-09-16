@@ -10,18 +10,17 @@ public class SearchServiceTests
 {
     private readonly Mock<ICommercialToolsQueryBuilder> _mockQueryBuilder;
     private readonly Mock<ICommercialToolsService> _mockRepository;
-    private readonly Mock<IConfiguration> _mockConfiguration;
     private readonly SearchService _searchService;
 
     public SearchServiceTests()
     {
         _mockQueryBuilder = new Mock<ICommercialToolsQueryBuilder>();
         _mockRepository = new Mock<ICommercialToolsService>();
-        _mockConfiguration = new Mock<IConfiguration>();
+        var mockConfiguration = new Mock<IConfiguration>();
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns("https://test-api.example.com/v1/tender");
-        _mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
-        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, _mockConfiguration.Object);
+        mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
+        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, mockConfiguration.Object);
     }
 
     [Fact]
@@ -39,7 +38,6 @@ public class SearchServiceTests
             ContractEndDateTo = new DateTime(2026, 12, 31),
             MinFees = 100.50m,
             MaxFees = 999.99m,
-            PageSize = 20,
             PageNumber = 2
         };
 
@@ -49,8 +47,8 @@ public class SearchServiceTests
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("IT services")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageSize(20)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageNumber(2)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31))).Returns(mockBuilder.Object);
@@ -75,8 +73,8 @@ public class SearchServiceTests
         _mockQueryBuilder.Verify(x => x.WithKeywords("IT services"), Times.Once);
         mockBuilder.Verify(x => x.WithStatus("Active"), Times.Once);
         mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("proportion"))), Times.Once);
-        mockBuilder.Verify(x => x.WithPageSize(20), Times.Once);
-        mockBuilder.Verify(x => x.WithPageNumber(2), Times.Once);
+        mockBuilder.Verify(x => x.WithTop(20), Times.Once);
+        mockBuilder.Verify(x => x.WithSkip(20), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31)), Times.Once);
         mockBuilder.Verify(x => x.ContractStartDateFrom(new DateTime(2025, 6, 1)), Times.Once);
@@ -95,7 +93,6 @@ public class SearchServiceTests
             Status = "Active",
             MinFees = 0,
             MaxFees = decimal.MaxValue,
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -107,8 +104,8 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -119,7 +116,7 @@ public class SearchServiceTests
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
         result.PageNumber.Should().Be(1);
-        result.PageSize.Should().Be(10);
+        result.PageSize.Should().Be(20);
 
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(It.IsAny<DateTime>()), Times.Never);
         mockBuilder.Verify(x => x.SubmissionDeadlineTo(It.IsAny<DateTime>()), Times.Never);
@@ -139,7 +136,6 @@ public class SearchServiceTests
             SubmissionDeadlineFrom = new DateTime(2025, 1, 1),
             MinFees = 0,
             MaxFees = decimal.MaxValue,
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -151,8 +147,8 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -182,7 +178,6 @@ public class SearchServiceTests
             Status = null,
             MinFees = 0,
             MaxFees = decimal.MaxValue,
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -194,8 +189,8 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageSize(10)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithPageNumber(1)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();

@@ -51,7 +51,7 @@ public class PaginationPartialModelTests
 
         var pageUrl = model.GetPageUrl(2);
 
-        pageUrl.Should().Be("/test?pageNumber=2&pageSize=10");
+        pageUrl.Should().Be("/test?pageNumber=2");
     }
 
     [Fact]
@@ -67,7 +67,7 @@ public class PaginationPartialModelTests
 
         var pageUrl = model.GetPageUrl(2);
 
-        pageUrl.Should().Be("/test?q=hello&pageNumber=2&pageSize=10");
+        pageUrl.Should().Be("/test?q=hello&pageNumber=2");
     }
 
     [Fact]

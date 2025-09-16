@@ -27,7 +27,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
     [BindProperty(SupportsGet = true, Name = "organisation_id")]
     public Guid? OrganisationId { get; set; }
 
-    private const int PageSize = 10;
+    private const int PageSize = 20;
 
     public string HomeUrl { get; private set; } = string.Empty;
 
@@ -59,8 +59,8 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
             }).ToList();
             TotalCount = totalCount;
 
-            logger.LogInformation("Search completed successfully. Found {TotalCount} results for page {PageNumber}",
-                totalCount, PageNumber);
+            logger.LogInformation("Search completed successfully. Found {TotalCount} results.",
+                totalCount);
 
             Pagination = new PaginationPartialModel
             {
