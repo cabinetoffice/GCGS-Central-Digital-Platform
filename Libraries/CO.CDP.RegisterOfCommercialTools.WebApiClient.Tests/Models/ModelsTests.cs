@@ -11,7 +11,6 @@ public class SearchRequestDtoTests
         var request = new SearchRequestDto();
 
         request.PageNumber.Should().Be(1);
-        request.PageSize.Should().Be(10);
         request.Keyword.Should().BeNull();
         request.Status.Should().BeNull();
         request.SortBy.Should().BeNull();
@@ -39,7 +38,6 @@ public class SearchRequestDtoTests
             MinFees = 100m,
             MaxFees = 1000m,
             PageNumber = 2,
-            PageSize = 20,
             SubmissionDeadlineFrom = testDate,
             SubmissionDeadlineTo = testDate.AddDays(30),
             ContractStartDateFrom = testDate.AddDays(60),
@@ -55,7 +53,6 @@ public class SearchRequestDtoTests
         request.MinFees.Should().Be(100m);
         request.MaxFees.Should().Be(1000m);
         request.PageNumber.Should().Be(2);
-        request.PageSize.Should().Be(20);
         request.SubmissionDeadlineFrom.Should().Be(testDate);
         request.SubmissionDeadlineTo.Should().Be(testDate.AddDays(30));
         request.ContractStartDateFrom.Should().Be(testDate.AddDays(60));
