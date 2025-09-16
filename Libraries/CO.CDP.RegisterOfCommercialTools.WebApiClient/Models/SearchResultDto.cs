@@ -14,6 +14,7 @@ public class SearchResultDto
     public string? AwardMethod { get; set; }
     public string? OtherContractingAuthorityCanUse { get; set; }
     public string? ContractDates { get; set; }
+    public string? CommercialTool { get; set; }
     public TechniquesInfo? Techniques { get; set; }
     public Dictionary<string, string>? AdditionalProperties { get; set; }
 }

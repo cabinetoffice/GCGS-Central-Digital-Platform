@@ -9,7 +9,8 @@ public class CommercialToolsService : ICommercialToolsService
     private readonly HttpClient _httpClient;
     private readonly ILogger<CommercialToolsService> _logger;
 
-    public CommercialToolsService(HttpClient httpClient, IConfiguration configuration, ILogger<CommercialToolsService> logger)
+    public CommercialToolsService(HttpClient httpClient, IConfiguration configuration,
+        ILogger<CommercialToolsService> logger)
     {
         _httpClient = httpClient;
         _logger = logger;
@@ -17,7 +18,8 @@ public class CommercialToolsService : ICommercialToolsService
     }
 
 
-    public async Task<(IEnumerable<SearchResultDto> results, int totalCount)> SearchCommercialToolsWithCount(string queryUrl)
+    public async Task<(IEnumerable<SearchResultDto> results, int totalCount)> SearchCommercialToolsWithCount(
+        string queryUrl)
     {
         var response = await _httpClient.GetAsync(queryUrl);
 
@@ -100,6 +102,7 @@ public class CommercialToolsService : ICommercialToolsService
                 Status = DetermineCommercialToolStatus(tenderInfo.Status),
                 OtherContractingAuthorityCanUse = GetOtherContractingAuthorityCanUse(tenderInfo),
                 ContractDates = GetContractDates(tenderInfo),
+                CommercialTool = GetCommercialTool(tenderInfo.Techniques),
                 Techniques = tenderInfo.Techniques,
                 AdditionalProperties = tenderInfo.AdditionalProperties
             };
@@ -107,7 +110,8 @@ public class CommercialToolsService : ICommercialToolsService
             processedResults.Add(dto);
         }
 
-        _logger.LogInformation("Processed {ProcessedCount} results, total count: {TotalCount}", processedResults.Count, totalCount);
+        _logger.LogInformation("Processed {ProcessedCount} results, total count: {TotalCount}", processedResults.Count,
+            totalCount);
         return (processedResults, totalCount);
     }
 
@@ -237,18 +241,22 @@ public class CommercialToolsService : ICommercialToolsService
         {
             return new TechniquesInfo
             {
-                HasFrameworkAgreement = techniquesElement.TryGetProperty("hasFrameworkAgreement", out var hasFrameworkElement)
-                    ? hasFrameworkElement.GetBoolean()
-                    : null,
-                HasDynamicPurchasingSystem = techniquesElement.TryGetProperty("hasDynamicPurchasingSystem", out var hasDynamicElement)
-                    ? hasDynamicElement.GetBoolean()
-                    : null,
-                HasElectronicAuction = techniquesElement.TryGetProperty("hasElectronicAuction", out var hasElectronicElement)
-                    ? hasElectronicElement.GetBoolean()
-                    : null,
+                HasFrameworkAgreement =
+                    techniquesElement.TryGetProperty("hasFrameworkAgreement", out var hasFrameworkElement)
+                        ? hasFrameworkElement.GetBoolean()
+                        : null,
+                HasDynamicPurchasingSystem =
+                    techniquesElement.TryGetProperty("hasDynamicPurchasingSystem", out var hasDynamicElement)
+                        ? hasDynamicElement.GetBoolean()
+                        : null,
+                HasElectronicAuction =
+                    techniquesElement.TryGetProperty("hasElectronicAuction", out var hasElectronicElement)
+                        ? hasElectronicElement.GetBoolean()
+                        : null,
                 FrameworkAgreement = ExtractFrameworkAgreementFromTechniques(techniquesElement)
             };
         }
+
         return null;
     }
 
@@ -353,5 +361,25 @@ public class CommercialToolsService : ICommercialToolsService
         var end = endDate?.ToShortDateString() ?? "Unknown";
 
         return $"{start} - {end}";
+    }
+
+    private static string GetCommercialTool(TechniquesInfo? techniques)
+    {
+        if (techniques == null)
+            return "Unknown";
+
+        var tags = new List<string>();
+
+        if (techniques.HasFrameworkAgreement == true)
+            tags.Add("Framework agreement");
+
+        if (techniques.FrameworkAgreement?.IsOpenFrameworkScheme == true)
+            tags.Add("Open framework scheme");
+        if (techniques.HasDynamicPurchasingSystem == true)
+            tags.Add("Dynamic purchasing system");
+        if (techniques.HasElectronicAuction == true)
+            tags.Add("Electronic auction");
+
+        return tags.Any() ? string.Join(", ", tags) : "Unknown";
     }
 }
