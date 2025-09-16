@@ -56,7 +56,7 @@ public class SearchIntegrationTests
     [Fact]
     public async Task Get_SearchEndpoint_ShouldReturnSearchResults()
     {
-        var response = await _client.GetAsync("/api/Search?Keyword=test&PageSize=10&PageNumber=1");
+        var response = await _client.GetAsync("/api/Search?Keyword=test&PageNumber=1");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var content = await response.Content.ReadAsStringAsync();
@@ -69,7 +69,7 @@ public class SearchIntegrationTests
         searchResponse!.Results.Should().HaveCount(2);
         searchResponse.TotalCount.Should().Be(50);
         searchResponse.PageNumber.Should().Be(1);
-        searchResponse.PageSize.Should().Be(10);
+        searchResponse.PageSize.Should().Be(20);
         searchResponse.Results.First().Id.Should().Be("003033-2025");
         searchResponse.Results.First().Title.Should().Be("Integration Test Framework 1");
         searchResponse.Results.Last().Id.Should().Be("004044-2025");
@@ -127,7 +127,6 @@ public class SearchIntegrationTests
         var searchRequest = new SearchRequestDto
         {
             Keyword = "test",
-            PageSize = 10,
             PageNumber = 1
         };
 
@@ -139,7 +138,7 @@ public class SearchIntegrationTests
     [Fact]
     public async Task Get_SearchEndpoint_ShouldBuildCorrectODataQuery()
     {
-        var response = await _client.GetAsync("/api/Search?Keyword=integration&Status=Active&MinFees=100&MaxFees=500&PageSize=5&PageNumber=3");
+        var response = await _client.GetAsync("/api/Search?Keyword=integration&Status=Active&MinFees=100&MaxFees=500&PageNumber=3");
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -153,7 +152,7 @@ public class SearchIntegrationTests
         searchResponse!.Results.Should().HaveCount(2);
         searchResponse.TotalCount.Should().Be(50);
         searchResponse.PageNumber.Should().Be(3);
-        searchResponse.PageSize.Should().Be(5);
+        searchResponse.PageSize.Should().Be(20);
     }
 
     private static void SetupMockRepository(Mock<ICommercialToolsService> mockRepository)
