@@ -11,6 +11,7 @@ public class CpvCodeDto
     public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedOn { get; set; } = DateTimeOffset.UtcNow;
     public List<CpvCodeDto> Children { get; set; } = [];
+    public bool HasChildren { get; set; }
     
     public string GetDescription(Culture culture = Culture.English)
     {
