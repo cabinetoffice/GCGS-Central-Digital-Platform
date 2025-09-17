@@ -52,6 +52,8 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
 
+builder.Services.AddControllers();
+
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 
@@ -165,6 +167,9 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.MapRazorPages();
+
+// Map controller routes for API endpoints
+app.MapControllers();
 
 app.MapFallback(ctx =>
 {

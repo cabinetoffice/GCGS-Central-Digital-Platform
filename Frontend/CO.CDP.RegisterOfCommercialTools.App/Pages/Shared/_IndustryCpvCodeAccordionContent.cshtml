@@ -23,7 +23,11 @@
     }
 
     <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
-        <a href="#" class="govuk-link" id="browse-cpv-codes" data-toggle="modal" data-target="#cpv-selector-modal">
+        <a href="#" class="govuk-link" id="browse-cpv-codes" data-toggle="modal" data-target="#cpv-selector-modal"
+           data-api-roots="@Url.Action("GetRootCpvCodes","CpvCodes")"
+           data-api-children="@Url.Action("GetChildren","CpvCodes", new { parentCode = "__PARENT__" })"
+           data-api-search="@Url.Action("Search","CpvCodes")"
+           data-api-bycode="@Url.Action("GetByCode","CpvCodes", new { code = "__CODE__" })">
             @cpvSelection.BrowseLinkText
         </a>
     </div>
