@@ -29,7 +29,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'EnvironmentalQuestion_05_Title', NULL, '{{}}', NULL, 'EnvironmentalQuestion_05_SummaryTitle', '_EnvironmentalQuestion05', 5)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, false, 'EnvironmentalQuestion_05_Title', NULL, '{{}}', NULL, 'EnvironmentalQuestion_05_SummaryTitle', '_EnvironmentalQuestion05', 5)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
@@ -37,7 +37,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, true, 'EnvironmentalQuestion_03_Title', 'EnvironmentalQuestion_03_Description', '{{}}', NULL, 'EnvironmentalQuestion_03_SummaryTitle', '_EnvironmentalQuestion03', 3)
+                    VALUES('{Guid.NewGuid()}', previousQuestionId, NULL, sectionId, 10, false, 'EnvironmentalQuestion_03_Title', 'EnvironmentalQuestion_03_Description', '{{}}', NULL, 'EnvironmentalQuestion_03_SummaryTitle', '_EnvironmentalQuestion03', 3)
                     RETURNING id INTO previousQuestionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
