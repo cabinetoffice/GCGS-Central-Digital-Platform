@@ -168,7 +168,6 @@ app.UseAuthorization();
 app.MapHealthChecks("/health").AllowAnonymous();
 app.MapRazorPages();
 
-// Map controller routes for API endpoints
 app.MapControllers();
 
 app.MapFallback(ctx =>

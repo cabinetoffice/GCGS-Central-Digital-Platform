@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
-public class CpvCodeSelection : IValidatableObject
+public class CpvCodeSelection
 {
     public List<string> SelectedCodes { get; set; } = [];
 
@@ -13,29 +12,23 @@ public class CpvCodeSelection : IValidatableObject
 
     public List<string> ExpandedNodes { get; set; } = [];
 
-    public const int MaxSelections = 20;
-
-    public bool IsAtMaxSelections => SelectedCodes.Count >= MaxSelections;
-
-    public int RemainingSelections => Math.Max(0, MaxSelections - SelectedCodes.Count);
-
     public bool HasSelections => SelectedCodes.Count > 0;
 
-    public string SelectionSummary => $"Selected ({SelectedCodes.Count} of {MaxSelections})";
+    public string SelectionSummary => $"Selected ({SelectedCodes.Count})";
 
     public string BrowseLinkText => HasSelections ? "Edit CPV code selection" : "Browse CPV codes";
 
-    public IEnumerable<(string Name, string Value)> GetHiddenInputs() => 
+    public IEnumerable<(string Name, string Value)> GetHiddenInputs() =>
         SelectedCodes.Select(code => ("cpv", code));
 
     public void AddSelection(string code, string descriptionEn, string descriptionCy)
     {
-        if (!SelectedCodes.Contains(code) && !IsAtMaxSelections)
+        if (!SelectedCodes.Contains(code))
         {
             SelectedCodes.Add(code);
-            SelectedItems.Add(new CpvCodeDto { 
-                Code = code, 
-                DescriptionEn = descriptionEn, 
+            SelectedItems.Add(new CpvCodeDto {
+                Code = code,
+                DescriptionEn = descriptionEn,
                 DescriptionCy = descriptionCy
             });
         }
@@ -53,16 +46,5 @@ public class CpvCodeSelection : IValidatableObject
     {
         SelectedCodes.Clear();
         SelectedItems.Clear();
-    }
-
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (SelectedCodes.Count > MaxSelections)
-        {
-            yield return new ValidationResult(
-                $"The number of selections must be {MaxSelections} or fewer",
-                [nameof(SelectedCodes)]
-            );
-        }
     }
 }
