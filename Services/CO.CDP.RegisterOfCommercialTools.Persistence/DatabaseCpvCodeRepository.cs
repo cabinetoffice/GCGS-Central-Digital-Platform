@@ -7,7 +7,20 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
     public async Task<List<CpvCode>> GetRootCodesAsync(Culture culture = Culture.English)
     {
         return await context.CpvCodes
+            .AsNoTracking()
             .Where(c => c.ParentCode == null && c.IsActive)
+            .Select(c => new CpvCode
+            {
+                Code = c.Code,
+                DescriptionEn = c.DescriptionEn,
+                DescriptionCy = c.DescriptionCy,
+                ParentCode = c.ParentCode,
+                Level = c.Level,
+                IsActive = c.IsActive,
+                CreatedOn = c.CreatedOn,
+                UpdatedOn = c.UpdatedOn,
+                HasChildren = context.CpvCodes.Any(child => child.ParentCode == c.Code && child.IsActive)
+            })
             .OrderBy(c => c.Code)
             .ToListAsync();
     }
@@ -15,7 +28,20 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
     public async Task<List<CpvCode>> GetChildrenAsync(string parentCode, Culture culture = Culture.English)
     {
         return await context.CpvCodes
+            .AsNoTracking()
             .Where(c => c.ParentCode == parentCode && c.IsActive)
+            .Select(c => new CpvCode
+            {
+                Code = c.Code,
+                DescriptionEn = c.DescriptionEn,
+                DescriptionCy = c.DescriptionCy,
+                ParentCode = c.ParentCode,
+                Level = c.Level,
+                IsActive = c.IsActive,
+                CreatedOn = c.CreatedOn,
+                UpdatedOn = c.UpdatedOn,
+                HasChildren = context.CpvCodes.Any(child => child.ParentCode == c.Code && child.IsActive)
+            })
             .OrderBy(c => c.Code)
             .ToListAsync();
     }
@@ -25,27 +51,76 @@ public class DatabaseCpvCodeRepository(RegisterOfCommercialToolsContext context)
         if (string.IsNullOrWhiteSpace(query))
             return [];
 
-        var searchTerms = query.ToLowerInvariant().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var searchTerm = query.ToLowerInvariant().Trim();
 
-        return await context.CpvCodes
-            .Where(c => c.IsActive && searchTerms.All(term =>
-                c.Code.ToLower().Contains(term) ||
-                c.DescriptionEn.ToLower().Contains(term) ||
-                c.DescriptionCy.ToLower().Contains(term)))
-            .OrderBy(c => c.Code)
+        var results = await context.CpvCodes
+            .AsNoTracking()
+            .Where(c => c.IsActive && (
+                EF.Functions.TrigramsSimilarity(c.DescriptionEn.ToLower(), searchTerm) > 0.1 ||
+                EF.Functions.TrigramsSimilarity(c.DescriptionCy.ToLower(), searchTerm) > 0.1 ||
+                EF.Functions.TrigramsSimilarity(c.Code.ToLower(), searchTerm) > 0.1))
+            .Select(c => new CpvCode
+            {
+                Code = c.Code,
+                DescriptionEn = c.DescriptionEn,
+                DescriptionCy = c.DescriptionCy,
+                ParentCode = c.ParentCode,
+                Level = c.Level,
+                IsActive = c.IsActive,
+                CreatedOn = c.CreatedOn,
+                UpdatedOn = c.UpdatedOn,
+                HasChildren = context.CpvCodes.Any(child => child.ParentCode == c.Code && child.IsActive)
+            })
+            .OrderByDescending(c =>
+                Math.Max(
+                    Math.Max(
+                        EF.Functions.TrigramsSimilarity(c.DescriptionEn.ToLower(), searchTerm),
+                        EF.Functions.TrigramsSimilarity(c.DescriptionCy.ToLower(), searchTerm)
+                    ),
+                    EF.Functions.TrigramsSimilarity(c.Code.ToLower(), searchTerm)
+                ))
+            .Take(10)
             .ToListAsync();
+
+        return results;
     }
 
     public async Task<CpvCode?> GetByCodeAsync(string code)
     {
         return await context.CpvCodes
+            .AsNoTracking()
+            .Select(c => new CpvCode
+            {
+                Code = c.Code,
+                DescriptionEn = c.DescriptionEn,
+                DescriptionCy = c.DescriptionCy,
+                ParentCode = c.ParentCode,
+                Level = c.Level,
+                IsActive = c.IsActive,
+                CreatedOn = c.CreatedOn,
+                UpdatedOn = c.UpdatedOn,
+                HasChildren = context.CpvCodes.Any(child => child.ParentCode == c.Code && child.IsActive)
+            })
             .FirstOrDefaultAsync(c => c.Code == code && c.IsActive);
     }
 
     public async Task<List<CpvCode>> GetByCodesAsync(List<string> codes)
     {
         return await context.CpvCodes
+            .AsNoTracking()
             .Where(c => codes.Contains(c.Code) && c.IsActive)
+            .Select(c => new CpvCode
+            {
+                Code = c.Code,
+                DescriptionEn = c.DescriptionEn,
+                DescriptionCy = c.DescriptionCy,
+                ParentCode = c.ParentCode,
+                Level = c.Level,
+                IsActive = c.IsActive,
+                CreatedOn = c.CreatedOn,
+                UpdatedOn = c.UpdatedOn,
+                HasChildren = context.CpvCodes.Any(child => child.ParentCode == c.Code && child.IsActive)
+            })
             .OrderBy(c => c.Code)
             .ToListAsync();
     }

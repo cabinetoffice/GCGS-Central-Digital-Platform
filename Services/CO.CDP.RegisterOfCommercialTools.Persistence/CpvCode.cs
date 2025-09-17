@@ -40,6 +40,9 @@ public class CpvCode
 
     public ICollection<CpvCode> Children { get; set; } = [];
 
+    [NotMapped]
+    public bool HasChildren { get; set; }
+
     public string GetDescription(Culture culture = Culture.English)
     {
         return culture.IsWelsh() ? DescriptionCy : DescriptionEn;
