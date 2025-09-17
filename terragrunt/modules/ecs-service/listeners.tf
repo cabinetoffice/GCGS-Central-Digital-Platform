@@ -87,5 +87,11 @@ resource "aws_lb_listener_rule" "this_allowed_unauthenticated_paths" {
     }
   }
 
+  condition {
+    host_header {
+      values = local.tg_host_header
+    }
+  }
+
   tags = merge(var.tags, { Name : var.name })
 }
