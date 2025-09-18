@@ -121,10 +121,16 @@ public static class AuthenticationServiceExtensions
                 options.Scope.Add("phone");
                 options.SaveTokens = true;
                 options.GetClaimsFromUserInfoEndpoint = true;
-                options.UsePkce = false;
+                options.UsePkce = true;
                 options.ClientSecret = null;
                 options.EventsType = typeof(OidcEvents);
                 options.ClaimActions.MapAll();
+                options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+                options.CorrelationCookie.SecurePolicy = cookieSecurePolicy;
+                options.CorrelationCookie.HttpOnly = true;
+                options.NonceCookie.SameSite = SameSiteMode.Lax;
+                options.NonceCookie.SecurePolicy = cookieSecurePolicy;
+                options.NonceCookie.HttpOnly = true;
             });
 
         return services;

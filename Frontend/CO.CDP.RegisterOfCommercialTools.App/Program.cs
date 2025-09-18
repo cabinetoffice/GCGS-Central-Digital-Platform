@@ -9,15 +9,17 @@ using Microsoft.FeatureManagement;
 using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.DataProtection;
+using CO.CDP.Configuration.ForwardedHeaders;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.ConfigureForwardedHeaders();
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
-    options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
@@ -37,6 +39,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
+    uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
 });
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
@@ -54,7 +57,7 @@ builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
 
 builder.Services.AddControllers();
 
-var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 30);
+var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 
 builder.Services.AddSession(options =>
@@ -145,6 +148,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseForwardedHeaders();
 app.UseMiddleware<ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -167,6 +171,13 @@ app.UseAuthorization();
 
 app.MapHealthChecks("/health").AllowAnonymous();
 app.MapRazorPages();
+
+var diagnosticPage = builder.Configuration.GetValue<string?>("Features:DiagnosticPage:Path", null);
+if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
+    && !string.IsNullOrWhiteSpace(diagnosticPage))
+{
+    app.MapGet(diagnosticPage, async (CO.CDP.UI.Foundation.Pages.IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
+}
 
 app.MapControllers();
 

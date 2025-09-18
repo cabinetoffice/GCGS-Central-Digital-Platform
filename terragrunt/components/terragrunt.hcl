@@ -291,7 +291,7 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_cfs        = "1.0.4"
       pinned_service_version_fts        = "1.0.15"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
@@ -343,7 +343,7 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs        = "1.0.2"
+      pinned_service_version_cfs        = "1.0.4"
       pinned_service_version_fts        = "1.0.15"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"

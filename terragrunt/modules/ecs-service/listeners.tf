@@ -72,7 +72,7 @@ resource "aws_lb_listener_rule" "this_allowed_unauthenticated_paths" {
   count = var.host_port != null && length(var.allowed_unauthenticated_paths) > 0 ? 1 : 0
 
   listener_arn = var.ecs_listener_arn
-  // To ensure overriding the authenticated rule. @TODO (ABN) (GO Live) Remove when removing Cognito
+
   priority = local.service_listener_rule_priority - 55
 
   action {
@@ -84,6 +84,12 @@ resource "aws_lb_listener_rule" "this_allowed_unauthenticated_paths" {
   condition {
     path_pattern {
       values = var.allowed_unauthenticated_paths
+    }
+  }
+
+  condition {
+    host_header {
+      values = local.tg_host_header
     }
   }
 

@@ -1,3 +1,4 @@
+using CO.CDP.UI.Foundation.Pages;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -101,6 +102,18 @@ public class UiFoundationBuilder
         configure(options);
         _services.AddSingleton(options);
         _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds diagnostic page service
+    /// </summary>
+    /// <typeparam name="TDiagnosticPage">The diagnostic page implementation type</typeparam>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddDiagnosticPage<TDiagnosticPage>()
+        where TDiagnosticPage : class, IDiagnosticPage
+    {
+        _services.AddTransient<IDiagnosticPage, TDiagnosticPage>();
         return this;
     }
 }

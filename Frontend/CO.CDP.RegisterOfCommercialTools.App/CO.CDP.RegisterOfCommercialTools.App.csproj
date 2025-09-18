@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>5c9c34bb-48b5-40e0-aec6-24fd5261f8cd</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,6 +31,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj"/>
     </ItemGroup>

@@ -24,7 +24,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="GOV.UK Central Digital Platform" />
-    <link rel="manifest" href="/manifest.json" />
+    <link rel="manifest" href="/assets/manifest.json" />
     <link rel="stylesheet" href="/css/govuk-frontend-5.7.1.min.css">
     <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
     <title>@ViewData["Title"]</title>
@@ -68,7 +68,7 @@
                         Menu
                     </button>
                     <ul id="navigation" class="govuk-header__navigation-list">
-                        @RenderSection("HeaderNavigation", required: false)
+                        @await RenderSectionAsync("HeaderNavigation", required: false)
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="govuk-header__navigation-item">
@@ -164,13 +164,9 @@
         </div>
     </footer>
 
-
-    <script nonce-csp type="module" src="/js/govuk-frontend-5.7.1.min.js"></script>
     <script nonce-csp type="module">
-        import { initAll } from '/js/govuk-frontend-5.7.1.min.js'
-        initAll()
+        import { initAll } from '/js/govuk-frontend-5.7.1.min.js';
+        initAll();
     </script>
-
-
 </body>
 </html>

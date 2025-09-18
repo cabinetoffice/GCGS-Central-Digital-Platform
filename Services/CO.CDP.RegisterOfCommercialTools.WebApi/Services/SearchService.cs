@@ -15,11 +15,17 @@ public class SearchService(
 
     public async Task<SearchResponse> Search(SearchRequestDto request)
     {
+        const int fixedPageSize = 20;
+
+        var skip = request.Skip ?? (request.PageNumber - 1) * fixedPageSize;
+        var top = request.Top ?? fixedPageSize;
+        var pageNumber = (skip / fixedPageSize) + 1;
+
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithStatus(request.Status ?? string.Empty)
-            .WithPageSize(request.PageSize)
-            .WithPageNumber(request.PageNumber);
+            .WithSkip(skip)
+            .WithTop(top);
 
         if (request.MinFees.HasValue || request.MaxFees.HasValue)
         {
@@ -90,8 +96,8 @@ public class SearchService(
         {
             Results = results,
             TotalCount = totalCount,
-            PageNumber = request.PageNumber,
-            PageSize = request.PageSize
+            PageNumber = pageNumber,
+            PageSize = top
         };
     }
 
