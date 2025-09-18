@@ -90,11 +90,9 @@ resource "aws_lb_listener_rule" "unauthenticated_assets" {
   priority = 5
 
   action {
-    type = "redirect"
-    redirect {
-      status_code = "HTTP_301"
-      host        = "${var.service_configs.organisation_app.name}.${var.public_domain}"
-    }
+    type             = "forward"
+    target_group_arn = module.ecs_service_organisation_app.service_target_group_arn
+    order            = 1
   }
 
   condition {
