@@ -419,7 +419,7 @@ button[aria-expanded="true"] .custom-chevron-icon {
     background: #ffffff;
     max-height: 300px;
     overflow-y: auto;
-    width: 100%;
+    width: calc(100% - 2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-top: 1px solid #b1b4b6;
 }

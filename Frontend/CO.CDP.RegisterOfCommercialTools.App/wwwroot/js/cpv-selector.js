@@ -58,8 +58,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 setupTreeEventHandlers();
             } catch (error) {
                 const errorMessage = error.status === 404
-                    ? '<p class="govuk-body"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
-                    : '<p class="govuk-body">Something went wrong. Please try again later.</p>';
+                    ? '<p class="govuk-body govuk-!-margin-top-2"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
+                    : '<p class="govuk-body govuk-!-margin-top-2">Something went wrong. Please try again later.</p>';
                 updateContainer(state.treeContainer, errorMessage);
             }
         };
@@ -69,15 +69,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!query || query.length < 2) {
                 updateContainer(state.searchContainer, query && query.length < 2
-                    ? '<p class="govuk-body-s">Please enter at least 2 characters to search.</p>'
+                    ? '<p class="govuk-body-s govuk-!-margin-top-2">Please enter at least 2 characters to search.</p>'
                     : '');
-                searchResults.style.display = query ? 'block' : 'none';
+                if (query) {
+                    searchResults.classList.remove('govuk-!-display-none');
+                    searchResults.classList.add('govuk-!-display-block');
+                } else {
+                    searchResults.classList.add('govuk-!-display-none');
+                    searchResults.classList.remove('govuk-!-display-block');
+                }
                 return;
             }
 
             try {
-                searchResults.style.display = 'block';
-                updateContainer(state.searchContainer, '<p class="govuk-body-s">Searching...</p>');
+                searchResults.classList.remove('govuk-!-display-none');
+                searchResults.classList.add('govuk-!-display-block');
+                updateContainer(state.searchContainer, '<p class="govuk-body-s govuk-!-margin-top-2">Searching...</p>');
 
                 const selection = getCurrentSelection();
                 const params = new URLSearchParams();
@@ -89,8 +96,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 setupSearchEventHandlers();
             } catch (error) {
                 const errorMessage = error.status === 404
-                    ? '<p class="govuk-body"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
-                    : '<p class="govuk-body">Something went wrong. Please try again later.</p>';
+                    ? '<p class="govuk-body govuk-!-margin-top-2"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
+                    : '<p class="govuk-body govuk-!-margin-top-2">Something went wrong. Please try again later.</p>';
                 updateContainer(state.searchContainer, errorMessage);
             }
         };
@@ -162,8 +169,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 setupTreeEventHandlers();
             } catch (error) {
                 container.innerHTML = error.status === 404
-                    ? '<p class="govuk-body"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
-                    : '<p class="govuk-body">Something went wrong. Please try again later.</p>';
+                    ? '<p class="govuk-body govuk-!-margin-top-2"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
+                    : '<p class="govuk-body govuk-!-margin-top-2">Something went wrong. Please try again later.</p>';
             }
         };
 
@@ -199,7 +206,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     toggleSelection(item.dataset.code);
                     const searchResults = document.getElementById('cpv-search-results');
                     if (searchResults) {
-                        searchResults.style.display = 'none';
+                        searchResults.classList.add('govuk-!-display-none');
+                        searchResults.classList.remove('govuk-!-display-block');
                     }
                 };
 
@@ -250,7 +258,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 state.searchInput.addEventListener('focus', () => {
                     if (state.searchInput.value.trim().length >= 2) {
-                        document.getElementById('cpv-search-results').style.display = 'block';
+                        const searchResults = document.getElementById('cpv-search-results');
+                        searchResults.classList.remove('govuk-!-display-none');
+                        searchResults.classList.add('govuk-!-display-block');
                     }
                 });
 
@@ -258,7 +268,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     setTimeout(() => {
                         const searchResults = document.getElementById('cpv-search-results');
                         if (searchResults && !searchResults.contains(document.activeElement)) {
-                            searchResults.style.display = 'none';
+                            searchResults.classList.add('govuk-!-display-none');
+                            searchResults.classList.remove('govuk-!-display-block');
                         }
                     }, 150);
                 });
@@ -271,7 +282,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (searchResults && searchInput &&
                     !searchResults.contains(e.target) &&
                     !searchInput.contains(e.target)) {
-                    searchResults.style.display = 'none';
+                    searchResults.classList.add('govuk-!-display-none');
+                    searchResults.classList.remove('govuk-!-display-block');
                 }
             });
 
