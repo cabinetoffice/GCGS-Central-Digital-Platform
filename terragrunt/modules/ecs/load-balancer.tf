@@ -82,3 +82,37 @@ resource "aws_lb_listener_rule" "redirect_private_beta_to_live" {
   }
 
 }
+
+// To ensure overriding the authenticated rule. @TODO (ABN) (GO Live) Remove when removing Cognito
+resource "aws_lb_listener_rule" "unauthenticated_assets" {
+
+  listener_arn = aws_lb_listener.ecs.arn
+  priority = 5
+
+  action {
+    type = "redirect"
+    redirect {
+      status_code = "HTTP_301"
+      host        = "${var.service_configs.organisation_app.name}.${var.public_domain}"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = local.unauthenticated_assets_paths
+    }
+  }
+
+  condition {
+    host_header {
+      values = [var.public_domain]
+    }
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name : "Unauthenticated assets to ${var.service_configs.organisation_app.name}"
+    }
+  )
+}
