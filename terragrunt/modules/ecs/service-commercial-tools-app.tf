@@ -52,7 +52,7 @@ module "ecs_service_commercial_tools_app" {
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
   tags                          = var.tags
-  allowed_unauthenticated_paths = ["/signout-callback-oidc", "/assets/*", "/css/*", "/manifest.json"]
+  allowed_unauthenticated_paths = local.unauthenticated_assets_paths
   user_pool_arn                 = null
   user_pool_client_id           = null
   user_pool_domain              = null

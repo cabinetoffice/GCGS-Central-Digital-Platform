@@ -84,8 +84,7 @@ public class SearchServiceTests
             dto.MinFees == 0.01m &&
             dto.MaxFees == 0.05m &&
             dto.AwardMethod == "Competitive" &&
-            dto.PageNumber == 1 &&
-            dto.PageSize == 10
+            dto.PageNumber == 1
         )), Times.Once);
     }
 

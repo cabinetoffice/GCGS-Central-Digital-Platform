@@ -221,23 +221,23 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithPageSize_ShouldAddPageSizeFilter()
+    public void WithSkip_ShouldAddSkipParameter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithPageSize(20).Build(BaseUrl);
+        var result = builder.WithSkip(40).Build(BaseUrl);
 
-        result.Should().Contain("page[size]=20");
+        result.Should().Contain("$skip=40");
     }
 
     [Fact]
-    public void WithPageNumber_ShouldAddPageNumberFilter()
+    public void WithTop_ShouldAddTopParameter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithPageNumber(3).Build(BaseUrl);
+        var result = builder.WithTop(25).Build(BaseUrl);
 
-        result.Should().Contain("page[number]=3");
+        result.Should().Contain("$top=25");
     }
 
 
@@ -345,8 +345,8 @@ public class CommercialToolsQueryBuilderTests
             .SubmissionDeadlineTo(new DateTime(2025, 12, 31))
             .ContractStartDateFrom(new DateTime(2025, 6, 1))
             .ContractStartDateTo(new DateTime(2025, 6, 30))
-            .WithPageSize(25)
-            .WithPageNumber(2)
+            .WithSkip(25)
+            .WithTop(25)
             .Build(BaseUrl);
 
         result.Should().StartWith(BaseUrl);
@@ -359,8 +359,8 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("filter[tender.tenderPeriod.endDate.to]=2025-12-31");
         result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
         result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
-        result.Should().Contain("page[size]=25");
-        result.Should().Contain("page[number]=2");
+        result.Should().Contain("$top=25");
+        result.Should().Contain("$skip=25");
     }
 
 
