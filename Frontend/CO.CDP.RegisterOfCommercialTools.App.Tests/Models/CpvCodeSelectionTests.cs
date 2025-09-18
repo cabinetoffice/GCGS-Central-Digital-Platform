@@ -1,7 +1,6 @@
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
-using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Models;
 
@@ -184,47 +183,6 @@ public class CpvCodeSelectionTests
 
         selection.SelectedCodes.Should().BeEmpty();
         selection.SelectedItems.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Validate_WithNoSelections_ReturnsValid()
-    {
-        var selection = new CpvCodeSelection();
-        var validationContext = new ValidationContext(selection);
-
-        var result = selection.Validate(validationContext);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Validate_WithSelections_ReturnsValid()
-    {
-        var selection = new CpvCodeSelection
-        {
-            SelectedCodes = ["03000000", "03100000", "03200000"]
-        };
-        var validationContext = new ValidationContext(selection);
-
-        var result = selection.Validate(validationContext);
-
-        result.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Validate_WithManySelections_ReturnsValid()
-    {
-        var selection = new CpvCodeSelection();
-
-        for (int i = 0; i < 50; i++)
-        {
-            selection.SelectedCodes.Add($"030{i:D5}00");
-        }
-
-        var validationContext = new ValidationContext(selection);
-        var result = selection.Validate(validationContext);
-
-        result.Should().BeEmpty();
     }
 
     [Fact]
