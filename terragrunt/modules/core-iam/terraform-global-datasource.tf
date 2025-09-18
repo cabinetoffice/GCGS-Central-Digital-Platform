@@ -160,6 +160,7 @@ data "aws_iam_policy_document" "terraform_global" {
       "rds:AddTagsToResource",
       "rds:CreateDBInstanceReadReplica",
       "rds:DescribeDBInstances",
+      "rds:RemoveTagsFromResource",
     ]
     effect = "Allow"
     resources = [
