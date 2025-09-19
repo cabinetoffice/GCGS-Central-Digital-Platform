@@ -522,10 +522,9 @@ public class FormsEngine(
 
         return questionOnPath.Type switch
         {
-            FormQuestionType.Text or FormQuestionType.Url or FormQuestionType.FileUpload =>
+            FormQuestionType.Text or FormQuestionType.Url or FormQuestionType.FileUpload or FormQuestionType.MultiLine =>
                 !string.IsNullOrWhiteSpace(answer.TextValue) ||
                 (!questionOnPath.IsRequired && answer.BoolValue == false),
-            FormQuestionType.MultiLine => !string.IsNullOrWhiteSpace(answer.TextValue),
             FormQuestionType.YesOrNo or FormQuestionType.CheckBox => answer.BoolValue.HasValue,
             FormQuestionType.SingleChoice => !string.IsNullOrWhiteSpace(answer.OptionValue) ||
                                              !string.IsNullOrWhiteSpace(answer.JsonValue),
