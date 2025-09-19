@@ -1,10 +1,14 @@
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
+using CO.CDP.Configuration.Helpers;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
+using CO.CDP.RegisterOfCommercialTools.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,6 +31,13 @@ builder.Services.AddHttpClient<ICommercialToolsService, CommercialToolsService>(
 });
 
 builder.Services.AddTransient<ISearchService, SearchService>();
+
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
+builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<RegisterOfCommercialToolsContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+
+builder.Services.AddScoped<ICpvCodeRepository, DatabaseCpvCodeRepository>();
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)

@@ -26,6 +26,8 @@ public class SearchModel : IValidatableObject
     [FromQuery(Name = "status")] public List<string> Status { get; set; } = [];
     [FromQuery(Name = "usage")] public string? ContractingAuthorityUsage { get; set; }
 
+    [FromQuery(Name = "cpv")] public List<string> CpvCodes { get; set; } = [];
+
     public DateRange SubmissionDeadline { get; init; } = new("Submission deadline");
     public DateRange ContractStartDate { get; init; } = new("Contract start date");
     public DateRange ContractEndDate { get; init; } = new("Contract end date");

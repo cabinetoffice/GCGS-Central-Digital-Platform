@@ -53,6 +53,9 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
 .AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
+
+builder.Services.AddControllers();
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
@@ -175,6 +178,8 @@ if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
 {
     app.MapGet(diagnosticPage, async (CO.CDP.UI.Foundation.Pages.IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
 }
+
+app.MapControllers();
 
 app.MapFallback(ctx =>
 {

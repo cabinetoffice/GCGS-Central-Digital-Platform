@@ -1,0 +1,16 @@
+@using CO.CDP.RegisterOfCommercialTools.App.Models
+@model CpvSelectionViewModel
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="govuk-error-message" role="alert">
+        <span class="govuk-visually-hidden">Error: </span>@Model.ErrorMessage
+    </div>
+}
+else
+{
+    @foreach (var child in Model.RootCodes)
+    {
+        @await Html.PartialAsync("_CpvTreeNode", new CpvTreeNodeViewModel { Item = child, Level = 1, SelectedCodes = Model.SelectedCodes })
+    }
+}
