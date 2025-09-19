@@ -39,7 +39,8 @@ public class FormsLandingPage(
 
         if (form.Section.Type != FormSectionType.Declaration)
         {
-            if (form.Section.Type == FormSectionType.AdditionalSection)
+            if (form.Section.Type == FormSectionType.AdditionalSection ||
+                    form.Section.Type == FormSectionType.WelshAdditionalSection)
             {
                 return await HandleAdditionalSectionAsync(form);
             }

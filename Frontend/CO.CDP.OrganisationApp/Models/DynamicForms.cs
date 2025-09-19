@@ -19,7 +19,8 @@ public enum FormSectionType
     Standard,
     Declaration,
     Exclusions,
-    Additional
+    Additional,
+    WelshAdditional
 }
 
 public class FormQuestion
