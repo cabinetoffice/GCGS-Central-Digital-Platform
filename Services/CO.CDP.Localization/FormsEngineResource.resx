@@ -1706,7 +1706,10 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="WelshSteel_02_Description" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;For contracts which relate to projects or programmes with a value of £3 million or more, please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management.&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;For contracts which relate to projects or programmes with a value of £3 million or more, please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management.
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        You can provide your answer in the text box below or upload a file
+      &lt;/div&gt;&lt;/p&gt;
     </value>
   </data>
   <data name="WelshSteel_03_Title" xml:space="preserve">
@@ -1719,7 +1722,7 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     <value>
       &lt;p class="govuk-body"&gt;Provide details of previous similar projects where you have demonstrated a high level of competency in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.
       &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
-        The following question refers to public sector contracts awarded under the Procurement Act 2023
+        You can provide your answer in the text box below or upload a file
       &lt;/div&gt;&lt;/p&gt;
     </value>
   </data>
