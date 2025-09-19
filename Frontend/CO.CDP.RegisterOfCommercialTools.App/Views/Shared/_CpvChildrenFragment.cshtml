@@ -1,5 +1,6 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
-@model CpvSelectionViewModel
+@using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
+@model HierarchicalCodeSelectionViewModel<CpvCodeDto>
 
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {

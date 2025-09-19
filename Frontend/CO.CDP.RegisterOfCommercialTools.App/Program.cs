@@ -2,6 +2,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.RegisterOfCommercialTools.App;
 using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
@@ -20,6 +21,7 @@ builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
@@ -54,6 +56,7 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
 
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
+builder.Services.AddScoped<IHierarchicalCodeService<CpvCodeDto>, CpvCodeService>();
 
 builder.Services.AddControllers();
 

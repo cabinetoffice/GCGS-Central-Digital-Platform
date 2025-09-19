@@ -1,6 +1,6 @@
 namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
-public class CpvCodeDto
+public class CpvCodeDto : IHierarchicalCodeDto
 {
     public required string Code { get; set; }
     public required string DescriptionEn { get; set; }

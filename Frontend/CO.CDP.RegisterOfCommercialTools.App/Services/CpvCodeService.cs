@@ -3,11 +3,16 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
-public class CpvCodeService(ICommercialToolsApiClient client) : ICpvCodeService
+public class CpvCodeService(ICommercialToolsApiClient client) : ICpvCodeService, IHierarchicalCodeService<CpvCodeDto>
 {
     public async Task<List<CpvCodeDto>> GetRootCpvCodesAsync()
     {
         return await client.GetRootCpvCodesAsync() ?? [];
+    }
+
+    public async Task<List<CpvCodeDto>> GetRootCodesAsync()
+    {
+        return await GetRootCpvCodesAsync();
     }
 
     public async Task<List<CpvCodeDto>> GetChildrenAsync(string parentCode)

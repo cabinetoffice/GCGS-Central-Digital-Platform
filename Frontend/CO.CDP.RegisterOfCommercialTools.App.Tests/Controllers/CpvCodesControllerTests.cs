@@ -10,12 +10,12 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Controllers;
 
 public class CpvCodesControllerTests
 {
-    private readonly Mock<ICpvCodeService> _mockService;
+    private readonly Mock<IHierarchicalCodeService<CpvCodeDto>> _mockService;
     private readonly CpvCodesController _controller;
 
     public CpvCodesControllerTests()
     {
-        _mockService = new Mock<ICpvCodeService>();
+        _mockService = new Mock<IHierarchicalCodeService<CpvCodeDto>>();
         _controller = new CpvCodesController(_mockService.Object);
     }
 
@@ -33,7 +33,7 @@ public class CpvCodesControllerTests
             new() { Code = "03100000", DescriptionEn = "Live animals", DescriptionCy = "Anifeiliaid byw", Level = 2, ParentCode = "03000000" }
         };
 
-        _mockService.Setup(s => s.GetRootCpvCodesAsync()).ReturnsAsync(rootCodes);
+        _mockService.Setup(s => s.GetRootCodesAsync()).ReturnsAsync(rootCodes);
         _mockService.Setup(s => s.GetChildrenAsync(expandedCode)).ReturnsAsync(children);
 
         var result = await _controller.GetTreeFragment(selectedCodes, expandedCode);
@@ -41,9 +41,9 @@ public class CpvCodesControllerTests
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
         partialView!.ViewName.Should().Be("_CpvTreeFragment");
-        partialView.Model.Should().BeOfType<CpvSelectionViewModel>();
+        partialView.Model.Should().BeOfType<HierarchicalCodeSelectionViewModel<CpvCodeDto>>();
 
-        var model = partialView.Model as CpvSelectionViewModel;
+        var model = partialView.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.SelectedCodes.Should().BeEquivalentTo(selectedCodes);
         model.ExpandedCode.Should().Be(expandedCode);
     }
@@ -51,13 +51,13 @@ public class CpvCodesControllerTests
     [Fact]
     public async Task GetTreeFragment_ServiceThrowsException_ReturnsErrorModel()
     {
-        _mockService.Setup(s => s.GetRootCpvCodesAsync()).ThrowsAsync(new Exception("Service error"));
+        _mockService.Setup(s => s.GetRootCodesAsync()).ThrowsAsync(new Exception("Service error"));
 
         var result = await _controller.GetTreeFragment();
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.ErrorMessage.Should().Be("There is a problem loading CPV codes. Try refreshing the page.");
     }
 
@@ -70,7 +70,7 @@ public class CpvCodesControllerTests
         var partialView = result as PartialViewResult;
         partialView!.ViewName.Should().Be("_CpvSearchFragment");
 
-        var model = partialView.Model as CpvSelectionViewModel;
+        var model = partialView.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.SearchResults.Should().BeEmpty();
         model.SearchQuery.Should().Be("");
     }
@@ -82,7 +82,7 @@ public class CpvCodesControllerTests
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.SearchResults.Should().BeEmpty();
         model.SearchQuery.Should().Be("a");
     }
@@ -103,7 +103,7 @@ public class CpvCodesControllerTests
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.SearchResults.Should().BeEquivalentTo(searchResults);
         model.SelectedCodes.Should().BeEquivalentTo(selectedCodes);
         model.SearchQuery.Should().Be(query);
@@ -119,7 +119,7 @@ public class CpvCodesControllerTests
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.ErrorMessage.Should().Be("There is a problem with search. Try again or browse the categories below.");
     }
 
@@ -141,7 +141,7 @@ public class CpvCodesControllerTests
         var partialView = result as PartialViewResult;
         partialView!.ViewName.Should().Be("_CpvSelectionFragment");
 
-        var model = partialView.Model as CpvSelectionViewModel;
+        var model = partialView.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.SelectedCodes.Should().BeEquivalentTo(selectedCodes);
     }
 
@@ -155,7 +155,7 @@ public class CpvCodesControllerTests
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.ErrorMessage.Should().Be("There is a problem updating your selection. Try again.");
     }
 
@@ -189,7 +189,7 @@ public class CpvCodesControllerTests
         var partialView = result as PartialViewResult;
         partialView!.ViewName.Should().Be("_CpvChildrenFragment");
 
-        var model = partialView.Model as CpvSelectionViewModel;
+        var model = partialView.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.RootCodes.Should().BeEquivalentTo(children);
         model.SelectedCodes.Should().BeEquivalentTo(selectedCodes);
     }
@@ -204,7 +204,7 @@ public class CpvCodesControllerTests
 
         result.Should().BeOfType<PartialViewResult>();
         var partialView = result as PartialViewResult;
-        var model = partialView!.Model as CpvSelectionViewModel;
+        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
         model!.ErrorMessage.Should().Be("There is a problem loading the subcategories. Try again.");
     }
 }
