@@ -45,7 +45,8 @@ public class FormsAdditionalSummaryModel(
             return Redirect("/page-not-found");
         }
 
-        if (form.Section.Type != CO.CDP.Forms.WebApiClient.FormSectionType.AdditionalSection)
+        if (form.Section.Type != CO.CDP.Forms.WebApiClient.FormSectionType.AdditionalSection &&
+                form.Section.Type != CO.CDP.Forms.WebApiClient.FormSectionType.WelshAdditionalSection)
         {
             return RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId });
         }
