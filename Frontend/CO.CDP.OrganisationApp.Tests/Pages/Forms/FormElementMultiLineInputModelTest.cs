@@ -57,15 +57,17 @@ public class FormElementMultiLineInputModelTest
     }
 
     [Theory]
-    [InlineData(true, null, "All information is required on this page")]
-    [InlineData(true, " ", "All information is required on this page")]
-    [InlineData(false, null, null)]
-    [InlineData(false, "Some value", null)]
-    public void Validate_ReturnsExpectedResults(bool isRequired, string? textInput, string? expectedErrorMessage)
+    [InlineData(true, null, false, "All information is required on this page")]
+    [InlineData(true, " ", false, "All information is required on this page")]
+    [InlineData(false, null, null, "Select an option")]
+    [InlineData(false, null, false, null)]
+    [InlineData(false, "Some value", true, null)]
+    public void Validate_ReturnsExpectedResults(bool isRequired, string? textInput, bool? hasValue, string? expectedErrorMessage)
     {
         _model.IsRequired = isRequired;
         _model.CurrentFormQuestionType = FormQuestionType.MultiLine;
         _model.TextInput = textInput;
+        _model.HasValue = hasValue;
 
         var validationResults = _model.Validate(new ValidationContext(_model)).ToList();
 
