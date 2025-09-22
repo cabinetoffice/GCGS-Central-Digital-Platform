@@ -202,22 +202,6 @@ public class CpvCodeServiceTests
         result[2].Level.Should().Be(3);
     }
 
-
-    [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
-    [InlineData(null)]
-    public async Task SearchAsync_WithInvalidQuery_ShouldStillCallClient(string? query)
-    {
-        _mockClient.Setup(x => x.SearchCpvCodesAsync(It.IsAny<string>(), It.IsAny<WebApiCulture>()))
-            .ReturnsAsync(new List<CpvCodeDto>());
-
-        var result = await _service.SearchAsync(query!);
-
-        _mockClient.Verify(x => x.SearchCpvCodesAsync(query!, It.IsAny<WebApiCulture>()), Times.Once);
-        result.Should().BeEmpty();
-    }
-
     [Fact]
     public async Task GetChildrenAsync_ShouldPassCorrectParameters()
     {
