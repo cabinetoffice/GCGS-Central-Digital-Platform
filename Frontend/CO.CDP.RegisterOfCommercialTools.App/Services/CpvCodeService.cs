@@ -22,9 +22,10 @@ public class CpvCodeService(ICommercialToolsApiClient client, ILogger<CpvCodeSer
 
     public async Task<List<CpvCodeDto>> SearchAsync(string query)
     {
-        logger.LogInformation("CPV code search executed: Query='{Query}'", query.Replace("\r", "").Replace("\n", ""));
+        var sanitisedQuery = query.Replace("\r", "").Replace("\n", "");
+        logger.LogInformation("CPV code search executed: Query='{Query}'", sanitisedQuery);
         var results = await client.SearchCpvCodesAsync(query) ?? [];
-        logger.LogInformation("CPV code search completed: Query='{Query}', ResultCount={ResultCount}", query.Replace("\r", "").Replace("\n", ""), results.Count);
+        logger.LogInformation("CPV code search completed: Query='{Query}', ResultCount={ResultCount}", sanitisedQuery, results.Count);
         return results;
     }
 
