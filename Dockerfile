@@ -101,6 +101,8 @@ COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries
 COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
+COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
+COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
@@ -245,6 +247,12 @@ COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification.Persistence -s /src/Services/CO.CDP.EntityVerification.Persistence --self-contained -o /app/migrations/efbundle
 
+FROM build-commercial-tools-api AS build-migrations-commercial-tools
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence -s /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence --self-contained -o /app/migrations/efbundle
+
 FROM base AS migrations-organisation-information
 COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
@@ -263,6 +271,14 @@ WORKDIR /app
 COPY --from=build-migrations-entity-verification /src/Services/CO.CDP.EntityVerification.Persistence/EntityVerificationDatabaseMigrationConfig /app/EntityVerificationDatabaseMigrationConfig
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"]
+
+FROM base AS migrations-commercial-tools
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=build-migrations-commercial-tools /app/migrations/efbundle .
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 
 FROM base AS final-authority
 ARG VERSION
