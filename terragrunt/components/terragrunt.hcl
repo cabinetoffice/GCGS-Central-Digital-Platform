@@ -95,7 +95,7 @@ locals {
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.8xlarge"
+      mysql_aurora_instance_type        = "db.r5.xlarge"
       onelogin_logout_notification_urls = [
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
@@ -281,7 +281,7 @@ locals {
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.8xlarge"
+      mysql_aurora_instance_type        = "db.r5.xlarge"
       name                              = "integration"
       onelogin_logout_notification_urls = [
         "https://truk-alpha.nqc.com/auth/backchannellogout",
