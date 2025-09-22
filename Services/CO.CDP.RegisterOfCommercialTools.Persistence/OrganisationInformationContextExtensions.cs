@@ -43,7 +43,7 @@ public static class OrganisationInformationContextExtensions
             .HasForeignKey(e => e.ParentCode)
             .OnDelete(DeleteBehavior.Restrict);
 
-        entity.HasIndex(e => e.ParentCode);
+        entity.HasIndex(e => new { e.ParentCode, e.IsActive });
         entity.HasIndex(e => new { e.Code, e.IsActive });
     }
 }
