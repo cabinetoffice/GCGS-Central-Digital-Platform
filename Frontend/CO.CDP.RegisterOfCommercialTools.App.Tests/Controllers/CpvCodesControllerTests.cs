@@ -4,6 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Controllers;
@@ -16,7 +17,8 @@ public class CpvCodesControllerTests
     public CpvCodesControllerTests()
     {
         _mockService = new Mock<IHierarchicalCodeService<CpvCodeDto>>();
-        _controller = new CpvCodesController(_mockService.Object);
+        var mockLogger = new Mock<ILogger<CpvCodesController>>();
+        _controller = new CpvCodesController(_mockService.Object, mockLogger.Object);
     }
 
     [Fact]

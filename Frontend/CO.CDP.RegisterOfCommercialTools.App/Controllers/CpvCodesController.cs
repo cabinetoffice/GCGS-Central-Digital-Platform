@@ -4,7 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Controllers;
 
-public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService) : HierarchicalCodeControllerBase<CpvCodeDto>(codeService)
+public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService, ILogger<CpvCodesController> logger) : HierarchicalCodeControllerBase<CpvCodeDto>(codeService)
 {
     protected override string CodeTypeName => "CPV";
     protected override string RoutePrefix => "cpv";
@@ -16,24 +16,36 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
     [HttpGet("/cpv/tree-fragment")]
     public override async Task<IActionResult> GetTreeFragment([FromQuery] string[]? selectedCodes = null, [FromQuery] string? expandedCode = null)
     {
+        logger.LogInformation("CPV tree fragment requested: SelectedCodes={SelectedCodes}, ExpandedCode={ExpandedCode}",
+            selectedCodes?.Length ?? 0, expandedCode ?? "none");
+
         return await base.GetTreeFragment(selectedCodes, expandedCode);
     }
 
     [HttpGet("/cpv/search-fragment")]
-    public override async Task<IActionResult> GetSearchFragment([FromQuery] string q, [FromQuery] string[]? selectedCodes = null)
+    public override async Task<IActionResult> GetSearchFragment([FromQuery] string? q, [FromQuery] string[]? selectedCodes = null)
     {
-        return await base.GetSearchFragment(q, selectedCodes);
+        logger.LogInformation("CPV search requested: Query='{Query}', SelectedCodes={SelectedCodeCount}",
+            q ?? string.Empty, selectedCodes?.Length ?? 0);
+
+        return await base.GetSearchFragment(q ?? string.Empty, selectedCodes);
     }
 
     [HttpPost("/cpv/selection-fragment")]
     public override async Task<IActionResult> UpdateSelectionFragment([FromForm] string[]? selectedCodes = null)
     {
+        logger.LogInformation("CPV selection updated: SelectedCodes=[{SelectedCodes}]",
+            string.Join(", ", selectedCodes ?? []));
+
         return await base.UpdateSelectionFragment(selectedCodes);
     }
 
     [HttpGet("/cpv/children-fragment/{parentCode}")]
     public override async Task<IActionResult> GetChildrenFragment(string parentCode, [FromQuery] string[]? selectedCodes = null)
     {
+        logger.LogInformation("CPV children requested: ParentCode={ParentCode}, SelectedCodes={SelectedCodeCount}",
+            parentCode, selectedCodes?.Length ?? 0);
+
         return await base.GetChildrenFragment(parentCode, selectedCodes);
     }
 }

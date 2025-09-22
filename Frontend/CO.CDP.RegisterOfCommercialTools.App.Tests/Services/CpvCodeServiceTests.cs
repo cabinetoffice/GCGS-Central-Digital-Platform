@@ -2,6 +2,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using WebApiCulture = CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.Culture;
 
@@ -15,7 +16,8 @@ public class CpvCodeServiceTests
     public CpvCodeServiceTests()
     {
         _mockClient = new Mock<ICommercialToolsApiClient>();
-        _service = new CpvCodeService(_mockClient.Object);
+        var mockLogger = new Mock<ILogger<CpvCodeService>>();
+        _service = new CpvCodeService(_mockClient.Object, mockLogger.Object);
     }
 
     [Fact]
