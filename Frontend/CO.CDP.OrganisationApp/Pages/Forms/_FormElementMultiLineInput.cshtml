@@ -4,13 +4,13 @@
 @{
     var textInputHasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
     var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
-    string textInputAriaDescribedby = "";
+    var textInputAriaDescribedby = new List<string>();
 
     void RenderDescription()
     {
         if (!string.IsNullOrWhiteSpace(Model.Description))
         {
-            textInputAriaDescribedby += Model.GetFieldName("TextInput-description");
+            textInputAriaDescribedby.Add(Model.GetFieldName("TextInput-description"));
             <div id="@Model.GetFieldName("TextInput-description")">
                 @Html.Raw(Model.Description)
             </div>
@@ -21,7 +21,7 @@
     {
         if (textInputHasError)
         {
-            textInputAriaDescribedby += " " + Model.GetFieldName("TextInput-error");
+            textInputAriaDescribedby.Add(Model.GetFieldName("TextInput-error"));
 
             <p class="govuk-error-message" id="@Model.GetFieldName("TextInput-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
@@ -29,8 +29,11 @@
             </p>
         }
 
+        // Always add the info id to the list
+        textInputAriaDescribedby.Add(Model.GetFieldName("TextInput-info"));
+
         <div class="govuk-character-count" data-module="govuk-character-count" data-maxlength="10000" data-threshold="90">
-            <textarea class="govuk-textarea govuk-js-character-count @(Model.Options?.Layout?.Input?.CustomCssClasses) @(textInputHasError ? "govuk-textarea--error" : "")" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="@(textInputAriaDescribedby) @Model.GetFieldName("TextInput-info")">@Model.TextInput</textarea>
+            <textarea class="govuk-textarea govuk-js-character-count @(Model.Options?.Layout?.Input?.CustomCssClasses) @(textInputHasError ? "govuk-textarea--error" : "")" rows="5" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" aria-describedby="@string.Join(" ", textInputAriaDescribedby)">@Model.TextInput</textarea>
             <div id="@Model.GetFieldName("TextInput-info")" class="govuk-hint govuk-character-count__message">
                 @string.Format(StaticTextResource.GovukFrontend_CharacterCount_CharactersAvailable, "10,000")
             </div>
@@ -70,7 +73,7 @@
                 <div class="govuk-radios__conditional" id="@Model.GetFieldName("conditional-YES")">
                     <div class="govuk-form-group @(textInputHasError ? "govuk-form-group--error" : "")">
                         @{
-                            <label class="govuk-label" for="@nameof(Model.TextInput)">@Model.Caption</label>
+                            <label class="govuk-label" for="@Model.GetFieldName(nameof(Model.TextInput))">@Model.Caption</label>
                             RenderField();
                         }
                     </div>
