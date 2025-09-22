@@ -17,7 +17,7 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
     public override async Task<IActionResult> GetTreeFragment([FromQuery] string[]? selectedCodes = null, [FromQuery] string? expandedCode = null)
     {
         logger.LogInformation("CPV tree fragment requested: SelectedCodes={SelectedCodes}, ExpandedCode={ExpandedCode}",
-            selectedCodes?.Length ?? 0, expandedCode ?? "none");
+            selectedCodes?.Length ?? 0, (expandedCode ?? "none").Replace("\r", "").Replace("\n", ""));
 
         return await base.GetTreeFragment(selectedCodes, expandedCode);
     }
@@ -26,7 +26,7 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
     public override async Task<IActionResult> GetSearchFragment([FromQuery] string? q, [FromQuery] string[]? selectedCodes = null)
     {
         logger.LogInformation("CPV search requested: Query='{Query}', SelectedCodes={SelectedCodeCount}",
-            q ?? string.Empty, selectedCodes?.Length ?? 0);
+            (q ?? string.Empty).Replace("\r", "").Replace("\n", ""), selectedCodes?.Length ?? 0);
 
         return await base.GetSearchFragment(q ?? string.Empty, selectedCodes);
     }
@@ -35,7 +35,7 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
     public override async Task<IActionResult> UpdateSelectionFragment([FromForm] string[]? selectedCodes = null)
     {
         logger.LogInformation("CPV selection updated: SelectedCodes=[{SelectedCodes}]",
-            string.Join(", ", selectedCodes ?? []));
+            string.Join(", ", (selectedCodes ?? []).Select(code => code.Replace("\r", "").Replace("\n", ""))));
 
         return await base.UpdateSelectionFragment(selectedCodes);
     }
@@ -44,7 +44,7 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
     public override async Task<IActionResult> GetChildrenFragment(string parentCode, [FromQuery] string[]? selectedCodes = null)
     {
         logger.LogInformation("CPV children requested: ParentCode={ParentCode}, SelectedCodes={SelectedCodeCount}",
-            parentCode, selectedCodes?.Length ?? 0);
+            parentCode.Replace("\r", "").Replace("\n", ""), selectedCodes?.Length ?? 0);
 
         return await base.GetChildrenFragment(parentCode, selectedCodes);
     }

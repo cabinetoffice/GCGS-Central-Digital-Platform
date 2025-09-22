@@ -22,9 +22,9 @@ public class CpvCodeService(ICommercialToolsApiClient client, ILogger<CpvCodeSer
 
     public async Task<List<CpvCodeDto>> SearchAsync(string query)
     {
-        logger.LogInformation("CPV code search executed: Query='{Query}'", query);
+        logger.LogInformation("CPV code search executed: Query='{Query}'", query.Replace("\r", "").Replace("\n", ""));
         var results = await client.SearchCpvCodesAsync(query) ?? [];
-        logger.LogInformation("CPV code search completed: Query='{Query}', ResultCount={ResultCount}", query, results.Count);
+        logger.LogInformation("CPV code search completed: Query='{Query}', ResultCount={ResultCount}", query.Replace("\r", "").Replace("\n", ""), results.Count);
         return results;
     }
 
@@ -37,7 +37,7 @@ public class CpvCodeService(ICommercialToolsApiClient client, ILogger<CpvCodeSer
     public async Task<List<CpvCodeDto>> GetByCodesAsync(List<string> codes)
     {
         logger.LogInformation("CPV codes retrieved by codes: Codes=[{Codes}], Count={Count}",
-            string.Join(", ", codes), codes.Count);
+            string.Join(", ", codes.Select(code => code.Replace("\r", "").Replace("\n", ""))), codes.Count);
         return await client.GetCpvCodesAsync(codes) ?? [];
     }
 
