@@ -4,13 +4,13 @@
 @{
     var textInputHasError = Model.HasValidationError(nameof(Model.TextInput), ViewData.ModelState);
     var selectOptionHasError = Model.HasValidationError(nameof(Model.HasValue), ViewData.ModelState);
-    var textInputAriaDescribedby = new List<string>();
+    var textInputAriaDescribedBy = new List<string>();
 
     void RenderDescription()
     {
         if (!string.IsNullOrWhiteSpace(Model.Description))
         {
-            textInputAriaDescribedby.Add(Model.GetFieldName("TextInput-description"));
+            textInputAriaDescribedBy.Add(Model.GetFieldName("TextInput-description"));
 
             <div id="@Model.GetFieldName("TextInput-description")">
                 @Html.Raw(Model.Description)
@@ -22,7 +22,7 @@
     {
         if (textInputHasError)
         {
-            textInputAriaDescribedby.Add(Model.GetFieldName("TextInput-error"));
+            textInputAriaDescribedBy.Add(Model.GetFieldName("TextInput-error"));
 
             <p class="govuk-error-message" id="@Model.GetFieldName("TextInput-error")">
                 <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
@@ -31,7 +31,7 @@
         }
 
         <input class="govuk-input govuk-!-width-two-thirds @(Model.Options?.Layout?.Input?.CustomCssClasses) @(textInputHasError ? "govuk-input--error" : "")" id="@Model.GetFieldName(nameof(Model.TextInput))" name="@Model.GetFieldName(nameof(Model.TextInput))" type="text" value="@Model.TextInput"
-        @(textInputAriaDescribedby.Any() ? Html.Raw($"aria-describedby=\"{string.Join(" ", textInputAriaDescribedby)}\"") : Html.Raw(""))>
+        @(textInputAriaDescribedBy.Any() ? Html.Raw($"aria-describedby=\"{string.Join(" ", textInputAriaDescribedBy)}\"") : Html.Raw(""))>
     }
 }
 
