@@ -184,19 +184,21 @@ const HierarchicalCodeSelector = (() => {
     };
 
     const loadChildren = async (parentCode, container) => {
-        try {
-            container.innerHTML = '<div class="govuk-body-s">Loading...</div>';
-            const selection = getCurrentSelection();
-            const params = new URLSearchParams();
-            selection.forEach(code => params.append('selectedCodes', code));
+        container.innerHTML = '<div class="govuk-body-s">Loading...</div>';
+        const selection = getCurrentSelection();
+        const params = new URLSearchParams();
+        selection.forEach(code => params.append('selectedCodes', code));
 
-            container.innerHTML = await fetchHtml(`/${config.routePrefix}/children-fragment/${encodeURIComponent(parentCode)}?${params.toString()}`);
+        const response = await fetchHtml(`/${config.routePrefix}/children-fragment/${encodeURIComponent(parentCode)}?${params.toString()}`);
+
+        if (response && response.success) {
+            container.innerHTML = response.html;
             setupTreeEventHandlers();
             refreshCheckboxStates();
-        } catch (error) {
-            container.innerHTML = error.status === 404
-                ? '<p class="govuk-body govuk-!-margin-top-2"><span class="govuk-!-font-weight-bold">There are no matching results.</span></p><p class="govuk-body">Double-check your spelling to improve your search results.</p>'
-                : '<p class="govuk-body govuk-!-margin-top-2">Something went wrong. Please try again later.</p>';
+        } else if (response && !response.success) {
+            container.innerHTML = createErrorMessage(response.message);
+        } else {
+            container.innerHTML = createErrorMessage('Something went wrong. Please try again later.');
         }
     };
 
