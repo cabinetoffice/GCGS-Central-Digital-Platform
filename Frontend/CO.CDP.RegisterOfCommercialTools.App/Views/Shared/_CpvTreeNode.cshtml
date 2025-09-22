@@ -9,8 +9,11 @@
                    type="checkbox"
                    id="@Model.CheckboxId"
                    data-code="@Model.Item.Code"
+                   data-parent-code="@Model.Item.ParentCode"
+                   data-level="@Model.Item.Level"
                    data-action="toggle-selection"
-                   @(Model.IsSelected ? "checked" : "")>
+                   @(Model.IsSelected || Model.IsDisabled ? "checked" : "")
+                   @(Model.IsDisabled ? "disabled" : "")>
             <span class="cpv-details__content">
                 <span class="govuk-body-s"><strong>@Model.Item.Code</strong> @Model.Item.DescriptionEn</span>
             </span>
@@ -35,8 +38,11 @@ else
                    type="checkbox"
                    id="@Model.CheckboxId"
                    data-code="@Model.Item.Code"
+                   data-parent-code="@Model.Item.ParentCode"
+                   data-level="@Model.Item.Level"
                    data-action="toggle-selection"
-                   @(Model.IsSelected ? "checked" : "")>
+                   @(Model.IsSelected || Model.IsDisabled ? "checked" : "")
+                   @(Model.IsDisabled ? "disabled" : "")>
             <span class="cpv-item__text">
                 <span class="govuk-body-s"><strong>@Model.Item.Code</strong> @Model.Item.DescriptionEn</span>
             </span>

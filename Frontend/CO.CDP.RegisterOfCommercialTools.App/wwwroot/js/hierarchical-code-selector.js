@@ -156,7 +156,10 @@ const HierarchicalCodeSelector = (() => {
         if (state.selectedCodes.has(code)) {
             state.selectedCodes.delete(code);
         } else {
-            state.selectedCodes.add(code);
+            if (!hasAncestorSelected(code)) {
+                removeDescendants(code);
+                state.selectedCodes.add(code);
+            }
         }
 
         updateTriggerText();
@@ -164,13 +167,15 @@ const HierarchicalCodeSelector = (() => {
         refreshCheckboxStates();
     };
 
-    const refreshCheckboxStates = () => {
-        document.querySelectorAll('[data-action="toggle-selection"]').forEach(element => {
+    const refreshCheckboxStates = (container = document) => {
+        container.querySelectorAll('[data-action="toggle-selection"]').forEach(element => {
             const code = element.dataset.code;
             const isSelected = state.selectedCodes.has(code);
+            const isDisabled = hasAncestorSelected(code);
 
             if (element.type === 'checkbox') {
-                element.checked = isSelected;
+                element.checked = isSelected || isDisabled;
+                element.disabled = isDisabled;
             }
 
             if (element.classList.contains(`${config.codeType.toLowerCase()}-search-item`)) {
@@ -178,6 +183,12 @@ const HierarchicalCodeSelector = (() => {
                     element.classList.add(`${config.codeType.toLowerCase()}-search-item--selected`);
                 } else {
                     element.classList.remove(`${config.codeType.toLowerCase()}-search-item--selected`);
+                }
+
+                if (isDisabled) {
+                    element.setAttribute('aria-disabled', 'true');
+                } else {
+                    element.removeAttribute('aria-disabled');
                 }
             }
         });
@@ -194,7 +205,7 @@ const HierarchicalCodeSelector = (() => {
         if (response && response.success) {
             container.innerHTML = response.html;
             setupTreeEventHandlers();
-            refreshCheckboxStates();
+            refreshCheckboxStates(container);
         } else if (response && !response.success) {
             container.innerHTML = createErrorMessage(response.message);
         } else {
@@ -207,7 +218,7 @@ const HierarchicalCodeSelector = (() => {
             state.treeContainer.dataset.delegatedListeners = 'true';
 
             state.treeContainer.addEventListener('change', (e) => {
-                if (e.target.matches('[data-action="toggle-selection"]')) {
+                if (e.target.matches('[data-action="toggle-selection"]') && !e.target.disabled) {
                     e.stopPropagation();
                     toggleSelection(e.target.dataset.code);
                 }
@@ -233,11 +244,13 @@ const HierarchicalCodeSelector = (() => {
     const setupSearchEventHandlers = () => {
         document.querySelectorAll(`#${config.searchContainerId} [data-action="toggle-selection"]`).forEach(item => {
             const handleToggle = () => {
-                toggleSelection(item.dataset.code);
-                const searchResults = document.getElementById(`${config.searchInputId}-results`);
-                if (searchResults) {
-                    searchResults.classList.add('govuk-!-display-none');
-                    searchResults.classList.remove('govuk-!-display-block');
+                if (!item.hasAttribute('aria-disabled')) {
+                    toggleSelection(item.dataset.code);
+                    const searchResults = document.getElementById(`${config.searchInputId}-results`);
+                    if (searchResults) {
+                        searchResults.classList.add('govuk-!-display-none');
+                        searchResults.classList.remove('govuk-!-display-block');
+                    }
                 }
             };
 
@@ -368,6 +381,57 @@ const HierarchicalCodeSelector = (() => {
             Object.assign(input, {type: 'hidden', name: config.fieldName, value: code});
             container.appendChild(input);
         });
+    };
+
+    const buildHierarchyCache = () => {
+        const cache = {};
+        document.querySelectorAll('[data-code][data-parent-code]').forEach(element => {
+            const code = element.dataset.code;
+            const parentCode = element.dataset.parentCode;
+            const level = parseInt(element.dataset.level) || 0;
+
+            if (code) {
+                cache[code] = {
+                    code: code,
+                    parentCode: parentCode || null,
+                    level: level
+                };
+            }
+        });
+        return cache;
+    };
+
+    const isAncestorOf = (potentialAncestor, code) => {
+        if (potentialAncestor === code) return false;
+
+        const cache = buildHierarchyCache();
+        const findAncestor = (childCode) => {
+            const childData = cache[childCode];
+            if (!childData?.parentCode) return false;
+            if (childData.parentCode === potentialAncestor) return true;
+            return findAncestor(childData.parentCode);
+        };
+
+        return cache[code] ? findAncestor(code) : false;
+    };
+
+    const hasAncestorSelected = (code) => {
+        for (const selectedCode of state.selectedCodes) {
+            if (isAncestorOf(selectedCode, code)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const removeDescendants = (parentCode) => {
+        const toRemove = [];
+        for (const code of state.selectedCodes) {
+            if (isAncestorOf(parentCode, code)) {
+                toRemove.push(code);
+            }
+        }
+        toRemove.forEach(code => state.selectedCodes.delete(code));
     };
 
     const updateAccordionContent = () => {
