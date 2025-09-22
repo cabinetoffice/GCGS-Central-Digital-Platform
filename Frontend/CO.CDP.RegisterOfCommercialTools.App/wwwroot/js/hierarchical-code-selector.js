@@ -394,7 +394,7 @@ const HierarchicalCodeSelector = (() => {
                 Selected (${state.selectedCodes.size}):
             </p>
             <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).map(code =>
+                ${Array.from(state.selectedCodes).sort().map(code =>
             `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
                         ${code}
                     </div>`
