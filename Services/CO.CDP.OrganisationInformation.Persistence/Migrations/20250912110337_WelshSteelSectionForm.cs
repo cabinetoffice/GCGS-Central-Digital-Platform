@@ -32,11 +32,11 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO sectionId;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 0, false, 'WelshSteel_01_Title', 'WelshSteel_01_Description', '{{}}', NULL, 'WelshSteel_01_SummaryTitle', '_WelshSteel01', 1)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 0, false, 'WelshSteel_01_Title', 'WelshSteel_01_Description', '{{""layout"": {{""button"": {{""style"": ""Start"", ""text"": ""Global_Start""}}}}}}', NULL, 'WelshSteel_01_SummaryTitle', '_WelshSteel01', 1)
                     RETURNING id INTO q1Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 2, false, 'WelshSteel_02_Title', 'WelshSteel_02_Description', '{{}}', NULL, 'WelshSteel_02_SummaryTitle', '_WelshSteel02', 2)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 2, false, 'WelshSteel_02_Title', 'WelshSteel_02_Description', '{{""layout"": {{""button"" : {{""beforeButtonContent"": ""WelshSteel_02_CustomInsetText""}}}}}}', NULL, 'WelshSteel_02_SummaryTitle', '_WelshSteel02', 2)
                     RETURNING id INTO q2Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
@@ -44,7 +44,7 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q3Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 2, false, 'WelshSteel_04_Title', 'WelshSteel_04_Description', '{{}}', NULL, 'WelshSteel_04_SummaryTitle', '_WelshSteel04', 4)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 2, false, 'WelshSteel_04_Title', 'WelshSteel_04_Description', '{{""layout"": {{""button"" : {{""beforeButtonContent"": ""WelshSteel_04_CustomInsetText""}}}}}}', NULL, 'WelshSteel_04_SummaryTitle', '_WelshSteel04', 4)
                     RETURNING id INTO q4Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
