@@ -41,8 +41,17 @@ const HierarchicalCodeSelector = (() => {
         }
     };
 
+    const escapeHtml = (unsafeString) => {
+        return String(unsafeString)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    };
+
     const createErrorMessage = (message) => {
-        return `<p class="govuk-body govuk-!-margin-top-2">${message}</p>`;
+        return `<p class="govuk-body govuk-!-margin-top-2">${escapeHtml(message)}</p>`;
     };
 
     const updateContainer = (container, html) => {
@@ -438,30 +447,31 @@ const HierarchicalCodeSelector = (() => {
         const accordionContent = document.querySelector('#industry-cpv-code-content');
         if (!accordionContent) return;
 
-        let displayArea = accordionContent.querySelector('.cpv-selected-display');
+        const createDisplayArea = () => {
+            const selectedCodesDisplay = document.createElement('div');
+            selectedCodesDisplay.className = 'cpv-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2';
+            accordionContent.insertBefore(selectedCodesDisplay, accordionContent.lastElementChild);
+            return selectedCodesDisplay;
+        };
+
+        const existingSelectedDisplay = accordionContent.querySelector('.cpv-selected-display');
 
         if (state.selectedCodes.size === 0) {
-            if (displayArea) {
-                displayArea.remove();
+            if (existingSelectedDisplay) {
+                existingSelectedDisplay.remove();
             }
             return;
         }
 
-        if (!displayArea) {
-            displayArea = document.createElement('div');
-            displayArea.className = 'cpv-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2';
-            accordionContent.insertBefore(displayArea, accordionContent.lastElementChild);
-        }
+        const selectedCodesDisplay = existingSelectedDisplay || createDisplayArea();
 
-        displayArea.innerHTML = `
+        selectedCodesDisplay.innerHTML = `
             <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
                 Selected (${state.selectedCodes.size}):
             </p>
             <div class="govuk-!-margin-top-2">
                 ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                        ${code}
-                    </div>`
+            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
         ).join('')}
             </div>
         `;
