@@ -62,7 +62,8 @@ public abstract class HierarchicalCodeControllerBase<T>(IHierarchicalCodeService
 
         try
         {
-            var searchResults = await codeService.SearchAsync(q);
+            var sanitisedSearchQuery = SanitiseSearchQuery(q);
+            var searchResults = await codeService.SearchAsync(sanitisedSearchQuery);
             var viewModel = new HierarchicalCodeSelectionViewModel<T>
             {
                 SearchResults = searchResults,
@@ -163,5 +164,24 @@ public abstract class HierarchicalCodeControllerBase<T>(IHierarchicalCodeService
         {
             cpvCode.Children = cpvChildren;
         }
+    }
+
+    private static string SanitiseSearchQuery(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+            return string.Empty;
+
+        const int maxLength = 100;
+        var sanitised = query.Length > maxLength ? query[..maxLength] : query;
+
+        sanitised = sanitised
+            .Replace("%", "")
+            .Replace("_", "")
+            .Replace("[", "")
+            .Replace("]", "")
+            .Replace("*", "")
+            .Replace("?", "");
+
+        return sanitised.Trim();
     }
 }
