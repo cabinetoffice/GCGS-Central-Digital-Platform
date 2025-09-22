@@ -50,7 +50,7 @@ locals {
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.8xlarge"
+      mysql_aurora_instance_type        = "db.r5.xlarge"
       name                              = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
