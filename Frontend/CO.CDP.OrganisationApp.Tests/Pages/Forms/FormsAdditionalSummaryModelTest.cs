@@ -72,6 +72,18 @@ public class FormsAdditionalSummaryModelTest
     }
 
     [Fact]
+    public async Task OnGet_ShouldReturnPage_WhenFormSectionIsWelshAdditional()
+    {
+        _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(_formId, _sectionId, _organisationId))
+            .ReturnsAsync(CreateMockSectionQuestionsResponse(FormSectionType.WelshAdditionalSection, withAnswerSets: true));
+
+        var result = await _model.OnGet();
+
+        result.Should().BeOfType<PageResult>();
+        _model.SectionTitle.Should().Be("Test Section");
+    }
+
+    [Fact]
     public async Task OnGet_ShouldReturnPageWithEmptyAnswers_WhenNoAnswerSetsExist()
     {
         _formsClientMock.Setup(client => client.GetFormSectionQuestionsAsync(_formId, _sectionId, _organisationId))

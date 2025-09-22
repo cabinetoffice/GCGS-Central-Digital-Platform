@@ -22,8 +22,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             MinFees = searchModel.NoFees != null ? 0 : searchModel.FeeMin / 100,
             MaxFees = searchModel.NoFees != null ? 0 : searchModel.FeeMax / 100,
             AwardMethod = searchModel.AwardMethod,
-            PageNumber = pageNumber,
-            PageSize = pageSize
+            PageNumber = pageNumber
         };
 
         var response = await commercialToolsApiClient.SearchAsync(requestDto);
@@ -40,7 +39,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             Id: dto.Id ?? "Unknown",
             Title: dto.Title ?? "Unknown",
             Caption: dto.Description ?? "Unknown",
-            CommercialTool: dto.Title ?? "Unknown",
+            CommercialTool: dto.CommercialTool ?? "Unknown",
             Status: dto.Status ?? CommercialToolStatus.Unknown,
             MaximumFee: dto.Fees.HasValue && dto.Fees > 0 ? $"{dto.Fees.Value * 100:0.##}%" : "Unknown",
             OtherContractingAuthorityCanUse: dto.OtherContractingAuthorityCanUse ?? "Unknown",

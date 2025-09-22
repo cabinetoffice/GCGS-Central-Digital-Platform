@@ -36,6 +36,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "rds:List*",
       "rds:Modify*",
       "rds:ModifyDBCluster",
+      "rds:RemoveTagsFromResource",
       "rds:ResetDBClusterParameterGroup",
       "rds:ResetDBParameterGroup",
     ]

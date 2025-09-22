@@ -7,6 +7,10 @@ module "ecs_service_commercial_tools_api" {
       aspcore_environment = local.aspcore_environment
       container_port      = var.service_configs.commercial_tools_api.port
       cpu                 = var.service_configs.commercial_tools_api.cpu
+      db_address          = var.db_sirsi_cluster_address
+      db_name             = var.db_sirsi_cluster_name
+      db_password         = local.db_sirsi_password
+      db_username         = local.db_sirsi_username
       host_port           = var.service_configs.commercial_tools_api.port
       image               = local.ecr_urls[var.service_configs.commercial_tools_api.name]
       lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_api.name].name
@@ -16,14 +20,14 @@ module "ecs_service_commercial_tools_api" {
       name                = var.service_configs.commercial_tools_api.name
       odataapi_apikey     = "${data.aws_secretsmanager_secret.odi_data_platform.arn}:ApiKey::"
       public_domain       = var.public_domain
-      service_version     = local.service_version_sirsi
+      service_version     = "1.0.78-3bd90b215"
       vpc_cidr            = var.vpc_cider
     }
   )
   cluster_id             = aws_ecs_cluster.this.id
   container_port         = var.service_configs.commercial_tools_api.port
   cpu                    = var.service_configs.commercial_tools_api.cpu
-  desired_count          = var.environment == "development" ? 1 : 0 // var.service_configs.commercial_tools_api.desired_count
+  desired_count          = contains(["development", "staging"], var.environment) ? var.service_configs.commercial_tools_app.desired_count : 0
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = aws_lb_listener.ecs.arn
   ecs_service_base_sg_id = var.ecs_sg_id

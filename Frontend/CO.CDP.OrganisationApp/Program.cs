@@ -33,6 +33,7 @@ using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
 using CO.CDP.UI.Foundation;
+using CO.CDP.UI.Foundation.Pages;
 using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
@@ -167,12 +168,12 @@ builder.Services.AddTransient<IChoiceProviderService, ChoiceProviderService>();
 
 builder.Services.AddTransient<IFormsEngine, FormsEngine>();
 builder.Services.AddTransient<IAnswerDisplayService, AnswerDisplayService>();
-builder.Services.AddTransient<IDiagnosticPage, DiagnosticPage>();
 builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
-    uiFoundationBuilder.AddCommercialToolsUrlService();
+    uiFoundationBuilder.AddCommercialToolsUrlService()
+                      .AddDiagnosticPage<DiagnosticPage>();
 });
 
 builder.Services.AddScoped<CO.CDP.OrganisationApp.IFtsUrlService, CO.CDP.OrganisationApp.FtsUrlService>();

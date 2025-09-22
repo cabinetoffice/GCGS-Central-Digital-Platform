@@ -865,6 +865,7 @@ public class FormsQuestionPageModel(
         {
             Models.FormSectionType.Declaration => await CreateShareCodeAndRedirect(),
             Models.FormSectionType.Additional => RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId }),
+            Models.FormSectionType.WelshAdditional => RedirectToPage("../Supplier/SupplierInformationSummary", new { Id = OrganisationId }),
             _ => RedirectToPage("FormsAnswerSetSummary", new { OrganisationId, FormId, SectionId })
         };
     }

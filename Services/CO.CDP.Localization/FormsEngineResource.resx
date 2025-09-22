@@ -486,6 +486,90 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Product quality processes</value>
   </data>
 
+
+  <data name="Environmental_SectionTitle" xml:space="preserve">
+    <value>Environmental</value>
+  </data>
+  <data name="EnvironmentalQuestion_01_Title" xml:space="preserve">
+    <value>Submitting your environmental information</value>
+  </data>
+  <data name="EnvironmentalQuestion_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      For some procurements it may be necessary for bidders to provide information on their environmental management system (EMS) and its certification standard. An EMS is a set of processes that help an organisation to reduce its environmental impact. Your contracting authority will provide you with specific requirements that your EMS must meet. For further information read WPPN &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      Placeholder (opens in a new tab)&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+Failure to complete this module may result in your tenders being deemed insufficient where WPPN 10/21 has been applied. For more information read WPPN 10/21 in the construction industry &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;Placeholder (opens in a new tab)&lt;/a&gt;.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;You'll need to provide information on your environmental management policies and systems. This may include:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt; confirmation you have an EMS certified by a UKAS-accredited organisation or equivalent &lt;/li&gt;
+        &lt;li&gt; how your consortium members are covered under the EMS (where relevant) &lt;/li&gt;
+        &lt;li&gt; information about your environmental policy statement and how this covers your consortium members (where relevant) &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_02_Title" xml:space="preserve">
+    <value>
+      Do you operate in accordance with an environmental management system (EMS) that is certified by a UKAS-accredited (or national equivalent) organisation?
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_02_SummaryTitle" xml:space="preserve">
+    <value>Environmental management system certification</value>
+  </data>
+  <data name="EnvironmentalQuestion_02_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_03_Title" xml:space="preserve">
+    <value>
+      If you're bidding as a consortium, explain which members have an environmental management system certified by a UKAS-accredited (or national equivalent) organisation
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Consortium member certification</value>
+  </data>
+  <data name="EnvironmentalQuestion_03_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        In your answer, explain how this covers the work of the consortium.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_04_Title" xml:space="preserve">
+    <value>
+      Do you have an environmental policy statement committing your organisation to a programme of improvement?
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_04_SummaryTitle" xml:space="preserve">
+    <value>Environmental policy statement</value>
+  </data>
+  <data name="EnvironmentalQuestion_04_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_05_Title" xml:space="preserve">
+    <value>
+      If you are bidding as a consortium, please explain how your environmental policy statement covers the work of the consortium
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_05_SummaryTitle" xml:space="preserve">
+    <value>Consortium environmental policy statement</value>
+  </data>
+
   <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
     <value>Health and Safety</value>
   </data>

@@ -1,5 +1,7 @@
 locals {
 
+  unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
+
   aspcore_environment = "Aws${title(var.environment)}"
 
   cognito_enabled = contains(["development", "staging"], var.environment)

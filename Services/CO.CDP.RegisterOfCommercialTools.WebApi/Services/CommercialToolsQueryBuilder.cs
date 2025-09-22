@@ -6,23 +6,24 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 {
     private readonly ImmutableDictionary<string, string> _params;
-    private readonly int? _pageNumber;
-    private readonly int? _pageSize;
+    private readonly int? _skip;
+    private readonly int? _top;
 
     public CommercialToolsQueryBuilder() : this(
         ImmutableDictionary.Create<string, string>(StringComparer.OrdinalIgnoreCase))
     {
     }
 
-    private CommercialToolsQueryBuilder(ImmutableDictionary<string, string> parameters, int? pageNumber = null, int? pageSize = null)
+    private CommercialToolsQueryBuilder(ImmutableDictionary<string, string> parameters, int? skip = null,
+        int? top = null)
     {
         _params = parameters;
-        _pageNumber = pageNumber;
-        _pageSize = pageSize;
+        _skip = skip;
+        _top = top;
     }
 
     private ICommercialToolsQueryBuilder WithParameter(string key, string value) =>
-        new CommercialToolsQueryBuilder(_params.SetItem(key, value), _pageNumber, _pageSize);
+        new CommercialToolsQueryBuilder(_params.SetItem(key, value), _skip, _top);
 
     private ICommercialToolsQueryBuilder WithParameterIf(bool condition, string key, string value) =>
         condition ? WithParameter(key, value) : this;
@@ -39,7 +40,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             .SetItem("filter[tender.name]", keywords)
             .SetItem("filter[tender.techniques.frameworkAgreement.description]", keywords)
             .SetItem("filter[parties.identifier.id]", keywords)
-            .SetItem("filter[parties.name]", keywords), _pageNumber, _pageSize);
+            .SetItem("filter[parties.name]", keywords), _skip, _top);
     }
 
     private static string ParseKeywordsForOData(string keywords)
@@ -131,11 +132,11 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         WithParameterIf(!string.IsNullOrWhiteSpace(restrictionId),
             "filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id ne]", restrictionId);
 
-    public ICommercialToolsQueryBuilder WithPageSize(int size) =>
-        new CommercialToolsQueryBuilder(_params, _pageNumber, size);
+    public ICommercialToolsQueryBuilder WithSkip(int skip) =>
+        new CommercialToolsQueryBuilder(_params, skip, _top);
 
-    public ICommercialToolsQueryBuilder WithPageNumber(int number) =>
-        new CommercialToolsQueryBuilder(_params, number, _pageSize);
+    public ICommercialToolsQueryBuilder WithTop(int top) =>
+        new CommercialToolsQueryBuilder(_params, _skip, top);
 
     public ICommercialToolsQueryBuilder WithCustomFilter(string filter)
     {
@@ -147,7 +148,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             ? filter
             : $"({existingFilter}) and ({filter})";
 
-        return new CommercialToolsQueryBuilder(_params.SetItem("$filter", newFilter), _pageNumber, _pageSize);
+        return new CommercialToolsQueryBuilder(_params.SetItem("$filter", newFilter), _skip, _top);
     }
 
     public string Build(string baseUrl)
@@ -157,27 +158,23 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
         var odataParams = new List<string>();
 
-        // Add pagination parameters
-        if (_pageSize.HasValue)
+        if (_skip.HasValue)
         {
-            odataParams.Add($"page[size]={_pageSize.Value}");
+            odataParams.Add($"$skip={_skip.Value}");
         }
 
-        if (_pageNumber.HasValue)
+        if (_top.HasValue)
         {
-            odataParams.Add($"page[number]={_pageNumber.Value}");
+            odataParams.Add($"$top={_top.Value}");
         }
 
-        // Add other OData parameters
         foreach (var param in _params)
         {
             odataParams.Add($"{param.Key}={Uri.EscapeDataString(param.Value)}");
         }
 
-        // Only add queryOptions if we have parameters or pagination
-        if (odataParams.Any() || _pageNumber.HasValue || _pageSize.HasValue)
+        if (odataParams.Any())
         {
-            // Always include count when we have other params
             odataParams.Insert(0, "$count=true");
 
             var queryOptionsValue = string.Join("&", odataParams);

@@ -35,10 +35,10 @@
     ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
 }
 
-<script src="/js/search.js" nonce="@Model.ScriptNonce"></script>
+<script src="/js/search.js" nonce-csp></script>
 
 <govuk-breadcrumbs>
-    <govuk-breadcrumbs-item href="@Model.SirsiHomeUrl">Home</govuk-breadcrumbs-item>
+    <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
     <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
 </govuk-breadcrumbs>
 

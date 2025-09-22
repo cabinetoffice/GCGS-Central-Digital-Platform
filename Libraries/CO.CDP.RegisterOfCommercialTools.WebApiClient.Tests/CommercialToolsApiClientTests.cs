@@ -30,7 +30,6 @@ public class CommercialToolsApiClientTests
             },
             TotalCount = 1,
             PageNumber = 1,
-            PageSize = 10
         };
 
         mockHttpMessageHandler
@@ -55,7 +54,6 @@ public class CommercialToolsApiClientTests
         {
             Keyword = "test",
             PageNumber = 1,
-            PageSize = 10
         };
 
         var result = await client.SearchAsync(request);
@@ -168,7 +166,6 @@ public class CommercialToolsApiClientTests
             Status = "Active",
             SortBy = "Title",
             PageNumber = 2,
-            PageSize = 20,
             MinFees = 100m,
             MaxFees = 1000m
         };
@@ -179,7 +176,6 @@ public class CommercialToolsApiClientTests
         actualQuery.Should().Contain("Status=Active");
         actualQuery.Should().Contain("SortBy=Title");
         actualQuery.Should().Contain("PageNumber=2");
-        actualQuery.Should().Contain("PageSize=20");
         actualQuery.Should().Contain("MinFees=100");
         actualQuery.Should().Contain("MaxFees=1000");
     }
