@@ -2,6 +2,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.RegisterOfCommercialTools.App;
 using CO.CDP.RegisterOfCommercialTools.App.Middleware;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.UI.Foundation;
 using GovUk.Frontend.AspNetCore;
 using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
@@ -20,6 +21,7 @@ builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeFolder("/");
+    options.Conventions.AllowAnonymousToPage("/Index");
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
@@ -53,6 +55,10 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
 .AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
 builder.Services.AddScoped<ISearchService, SearchService>();
+builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
+builder.Services.AddScoped<IHierarchicalCodeService<CpvCodeDto>, CpvCodeService>();
+
+builder.Services.AddControllers();
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
 var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
@@ -175,6 +181,8 @@ if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
 {
     app.MapGet(diagnosticPage, async (CO.CDP.UI.Foundation.Pages.IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
 }
+
+app.MapControllers();
 
 app.MapFallback(ctx =>
 {
