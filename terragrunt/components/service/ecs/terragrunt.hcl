@@ -148,9 +148,10 @@ inputs = {
   fts_extra_host_headers            = local.global_vars.locals.fts_extra_domains
   fts_service_allowed_origins       = local.global_vars.locals.fts_service_allowed_origins
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
-  pinned_service_version_cfs        = local.global_vars.locals.pinned_service_version_cfs
-  pinned_service_version_fts        = local.global_vars.locals.pinned_service_version_fts
-  pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
+  pinned_service_version_cfs               = local.global_vars.locals.pinned_service_version_cfs
+  pinned_service_version_fts               = local.global_vars.locals.pinned_service_version_fts
+  pinned_service_version_sirsi             = local.global_vars.locals.pinned_service_version
+  pinned_service_version_commercial_tools  = local.global_vars.locals.pinned_service_version_commercial_tools
   service_configs                   = local.global_vars.locals.service_configs
   tags                              = local.tags
 

@@ -26,7 +26,7 @@ module "ecs_service_commercial_tools_app" {
       redis_auth_token_arn              = var.redis_auth_token_arn
       redis_port                        = var.redis_port
       redis_primary_endpoint_address    = var.redis_primary_endpoint
-      service_version                   = "1.0.78-ecbcbded0"
+      service_version                   = var.environment == "development" ? "latest" : (var.pinned_service_version_commercial_tools != null ? var.pinned_service_version_commercial_tools : "1.0.78-ecbcbded0")
       sessiontimeoutinminutes           = var.commercial_tools_session_timeout
       shared_sessions_enabled           = local.shared_sessions_enabled
       ssm_data_protection_prefix        = local.ssm_data_protection_prefix

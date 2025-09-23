@@ -100,9 +100,10 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "2025-09-23-notice-performance-improvements-experiment"
-      pinned_service_version            = "1.0.78"
+      pinned_service_version_cfs               = "1.0.4"
+      pinned_service_version_fts               = "2025-09-23-notice-performance-improvements-experiment"
+      pinned_service_version                   = "1.0.78"
+      pinned_service_version_commercial_tools  = "1.0.78-ecbcbded0"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -381,9 +382,10 @@ locals {
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
-  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
-  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
+  pinned_service_version                   = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_cfs               = try(local.environments[local.environment].pinned_service_version_cfs, null)
+  pinned_service_version_fts               = try(local.environments[local.environment].pinned_service_version_fts, null)
+  pinned_service_version_commercial_tools  = try(local.environments[local.environment].pinned_service_version_commercial_tools, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
@@ -406,6 +408,7 @@ locals {
     cfs_scheduler                        = { desired_count = 1 }
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
+    commercial_tools_migrations          = { cpu = 256,  memory = 512}
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256,  memory = 512}
@@ -457,6 +460,7 @@ locals {
     cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
     commercial_tools_app                 = { port = 8192, port_host = 8192, name = "commercial-tools-app"}
     commercial_tools_api                 = { port = 8184, port_host = 8184, name = "commercial-tools-api"}
+    commercial_tools_migrations          = { port = 9192, port_host = null, name = "commercial-tools-migrations"}
     data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
