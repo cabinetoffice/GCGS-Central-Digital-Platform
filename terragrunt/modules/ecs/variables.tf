@@ -164,6 +164,12 @@ variable "pinned_service_version_sirsi" {
   default     = null
 }
 
+variable "pinned_service_version_commercial_tools" {
+  description = "The commercial tools service version for this environment. If null, latest version from Orchestration will be used"
+  type        = string
+  default     = null
+}
+
 variable "private_beta_domain" {
   description = "Optional fully qualified domain name (FQDN) of private-beta domain"
   type        = string
