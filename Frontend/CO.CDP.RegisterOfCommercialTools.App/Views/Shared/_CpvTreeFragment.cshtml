@@ -1,0 +1,21 @@
+@using CO.CDP.RegisterOfCommercialTools.App.Models
+@using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
+@model HierarchicalCodeSelectionViewModel<CpvCodeDto>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="govuk-error-message" role="alert">
+        <span class="govuk-visually-hidden">Error: </span>@Model.ErrorMessage
+    </div>
+}
+else if (Model.IsLoading)
+{
+    <div class="govuk-body">Loading CPV codes...</div>
+}
+else
+{
+    @foreach (var item in Model.RootCodes)
+    {
+        @await Html.PartialAsync("_CpvTreeNode", new CpvTreeNodeViewModel { Item = item, Level = 0, SelectedCodes = Model.SelectedCodes })
+    }
+}

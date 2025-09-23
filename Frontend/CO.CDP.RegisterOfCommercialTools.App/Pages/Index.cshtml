@@ -23,6 +23,11 @@
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
     ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    var industryCpvCodeAccordion = new Accordion(
+        "industry-cpv-code",
+        "Industry CPV code",
+        "_IndustryCpvCodeAccordionContent", Model.SearchParams
+        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
@@ -36,6 +41,7 @@
 }
 
 <script src="/js/search.js" nonce-csp></script>
+<script src="/js/hierarchical-code-selector.js" nonce-csp></script>
 
 <govuk-breadcrumbs>
     <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
@@ -160,6 +166,7 @@
                     <partial name="_Accordion" model="commercialToolStatusAccordion"/>
                     <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
                     <partial name="_Accordion" model="awardMethodAccordion"/>
+                    <partial name="_Accordion" model="industryCpvCodeAccordion"/>
                     <partial name="_Accordion" model="feesAccordion"/>
                     <partial name="_Accordion" model="dateRangeAccordion"/>
                 </div>
