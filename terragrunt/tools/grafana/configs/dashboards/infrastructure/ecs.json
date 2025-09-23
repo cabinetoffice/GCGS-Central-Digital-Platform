@@ -1225,6 +1225,16 @@
           },
           {
             "selected": false,
+            "text": "commercial-tools-api",
+            "value": "commercial-tools-api"
+          },
+          {
+            "selected": false,
+            "text": "commercial-tools-app",
+            "value": "commercial-tools-app"
+          },
+          {
+            "selected": false,
             "text": "data-sharing",
             "value": "data-sharing"
           },
@@ -1274,7 +1284,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app,  cfs, cfs-scheduler, clamav-rest, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app,  cfs, cfs-scheduler, clamav-rest, commercial-tools-api, commercial-tools-app, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {

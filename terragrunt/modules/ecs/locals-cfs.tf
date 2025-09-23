@@ -13,8 +13,6 @@ locals {
     production  = "www.contractsfinder.service.gov.uk"
   }
 
-  data_harvester_folder_format = contains(["development", "staging"], var.environment) ? "S3-migration-test/{Y}-{m}" : ""
-
   cfs_secrets = {
     dev_email                             = "${local.cfs_screts_arn}:DEV_EMAIL::"
     email_contactus                       = "${local.cfs_screts_arn}:CONTACTUS_EMAIL::"
@@ -48,7 +46,7 @@ locals {
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
     cookie_domain                       = local.cfs_site_domains[var.environment]
-    data_harvester_folder_format        = local.data_harvester_folder_format
+    data_harvester_folder_format        = ""
     db_host                             = var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306
