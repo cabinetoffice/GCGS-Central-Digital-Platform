@@ -1,6 +1,6 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
 @using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
-@model HierarchicalCodeSelectionViewModel<CpvCodeDto>
+@model HierarchicalCodeSelectionViewModel<NutsCodeDto>
 
 @if (!string.IsNullOrEmpty(Model.ErrorMessage))
 {
@@ -10,7 +10,7 @@
 }
 else if (string.IsNullOrEmpty(Model.SearchQuery))
 {
-    <p class="govuk-body-s">Enter a search term to find CPV codes</p>
+    <p class="govuk-body-s">Enter a search term to find locations</p>
 }
 else if (Model.SearchQuery.Length < 2)
 {
@@ -18,7 +18,7 @@ else if (Model.SearchQuery.Length < 2)
 }
 else if (!Model.SearchResults.Any())
 {
-    <p class="govuk-body-s govuk-!-margin-top-2">No CPV codes found. Please check your spelling.</p>
+    <p class="govuk-body-s govuk-!-margin-top-2">No locations found. Please check your spelling.</p>
 }
 else
 {
@@ -26,6 +26,7 @@ else
         @foreach (var (item, _) in Model.SearchResults.Take(10).Select((x, i) => (x, i)))
         {
             var isSelected = Model.IsSelected(item.Code);
+            var isCountryLevel = item.ParentCode == null;
 
             <div class="code-search-item @(isSelected ? "code-search-item--selected" : "")"
                  data-code="@item.Code"
@@ -33,10 +34,20 @@ else
                  role="button"
                  tabindex="0">
                 <div class="code-search-text">
-                    <span class="govuk-body-s govuk-!-font-weight-bold result-title">@item.Code</span>
-                    <span class="govuk-body-s result-description">@item.DescriptionEn</span>
+                    <span class="govuk-body-s govuk-!-font-weight-bold result-title">@item.DescriptionEn</span>
+                    <span class="govuk-body-s result-description">
+                        @if (!isCountryLevel && !string.IsNullOrEmpty(item.GetParentDescription()))
+                        {
+                            @item.GetParentDescription()
+                        }
+                        else
+                        {
+                            <text>&nbsp;</text>
+                        }
+                    </span>
                 </div>
             </div>
         }
     </div>
+
 }

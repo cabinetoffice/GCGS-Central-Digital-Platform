@@ -22,6 +22,8 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             MinFees = searchModel.NoFees != null ? 0 : searchModel.FeeMin / 100,
             MaxFees = searchModel.NoFees != null ? 0 : searchModel.FeeMax / 100,
             AwardMethod = searchModel.AwardMethod,
+            CpvCodes = searchModel.CpvCodes.Any() ? searchModel.CpvCodes : null,
+            LocationCodes = searchModel.LocationCodes.Any() ? searchModel.LocationCodes : null,
             PageNumber = pageNumber
         };
 

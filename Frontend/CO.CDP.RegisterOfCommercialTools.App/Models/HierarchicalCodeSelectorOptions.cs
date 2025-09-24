@@ -13,4 +13,5 @@ public class HierarchicalCodeSelectorOptions
     public string TreeContainerId { get; set; } = "code-tree";
     public string SearchContainerId { get; set; } = "search-results-list";
     public string SelectionContainerId { get; set; } = "selected-codes-list";
+    public string AccordionContentId { get; set; } = "code-content";
 }

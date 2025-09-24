@@ -57,6 +57,8 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
 builder.Services.AddScoped<IHierarchicalCodeService<CpvCodeDto>, CpvCodeService>();
+builder.Services.AddScoped<ILocationCodeService, LocationCodeService>();
+builder.Services.AddScoped<IHierarchicalCodeService<NutsCodeDto>, LocationCodeService>();
 
 builder.Services.AddControllers();
 

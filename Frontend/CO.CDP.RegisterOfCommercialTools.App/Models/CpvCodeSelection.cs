@@ -4,7 +4,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public class CpvCodeSelection : HierarchicalCodeSelection<CpvCodeDto>
 {
-    public override string BrowseLinkText => HasSelections ? "Edit CPV code selection" : "Browse CPV codes";
+    public override string BrowseLinkText => HasSelections ? "Edit selected CPV codes" : "Browse CPV codes";
 
     public override IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName = "cpv") =>
         SelectedCodes.Select(code => (fieldName, code));

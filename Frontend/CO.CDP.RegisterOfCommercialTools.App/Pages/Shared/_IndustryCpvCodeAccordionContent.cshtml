@@ -13,11 +13,12 @@
         SearchInputId = "cpv-search",
         TreeContainerId = "cpv-tree",
         SearchContainerId = "search-results-list",
-        SelectionContainerId = "selected-codes-list"
+        SelectionContainerId = "selected-codes-list",
+        AccordionContentId = "industry-cpv-code-content"
     };
 }
 
-<div class="govuk-!-margin-top-0">
+<div class="govuk-!-margin-top-0" id="industry-cpv-code-content">
     <p class="govuk-body-s govuk-!-padding-left-2">The common procurement vocabulary (CPV) is used to classify contracts
         in a standardised way</p>
 
@@ -49,3 +50,23 @@
 </div>
 
 <partial name="_HierarchicalCodeSelector" model="(selectorOptions, (IHierarchicalCodeSelection)cpvSelection)" />
+
+<script src="~/js/cpv-selector.js" nonce-csp></script>
+<script nonce-csp>
+document.addEventListener("DOMContentLoaded", function () {
+    if (typeof CpvSelector !== 'undefined') {
+        CpvSelector.init({
+            codeType: '@selectorOptions.CodeType',
+            routePrefix: '@selectorOptions.RoutePrefix',
+            fieldName: '@selectorOptions.FieldName',
+            modalId: '@selectorOptions.ModalId',
+            triggerId: '@selectorOptions.BrowseButtonId',
+            searchInputId: '@selectorOptions.SearchInputId',
+            treeContainerId: '@selectorOptions.TreeContainerId',
+            searchContainerId: '@selectorOptions.SearchContainerId',
+            selectionContainerId: '@selectorOptions.SelectionContainerId',
+            accordionContentId: '@selectorOptions.AccordionContentId'
+        });
+    }
+});
+</script>

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
-public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, IFtsUrlService ftsUrlService, ILogger<IndexModel> logger)
+public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, IFtsUrlService ftsUrlService, ICpvCodeService cpvCodeService, ILocationCodeService locationCodeService, ILogger<IndexModel> logger)
     : PageModel
 {
     [BindProperty(SupportsGet = true, Name = "sort")] public SearchModel SearchParams { get; set; } = new();
@@ -46,10 +46,12 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
             {
                 OpenAccordions =
                 [
-                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-                    "date-range"
+                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
+                    "industry-cpv-code", "contract-location", "fees", "date-range"
                 ];
             }
+
+            await PopulateViewDataAsync();
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
@@ -88,5 +90,28 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
         {
             HomeUrl = ftsUrlService.BuildUrl("/Search");
         }
+    }
+
+    private async Task PopulateViewDataAsync()
+    {
+        var cpvSelection = new CpvCodeSelection();
+        if (SearchParams.CpvCodes.Any())
+        {
+            var selectedCpvCodes = await cpvCodeService.GetByCodesAsync(SearchParams.CpvCodes);
+            foreach (var cpvCode in selectedCpvCodes)
+            {
+                cpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
+            }
+        }
+        ViewData["CpvSelection"] = cpvSelection;
+
+        var locationSelection = new LocationCodeSelection();
+        if (SearchParams.LocationCodes.Any())
+        {
+            var selectedLocationCodes = await locationCodeService.GetByCodesAsync(SearchParams.LocationCodes);
+            locationSelection.SelectedCodes.AddRange(selectedLocationCodes.Select(x => x.Code));
+            locationSelection.SelectedItems.AddRange(selectedLocationCodes);
+        }
+        ViewData["LocationSelection"] = locationSelection;
     }
 }

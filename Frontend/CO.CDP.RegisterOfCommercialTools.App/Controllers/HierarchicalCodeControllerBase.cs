@@ -155,6 +155,11 @@ public abstract class HierarchicalCodeControllerBase<T>(IHierarchicalCodeService
             return cpvCode.Children.Cast<T>().ToList();
         }
 
+        if (code is NutsCodeDto nutsCode)
+        {
+            return nutsCode.Children.Cast<T>().ToList();
+        }
+
         return [];
     }
 
@@ -163,6 +168,11 @@ public abstract class HierarchicalCodeControllerBase<T>(IHierarchicalCodeService
         if (code is CpvCodeDto cpvCode && children is List<CpvCodeDto> cpvChildren)
         {
             cpvCode.Children = cpvChildren;
+        }
+
+        if (code is NutsCodeDto nutsCode && children is List<NutsCodeDto> nutsChildren)
+        {
+            nutsCode.Children = nutsChildren;
         }
     }
 

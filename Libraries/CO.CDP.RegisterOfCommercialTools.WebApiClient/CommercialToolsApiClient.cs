@@ -89,6 +89,70 @@ public class CommercialToolsApiClient : ICommercialToolsApiClient
         }
     }
 
+    public async Task<List<NutsCodeDto>?> GetRootNutsCodesAsync(Culture culture = Culture.English)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<NutsCodeDto>>($"api/NutsCode/root?culture={culture}");
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<NutsCodeDto>?> GetNutsChildrenAsync(string parentCode, Culture culture = Culture.English)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<NutsCodeDto>>(
+                $"api/NutsCode/{Uri.EscapeDataString(parentCode)}/children?culture={culture}");
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<NutsCodeDto>?> SearchNutsCodesAsync(string query, Culture culture = Culture.English)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<NutsCodeDto>>(
+                $"api/NutsCode/search?query={Uri.EscapeDataString(query)}&culture={culture}");
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<NutsCodeDto>?> GetNutsCodesAsync(List<string> codes)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/NutsCode/lookup", codes);
+            return await response.Content.ReadFromJsonAsync<List<NutsCodeDto>>();
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<List<NutsCodeDto>?> GetNutsHierarchyAsync(string code)
+    {
+        try
+        {
+            return await _httpClient.GetFromJsonAsync<List<NutsCodeDto>>(
+                $"api/NutsCode/{Uri.EscapeDataString(code)}/hierarchy");
+        }
+        catch (HttpRequestException)
+        {
+            return null;
+        }
+    }
+
     private static string ToQueryString(SearchRequestDto dto)
     {
         var properties = from p in dto.GetType().GetProperties()

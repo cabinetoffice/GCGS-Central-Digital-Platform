@@ -10,4 +10,10 @@ public interface ICommercialToolsApiClient
     Task<List<CpvCodeDto>?> SearchCpvCodesAsync(string query, Culture culture = Culture.English);
     Task<List<CpvCodeDto>?> GetCpvCodesAsync(List<string> codes);
     Task<List<CpvCodeDto>?> GetCpvHierarchyAsync(string code);
+
+    Task<List<NutsCodeDto>?> GetRootNutsCodesAsync(Culture culture = Culture.English);
+    Task<List<NutsCodeDto>?> GetNutsChildrenAsync(string parentCode, Culture culture = Culture.English);
+    Task<List<NutsCodeDto>?> SearchNutsCodesAsync(string query, Culture culture = Culture.English);
+    Task<List<NutsCodeDto>?> GetNutsCodesAsync(List<string> codes);
+    Task<List<NutsCodeDto>?> GetNutsHierarchyAsync(string code);
 }

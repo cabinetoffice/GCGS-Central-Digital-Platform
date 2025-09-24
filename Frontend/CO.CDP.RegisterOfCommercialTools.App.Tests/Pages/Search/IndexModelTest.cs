@@ -29,8 +29,15 @@ public class IndexModelTest
             .Returns<string, Guid?, string?, bool?>((path, _, _, _) => $"https://sirsi.home{path}");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
         mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
+        var mockCpvCodeService = new Mock<ICpvCodeService>();
+        mockCpvCodeService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>()))
+            .ReturnsAsync(new List<CpvCodeDto>());
+
+        var mockLocationCodeService = new Mock<ILocationCodeService>();
+        mockLocationCodeService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>()))
+            .ReturnsAsync(new List<NutsCodeDto>());
         var mockLogger = new Mock<ILogger<IndexModel>>();
-        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockFtsUrlService.Object, mockLogger.Object);
+        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockFtsUrlService.Object, mockCpvCodeService.Object, mockLocationCodeService.Object, mockLogger.Object);
 
         var mockHttpContext = new Mock<HttpContext>();
         var mockRequest = new Mock<HttpRequest>();
@@ -39,7 +46,11 @@ public class IndexModelTest
         mockRequest.Setup(r => r.Query).Returns(new QueryCollection());
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
 
-        var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
+        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(mockHttpContext.Object, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+        var pageContext = new PageContext(actionContext)
+        {
+            ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
+        };
         _model.PageContext = pageContext;
     }
 
@@ -199,15 +210,19 @@ public class IndexModelTest
         mockRequest.Setup(r => r.Query).Returns(new QueryCollection()); // Ensure no 'acc' parameter
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
 
-        var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
+        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(mockHttpContext.Object, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+        var pageContext = new PageContext(actionContext)
+        {
+            ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
+        };
         _model.PageContext = pageContext;
 
         await _model.OnGetAsync();
 
         var expectedOpenAccordions = new[]
         {
-            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-            "date-range"
+            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
+            "industry-cpv-code", "contract-location", "fees", "date-range"
         };
         _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
     }

@@ -47,6 +47,11 @@ public class HierarchicalCodeSelectionViewModel<T> where T : IHierarchicalCodeDt
             return cpvCode.Children.Cast<T>().ToList();
         }
 
+        if (code is NutsCodeDto nutsCode)
+        {
+            return nutsCode.Children.Cast<T>().ToList();
+        }
+
         return [];
     }
 

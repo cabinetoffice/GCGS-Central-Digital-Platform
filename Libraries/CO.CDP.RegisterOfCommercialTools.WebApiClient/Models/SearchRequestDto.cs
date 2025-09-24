@@ -16,6 +16,8 @@ public class SearchRequestDto
     public string? FrameworkOptions { get; set; }
     public string? DynamicMarketOptions { get; set; }
     public string? ContractingAuthorityUsage { get; set; }
+    public List<string>? CpvCodes { get; set; }
+    public List<string>? LocationCodes { get; set; }
     public string? SortBy { get; set; }
     public int PageNumber { get; set; } = 1;
     public int? Skip { get; set; }
