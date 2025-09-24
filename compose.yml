@@ -124,6 +124,25 @@ services:
         EntityVerificationDatabase__Password: 'cdp123'
         Organisation__Authority: *organisation-authority
 
+  commercial-tools-migrations:
+    container_name: co-cdp-commercial-tools-migrations
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations-commercial-tools
+    image: 'cabinetoffice/cdp-commercial-tools-migrations:${IMAGE_VERSION:-latest}'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      OrganisationInformationDatabase__Host: 'db'
+      OrganisationInformationDatabase__Server: 'db'
+      OrganisationInformationDatabase__Database: 'cdp'
+      OrganisationInformationDatabase__Username: 'cdp_user'
+      OrganisationInformationDatabase__Password: 'cdp123'
+
   organisation-app:
     container_name: co-cdp-organisation-app
     build:

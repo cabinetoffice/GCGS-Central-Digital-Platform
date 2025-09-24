@@ -277,6 +277,7 @@ COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
+COPY --from=build-migrations-commercial-tools /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence/RegisterOfCommercialToolsDatabaseMigrationConfig /app/RegisterOfCommercialToolsDatabaseMigrationConfig
 COPY --from=build-migrations-commercial-tools /app/migrations/efbundle .
 ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 
