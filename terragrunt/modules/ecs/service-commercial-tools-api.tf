@@ -20,7 +20,7 @@ module "ecs_service_commercial_tools_api" {
       name                = var.service_configs.commercial_tools_api.name
       odataapi_apikey     = "${data.aws_secretsmanager_secret.odi_data_platform.arn}:ApiKey::"
       public_domain       = var.public_domain
-      service_version     = var.environment == "development" ? "latest" : (var.pinned_service_version_commercial_tools != null ? var.pinned_service_version_commercial_tools : "1.0.78-ecbcbded0")
+      service_version     = var.environment == "development" ? "latest" : "1.0.78-ecbcbded0"
       vpc_cidr            = var.vpc_cider
     }
   )

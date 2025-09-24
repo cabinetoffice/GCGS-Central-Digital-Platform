@@ -103,7 +103,6 @@ locals {
       pinned_service_version_cfs               = "1.0.4"
       pinned_service_version_fts               = "2025-09-23-notice-performance-improvements-experiment"
       pinned_service_version                   = "1.0.78"
-      pinned_service_version_commercial_tools  = "1.0.78-ecbcbded0"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -385,7 +384,6 @@ locals {
   pinned_service_version                   = try(local.environments[local.environment].pinned_service_version, null)
   pinned_service_version_cfs               = try(local.environments[local.environment].pinned_service_version_cfs, null)
   pinned_service_version_fts               = try(local.environments[local.environment].pinned_service_version_fts, null)
-  pinned_service_version_commercial_tools  = try(local.environments[local.environment].pinned_service_version_commercial_tools, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
