@@ -1,3 +1,4 @@
+using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
@@ -13,6 +14,7 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Services;
 public class CommercialToolsServiceTests
 {
     private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
+    private readonly Mock<IMapper> _mockMapper;
     private readonly CommercialToolsService _service;
 
     public CommercialToolsServiceTests()
@@ -28,7 +30,8 @@ public class CommercialToolsServiceTests
         mockConfiguration.Setup(c => c.GetSection("ODataApi:ApiKey")).Returns(mockODataApiSection.Object);
 
         var mockLogger = new Mock<ILogger<CommercialToolsService>>();
-        _service = new CommercialToolsService(httpClient, mockConfiguration.Object, mockLogger.Object);
+        _mockMapper = new Mock<IMapper>();
+        _service = new CommercialToolsService(httpClient, mockConfiguration.Object, mockLogger.Object, _mockMapper.Object);
     }
 
     [Fact]
@@ -37,47 +40,54 @@ public class CommercialToolsServiceTests
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
         {
-            "@odata.count": 1,
+            "success": true,
+            "statusCode": 200,
+            "message": "Commercial Tools retrieved successfully",
             "data": [
                 {
-                    "name": "IT Services Framework",
+                    "tenderId": "da77fe43-bc0a-43fe-b05d-8c292833404b",
+                    "tenderIdentifier": "ocds-h6vhtk-04f907",
+                    "title": "IT Services Framework",
                     "status": "active",
-                    "additionalProperties": {
-                        "procurementId": "003033-2025",
-                        "tenderId": "tender-123",
-                        "uri": "https://example.com/tender/1",
-                        "procuringEntity": "Test Authority",
-                        "effectiveEndDateUtc": "2025-03-15T23:59:59Z"
+                    "description": "Test procurement description",
+                    "createdAt": {
+                        "value": "2025-01-15T10:00:00Z"
                     },
-                    "documents": [
-                        {
-                            "datePublished": {
-                                "dateTime": {
-                                    "value": "2025-01-15T10:00:00Z"
-                                }
-                            }
-                        }
-                    ],
-                    "participationFees": [
-                        {
-                            "relativeValue": {
-                                "proportion": 0.05
-                            }
-                        }
-                    ],
-                    "tender": {
-                        "techniques": {
-                            "hasFrameworkAgreement": true,
-                            "frameworkAgreement": {
-                                "method": "open",
-                                "isOpenFrameworkScheme": true
-                            }
+                    "tenderPeriod": {
+                        "endDate": "2025-03-15T23:59:59Z"
+                    },
+                    "techniques": {
+                        "hasFrameworkAgreement": true,
+                        "frameworkAgreement": {
+                            "method": "open",
+                            "isOpenFrameworkScheme": true
                         }
                     }
                 }
-            ]
+            ],
+            "paging": {
+                "totalItems": 1,
+                "currentPage": 1,
+                "pageSize": 10
+            }
         }
         """;
+
+        var expectedSearchResult = new SearchResultDto
+        {
+            Id = "ocds-h6vhtk-04f907",
+            Title = "IT Services Framework",
+            Description = "Test procurement description",
+            PublishedDate = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
+            SubmissionDeadline = new DateTime(2025, 3, 15, 23, 59, 59, DateTimeKind.Utc),
+            Fees = 0,
+            AwardMethod = "With competition",
+            Status = CommercialToolStatus.Active,
+            OtherContractingAuthorityCanUse = "Yes"
+        };
+
+        _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
+            .Returns(expectedSearchResult);
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
@@ -88,109 +98,29 @@ public class CommercialToolsServiceTests
         totalCount.Should().Be(1);
 
         var searchResult = resultList.First();
-        searchResult.Id.Should().Be("003033-2025");
+        searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
         searchResult.Title.Should().Be("IT Services Framework");
-        searchResult.Description.Should().Be("Test Authority");
+        searchResult.Description.Should().Be("Test procurement description");
         searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
         searchResult.SubmissionDeadline.Should().Be(new DateTime(2025, 3, 15, 23, 59, 59, DateTimeKind.Utc));
-        searchResult.Fees.Should().Be(5.0m);
+        searchResult.Fees.Should().Be(0);
         searchResult.AwardMethod.Should().Be("With competition");
         searchResult.Status.Should().Be(CommercialToolStatus.Active);
         searchResult.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
 
     [Fact]
-    public async Task SearchCommercialToolsWithCount_WhenProcurementIdMissing_ShouldUseTenderIdFallback()
+    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnEmptyResults()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
-        var jsonResponse = """
-        {
-            "@odata.count": 1,
-            "data": [
-                {
-                    "name": "Test Framework",
-                    "status": "active",
-                    "additionalProperties": {
-                        "tenderId": "fallback-tender-id"
-                    }
-                }
-            ]
-        }
-        """;
+        var jsonResponse = "null";
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
         var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var resultList = results.ToList();
-        resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1);
-        resultList.First().Id.Should().Be("fallback-tender-id");
-    }
-
-    [Fact]
-    public async Task SearchCommercialTools_ShouldMapStatusCorrectly()
-    {
-        var queryUrl = "https://api.example.com/tenders?filter=test";
-        var jsonResponse = """
-        {
-            "data": [
-                {
-                    "name": "Test",
-                    "status": "cancelled",
-                    "additionalProperties": {
-                        "procurementId": "test-123"
-                    }
-                },
-                {
-                    "name": "Test2",
-                    "status": "active",
-                    "additionalProperties": {
-                        "procurementId": "test-456",
-                        "effectiveEndDateUtc": "2026-01-15T23:59:59Z"
-                    }
-                }
-            ]
-        }
-        """;
-
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
-
-        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
-
-        var resultList = results.ToList();
-        resultList.Should().HaveCount(2);
-
-        resultList[0].Status.Should().Be(CommercialToolStatus.Closed);
-
-        resultList[1].Status.Should().Be(CommercialToolStatus.Active);
-    }
-
-    [Fact]
-    public async Task SearchCommercialTools_WhenStatusIsUnknown_ShouldSetUnknownStatus()
-    {
-        var queryUrl = "https://api.example.com/tenders?filter=test";
-        var jsonResponse = """
-        {
-            "data": [
-                {
-                    "name": "Test",
-                    "status": "InvalidStatus",
-                    "additionalProperties": {
-                        "procurementId": "test-123"
-                    }
-                }
-            ]
-        }
-        """;
-
-        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
-
-        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
-
-        var resultList = results.ToList();
-        resultList.Should().HaveCount(1);
-        resultList.First().Status.Should().Be(CommercialToolStatus.Unknown);
+        results.Should().BeEmpty();
+        totalCount.Should().Be(0);
     }
 
     [Fact]
@@ -205,14 +135,44 @@ public class CommercialToolsServiceTests
 
 
     [Fact]
-    public async Task SearchCommercialTools_WhenEmptyResponse_ShouldReturnEmptyList()
+    public async Task SearchCommercialTools_WhenValidResponse_ShouldCallMapperWithCorrectData()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
-        SetupHttpResponse(HttpStatusCode.OK, "{\"data\": []}");
+        var jsonResponse = """
+        {
+            "success": true,
+            "statusCode": 200,
+            "message": "Success",
+            "data": [
+                {
+                    "tenderId": "test-id",
+                    "tenderIdentifier": "ocds-test",
+                    "title": "Test Tender"
+                }
+            ],
+            "paging": {
+                "totalItems": 5
+            }
+        }
+        """;
 
-        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var expectedResult = new SearchResultDto { Id = "ocds-test", Title = "Test Tender" };
+        _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
+            .Returns(expectedResult);
 
-        results.Should().BeEmpty();
+        SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
+
+        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+
+        var resultList = results.ToList();
+        resultList.Should().HaveCount(1);
+        totalCount.Should().Be(5);
+        resultList.First().Should().Be(expectedResult);
+
+        _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(
+            item => item.TenderId == "test-id" &&
+                    item.TenderIdentifier == "ocds-test" &&
+                    item.Title == "Test Tender")), Times.Once);
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)

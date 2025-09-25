@@ -88,7 +88,7 @@ public class SearchService(
             queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod);
         }
 
-        var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/Tender");
+        var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
 
