@@ -2,6 +2,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.RegisterOfCommercialTools.WebApi;
+using CO.CDP.RegisterOfCommercialTools.WebApi.AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
@@ -31,6 +32,8 @@ builder.Services.AddHttpClient<ICommercialToolsService, CommercialToolsService>(
 });
 
 builder.Services.AddTransient<ISearchService, SearchService>();
+
+builder.Services.AddAutoMapper(typeof(ApiResponseProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
