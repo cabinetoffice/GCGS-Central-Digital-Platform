@@ -9,18 +9,18 @@ public class ApiResponseProfile : Profile
     public ApiResponseProfile()
     {
         CreateMap<CommercialToolApiItem, SearchResultDto>()
-            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.TenderIdentifier))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description ?? "Unknown"))
-            .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.CreatedAt != null ? src.CreatedAt.Value : (DateTime?)null))
-            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.TenderPeriod != null ? src.TenderPeriod.EndDate : null))
-            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Status)))
-            .ForMember(dest => dest.Fees, opt => opt.MapFrom(src => 0))
-            .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Techniques)))
-            .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src.Techniques)))
-            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src.Techniques)))
-            .ForMember(dest => dest.CommercialTool, opt => opt.MapFrom(src => GetCommercialTool(src.Techniques)))
-            .ForMember(dest => dest.Techniques, opt => opt.MapFrom(src => src.Techniques))
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Tender != null ? src.Tender.Title : "Unknown"))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Buyer != null ? src.Buyer.Name ?? "Unknown" : "Unknown"))
+            .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
+            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null ? src.Tender.TenderPeriod.EndDate : null))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
+            .ForMember(dest => dest.Fees, opt => opt.MapFrom(src => GetFees(src.Tender)))
+            .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Tender)))
+            .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src.Tender)))
+            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src.Tender)))
+            .ForMember(dest => dest.CommercialTool, opt => opt.MapFrom(src => GetCommercialTool(src.Tender)))
+            .ForMember(dest => dest.Techniques, opt => opt.MapFrom(src => MapTechniques(src.Tender)))
             .ForMember(dest => dest.AdditionalProperties, opt => opt.MapFrom(src => CreateAdditionalProperties(src)));
     }
 
@@ -36,27 +36,47 @@ public class ApiResponseProfile : Profile
         };
     }
 
-    private static string ExtractAwardMethod(TechniquesInfo? techniques)
+    private static decimal? GetFees(CommercialToolTender? tender)
     {
-        if (techniques?.FrameworkAgreement?.Method != null)
+        if (tender?.ParticipationFees == null || !tender.ParticipationFees.Any())
+            return null;
+
+        // Convert to the expected ParticipationFee format and get max percentage
+        var participationFees = tender.ParticipationFees
+            .Where(f => f.RelativeValue?.Proportion.HasValue == true)
+            .Select(f => new ParticipationFee
+            {
+                RelativeValue = new RelativeValue
+                {
+                    Proportion = f.RelativeValue!.Proportion
+                }
+            })
+            .ToList();
+
+        return FeeConverter.GetMaxFeePercentage(participationFees);
+    }
+
+    private static string ExtractAwardMethod(CommercialToolTender? tender)
+    {
+        if (tender?.Techniques?.FrameworkAgreement?.Method != null)
         {
-            return techniques.FrameworkAgreement.Method switch
+            return tender.Techniques.FrameworkAgreement.Method switch
             {
                 "open" => "With competition",
                 "direct" => "Without competition",
                 "withoutReopeningCompetition" => "Without competition",
                 "withReopeningCompetition" => "With competition",
                 "withAndWithoutReopeningCompetition" => "With and without competition",
-                _ => techniques.FrameworkAgreement.Method
+                _ => tender.Techniques.FrameworkAgreement.Method
             };
         }
 
         return "Unknown";
     }
 
-    private static string GetOtherContractingAuthorityCanUse(TechniquesInfo? techniques)
+    private static string GetOtherContractingAuthorityCanUse(CommercialToolTender? tender)
     {
-        var isOpenFramework = techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
+        var isOpenFramework = tender?.Techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
 
         return isOpenFramework switch
         {
@@ -66,10 +86,18 @@ public class ApiResponseProfile : Profile
         };
     }
 
-    private static string GetContractDates(TechniquesInfo? techniques)
+    private static string GetContractDates(CommercialToolTender? tender)
     {
-        var startDate = techniques?.FrameworkAgreement?.PeriodStartDate ?? techniques?.FrameworkAgreement?.Period?.StartDate;
-        var endDate = techniques?.FrameworkAgreement?.PeriodEndDate ?? techniques?.FrameworkAgreement?.Period?.EndDate;
+        // First try framework agreement dates (priority)
+        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
+        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
+
+        // Fall back to contract period dates if framework agreement dates are not available
+        if (startDate == null && endDate == null)
+        {
+            startDate = tender?.ContractPeriod?.StartDate;
+            endDate = tender?.ContractPeriod?.EndDate;
+        }
 
         if (startDate == null && endDate == null)
         {
@@ -82,11 +110,12 @@ public class ApiResponseProfile : Profile
         return $"{start} - {end}";
     }
 
-    private static string GetCommercialTool(TechniquesInfo? techniques)
+    private static string GetCommercialTool(CommercialToolTender? tender)
     {
-        if (techniques == null)
+        if (tender?.Techniques == null)
             return "Unknown";
 
+        var techniques = tender.Techniques;
         var tags = new List<string>();
 
         if (techniques.HasFrameworkAgreement == true)
@@ -104,18 +133,78 @@ public class ApiResponseProfile : Profile
         return tags.Any() ? string.Join(", ", tags) : "Unknown";
     }
 
+    private static TechniquesInfo? MapTechniques(CommercialToolTender? tender)
+    {
+        if (tender?.Techniques == null)
+            return null;
+
+        var techniques = tender.Techniques;
+        var mappedTechniques = new TechniquesInfo
+        {
+            HasFrameworkAgreement = techniques.HasFrameworkAgreement,
+            HasDynamicPurchasingSystem = techniques.HasDynamicPurchasingSystem,
+            HasElectronicAuction = techniques.HasElectronicAuction
+        };
+
+        if (techniques.FrameworkAgreement != null)
+        {
+            mappedTechniques.FrameworkAgreement = new FrameworkAgreement
+            {
+                Method = techniques.FrameworkAgreement.Method,
+                IsOpenFrameworkScheme = techniques.FrameworkAgreement.IsOpenFrameworkScheme,
+                PeriodStartDate = techniques.FrameworkAgreement.PeriodStartDate,
+                PeriodEndDate = techniques.FrameworkAgreement.PeriodEndDate
+            };
+
+            if (techniques.FrameworkAgreement.Period != null)
+            {
+                mappedTechniques.FrameworkAgreement.Period = new FrameworkAgreementPeriod
+                {
+                    StartDate = techniques.FrameworkAgreement.Period.StartDate,
+                    EndDate = techniques.FrameworkAgreement.Period.EndDate
+                };
+            }
+        }
+
+        return mappedTechniques;
+    }
+
     private static Dictionary<string, string>? CreateAdditionalProperties(CommercialToolApiItem src)
     {
         var properties = new Dictionary<string, string>();
 
-        if (!string.IsNullOrEmpty(src.TenderId))
-            properties["tenderId"] = src.TenderId;
+        if (!string.IsNullOrEmpty(src.Id))
+            properties["id"] = src.Id;
 
-        if (!string.IsNullOrEmpty(src.TenderIdentifier))
-            properties["procurementId"] = src.TenderIdentifier;
+        if (!string.IsNullOrEmpty(src.Ocid))
+            properties["ocid"] = src.Ocid;
 
-        if (src.TenderPeriod?.EndDate != null)
-            properties["effectiveEndDateUtc"] = src.TenderPeriod.EndDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
+        if (!string.IsNullOrEmpty(src.Tender?.TenderId))
+            properties["tenderId"] = src.Tender.TenderId;
+
+        if (!string.IsNullOrEmpty(src.Tender?.TenderIdentifier))
+            properties["procurementId"] = src.Tender.TenderIdentifier;
+
+        if (!string.IsNullOrEmpty(src.Buyer?.Name))
+            properties["buyerName"] = src.Buyer.Name;
+
+        if (src.Tender?.TenderPeriod?.EndDate != null)
+            properties["effectiveEndDateUtc"] = src.Tender.TenderPeriod.EndDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        var buyerParty = src.Parties?.FirstOrDefault(p => p.Roles?.Contains("buyer") == true);
+        if (buyerParty?.Locations?.FirstOrDefault()?.PhysicalAddress != null)
+        {
+            var address = buyerParty.Locations.First().PhysicalAddress;
+            var addressParts = new List<string>();
+
+            if (!string.IsNullOrEmpty(address?.AddressLine1)) addressParts.Add(address.AddressLine1);
+            if (!string.IsNullOrEmpty(address?.AddressLine2)) addressParts.Add(address.AddressLine2);
+            if (!string.IsNullOrEmpty(address?.Locality)) addressParts.Add(address.Locality);
+            if (!string.IsNullOrEmpty(address?.PostalCode)) addressParts.Add(address.PostalCode);
+
+            if (addressParts.Any())
+                properties["buyerAddress"] = string.Join(", ", addressParts);
+        }
 
         return properties.Any() ? properties : null;
     }

@@ -145,9 +145,16 @@ public class CommercialToolsServiceTests
             "message": "Success",
             "data": [
                 {
-                    "tenderId": "test-id",
-                    "tenderIdentifier": "ocds-test",
-                    "title": "Test Tender"
+                    "id": "test-id",
+                    "ocid": "ocds-test",
+                    "buyer": {
+                        "name": "Test Buyer"
+                    },
+                    "tender": {
+                        "tenderId": "test-tender-id",
+                        "tenderIdentifier": "ocds-test",
+                        "title": "Test Tender"
+                    }
                 }
             ],
             "paging": {
@@ -170,9 +177,9 @@ public class CommercialToolsServiceTests
         resultList.First().Should().Be(expectedResult);
 
         _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(
-            item => item.TenderId == "test-id" &&
-                    item.TenderIdentifier == "ocds-test" &&
-                    item.Title == "Test Tender")), Times.Once);
+            item => item.Id == "test-id" &&
+                    item.Ocid == "ocds-test" &&
+                    item.Tender != null && item.Tender.Title == "Test Tender")), Times.Once);
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)
