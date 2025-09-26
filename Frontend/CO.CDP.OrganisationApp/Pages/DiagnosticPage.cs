@@ -25,7 +25,7 @@ public class DiagnosticPage(
                 sb.Append("<div class=\"summary-list__row\">");
                 sb.Append("<dt class=\"summary-list__key\">Authority Access Token</dt>");
                 sb.Append("<dd class=\"summary-list__value\">");
-                sb.Append($"<div class=\"token\">{tokens.AccessToken}</div>");
+                sb.Append($"<div class=\"token\" id=\"aat\">{tokens.AccessToken}</div>");
                 sb.Append($"<p class=\"body-s\">");
                 sb.Append($"<a href=\"https://jwt.io/#debugger-io?token={tokens.AccessToken}\" target=\"_blank\" class=\"link\">Decode token</a>");
                 sb.Append("</p>");
