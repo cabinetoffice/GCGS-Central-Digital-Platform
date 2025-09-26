@@ -5,7 +5,7 @@ namespace E2ETests.Utilities;
 public static class AuthUtility
 {
     private const string DiagnosticUrl = "http://localhost:8090/diagnostic";
-    private const string AccessTokenSelector = "span#aat"; // Selector for access token
+    private const string AccessTokenSelector = "div#aat"; // Selector for access token
     private const string DashboardUrl = "http://localhost:8090/organisation-selection";
 
     public static async Task<string> GetAccessToken(IPage page)
