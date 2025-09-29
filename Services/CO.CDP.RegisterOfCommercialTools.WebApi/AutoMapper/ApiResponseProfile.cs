@@ -87,26 +87,15 @@ public class ApiResponseProfile : Profile
 
     private static string GetContractDates(CommercialToolTender? tender)
     {
-        // First try framework agreement dates (priority)
         var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
         var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
 
-        // Fall back to contract period dates if framework agreement dates are not available
-        if (startDate == null && endDate == null)
-        {
-            startDate = tender?.ContractPeriod?.StartDate;
-            endDate = tender?.ContractPeriod?.EndDate;
-        }
-
-        if (startDate == null && endDate == null)
+        if (startDate == null || endDate == null)
         {
             return "Unknown";
         }
 
-        var start = startDate?.ToShortDateString() ?? "Unknown";
-        var end = endDate?.ToShortDateString() ?? "Unknown";
-
-        return $"{start} - {end}";
+        return $"{startDate.Value:dd MMMM yyyy} to {endDate.Value:dd MMMM yyyy}";
     }
 
     private static string GetCommercialTool(CommercialToolTender? tender)
