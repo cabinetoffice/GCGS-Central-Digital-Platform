@@ -4,20 +4,25 @@ namespace E2ETests.Utilities;
 
 public static class AuthUtility
 {
-    private const string DiagnosticUrl = "http://localhost:8090/diagnostic";
+    // XPath: grab the token for the "Authority Access Token" row only
     private const string AccessTokenSelector = "div#aat"; // Selector for access token
-    private const string DashboardUrl = "http://localhost:8090/organisation-selection";
+
+    private static string Join(string baseUrl, string path)
+        => $"{baseUrl.TrimEnd('/')}/{path.TrimStart('/')}";
 
     public static async Task<string> GetAccessToken(IPage page)
     {
-        // Navigate to the diagnostic page
-        await page.GotoAsync(DiagnosticUrl);
+        var baseUrl       = ConfigUtility.GetBaseUrl(); // <- from appsettings/env
+        var diagnosticUrl = Join(baseUrl, "diagnostic");
+        var dashboardUrl  = Join(baseUrl, "organisation-selection");
+
+        await page.GotoAsync(diagnosticUrl);
         await page.WaitForSelectorAsync(AccessTokenSelector);
 
-        // Extract the access token
         var accessToken = await page.InnerTextAsync(AccessTokenSelector);
         Console.WriteLine($"✅ Extracted Access Token: {accessToken}");
-        await page.GotoAsync(DashboardUrl);
+
+        await page.GotoAsync(dashboardUrl);
         return accessToken;
     }
 }
