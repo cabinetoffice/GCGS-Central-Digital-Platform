@@ -4,7 +4,7 @@ public enum CommercialToolStatus
 {
     Unknown,
     Active,
-    Closed,
+    Expired,
     Awarded,
     Upcoming
 }

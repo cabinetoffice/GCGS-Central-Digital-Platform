@@ -148,7 +148,7 @@ public class SearchResponseTests
                 Title = "Tool 2",
                 Description = "Description 2",
                 PublishedDate = DateTime.UtcNow,
-                Status = CommercialToolStatus.Closed,
+                Status = CommercialToolStatus.Expired,
                 Fees = 2000m,
                 AwardMethod = "Framework"
             }
@@ -175,7 +175,7 @@ public class CommercialToolStatusTests
     [Theory]
     [InlineData(CommercialToolStatus.Unknown)]
     [InlineData(CommercialToolStatus.Active)]
-    [InlineData(CommercialToolStatus.Closed)]
+    [InlineData(CommercialToolStatus.Expired)]
     [InlineData(CommercialToolStatus.Awarded)]
     [InlineData(CommercialToolStatus.Upcoming)]
     public void CommercialToolStatus_HasAllExpectedValues(CommercialToolStatus status)
@@ -194,7 +194,7 @@ public class CommercialToolStatusTests
     public void CommercialToolStatus_CanConvertToString()
     {
         CommercialToolStatus.Active.ToString().Should().Be("Active");
-        CommercialToolStatus.Closed.ToString().Should().Be("Closed");
+        CommercialToolStatus.Expired.ToString().Should().Be("Expired");
         CommercialToolStatus.Awarded.ToString().Should().Be("Awarded");
         CommercialToolStatus.Upcoming.ToString().Should().Be("Upcoming");
         CommercialToolStatus.Unknown.ToString().Should().Be("Unknown");

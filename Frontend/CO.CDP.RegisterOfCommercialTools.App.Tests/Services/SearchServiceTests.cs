@@ -160,7 +160,7 @@ public class SearchServiceTests
             Results = new List<SearchResultDto>
             {
                 new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "2", Title = "Closed", Status = CommercialToolStatus.Closed, Fees = 0, AwardMethod = "Open" },
+                new() { Id = "2", Title = "Expired", Status = CommercialToolStatus.Expired, Fees = 0, AwardMethod = "Open" },
                 new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, Fees = 0, AwardMethod = "Open" },
                 new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, Fees = 0, AwardMethod = "Open" }
             },
@@ -177,7 +177,7 @@ public class SearchServiceTests
 
         results.Should().HaveCount(4);
         results.ElementAt(0).Status.Should().Be(CommercialToolStatus.Active);
-        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Closed);
+        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Expired);
         results.ElementAt(2).Status.Should().Be(CommercialToolStatus.Upcoming);
         results.ElementAt(3).Status.Should().Be(CommercialToolStatus.Awarded);
     }

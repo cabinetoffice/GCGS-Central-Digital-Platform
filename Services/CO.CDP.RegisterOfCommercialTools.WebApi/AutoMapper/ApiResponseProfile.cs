@@ -30,9 +30,10 @@ public class ApiResponseProfile : Profile
         var statusLower = status?.ToLowerInvariant();
         return statusLower switch
         {
-            "active" or "planned" => CommercialToolStatus.Active,
+            "active" => CommercialToolStatus.Active,
+            "planning" or "planned" => CommercialToolStatus.Upcoming,
             "awarded" or "complete" => CommercialToolStatus.Awarded,
-            "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Closed,
+            "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Expired,
             _ => CommercialToolStatus.Unknown
         };
     }
