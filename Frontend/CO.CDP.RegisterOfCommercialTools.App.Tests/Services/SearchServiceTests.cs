@@ -54,9 +54,9 @@ public class SearchServiceTests
                     Title = "Test Framework",
                     Description = "Test Description",
                     PublishedDate = DateTime.UtcNow,
-                    SubmissionDeadline = DateTime.UtcNow.AddDays(30),
+                    SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
-                    Fees = 0.025m,
+                    Fees = 2.5m,
                     AwardMethod = "Competitive"
                 }
             },
@@ -195,7 +195,7 @@ public class SearchServiceTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 0.025m,
+                    Fees = 2.5m,
                     AwardMethod = "Open",
                     Description = "Test"
                 }
@@ -232,7 +232,7 @@ public class SearchServiceTests
                     Fees = 0,
                     AwardMethod = "Open",
                     Description = "Test",
-                    SubmissionDeadline = submissionDeadline
+                    SubmissionDeadline = submissionDeadline.ToString("dd MMMM yyyy")
                 }
             },
             TotalCount = 1,
@@ -247,6 +247,6 @@ public class SearchServiceTests
         var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(1);
-        results.First().SubmissionDeadline.Should().Be(submissionDeadline.ToShortDateString());
+        results.First().SubmissionDeadline.Should().Be("15 March 2025");
     }
 }

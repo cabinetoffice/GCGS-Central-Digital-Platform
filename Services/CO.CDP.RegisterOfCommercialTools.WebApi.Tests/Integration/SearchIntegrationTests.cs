@@ -165,7 +165,7 @@ public class SearchIntegrationTests
                 Title = "Integration Test Framework 1",
                 Description = "First integration test framework",
                 PublishedDate = DateTime.UtcNow.AddDays(-10),
-                SubmissionDeadline = DateTime.UtcNow.AddDays(30),
+                SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Active,
                 Fees = 250.00m,
                 AwardMethod = "Competitive"
@@ -176,7 +176,7 @@ public class SearchIntegrationTests
                 Title = "Integration Test Framework 2",
                 Description = "Second integration test framework",
                 PublishedDate = DateTime.UtcNow.AddDays(-5),
-                SubmissionDeadline = DateTime.UtcNow.AddDays(45),
+                SubmissionDeadline = DateTime.UtcNow.AddDays(45).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Upcoming,
                 Fees = 500.00m,
                 AwardMethod = "Direct Award"

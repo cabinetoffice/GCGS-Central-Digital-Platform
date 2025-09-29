@@ -9,7 +9,7 @@ public class SearchResultDto
     public string? Description { get; set; }
     public string? Url { get; set; }
     public DateTime? PublishedDate { get; set; }
-    public DateTime? SubmissionDeadline { get; set; }
+    public string? SubmissionDeadline { get; set; }
     public CommercialToolStatus? Status { get; set; }
     public decimal? Fees { get; set; }
     public string? AwardMethod { get; set; }

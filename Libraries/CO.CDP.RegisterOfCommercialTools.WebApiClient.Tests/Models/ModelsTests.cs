@@ -74,7 +74,7 @@ public class SearchResultDtoTests
             Title = "Test Tool",
             Description = "Test Description",
             PublishedDate = testDate,
-            SubmissionDeadline = testDate.AddDays(30),
+            SubmissionDeadline = testDate.AddDays(30).ToString("dd MMMM yyyy"),
             Status = CommercialToolStatus.Active,
             Fees = 1000m,
             AwardMethod = "Open",
@@ -85,7 +85,7 @@ public class SearchResultDtoTests
         result.Title.Should().Be("Test Tool");
         result.Description.Should().Be("Test Description");
         result.PublishedDate.Should().Be(testDate);
-        result.SubmissionDeadline.Should().Be(testDate.AddDays(30));
+        result.SubmissionDeadline.Should().Be(testDate.AddDays(30).ToString("dd MMMM yyyy"));
         result.Status.Should().Be(CommercialToolStatus.Active);
         result.Fees.Should().Be(1000m);
         result.AwardMethod.Should().Be("Open");

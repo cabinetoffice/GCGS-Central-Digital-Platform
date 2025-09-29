@@ -14,7 +14,7 @@ public class ApiResponseProfile : Profile
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Buyer != null ? src.Buyer.Name ?? "Unknown" : "Unknown"))
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => GenerateFindTenderUrl(src.Ocid)))
             .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
-            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null ? src.Tender.TenderPeriod.EndDate : null))
+            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null && src.Tender.TenderPeriod.EndDate != null ? src.Tender.TenderPeriod.EndDate.Value.ToString("dd MMMM yyyy") : "Unknown"))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
             .ForMember(dest => dest.Fees, opt => opt.MapFrom(src => GetFees(src.Tender)))
             .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Tender)))
@@ -43,19 +43,15 @@ public class ApiResponseProfile : Profile
         if (tender?.ParticipationFees == null || !tender.ParticipationFees.Any())
             return null;
 
-        // Convert to the expected ParticipationFee format and get max percentage
-        var participationFees = tender.ParticipationFees
-            .Where(f => f.RelativeValue?.Proportion.HasValue == true)
-            .Select(f => new ParticipationFee
-            {
-                RelativeValue = new RelativeValue
-                {
-                    Proportion = f.RelativeValue!.Proportion
-                }
-            })
+        var proportions = tender.ParticipationFees
+            .Where(f => f.RelativeValueProportion.HasValue)
+            .Select(f => f.RelativeValueProportion!.Value)
             .ToList();
 
-        return FeeConverter.GetMaxFeePercentage(participationFees);
+        if (!proportions.Any())
+            return null;
+
+        return proportions.Max() * 100;
     }
 
     private static string ExtractAwardMethod(CommercialToolTender? tender)

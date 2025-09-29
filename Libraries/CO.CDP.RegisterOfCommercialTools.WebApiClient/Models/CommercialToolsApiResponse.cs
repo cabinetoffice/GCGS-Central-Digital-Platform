@@ -68,7 +68,7 @@ public class CommercialToolTender
 
 public class CommercialToolParticipationFee
 {
-    public CommercialToolRelativeValue? RelativeValue { get; set; }
+    public decimal? RelativeValueProportion { get; set; }
 }
 
 public class CommercialToolRelativeValue
