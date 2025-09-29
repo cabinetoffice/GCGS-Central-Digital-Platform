@@ -66,7 +66,7 @@ public class ApiResponseProfile : Profile
                 "withoutReopeningCompetition" => "Without competition",
                 "withReopeningCompetition" => "With competition",
                 "withAndWithoutReopeningCompetition" => "With and without competition",
-                _ => tender.Techniques.FrameworkAgreement.Method
+                _ => "Unknown"
             };
         }
 
