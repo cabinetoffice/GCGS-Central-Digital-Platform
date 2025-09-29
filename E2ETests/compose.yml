@@ -11,6 +11,12 @@ services:
     working_dir: /app
     networks:
       - cdp-sirsi
+    environment:
+      TestSettings__BaseUrl: http://gateway:8090
+      TestSettings__ApiUrl: http://gateway:8082
+      TestSettings__Email:
+      TestSettings__Password:
+      TestSettings__SecretKey:
 
 networks:
   cdp-sirsi:

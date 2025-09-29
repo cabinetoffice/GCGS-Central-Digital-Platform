@@ -100,8 +100,6 @@ jobs:
       - name: Run E2E Tests
         run: make e2e-test
         env:
-          TestSettings__BaseUrl: http://gateway:8090
-          TestSettings__ApiUrl: http://gateway:8082
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
           TestSettings__Password: ${{ secrets.SIRSI_E2ETEST_PASSWORD }}
           TestSettings__SecretKey: ${{ secrets.SIRSI_E2ETEST_SECRETKEY }}
