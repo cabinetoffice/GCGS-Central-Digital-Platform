@@ -482,4 +482,66 @@ public class InteractionUtilities(IPage page)
             Assert.Fail($"Failed to upload the file (Resources/{fileName}). Error: {ex.Message}");
         }
     }
+
+    public async Task EnterDateMinusOne()
+{
+    try
+    {
+        // Get the current date and subtract one day
+        DateTime dateMinusOne = DateTime.Now.AddDays(-1);
+        int day = dateMinusOne.Day;
+        int month = dateMinusOne.Month;
+        int year = dateMinusOne.Year;
+
+        var dayInput = page.Locator("input[name='Day']");
+        var monthInput = page.Locator("input[name='Month']");
+        var yearInput = page.Locator("input[name='Year']");
+
+        // Check if the day input exists
+        if (await dayInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Day. Please ensure the input exists.");
+        }
+
+        // Check if the month input exists
+        if (await monthInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Month. Please ensure the input exists.");
+        }
+
+        // Check if the year input exists
+        if (await yearInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Year. Please ensure the input exists.");
+        }
+
+        // Fill in the Day, Month, and Year
+        await dayInput.FillAsync(day.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await monthInput.FillAsync(month.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
+
+        Console.WriteLine($"✅ Entered Date: {day}/{month}/{year} into the respective input fields.");
+    }
+    catch (PlaywrightException pe)
+    {
+        string errorMessage = $"Playwright error while entering date. Error: {pe.Message}";
+        if (pe.Message.Contains("Timeout"))
+        {
+            errorMessage =
+                $"Timeout while trying to enter date. One or more elements might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+        }
+        else if (pe.Message.ToLower().Contains("element is not visible") ||
+                 pe.Message.ToLower().Contains("element is hidden"))
+        {
+            errorMessage = $"Input fields found but they are not visible. Cannot enter date. Error: {pe.Message}";
+        }
+
+        Assert.Fail(errorMessage);
+    }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to enter date. Error: {ex.Message}");
+    }
+}
+
 }

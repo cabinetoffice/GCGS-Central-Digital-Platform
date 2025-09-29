@@ -24,18 +24,17 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Data Protection");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your data protection information - Find a Tender - GOV.UK");
-        //Step below to be updated once change/update is pushed (Should be "Start")
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I have the resources or will have the resources by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently have the resources");
         await InteractionUtilities.ClickButtonByText("Continue");
-        // await InteractionUtilities.PageTitleShouldBe(
-        //     "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
+        await InteractionUtilities.PageTitleShouldBe(
+            "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("Example test for data protection !@£$123");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
@@ -70,14 +69,13 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
             await InteractionUtilities.ClickLinkByText("Data Protection");
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your data protection information - Find a Tender - GOV.UK");
-            //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-            await InteractionUtilities.ClickRadioButtonByText("No");
+            await InteractionUtilities.ClickRadioButtonByText("No, I do not have the resources");
             await InteractionUtilities.ClickButtonByText("Continue");
-            // await InteractionUtilities.PageTitleShouldBe(
-            //     "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
+            await InteractionUtilities.PageTitleShouldBe(
+                "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
             await InteractionUtilities.EnterTextIntoTextArea("Example test for data protection !@£$123");
             await InteractionUtilities.ClickButtonByText("Continue");
             await InteractionUtilities.PageTitleShouldBe(
@@ -103,14 +101,13 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Data Protection");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your data protection information - Find a Tender - GOV.UK");
-        //Step below to be updated once change/update is pushed (Should be "Start")
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not have the resources");
         await InteractionUtilities.ClickButtonByText("Continue");
-        // await InteractionUtilities.PageTitleShouldBe(
-        //     "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
+        await InteractionUtilities.PageTitleShouldBe(
+            "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("Example test for data protection !@£$123");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
@@ -122,16 +119,16 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         // await InteractionUtilities.PageShouldContainText("No, I don't have the resources");
         await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
         await InteractionUtilities.ClickNthLinkByText("Change", 0);
-        // await InteractionUtilities.PageTitleShouldBe(
-        //     "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.PageTitleShouldBe(
+            "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I have the resources or will have the resources by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently have the resources");
         await InteractionUtilities.ClickButtonByText("Continue");
-        // await InteractionUtilities.PageTitleShouldBe(
-        //     "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
+        await InteractionUtilities.PageTitleShouldBe(
+            "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
         // await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
         await InteractionUtilities.EnterTextIntoTextArea("Updated test data protection");
         await InteractionUtilities.ClickButtonByText("Continue");
@@ -155,22 +152,21 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Data Protection");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your data protection information - Find a Tender - GOV.UK");
-        //Step below to be updated once change/update is pushed (Should be "Start")
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I have the resources or will have the resources by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you have the resources to ensure compliance with UK GDPR? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently have the resources");
         await InteractionUtilities.ClickButtonByText("Continue");
-        // await InteractionUtilities.PageTitleShouldBe(
-        //     "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
+        await InteractionUtilities.PageTitleShouldBe(
+            "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("Example test for data protection !@£$123");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(

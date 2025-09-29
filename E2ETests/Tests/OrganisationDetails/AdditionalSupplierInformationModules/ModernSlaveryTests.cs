@@ -25,7 +25,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickRadioButtonByText("Yes");
@@ -92,7 +92,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickRadioButtonByText("No");
@@ -156,7 +156,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickButtonByText("Continue");
@@ -201,7 +201,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickButtonByText("Continue");
@@ -246,7 +246,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickButtonByText("Continue");
@@ -294,7 +294,7 @@ namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModule
             await InteractionUtilities.PageTitleShouldBe(
                 "Submitting your modern slavery information - Find a Tender - GOV.UK");
             //Step below to be updated once change/update is pushed (Should be "Start")
-            await InteractionUtilities.ClickButtonByText("Continue");
+            await InteractionUtilities.ClickButtonByText("Start");
             await InteractionUtilities.PageTitleShouldBe(
                 "Are you a commercial organisation subject to Section 54 of the Modern Slavery Act 2015? - Find a Tender - GOV.UK");
             await InteractionUtilities.ClickButtonByText("Continue");
