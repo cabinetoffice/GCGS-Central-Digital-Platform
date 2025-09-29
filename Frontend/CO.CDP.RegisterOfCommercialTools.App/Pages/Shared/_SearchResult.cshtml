@@ -1,5 +1,4 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
-@using CO.CDP.RegisterOfCommercialTools.App.Models
 @using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
 
 <div class="search-result" data-result-id="@Model.Id">
@@ -32,7 +31,7 @@
             case CommercialToolStatus.Upcoming:
                 <span>Applications window opening soon</span>
                 break;
-            case CommercialToolStatus.Closed:
+            case CommercialToolStatus.Expired:
                 <span>Applications window has closed</span>
                 break;
             case CommercialToolStatus.Awarded:

@@ -79,8 +79,8 @@ public class CommercialToolsServiceTests
             Title = "IT Services Framework",
             Description = "Test procurement description",
             PublishedDate = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
-            SubmissionDeadline = new DateTime(2025, 3, 15, 23, 59, 59, DateTimeKind.Utc),
-            Fees = 0,
+            SubmissionDeadline = "15 March 2025",
+            MaximumFee = "Unknown",
             AwardMethod = "With competition",
             Status = CommercialToolStatus.Active,
             OtherContractingAuthorityCanUse = "Yes"
@@ -102,8 +102,8 @@ public class CommercialToolsServiceTests
         searchResult.Title.Should().Be("IT Services Framework");
         searchResult.Description.Should().Be("Test procurement description");
         searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
-        searchResult.SubmissionDeadline.Should().Be(new DateTime(2025, 3, 15, 23, 59, 59, DateTimeKind.Utc));
-        searchResult.Fees.Should().Be(0);
+        searchResult.SubmissionDeadline.Should().Be("15 March 2025");
+        searchResult.MaximumFee.Should().Be("Unknown");
         searchResult.AwardMethod.Should().Be("With competition");
         searchResult.Status.Should().Be(CommercialToolStatus.Active);
         searchResult.OtherContractingAuthorityCanUse.Should().Be("Yes");
@@ -145,9 +145,16 @@ public class CommercialToolsServiceTests
             "message": "Success",
             "data": [
                 {
-                    "tenderId": "test-id",
-                    "tenderIdentifier": "ocds-test",
-                    "title": "Test Tender"
+                    "id": "test-id",
+                    "ocid": "ocds-test",
+                    "buyer": {
+                        "name": "Test Buyer"
+                    },
+                    "tender": {
+                        "tenderId": "test-tender-id",
+                        "tenderIdentifier": "ocds-test",
+                        "title": "Test Tender"
+                    }
                 }
             ],
             "paging": {
@@ -156,7 +163,7 @@ public class CommercialToolsServiceTests
         }
         """;
 
-        var expectedResult = new SearchResultDto { Id = "ocds-test", Title = "Test Tender" };
+        var expectedResult = new SearchResultDto { Id = "test-id", Title = "Test Tender" };
         _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
             .Returns(expectedResult);
 
@@ -170,9 +177,9 @@ public class CommercialToolsServiceTests
         resultList.First().Should().Be(expectedResult);
 
         _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(
-            item => item.TenderId == "test-id" &&
-                    item.TenderIdentifier == "ocds-test" &&
-                    item.Title == "Test Tender")), Times.Once);
+            item => item.Id == "test-id" &&
+                    item.Ocid == "ocds-test" &&
+                    item.Tender != null && item.Tender.Title == "Test Tender")), Times.Once);
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)

@@ -24,7 +24,7 @@ public class CommercialToolsApiClientTests
                     Description = "Test Description",
                     PublishedDate = DateTime.UtcNow,
                     Status = CommercialToolStatus.Active,
-                    Fees = 1000m,
+                    MaximumFee = "10%",
                     AwardMethod = "Open"
                 }
             },
