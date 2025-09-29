@@ -5,7 +5,7 @@ namespace E2ETests.Utilities;
 public static class AuthUtility
 {
     // XPath: grab the token for the "Authority Access Token" row only
-    private const string AccessTokenSelector = "div#aat"; // Selector for access token
+    private const string AccessTokenSelector = "#aat"; // Selector for access token
 
     private static string Join(string baseUrl, string path)
         => $"{baseUrl.TrimEnd('/')}/{path.TrimStart('/')}";
