@@ -49,4 +49,7 @@ locals {
 
   has_import_instance  = true
   import_instance_tags = merge(var.tags, { Name = "fts-db-import" })
+
+  fts_instance_count = contains(["development", "staging"], var.environment) ? 1 : 2
+  cfs_instance_count = local.fts_instance_count
 }

@@ -11,7 +11,7 @@ module "cluster_fts" {
   deletion_protection          = var.is_production
   engine_version               = var.aurora_mysql_engine_version
   family                       = var.aurora_mysql_family
-  instance_count               = contains(["development"], var.environment) ? 1 : 2
+  instance_count               = local.fts_instance_count
   instance_type                = var.aurora_mysql_instance_type
   monitoring_interval          = 30
   monitoring_role_arn          = var.role_rds_cloudwatch_arn
