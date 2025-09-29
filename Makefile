@@ -164,5 +164,5 @@ render-compose-override-force: ## Force overwrite compose override from template
 
 e2e-test: up ## Build & run e2e tests in Docker
 	docker network ls
-	@cd E2ETests && docker compose up --build
+	@cd E2ETests && docker compose up --build --abort-on-container-exit --exit-code-from e2e-tests
 .PHONY: make-e2e
