@@ -150,7 +150,7 @@ localization-import-from-csv:
 
 render-compose-override: ## Render compose override from template and inject secrets (WIP)
 	@if [ ! -f compose.override.yml ]; then \
-		cp compose.override.yml.template compose.override.yml; \
+		envsubst < compose.override.yml.template > compose.override.yml; \
 		echo "compose.override.yml created from template."; \
 	else \
 		echo "compose.override.yml already exists. Skipping."; \
