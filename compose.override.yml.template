@@ -47,7 +47,6 @@ services:
       OneLogin__PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
       CompaniesHouse__Url: "https://api.company-information.service.gov.uk"
       CompaniesHouse__User: "${SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER}"
-      CompaniesHouse__Password: "${SIRSI_ORGANISATION_APP_COMPANIESHOUSE_PASSWORD}"
       CharityCommission__Url: "https://api.charitycommission.gov.uk/register/api/"
       CharityCommission__SubscriptionKey: "${SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY}"
     deploy:
