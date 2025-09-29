@@ -12,6 +12,7 @@ module "cluster_cfs" {
   engine_version               = var.aurora_mysql_engine_version
   family                       = var.aurora_mysql_family
   instance_type                = var.aurora_mysql_instance_type
+  instance_count               = local.cfs_instance_count
   monitoring_interval          = 30
   monitoring_role_arn          = var.role_rds_cloudwatch_arn
   performance_insights_enabled = true
