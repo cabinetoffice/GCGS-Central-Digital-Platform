@@ -76,7 +76,7 @@ public class SearchResultDtoTests
             PublishedDate = testDate,
             SubmissionDeadline = testDate.AddDays(30).ToString("dd MMMM yyyy"),
             Status = CommercialToolStatus.Active,
-            Fees = 1000m,
+            MaximumFee = "10%",
             AwardMethod = "Open",
             OtherContractingAuthorityCanUse = "Yes"
         };
@@ -87,7 +87,7 @@ public class SearchResultDtoTests
         result.PublishedDate.Should().Be(testDate);
         result.SubmissionDeadline.Should().Be(testDate.AddDays(30).ToString("dd MMMM yyyy"));
         result.Status.Should().Be(CommercialToolStatus.Active);
-        result.Fees.Should().Be(1000m);
+        result.MaximumFee.Should().Be("10%");
         result.AwardMethod.Should().Be("Open");
         result.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
@@ -102,14 +102,14 @@ public class SearchResultDtoTests
             Description = "Test Description",
             PublishedDate = DateTime.UtcNow,
             Status = CommercialToolStatus.Active,
-            Fees = 0m,
+            MaximumFee = "Unknown",
             AwardMethod = "Open",
-            SubmissionDeadline = null,
-            OtherContractingAuthorityCanUse = null
+            SubmissionDeadline = "Unknown",
+            OtherContractingAuthorityCanUse = "Unknown"
         };
 
-        result.SubmissionDeadline.Should().BeNull();
-        result.OtherContractingAuthorityCanUse.Should().BeNull();
+        result.SubmissionDeadline.Should().Be("Unknown");
+        result.OtherContractingAuthorityCanUse.Should().Be("Unknown");
     }
 }
 
@@ -139,7 +139,7 @@ public class SearchResponseTests
                 Description = "Description 1",
                 PublishedDate = DateTime.UtcNow,
                 Status = CommercialToolStatus.Active,
-                Fees = 1000m,
+                MaximumFee = "10%",
                 AwardMethod = "Open"
             },
             new SearchResultDto
@@ -149,7 +149,7 @@ public class SearchResponseTests
                 Description = "Description 2",
                 PublishedDate = DateTime.UtcNow,
                 Status = CommercialToolStatus.Expired,
-                Fees = 2000m,
+                MaximumFee = "20%",
                 AwardMethod = "Framework"
             }
         };

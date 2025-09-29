@@ -167,7 +167,7 @@ public class SearchIntegrationTests
                 PublishedDate = DateTime.UtcNow.AddDays(-10),
                 SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Active,
-                Fees = 250.00m,
+                MaximumFee = "2.5%",
                 AwardMethod = "Competitive"
             },
             new()
@@ -178,7 +178,7 @@ public class SearchIntegrationTests
                 PublishedDate = DateTime.UtcNow.AddDays(-5),
                 SubmissionDeadline = DateTime.UtcNow.AddDays(45).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Upcoming,
-                Fees = 500.00m,
+                MaximumFee = "5%",
                 AwardMethod = "Direct Award"
             }
         };

@@ -56,7 +56,7 @@ public class SearchServiceTests
                     PublishedDate = DateTime.UtcNow,
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
-                    Fees = 2.5m,
+                    MaximumFee = "2.5%",
                     AwardMethod = "Competitive"
                 }
             },
@@ -159,10 +159,10 @@ public class SearchServiceTests
         {
             Results = new List<SearchResultDto>
             {
-                new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "2", Title = "Expired", Status = CommercialToolStatus.Expired, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, Fees = 0, AwardMethod = "Open" }
+                new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "2", Title = "Expired", Status = CommercialToolStatus.Expired, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, MaximumFee = "Unknown", AwardMethod = "Open" }
             },
             TotalCount = 4,
             PageNumber = 1,
@@ -195,7 +195,7 @@ public class SearchServiceTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 2.5m,
+                    MaximumFee = "2.5%",
                     AwardMethod = "Open",
                     Description = "Test"
                 }
@@ -229,7 +229,7 @@ public class SearchServiceTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 0,
+                    MaximumFee = "Unknown",
                     AwardMethod = "Open",
                     Description = "Test",
                     SubmissionDeadline = submissionDeadline.ToString("dd MMMM yyyy")

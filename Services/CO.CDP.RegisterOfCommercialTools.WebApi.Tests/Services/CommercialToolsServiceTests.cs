@@ -80,7 +80,7 @@ public class CommercialToolsServiceTests
             Description = "Test procurement description",
             PublishedDate = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
             SubmissionDeadline = "15 March 2025",
-            Fees = 0,
+            MaximumFee = "Unknown",
             AwardMethod = "With competition",
             Status = CommercialToolStatus.Active,
             OtherContractingAuthorityCanUse = "Yes"
@@ -103,7 +103,7 @@ public class CommercialToolsServiceTests
         searchResult.Description.Should().Be("Test procurement description");
         searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
         searchResult.SubmissionDeadline.Should().Be("15 March 2025");
-        searchResult.Fees.Should().Be(0);
+        searchResult.MaximumFee.Should().Be("Unknown");
         searchResult.AwardMethod.Should().Be("With competition");
         searchResult.Status.Should().Be(CommercialToolStatus.Active);
         searchResult.OtherContractingAuthorityCanUse.Should().Be("Yes");

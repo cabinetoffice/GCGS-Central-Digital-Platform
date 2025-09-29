@@ -4,18 +4,18 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 public class SearchResultDto
 {
-    public string? Id { get; set; }
-    public string? Title { get; set; }
-    public string? Description { get; set; }
+    public string Id { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public string? Url { get; set; }
     public DateTime? PublishedDate { get; set; }
-    public string? SubmissionDeadline { get; set; }
-    public CommercialToolStatus? Status { get; set; }
-    public decimal? Fees { get; set; }
-    public string? AwardMethod { get; set; }
-    public string? OtherContractingAuthorityCanUse { get; set; }
-    public string? ContractDates { get; set; }
-    public string? CommercialTool { get; set; }
+    public string SubmissionDeadline { get; set; } = string.Empty;
+    public CommercialToolStatus Status { get; set; }
+    public string MaximumFee { get; set; } = string.Empty;
+    public string AwardMethod { get; set; } = string.Empty;
+    public string OtherContractingAuthorityCanUse { get; set; } = string.Empty;
+    public string ContractDates { get; set; } = string.Empty;
+    public string CommercialTool { get; set; } = string.Empty;
     public TechniquesInfo? Techniques { get; set; }
     public Dictionary<string, string>? AdditionalProperties { get; set; }
 }

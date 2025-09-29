@@ -16,7 +16,7 @@ public class ApiResponseProfile : Profile
             .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
             .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null && src.Tender.TenderPeriod.EndDate != null ? src.Tender.TenderPeriod.EndDate.Value.ToString("dd MMMM yyyy") : "Unknown"))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
-            .ForMember(dest => dest.Fees, opt => opt.MapFrom(src => GetFees(src.Tender)))
+            .ForMember(dest => dest.MaximumFee, opt => opt.MapFrom(src => GetMaximumFee(src.Tender)))
             .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Tender)))
             .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src.Tender)))
             .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src.Tender)))
@@ -38,10 +38,10 @@ public class ApiResponseProfile : Profile
         };
     }
 
-    private static decimal? GetFees(CommercialToolTender? tender)
+    private static string GetMaximumFee(CommercialToolTender? tender)
     {
         if (tender?.ParticipationFees == null || !tender.ParticipationFees.Any())
-            return null;
+            return "Unknown";
 
         var proportions = tender.ParticipationFees
             .Where(f => f.RelativeValueProportion.HasValue)
@@ -49,9 +49,10 @@ public class ApiResponseProfile : Profile
             .ToList();
 
         if (!proportions.Any())
-            return null;
+            return "Unknown";
 
-        return proportions.Max() * 100;
+        var maxPercentage = proportions.Max() * 100;
+        return $"{maxPercentage:0.##}%";
     }
 
     private static string ExtractAwardMethod(CommercialToolTender? tender)

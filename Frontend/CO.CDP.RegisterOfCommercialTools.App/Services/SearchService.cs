@@ -36,16 +36,16 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
     {
         return new SearchResult
         (
-            Id: dto.Id ?? "Unknown",
-            Title: dto.Title ?? "Unknown",
-            Caption: dto.Description ?? "Unknown",
-            CommercialTool: dto.CommercialTool ?? "Unknown",
-            Status: dto.Status ?? CommercialToolStatus.Unknown,
-            MaximumFee: dto.Fees.HasValue && dto.Fees > 0 ? $"{dto.Fees.Value:0.##}%" : "Unknown",
-            OtherContractingAuthorityCanUse: dto.OtherContractingAuthorityCanUse ?? "Unknown",
-            SubmissionDeadline: dto.SubmissionDeadline ?? "Unknown",
-            ContractDates: dto.ContractDates ?? "Unknown",
-            AwardMethod: dto.AwardMethod ?? "Unknown",
+            Id: dto.Id,
+            Title: dto.Title,
+            Caption: dto.Description,
+            CommercialTool: dto.CommercialTool,
+            Status: dto.Status,
+            MaximumFee: dto.MaximumFee,
+            OtherContractingAuthorityCanUse: dto.OtherContractingAuthorityCanUse,
+            SubmissionDeadline: dto.SubmissionDeadline,
+            ContractDates: dto.ContractDates,
+            AwardMethod: dto.AwardMethod,
             Url: dto.Url
         );
     }
