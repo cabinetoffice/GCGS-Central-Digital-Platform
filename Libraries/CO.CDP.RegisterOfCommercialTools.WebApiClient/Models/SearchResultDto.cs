@@ -7,6 +7,7 @@ public class SearchResultDto
     public string? Id { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
+    public string? Url { get; set; }
     public DateTime? PublishedDate { get; set; }
     public DateTime? SubmissionDeadline { get; set; }
     public CommercialToolStatus? Status { get; set; }

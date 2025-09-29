@@ -12,6 +12,7 @@ public class ApiResponseProfile : Profile
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Tender != null ? src.Tender.Title : "Unknown"))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Buyer != null ? src.Buyer.Name ?? "Unknown" : "Unknown"))
+            .ForMember(dest => dest.Url, opt => opt.MapFrom(src => GenerateFindTenderUrl(src.Ocid)))
             .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
             .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null ? src.Tender.TenderPeriod.EndDate : null))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
@@ -182,8 +183,8 @@ public class ApiResponseProfile : Profile
         if (!string.IsNullOrEmpty(src.Tender?.TenderId))
             properties["tenderId"] = src.Tender.TenderId;
 
-        if (!string.IsNullOrEmpty(src.Tender?.TenderIdentifier))
-            properties["procurementId"] = src.Tender.TenderIdentifier;
+        if (!string.IsNullOrEmpty(src.Ocid))
+            properties["procurementId"] = src.Ocid;
 
         if (!string.IsNullOrEmpty(src.Buyer?.Name))
             properties["buyerName"] = src.Buyer.Name;
@@ -207,5 +208,12 @@ public class ApiResponseProfile : Profile
         }
 
         return properties.Any() ? properties : null;
+    }
+
+    private static string? GenerateFindTenderUrl(string? ocid)
+    {
+        return !string.IsNullOrEmpty(ocid)
+            ? $"https://www.find-tender.service.gov.uk/procurement/{ocid}"
+            : null;
     }
 }

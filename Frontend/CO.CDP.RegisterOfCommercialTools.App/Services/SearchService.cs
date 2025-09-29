@@ -46,7 +46,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             SubmissionDeadline: dto.SubmissionDeadline?.ToShortDateString() ?? "Unknown",
             ContractDates: dto.ContractDates ?? "Unknown",
             AwardMethod: dto.AwardMethod ?? "Unknown",
-            Url: null
+            Url: dto.Url
         );
     }
 }

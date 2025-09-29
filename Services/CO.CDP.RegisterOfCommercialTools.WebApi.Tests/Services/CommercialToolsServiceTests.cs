@@ -163,7 +163,7 @@ public class CommercialToolsServiceTests
         }
         """;
 
-        var expectedResult = new SearchResultDto { Id = "ocds-test", Title = "Test Tender" };
+        var expectedResult = new SearchResultDto { Id = "test-id", Title = "Test Tender" };
         _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
             .Returns(expectedResult);
 
