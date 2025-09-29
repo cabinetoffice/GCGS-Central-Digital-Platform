@@ -75,13 +75,13 @@ public class ApiResponseProfile : Profile
 
     private static string GetOtherContractingAuthorityCanUse(CommercialToolTender? tender)
     {
-        var isOpenFramework = tender?.Techniques?.FrameworkAgreement?.IsOpenFrameworkScheme;
+        var frameworkType = tender?.Techniques?.FrameworkAgreement?.Type?.ToLowerInvariant();
 
-        return isOpenFramework switch
+        return frameworkType switch
         {
-            true => "Yes",
-            false => "No",
-            null => "Unknown"
+            "open" => "Yes",
+            "closed" => "No",
+            _ => "Unknown"
         };
     }
 

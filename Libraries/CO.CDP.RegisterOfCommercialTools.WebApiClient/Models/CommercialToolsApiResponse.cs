@@ -93,6 +93,7 @@ public class CommercialToolTechniques
 public class CommercialToolFrameworkAgreement
 {
     public string? Method { get; set; }
+    public string? Type { get; set; }
     public bool? IsOpenFrameworkScheme { get; set; }
     public DateTime? PeriodStartDate { get; set; }
     public DateTime? PeriodEndDate { get; set; }
