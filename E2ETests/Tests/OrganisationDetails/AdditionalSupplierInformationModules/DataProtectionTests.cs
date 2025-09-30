@@ -51,7 +51,8 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
                 "Check your answers - Find a Tender - GOV.UK");
-        await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");        await InteractionUtilities.PageShouldContainText("cat");
+        await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
+        await InteractionUtilities.PageShouldContainText("cat");
         await InteractionUtilities.PageShouldContainText(".jpeg");
 
 
