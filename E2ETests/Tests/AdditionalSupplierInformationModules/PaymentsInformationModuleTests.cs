@@ -1,10 +1,9 @@
 using E2ETests.Utilities;
-using E2ETests.OrganisationDetails;
 
-namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModules;
+namespace E2ETests.Tests.AdditionalSupplierInformationModules;
 
 [TestFixture]
-public class PaymentsInformationModuleTests : OrganisationDetailsBaseTest
+public class PaymentsInformationModuleTests : PaymentsInformationModuleBaseTest
 {
     private InteractionUtilities InteractionUtilities;
 

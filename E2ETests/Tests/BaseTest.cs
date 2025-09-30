@@ -1,17 +1,18 @@
 using E2ETests.Pages;
 using E2ETests.Utilities;
 using Microsoft.Playwright;
+using System.Threading;
 
 namespace E2ETests;
 
 public class BaseTest
 {
-    protected IPlaywright _playwright;
-    protected IBrowser _browser;
     protected IBrowserContext _context;
     protected IPage _page;
     protected LoginPage _loginPage;
     protected static string? _accessToken; // Store the token globally
+
+    private static readonly SemaphoreSlim _tokenLock = new(1, 1);
 
     // Retrieve configuration values dynamically
     protected readonly string _baseUrl = ConfigUtility.GetBaseUrl();
@@ -23,27 +24,23 @@ public class BaseTest
     private readonly string _superAdminPassword = ConfigUtility.GetTestSupportAdminPassword();
     private readonly string _superAdminSecretKey = ConfigUtility.GetTestSupportAdminSecretKey();
 
-    [SetUp]
-    public async Task Setup()
+[SetUp]
+public async Task Setup()
+{
+    await PlaywrightHost.EnsureAsync();                 // shared browser
+    _context = await PlaywrightHost.Browser!.NewContextAsync(); // isolated per test
+    _page = await _context.NewPageAsync();
+
+    // Start Playwright tracing for this test (screenshots & snapshots help debugging)
+    await _context.Tracing.StartAsync(new TracingStartOptions
     {
-        _playwright = await Playwright.CreateAsync();
-        _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = ConfigUtility.IsHeadless()
-        });
+        Screenshots = true,
+        Snapshots = true,
+        Sources = true
+    });
 
-        _context = await _browser.NewContextAsync();
-        _page = await _context.NewPageAsync();
-
-        await _context.Tracing.StartAsync(new TracingStartOptions
-        {
-            Screenshots = true,
-            Snapshots = true,
-            Sources = true
-        });
-
-        await Login();
-    }
+    await Login();
+}
 
     protected async Task Login(bool isSuperAdminUser = false)
     {
@@ -56,11 +53,22 @@ public class BaseTest
             isSuperAdminUser ? _superAdminPassword : _testPassword,
             isSuperAdminUser ? _superAdminSecretKey : _secretKey);
 
-        // Extract the access token ONCE
+        // Extract the access token ONCE (thread-safe for parallel runs)
         if (_accessToken == null)
         {
-            _accessToken = await AuthUtility.GetAccessToken(_page);
-            Console.WriteLine($"🔑 Stored Access Token: {_accessToken}");
+            await _tokenLock.WaitAsync();
+            try
+            {
+                if (_accessToken == null) // double-check inside the lock
+                {
+                    _accessToken = await AuthUtility.GetAccessToken(_page);
+                    Console.WriteLine($"🔑 Stored Access Token: {_accessToken}");
+                }
+            }
+            finally
+            {
+                _tokenLock.Release();
+            }
         }
     }
 
@@ -105,8 +113,7 @@ public class BaseTest
             await _context.Tracing.StopAsync();
         }
 
-        await _browser.CloseAsync();
-        _playwright.Dispose();
+            await _context.CloseAsync(); // close only the context
     }
 
     // Provide the stored access token for tests that need API requests
