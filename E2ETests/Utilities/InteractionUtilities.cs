@@ -482,4 +482,153 @@ public class InteractionUtilities(IPage page)
             Assert.Fail($"Failed to upload the file (Resources/{fileName}). Error: {ex.Message}");
         }
     }
+
+    public async Task EnterDateMinusOne()
+{
+    try
+    {
+        // Get the current date and subtract one day
+        DateTime dateMinusOne = DateTime.Now.AddDays(-1);
+        int day = dateMinusOne.Day;
+        int month = dateMinusOne.Month;
+        int year = dateMinusOne.Year;
+
+        var dayInput = page.Locator("input[name='Day']");
+        var monthInput = page.Locator("input[name='Month']");
+        var yearInput = page.Locator("input[name='Year']");
+
+        // Check if the day input exists
+        if (await dayInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Day. Please ensure the input exists.");
+        }
+
+        // Check if the month input exists
+        if (await monthInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Month. Please ensure the input exists.");
+        }
+
+        // Check if the year input exists
+        if (await yearInput.CountAsync() == 0)
+        {
+            Assert.Fail("No input element found for Year. Please ensure the input exists.");
+        }
+
+        // Fill in the Day, Month, and Year
+        await dayInput.FillAsync(day.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await monthInput.FillAsync(month.ToString(), new LocatorFillOptions { Timeout = 10000 });
+        await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
+
+        Console.WriteLine($"✅ Entered Date: {day}/{month}/{year} into the respective input fields.");
+    }
+    catch (PlaywrightException pe)
+    {
+        string errorMessage = $"Playwright error while entering date. Error: {pe.Message}";
+        if (pe.Message.Contains("Timeout"))
+        {
+            errorMessage =
+                $"Timeout while trying to enter date. One or more elements might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+        }
+        else if (pe.Message.ToLower().Contains("element is not visible") ||
+                 pe.Message.ToLower().Contains("element is hidden"))
+        {
+            errorMessage = $"Input fields found but they are not visible. Cannot enter date. Error: {pe.Message}";
+        }
+
+        Assert.Fail(errorMessage);
+    }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to enter date. Error: {ex.Message}");
+    }
+}
+
+     public async Task EnterYear(int year)
+    {
+        try
+        {
+            var yearInput = page.Locator("input[name='Year']");
+
+            // Check if the year input exists
+            if (await yearInput.CountAsync() == 0)
+            {
+                Assert.Fail("No input element found for Year. Please ensure the input exists.");
+            }
+
+            // Fill in the Year
+            await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
+
+            Console.WriteLine($"✅ Entered Year: {year} into the respective input field.");
+        }
+        catch (PlaywrightException pe)
+        {
+            string errorMessage = $"Playwright error while entering year '{year}'. Error: {pe.Message}";
+            if (pe.Message.Contains("Timeout"))
+            {
+                errorMessage =
+                    $"Timeout while trying to enter year '{year}'. The element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+            }
+            else if (pe.Message.ToLower().Contains("element is not visible") ||
+                     pe.Message.ToLower().Contains("element is hidden"))
+            {
+                errorMessage =
+                    $"Input field found but it is not visible. Cannot enter year '{year}'. Error: {pe.Message}";
+            }
+
+            Assert.Fail(errorMessage);
+        }
+        catch (System.Exception ex)
+        {
+            Assert.Fail($"Failed to enter year '{year}'. Error: {ex.Message}");
+        }
+    }
+    public async Task EnterTextIntoInputField(string fieldName, string text)
+    {
+        try
+        {
+            // Use the field name to locate the input
+            var inputField = page.Locator($"input[name=\"{fieldName}\"]");
+
+            int count = await inputField.CountAsync();
+
+            if (count == 0)
+            {
+                Assert.Fail($"No input element found with the name '{fieldName}'. Please ensure the input exists.");
+            }
+
+            if (count > 1)
+            {
+                Assert.Fail(
+                    $"Expected a unique input field with the name '{fieldName}', but found {count} input elements. Please ensure only one input exists or use a more specific selector.");
+            }
+
+            await inputField.FillAsync(text, new LocatorFillOptions { Timeout = 10000 });
+
+            Console.WriteLine($"✅ Entered text '{text}' into the input field with name '{fieldName}'.");
+        }
+        catch (PlaywrightException pe)
+        {
+            string errorMessage =
+                $"Playwright error while entering text '{text}' into the input field with name '{fieldName}'. Error: {pe.Message}";
+            if (pe.Message.Contains("Timeout"))
+            {
+                errorMessage =
+                    $"Timeout while trying to enter text '{text}' into the input field with name '{fieldName}'. Element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+            }
+            else if (pe.Message.ToLower().Contains("element is not visible") ||
+                     pe.Message.ToLower().Contains("element is hidden"))
+            {
+                errorMessage =
+                    $"Input field found but it is not visible. Cannot enter text '{text}' into the input field with name '{fieldName}'. Error: {pe.Message}";
+            }
+
+            Assert.Fail(errorMessage);
+        }
+        catch (System.Exception ex)
+        {
+            Assert.Fail($"Failed to enter text '{text}' into the input field with name '{fieldName}'. Error: {ex.Message}");
+        }
+    }
+
 }

@@ -23,7 +23,7 @@ public class SteelTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Complete supplier information");
         await InteractionUtilities.ClickLinkByText("Steel module");
         await InteractionUtilities.PageTitleShouldBe("Submitting your steel information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe("Supply chain management in steel procurement - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("I love steel");
         await InteractionUtilities.ClickButtonByText("Continue");
@@ -51,7 +51,7 @@ public class SteelTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Complete supplier information");
         await InteractionUtilities.ClickLinkByText("Steel module");
         await InteractionUtilities.PageTitleShouldBe("Submitting your steel information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe("Supply chain management in steel procurement - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("I love steel");
         await InteractionUtilities.ClickButtonByText("Continue");

@@ -24,14 +24,14 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
@@ -39,15 +39,15 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(01, 06, 2017);
+        await InteractionUtilities.EnterDate(01, 06, 2035);
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
@@ -55,7 +55,7 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(02, 07, 2018);
+        await InteractionUtilities.EnterDate(02, 07, 2040);
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -70,10 +70,10 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -88,18 +88,18 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("I do not currently meet the requirements, but will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -114,22 +114,22 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("I do not currently meet the requirements, but will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("I do not currently meet the requirements, but will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -144,18 +144,18 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
@@ -175,22 +175,22 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.PageShouldContainText("Month must be a valid number");
         await InteractionUtilities.PageShouldContainText("Year must be a valid number");
         await InteractionUtilities.PageShouldContainText("Date must be a real date");
-        await InteractionUtilities.EnterDatePlusOne();
+        await InteractionUtilities.EnterDateMinusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
-        await InteractionUtilities.PageShouldContainText("Date must be today or in the past");
-        await InteractionUtilities.EnterDate(23, 8, 2012);
+        await InteractionUtilities.PageShouldContainText("Date must be in the future");
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageShouldContainText("Select an option");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
@@ -210,10 +210,10 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.PageShouldContainText("Month must be a valid number");
         await InteractionUtilities.PageShouldContainText("Year must be a valid number");
         await InteractionUtilities.PageShouldContainText("Date must be a real date");
-        await InteractionUtilities.EnterDatePlusOne();
+        await InteractionUtilities.EnterDateMinusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
-        await InteractionUtilities.PageShouldContainText("Date must be today or in the past");
-        await InteractionUtilities.EnterDate(21, 3, 2009);
+        await InteractionUtilities.PageShouldContainText("Date must be in the future");
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -229,14 +229,14 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Cyber Essentials certification scheme");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your Cyber Essentials certification scheme information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
@@ -244,15 +244,15 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(01, 06, 2017);
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
@@ -260,7 +260,7 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(02, 07, 2018);
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -288,22 +288,22 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText2("Back");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickLinkByText2("Back");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("I do not currently meet the requirements, but will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
@@ -313,7 +313,7 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText2("Back");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
@@ -321,29 +321,29 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(22, 09, 2005);
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("No, I do not meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickLinkByText2("Back");
         await InteractionUtilities.PageTitleShouldBe(
             "Do you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("Yes, I meet the requirements or will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("No");
+        await InteractionUtilities.ClickRadioButtonByText("I do not currently meet the requirements, but will meet them by contract award");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickLinkByText2("Back");
         await InteractionUtilities.PageTitleShouldBe(
             "When will you meet the Cyber Essentials Plus certification requirements? - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickRadioButtonByText("Yes");
+        await InteractionUtilities.ClickRadioButtonByText("I currently meet the requirements");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Upload evidence of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
@@ -351,7 +351,7 @@ public class CyberEssentialsTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Enter the expiry date of your Cyber Essentials Plus certification (or equivalent) - Find a Tender - GOV.UK");
-        await InteractionUtilities.EnterDate(2, 05, 2003);
+        await InteractionUtilities.EnterDatePlusOne();
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
