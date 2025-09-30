@@ -43,13 +43,15 @@
 <script src="/js/search.js" nonce-csp></script>
 <script src="/js/hierarchical-code-selector.js" nonce-csp></script>
 
-<govuk-breadcrumbs>
-    <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
-    <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
-</govuk-breadcrumbs>
+@section BeforeContent {
+    <govuk-breadcrumbs>
+        <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
+        <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
+    </govuk-breadcrumbs>
 
-<govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
-</govuk-inset-text>
+    <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
+    </govuk-inset-text>
+}
 
     <div class="govuk-grid-row">
         @if (!ModelState.IsValid)
