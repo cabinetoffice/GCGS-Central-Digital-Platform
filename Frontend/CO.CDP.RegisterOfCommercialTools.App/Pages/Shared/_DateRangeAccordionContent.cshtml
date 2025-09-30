@@ -24,18 +24,6 @@
         Year = ViewData.ModelState["start_to_year"]?.Errors.FirstOrDefault()?.ErrorMessage
     };
 
-    var contractEndDateFromErrors = new {
-        Day = ViewData.ModelState["end_from_day"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["end_from_month"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["end_from_year"]?.Errors.FirstOrDefault()?.ErrorMessage
-    };
-
-    var contractEndDateToErrors = new {
-        Day = ViewData.ModelState["end_to_day"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Month = ViewData.ModelState["end_to_month"]?.Errors.FirstOrDefault()?.ErrorMessage,
-        Year = ViewData.ModelState["end_to_year"]?.Errors.FirstOrDefault()?.ErrorMessage
-    };
-
     bool HasDateErrors(dynamic errors) => !string.IsNullOrEmpty(errors.Day) || !string.IsNullOrEmpty(errors.Month) || !string.IsNullOrEmpty(errors.Year);
 
     string GetFirstError(dynamic errors) => errors.Day ?? errors.Month ?? errors.Year ?? "";
@@ -46,7 +34,7 @@
         (searches submission deadline, contract start/end date, open framework end date and start/end date of the
         DM)</p>
 
-    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4"
+    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-2"
              data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text govuk-!-font-size-14">
@@ -112,13 +100,10 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="submission-deadline-to-hint @(HasDateErrors(submissionDeadlineToErrors) ? "submission-deadline-to-error" : "")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="@(HasDateErrors(submissionDeadlineToErrors) ? "submission-deadline-to-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         To
                     </legend>
-                    <div id="submission-deadline-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        For example, 25 05 2025
-                    </div>
                     @if (HasDateErrors(submissionDeadlineToErrors))
                     {
                         <p id="submission-deadline-to-error" class="govuk-error-message">
@@ -171,7 +156,7 @@
         </div>
     </details>
 
-    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4"
+    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-2"
              data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text govuk-!-font-size-14">
@@ -237,13 +222,10 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="contract-start-date-to-hint @(HasDateErrors(contractStartDateToErrors) ? "contract-start-date-to-error" : "")">
+                <fieldset class="govuk-fieldset" role="group" aria-describedby="@(HasDateErrors(contractStartDateToErrors) ? "contract-start-date-to-error" : "")">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         To
                     </legend>
-                    <div id="contract-start-date-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        For example, 25 05 2025
-                    </div>
                     @if (HasDateErrors(contractStartDateToErrors))
                     {
                         <p id="contract-start-date-to-error" class="govuk-error-message">
