@@ -32,7 +32,18 @@ public class BaseTest
             Headless = ConfigUtility.IsHeadless()
         });
 
-        _context = await _browser.NewContextAsync();
+        _context = await _browser.NewContextAsync(new()
+        {
+            TracesDir = "Traces" // where to save traces
+        });
+
+        await _context.Tracing.StartAsync(new()
+        {
+            Screenshots = true,
+            Snapshots = true,
+            Sources = true
+        });
+
         _page = await _context.NewPageAsync();
 
         await Login();
@@ -65,6 +76,39 @@ public class BaseTest
     [TearDown]
     public async Task TearDown()
     {
+        // Take screenshot if the test failed
+        var result = TestContext.CurrentContext.Result.Outcome.Status;
+        if (result == NUnit.Framework.Interfaces.TestStatus.Failed)
+        {
+            var screenshotsDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Screenshots");
+            Directory.CreateDirectory(screenshotsDir);
+
+            var filePath = Path.Combine(screenshotsDir, $"{TestContext.CurrentContext.Test.Name}.png");
+
+            await _page.ScreenshotAsync(new PageScreenshotOptions
+            {
+                Path = filePath,
+                FullPage = true
+            });
+
+            TestContext.AddTestAttachment(filePath, "Screenshot on failure");
+            Console.WriteLine($"📸 Screenshot saved: {filePath}");
+        }
+
+        // Add traces if the test failed
+        if (result == NUnit.Framework.Interfaces.TestStatus.Failed)
+        {
+            var tracePath = Path.Combine("Traces", $"{TestContext.CurrentContext.Test.Name}.zip");
+            Directory.CreateDirectory("Traces");
+
+            await _context.Tracing.StopAsync(new() { Path = tracePath });
+            TestContext.AddTestAttachment(tracePath, "Playwright trace");
+        }
+        else
+        {
+            await _context.Tracing.StopAsync();
+        }
+
         await _browser.CloseAsync();
         _playwright.Dispose();
     }
