@@ -175,7 +175,7 @@
              data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text govuk-!-font-size-14">
-                Contract start date
+                Commercial tool dates
             </span>
         </summary>
         <div class="govuk-details__text govuk-!-padding-0 no-border">
@@ -288,131 +288,6 @@
                                        name="start_to_year"
                                        type="text" inputmode="numeric"
                                        value="@(Model.ContractStartDateTo?.Year)">
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-    </details>
-
-    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4"
-             data-module="govuk-details">
-        <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text govuk-!-font-size-14">
-                Contract end date
-            </span>
-        </summary>
-        <div class="govuk-details__text govuk-!-padding-0 no-border">
-            <div class="govuk-form-group @(HasDateErrors(contractEndDateFromErrors) ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
-                <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group" aria-describedby="contract-end-date-from-hint @(HasDateErrors(contractEndDateFromErrors) ? "contract-end-date-from-error" : "")">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
-                        From
-                    </legend>
-                    <div id="contract-end-date-from-hint"
-                         class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        For example, 25 05 2025
-                    </div>
-                    @if (HasDateErrors(contractEndDateFromErrors))
-                    {
-                        <p id="contract-end-date-from-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractEndDateFromErrors)
-                        </p>
-                    }
-                    <div class="govuk-date-input @(HasDateErrors(contractEndDateFromErrors) ? "govuk-date-input--error" : "")" id="contract-end-date-from">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_from_day">
-                                    Day
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Day) ? "govuk-input--error" : "")"
-                                       id="end_from_day"
-                                       name="end_from_day"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateFrom?.Day)">
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_from_month">
-                                    Month
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Month) ? "govuk-input--error" : "")"
-                                       id="end_from_month"
-                                       name="end_from_month"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateFrom?.Month)">
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_from_year">
-                                    Year
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateFromErrors.Year) ? "govuk-input--error" : "")"
-                                       id="end_from_year"
-                                       name="end_from_year"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateFrom?.Year)">
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="govuk-fieldset" role="group" aria-describedby="contract-end-date-to-hint @(HasDateErrors(contractEndDateToErrors) ? "contract-end-date-to-error" : "")">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        To
-                    </legend>
-                    <div id="contract-end-date-to-hint" class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        For example, 25 05 2025
-                    </div>
-                    @if (HasDateErrors(contractEndDateToErrors))
-                    {
-                        <p id="contract-end-date-to-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @GetFirstError(contractEndDateToErrors)
-                        </p>
-                    }
-                    <div class="govuk-date-input @(HasDateErrors(contractEndDateToErrors) ? "govuk-date-input--error" : "")" id="contract-end-date-to">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_to_day">
-                                    Day
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateToErrors.Day) ? "govuk-input--error" : "")"
-                                       id="end_to_day"
-                                       name="end_to_day"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateTo?.Day)">
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_to_month">
-                                    Month
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-2 @(!string.IsNullOrEmpty(contractEndDateToErrors.Month) ? "govuk-input--error" : "")"
-                                       id="end_to_month"
-                                       name="end_to_month"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateTo?.Month)">
-                            </div>
-                        </div>
-                        <div class="govuk-date-input__item">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-date-input__label govuk-!-font-size-16"
-                                       for="end_to_year">
-                                    Year
-                                </label>
-                                <input class="govuk-input govuk-date-input__input govuk-input--width-4 @(!string.IsNullOrEmpty(contractEndDateToErrors.Year) ? "govuk-input--error" : "")"
-                                       id="end_to_year"
-                                       name="end_to_year"
-                                       type="text" inputmode="numeric"
-                                       value="@(Model.ContractEndDateTo?.Year)">
                             </div>
                         </div>
                     </div>
