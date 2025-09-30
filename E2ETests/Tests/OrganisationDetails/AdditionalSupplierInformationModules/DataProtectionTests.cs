@@ -51,8 +51,6 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
                 "Check your answers - Find a Tender - GOV.UK");
-        // await InteractionUtilities.PageShouldContainText("Yes, I have the resources or will have the resources by contract award");
-        // await InteractionUtilities.PageShouldContainText("Yes, I currently have the resources");
         await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");        await InteractionUtilities.PageShouldContainText("cat");
         await InteractionUtilities.PageShouldContainText(".jpeg");
 
@@ -84,7 +82,6 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
             await InteractionUtilities.ClickButtonByText("Continue");
             await InteractionUtilities.PageTitleShouldBe(
                 "Check your answers - Find a Tender - GOV.UK");
-            // await InteractionUtilities.PageShouldContainText("No, I don't have the resources");
             await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
 
 
@@ -116,7 +113,6 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
-        // await InteractionUtilities.PageShouldContainText("No, I don't have the resources");
         await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
         await InteractionUtilities.ClickNthLinkByText("Change", 0);
         await InteractionUtilities.PageTitleShouldBe(
@@ -129,7 +125,6 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "How do you ensure compliance with UK data protection law? - Find a Tender - GOV.UK");
-        // await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123");
         await InteractionUtilities.EnterTextIntoTextArea("Updated test data protection");
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
@@ -138,7 +133,6 @@ public class DataProtectionTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Continue");
         await InteractionUtilities.PageTitleShouldBe(
             "Check your answers - Find a Tender - GOV.UK");
-        // await InteractionUtilities.PageShouldContainText("Example test for data protection !@£$123 Updated test data protection");
 
 
     }
