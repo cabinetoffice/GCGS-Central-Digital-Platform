@@ -42,4 +42,4 @@ ENV PATH="${PATH}:/root/.dotnet/tools"
 RUN playwright install
 RUN playwright install-deps
 
-CMD ["dotnet", "test", "E2ETests.csproj", "--verbosity", "detailed"]
+CMD ["dotnet", "test", "E2ETests.csproj", "--verbosity", "detailed", "--", "NUnit.NumberOfTestWorkers=4"]

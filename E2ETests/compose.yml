@@ -12,8 +12,8 @@ services:
     networks:
       - cdp-sirsi
     environment:
-      TestSettings__BaseUrl: http://gateway:8090
-      TestSettings__ApiUrl: http://gateway:8082
+      TestSettings__BaseUrl: http://organisation-app:8080
+      TestSettings__ApiUrl: http://organisation:8080
       TestSettings__Email:
       TestSettings__Password:
       TestSettings__SecretKey:
