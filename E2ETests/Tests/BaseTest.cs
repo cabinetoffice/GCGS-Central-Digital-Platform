@@ -32,19 +32,15 @@ public class BaseTest
             Headless = ConfigUtility.IsHeadless()
         });
 
-        _context = await _browser.NewContextAsync(new()
-        {
-            TracesDir = "Traces" // where to save traces
-        });
+        _context = await _browser.NewContextAsync();
+        _page = await _context.NewPageAsync();
 
-        await _context.Tracing.StartAsync(new()
+        await _context.Tracing.StartAsync(new TracingStartOptions
         {
             Screenshots = true,
             Snapshots = true,
             Sources = true
         });
-
-        _page = await _context.NewPageAsync();
 
         await Login();
     }
@@ -80,32 +76,32 @@ public class BaseTest
         var result = TestContext.CurrentContext.Result.Outcome.Status;
         if (result == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
+            // Save screenshot
             var screenshotsDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Screenshots");
             Directory.CreateDirectory(screenshotsDir);
 
-            var filePath = Path.Combine(screenshotsDir, $"{TestContext.CurrentContext.Test.Name}.png");
-
+            var screenshotPath = Path.Combine(screenshotsDir, $"{TestContext.CurrentContext.Test.Name}.png");
             await _page.ScreenshotAsync(new PageScreenshotOptions
             {
-                Path = filePath,
+                Path = screenshotPath,
                 FullPage = true
             });
+            TestContext.AddTestAttachment(screenshotPath, "Screenshot on failure");
 
-            TestContext.AddTestAttachment(filePath, "Screenshot on failure");
-            Console.WriteLine($"📸 Screenshot saved: {filePath}");
-        }
+            // Save trace
+            var tracesDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Traces");
+            Directory.CreateDirectory(tracesDir);
 
-        // Add traces if the test failed
-        if (result == NUnit.Framework.Interfaces.TestStatus.Failed)
-        {
-            var tracePath = Path.Combine("Traces", $"{TestContext.CurrentContext.Test.Name}.zip");
-            Directory.CreateDirectory("Traces");
-
-            await _context.Tracing.StopAsync(new() { Path = tracePath });
+            var tracePath = Path.Combine(tracesDir, $"{TestContext.CurrentContext.Test.Name}.zip");
+            await _context.Tracing.StopAsync(new TracingStopOptions
+            {
+                Path = tracePath
+            });
             TestContext.AddTestAttachment(tracePath, "Playwright trace");
         }
         else
         {
+            // Stop without saving
             await _context.Tracing.StopAsync();
         }
 
