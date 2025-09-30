@@ -48,9 +48,8 @@
     <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
 </govuk-breadcrumbs>
 
-<div class="govuk-width-container">
-    <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
-    </govuk-inset-text>
+<govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
+</govuk-inset-text>
 
     <div class="govuk-grid-row">
         @if (!ModelState.IsValid)
@@ -161,7 +160,7 @@
                            class="govuk-input">
                 </div>
 
-                <div class="govuk-!-margin-top-0 govuk-!-padding-bottom-2 govuk-filter-section">
+                <div>
                     <partial name="_Accordion" model="commercialToolAccordion"/>
                     <partial name="_Accordion" model="commercialToolStatusAccordion"/>
                     <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
@@ -210,4 +209,3 @@
             }
         </div>
     </div>
-</div>

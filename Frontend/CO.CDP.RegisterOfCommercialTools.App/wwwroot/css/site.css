@@ -28,6 +28,14 @@ button[aria-expanded="true"] .custom-chevron-icon {
     background-color: #f3f2f1;
 }
 
+.govuk-filter-section > div[data-accordion-section] .govuk-accordion {
+    margin-bottom: 0;
+}
+
+.govuk-filter-section > div[data-accordion-section] + div[data-accordion-section] {
+    margin-top: 5px;
+}
+
 .govuk-modal {
     position: fixed;
     top: 0;
