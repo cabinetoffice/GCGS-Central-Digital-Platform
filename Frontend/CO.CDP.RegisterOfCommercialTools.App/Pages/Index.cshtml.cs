@@ -53,10 +53,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-            SearchResults = results.Select(result => result with
-            {
-                Url = !string.IsNullOrEmpty(result.Id) && result.Id != "Unknown" ? ftsUrlService.BuildUrl($"/procurement/{result.Id}") : null
-            }).ToList();
+            SearchResults = results;
             TotalCount = totalCount;
 
             logger.LogInformation("Search completed successfully. Found {TotalCount} results.",

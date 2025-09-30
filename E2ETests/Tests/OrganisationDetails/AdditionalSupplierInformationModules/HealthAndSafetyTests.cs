@@ -24,8 +24,7 @@ public class HealthAndSafetyTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Health and Safety");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your health and safety information - Find a Tender - GOV.UK");
-        //Step below to be updated once change/update is pushed (Should be "Start")
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "How do you manage health and safety? - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("Example test for health and Safety !@£$123");
@@ -59,8 +58,7 @@ public class HealthAndSafetyTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickLinkByText("Health and Safety");
         await InteractionUtilities.PageTitleShouldBe(
             "Submitting your health and safety information - Find a Tender - GOV.UK");
-        //Step below to be updated once change/update is pushed (Should be "Start")
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe(
             "How do you manage health and safety? - Find a Tender - GOV.UK");
         await InteractionUtilities.EnterTextIntoTextArea("Example test for health and Safety !@£$123");
