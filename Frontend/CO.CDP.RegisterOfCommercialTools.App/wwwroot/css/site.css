@@ -28,6 +28,11 @@ button[aria-expanded="true"] .custom-chevron-icon {
     background-color: #f3f2f1;
 }
 
+.sort-results-container {
+    display: inline-block;
+    text-align: left;
+}
+
 .govuk-filter-section > div[data-accordion-section] .govuk-accordion {
     margin-bottom: 0;
 }
