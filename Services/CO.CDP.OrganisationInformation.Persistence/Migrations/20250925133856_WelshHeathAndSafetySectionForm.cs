@@ -81,7 +81,7 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q1Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 3, false, 'WelshHealthAndSafetyQuestion_02_Title', NULL, " + healthAndSafety01GroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_02_SummaryTitle', '_WelshHealthAndSafetyQuestion02', 2)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 3, true, 'WelshHealthAndSafetyQuestion_02_Title', NULL, " + healthAndSafety01GroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_02_SummaryTitle', '_WelshHealthAndSafetyQuestion02', 2)
                     RETURNING id INTO q2Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
@@ -109,7 +109,7 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q5Id_3_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 3, false, 'WelshHealthAndSafetyQuestion_06_Title', 'WelshHealthAndSafetyQuestion_06_Description', " + healthAndSafety03SingleQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_06_SummaryTitle', '_WelshHealthAndSafetyQuestion06', 9)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 3, true, 'WelshHealthAndSafetyQuestion_06_Title', 'WelshHealthAndSafetyQuestion_06_Description', " + healthAndSafety03SingleQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_06_SummaryTitle', '_WelshHealthAndSafetyQuestion06', 9)
                     RETURNING id INTO q6Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
