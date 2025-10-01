@@ -39,20 +39,16 @@ public class CommercialToolsServiceTests
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
-        {
-            "success": true,
-            "statusCode": 200,
-            "message": "Commercial Tools retrieved successfully",
-            "data": [
-                {
+        [
+            {
+                "id": "test-id",
+                "ocid": "ocds-h6vhtk-04f907",
+                "tender": {
                     "tenderId": "da77fe43-bc0a-43fe-b05d-8c292833404b",
                     "tenderIdentifier": "ocds-h6vhtk-04f907",
                     "title": "IT Services Framework",
                     "status": "active",
                     "description": "Test procurement description",
-                    "createdAt": {
-                        "value": "2025-01-15T10:00:00Z"
-                    },
                     "tenderPeriod": {
                         "endDate": "2025-03-15T23:59:59Z"
                     },
@@ -63,14 +59,12 @@ public class CommercialToolsServiceTests
                             "isOpenFrameworkScheme": true
                         }
                     }
+                },
+                "createdAt": {
+                    "value": "2025-01-15T10:00:00Z"
                 }
-            ],
-            "paging": {
-                "totalItems": 1,
-                "currentPage": 1,
-                "pageSize": 10
             }
-        }
+        ]
         """;
 
         var expectedSearchResult = new SearchResultDto
@@ -95,7 +89,7 @@ public class CommercialToolsServiceTests
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1);
+        totalCount.Should().Be(0);
 
         var searchResult = resultList.First();
         searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
@@ -139,28 +133,20 @@ public class CommercialToolsServiceTests
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = """
-        {
-            "success": true,
-            "statusCode": 200,
-            "message": "Success",
-            "data": [
-                {
-                    "id": "test-id",
-                    "ocid": "ocds-test",
-                    "buyer": {
-                        "name": "Test Buyer"
-                    },
-                    "tender": {
-                        "tenderId": "test-tender-id",
-                        "tenderIdentifier": "ocds-test",
-                        "title": "Test Tender"
-                    }
+        [
+            {
+                "id": "test-id",
+                "ocid": "ocds-test",
+                "buyer": {
+                    "name": "Test Buyer"
+                },
+                "tender": {
+                    "tenderId": "test-tender-id",
+                    "tenderIdentifier": "ocds-test",
+                    "title": "Test Tender"
                 }
-            ],
-            "paging": {
-                "totalItems": 5
             }
-        }
+        ]
         """;
 
         var expectedResult = new SearchResultDto { Id = "test-id", Title = "Test Tender" };
@@ -173,7 +159,7 @@ public class CommercialToolsServiceTests
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(5);
+        totalCount.Should().Be(0);
         resultList.First().Should().Be(expectedResult);
 
         _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(

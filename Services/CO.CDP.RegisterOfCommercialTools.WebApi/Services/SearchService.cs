@@ -23,9 +23,22 @@ public class SearchService(
 
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
-            .WithStatus(request.Status ?? string.Empty)
             .WithSkip(skip)
             .WithTop(top);
+
+        if (!string.IsNullOrWhiteSpace(request.Status))
+        {
+            var statuses = request.Status.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var statusFilters = statuses.Select(s => MapStatusToODataFilter(s.Trim())).ToList();
+
+            if (statusFilters.Count > 0)
+            {
+                var combinedStatusFilter = statusFilters.Count == 1
+                    ? statusFilters[0]
+                    : $"({string.Join(" or ", statusFilters)})";
+                queryBuilder = queryBuilder.WithCustomFilter(combinedStatusFilter);
+            }
+        }
 
         if (request.MinFees.HasValue || request.MaxFees.HasValue)
         {
@@ -101,4 +114,15 @@ public class SearchService(
         };
     }
 
+    private static string MapStatusToODataFilter(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
+            "active" => "tender/status eq 'active'",
+            "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
+            _ => $"tender/status eq '{status}'"
+        };
 }

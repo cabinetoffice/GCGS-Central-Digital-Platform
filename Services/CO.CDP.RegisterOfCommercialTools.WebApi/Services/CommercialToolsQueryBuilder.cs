@@ -65,7 +65,21 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
 
     public ICommercialToolsQueryBuilder WithStatus(string status) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(status), "filter[tender.status]", status);
+        string.IsNullOrWhiteSpace(status)
+            ? this
+            : WithCustomFilter(MapStatusToODataFilter(status.ToLowerInvariant()));
+
+    private static string MapStatusToODataFilter(string status) =>
+        status switch
+        {
+            "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
+            "active" => "tender/status eq 'active'",
+            "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
+            _ => $"tender/status eq '{status}'"
+        };
 
     public ICommercialToolsQueryBuilder FeeFrom(decimal from)
     {

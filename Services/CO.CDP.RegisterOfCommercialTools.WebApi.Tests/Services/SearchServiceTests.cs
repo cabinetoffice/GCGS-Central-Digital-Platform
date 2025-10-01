@@ -46,7 +46,6 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("IT services")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
@@ -71,7 +70,7 @@ public class SearchServiceTests
         result.PageNumber.Should().Be(2);
         result.PageSize.Should().Be(20);
         _mockQueryBuilder.Verify(x => x.WithKeywords("IT services"), Times.Once);
-        mockBuilder.Verify(x => x.WithStatus("Active"), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("tender/status eq 'active'"))), Times.Once);
         mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("proportion"))), Times.Once);
         mockBuilder.Verify(x => x.WithTop(20), Times.Once);
         mockBuilder.Verify(x => x.WithSkip(20), Times.Once);
@@ -100,7 +99,6 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
@@ -143,7 +141,6 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
@@ -185,7 +182,6 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
@@ -201,7 +197,6 @@ public class SearchServiceTests
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
         _mockQueryBuilder.Verify(x => x.WithKeywords(""), Times.Once);
-        mockBuilder.Verify(x => x.WithStatus(""), Times.Once);
     }
 
     [Fact]

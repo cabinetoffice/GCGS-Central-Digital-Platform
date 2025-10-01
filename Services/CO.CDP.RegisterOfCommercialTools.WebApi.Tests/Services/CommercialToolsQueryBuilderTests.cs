@@ -113,13 +113,23 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithStatus_WhenStatusProvided_ShouldAddStatusFilter()
+    public void WithStatus_WhenActiveProvided_ShouldAddODataFilter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithStatus("Active").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.status]=Active");
+        result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
+    }
+
+    [Fact]
+    public void WithStatus_WhenUpcomingProvided_ShouldAddODataFilterWithOrCondition()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithStatus("upcoming").Build(BaseUrl);
+
+        result.Should().Contain("$filter=%28tender%2Fstatus%20eq%20%27planned%27%20or%20tender%2Fstatus%20eq%20%27planning%27%29");
     }
 
     [Fact]
@@ -290,7 +300,7 @@ public class CommercialToolsQueryBuilderTests
         var result = builder.WithStatus("Active").Build(baseUrlWithQuery);
 
         result.Should().StartWith(baseUrlWithQuery);
-        result.Should().Contain("&filter[tender.status]=Active");
+        result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
     }
 
     [Fact]
@@ -328,7 +338,7 @@ public class CommercialToolsQueryBuilderTests
 
         result3.Should().Contain("$search=test");
         result3.Should().Contain("filter[tender.name]=test");
-        result3.Should().Contain("filter[tender.status]=Active");
+        result3.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
     }
 
     [Fact]
@@ -352,7 +362,7 @@ public class CommercialToolsQueryBuilderTests
         result.Should().StartWith(BaseUrl);
         result.Should().Contain("$search=IT%20services");
         result.Should().Contain("filter[tender.name]=IT%20services");
-        result.Should().Contain("filter[tender.status]=Active");
+        result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.from]=1.005");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.to]=9.9999");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.from]=2025-01-01");
