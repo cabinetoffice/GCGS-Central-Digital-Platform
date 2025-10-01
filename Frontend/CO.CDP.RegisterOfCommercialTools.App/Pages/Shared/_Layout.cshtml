@@ -124,17 +124,20 @@
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/contact-us")">Contact us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/accessibility-statement")">Accessibility statement</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/home/accessibility-statement")">Accessibility statement</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/terms-and-conditions")">Terms and conditions</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/home/terms-and-conditions")">Terms and conditions</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/privacy-notice")">Privacy</a>
+                            <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/privacy-notice")">Privacy</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/cookies")">Cookies</a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="govuk-footer__inline-list-item">
+                                <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/cookies")">Cookies</a>
+                            </li>
+                        }
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Developer/Documentation")">Data and API</a>
                         </li>
