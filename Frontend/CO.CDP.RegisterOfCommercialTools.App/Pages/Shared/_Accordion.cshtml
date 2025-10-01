@@ -1,6 +1,6 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.Accordion
 
-<div class="govuk-accordion no-border" data-accordion-section>
+<div class="govuk-accordion no-border govuk-filter-section govuk-!-margin-bottom-1 govuk-!-padding-top-2 govuk-!-padding-bottom-3" data-accordion-section>
     <div class="govuk-accordion__section no-border @(Model.IsOpen ? "govuk-accordion__section--expanded" : "")">
         <input type="hidden" name="acc" data-accordion-input value="@(Model.IsOpen ? Model.Id : null)"/>
         <button type="button"
@@ -13,7 +13,7 @@
                           stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </span>
-            <span class="govuk-body govuk-!-margin-0">
+            <span class="govuk-body govuk-!-margin-0 govuk-!-font-weight-bold">
                 @Model.Title
             </span>
         </button>

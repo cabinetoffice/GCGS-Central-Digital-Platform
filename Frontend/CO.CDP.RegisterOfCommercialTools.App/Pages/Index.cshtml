@@ -43,14 +43,15 @@
 <script src="/js/search.js" nonce-csp></script>
 <script src="/js/hierarchical-code-selector.js" nonce-csp></script>
 
-<govuk-breadcrumbs>
-    <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
-    <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
-</govuk-breadcrumbs>
+@section BeforeContent {
+    <govuk-breadcrumbs>
+        <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
+        <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
+    </govuk-breadcrumbs>
 
-<div class="govuk-width-container">
     <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
     </govuk-inset-text>
+}
 
     <div class="govuk-grid-row">
         @if (!ModelState.IsValid)
@@ -80,12 +81,12 @@
                 </div>
             </div>
         }
-        <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search results</h1>
             <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
                 result@(Model.TotalCount == 1 ? "" : "s")</p>
         </div>
-        <div class="govuk-grid-column-one-third">
+        <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
             <form method="get" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
                 <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
@@ -105,13 +106,15 @@
                 <input type="hidden" name="start_to" value="@Model.SearchParams.ContractStartDateTo"/>
                 <input type="hidden" name="end_from" value="@Model.SearchParams.ContractEndDateFrom"/>
                 <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
-                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                <select id="sort-results" class="govuk-select" name="sort"
-                        onchange="this.form.submit()">
-                    <option value="relevance">Relevance</option>
-                    <option value="a-z">Alphabetical (A-Z)</option>
-                    <option value="z-a">Alphabetical (Z-A)</option>
-                </select>
+                <div class="sort-results-container">
+                    <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
+                    <select id="sort-results" class="govuk-select" name="sort"
+                            onchange="this.form.submit()">
+                        <option value="relevance">Relevance</option>
+                        <option value="a-z">Alphabetical (A-Z)</option>
+                        <option value="z-a">Alphabetical (Z-A)</option>
+                    </select>
+                </div>
                 <noscript>
                     <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
                 </noscript>
@@ -123,7 +126,7 @@
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
-                <div class="govuk-!-padding-3 govuk-!-margin-bottom-0 govuk-filter-section">
+                <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 govuk-filter-section">
                     <h2 class="govuk-heading-m">Keywords</h2>
 
                     <p class="govuk-body-s">
@@ -161,7 +164,7 @@
                            class="govuk-input">
                 </div>
 
-                <div class="govuk-!-margin-top-0 govuk-!-padding-bottom-2 govuk-filter-section">
+                <div>
                     <partial name="_Accordion" model="commercialToolAccordion"/>
                     <partial name="_Accordion" model="commercialToolStatusAccordion"/>
                     <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
@@ -210,4 +213,3 @@
             }
         </div>
     </div>
-</div>
