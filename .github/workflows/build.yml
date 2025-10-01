@@ -52,13 +52,6 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
-      CDP_ORGANISATION_APP_PORT: 8888
-      CDP_TENANT_PORT: 8811
-      CDP_ORGANISATION_PORT: 8822
-      CDP_PERSON_PORT: 8833
-      CDP_FORMS_PORT: 8844
-      CDP_DATA_SHARING_PORT: 8855
-      CDP_ENTITY_VERIFICATION_PORT: 8094
     outputs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}
