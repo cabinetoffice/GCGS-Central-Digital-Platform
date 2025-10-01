@@ -189,28 +189,6 @@ public class IndexModelTest
         _model.TotalCount.Should().Be(42);
     }
 
-    [Fact]
-    public async Task OnGet_ShouldSetDefaultOpenAccordionsWhenNoAccParam()
-    {
-        var mockHttpContext = new Mock<HttpContext>();
-        var mockRequest = new Mock<HttpRequest>();
-        mockRequest.Setup(r => r.Path).Returns("/");
-        mockRequest.Setup(r => r.QueryString).Returns(QueryString.Empty);
-        mockRequest.Setup(r => r.Query).Returns(new QueryCollection()); // Ensure no 'acc' parameter
-        mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        var pageContext = new PageContext { HttpContext = mockHttpContext.Object };
-        _model.PageContext = pageContext;
-
-        await _model.OnGetAsync();
-
-        var expectedOpenAccordions = new[]
-        {
-            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-            "date-range"
-        };
-        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
-    }
 
     [Fact]
     public async Task OnGetAsync_WithOriginBuyerViewAndOrganisationId_SetsHomeUrlToBuyerView()

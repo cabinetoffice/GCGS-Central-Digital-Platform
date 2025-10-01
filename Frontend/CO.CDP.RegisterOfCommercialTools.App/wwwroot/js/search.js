@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const button = control.querySelector("[data-accordion-button]");
         const content = control.querySelector("[data-accordion-content]");
         const accordionSection = control.querySelector(".govuk-accordion__section");
-        const input = control.querySelector('[data-accordion-input]');
 
-        if (!button || !content || !input || !accordionSection) {
+        if (!button || !content || !accordionSection) {
             return;
         }
 
@@ -27,7 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             accordionSection.classList.remove("govuk-accordion__section--expanded");
         }
-        input.value = isExpanded ? id : "";
 
         button.addEventListener("click", function () {
             const wasExpanded = this.getAttribute("aria-expanded") === "true";
@@ -37,10 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (isNowExpanded) {
                 accordionSection.classList.add("govuk-accordion__section--expanded");
-                input.value = id;
             } else {
                 accordionSection.classList.remove("govuk-accordion__section--expanded");
-                input.value = "";
             }
 
             states[id] = isNowExpanded;
