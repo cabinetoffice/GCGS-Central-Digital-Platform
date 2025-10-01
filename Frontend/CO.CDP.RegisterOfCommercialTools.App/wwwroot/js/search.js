@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const accordionControls = document.querySelectorAll("[data-accordion-section]");
     const storageKey = "accordionStates";
 
-    let states = JSON.parse(sessionStorage.getItem(storageKey));
+    const states = JSON.parse(sessionStorage.getItem(storageKey)) || {};
 
     accordionControls.forEach(control => {
         const button = control.querySelector("[data-accordion-button]");
@@ -16,8 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const id = content.id.replace("-content", "");
 
-        if (states === null) {
-            states = {};
+        if (states[id] === undefined) {
             states[id] = accordionSection.classList.contains("govuk-accordion__section--expanded");
         }
 
@@ -49,7 +48,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    if (sessionStorage.getItem(storageKey) === null) {
-        sessionStorage.setItem(storageKey, JSON.stringify(states));
-    }
+    sessionStorage.setItem(storageKey, JSON.stringify(states));
 });
