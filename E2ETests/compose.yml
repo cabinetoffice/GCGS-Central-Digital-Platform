@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   e2e-tests:
+    shm_size: "1gb"
     build:
       context: .
       dockerfile: Dockerfile

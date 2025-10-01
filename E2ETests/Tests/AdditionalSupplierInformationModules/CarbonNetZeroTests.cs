@@ -1,11 +1,8 @@
 using E2ETests.Utilities;
-using E2ETests.OrganisationDetails;
-using Microsoft.VisualBasic;
-
-namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModules;
+namespace E2ETests.Tests.AdditionalSupplierInformationModules;
 
 [TestFixture]
-public class CarbonNetZeroTests : OrganisationDetailsBaseTest
+public class CarbonNetZeroTests : CarbonNetZeroBaseTest
 {
     private InteractionUtilities InteractionUtilities;
 
@@ -15,7 +12,6 @@ public class CarbonNetZeroTests : OrganisationDetailsBaseTest
         InteractionUtilities = new InteractionUtilities(_page);
         return Task.CompletedTask;
     }
-
     [Test]
     public async Task ShouldCompleteTheCarbonNetZeroModuleJourney()
     {
