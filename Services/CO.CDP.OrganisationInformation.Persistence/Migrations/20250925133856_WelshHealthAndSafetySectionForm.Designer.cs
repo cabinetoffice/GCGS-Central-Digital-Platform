@@ -13,8 +13,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     [DbContext(typeof(OrganisationInformationContext))]
-    [Migration("20250925133856_WelshHeathAndSafetySectionForm")]
-    partial class WelshHeathAndSafetySectionForm
+    [Migration("20250925133856_WelshHealthAndSafetySectionForm")]
+    partial class WelshHealthAndSafetySectionForm
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

@@ -5,7 +5,7 @@
 namespace CO.CDP.OrganisationInformation.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class WelshHeathAndSafetySectionForm : Migration
+    public partial class WelshHealthAndSafetySectionForm : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -97,15 +97,15 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q5Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_05_01_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_05_SummaryTitle', '_WelshHealthAndSafetyQuestion05_1', 6)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_05_01_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_05_01_SummaryTitle', '_WelshHealthAndSafetyQuestion05_1', 6)
                     RETURNING id INTO q5Id_1_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_05_02_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, '', '_WelshHealthAndSafetyQuestion05_2', 7)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_05_02_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_05_02_SummaryTitle', '_WelshHealthAndSafetyQuestion05_2', 7)
                     RETURNING id INTO q5Id_2_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 10, true, 'WelshHealthAndSafetyQuestion_05_03_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, '', '_WelshHealthAndSafetyQuestion05_3', 8)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 10, true, 'WelshHealthAndSafetyQuestion_05_03_Title', NULL, " + healthAndSafety02MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_05_03_SummaryTitle', '_WelshHealthAndSafetyQuestion05_3', 8)
                     RETURNING id INTO q5Id_3_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
@@ -117,15 +117,15 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q7Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_07_01_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_07_SummaryTitle', '_WelshHealthAndSafetyQuestion07_1', 11)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_07_01_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_07_01_SummaryTitle', '_WelshHealthAndSafetyQuestion07_1', 11)
                     RETURNING id INTO q7Id_1_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_07_02_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, '', '_WelshHealthAndSafetyQuestion07_2', 12)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 1, true, 'WelshHealthAndSafetyQuestion_07_02_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_07_02_SummaryTitle', '_WelshHealthAndSafetyQuestion07_2', 12)
                     RETURNING id INTO q7Id_2_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 10, true, 'WelshHealthAndSafetyQuestion_07_03_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, '', '_WelshHealthAndSafetyQuestion07_3', 13)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 10, true, 'WelshHealthAndSafetyQuestion_07_03_Title', NULL, " + healthAndSafety03MultiQuestionGroupedOptionsJson + $@", NULL, 'WelshHealthAndSafetyQuestion_07_03_SummaryTitle', '_WelshHealthAndSafetyQuestion07_3', 13)
                     RETURNING id INTO q7Id_3_Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)

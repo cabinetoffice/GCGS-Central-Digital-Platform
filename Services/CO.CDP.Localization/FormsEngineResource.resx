@@ -631,17 +631,23 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="WelshHealthAndSafetyQuestion_05_Title" xml:space="preserve">
     <value>Please provide your membership number, your membership level, and other details of what your registration covers</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_05_SummaryTitle" xml:space="preserve">
-    <value>Membership details</value>
-  </data>
   <data name="WelshHealthAndSafetyQuestion_05_01_Title" xml:space="preserve">
+    <value>Membership number</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_05_01_SummaryTitle" xml:space="preserve">
     <value>Membership number</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_05_02_Title" xml:space="preserve">
     <value>Membership level</value>
   </data>
+  <data name="WelshHealthAndSafetyQuestion_05_02_SummaryTitle" xml:space="preserve">
+    <value>Membership level</value>
+  </data>
   <data name="WelshHealthAndSafetyQuestion_05_03_Title" xml:space="preserve">
     <value>Other details of what your registration covers</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_05_03_SummaryTitle" xml:space="preserve">
+    <value>Other details</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_06_Title" xml:space="preserve">
     <value>Is your organisation registered with an industrial or occupational safety group</value>
@@ -657,17 +663,23 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="WelshHealthAndSafetyQuestion_07_Title" xml:space="preserve">
     <value>Please provide your organisation’s membership number, membership level, and other details of what the registration covers</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_07_SummaryTitle" xml:space="preserve">
-    <value>Membership details</value>
-  </data>
   <data name="WelshHealthAndSafetyQuestion_07_01_Title" xml:space="preserve">
+    <value>Membership number</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_07_01_SummaryTitle" xml:space="preserve">
     <value>Membership number</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_07_02_Title" xml:space="preserve">
     <value>Membership level</value>
   </data>
+  <data name="WelshHealthAndSafetyQuestion_07_02_SummaryTitle" xml:space="preserve">
+    <value>Membership level</value>
+  </data>
   <data name="WelshHealthAndSafetyQuestion_07_03_Title" xml:space="preserve">
     <value>Other details of what your registration covers</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_07_03_SummaryTitle" xml:space="preserve">
+    <value>Other details</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_08_Title" xml:space="preserve">
     <value>Please confirm that your organisation has a health and safety policy that includes the following?</value>
