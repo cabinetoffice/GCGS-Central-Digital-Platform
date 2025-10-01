@@ -32,9 +32,7 @@ public class ShareCodeMandatoryInformationService : IShareCodeMandatoryInformati
             return SupplierInformationStatus.GetBasicInfoStepStatus(supplierInfo) == SupplierInformationStatus.StepStatus.Completed
                 && SupplierInformationStatus.GetConnectedPersonStepStatus(supplierInfo, connectedEntities.Count) == SupplierInformationStatus.StepStatus.Completed
                 && formSections
-                    .Where(s => s.Type != FormSectionType.Declaration
-                                && s.Type != FormSectionType.AdditionalSection
-                                && s.Type != FormSectionType.WelshAdditionalSection)
+                    .Where(s => s.Type == FormSectionType.Standard)
                     .All(section => (section.AnswerSetCount != 0 || section.AnswerSetWithFurtherQuestionExemptedExists));
         }
         catch (Exception ex)
