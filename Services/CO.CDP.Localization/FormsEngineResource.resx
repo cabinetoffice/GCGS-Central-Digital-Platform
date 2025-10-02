@@ -749,15 +749,21 @@ Failure to complete this module may result in your tenders being deemed insuffic
     <value>Health and safety enforcement orders</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_Group2_SummaryTitle" xml:space="preserve">
-    <value>Your safety group information</value>
+    <value>Your safety group registration</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_Group3_SummaryTitle" xml:space="preserve">
-    <value>Your organisation’s safety group information</value>
+    <value>Your safety group membership details</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_Group4_SummaryTitle" xml:space="preserve">
-    <value>Health and safety policy</value>
+    <value>Your organisation's safety group registration</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_Group5_SummaryTitle" xml:space="preserve">
+    <value>Your organisation's safety group membership details</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_Group6_SummaryTitle" xml:space="preserve">
+    <value>Health and safety policy</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_Group7_SummaryTitle" xml:space="preserve">
     <value>Health and safety management</value>
   </data>
 
