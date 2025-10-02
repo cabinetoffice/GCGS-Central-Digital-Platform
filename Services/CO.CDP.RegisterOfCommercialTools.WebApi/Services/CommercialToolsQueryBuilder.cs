@@ -33,32 +33,54 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         if (string.IsNullOrWhiteSpace(keywords))
             return this;
 
-        var searchQuery = ParseKeywordsForOData(keywords);
-
-        return new CommercialToolsQueryBuilder(_params
-            .SetItem("$search", searchQuery)
-            .SetItem("filter[tender.name]", keywords)
-            .SetItem("filter[tender.techniques.frameworkAgreement.description]", keywords)
-            .SetItem("filter[parties.identifier.id]", keywords)
-            .SetItem("filter[parties.name]", keywords), _skip, _top);
+        var filter = BuildKeywordFilter(keywords);
+        return WithCustomFilter(filter);
     }
 
-    private static string ParseKeywordsForOData(string keywords)
+    private static string BuildKeywordFilter(string keywords)
     {
         keywords = keywords.Trim();
 
         if (keywords.StartsWith("\"") && keywords.EndsWith("\""))
         {
-            return keywords;
+            var phrase = keywords.Trim('"');
+            return BuildContainsFilterForPhrase(phrase);
         }
 
         if (keywords.Contains(" + "))
         {
-            var terms = keywords.Split(" + ", StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" AND ", terms.Select(term => term.Trim()));
+            var terms = keywords.Split(" + ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var filters = terms.Select(term => BuildContainsFilterForPhrase(term)).ToList();
+            return $"({string.Join(" and ", filters)})";
         }
 
-        return keywords;
+        var words = keywords.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (words.Length > 1)
+        {
+            var filters = words.Select(word => BuildContainsFilterForPhrase(word)).ToList();
+            return $"({string.Join(" or ", filters)})";
+        }
+
+        return BuildContainsFilterForPhrase(keywords);
+    }
+
+    private static string BuildContainsFilterForPhrase(string phrase)
+    {
+        var escapedPhrase = phrase.Replace("'", "''").ToLower();
+
+        var containsFilters = new List<string>
+        {
+            $"contains(tolower(tender/title), '{escapedPhrase}')",
+            $"contains(tolower(tender/description), '{escapedPhrase}')",
+            $"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedPhrase}')",
+
+            $"parties/any(p: contains(tolower(p/name), '{escapedPhrase}'))",
+            $"parties/any(p: contains(tolower(p/identifier/id), '{escapedPhrase}'))"
+        };
+
+        containsFilters.Add($"additionalIdentifiers/any(ai: contains(tolower(ai/id), '{escapedPhrase}'))");
+
+        return $"({string.Join(" or ", containsFilters)})";
     }
 
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
