@@ -381,7 +381,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithFrameworkType("open").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.type]=open");
+        result.Should().Contain("$filter=tender%2Ftechniques%2FframeworkAgreement%2Ftype%20eq%20%27open%27");
     }
 
     [Fact]

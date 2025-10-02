@@ -135,8 +135,9 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     }
 
     public ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(frameworkType), "filter[tender.techniques.frameworkAgreement.type]",
-            frameworkType);
+        string.IsNullOrWhiteSpace(frameworkType)
+            ? this
+            : WithCustomFilter($"tender/techniques/frameworkAgreement/type eq '{frameworkType}'");
 
     public ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(restrictionId),
