@@ -66,6 +66,8 @@ services:
   organisation:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      GOVUKNotify__ApiKey: "fakekey-aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa-bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      Features__SendNotifyEmails: false
     deploy:
       replicas: 1
   person:
@@ -91,7 +93,8 @@ services:
   av-scanner:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      GOVUKNotify__ApiKey: ""
+      GOVUKNotify__ApiKey: "fakekey-aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa-bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      Features__SendNotifyEmails: false
     deploy:
       replicas: 1
   clamav-rest:
