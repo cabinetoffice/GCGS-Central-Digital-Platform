@@ -234,6 +234,7 @@ locals {
         "gov.wales",
         "homeoffice.gov.uk",
         "in-tend.co.uk",
+        "ivalua.com",
         "jaggaer.com",
         "justice.gov.uk",
         "Kainos.com",
