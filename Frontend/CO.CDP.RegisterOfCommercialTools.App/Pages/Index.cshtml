@@ -7,37 +7,37 @@
         "commercial-tool",
         "Commercial tool",
         "_CommercialToolAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool") };
+    ) { IsOpen = true };
     var commercialToolStatusAccordion = new Accordion(
         "commercial-tool-status",
         "Commercial tool status",
         "_CommercialToolStatusAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool-status") };
+    ) { IsOpen = true };
     var contractingAuthorityUsageAccordion = new Accordion(
         "contracting-authority-usage",
         "Contracting authority usage",
         "_ContractingAuthorityUsageAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("contracting-authority-usage") };
+    ) { IsOpen = true };
     var awardMethodAccordion = new Accordion(
         "award-method",
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    ) { IsOpen = true };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
         "_IndustryCpvCodeAccordionContent", Model.SearchParams
-        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
+        ) { IsOpen = true };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
         "_FeesAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("fees") };
+    ) { IsOpen = true };
     var dateRangeAccordion = new Accordion(
         "date-range",
         "Date range",
         "_DateRangeAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
+    ) { IsOpen = true };
 }
 
 <script src="/js/search.js" nonce-csp></script>
@@ -115,40 +115,33 @@
                 <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
                 <div class="sort-results-container">
                     <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                    <select id="sort-results" class="govuk-select" name="sort"
-                            onchange="this.form.submit()">
-                        <option value="relevance">Relevance</option>
-                        <option value="a-z">Alphabetical (A-Z)</option>
-                        <option value="z-a">Alphabetical (Z-A)</option>
+                    <select id="sort-results" class="govuk-select" name="sort">
+                        @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
+                        {
+                            <option value="relevance" selected>Relevance</option>
+                        }
+                        else
+                        {
+                            <option value="relevance">Relevance</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "a-z")
+                        {
+                            <option value="a-z" selected>Alphabetical (A-Z)</option>
+                        }
+                        else
+                        {
+                            <option value="a-z">Alphabetical (A-Z)</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "z-a")
+                        {
+                            <option value="z-a" selected>Alphabetical (Z-A)</option>
+                        }
+                        else
+                        {
+                            <option value="z-a">Alphabetical (Z-A)</option>
+                        }
                     </select>
                 </div>
-                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                <select id="sort-results" class="govuk-select" name="sort">
-                    @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
-                    {
-                        <option value="relevance" selected>Relevance</option>
-                    }
-                    else
-                    {
-                        <option value="relevance">Relevance</option>
-                    }
-                    @if (Model.SearchParams.SortOrder == "a-z")
-                    {
-                        <option value="a-z" selected>Alphabetical (A-Z)</option>
-                    }
-                    else
-                    {
-                        <option value="a-z">Alphabetical (A-Z)</option>
-                    }
-                    @if (Model.SearchParams.SortOrder == "z-a")
-                    {
-                        <option value="z-a" selected>Alphabetical (Z-A)</option>
-                    }
-                    else
-                    {
-                        <option value="z-a">Alphabetical (Z-A)</option>
-                    }
-                </select>
                 <noscript>
                     <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
                 </noscript>
