@@ -7,37 +7,37 @@
         "commercial-tool",
         "Commercial tool",
         "_CommercialToolAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool") };
+    ) { IsOpen = true };
     var commercialToolStatusAccordion = new Accordion(
         "commercial-tool-status",
         "Commercial tool status",
         "_CommercialToolStatusAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool-status") };
+    ) { IsOpen = true };
     var contractingAuthorityUsageAccordion = new Accordion(
         "contracting-authority-usage",
         "Contracting authority usage",
         "_ContractingAuthorityUsageAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("contracting-authority-usage") };
+    ) { IsOpen = true };
     var awardMethodAccordion = new Accordion(
         "award-method",
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    ) { IsOpen = true };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
         "_IndustryCpvCodeAccordionContent", Model.SearchParams
-        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
+        ) { IsOpen = true };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
         "_FeesAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("fees") };
+    ) { IsOpen = true };
     var dateRangeAccordion = new Accordion(
         "date-range",
         "Date range",
         "_DateRangeAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
+    ) { IsOpen = true };
 }
 
 <script src="/js/search.js" nonce-csp></script>
@@ -87,11 +87,14 @@
                 result@(Model.TotalCount == 1 ? "" : "s")</p>
         </div>
         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
-            <form method="get" class="govuk-form-group">
+            <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
                 <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
                 <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
-                <input type="hidden" name="award" value="@Model.SearchParams.AwardMethod"/>
+                @foreach (var award in Model.SearchParams.AwardMethod)
+                {
+                    <input type="hidden" name="award" value="@award"/>
+                }
                 <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
                 <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
                 <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>
@@ -99,6 +102,10 @@
                 @foreach (var status in Model.SearchParams.Status)
                 {
                     <input type="hidden" name="status" value="@status"/>
+                }
+                @foreach (var cpv in Model.SearchParams.CpvCodes)
+                {
+                    <input type="hidden" name="cpv" value="@cpv"/>
                 }
                 <input type="hidden" name="sub_from" value="@Model.SearchParams.SubmissionDeadlineFrom"/>
                 <input type="hidden" name="sub_to" value="@Model.SearchParams.SubmissionDeadlineTo"/>
@@ -108,11 +115,31 @@
                 <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
                 <div class="sort-results-container">
                     <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                    <select id="sort-results" class="govuk-select" name="sort"
-                            onchange="this.form.submit()">
-                        <option value="relevance">Relevance</option>
-                        <option value="a-z">Alphabetical (A-Z)</option>
-                        <option value="z-a">Alphabetical (Z-A)</option>
+                    <select id="sort-results" class="govuk-select" name="sort">
+                        @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
+                        {
+                            <option value="relevance" selected>Relevance</option>
+                        }
+                        else
+                        {
+                            <option value="relevance">Relevance</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "a-z")
+                        {
+                            <option value="a-z" selected>Alphabetical (A-Z)</option>
+                        }
+                        else
+                        {
+                            <option value="a-z">Alphabetical (A-Z)</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "z-a")
+                        {
+                            <option value="z-a" selected>Alphabetical (Z-A)</option>
+                        }
+                        else
+                        {
+                            <option value="z-a">Alphabetical (Z-A)</option>
+                        }
                     </select>
                 </div>
                 <noscript>
