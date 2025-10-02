@@ -124,14 +124,14 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         if (string.IsNullOrWhiteSpace(awardMethod))
             return this;
 
-        var filterValue = awardMethod.ToLowerInvariant() switch
+        var odataFilter = awardMethod.ToLowerInvariant() switch
         {
-            "with-competition" => "open",
-            "without-competition" => "direct",
-            _ => awardMethod
+            "with-competition" => "(tender/techniques/frameworkAgreement/method eq 'open' or tender/techniques/frameworkAgreement/method eq 'withReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition')",
+            "without-competition" => "(tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition')",
+            _ => $"tender/techniques/frameworkAgreement/method eq '{awardMethod}'"
         };
 
-        return WithParameter("filter[tender.awardCriteria.method]", filterValue);
+        return WithCustomFilter(odataFilter);
     }
 
     public ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType) =>

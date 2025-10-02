@@ -441,7 +441,10 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithAwardMethod("with-competition").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.awardCriteria.method]=open");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27open%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withReopeningCompetition%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withAndWithoutReopeningCompetition%27");
     }
 
     [Fact]
@@ -451,7 +454,9 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithAwardMethod("without-competition").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.awardCriteria.method]=direct");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27direct%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withoutReopeningCompetition%27");
     }
 
     [Fact]
