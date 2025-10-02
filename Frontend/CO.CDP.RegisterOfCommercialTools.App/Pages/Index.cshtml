@@ -90,7 +90,10 @@
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
                 <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
                 <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
-                <input type="hidden" name="award" value="@Model.SearchParams.AwardMethod"/>
+                @foreach (var award in Model.SearchParams.AwardMethod)
+                {
+                    <input type="hidden" name="award" value="@award"/>
+                }
                 <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
                 <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
                 <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>

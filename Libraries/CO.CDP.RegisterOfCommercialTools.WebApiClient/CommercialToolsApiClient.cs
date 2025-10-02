@@ -91,10 +91,29 @@ public class CommercialToolsApiClient : ICommercialToolsApiClient
 
     private static string ToQueryString(SearchRequestDto dto)
     {
-        var properties = from p in dto.GetType().GetProperties()
-            where p.GetValue(dto, null) != null
-            select $"{p.Name}={Uri.EscapeDataString(p.GetValue(dto, null)?.ToString() ?? string.Empty)}";
+        var parameters = new List<string>();
 
-        return string.Join("&", properties);
+        foreach (var property in dto.GetType().GetProperties())
+        {
+            var value = property.GetValue(dto, null);
+            if (value == null) continue;
+
+            if (value is System.Collections.IEnumerable enumerable and not string)
+            {
+                foreach (var item in enumerable)
+                {
+                    if (item != null)
+                    {
+                        parameters.Add($"{property.Name}={Uri.EscapeDataString(item.ToString() ?? string.Empty)}");
+                    }
+                }
+            }
+            else
+            {
+                parameters.Add($"{property.Name}={Uri.EscapeDataString(value.ToString() ?? string.Empty)}");
+            }
+        }
+
+        return string.Join("&", parameters);
     }
 }

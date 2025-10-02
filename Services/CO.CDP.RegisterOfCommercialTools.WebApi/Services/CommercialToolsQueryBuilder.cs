@@ -127,7 +127,8 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         var odataFilter = awardMethod.ToLowerInvariant() switch
         {
             "with-competition" => "(tender/techniques/frameworkAgreement/method eq 'open' or tender/techniques/frameworkAgreement/method eq 'withReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition')",
-            "without-competition" => "(tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition')",
+            "without-competition" => "(tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition')",
+            "with-and-without-competition" => "(tender/techniques/frameworkAgreement/method eq 'open' or tender/techniques/frameworkAgreement/method eq 'withReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition')",
             _ => $"tender/techniques/frameworkAgreement/method eq '{awardMethod}'"
         };
 

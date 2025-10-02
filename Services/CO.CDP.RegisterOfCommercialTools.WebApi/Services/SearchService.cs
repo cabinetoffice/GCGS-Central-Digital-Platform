@@ -96,9 +96,18 @@ public class SearchService(
             queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.AwardMethod))
+        if (request.AwardMethod != null && request.AwardMethod.Count > 0)
         {
-            queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod);
+            if (request.AwardMethod.Count == 2 &&
+                request.AwardMethod.Contains("with-competition") &&
+                request.AwardMethod.Contains("without-competition"))
+            {
+                queryBuilder = queryBuilder.WithAwardMethod("with-and-without-competition");
+            }
+            else if (request.AwardMethod.Count == 1)
+            {
+                queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod[0]);
+            }
         }
 
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");

@@ -70,7 +70,7 @@ public class IndexModelTest
         _model.SearchParams.SortOrder.Should().BeNull();
         _model.SearchParams.FrameworkOptions.Should().BeNull();
         _model.SearchParams.DynamicMarketOptions.Should().BeNull();
-        _model.SearchParams.AwardMethod.Should().BeNull();
+        _model.SearchParams.AwardMethod.Should().BeEmpty();
         _model.SearchParams.Status.Should().BeEmpty();
         _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
         _model.SearchParams.FeeMin.Should().BeNull();
@@ -103,7 +103,7 @@ public class IndexModelTest
         _model.SearchParams.SortOrder = "a-z";
         _model.SearchParams.FrameworkOptions = "open";
         _model.SearchParams.DynamicMarketOptions = "utilities-only";
-        _model.SearchParams.AwardMethod = "direct-award";
+        _model.SearchParams.AwardMethod = ["without-competition"];
         _model.SearchParams.Status = ["upcoming", "active-buyers"];
         _model.SearchParams.ContractingAuthorityUsage = "yes";
         _model.SearchParams.FeeMin = 0;
@@ -137,7 +137,7 @@ public class IndexModelTest
         _model.SearchParams.SortOrder.Should().Be("a-z");
         _model.SearchParams.FrameworkOptions.Should().Be("open");
         _model.SearchParams.DynamicMarketOptions.Should().Be("utilities-only");
-        _model.SearchParams.AwardMethod.Should().Be("direct-award");
+        _model.SearchParams.AwardMethod.Should().ContainSingle().Which.Should().Be("without-competition");
         _model.SearchParams.Status.Should().BeEquivalentTo(["upcoming", "active-buyers"]);
         _model.SearchParams.ContractingAuthorityUsage.Should().Be("yes");
         _model.SearchParams.FeeMin.Should().Be(0);
