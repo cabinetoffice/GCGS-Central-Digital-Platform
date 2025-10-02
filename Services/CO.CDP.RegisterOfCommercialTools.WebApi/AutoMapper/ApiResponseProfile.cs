@@ -41,15 +41,11 @@ public class ApiResponseProfile : Profile
     private static string GetMaximumFee(CommercialToolTender? tender)
     {
         if (tender?.ParticipationFees == null || !tender.ParticipationFees.Any())
-            return "Unknown";
+            return "0%";
 
         var proportions = tender.ParticipationFees
-            .Where(f => f.RelativeValueProportion.HasValue)
-            .Select(f => f.RelativeValueProportion!.Value)
+            .Select(f => f.RelativeValueProportion ?? 0)
             .ToList();
-
-        if (!proportions.Any())
-            return "Unknown";
 
         var maxPercentage = proportions.Max() * 100;
         return $"{maxPercentage:0.##}%";

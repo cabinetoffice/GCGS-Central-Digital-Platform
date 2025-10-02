@@ -1,5 +1,5 @@
+using System.Globalization;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
-using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -40,14 +40,11 @@ public class SearchService(
             }
         }
 
-        if (request.MinFees.HasValue || request.MaxFees.HasValue)
+        queryBuilder = BuildFeeFilter(request.MinFees, request.MaxFees) switch
         {
-            var feeFilter = FeeConverter.CreateProportionFilter(request.MinFees, request.MaxFees);
-            if (!string.IsNullOrEmpty(feeFilter))
-            {
-                queryBuilder = queryBuilder.WithCustomFilter(feeFilter);
-            }
-        }
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
 
         if (request.SubmissionDeadlineFrom.HasValue)
             queryBuilder = queryBuilder.SubmissionDeadlineFrom(request.SubmissionDeadlineFrom.Value);
@@ -157,4 +154,26 @@ public class SearchService(
 
     private static string BuildMultipleCpvFilter(List<string> codes) =>
         $"(tender/classification/scheme eq 'CPV' and ({string.Join(" or ", codes.Select(c => $"tender/classification/classificationId eq '{c}'"))}))";
+
+    private static string? BuildFeeFilter(decimal? minProportion, decimal? maxProportion)
+    {
+        if (minProportion == 0 && maxProportion == 0)
+        {
+            return "tender/participationFees/all(fee: fee/relativeValueProportion eq 0)";
+        }
+
+        var filters = new List<string>();
+
+        if (minProportion.HasValue && minProportion > 0)
+        {
+            filters.Add($"tender/participationFees/any(fee: fee/relativeValueProportion ge {minProportion.Value.ToString(CultureInfo.InvariantCulture)})");
+        }
+
+        if (maxProportion.HasValue && maxProportion > 0)
+        {
+            filters.Add($"tender/participationFees/any(fee: fee/relativeValueProportion le {maxProportion.Value.ToString(CultureInfo.InvariantCulture)})");
+        }
+
+        return filters.Count > 0 ? string.Join(" and ", filters) : null;
+    }
 }

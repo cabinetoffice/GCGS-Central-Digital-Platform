@@ -71,7 +71,7 @@ public class SearchServiceTests
         result.PageSize.Should().Be(20);
         _mockQueryBuilder.Verify(x => x.WithKeywords("IT services"), Times.Once);
         mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("tender/status eq 'active'"))), Times.Once);
-        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("proportion"))), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("relativeValueProportion"))), Times.Once);
         mockBuilder.Verify(x => x.WithTop(20), Times.Once);
         mockBuilder.Verify(x => x.WithSkip(20), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
