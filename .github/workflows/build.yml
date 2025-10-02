@@ -82,16 +82,6 @@ jobs:
           SIRSI_ONELOGIN_PRIVATEKEY: ${{ secrets.SIRSI_ONELOGIN_PRIVATEKEY }}
           SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER: ${{ secrets.SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER }}
           SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY: ${{ secrets.SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY }}
-          Organisation__Authority: http://authority:8080
-          OrganisationService: http://organisation:8080
-          FormsService: http://forms:8080
-          PersonService: http://person:8080
-          TenantService: 'http://tenant:8080'
-          DataSharingService: http://data-sharing:8080
-          EntityVerificationService: http://entity-verification:8080
-          CommercialToolsApp: http://commercial-tools-app:8080
-          CommercialToolsApi: http://commercial-tools-api:8080
-          SirsiService: http://organisation-app:8080
       - name: Verify services
         run: make verify-up
         env:
@@ -106,6 +96,16 @@ jobs:
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
           TestSettings__Password: ${{ secrets.SIRSI_E2ETEST_PASSWORD }}
           TestSettings__SecretKey: ${{ secrets.SIRSI_E2ETEST_SECRETKEY }}
+          Organisation__Authority: http://authority:8080
+          OrganisationService: http://organisation:8080
+          FormsService: http://forms:8080
+          PersonService: http://person:8080
+          TenantService: 'http://tenant:8080'
+          DataSharingService: http://data-sharing:8080
+          EntityVerificationService: http://entity-verification:8080
+          CommercialToolsApp: http://commercial-tools-app:8080
+          CommercialToolsApi: http://commercial-tools-api:8080
+          SirsiService: http://organisation-app:8080
       - name: Grab Docker logs
         if: failure()
         run: |
