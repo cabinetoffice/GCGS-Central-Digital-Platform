@@ -48,6 +48,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("IT services")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31))).Returns(mockBuilder.Object);
@@ -104,6 +105,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -146,6 +148,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -187,6 +190,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -231,6 +235,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithAwardMethod("with-competition")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -258,6 +263,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithAwardMethod("with-and-without-competition")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -285,6 +291,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -311,6 +318,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -337,6 +345,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
             f.Contains("tender/classification/scheme eq 'CPV'") &&
             f.Contains("tender/classification/classificationId eq '12345678'")))).Returns(mockBuilder.Object);
@@ -368,6 +377,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
             f.Contains("tender/classification/classificationId") &&
             f.Contains("12345678") &&
@@ -403,6 +413,7 @@ public class SearchServiceTests
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();

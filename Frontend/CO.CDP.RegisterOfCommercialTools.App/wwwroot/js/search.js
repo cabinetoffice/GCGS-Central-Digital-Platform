@@ -45,4 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     sessionStorage.setItem(storageKey, JSON.stringify(states));
+
+    const sortSelect = document.getElementById("sort-results");
+    if (sortSelect) {
+        sortSelect.addEventListener("change", function () {
+            this.form.submit();
+        });
+    }
 });

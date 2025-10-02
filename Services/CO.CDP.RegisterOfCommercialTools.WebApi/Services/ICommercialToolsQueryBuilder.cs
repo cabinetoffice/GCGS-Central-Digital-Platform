@@ -22,5 +22,6 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder WithSkip(int skip);
     ICommercialToolsQueryBuilder WithTop(int top);
     ICommercialToolsQueryBuilder WithCustomFilter(string filter);
+    ICommercialToolsQueryBuilder WithOrderBy(string sortBy);
     string Build(string baseUrl);
 }

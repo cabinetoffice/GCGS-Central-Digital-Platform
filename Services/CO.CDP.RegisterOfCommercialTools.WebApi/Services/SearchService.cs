@@ -24,7 +24,8 @@ public class SearchService(
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithSkip(skip)
-            .WithTop(top);
+            .WithTop(top)
+            .WithOrderBy(request.SortBy ?? "relevance");
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {

@@ -495,4 +495,46 @@ public class CommercialToolsQueryBuilderTests
 
         result.Should().BeSameAs(builder);
     }
+
+    [Fact]
+    public void WithOrderBy_WhenAtoZ_ShouldAddOrderByAscending()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("a-z").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=tender%2Ftitle%20asc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenZtoA_ShouldAddOrderByDescending()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("z-a").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=tender%2Ftitle%20desc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenRelevance_ShouldAddRelevanceOrderBy()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("relevance").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=");
+        result.Should().Contain("tender%2Fstatus%20desc");
+        result.Should().Contain("tender%2FtenderPeriod%2FendDate%20asc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("");
+
+        result.Should().BeSameAs(builder);
+    }
 }

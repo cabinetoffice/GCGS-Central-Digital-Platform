@@ -195,6 +195,25 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         return new CommercialToolsQueryBuilder(_params.SetItem("$filter", newFilter), _skip, _top);
     }
 
+    public ICommercialToolsQueryBuilder WithOrderBy(string sortBy)
+    {
+        if (string.IsNullOrWhiteSpace(sortBy))
+            return this;
+
+        var orderByClause = sortBy.ToLowerInvariant() switch
+        {
+            "a-z" => "tender/title asc",
+            "z-a" => "tender/title desc",
+            "relevance" => "tender/status desc,tender/tenderPeriod/endDate asc,tender/title asc",
+            _ => null
+        };
+
+        if (orderByClause == null)
+            return this;
+
+        return WithParameter("$orderby", orderByClause);
+    }
+
     public string Build(string baseUrl)
     {
         if (string.IsNullOrWhiteSpace(baseUrl))

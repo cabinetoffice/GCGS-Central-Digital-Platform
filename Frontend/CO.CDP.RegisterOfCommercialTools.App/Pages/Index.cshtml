@@ -86,7 +86,7 @@
                 result@(Model.TotalCount == 1 ? "" : "s")</p>
         </div>
         <div class="govuk-grid-column-one-third">
-            <form method="get" class="govuk-form-group">
+            <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
                 <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
                 <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
@@ -113,11 +113,31 @@
                 <input type="hidden" name="end_from" value="@Model.SearchParams.ContractEndDateFrom"/>
                 <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
                 <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                <select id="sort-results" class="govuk-select" name="sort"
-                        onchange="this.form.submit()">
-                    <option value="relevance">Relevance</option>
-                    <option value="a-z">Alphabetical (A-Z)</option>
-                    <option value="z-a">Alphabetical (Z-A)</option>
+                <select id="sort-results" class="govuk-select" name="sort">
+                    @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
+                    {
+                        <option value="relevance" selected>Relevance</option>
+                    }
+                    else
+                    {
+                        <option value="relevance">Relevance</option>
+                    }
+                    @if (Model.SearchParams.SortOrder == "a-z")
+                    {
+                        <option value="a-z" selected>Alphabetical (A-Z)</option>
+                    }
+                    else
+                    {
+                        <option value="a-z">Alphabetical (A-Z)</option>
+                    }
+                    @if (Model.SearchParams.SortOrder == "z-a")
+                    {
+                        <option value="z-a" selected>Alphabetical (Z-A)</option>
+                    }
+                    else
+                    {
+                        <option value="z-a">Alphabetical (Z-A)</option>
+                    }
                 </select>
                 <noscript>
                     <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
