@@ -320,4 +320,97 @@ public class SearchServiceTests
 
         mockBuilder.Verify(x => x.WithAwardMethod(It.IsAny<string>()), Times.Never);
     }
+
+    [Fact]
+    public async Task Search_WhenSingleCpvCodeProvided_ShouldAddCpvFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = ["12345678"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/scheme eq 'CPV'") &&
+            f.Contains("tender/classification/classificationId eq '12345678'")))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/scheme eq 'CPV'") &&
+            f.Contains("tender/classification/classificationId eq '12345678'"))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenMultipleCpvCodesProvided_ShouldCombineWithOr()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = ["12345678", "87654321"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/classificationId") &&
+            f.Contains("12345678") &&
+            f.Contains("87654321") &&
+            f.Contains(" or ")))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/classificationId") &&
+            f.Contains("12345678") &&
+            f.Contains("87654321") &&
+            f.Contains(" or "))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenNoCpvCodesProvided_ShouldNotAddCpvFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = null,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification") && f.Contains("CPV"))), Times.Never);
+    }
 }

@@ -116,8 +116,14 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder ContractLocation(string region) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(region), "filter[tender.items.deliveryAddresses.region]", region);
 
-    public ICommercialToolsQueryBuilder WithCpv(string cpv) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(cpv), "filter[tender.items.additionalClassifications.id]", cpv);
+    public ICommercialToolsQueryBuilder WithCpv(string cpv)
+    {
+        if (string.IsNullOrWhiteSpace(cpv))
+            return this;
+
+        var odataFilter = $"(tender/classification/scheme eq 'CPV' and tender/classification/classificationId eq '{cpv}')";
+        return WithCustomFilter(odataFilter);
+    }
 
     public ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod)
     {

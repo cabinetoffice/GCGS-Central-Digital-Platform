@@ -110,6 +110,12 @@ public class SearchService(
             }
         }
 
+        queryBuilder = BuildCpvFilter(request.CpvCodes) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
+
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
@@ -134,4 +140,21 @@ public class SearchService(
             "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
             _ => $"tender/status eq '{status}'"
         };
+
+    private static string? BuildCpvFilter(List<string>? codes)
+    {
+        var validCodes = (codes ?? [])
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .ToList();
+
+        return validCodes.Count switch
+        {
+            0 => null,
+            1 => $"(tender/classification/scheme eq 'CPV' and tender/classification/classificationId eq '{validCodes[0]}')",
+            _ => BuildMultipleCpvFilter(validCodes)
+        };
+    }
+
+    private static string BuildMultipleCpvFilter(List<string> codes) =>
+        $"(tender/classification/scheme eq 'CPV' and ({string.Join(" or ", codes.Select(c => $"tender/classification/classificationId eq '{c}'"))}))";
 }

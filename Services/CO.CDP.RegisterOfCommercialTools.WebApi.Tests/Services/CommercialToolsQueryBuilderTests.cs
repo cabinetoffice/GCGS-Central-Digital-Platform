@@ -268,7 +268,9 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithCpv("12345678").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.items.additionalClassifications.id]=12345678");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Fclassification%2Fscheme%20eq%20%27CPV%27");
+        result.Should().Contain("tender%2Fclassification%2FclassificationId%20eq%20%2712345678%27");
     }
 
     [Fact]

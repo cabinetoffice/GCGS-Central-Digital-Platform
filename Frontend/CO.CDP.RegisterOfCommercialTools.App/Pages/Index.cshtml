@@ -102,6 +102,10 @@
                 {
                     <input type="hidden" name="status" value="@status"/>
                 }
+                @foreach (var cpv in Model.SearchParams.CpvCodes)
+                {
+                    <input type="hidden" name="cpv" value="@cpv"/>
+                }
                 <input type="hidden" name="sub_from" value="@Model.SearchParams.SubmissionDeadlineFrom"/>
                 <input type="hidden" name="sub_to" value="@Model.SearchParams.SubmissionDeadlineTo"/>
                 <input type="hidden" name="start_from" value="@Model.SearchParams.ContractStartDateFrom"/>
