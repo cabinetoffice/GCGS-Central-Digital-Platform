@@ -21,6 +21,7 @@ services:
       TestSettings__TestSupportAdminEmail: 
       TestSettings__TestSupportAdminPassword: 
       TestSettings__TestSupportAdminSecretKey:
+      TestSettings__DatabaseConnectionString: "Server=db;Database=cdp;User Id=cdp_user;Password=cdp123;"
 
 
 networks:
