@@ -30,21 +30,18 @@ build-docker-parallel: ## Build Docker images in parallel
 
 # Default to empty cache args locally
 DOCKER_CACHE_ARGS ?=
-PARALLELISM ?=
 
 # If running in GitHub Actions, set cache args for Bake
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
 	--set *.cache-from=type=local,src=/tmp/.buildx-cache \
 	--set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
-PARALLELISM = 4
 endif
 
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images with bake
 	@docker buildx bake -f compose.yml \
 		--set *.args.VERSION=$(VERSION) \
-		$(if $(PARALLELISM),--set *.max-parallelism=$(PARALLELISM),) \
 		$(DOCKER_CACHE_ARGS)
 .PHONY: build-docker
 
