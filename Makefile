@@ -31,11 +31,10 @@ build-docker-parallel: ## Build Docker images in parallel
 # Default to empty cache args
 DOCKER_CACHE_ARGS ?=
 
-# If running in GitHub Actions, use the GHA cache driver
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
-	--set *.cache-from=type=gha,scope=buildx \
-	--set *.cache-to=type=gha,scope=buildx,mode=max
+  --set *.cache-from=type=local,src=/tmp/.buildx-cache \
+  --set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
 endif
 
 build-docker: VERSION ?= "undefined"
