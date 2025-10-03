@@ -106,6 +106,9 @@ jobs:
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
           TestSettings__Password: ${{ secrets.SIRSI_E2ETEST_PASSWORD }}
           TestSettings__SecretKey: ${{ secrets.SIRSI_E2ETEST_SECRETKEY }}
+          TestSettings__TestSupportAdminEmail: ${{ secrets.SIRSI_E2ETEST_SUPPORTADMINEMAIL }}
+          TestSettings__TestSupportAdminPassword: ${{ secrets.SIRSI_E2ETEST_SUPPORTADMINPASSWORD }}
+          TestSettings__TestSupportAdminSecretKey: ${{ secrets.SIRSI_E2ETEST_SUPPORTADMINSECRETKEY }}
           Organisation__Authority: http://authority:8080
           OrganisationService: http://organisation:8080
           FormsService: http://forms:8080

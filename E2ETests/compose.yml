@@ -18,6 +18,10 @@ services:
       TestSettings__Email:
       TestSettings__Password:
       TestSettings__SecretKey:
+      TestSettings__TestSupportAdminEmail: 
+      TestSettings__TestSupportAdminPassword: 
+      TestSettings__TestSupportAdminSecretKey:
+
 
 networks:
   cdp-sirsi:
