@@ -29,15 +29,25 @@ build-docker-parallel: ## Build Docker images in parallel
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker-parallel
 
+# Default to empty cache args locally
+DOCKER_CACHE_ARGS ?=
+
+# If running in GitHub Actions, set cache args
+ifdef GITHUB_ACTIONS
+DOCKER_CACHE_ARGS = \
+	--cache-from=type=local,src=/tmp/.buildx-cache \
+	--cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
+endif
+
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images sequentially to reduce memory usage
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation person forms
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) db gateway
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) authority tenant
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation person forms
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) data-sharing entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-app commercial-tools-app commercial-tools-api
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
