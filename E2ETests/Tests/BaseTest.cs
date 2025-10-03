@@ -1,20 +1,22 @@
 using E2ETests.Pages;
 using E2ETests.Utilities;
 using Microsoft.Playwright;
+using NUnit.Framework;
 using System.Threading;
 
 namespace E2ETests;
 
 public class BaseTest
 {
-    protected IBrowserContext _context;
-    protected IPage _page;
-    protected LoginPage _loginPage;
-    protected static string? _accessToken; // Store the token globally
+    protected IBrowserContext _context = default!;
+    protected IPage _page = default!;
+    protected LoginPage _loginPage = default!;
 
+    // Static so it’s shared across the entire run
+    private static string? _authStatePath;
+    private static string? _accessToken;
     private static readonly SemaphoreSlim _tokenLock = new(1, 1);
 
-    // Retrieve configuration values dynamically
     protected readonly string _baseUrl = ConfigUtility.GetBaseUrl();
     private readonly string _testEmail = ConfigUtility.GetTestEmail();
     private readonly string _testPassword = ConfigUtility.GetTestPassword();
@@ -24,109 +26,127 @@ public class BaseTest
     private readonly string _superAdminPassword = ConfigUtility.GetTestSupportAdminPassword();
     private readonly string _superAdminSecretKey = ConfigUtility.GetTestSupportAdminSecretKey();
 
-[SetUp]
-public async Task Setup()
-{
-    await PlaywrightHost.EnsureAsync();                 // shared browser
-    _context = await PlaywrightHost.Browser!.NewContextAsync(); // isolated per test
-    _page = await _context.NewPageAsync();
-
-    // Start Playwright tracing for this test (screenshots & snapshots help debugging)
-    await _context.Tracing.StartAsync(new TracingStartOptions
+    // ---------- One-time login ----------
+    [OneTimeSetUp]
+    public async Task GlobalLogin()
     {
-        Screenshots = true,
-        Snapshots = true,
-        Sources = true
-    });
+        await PlaywrightHost.EnsureAsync();
 
-    await Login();
-}
+        var work = TestContext.CurrentContext.WorkDirectory;
+        var dir = Path.Combine(work, "AuthStates");
+        Directory.CreateDirectory(dir);
 
-    protected async Task Login(bool isSuperAdminUser = false)
-    {
-        _loginPage = new LoginPage(_page);
+        _authStatePath = Path.Combine(dir, "global.json");
 
-        // Perform login before each test
-        await _loginPage.Login(
-            _baseUrl,
-            isSuperAdminUser ? SuperAdminEmail : _testEmail,
-            isSuperAdminUser ? _superAdminPassword : _testPassword,
-            isSuperAdminUser ? _superAdminSecretKey : _secretKey);
-
-        // Extract the access token ONCE (thread-safe for parallel runs)
-        if (_accessToken == null)
+        if (!File.Exists(_authStatePath))
         {
-            await _tokenLock.WaitAsync();
-            try
-            {
-                if (_accessToken == null) // double-check inside the lock
-                {
-                    _accessToken = await AuthUtility.GetAccessToken(_page);
-                    Console.WriteLine($"🔑 Stored Access Token: {_accessToken}");
-                }
-            }
-            finally
-            {
-                _tokenLock.Release();
-            }
+            var ctx = await PlaywrightHost.Browser!.NewContextAsync();
+            var page = await ctx.NewPageAsync();
+
+            // Do real login ONCE
+            _loginPage = new LoginPage(page);
+            await _loginPage.Login(_baseUrl, _testEmail, _testPassword, _secretKey);
+
+            // Capture token once
+            _accessToken = await AuthUtility.GetAccessToken(page);
+
+            // Save storage state to disk
+            await ctx.StorageStateAsync(new() { Path = _authStatePath });
+            await ctx.CloseAsync();
+
+            Console.WriteLine("✅ Logged in once and saved auth state.");
         }
     }
 
-    protected async Task Logout()
+    // ---------- Per-test setup ----------
+    [SetUp]
+    public async Task Setup()
     {
-        await _page.ClickAsync("a.govuk-header__link[href='/one-login/sign-out']");
+        await PlaywrightHost.EnsureAsync();
+
+        if (string.IsNullOrEmpty(_authStatePath))
+            throw new("Auth state missing. Did GlobalLogin run?");
+
+        // Create a new context with the saved signed-in state
+        _context = await PlaywrightHost.Browser!.NewContextAsync(new() { StorageStatePath = _authStatePath });
+        _page = await _context.NewPageAsync();
+
+        await _context.Tracing.StartAsync(new()
+        {
+            Screenshots = true,
+            Snapshots = true,
+            Sources = true
+        });
     }
 
+    // ---------- Tear down ----------
     [TearDown]
     public async Task TearDown()
     {
-        // Take screenshot if the test failed
         var result = TestContext.CurrentContext.Result.Outcome.Status;
+
         if (result == NUnit.Framework.Interfaces.TestStatus.Failed)
         {
-            // Save screenshot
-            var screenshotsDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Screenshots");
-            Directory.CreateDirectory(screenshotsDir);
+            var work = TestContext.CurrentContext.WorkDirectory;
 
-            var screenshotPath = Path.Combine(screenshotsDir, $"{TestContext.CurrentContext.Test.Name}.png");
-            await _page.ScreenshotAsync(new PageScreenshotOptions
-            {
-                Path = screenshotPath,
-                FullPage = true
-            });
-            TestContext.AddTestAttachment(screenshotPath, "Screenshot on failure");
+            var shots = Path.Combine(work, "Screenshots");
+            Directory.CreateDirectory(shots);
+            var shot = Path.Combine(shots, $"{TestContext.CurrentContext.Test.Name}.png");
+            await _page.ScreenshotAsync(new() { Path = shot, FullPage = true });
+            TestContext.AddTestAttachment(shot, "Screenshot");
 
-            // Save trace
-            var tracesDir = Path.Combine(TestContext.CurrentContext.WorkDirectory, "Traces");
-            Directory.CreateDirectory(tracesDir);
-
-            var tracePath = Path.Combine(tracesDir, $"{TestContext.CurrentContext.Test.Name}.zip");
-            await _context.Tracing.StopAsync(new TracingStopOptions
-            {
-                Path = tracePath
-            });
-            TestContext.AddTestAttachment(tracePath, "Playwright trace");
+            var traces = Path.Combine(work, "Traces");
+            Directory.CreateDirectory(traces);
+            var trace = Path.Combine(traces, $"{TestContext.CurrentContext.Test.Name}.zip");
+            await _context.Tracing.StopAsync(new() { Path = trace });
+            TestContext.AddTestAttachment(trace, "Trace");
         }
         else
         {
-            // Stop without saving
             await _context.Tracing.StopAsync();
         }
 
-            await _context.CloseAsync(); // close only the context
+        await _context.CloseAsync(); // safe: doesn’t affect the saved global state
     }
 
-    // Provide the stored access token for tests that need API requests
-    protected string GetAccessToken()
+    // ---------- Helpers ----------
+protected string GetAccessToken()
+{
+    if (_accessToken != null) return _accessToken;
+
+    // Make sure we only fetch once across all workers
+    _tokenLock.Wait();
+    try
     {
         if (_accessToken == null)
-            throw new Exception("Access token not available. Ensure BaseTest has run.");
-        return _accessToken;
+        {
+            // Use a fresh page in the current authenticated context so we don't
+            // disturb whatever _page is doing in the test.
+            var tokenPageTask = _context.NewPageAsync(); // _context is already authed from storage state
+            tokenPageTask.Wait();
+            var tokenPage = tokenPageTask.Result;
+
+            try
+            {
+                // AuthUtility navigates to /diagnostic and returns the token
+                var tokenTask = AuthUtility.GetAccessToken(tokenPage);
+                tokenTask.Wait();
+                _accessToken = tokenTask.Result;
+                Console.WriteLine($"🔑 Stored Access Token (lazy): {_accessToken}");
+            }
+            finally
+            {
+                // close the temporary page
+                tokenPage.CloseAsync().Wait();
+            }
+        }
+    }
+    finally
+    {
+        _tokenLock.Release();
     }
 
-    // Provide the base URL for page objects
-    public string GetBaseUrl()
-    {
-        return _baseUrl;
-    }
+    return _accessToken!;
+}
+    public string GetBaseUrl() => _baseUrl;
 }
