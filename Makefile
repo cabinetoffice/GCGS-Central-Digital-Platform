@@ -4,7 +4,6 @@ REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 IMAGE_VERSION ?= latest
 
 export DOCKER_BUILDKIT=1
-export COMPOSE_DOCKER_CLI_BUILD=1
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -26,7 +25,7 @@ test: ## Run tests
 
 build-docker-parallel: VERSION ?= "undefined"
 build-docker-parallel: ## Build Docker images in parallel
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --build-arg VERSION=$(VERSION)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
 .PHONY: build-docker-parallel
 
 # Default to empty cache args locally
@@ -41,13 +40,12 @@ endif
 
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images sequentially to reduce memory usage
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) db gateway
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) authority tenant
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation person forms
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) data-sharing entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-app commercial-tools-app commercial-tools-api
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --parallel --memory=2g --build-arg VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set authority.args.VERSION=$(VERSION) --set tenant.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation.args.VERSION=$(VERSION) --set person.args.VERSION=$(VERSION) --set forms.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set data-sharing.args.VERSION=$(VERSION) --set entity-verification.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation-app.args.VERSION=$(VERSION) --set commercial-tools-app.args.VERSION=$(VERSION) --set commercial-tools-api.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set av-scanner.args.VERSION=$(VERSION) --set scheduled-worker.args.VERSION=$(VERSION) --set outbox-processor-organisation.args.VERSION=$(VERSION) --set outbox-processor-entity-verification.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation-information-migrations.args.VERSION=$(VERSION) --set entity-verification-migrations.args.VERSION=$(VERSION) --set commercial-tools-migrations.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
