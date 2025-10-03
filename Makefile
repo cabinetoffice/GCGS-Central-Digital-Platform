@@ -32,12 +32,12 @@ build-docker-parallel: ## Build Docker images in parallel
 DOCKER_CACHE_ARGS ?=
 PARALLELISM ?=
 
-# If running in GitHub Actions, set cache args
+# If running in GitHub Actions, set cache args for Bake
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
-	--cache-from=type=local,src=/tmp/.buildx-cache \
-	--cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
-PARALLELISM = 8
+	--set *.cache-from=type=local,src=/tmp/.buildx-cache \
+	--set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
+PARALLELISM = 4
 endif
 
 build-docker: VERSION ?= "undefined"
