@@ -39,7 +39,9 @@ endif
 
 build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images with bake
-	@docker buildx bake -f compose.yml \
+	@docker buildx bake
+		--allow=fs=/tmp \
+		-f compose.yml \
 		--set *.args.VERSION=$(VERSION) \
 		$(DOCKER_CACHE_ARGS)
 .PHONY: build-docker
