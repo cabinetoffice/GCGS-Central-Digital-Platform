@@ -30,22 +30,22 @@ build-docker-parallel: ## Build Docker images in parallel
 
 # Default to empty cache args locally
 DOCKER_CACHE_ARGS ?=
+PARALLELISM ?=
 
 # If running in GitHub Actions, set cache args
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
 	--cache-from=type=local,src=/tmp/.buildx-cache \
 	--cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
+PARALLELISM = 8
 endif
 
 build-docker: VERSION ?= "undefined"
-build-docker: ## Build Docker images sequentially to reduce memory usage
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set authority.args.VERSION=$(VERSION) --set tenant.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation.args.VERSION=$(VERSION) --set person.args.VERSION=$(VERSION) --set forms.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set data-sharing.args.VERSION=$(VERSION) --set entity-verification.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation-app.args.VERSION=$(VERSION) --set commercial-tools-app.args.VERSION=$(VERSION) --set commercial-tools-api.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set av-scanner.args.VERSION=$(VERSION) --set scheduled-worker.args.VERSION=$(VERSION) --set outbox-processor-organisation.args.VERSION=$(VERSION) --set outbox-processor-entity-verification.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set organisation-information-migrations.args.VERSION=$(VERSION) --set entity-verification-migrations.args.VERSION=$(VERSION) --set commercial-tools-migrations.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+build-docker: ## Build Docker images with bake
+	@docker buildx bake -f compose.yml \
+		--set *.args.VERSION=$(VERSION) \
+		$(if $(PARALLELISM),--set *.max-parallelism=$(PARALLELISM),) \
+		$(DOCKER_CACHE_ARGS)
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
