@@ -28,14 +28,14 @@ build-docker-parallel: ## Build Docker images in parallel
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
 .PHONY: build-docker-parallel
 
-# Default to empty cache args locally
+# Default to empty cache args
 DOCKER_CACHE_ARGS ?=
 
-# If running in GitHub Actions, set cache args for Bake
+# If running in GitHub Actions, use the GHA cache driver
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
-	--set *.cache-from=type=local,src=/tmp/.buildx-cache \
-	--set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max
+	--set *.cache-from=type=gha,scope=buildx \
+	--set *.cache-to=type=gha,scope=buildx,mode=max
 endif
 
 build-docker: VERSION ?= "undefined"
