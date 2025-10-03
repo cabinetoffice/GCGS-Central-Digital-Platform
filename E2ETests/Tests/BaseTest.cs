@@ -1,85 +1,96 @@
+using System.Collections.Concurrent;
+using System.Threading;
 using E2ETests.Pages;
 using E2ETests.Utilities;
 using Microsoft.Playwright;
 using NUnit.Framework;
-using System.Threading;
 
 namespace E2ETests;
 
 public class BaseTest
 {
+    // ---------- per-fixture storage states & token ----------
+    private static readonly ConcurrentDictionary<string, string> _fixtureStatePath = new();
+    protected static string? _accessToken;            // shared token once fetched
+    private static readonly SemaphoreSlim _tokenLock = new(1, 1);
+
+    // ---------- per-test context/page ----------
     protected IBrowserContext _context = default!;
     protected IPage _page = default!;
     protected LoginPage _loginPage = default!;
 
-    // Static so it’s shared across the entire run
-    private static string? _authStatePath;
-    private static string? _accessToken;
-    private static readonly SemaphoreSlim _tokenLock = new(1, 1);
-
+    // ---------- config ----------
     protected readonly string _baseUrl = ConfigUtility.GetBaseUrl();
-    private readonly string _testEmail = ConfigUtility.GetTestEmail();
+    private readonly string _testEmail    = ConfigUtility.GetTestEmail();
     private readonly string _testPassword = ConfigUtility.GetTestPassword();
-    private readonly string _secretKey = ConfigUtility.GetSecretKey();
-
+    private readonly string _secretKey    = ConfigUtility.GetSecretKey();
     protected static string SuperAdminEmail => ConfigUtility.GetTestSupportAdminEmail();
     private readonly string _superAdminPassword = ConfigUtility.GetTestSupportAdminPassword();
     private readonly string _superAdminSecretKey = ConfigUtility.GetTestSupportAdminSecretKey();
 
-    // ---------- One-time login ----------
+    // =========================================================
+    // ONE-TIME LOGIN PER FIXTURE (saves a unique session cookie)
+    // =========================================================
     [OneTimeSetUp]
-    public async Task GlobalLogin()
+    public async Task OneTimeLoginPerFixture()
     {
         await PlaywrightHost.EnsureAsync();
 
+        var fixtureKey = GetType().FullName!; // unique per test class
+        if (_fixtureStatePath.ContainsKey(fixtureKey)) return;
+
         var work = TestContext.CurrentContext.WorkDirectory;
-        var dir = Path.Combine(work, "AuthStates");
+        var dir  = Path.Combine(work, "AuthStates");
         Directory.CreateDirectory(dir);
 
-        _authStatePath = Path.Combine(dir, "global.json");
+        var statePath = Path.Combine(dir, fixtureKey.Replace('.', '_') + ".json");
 
-        if (!File.Exists(_authStatePath))
+        if (!File.Exists(statePath))
         {
-            var ctx = await PlaywrightHost.Browser!.NewContextAsync();
-            var page = await ctx.NewPageAsync();
+            var tempCtx  = await PlaywrightHost.Browser!.NewContextAsync();
+            var tempPage = await tempCtx.NewPageAsync();
 
-            // Do real login ONCE
-            _loginPage = new LoginPage(page);
+            // Real OneLogin ONCE for this fixture
+            _loginPage = new LoginPage(tempPage);
             await _loginPage.Login(_baseUrl, _testEmail, _testPassword, _secretKey);
 
-            // Capture token once
-            _accessToken = await AuthUtility.GetAccessToken(page);
+            // (optional) do not rely on this being set; GetAccessToken() is lazy+locked
+            await tempCtx.StorageStateAsync(new() { Path = statePath });
+            await tempCtx.CloseAsync();
 
-            // Save storage state to disk
-            await ctx.StorageStateAsync(new() { Path = _authStatePath });
-            await ctx.CloseAsync();
-
-            Console.WriteLine("✅ Logged in once and saved auth state.");
+            Console.WriteLine($"✅ [{fixtureKey}] saved auth state: {statePath}");
         }
+
+        _fixtureStatePath[fixtureKey] = statePath;
     }
 
-    // ---------- Per-test setup ----------
+    // ===========================================
+    // PER-TEST: new isolated context from that state
+    // ===========================================
     [SetUp]
     public async Task Setup()
     {
         await PlaywrightHost.EnsureAsync();
 
-        if (string.IsNullOrEmpty(_authStatePath))
-            throw new("Auth state missing. Did GlobalLogin run?");
+        var fixtureKey = GetType().FullName!;
+        if (!_fixtureStatePath.TryGetValue(fixtureKey, out var statePath))
+            throw new("Auth state not initialised. Did OneTimeSetUp run?");
 
-        // Create a new context with the saved signed-in state
-        _context = await PlaywrightHost.Browser!.NewContextAsync(new() { StorageStatePath = _authStatePath });
-        _page = await _context.NewPageAsync();
+        _context = await PlaywrightHost.Browser!.NewContextAsync(new() { StorageStatePath = statePath });
+        _page    = await _context.NewPageAsync();
 
+        // Tracing per test
         await _context.Tracing.StartAsync(new()
         {
             Screenshots = true,
-            Snapshots = true,
-            Sources = true
+            Snapshots   = true,
+            Sources     = true
         });
     }
 
-    // ---------- Tear down ----------
+    // ===========================================
+    // PER-TEST TEARDOWN: traces/screenshots & close
+    // ===========================================
     [TearDown]
     public async Task TearDown()
     {
@@ -93,60 +104,73 @@ public class BaseTest
             Directory.CreateDirectory(shots);
             var shot = Path.Combine(shots, $"{TestContext.CurrentContext.Test.Name}.png");
             await _page.ScreenshotAsync(new() { Path = shot, FullPage = true });
-            TestContext.AddTestAttachment(shot, "Screenshot");
+            TestContext.AddTestAttachment(shot, "Screenshot on failure");
 
             var traces = Path.Combine(work, "Traces");
             Directory.CreateDirectory(traces);
             var trace = Path.Combine(traces, $"{TestContext.CurrentContext.Test.Name}.zip");
             await _context.Tracing.StopAsync(new() { Path = trace });
-            TestContext.AddTestAttachment(trace, "Trace");
+            TestContext.AddTestAttachment(trace, "Playwright trace");
         }
         else
         {
             await _context.Tracing.StopAsync();
         }
 
-        await _context.CloseAsync(); // safe: doesn’t affect the saved global state
+        await _context.CloseAsync(); // only this test's context; fixture state remains
     }
 
-    // ---------- Helpers ----------
-protected string GetAccessToken()
-{
-    if (_accessToken != null) return _accessToken;
+    // =========================================================
+    // HELPERS
+    // =========================================================
 
-    // Make sure we only fetch once across all workers
-    _tokenLock.Wait();
-    try
+    // Lazy, thread-safe token fetch — safe under parallel start-up
+    protected string GetAccessToken()
     {
-        if (_accessToken == null)
-        {
-            // Use a fresh page in the current authenticated context so we don't
-            // disturb whatever _page is doing in the test.
-            var tokenPageTask = _context.NewPageAsync(); // _context is already authed from storage state
-            tokenPageTask.Wait();
-            var tokenPage = tokenPageTask.Result;
+        if (_accessToken != null) return _accessToken;
 
-            try
+        _tokenLock.Wait();
+        try
+        {
+            if (_accessToken == null)
             {
-                // AuthUtility navigates to /diagnostic and returns the token
-                var tokenTask = AuthUtility.GetAccessToken(tokenPage);
-                tokenTask.Wait();
-                _accessToken = tokenTask.Result;
-                Console.WriteLine($"🔑 Stored Access Token (lazy): {_accessToken}");
-            }
-            finally
-            {
-                // close the temporary page
-                tokenPage.CloseAsync().Wait();
+                // Use a temporary page in the current authenticated context
+                var tmpPage = _context.NewPageAsync().GetAwaiter().GetResult();
+                try
+                {
+                    _accessToken = AuthUtility.GetAccessToken(tmpPage).GetAwaiter().GetResult();
+                    Console.WriteLine($"🔑 Stored Access Token (lazy): {_accessToken}");
+                }
+                finally
+                {
+                    tmpPage.CloseAsync().GetAwaiter().GetResult();
+                }
             }
         }
-    }
-    finally
-    {
-        _tokenLock.Release();
+        finally
+        {
+            _tokenLock.Release();
+        }
+
+        return _accessToken!;
     }
 
-    return _accessToken!;
-}
+    // Use only if you explicitly need to log in as a different identity mid-test.
+    protected async Task Login(bool isSuperAdminUser = false)
+    {
+        _loginPage = new LoginPage(_page);
+        await _loginPage.Login(
+            _baseUrl,
+            isSuperAdminUser ? SuperAdminEmail      : _testEmail,
+            isSuperAdminUser ? _superAdminPassword  : _testPassword,
+            isSuperAdminUser ? _superAdminSecretKey : _secretKey);
+    }
+
+    protected async Task Logout()
+    {
+        // Avoid calling this in setup/teardown for per-fixture mode; it will invalidate the server session.
+        await _page.ClickAsync("a.govuk-header__link[href='/one-login/sign-out']");
+    }
+
     public string GetBaseUrl() => _baseUrl;
 }
