@@ -147,20 +147,6 @@ public class CpvCodesControllerTests
         model!.SelectedCodes.Should().BeEquivalentTo(selectedCodes);
     }
 
-    [Fact]
-    public async Task UpdateSelectionFragment_ServiceThrowsException_ReturnsErrorModel()
-    {
-        var selectedCodes = new[] { "03000000" };
-        _mockService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>())).ThrowsAsync(new Exception("Service error"));
-
-        var result = await _controller.UpdateSelectionFragment(selectedCodes);
-
-        result.Should().BeOfType<PartialViewResult>();
-        var partialView = result as PartialViewResult;
-        var model = partialView!.Model as HierarchicalCodeSelectionViewModel<CpvCodeDto>;
-        model!.ErrorMessage.Should().Be("There is a problem updating your selection. Try again.");
-    }
-
     [Theory]
     [InlineData("")]
     [InlineData("   ")]

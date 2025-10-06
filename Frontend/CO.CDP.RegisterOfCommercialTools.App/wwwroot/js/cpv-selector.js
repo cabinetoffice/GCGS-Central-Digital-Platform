@@ -137,6 +137,16 @@ const CpvSelector = (() => {
     };
 
     const updateSelectionDisplay = async () => {
+        const countElement = document.getElementById(`${config.modalId}-selection-count`);
+        if (countElement) {
+            countElement.textContent = state.selectedCodes.size.toString();
+        }
+
+        if (state.selectedCodes.size === 0) {
+            updateContainer(state.selectionContainer, '<p class="govuk-body-s govuk-!-margin-bottom-0">No CPV codes selected</p>');
+            return;
+        }
+
         try {
             const formData = new FormData();
             getCurrentSelection().forEach(code => formData.append('selectedCodes', code));
@@ -150,12 +160,6 @@ const CpvSelector = (() => {
                 const html = await response.text();
                 updateContainer(state.selectionContainer, html);
                 setupSelectionEventHandlers();
-
-                const countElement = document.getElementById(`${config.modalId}-selection-count`);
-                if (countElement) {
-                    countElement.textContent = state.selectedCodes.size.toString();
-                }
-
                 refreshCheckboxStates();
             }
         } catch (error) {

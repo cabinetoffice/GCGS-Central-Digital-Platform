@@ -83,26 +83,16 @@ public abstract class HierarchicalCodeControllerBase<T>(IHierarchicalCodeService
     [HttpPost]
     public virtual async Task<IActionResult> UpdateSelectionFragment([FromForm] string[]? selectedCodes = null)
     {
-        try
+        var codes = selectedCodes?.ToList() ?? new List<string>();
+        var items = codes.Any() ? await codeService.GetByCodesAsync(codes) : new List<T>();
+
+        ViewData["SelectedItems"] = items;
+        ViewData["SelectionCount"] = codes.Count;
+
+        return PartialView(SelectionFragmentView, new HierarchicalCodeSelectionViewModel<T>
         {
-            var codes = selectedCodes?.ToList() ?? new List<string>();
-            var allCodes = await codeService.GetByCodesAsync(codes);
-
-            ViewData["SelectedItems"] = allCodes;
-            ViewData["SelectionCount"] = codes.Count;
-
-            var viewModel = new HierarchicalCodeSelectionViewModel<T>
-            {
-                SelectedCodes = codes
-            };
-
-            return PartialView(SelectionFragmentView, viewModel);
-        }
-        catch (Exception)
-        {
-            var errorModel = new HierarchicalCodeSelectionViewModel<T>().WithError("There is a problem updating your selection. Try again.");
-            return PartialView(SelectionFragmentView, errorModel);
-        }
+            SelectedCodes = codes
+        });
     }
 
     [HttpGet]
