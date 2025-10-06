@@ -19,17 +19,15 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithKeywords_WhenKeywordsProvided_ShouldAddSearchParameterAndFieldFilters()
+    public void WithKeywords_WhenKeywordsProvided_ShouldAddFilterWithContains()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test keyword").Build(BaseUrl);
+        var result = builder.WithKeywords("test").Build(BaseUrl);
 
-        result.Should().Contain("$search=test%20keyword");
-        result.Should().Contain("filter[tender.name]=test%20keyword");
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.description]=test%20keyword");
-        result.Should().Contain("filter[parties.identifier.id]=test%20keyword");
-        result.Should().Contain("filter[parties.name]=test%20keyword");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("contains");
+        result.Should().Contain("tender%2Ftitle");
     }
 
     [Fact]
@@ -53,43 +51,48 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithKeywords_WhenSpaceSeparatedWords_ShouldPassThroughForAnyWordSearch()
+    public void WithKeywords_WhenSpaceSeparatedWords_ShouldUseOrLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithKeywords("radio televisions").Build(BaseUrl);
 
-        result.Should().Contain("$search=radio%20televisions");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("%20or%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenPlusOperatorUsed_ShouldConvertToAndOperator()
+    public void WithKeywords_WhenPlusOperatorUsed_ShouldUseAndLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithKeywords("administration + defence").Build(BaseUrl);
 
-        result.Should().Contain("$search=administration%20AND%20defence");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("%20and%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenQuotedPhrase_ShouldPassThroughForExactMatch()
+    public void WithKeywords_WhenQuotedPhrase_ShouldSearchForExactPhrase()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithKeywords("\"market research\"").Build(BaseUrl);
 
-        result.Should().Contain("$search=%22market%20research%22");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("contains");
+        result.Should().Contain("market%20research");
     }
 
     [Fact]
-    public void WithKeywords_WhenMultiplePlusOperators_ShouldConvertAllToAnd()
+    public void WithKeywords_WhenMultiplePlusOperators_ShouldUseAndLogicForAll()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithKeywords("technology + innovation + digital").Build(BaseUrl);
 
-        result.Should().Contain("$search=technology%20AND%20innovation%20AND%20digital");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("%20and%20");
     }
 
     [Fact]
@@ -113,13 +116,23 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithStatus_WhenStatusProvided_ShouldAddStatusFilter()
+    public void WithStatus_WhenActiveProvided_ShouldAddODataFilter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithStatus("Active").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.status]=Active");
+        result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
+    }
+
+    [Fact]
+    public void WithStatus_WhenUpcomingProvided_ShouldAddODataFilterWithOrCondition()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithStatus("upcoming").Build(BaseUrl);
+
+        result.Should().Contain("$filter=%28tender%2Fstatus%20eq%20%27planned%27%20or%20tender%2Fstatus%20eq%20%27planning%27%29");
     }
 
     [Fact]
@@ -258,7 +271,9 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithCpv("12345678").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.items.additionalClassifications.id]=12345678");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Fclassification%2Fscheme%20eq%20%27CPV%27");
+        result.Should().Contain("tender%2Fclassification%2FclassificationId%20eq%20%2712345678%27");
     }
 
     [Fact]
@@ -290,7 +305,7 @@ public class CommercialToolsQueryBuilderTests
         var result = builder.WithStatus("Active").Build(baseUrlWithQuery);
 
         result.Should().StartWith(baseUrlWithQuery);
-        result.Should().Contain("&filter[tender.status]=Active");
+        result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
     }
 
     [Fact]
@@ -298,10 +313,10 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test with spaces").Build(BaseUrl);
+        var result = builder.WithKeywords("test").Build(BaseUrl);
 
-        result.Should().Contain("$search=test%20with%20spaces");
-        result.Should().Contain("filter[tender.name]=test%20with%20spaces");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("contains");
     }
 
     [Fact]
@@ -318,17 +333,14 @@ public class CommercialToolsQueryBuilderTests
         var result2 = builder2.Build(BaseUrl);
         var result3 = builder3.Build(BaseUrl);
 
-        result1.Should().NotContain("$search=test");
-        result1.Should().NotContain("filter[tender.name]=test");
-        result1.Should().NotContain("filter[tender.status]=Active");
+        result1.Should().NotContain("contains");
+        result1.Should().NotContain("tender%2Fstatus%20eq%20%27active%27");
 
-        result2.Should().Contain("$search=test");
-        result2.Should().Contain("filter[tender.name]=test");
-        result2.Should().NotContain("filter[tender.status]=Active");
+        result2.Should().Contain("contains");
+        result2.Should().NotContain("tender%2Fstatus%20eq%20%27active%27");
 
-        result3.Should().Contain("$search=test");
-        result3.Should().Contain("filter[tender.name]=test");
-        result3.Should().Contain("filter[tender.status]=Active");
+        result3.Should().Contain("contains");
+        result3.Should().Contain("tender%2Fstatus%20eq%20%27active%27");
     }
 
     [Fact]
@@ -350,9 +362,8 @@ public class CommercialToolsQueryBuilderTests
             .Build(BaseUrl);
 
         result.Should().StartWith(BaseUrl);
-        result.Should().Contain("$search=IT%20services");
-        result.Should().Contain("filter[tender.name]=IT%20services");
-        result.Should().Contain("filter[tender.status]=Active");
+        result.Should().Contain("contains");
+        result.Should().Contain("tender%2Fstatus%20eq%20%27active%27");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.from]=1.005");
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.to]=9.9999");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.from]=2025-01-01");
@@ -371,7 +382,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithFrameworkType("open").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.type]=open");
+        result.Should().Contain("$filter=tender%2Ftechniques%2FframeworkAgreement%2Ftype%20eq%20%27open%27");
     }
 
     [Fact]
@@ -431,7 +442,10 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithAwardMethod("with-competition").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.awardCriteria.method]=open");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27open%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withReopeningCompetition%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withAndWithoutReopeningCompetition%27");
     }
 
     [Fact]
@@ -441,7 +455,25 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithAwardMethod("without-competition").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.awardCriteria.method]=direct");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27direct%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withoutReopeningCompetition%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withAndWithoutReopeningCompetition%27");
+    }
+
+    [Fact]
+    public void WithAwardMethod_WhenWithAndWithoutCompetition_ShouldMapToAllMethods()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithAwardMethod("with-and-without-competition").Build(BaseUrl);
+
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27open%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withReopeningCompetition%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withAndWithoutReopeningCompetition%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27direct%27");
+        result.Should().Contain("tender%2Ftechniques%2FframeworkAgreement%2Fmethod%20eq%20%27withoutReopeningCompetition%27");
     }
 
     [Fact]
@@ -460,6 +492,48 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithAwardMethod(null!);
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenAtoZ_ShouldAddOrderByAscending()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("a-z").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=tender%2Ftitle%20asc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenZtoA_ShouldAddOrderByDescending()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("z-a").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=tender%2Ftitle%20desc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenRelevance_ShouldAddRelevanceOrderBy()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("relevance").Build(BaseUrl);
+
+        result.Should().Contain("$orderby=");
+        result.Should().Contain("tender%2Fstatus%20desc");
+        result.Should().Contain("tender%2FtenderPeriod%2FendDate%20asc");
+    }
+
+    [Fact]
+    public void WithOrderBy_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithOrderBy("");
 
         result.Should().BeSameAs(builder);
     }

@@ -11,7 +11,7 @@ public class SearchModel : IValidatableObject
     [FromQuery(Name = "framework")] public string? FrameworkOptions { get; set; }
     [FromQuery(Name = "market")] public string? DynamicMarketOptions { get; set; }
 
-    [FromQuery(Name = "award")] public string? AwardMethod { get; set; }
+    [FromQuery(Name = "award")] public List<string> AwardMethod { get; set; } = [];
 
     [FromQuery(Name = "fee_min")]
     [Range(0, 100, ErrorMessage = "Enter a value between 0 and 100")]

@@ -101,7 +101,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "2025-09-29-notice-performance-improvements-experiment"
+      pinned_service_version_fts        = "1.0.20"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -234,9 +234,11 @@ locals {
         "gov.wales",
         "homeoffice.gov.uk",
         "in-tend.co.uk",
+        "ivalua.com",
         "jaggaer.com",
         "justice.gov.uk",
         "Kainos.com",
+        "kcfmcglobal.com",
         "klickstream.co.uk",
         "maistro.com",
         "mastek.com",
@@ -292,7 +294,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.19"
+      pinned_service_version_fts        = "1.0.20"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -344,7 +346,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.19"
+      pinned_service_version_fts        = "1.0.20"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"

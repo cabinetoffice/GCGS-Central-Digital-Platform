@@ -7,13 +7,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
-public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, IFtsUrlService ftsUrlService, ILogger<IndexModel> logger)
+public class IndexModel(
+    ISearchService searchService,
+    ISirsiUrlService sirsiUrlService,
+    IFtsUrlService ftsUrlService,
+    ILogger<IndexModel> logger)
     : PageModel
 {
-    [BindProperty(SupportsGet = true, Name = "sort")] public SearchModel SearchParams { get; set; } = new();
-
-    [BindProperty(SupportsGet = true, Name = "acc")]
-    public List<string> OpenAccordions { get; set; } = new();
+    [BindProperty(SupportsGet = true)] public SearchModel SearchParams { get; set; } = new();
 
     public List<SearchResult> SearchResults { get; set; } = [];
     public PaginationPartialModel? Pagination { get; set; }
@@ -35,21 +36,14 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public async Task OnGetAsync()
     {
-        logger.LogInformation("Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}]",
-            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status));
+        logger.LogInformation(
+            "Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}], CpvCodes: [{CpvCodes}]",
+            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status),
+            string.Join(", ", SearchParams.CpvCodes));
 
         try
         {
             SetHomeUrl();
-
-            if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
-            {
-                OpenAccordions =
-                [
-                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method", "fees",
-                    "date-range"
-                ];
-            }
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 

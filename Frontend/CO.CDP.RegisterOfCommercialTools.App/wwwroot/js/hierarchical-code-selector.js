@@ -59,12 +59,13 @@ const HierarchicalCodeSelector = (() => {
     };
 
     const getCurrentSelection = () => Array.from(state.selectedCodes);
-
     const loadSelectedCodes = () => {
-        const hiddenInputs = document.querySelectorAll(`input[name="${config.fieldName}"]`);
         state.selectedCodes.clear();
-        hiddenInputs.forEach(input => {
-            if (input.value) state.selectedCodes.add(input.value);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const cpvParams = urlParams.getAll(config.fieldName);
+        cpvParams.forEach(code => {
+            if (code) state.selectedCodes.add(code);
         });
     };
 
@@ -174,6 +175,8 @@ const HierarchicalCodeSelector = (() => {
         updateTriggerText();
         updateSelectionDisplay();
         refreshCheckboxStates();
+        updateUrlParams();
+        updateHiddenInputs();
     };
 
     const refreshCheckboxStates = (container = document) => {
@@ -366,30 +369,91 @@ const HierarchicalCodeSelector = (() => {
         state.trigger?.focus();
     };
 
-    const clearAllSelections = () => {
-        state.selectedCodes.clear();
-        updateTriggerText();
-        updateSelectionDisplay();
-        refreshCheckboxStates();
-        updateHiddenInputs();
-        updateAccordionContent();
+    const updateUrlParams = () => {
+        const url = new URL(window.location);
+
+        url.searchParams.delete(config.fieldName);
+
+        getCurrentSelection().forEach(code => {
+            url.searchParams.append(config.fieldName, code);
+        });
+
+        window.history.replaceState({}, '', url);
+    };
+
+    const updateHiddenInputs = () => {
+        const searchForm = document.querySelector('#search-form');
+        if (!searchForm) return;
+
+        searchForm.querySelectorAll(`input[name="${config.fieldName}"]`).forEach(input => {
+            input.remove();
+        });
+
+        getCurrentSelection().forEach(code => {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = config.fieldName;
+            input.value = code;
+            searchForm.appendChild(input);
+        });
     };
 
     const applySelection = () => {
+        updateUrlParams();
         updateHiddenInputs();
         updateAccordionContent();
         closeModal();
     };
 
-    const updateHiddenInputs = () => {
-        document.querySelectorAll(`input[name="${config.fieldName}"]`).forEach(input => input.remove());
+    const clearAllSelections = () => {
+        state.selectedCodes.clear();
+        updateTriggerText();
+        updateSelectionDisplay();
+        refreshCheckboxStates();
+        updateUrlParams();
+        updateHiddenInputs();
+        updateAccordionContent();
+    };
 
-        const container = document.querySelector('form') || document.body;
-        getCurrentSelection().forEach(code => {
-            const input = document.createElement('input');
-            Object.assign(input, {type: 'hidden', name: config.fieldName, value: code});
-            container.appendChild(input);
-        });
+    const updateAccordionContent = () => {
+        const accordionContent = document.querySelector('#industry-cpv-code-content');
+        if (!accordionContent) return;
+
+        const browseLink = accordionContent.querySelector('.accordion-highlight');
+        if (!browseLink) return;
+
+        const existingDisplay = document.getElementById('cpv-selected-codes-display');
+        if (existingDisplay) {
+            existingDisplay.remove();
+        }
+
+        if (state.selectedCodes.size === 0) {
+            return;
+        }
+        const selectedCodesDisplay = document.createElement('div');
+        selectedCodesDisplay.className = 'cpv-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2';
+        selectedCodesDisplay.id = 'cpv-selected-codes-display';
+
+        selectedCodesDisplay.innerHTML = `
+            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
+                Selected (${state.selectedCodes.size}):
+            </p>
+            <div class="govuk-!-margin-top-2">
+                ${Array.from(state.selectedCodes).sort().map(code =>
+            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
+        ).join('')}
+            </div>
+        `;
+
+        browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+    };
+
+    const debounce = (func, wait) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
     };
 
     const buildHierarchyCache = () => {
@@ -441,48 +505,6 @@ const HierarchicalCodeSelector = (() => {
             }
         }
         toRemove.forEach(code => state.selectedCodes.delete(code));
-    };
-
-    const updateAccordionContent = () => {
-        const accordionContent = document.querySelector('#industry-cpv-code-content');
-        if (!accordionContent) return;
-
-        const createDisplayArea = () => {
-            const selectedCodesDisplay = document.createElement('div');
-            selectedCodesDisplay.className = 'cpv-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2';
-            accordionContent.insertBefore(selectedCodesDisplay, accordionContent.lastElementChild);
-            return selectedCodesDisplay;
-        };
-
-        const existingSelectedDisplay = accordionContent.querySelector('.cpv-selected-display');
-
-        if (state.selectedCodes.size === 0) {
-            if (existingSelectedDisplay) {
-                existingSelectedDisplay.remove();
-            }
-            return;
-        }
-
-        const selectedCodesDisplay = existingSelectedDisplay || createDisplayArea();
-
-        selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
-                Selected (${state.selectedCodes.size}):
-            </p>
-            <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
-        ).join('')}
-            </div>
-        `;
-    };
-
-    const debounce = (func, wait) => {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
     };
 
     const init = (options) => {
