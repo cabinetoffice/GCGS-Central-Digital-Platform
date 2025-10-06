@@ -129,6 +129,16 @@
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-api:*",
+              "name": "/ecs/commercial-tools-api"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-app:*",
+              "name": "/ecs/commercial-tools-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
               "name": "/ecs/data-sharing"
             },
@@ -392,6 +402,16 @@
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-api:*",
+              "name": "/ecs/commercial-tools-api"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-app:*",
+              "name": "/ecs/commercial-tools-app"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/data-sharing:*",
               "name": "/ecs/data-sharing"
             },
@@ -606,6 +626,16 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/clamav-rest:*",
               "name": "/ecs/clamav-rest"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-api:*",
+              "name": "/ecs/commercial-tools-api"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/commercial-tools-app:*",
+              "name": "/ecs/commercial-tools-app"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -1841,6 +1871,8 @@
                 "authority",
                 "av-scanner-app",
                 "clamav-rest",
+                "commercial-tools-api",
+                "commercial-tools-app",
                 "data-sharing",
                 "entity-verification",
                 "forms",

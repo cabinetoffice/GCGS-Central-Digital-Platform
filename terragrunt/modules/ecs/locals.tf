@@ -41,7 +41,7 @@ locals {
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
 
-  migrations_sirsi = ["organisation-information-migrations", "entity-verification-migrations"]
+  migrations_sirsi = ["organisation-information-migrations", "entity-verification-migrations", "commercial-tools-migrations"]
 
   migration_configs_sirsi = {
     for name, config in var.service_configs :

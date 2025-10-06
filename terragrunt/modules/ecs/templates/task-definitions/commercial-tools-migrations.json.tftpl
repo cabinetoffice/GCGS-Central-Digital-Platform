@@ -1,0 +1,33 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
+        { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"}
+    ],
+    "secrets": [
+        { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

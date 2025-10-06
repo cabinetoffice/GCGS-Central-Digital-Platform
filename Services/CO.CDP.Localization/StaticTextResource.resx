@@ -1828,7 +1828,7 @@
     <value>Back to consortium details</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
-    <value>You can &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is an 8 digit or 2 letter and 6 digit number. For example, 12345678 or SC123456.</value>
+    <value>You can &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is made up of 8 letters or numbers. For example, 12345678, SC123456 or SL12345A.</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner"
         xml:space="preserve">
@@ -4215,7 +4215,7 @@
     <value>Share code</value>
   </data>
   <data name="CompaniesHouse_Number_Error" xml:space="preserve">
-    <value>Company number must be 8 digits or 2 letters and 6 digits</value>
+    <value>Company number must be made up of 8 letters or numbers</value>
   </data>
   <data name="Supplier_AdditionalModulesInformation_Heading" xml:space="preserve">
     <value>Complete your additional supplier modules</value>

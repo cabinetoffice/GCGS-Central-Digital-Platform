@@ -4,7 +4,7 @@ locals {
 
   service_version_cfs = var.pinned_service_version_cfs == null ? local.orchestrator_cfs_service_version : var.pinned_service_version_cfs
 
-  cfs_screts_arn = data.aws_secretsmanager_secret.cfs_secrets.arn
+  cfs_secrets_arn = data.aws_secretsmanager_secret.cfs_secrets.arn
 
   cfs_site_domains = {
     development = "cfs.${var.public_domain}"
@@ -13,42 +13,40 @@ locals {
     production  = "www.contractsfinder.service.gov.uk"
   }
 
-  data_harvester_folder_format = contains(["development", "staging"], var.environment) ? "S3-migration-test/{Y}-{m}" : ""
-
   cfs_secrets = {
-    dev_email                             = "${local.cfs_screts_arn}:DEV_EMAIL::"
-    email_contactus                       = "${local.cfs_screts_arn}:CONTACTUS_EMAIL::"
-    email_subscription_authentication_key = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
-    email_subscription_cipher             = "${local.cfs_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
-    email_licence_request                 = "${local.cfs_screts_arn}:LICENCEREQUEST_EMAIL::"
-    google_analytics_key                  = "${local.cfs_screts_arn}:GOOGLE_ANALYTICS_KEY::"
-    google_tag_manager_key                = "${local.cfs_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
-    http_basic_auth_pass                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_PASS::"
-    http_basic_auth_user                  = "${local.cfs_screts_arn}:HTTP_BASIC_AUTH_USER::"
-    letsencrypt_key_authorization         = "${local.cfs_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
-    letsencrypt_token                     = "${local.cfs_screts_arn}:LETSENCRYPT_TOKEN::"
-    run_guest_token                       = "${local.cfs_screts_arn}:RUN_GUEST_TOKEN::"
-    run_migrator_token                    = "${local.cfs_screts_arn}:RUN_MIGRATOR_TOKEN::"
-    run_registrar_token                   = "${local.cfs_screts_arn}:RUN_REGISTRAR_TOKEN::"
-    saml_entity_id                        = "${local.cfs_screts_arn}:SAML_ENTITY_ID::"
-    saml_slo_url                          = "${local.cfs_screts_arn}:SAML_SLO_URL::"
-    saml_sso_url                          = "${local.cfs_screts_arn}:SAML_SSO_URL::"
-    saml_x509cert                         = "${local.cfs_screts_arn}:SAML_X509CERT::"
-    srs_private_key                       = "${local.cfs_screts_arn}:SRS_PRIVATE_KEY::"
-    sso_api_authentication_key            = "${local.cfs_screts_arn}:SSO_API_AUTHENTICATION_KEY::"
-    sso_cipher                            = "${local.cfs_screts_arn}:SSO_CIPHER::"
-    sso_token                             = "${local.cfs_screts_arn}:SSO_TOKEN::"
-    sso_token_session_authentication_key  = "${local.cfs_screts_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
-    sso_token_session_cipher              = "${local.cfs_screts_arn}:SSO_TOKEN_SESSION_CIPHER::"
-    email_tech_support                    = "${local.cfs_screts_arn}:TECHSUPPORT_EMAIL::"
-    email_user_research                   = "${local.cfs_screts_arn}:USER_RESEARCH_EMAIL::"
+    dev_email                             = "${local.cfs_secrets_arn}:DEV_EMAIL::"
+    email_contactus                       = "${local.cfs_secrets_arn}:CONTACTUS_EMAIL::"
+    email_subscription_authentication_key = "${local.cfs_secrets_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
+    email_subscription_cipher             = "${local.cfs_secrets_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
+    email_licence_request                 = "${local.cfs_secrets_arn}:LICENCEREQUEST_EMAIL::"
+    google_analytics_key                  = "${local.cfs_secrets_arn}:GOOGLE_ANALYTICS_KEY::"
+    google_tag_manager_key                = "${local.cfs_secrets_arn}:GOOGLE_TAG_MANAGER_KEY::"
+    http_basic_auth_pass                  = "${local.cfs_secrets_arn}:HTTP_BASIC_AUTH_PASS::"
+    http_basic_auth_user                  = "${local.cfs_secrets_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization         = "${local.cfs_secrets_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                     = "${local.cfs_secrets_arn}:LETSENCRYPT_TOKEN::"
+    run_guest_token                       = "${local.cfs_secrets_arn}:RUN_GUEST_TOKEN::"
+    run_migrator_token                    = "${local.cfs_secrets_arn}:RUN_MIGRATOR_TOKEN::"
+    run_registrar_token                   = "${local.cfs_secrets_arn}:RUN_REGISTRAR_TOKEN::"
+    saml_entity_id                        = "${local.cfs_secrets_arn}:SAML_ENTITY_ID::"
+    saml_slo_url                          = "${local.cfs_secrets_arn}:SAML_SLO_URL::"
+    saml_sso_url                          = "${local.cfs_secrets_arn}:SAML_SSO_URL::"
+    saml_x509cert                         = "${local.cfs_secrets_arn}:SAML_X509CERT::"
+    srs_private_key                       = "${local.cfs_secrets_arn}:SRS_PRIVATE_KEY::"
+    sso_api_authentication_key            = "${local.cfs_secrets_arn}:SSO_API_AUTHENTICATION_KEY::"
+    sso_cipher                            = "${local.cfs_secrets_arn}:SSO_CIPHER::"
+    sso_token                             = "${local.cfs_secrets_arn}:SSO_TOKEN::"
+    sso_token_session_authentication_key  = "${local.cfs_secrets_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
+    sso_token_session_cipher              = "${local.cfs_secrets_arn}:SSO_TOKEN_SESSION_CIPHER::"
+    email_tech_support                    = "${local.cfs_secrets_arn}:TECHSUPPORT_EMAIL::"
+    email_user_research                   = "${local.cfs_secrets_arn}:USER_RESEARCH_EMAIL::"
   }
 
   cfs_parameters = {
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
     cookie_domain                       = local.cfs_site_domains[var.environment]
-    data_harvester_folder_format        = local.data_harvester_folder_format
+    data_harvester_folder_format        = ""
     db_host                             = var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306

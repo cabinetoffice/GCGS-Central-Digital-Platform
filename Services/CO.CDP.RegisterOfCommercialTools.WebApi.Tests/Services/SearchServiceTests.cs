@@ -46,9 +46,9 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("IT services")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31))).Returns(mockBuilder.Object);
@@ -71,8 +71,8 @@ public class SearchServiceTests
         result.PageNumber.Should().Be(2);
         result.PageSize.Should().Be(20);
         _mockQueryBuilder.Verify(x => x.WithKeywords("IT services"), Times.Once);
-        mockBuilder.Verify(x => x.WithStatus("Active"), Times.Once);
-        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("proportion"))), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("tender/status eq 'active'"))), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("participationFees") && s.Contains("relativeValueProportion"))), Times.Once);
         mockBuilder.Verify(x => x.WithTop(20), Times.Once);
         mockBuilder.Verify(x => x.WithSkip(20), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
@@ -100,12 +100,12 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -143,12 +143,12 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("Active")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -185,12 +185,12 @@ public class SearchServiceTests
         var queryUrl = "https://api.example.com/tenders?built=query";
 
         _mockQueryBuilder.Setup(x => x.WithKeywords("")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithStatus("")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeFrom(0)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.FeeTo(decimal.MaxValue)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
@@ -201,7 +201,6 @@ public class SearchServiceTests
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
         _mockQueryBuilder.Verify(x => x.WithKeywords(""), Times.Once);
-        mockBuilder.Verify(x => x.WithStatus(""), Times.Once);
     }
 
     [Fact]
@@ -218,5 +217,211 @@ public class SearchServiceTests
 
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("ODataApi:BaseUrl configuration is required");
+    }
+
+    [Fact]
+    public async Task Search_WhenSingleAwardMethodProvided_ShouldPassToQueryBuilder()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            AwardMethod = ["with-competition"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethod("with-competition")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithAwardMethod("with-competition"), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenBothAwardMethodsProvided_ShouldPassCombinedValue()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            AwardMethod = ["with-competition", "without-competition"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethod("with-and-without-competition")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithAwardMethod("with-and-without-competition"), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenNoAwardMethodProvided_ShouldNotCallWithAwardMethod()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            AwardMethod = null,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithAwardMethod(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Search_WhenEmptyAwardMethodProvided_ShouldNotCallWithAwardMethod()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            AwardMethod = [],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithAwardMethod(It.IsAny<string>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Search_WhenSingleCpvCodeProvided_ShouldAddCpvFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = ["12345678"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/scheme eq 'CPV'") &&
+            f.Contains("tender/classification/classificationId eq '12345678'")))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/scheme eq 'CPV'") &&
+            f.Contains("tender/classification/classificationId eq '12345678'"))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenMultipleCpvCodesProvided_ShouldCombineWithOr()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = ["12345678", "87654321"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/classificationId") &&
+            f.Contains("12345678") &&
+            f.Contains("87654321") &&
+            f.Contains(" or ")))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification/classificationId") &&
+            f.Contains("12345678") &&
+            f.Contains("87654321") &&
+            f.Contains(" or "))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenNoCpvCodesProvided_ShouldNotAddCpvFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            CpvCodes = null,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/classification") && f.Contains("CPV"))), Times.Never);
     }
 }

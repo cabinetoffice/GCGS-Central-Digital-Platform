@@ -7,17 +7,17 @@
         "commercial-tool",
         "Commercial tool",
         "_CommercialToolAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool") };
+    ) { IsOpen = true };
     var commercialToolStatusAccordion = new Accordion(
         "commercial-tool-status",
         "Commercial tool status",
         "_CommercialToolStatusAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("commercial-tool-status") };
+    ) { IsOpen = true };
     var contractingAuthorityUsageAccordion = new Accordion(
         "contracting-authority-usage",
         "Contracting authority usage",
         "_ContractingAuthorityUsageAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("contracting-authority-usage") };
+    ) { IsOpen = true };
     var awardMethodAccordion = new Accordion(
         "award-method",
         "Award method",
@@ -37,12 +37,12 @@
         "fees",
         "Fees",
         "_FeesAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("fees") };
+    ) { IsOpen = true };
     var dateRangeAccordion = new Accordion(
         "date-range",
         "Date range",
         "_DateRangeAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("date-range") };
+    ) { IsOpen = true };
 }
 
 <script src="/js/search.js" nonce-csp></script>
@@ -63,14 +63,16 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<govuk-breadcrumbs>
-    <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
-    <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
-</govuk-breadcrumbs>
 
-<div class="govuk-width-container">
+@section BeforeContent {
+    <govuk-breadcrumbs>
+        <govuk-breadcrumbs-item href="@Model.HomeUrl">Home</govuk-breadcrumbs-item>
+        <govuk-breadcrumbs-item>Search results</govuk-breadcrumbs-item>
+    </govuk-breadcrumbs>
+
     <govuk-inset-text>The Register of Commercial Tools allows you to search for frameworks and dynamic markets.
     </govuk-inset-text>
+}
 
     <div class="govuk-grid-row">
         @if (!ModelState.IsValid)
@@ -100,17 +102,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         }
-        <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search Results</h1>
+        <div class="govuk-grid-column-one-half">
+            <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search results</h1>
             <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
                 result@(Model.TotalCount == 1 ? "" : "s")</p>
         </div>
-        <div class="govuk-grid-column-one-third">
-            <form method="get" class="govuk-form-group">
+        <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
+            <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
                 <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
                 <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
-                <input type="hidden" name="award" value="@Model.SearchParams.AwardMethod"/>
+                @foreach (var award in Model.SearchParams.AwardMethod)
+                {
+                    <input type="hidden" name="award" value="@award"/>
+                }
                 <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
                 <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
                 <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>
@@ -119,9 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 {
                     <input type="hidden" name="status" value="@status"/>
                 }
-                @foreach (var cpvCode in Model.SearchParams.CpvCodes)
+                @foreach (var cpv in Model.SearchParams.CpvCodes)
                 {
-                    <input type="hidden" name="cpv" value="@cpvCode"/>
+                    <input type="hidden" name="cpv" value="@cpv"/>
                 }
                 @foreach (var locationCode in Model.SearchParams.LocationCodes)
                 {
@@ -133,13 +138,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="hidden" name="start_to" value="@Model.SearchParams.ContractStartDateTo"/>
                 <input type="hidden" name="end_from" value="@Model.SearchParams.ContractEndDateFrom"/>
                 <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
-                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                <select id="sort-results" class="govuk-select" name="sort"
-                        onchange="this.form.submit()">
-                    <option value="relevance">Relevance</option>
-                    <option value="a-z">Alphabetical (A-Z)</option>
-                    <option value="z-a">Alphabetical (Z-A)</option>
-                </select>
+                <div class="sort-results-container">
+                    <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
+                    <select id="sort-results" class="govuk-select" name="sort">
+                        @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
+                        {
+                            <option value="relevance" selected>Relevance</option>
+                        }
+                        else
+                        {
+                            <option value="relevance">Relevance</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "a-z")
+                        {
+                            <option value="a-z" selected>Alphabetical (A-Z)</option>
+                        }
+                        else
+                        {
+                            <option value="a-z">Alphabetical (A-Z)</option>
+                        }
+                        @if (Model.SearchParams.SortOrder == "z-a")
+                        {
+                            <option value="z-a" selected>Alphabetical (Z-A)</option>
+                        }
+                        else
+                        {
+                            <option value="z-a">Alphabetical (Z-A)</option>
+                        }
+                    </select>
+                </div>
                 <noscript>
                     <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
                 </noscript>
@@ -151,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
-                <div class="govuk-!-padding-3 govuk-!-margin-bottom-0 govuk-filter-section">
+                <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 govuk-filter-section">
                     <h2 class="govuk-heading-m">Keywords</h2>
 
                     <p class="govuk-body-s">
@@ -189,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
                            class="govuk-input">
                 </div>
 
-                <div class="govuk-!-margin-top-0 govuk-!-padding-bottom-2 govuk-filter-section">
+                <div>
                     <partial name="_Accordion" model="commercialToolAccordion"/>
                     <partial name="_Accordion" model="commercialToolStatusAccordion"/>
                     <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
@@ -239,4 +266,3 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         </div>
     </div>
-</div>

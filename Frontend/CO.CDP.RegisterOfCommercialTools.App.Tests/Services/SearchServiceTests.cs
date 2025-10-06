@@ -27,7 +27,7 @@ public class SearchServiceTests
             Status = ["Active"],
             FeeMin = 1m,
             FeeMax = 5m,
-            AwardMethod = "Competitive"
+            AwardMethod = ["With competition"]
         };
 
         searchModel.SubmissionDeadline.From.Day = "1";
@@ -54,10 +54,10 @@ public class SearchServiceTests
                     Title = "Test Framework",
                     Description = "Test Description",
                     PublishedDate = DateTime.UtcNow,
-                    SubmissionDeadline = DateTime.UtcNow.AddDays(30),
+                    SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
-                    Fees = 0.025m,
-                    AwardMethod = "Competitive"
+                    MaximumFee = "2.5%",
+                    AwardMethod = "With competition"
                 }
             },
             TotalCount = 25,
@@ -83,7 +83,7 @@ public class SearchServiceTests
             dto.Keyword == "IT services" &&
             dto.MinFees == 0.01m &&
             dto.MaxFees == 0.05m &&
-            dto.AwardMethod == "Competitive" &&
+            dto.AwardMethod != null && dto.AwardMethod.Count == 1 && dto.AwardMethod[0] == "With competition" &&
             dto.PageNumber == 1
         )), Times.Once);
     }
@@ -159,10 +159,10 @@ public class SearchServiceTests
         {
             Results = new List<SearchResultDto>
             {
-                new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "2", Title = "Closed", Status = CommercialToolStatus.Closed, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, Fees = 0, AwardMethod = "Open" },
-                new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, Fees = 0, AwardMethod = "Open" }
+                new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "2", Title = "Expired", Status = CommercialToolStatus.Expired, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, MaximumFee = "Unknown", AwardMethod = "Open" }
             },
             TotalCount = 4,
             PageNumber = 1,
@@ -177,7 +177,7 @@ public class SearchServiceTests
 
         results.Should().HaveCount(4);
         results.ElementAt(0).Status.Should().Be(CommercialToolStatus.Active);
-        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Closed);
+        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Expired);
         results.ElementAt(2).Status.Should().Be(CommercialToolStatus.Upcoming);
         results.ElementAt(3).Status.Should().Be(CommercialToolStatus.Awarded);
     }
@@ -195,7 +195,7 @@ public class SearchServiceTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 0.025m,
+                    MaximumFee = "2.5%",
                     AwardMethod = "Open",
                     Description = "Test"
                 }
@@ -229,10 +229,10 @@ public class SearchServiceTests
                     Id = "1",
                     Title = "Test",
                     Status = CommercialToolStatus.Active,
-                    Fees = 0,
+                    MaximumFee = "Unknown",
                     AwardMethod = "Open",
                     Description = "Test",
-                    SubmissionDeadline = submissionDeadline
+                    SubmissionDeadline = submissionDeadline.ToString("dd MMMM yyyy")
                 }
             },
             TotalCount = 1,
@@ -247,6 +247,6 @@ public class SearchServiceTests
         var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
 
         results.Should().HaveCount(1);
-        results.First().SubmissionDeadline.Should().Be(submissionDeadline.ToShortDateString());
+        results.First().SubmissionDeadline.Should().Be("15 March 2025");
     }
 }

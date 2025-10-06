@@ -1751,6 +1751,144 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   <data name="WelshExclusions_05_SummaryTitle" xml:space="preserve">
     <value>Corrective measures</value>
   </data>
+  <!-- Welsh Steel -->
+  <data name="WelshSteel_SectionTitle" xml:space="preserve">
+    <value>Steel</value>
+  </data>
+  <data name="WelshSteel_01_Title" xml:space="preserve">
+    <value>Submitting your steel information</value>
+  </data>
+  <data name="WelshSteel_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+      The following module refers to the procurement and use of steel products in Welsh government projects. It focuses on compliance with UK regulations regarding sourcing, quality, and sustainability. For further information read
+      &lt;a href="https://www.gov.wales/wppn-008-sourcing-steel-in-major-construction-and-infrastructure-project" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      WPPN 008: Sourcing steel in major construction and infrastructure projects in Wales (opens in a new tab)&lt;/a&gt;.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        Failure to complete this module may result in your tenders being deemed insufficient where WPPN 008 has been applied.
+      &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;You'll need to provide information on steel specific, supply chain projects or programmes. This may include relevant examples of your:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;management systems, policies, standards and procedures&lt;/li&gt;
+        &lt;li&gt;compliance with relevant legislation&lt;/li&gt;
+        &lt;li&gt;sustainable practices&lt;/li&gt;
+        &lt;li&gt;compliance with Section 7 of the Procurement Act 2023, paragraphs 7 to 9&lt;/li&gt;
+        &lt;li&gt;health and safety policies and training in your supply chain&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_02_Title" xml:space="preserve">
+    <value>Steel supply chain management</value>
+  </data>
+  <data name="WelshSteel_02_SummaryTitle" xml:space="preserve">
+    <value>Steel supply chain management</value>
+  </data>
+  <data name="WelshSteel_02_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;For contracts which relate to projects or programmes with a value of £3 million or more, you are expected to provide details of steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management.&lt;/p&gt;&lt;p class="govuk-body govuk-!-font-weight-bold"&gt;Do you want to upload these details as a document?&lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_02_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you choose not to upload your details as a document, you will need to provide them as text on the next page.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_03_Title" xml:space="preserve">
+    <value>Steel supply chain management</value>
+  </data>
+  <data name="WelshSteel_03_SummaryTitle" xml:space="preserve">
+    <value>Steel supply chain management</value>
+  </data>
+  <data name="WelshSteel_03_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;For contracts which relate to projects or programmes with a value of £3 million or more, please describe the steel specific supply chain management systems, policies, standards and procedures you have in place to ensure robust supply chain management.&lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_04_Title" xml:space="preserve">
+    <value>Sustainable steel supply</value>
+  </data>
+  <data name="WelshSteel_04_SummaryTitle" xml:space="preserve">
+    <value>Sustainable steel supply</value>
+  </data>
+  <data name="WelshSteel_04_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Provide details of previous similar projects where you have demonstrated a high level of competency in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.&lt;/p&gt;&lt;p class="govuk-body govuk-!-font-weight-bold"&gt;Do you want to upload these details as a document&lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_04_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you choose not to upload your details as a document, you will need to provide them as text on the next page.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_05_Title" xml:space="preserve">
+    <value>Sustainable steel supply</value>
+  </data>
+  <data name="WelshSteel_05_SummaryTitle" xml:space="preserve">
+    <value>Sustainable steel supply</value>
+  </data>
+  <data name="WelshSteel_05_Description" xml:space="preserve">
+    <value>
+     &lt;p class="govuk-body"&gt;
+        Provide details of previous similar projects where you have demonstrated a high level of competency in managing all supply chain members involved in steel supply or production to ensure a sustainable and resilient supply of steel.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_06_Title" xml:space="preserve">
+    <value>Competition law breaches</value>
+  </data>
+  <data name="WelshSteel_06_SummaryTitle" xml:space="preserve">
+    <value>Competition law breaches</value>
+  </data>
+  <data name="WelshSteel_06_Description" xml:space="preserve">
+    <value>
+     &lt;p class="govuk-body"&gt;
+    Do you take steps to ensure that members of your supply chain do not make agreements with other economic operators aimed at distorting competition as described in Schedule 7 of the Procurement Act 2023, paragraphs 7-9?
+    &lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_07_Title" xml:space="preserve">
+    <value>Health and safety policy requirements</value>
+  </data>
+  <data name="WelshSteel_07_SummaryTitle" xml:space="preserve">
+    <value>Health and safety policy requirements</value>
+  </data>
+  <data name="WelshSteel_07_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        Do you take steps to ensure that all members of your supply chain have in place appropriate health and safety policies dealing with at least the following:
+      &lt;/p&gt;
+      &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;a policy statement that is signed and dated&lt;/li&gt;
+        &lt;li&gt;the organisation and responsibilities such as how health and safety requirements are implemented and &lt;/li&gt;
+        &lt;li&gt;the arrangements including standards and procedures adopted in practice&lt;/li&gt;
+        &lt;li&gt;and that is reviewed at least evey 2 years&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;&lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshSteel_08_Title" xml:space="preserve">
+    <value>Health and safety training</value>
+  </data>
+  <data name="WelshSteel_08_SummaryTitle" xml:space="preserve">
+    <value>Health and safety training</value>
+  </data>
+  <data name="WelshSteel_08_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Do you take steps to ensure that all members of your supply chain provide appropriate health and safety training, particularly for workers carrying out potentially hazardous tasks?&lt;/p&gt;
+    </value>
+  </data>
   <data name="DateForm_FutureDate_Hint" xml:space="preserve">
     <value>&lt;div class=&quot;govuk-hint&quot;&gt;For example, 27 3 2027&lt;/div&gt;</value>
   </data>

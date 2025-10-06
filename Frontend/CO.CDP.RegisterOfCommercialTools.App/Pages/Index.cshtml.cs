@@ -7,10 +7,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
-public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlService, IFtsUrlService ftsUrlService, ICpvCodeService cpvCodeService, ILocationCodeService locationCodeService, ILogger<IndexModel> logger)
+public class IndexModel(
+    ISearchService searchService,
+    ISirsiUrlService sirsiUrlService,
+    IFtsUrlService ftsUrlService,
+    ICpvCodeService cpvCodeService,
+    ILocationCodeService locationCodeService,
+    ILogger<IndexModel> logger)
     : PageModel
 {
-    [BindProperty(SupportsGet = true, Name = "sort")] public SearchModel SearchParams { get; set; } = new();
+    [BindProperty(SupportsGet = true)] public SearchModel SearchParams { get; set; } = new();
 
     [BindProperty(SupportsGet = true, Name = "acc")]
     public List<string> OpenAccordions { get; set; } = new();
@@ -35,8 +41,10 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
     public async Task OnGetAsync()
     {
-        logger.LogInformation("Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}]",
-            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status));
+        logger.LogInformation(
+            "Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}], CpvCodes: [{CpvCodes}]",
+            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status),
+            string.Join(", ", SearchParams.CpvCodes));
 
         try
         {
@@ -55,10 +63,7 @@ public class IndexModel(ISearchService searchService, ISirsiUrlService sirsiUrlS
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-            SearchResults = results.Select(result => result with
-            {
-                Url = !string.IsNullOrEmpty(result.Id) && result.Id != "Unknown" ? ftsUrlService.BuildUrl($"/procurement/{result.Id}") : null
-            }).ToList();
+            SearchResults = results;
             TotalCount = totalCount;
 
             logger.LogInformation("Search completed successfully. Found {TotalCount} results.",

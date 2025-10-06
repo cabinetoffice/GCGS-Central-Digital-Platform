@@ -18,4 +18,10 @@
     </PackageReference>
     <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="RegisterOfCommercialToolsDatabaseMigrationConfig\appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

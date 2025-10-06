@@ -2,16 +2,16 @@
 <div class="govuk-!-margin-top-0">
     <div class="govuk-form-group accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
         <fieldset class="govuk-fieldset">
-            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="award-method-with-competition" name="award" type="radio" value="with-competition" checked="@(Model.AwardMethod == "with-competition")">
-                    <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="award-method-with-competition">
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="award-method-with-competition" name="award" type="checkbox" value="with-competition" checked="@(Model.AwardMethod.Contains("with-competition"))">
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="award-method-with-competition">
                         With competition
                     </label>
                 </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="award-method-without-competition" name="award" type="radio" value="without-competition" checked="@(Model.AwardMethod == "without-competition")">
-                    <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="award-method-without-competition">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="award-method-without-competition" name="award" type="checkbox" value="without-competition" checked="@(Model.AwardMethod.Contains("without-competition"))">
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="award-method-without-competition">
                         Without competition
                     </label>
                 </div>

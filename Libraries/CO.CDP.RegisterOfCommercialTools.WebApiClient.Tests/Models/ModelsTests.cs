@@ -34,7 +34,7 @@ public class SearchRequestDtoTests
             Keyword = "test",
             Status = "Active",
             SortBy = "Title",
-            AwardMethod = "Open",
+            AwardMethod = ["With competition"],
             MinFees = 100m,
             MaxFees = 1000m,
             PageNumber = 2,
@@ -49,7 +49,7 @@ public class SearchRequestDtoTests
         request.Keyword.Should().Be("test");
         request.Status.Should().Be("Active");
         request.SortBy.Should().Be("Title");
-        request.AwardMethod.Should().Be("Open");
+        request.AwardMethod.Should().ContainSingle().Which.Should().Be("With competition");
         request.MinFees.Should().Be(100m);
         request.MaxFees.Should().Be(1000m);
         request.PageNumber.Should().Be(2);
@@ -74,10 +74,10 @@ public class SearchResultDtoTests
             Title = "Test Tool",
             Description = "Test Description",
             PublishedDate = testDate,
-            SubmissionDeadline = testDate.AddDays(30),
+            SubmissionDeadline = testDate.AddDays(30).ToString("dd MMMM yyyy"),
             Status = CommercialToolStatus.Active,
-            Fees = 1000m,
-            AwardMethod = "Open",
+            MaximumFee = "10%",
+            AwardMethod = "With competition",
             OtherContractingAuthorityCanUse = "Yes"
         };
 
@@ -85,10 +85,10 @@ public class SearchResultDtoTests
         result.Title.Should().Be("Test Tool");
         result.Description.Should().Be("Test Description");
         result.PublishedDate.Should().Be(testDate);
-        result.SubmissionDeadline.Should().Be(testDate.AddDays(30));
+        result.SubmissionDeadline.Should().Be(testDate.AddDays(30).ToString("dd MMMM yyyy"));
         result.Status.Should().Be(CommercialToolStatus.Active);
-        result.Fees.Should().Be(1000m);
-        result.AwardMethod.Should().Be("Open");
+        result.MaximumFee.Should().Be("10%");
+        result.AwardMethod.Should().Be("With competition");
         result.OtherContractingAuthorityCanUse.Should().Be("Yes");
     }
 
@@ -102,14 +102,14 @@ public class SearchResultDtoTests
             Description = "Test Description",
             PublishedDate = DateTime.UtcNow,
             Status = CommercialToolStatus.Active,
-            Fees = 0m,
-            AwardMethod = "Open",
-            SubmissionDeadline = null,
-            OtherContractingAuthorityCanUse = null
+            MaximumFee = "Unknown",
+            AwardMethod = "With competition",
+            SubmissionDeadline = "Unknown",
+            OtherContractingAuthorityCanUse = "Unknown"
         };
 
-        result.SubmissionDeadline.Should().BeNull();
-        result.OtherContractingAuthorityCanUse.Should().BeNull();
+        result.SubmissionDeadline.Should().Be("Unknown");
+        result.OtherContractingAuthorityCanUse.Should().Be("Unknown");
     }
 }
 
@@ -139,8 +139,8 @@ public class SearchResponseTests
                 Description = "Description 1",
                 PublishedDate = DateTime.UtcNow,
                 Status = CommercialToolStatus.Active,
-                Fees = 1000m,
-                AwardMethod = "Open"
+                MaximumFee = "10%",
+                AwardMethod = "With competition"
             },
             new SearchResultDto
             {
@@ -148,8 +148,8 @@ public class SearchResponseTests
                 Title = "Tool 2",
                 Description = "Description 2",
                 PublishedDate = DateTime.UtcNow,
-                Status = CommercialToolStatus.Closed,
-                Fees = 2000m,
+                Status = CommercialToolStatus.Expired,
+                MaximumFee = "20%",
                 AwardMethod = "Framework"
             }
         };
@@ -175,7 +175,7 @@ public class CommercialToolStatusTests
     [Theory]
     [InlineData(CommercialToolStatus.Unknown)]
     [InlineData(CommercialToolStatus.Active)]
-    [InlineData(CommercialToolStatus.Closed)]
+    [InlineData(CommercialToolStatus.Expired)]
     [InlineData(CommercialToolStatus.Awarded)]
     [InlineData(CommercialToolStatus.Upcoming)]
     public void CommercialToolStatus_HasAllExpectedValues(CommercialToolStatus status)
@@ -194,7 +194,7 @@ public class CommercialToolStatusTests
     public void CommercialToolStatus_CanConvertToString()
     {
         CommercialToolStatus.Active.ToString().Should().Be("Active");
-        CommercialToolStatus.Closed.ToString().Should().Be("Closed");
+        CommercialToolStatus.Expired.ToString().Should().Be("Expired");
         CommercialToolStatus.Awarded.ToString().Should().Be("Awarded");
         CommercialToolStatus.Upcoming.ToString().Should().Be("Upcoming");
         CommercialToolStatus.Unknown.ToString().Should().Be("Unknown");

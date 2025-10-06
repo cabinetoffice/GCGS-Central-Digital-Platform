@@ -1,6 +1,10 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 @{
-    var cpvSelection = ViewData["CpvSelection"] as CpvCodeSelection ?? new CpvCodeSelection();
+    var cpvSelection = new CpvCodeSelection
+    {
+        SelectedCodes = Model.CpvCodes
+    };
     var selectorOptions = new HierarchicalCodeSelectorOptions
     {
         CodeType = "CPV",

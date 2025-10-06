@@ -1,6 +1,10 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 @{
-    var locationSelection = ViewData["LocationSelection"] as LocationCodeSelection ?? new LocationCodeSelection();
+    var locationSelection = ViewData["LocationSelection"] as LocationCodeSelection ?? new LocationCodeSelection
+    {
+        SelectedCodes = Model.LocationCodes
+    };
     var selectorOptions = new HierarchicalCodeSelectorOptions
     {
         CodeType = "Location",

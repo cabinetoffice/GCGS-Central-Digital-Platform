@@ -1,5 +1,4 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchResult
-@using CO.CDP.RegisterOfCommercialTools.App.Models
 @using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
 
 <div class="search-result" data-result-id="@Model.Id">
@@ -12,7 +11,7 @@
                 }
             </h2>
         </div>
-        <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1">
+        <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1 govuk-!-padding-right-0 govuk-!-text-align-right">
             <partial name="Shared/_SearchResultStatusTag" model="Model.Status"/>
         </div>
     </div>
@@ -32,7 +31,7 @@
             case CommercialToolStatus.Upcoming:
                 <span>Applications window opening soon</span>
                 break;
-            case CommercialToolStatus.Closed:
+            case CommercialToolStatus.Expired:
                 <span>Applications window has closed</span>
                 break;
             case CommercialToolStatus.Awarded:
@@ -55,7 +54,7 @@
     <p class="govuk-body govuk-!-margin-bottom-1">
         <span class="govuk-!-font-weight-bold">Contract dates:</span> @Model.ContractDates
     </p>
-    <p class="govuk-body govuk-!-margin-bottom-2">
+    <p class="govuk-body govuk-!-margin-bottom-4">
         <span class="govuk-!-font-weight-bold">Award method:</span> @Model.AwardMethod
     </p>
     <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-4">
