@@ -13,10 +13,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Migrations
             var healthAndSafety01GroupId = new Guid("12345678-1234-1234-1234-123456789001"); // Group 1: HealthAndSafety_02-03
             var healthAndSafety02GroupId = new Guid("12345678-1234-1234-1234-123456789002"); // Group 2: HealthAndSafety_04
             var healthAndSafety03GroupId = new Guid("12345678-1234-1234-1234-123456789003"); // Group 3: HealthAndSafety_05
-
             var healthAndSafety04GroupId = new Guid("12345678-1234-1234-1234-123456789004"); // Group 4: HealthAndSafety_06
             var healthAndSafety05GroupId = new Guid("12345678-1234-1234-1234-123456789005"); // Group 5: HealthAndSafety_07
-
             var healthAndSafety06GroupId = new Guid("12345678-1234-1234-1234-123456789006"); // Group 6: HealthAndSafety_08-09
             var healthAndSafety07GroupId = new Guid("12345678-1234-1234-1234-123456789007"); // Group 7: HealthAndSafety_10-11
 
