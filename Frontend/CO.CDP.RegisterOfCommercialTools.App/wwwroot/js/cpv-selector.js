@@ -342,8 +342,8 @@ const CpvSelector = (() => {
             }
         });
 
-        document.querySelector('#apply-selection')?.addEventListener('click', applySelection);
-        document.querySelector('#clear-all')?.addEventListener('click', clearAllSelections);
+        document.querySelector(`#${config.modalId}-apply-selection`)?.addEventListener('click', applySelection);
+        document.querySelector(`#${config.modalId}-clear-all`)?.addEventListener('click', clearAllSelections);
     };
 
     const openModal = async () => {

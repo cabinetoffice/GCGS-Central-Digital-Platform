@@ -6,6 +6,8 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Controllers;
 
 public class LocationCodesController(IHierarchicalCodeService<NutsCodeDto> codeService, ILogger<LocationCodesController> logger) : HierarchicalCodeControllerBase<NutsCodeDto>(codeService)
 {
+    private readonly IHierarchicalCodeService<NutsCodeDto> _locationCodeService = codeService;
+
     protected override string CodeTypeName => "Location";
     protected override string RoutePrefix => "location";
     protected override string TreeFragmentView => "_LocationTreeFragment";
@@ -47,5 +49,20 @@ public class LocationCodesController(IHierarchicalCodeService<NutsCodeDto> codeS
             parentCode.Replace("\r", "").Replace("\n", ""), selectedCodes?.Length ?? 0);
 
         return await base.GetChildrenFragment(parentCode, selectedCodes);
+    }
+
+    [HttpPost("/location/accordion-selection-fragment")]
+    public async Task<IActionResult> GetAccordionSelectionFragment([FromForm] string[]? selectedCodes = null)
+    {
+        logger.LogInformation("Location accordion selection requested: SelectedCodes=[{SelectedCodes}]",
+            string.Join(", ", (selectedCodes ?? []).Select(code => code.Replace("\r", "").Replace("\n", ""))));
+
+        if (selectedCodes == null || selectedCodes.Length == 0)
+        {
+            return PartialView("_LocationAccordionSelectionFragment", new List<NutsCodeDto>());
+        }
+
+        var locations = await _locationCodeService.GetByCodesAsync(selectedCodes.ToList());
+        return PartialView("_LocationAccordionSelectionFragment", locations);
     }
 }

@@ -342,8 +342,8 @@ const LocationSelector = (() => {
             }
         });
 
-        document.querySelector('#apply-selection')?.addEventListener('click', applySelection);
-        document.querySelector('#clear-all')?.addEventListener('click', clearAllSelections);
+        document.querySelector(`#${config.modalId}-apply-selection`)?.addEventListener('click', applySelection);
+        document.querySelector(`#${config.modalId}-clear-all`)?.addEventListener('click', clearAllSelections);
     };
 
     const openModal = async () => {
@@ -421,7 +421,7 @@ const LocationSelector = (() => {
         updateAccordionContent();
     };
 
-    const updateAccordionContent = () => {
+    const updateAccordionContent = async () => {
         const accordionContent = document.querySelector(`#${config.accordionContentId}`);
         if (!accordionContent) return;
 
@@ -436,22 +436,26 @@ const LocationSelector = (() => {
         if (state.selectedCodes.size === 0) {
             return;
         }
-        const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2`;
-        selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
 
-        selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
-                Selected (${state.selectedCodes.size}):
-            </p>
-            <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
-        ).join('')}
-            </div>
-        `;
+        const formData = new FormData();
+        Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
 
-        browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+        try {
+            const response = await fetch(`/${config.routePrefix}/accordion-selection-fragment`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const selectedCodesDisplay = document.createElement('div');
+                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2 govuk-!-margin-top-3`;
+                selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
+                selectedCodesDisplay.innerHTML = html;
+                browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+            }
+        } catch (error) {
+        }
     };
 
     const debounce = (func, wait) => {

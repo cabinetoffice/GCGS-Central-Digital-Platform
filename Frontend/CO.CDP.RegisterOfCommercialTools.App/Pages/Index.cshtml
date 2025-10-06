@@ -26,12 +26,12 @@
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
-        "_IndustryCpvCodeAccordionContent", Model.SearchParams
+        "_IndustryCpvCodeAccordionContent", Model
         ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
     var contractLocationAccordion = new Accordion(
         "contract-location",
         "Contract location",
-        "_ContractLocationAccordionContent", Model.SearchParams
+        "_ContractLocationAccordionContent", Model
     ) { IsOpen = Model.OpenAccordions.Contains("contract-location") };
     var feesAccordion = new Accordion(
         "fees",

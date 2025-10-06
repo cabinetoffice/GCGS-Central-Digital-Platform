@@ -24,6 +24,9 @@ public class IndexModel(
     public List<SearchResult> SearchResults { get; set; } = [];
     public PaginationPartialModel? Pagination { get; set; }
 
+    public CpvCodeSelection CpvSelection { get; set; } = new();
+    public LocationCodeSelection LocationSelection { get; set; } = new();
+
     [BindProperty(SupportsGet = true, Name = "pageNumber")]
     public int PageNumber { get; set; } = 1;
 
@@ -59,7 +62,7 @@ public class IndexModel(
                 ];
             }
 
-            await PopulateViewDataAsync();
+            await PopulateCodeSelections();
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
@@ -97,26 +100,31 @@ public class IndexModel(
         }
     }
 
-    private async Task PopulateViewDataAsync()
+    private async Task PopulateCodeSelections()
     {
-        var cpvSelection = new CpvCodeSelection();
+        CpvSelection = new CpvCodeSelection
+        {
+            SelectedCodes = SearchParams.CpvCodes
+        };
+
         if (SearchParams.CpvCodes.Any())
         {
             var selectedCpvCodes = await cpvCodeService.GetByCodesAsync(SearchParams.CpvCodes);
             foreach (var cpvCode in selectedCpvCodes)
             {
-                cpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
+                CpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
             }
         }
-        ViewData["CpvSelection"] = cpvSelection;
 
-        var locationSelection = new LocationCodeSelection();
+        LocationSelection = new LocationCodeSelection
+        {
+            SelectedCodes = SearchParams.LocationCodes
+        };
+
         if (SearchParams.LocationCodes.Any())
         {
             var selectedLocationCodes = await locationCodeService.GetByCodesAsync(SearchParams.LocationCodes);
-            locationSelection.SelectedCodes.AddRange(selectedLocationCodes.Select(x => x.Code));
-            locationSelection.SelectedItems.AddRange(selectedLocationCodes);
+            LocationSelection.SelectedItems.AddRange(selectedLocationCodes);
         }
-        ViewData["LocationSelection"] = locationSelection;
     }
 }

@@ -1,10 +1,8 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
-@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
+@using CO.CDP.RegisterOfCommercialTools.App.Pages
+@model IndexModel
 @{
-    var locationSelection = ViewData["LocationSelection"] as LocationCodeSelection ?? new LocationCodeSelection
-    {
-        SelectedCodes = Model.LocationCodes
-    };
+    var locationSelection = Model.LocationSelection;
     var selectorOptions = new HierarchicalCodeSelectorOptions
     {
         CodeType = "Location",
@@ -23,34 +21,28 @@
 }
 
 <div class="govuk-!-margin-top-0" id="contract-location-content">
+    <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+        <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
+            @locationSelection.BrowseLinkText
+        </a>
+    </div>
+
     @if (locationSelection.HasSelections)
     {
-        <div class="govuk-!-margin-bottom-3 govuk-!-padding-left-2">
+        <div class="govuk-!-margin-bottom-3 govuk-!-padding-left-2 govuk-!-margin-top-3" id="location-selected-codes-display">
             <p class="govuk-body-s govuk-!-font-weight-bold">@locationSelection.SelectionSummary:</p>
             <div class="govuk-!-margin-top-2">
                 @foreach (var selectedItem in locationSelection.SelectedItems.OrderBy(x => x.GetDescription()))
                 {
-                    var isCountryLevel = string.IsNullOrEmpty(selectedItem.ParentCode);
+                    var parentDescription = selectedItem.GetParentDescription();
 
                     <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 location-filter-tag"
                          data-code="@selectedItem.Code">
-                        <div class="govuk-!-font-weight-bold">@selectedItem.GetDescription()</div>
-                        @if (!isCountryLevel && !string.IsNullOrEmpty(selectedItem.ParentCode))
+                        <div>@selectedItem.GetDescription()</div>
+                        @if (!string.IsNullOrEmpty(parentDescription))
                         {
                             <div class="govuk-hint govuk-!-font-size-14 location-parent-info">
-                                @{
-                                    var parentName = selectedItem.ParentCode switch
-                                    {
-                                        "UK" => "United Kingdom",
-                                        "ROW" => "Rest of the World",
-                                        "BOT" => "British Overseas Territories",
-                                        "GG" => "Guernsey",
-                                        "IM" => "Isle of Man",
-                                        "JE" => "Jersey",
-                                        _ => selectedItem.ParentCode
-                                    };
-                                }
-                                @parentName
+                                @parentDescription
                             </div>
                         }
                     </div>
@@ -58,12 +50,6 @@
             </div>
         </div>
     }
-
-    <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
-        <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
-            @locationSelection.BrowseLinkText
-        </a>
-    </div>
 
     @foreach (var (name, value) in locationSelection.GetHiddenInputs())
     {
