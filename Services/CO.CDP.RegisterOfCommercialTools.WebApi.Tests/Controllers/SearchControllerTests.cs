@@ -103,7 +103,7 @@ public class SearchControllerTests
             ContractEndDateTo = new DateTime(2026, 12, 31),
             MinFees = 100.50m,
             MaxFees = 999.99m,
-            AwardMethod = "Competitive",
+            AwardMethod = ["With competition"],
             SortBy = "title",
             PageNumber = 3,
         };

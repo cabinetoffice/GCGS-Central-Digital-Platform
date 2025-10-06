@@ -12,7 +12,8 @@ public class SearchRequestDto
     public DateTime? ContractEndDateTo { get; set; }
     public decimal? MinFees { get; set; }
     public decimal? MaxFees { get; set; }
-    public string? AwardMethod { get; set; }
+    public List<string>? AwardMethod { get; set; }
+    public List<string>? CpvCodes { get; set; }
     public string? FrameworkOptions { get; set; }
     public string? DynamicMarketOptions { get; set; }
     public string? ContractingAuthorityUsage { get; set; }

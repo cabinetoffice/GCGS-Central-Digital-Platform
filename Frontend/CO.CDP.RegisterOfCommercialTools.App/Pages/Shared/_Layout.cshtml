@@ -102,7 +102,7 @@
                     Beta
                 </strong>
                 <span class="govuk-phase-banner__text">
-                    This is a new service – your <a class="govuk-link" href="@SirsiUrlService.BuildUrl("provide-feedback-and-contact/?context=feedback")">feedback</a> will help us to improve it.
+                    <a class="govuk-link" href="@SirsiUrlService.BuildUrl("provide-feedback-and-contact/?context=feedback")" target="_blank" rel="noopener noreferrer">Contact the Find a Tender team (opens in new tab)</a> if you have feedback, questions or suggestions.
                 </span>
             </p>
         </div>
@@ -124,17 +124,20 @@
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/contact-us")">Contact us</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/accessibility-statement")">Accessibility statement</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/home/accessibility-statement")">Accessibility statement</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/terms-and-conditions")">Terms and conditions</a>
+                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/home/terms-and-conditions")">Terms and conditions</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/privacy-notice")">Privacy</a>
+                            <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/privacy-notice")">Privacy</a>
                         </li>
-                        <li class="govuk-footer__inline-list-item">
-                            <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/cookies")">Cookies</a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="govuk-footer__inline-list-item">
+                                <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/cookies")">Cookies</a>
+                            </li>
+                        }
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Developer/Documentation")">Data and API</a>
                         </li>

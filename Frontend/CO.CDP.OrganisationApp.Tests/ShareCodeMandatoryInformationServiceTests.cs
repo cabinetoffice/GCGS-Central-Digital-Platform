@@ -180,4 +180,59 @@ public class ShareCodeMandatoryInformationServiceTests
 
         (await _service.MandatorySectionsCompleted(organisationId)).Should().Be(true);
     }
+
+    [Fact]
+    public async Task MandatorySectionsCompleted_ShouldBeFalse_WhenWelshAdditionalFormSectionsAreComplete()
+    {
+        var organisationId = Guid.NewGuid();
+        var sectionId01 = Guid.NewGuid();
+        var sectionId02 = Guid.NewGuid();
+
+        _organisationClientMock
+            .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
+            .ReturnsAsync(
+                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
+
+        _organisationClientMock
+            .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever"), isInUse: false, formGuid: null, sectionGuid: null) });
+
+        _formsClientMock
+            .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
+            .ReturnsAsync(new FormSectionResponse(new List<FormSectionSummary>()
+            {
+                new FormSectionSummary(true, 1, false, sectionId01, "section name", FormSectionType.Standard),
+                new FormSectionSummary(true, 1, true, sectionId01, "section name", FormSectionType.Standard),
+                new FormSectionSummary(true, 0, false, sectionId01, "section name", FormSectionType.Standard),
+                new FormSectionSummary(true, 1, false, sectionId02, "additional name", FormSectionType.WelshAdditionalSection)
+            }));
+
+        (await _service.MandatorySectionsCompleted(organisationId)).Should().Be(false);
+    }
+
+    [Fact]
+    public async Task MandatorySectionsCompleted_ShouldBeTrue_WhenWelshAdditionalFormSectionsAreInComplete()
+    {
+        var organisationId = Guid.NewGuid();
+        var sectionId = Guid.NewGuid();
+
+        _organisationClientMock
+            .Setup(c => c.GetOrganisationSupplierInformationAsync(organisationId))
+            .ReturnsAsync(
+                new SupplierInformation(true, true, true, true, true, true, true, true, new LegalForm("law", "form", true, new DateTimeOffset()), new List<OperationType>() { OperationType.SmallOrMediumSized }, "org name", SupplierType.Organisation));
+
+        _organisationClientMock
+            .Setup(c => c.GetConnectedEntitiesAsync(organisationId))
+            .ReturnsAsync(new List<ConnectedEntityLookup>() { new ConnectedEntityLookup(deleted: false, endDate: null, entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "connected entity name", uri: new Uri("http://whatever"), isInUse: false, formGuid: null, sectionGuid: null) });
+
+        _formsClientMock
+            .Setup(f => f.GetFormSectionsAsync(It.IsAny<Guid>(), organisationId))
+            .ReturnsAsync(new FormSectionResponse(new List<FormSectionSummary>()
+            {
+                new FormSectionSummary(true, 0, true, sectionId, "section name", FormSectionType.Standard),
+                new FormSectionSummary(true, 0, false, sectionId, "section name", FormSectionType.WelshAdditionalSection)
+            }));
+
+        (await _service.MandatorySectionsCompleted(organisationId)).Should().Be(true);
+    }
 }

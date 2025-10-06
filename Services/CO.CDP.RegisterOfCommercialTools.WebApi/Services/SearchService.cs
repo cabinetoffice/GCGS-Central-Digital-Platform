@@ -1,5 +1,5 @@
+using System.Globalization;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
-using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -23,18 +23,29 @@ public class SearchService(
 
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
-            .WithStatus(request.Status ?? string.Empty)
             .WithSkip(skip)
-            .WithTop(top);
+            .WithTop(top)
+            .WithOrderBy(request.SortBy ?? "relevance");
 
-        if (request.MinFees.HasValue || request.MaxFees.HasValue)
+        if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            var feeFilter = FeeConverter.CreateProportionFilter(request.MinFees, request.MaxFees);
-            if (!string.IsNullOrEmpty(feeFilter))
+            var statuses = request.Status.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var statusFilters = statuses.Select(s => MapStatusToODataFilter(s.Trim())).ToList();
+
+            if (statusFilters.Count > 0)
             {
-                queryBuilder = queryBuilder.WithCustomFilter(feeFilter);
+                var combinedStatusFilter = statusFilters.Count == 1
+                    ? statusFilters[0]
+                    : $"({string.Join(" or ", statusFilters)})";
+                queryBuilder = queryBuilder.WithCustomFilter(combinedStatusFilter);
             }
         }
+
+        queryBuilder = BuildFeeFilter(request.MinFees, request.MaxFees) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
 
         if (request.SubmissionDeadlineFrom.HasValue)
             queryBuilder = queryBuilder.SubmissionDeadlineFrom(request.SubmissionDeadlineFrom.Value);
@@ -83,10 +94,25 @@ public class SearchService(
             queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.AwardMethod))
+        if (request.AwardMethod != null && request.AwardMethod.Count > 0)
         {
-            queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod);
+            if (request.AwardMethod.Count == 2 &&
+                request.AwardMethod.Contains("with-competition") &&
+                request.AwardMethod.Contains("without-competition"))
+            {
+                queryBuilder = queryBuilder.WithAwardMethod("with-and-without-competition");
+            }
+            else if (request.AwardMethod.Count == 1)
+            {
+                queryBuilder = queryBuilder.WithAwardMethod(request.AwardMethod[0]);
+            }
         }
+
+        queryBuilder = BuildCpvFilter(request.CpvCodes) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
 
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
@@ -101,4 +127,54 @@ public class SearchService(
         };
     }
 
+    private static string MapStatusToODataFilter(string status) =>
+        status.ToLowerInvariant() switch
+        {
+            "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
+            "active" => "tender/status eq 'active'",
+            "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
+            _ => $"tender/status eq '{status}'"
+        };
+
+    private static string? BuildCpvFilter(List<string>? codes)
+    {
+        var validCodes = (codes ?? [])
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .ToList();
+
+        return validCodes.Count switch
+        {
+            0 => null,
+            1 => $"(tender/classification/scheme eq 'CPV' and tender/classification/classificationId eq '{validCodes[0]}')",
+            _ => BuildMultipleCpvFilter(validCodes)
+        };
+    }
+
+    private static string BuildMultipleCpvFilter(List<string> codes) =>
+        $"(tender/classification/scheme eq 'CPV' and ({string.Join(" or ", codes.Select(c => $"tender/classification/classificationId eq '{c}'"))}))";
+
+    private static string? BuildFeeFilter(decimal? minProportion, decimal? maxProportion)
+    {
+        if (minProportion == 0 && maxProportion == 0)
+        {
+            return "tender/participationFees/all(fee: fee/relativeValueProportion eq 0)";
+        }
+
+        var filters = new List<string>();
+
+        if (minProportion.HasValue && minProportion > 0)
+        {
+            filters.Add($"tender/participationFees/any(fee: fee/relativeValueProportion ge {minProportion.Value.ToString(CultureInfo.InvariantCulture)})");
+        }
+
+        if (maxProportion.HasValue && maxProportion > 0)
+        {
+            filters.Add($"tender/participationFees/any(fee: fee/relativeValueProportion le {maxProportion.Value.ToString(CultureInfo.InvariantCulture)})");
+        }
+
+        return filters.Count > 0 ? string.Join(" and ", filters) : null;
+    }
 }
