@@ -64,8 +64,6 @@ dependency service_auth {
   mock_outputs = {
     healthcheck_user_pool_arn       = "mock"
     healthcheck_user_pool_client_id = "mock"
-    pgadmin_user_pool_arn           = "mock"
-    pgadmin_user_pool_client_id     = "mock"
     user_pool_domain                = "mock"
   }
 }
@@ -122,7 +120,6 @@ inputs = {
   account_ids         = local.global_vars.locals.account_ids
   cloud_beaver_config = local.global_vars.locals.tools_configs.cloud_beaver
   healthcheck_config  = local.global_vars.locals.tools_configs.healthcheck
-  pgadmin_config      = local.global_vars.locals.tools_configs.pgadmin
   tools_configs       = local.global_vars.locals.tools_configs
   tags                = local.tags
 
@@ -153,13 +150,10 @@ inputs = {
 
   user_pool_arn_cloud_beaver       = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
   user_pool_arn_healthcheck        = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_arn_pgadmin            = dependency.service_auth.outputs.pgadmin_user_pool_arn
   user_pool_client_id_cloud_beaver = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
   user_pool_client_id_healthcheck  = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_client_id_pgadmin      = dependency.service_auth.outputs.pgadmin_user_pool_client_id
   user_pool_domain_cloud_beaver    = dependency.service_auth.outputs.user_pool_domain
   user_pool_domain_healthcheck     = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain_pgadmin         = dependency.service_auth.outputs.user_pool_domain
 
   certificate_arn  = dependency.service_ecs.outputs.certificate_arn
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
