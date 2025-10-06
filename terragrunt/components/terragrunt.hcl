@@ -532,13 +532,6 @@ locals {
       port      = 4040
       port_host = null
     }
-    pgadmin = {
-      cpu       = 256
-      memory    = 512
-      name      = "pgadmin"
-      port      = 5050
-      port_host = 5050
-    }
   }
 
   tg = {
