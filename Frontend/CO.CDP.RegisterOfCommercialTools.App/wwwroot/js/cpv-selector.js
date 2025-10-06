@@ -441,11 +441,11 @@ const CpvSelector = (() => {
             return;
         }
         const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2`;
+        selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
         selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
 
         selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
+            <p class="govuk-body-s govuk-!-font-weight-bold">
                 Selected (${state.selectedCodes.size}):
             </p>
             <div class="govuk-!-margin-top-2">
@@ -455,7 +455,7 @@ const CpvSelector = (() => {
             </div>
         `;
 
-        browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+        browseLink.appendChild(selectedCodesDisplay);
     };
 
     const debounce = (func, wait) => {

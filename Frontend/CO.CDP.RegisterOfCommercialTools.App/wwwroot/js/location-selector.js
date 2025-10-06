@@ -453,10 +453,10 @@ const LocationSelector = (() => {
             if (response.ok) {
                 const html = await response.text();
                 const selectedCodesDisplay = document.createElement('div');
-                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2 govuk-!-margin-top-3`;
+                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
                 selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
                 selectedCodesDisplay.innerHTML = html;
-                browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+                browseLink.appendChild(selectedCodesDisplay);
             }
         } catch (error) {
         }
