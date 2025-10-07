@@ -2,6 +2,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Services;
@@ -20,7 +21,8 @@ public class SearchServiceTests
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns("https://test-api.example.com/v1/tender");
         mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
-        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, mockConfiguration.Object);
+        var mockLogger = new Mock<ILogger<SearchService>>();
+        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, mockConfiguration.Object, mockLogger.Object);
     }
 
     [Fact]
@@ -212,8 +214,9 @@ public class SearchServiceTests
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns((string?)null);
         mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
+        var mockLogger = new Mock<ILogger<SearchService>>();
 
-        var action = () => new SearchService(mockQueryBuilder.Object, mockRepository.Object, mockConfiguration.Object);
+        var action = () => new SearchService(mockQueryBuilder.Object, mockRepository.Object, mockConfiguration.Object, mockLogger.Object);
 
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("ODataApi:BaseUrl configuration is required");

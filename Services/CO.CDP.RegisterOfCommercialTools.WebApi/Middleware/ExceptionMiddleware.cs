@@ -12,8 +12,7 @@ public class ExceptionMiddleware(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, ex.Message);
-
+            logger.LogError(ex, "Request failed: {Message}", ex.Message);
             throw;
         }
     }

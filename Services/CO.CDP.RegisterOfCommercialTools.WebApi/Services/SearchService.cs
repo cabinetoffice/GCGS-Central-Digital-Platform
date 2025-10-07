@@ -6,7 +6,8 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 public class SearchService(
     ICommercialToolsQueryBuilder builder,
     ICommercialToolsService service,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    ILogger<SearchService> logger)
     : ISearchService
 {
     private readonly string _odataBaseUrl = configuration.GetSection("ODataApi:BaseUrl").Value ??
@@ -114,15 +115,19 @@ public class SearchService(
             var filter => queryBuilder.WithCustomFilter(filter)
         };
 
-        // Enable location filter once OData API supports deliveryAddresses property
-        // queryBuilder = BuildLocationFilter(request.LocationCodes) switch
-        // {
-        //     null => queryBuilder,
-        //     var filter => queryBuilder.WithCustomFilter(filter)
-        // };
+        queryBuilder = BuildLocationFilter(request.LocationCodes) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
 
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
+        return await ExecuteSearchWithFallback(queryUrl, pageNumber, top);
+    }
+
+    private async Task<SearchResponse> ExecuteSearchWithFallback(string queryUrl, int pageNumber, int pageSize)
+    {
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
 
         return new SearchResponse
@@ -130,7 +135,7 @@ public class SearchService(
             Results = results,
             TotalCount = totalCount,
             PageNumber = pageNumber,
-            PageSize = top
+            PageSize = pageSize
         };
     }
 
