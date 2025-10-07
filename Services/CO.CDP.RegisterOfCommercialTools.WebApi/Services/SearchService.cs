@@ -114,11 +114,12 @@ public class SearchService(
             var filter => queryBuilder.WithCustomFilter(filter)
         };
 
-        queryBuilder = BuildLocationFilter(request.LocationCodes) switch
-        {
-            null => queryBuilder,
-            var filter => queryBuilder.WithCustomFilter(filter)
-        };
+        // Enable location filter once OData API supports deliveryAddresses property
+        // queryBuilder = BuildLocationFilter(request.LocationCodes) switch
+        // {
+        //     null => queryBuilder,
+        //     var filter => queryBuilder.WithCustomFilter(filter)
+        // };
 
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
