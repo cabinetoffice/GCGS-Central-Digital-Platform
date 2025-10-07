@@ -27,7 +27,7 @@ public class SearchServiceTests
             Status = ["Active"],
             FeeMin = 1m,
             FeeMax = 5m,
-            AwardMethod = "Competitive"
+            AwardMethod = ["With competition"]
         };
 
         searchModel.SubmissionDeadline.From.Day = "1";
@@ -57,7 +57,7 @@ public class SearchServiceTests
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
-                    AwardMethod = "Competitive"
+                    AwardMethod = "With competition"
                 }
             },
             TotalCount = 25,
@@ -83,7 +83,7 @@ public class SearchServiceTests
             dto.Keyword == "IT services" &&
             dto.MinFees == 0.01m &&
             dto.MaxFees == 0.05m &&
-            dto.AwardMethod == "Competitive" &&
+            dto.AwardMethod != null && dto.AwardMethod.Count == 1 && dto.AwardMethod[0] == "With competition" &&
             dto.PageNumber == 1
         )), Times.Once);
     }

@@ -26,20 +26,20 @@ RUN apt-get update && apt-get install -y \
     libatspi2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY E2ETests.csproj .
-
 ENV NUGET_PACKAGES=/root/.nuget/packages
 RUN mkdir -p $NUGET_PACKAGES
 
-RUN dotnet restore --packages $NUGET_PACKAGES E2ETests.csproj
+COPY E2ETests.csproj ./
+
+RUN dotnet restore --packages $NUGET_PACKAGES E2ETests.csproj \
+ && dotnet build E2ETests.csproj --configuration Release
+
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet tool install --global Microsoft.Playwright.CLI \
+ && playwright install --with-deps
 
 COPY . .
 
 RUN dotnet build E2ETests.csproj --configuration Release
-
-RUN dotnet tool install --global Microsoft.Playwright.CLI
-ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN playwright install
-RUN playwright install-deps
 
 CMD ["dotnet", "test", "E2ETests.csproj", "--verbosity", "detailed", "--filter", "TestCategory!=Failing"]

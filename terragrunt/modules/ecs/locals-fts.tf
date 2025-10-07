@@ -4,7 +4,7 @@ locals {
 
   service_version_fts = var.pinned_service_version_fts == null ? local.orchestrator_fts_service_version : var.pinned_service_version_fts
 
-  fts_screts_arn = data.aws_secretsmanager_secret.fts_secrets.arn
+  fts_secrets_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
   fts_one_login_logout_redirect_uris = {
     development = "https://fts.${var.public_domain}/auth/logout"
@@ -28,39 +28,44 @@ locals {
   }
 
   fts_secrets = {
-    email_contactus                       = "${local.fts_screts_arn}:CONTACTUS_EMAIL::"
-    email_e_enablement                    = "${local.fts_screts_arn}:EENABLEMENT_EMAIL::"
-    email_subscription_authentication_key = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
-    email_subscription_cipher             = "${local.fts_screts_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
-    email_tech_support                    = "${local.fts_screts_arn}:TECHSUPPORT_EMAIL::"
-    email_user_research                   = "${local.fts_screts_arn}:USER_RESEARCH_EMAIL::"
-    fts_one_login_client_id               = local.one_login.credential_locations.client_id
-    fts_srsi_api_key                      = "${local.fts_screts_arn}:FTS_SRSI_API_KEY::"
-    google_analytics_key                  = "${local.fts_screts_arn}:GOOGLE_ANALYTICS_KEY::"
-    google_tag_manager_key                = "${local.fts_screts_arn}:GOOGLE_TAG_MANAGER_KEY::"
-    http_basic_auth_enabled               = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_ENABLED::"
-    http_basic_auth_pass                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_PASS::"
-    http_basic_auth_user                  = "${local.fts_screts_arn}:HTTP_BASIC_AUTH_USER::"
-    letsencrypt_key_authorization         = "${local.fts_screts_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
-    letsencrypt_token                     = "${local.fts_screts_arn}:LETSENCRYPT_TOKEN::"
-    one_login_base_url                    = local.one_login.credential_locations.authority
-    one_login_fln_api_key_arn             = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
-    one_login_private_key                 = local.one_login.credential_locations.private_key
-    run_guest_token                       = "${local.fts_screts_arn}:RUN_GUEST_TOKEN::"
-    run_migrator_token                    = "${local.fts_screts_arn}:RUN_MIGRATOR_TOKEN::"
-    run_registrar_token                   = "${local.fts_screts_arn}:RUN_REGISTRAR_TOKEN::"
-    ses_configuration_set_name            = var.ses_configuration_set_name
-    srsi_logout_api_key                   = "${local.fts_screts_arn}:SRSI_LOGOUT_API_KEY::"
-    sso_api_authentication_key            = "${local.fts_screts_arn}:SSO_API_AUTHENTICATION_KEY::"
-    sso_cipher                            = "${local.fts_screts_arn}:SSO_CIPHER::"
-    sso_password                          = "${local.fts_screts_arn}:SSO_PASSWORD::"
-    sso_token_session_authentication_key  = "${local.fts_screts_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
-    sso_token_session_cipher              = "${local.fts_screts_arn}:SSO_TOKEN_SESSION_CIPHER::"
+    email_contactus                           = "${local.fts_secrets_arn}:CONTACTUS_EMAIL::"
+    email_e_enablement                        = "${local.fts_secrets_arn}:EENABLEMENT_EMAIL::"
+    email_subscription_authentication_key     = "${local.fts_secrets_arn}:EMAIL_SUBSCRIPTION_AUTHENTICATION_KEY::"
+    email_subscription_cipher                 = "${local.fts_secrets_arn}:EMAIL_SUBSCRIPTION_CIPHER::"
+    email_tech_support                        = "${local.fts_secrets_arn}:TECHSUPPORT_EMAIL::"
+    email_user_research                       = "${local.fts_secrets_arn}:USER_RESEARCH_EMAIL::"
+    fts_one_login_client_id                   = local.one_login.credential_locations.client_id
+    fts_srsi_api_key                          = "${local.fts_secrets_arn}:FTS_SRSI_API_KEY::"
+    google_analytics_key                      = "${local.fts_secrets_arn}:GOOGLE_ANALYTICS_KEY::"
+    google_tag_manager_key                    = "${local.fts_secrets_arn}:GOOGLE_TAG_MANAGER_KEY::"
+    http_basic_auth_enabled                   = "${local.fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"
+    http_basic_auth_pass                      = "${local.fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"
+    http_basic_auth_user                      = "${local.fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"
+    letsencrypt_key_authorization             = "${local.fts_secrets_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
+    letsencrypt_token                         = "${local.fts_secrets_arn}:LETSENCRYPT_TOKEN::"
+    notify_api_key                            = "${local.fts_secrets_arn}:NOTIFY_API_KEY::"
+    notify_template_id_general                = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_GENERAL::"
+    notify_template_id_saved_searches         = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_SAVED_SEARCHES::"
+    notify_template_id_watched_notice_closing = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_WATCHED_NOTICE_CLOSING::"
+    notify_template_id_watched_notice_update  = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_WATCHED_NOTICE_UPDATE::"
+    one_login_base_url                        = local.one_login.credential_locations.authority
+    one_login_fln_api_key_arn                 = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
+    one_login_private_key                     = local.one_login.credential_locations.private_key
+    run_guest_token                           = "${local.fts_secrets_arn}:RUN_GUEST_TOKEN::"
+    run_migrator_token                        = "${local.fts_secrets_arn}:RUN_MIGRATOR_TOKEN::"
+    run_registrar_token                       = "${local.fts_secrets_arn}:RUN_REGISTRAR_TOKEN::"
+    ses_configuration_set_name                = var.ses_configuration_set_name
+    srsi_logout_api_key                       = "${local.fts_secrets_arn}:SRSI_LOGOUT_API_KEY::"
+    sso_api_authentication_key                = "${local.fts_secrets_arn}:SSO_API_AUTHENTICATION_KEY::"
+    sso_cipher                                = "${local.fts_secrets_arn}:SSO_CIPHER::"
+    sso_password                              = "${local.fts_secrets_arn}:SSO_PASSWORD::"
+    sso_token_session_authentication_key      = "${local.fts_secrets_arn}:SSO_TOKEN_SESSION_AUTHENTICATION_KEY::"
+    sso_token_session_cipher                  = "${local.fts_secrets_arn}:SSO_TOKEN_SESSION_CIPHER::"
   }
 
   fts_parameters = {
     email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
-    dev_email                           = "${local.fts_screts_arn}:DEV_EMAIL::"
+    dev_email                           = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                    = "%"
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
     cookie_domain                       = local.fts_site_domains[var.environment]

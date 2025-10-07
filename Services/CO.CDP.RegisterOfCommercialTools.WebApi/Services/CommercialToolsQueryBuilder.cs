@@ -33,39 +33,75 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         if (string.IsNullOrWhiteSpace(keywords))
             return this;
 
-        var searchQuery = ParseKeywordsForOData(keywords);
-
-        return new CommercialToolsQueryBuilder(_params
-            .SetItem("$search", searchQuery)
-            .SetItem("filter[tender.name]", keywords)
-            .SetItem("filter[tender.techniques.frameworkAgreement.description]", keywords)
-            .SetItem("filter[parties.identifier.id]", keywords)
-            .SetItem("filter[parties.name]", keywords), _skip, _top);
+        var filter = BuildKeywordFilter(keywords);
+        return WithCustomFilter(filter);
     }
 
-    private static string ParseKeywordsForOData(string keywords)
+    private static string BuildKeywordFilter(string keywords)
     {
         keywords = keywords.Trim();
 
         if (keywords.StartsWith("\"") && keywords.EndsWith("\""))
         {
-            return keywords;
+            var phrase = keywords.Trim('"');
+            return BuildContainsFilterForPhrase(phrase);
         }
 
         if (keywords.Contains(" + "))
         {
-            var terms = keywords.Split(" + ", StringSplitOptions.RemoveEmptyEntries);
-            return string.Join(" AND ", terms.Select(term => term.Trim()));
+            var terms = keywords.Split(" + ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var filters = terms.Select(term => BuildContainsFilterForPhrase(term)).ToList();
+            return $"({string.Join(" and ", filters)})";
         }
 
-        return keywords;
+        var words = keywords.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (words.Length > 1)
+        {
+            var filters = words.Select(word => BuildContainsFilterForPhrase(word)).ToList();
+            return $"({string.Join(" or ", filters)})";
+        }
+
+        return BuildContainsFilterForPhrase(keywords);
+    }
+
+    private static string BuildContainsFilterForPhrase(string phrase)
+    {
+        var escapedPhrase = phrase.Replace("'", "''").ToLower();
+
+        var containsFilters = new List<string>
+        {
+            $"contains(tolower(tender/title), '{escapedPhrase}')",
+            $"contains(tolower(tender/description), '{escapedPhrase}')",
+            $"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedPhrase}')",
+
+            $"parties/any(p: contains(tolower(p/name), '{escapedPhrase}'))",
+            $"parties/any(p: contains(tolower(p/identifier/id), '{escapedPhrase}'))"
+        };
+
+        containsFilters.Add($"additionalIdentifiers/any(ai: contains(tolower(ai/id), '{escapedPhrase}'))");
+
+        return $"({string.Join(" or ", containsFilters)})";
     }
 
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
         WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
 
     public ICommercialToolsQueryBuilder WithStatus(string status) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(status), "filter[tender.status]", status);
+        string.IsNullOrWhiteSpace(status)
+            ? this
+            : WithCustomFilter(MapStatusToODataFilter(status.ToLowerInvariant()));
+
+    private static string MapStatusToODataFilter(string status) =>
+        status switch
+        {
+            "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
+            "active" => "tender/status eq 'active'",
+            "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
+            _ => $"tender/status eq '{status}'"
+        };
 
     public ICommercialToolsQueryBuilder FeeFrom(decimal from)
     {
@@ -102,27 +138,35 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder ContractLocation(string region) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(region), "filter[tender.items.deliveryAddresses.region]", region);
 
-    public ICommercialToolsQueryBuilder WithCpv(string cpv) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(cpv), "filter[tender.items.additionalClassifications.id]", cpv);
+    public ICommercialToolsQueryBuilder WithCpv(string cpv)
+    {
+        if (string.IsNullOrWhiteSpace(cpv))
+            return this;
+
+        var odataFilter = $"(tender/classification/scheme eq 'CPV' and tender/classification/classificationId eq '{cpv}')";
+        return WithCustomFilter(odataFilter);
+    }
 
     public ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod)
     {
         if (string.IsNullOrWhiteSpace(awardMethod))
             return this;
 
-        var filterValue = awardMethod.ToLowerInvariant() switch
+        var odataFilter = awardMethod.ToLowerInvariant() switch
         {
-            "with-competition" => "open",
-            "without-competition" => "direct",
-            _ => awardMethod
+            "with-competition" => "(tender/techniques/frameworkAgreement/method eq 'open' or tender/techniques/frameworkAgreement/method eq 'withReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition')",
+            "without-competition" => "(tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition')",
+            "with-and-without-competition" => "(tender/techniques/frameworkAgreement/method eq 'open' or tender/techniques/frameworkAgreement/method eq 'withReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'withAndWithoutReopeningCompetition' or tender/techniques/frameworkAgreement/method eq 'direct' or tender/techniques/frameworkAgreement/method eq 'withoutReopeningCompetition')",
+            _ => $"tender/techniques/frameworkAgreement/method eq '{awardMethod}'"
         };
 
-        return WithParameter("filter[tender.awardCriteria.method]", filterValue);
+        return WithCustomFilter(odataFilter);
     }
 
     public ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(frameworkType), "filter[tender.techniques.frameworkAgreement.type]",
-            frameworkType);
+        string.IsNullOrWhiteSpace(frameworkType)
+            ? this
+            : WithCustomFilter($"tender/techniques/frameworkAgreement/type eq '{frameworkType}'");
 
     public ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId) =>
         WithParameterIf(!string.IsNullOrWhiteSpace(restrictionId),
@@ -149,6 +193,25 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             : $"({existingFilter}) and ({filter})";
 
         return new CommercialToolsQueryBuilder(_params.SetItem("$filter", newFilter), _skip, _top);
+    }
+
+    public ICommercialToolsQueryBuilder WithOrderBy(string sortBy)
+    {
+        if (string.IsNullOrWhiteSpace(sortBy))
+            return this;
+
+        var orderByClause = sortBy.ToLowerInvariant() switch
+        {
+            "a-z" => "tender/title asc",
+            "z-a" => "tender/title desc",
+            "relevance" => "tender/status desc,tender/tenderPeriod/endDate asc,tender/title asc",
+            _ => null
+        };
+
+        if (orderByClause == null)
+            return this;
+
+        return WithParameter("$orderby", orderByClause);
     }
 
     public string Build(string baseUrl)

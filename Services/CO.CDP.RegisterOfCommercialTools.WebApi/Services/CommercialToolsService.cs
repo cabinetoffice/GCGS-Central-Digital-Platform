@@ -39,24 +39,23 @@ public class CommercialToolsService : ICommercialToolsService
         var content = await response.Content.ReadAsStringAsync();
         var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-        var apiResponse = JsonSerializer.Deserialize<CommercialToolsApiResponse>(content, options);
+        var apiResponse = JsonSerializer.Deserialize<List<CommercialToolApiItem>>(content, options);
 
-        if (apiResponse == null || !apiResponse.Success || apiResponse.Data == null)
+        if (apiResponse == null)
         {
-            _logger.LogWarning("Failed to deserialise API response or API returned failure");
+            _logger.LogWarning("Failed to deserialise API response");
             return (Enumerable.Empty<SearchResultDto>(), 0);
         }
 
-        var totalCount = apiResponse.Paging?.TotalItems ?? 0;
-        _logger.LogInformation("Found paging.totalItems: {TotalCount}", totalCount);
-
         var results = new List<SearchResultDto>();
-        foreach (var item in apiResponse.Data)
+        foreach (var item in apiResponse)
         {
             var searchResult = _mapper.Map<SearchResultDto>(item);
             results.Add(searchResult);
         }
 
+        // Total count will be provided in future update
+        var totalCount = 0;
         _logger.LogInformation("Processed {ProcessedCount} results, total count: {TotalCount}", results.Count, totalCount);
         return (results, totalCount);
     }
