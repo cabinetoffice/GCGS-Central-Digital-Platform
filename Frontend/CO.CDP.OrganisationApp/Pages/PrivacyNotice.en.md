@@ -4,7 +4,7 @@ This notice sets out how the Find a Tender service (FTS) will use your personal 
 
 ### Purpose
    
-The Find a Tender service (FTS) is provideda digital service run by the Cabinet Office. Contracting authorities act as joint data controllers for this service. 
+The Find a Tender service (FTS) is provided by the Cabinet Office. Contracting authorities act as joint data controllers for this service. 
 
 The purpose of FTS is to publish procurement notices and related information as required by the Procurement Act 2023 and Procurement Regulations 2024 and other relevant procurement regimes, for example the Public Contracts Regulations 2015\.  
 
