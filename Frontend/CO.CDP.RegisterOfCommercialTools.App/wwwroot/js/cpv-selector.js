@@ -181,6 +181,7 @@ const CpvSelector = (() => {
         refreshCheckboxStates();
         updateUrlParams();
         updateHiddenInputs();
+        updateAccordionContent();
     };
 
     const refreshCheckboxStates = (container = document) => {
