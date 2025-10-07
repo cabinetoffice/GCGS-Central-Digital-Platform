@@ -82,7 +82,10 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
       cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = [
+        "cabinetoffice.gov.uk",
+        "goaco.com"
+      ]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
