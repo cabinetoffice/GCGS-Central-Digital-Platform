@@ -40,7 +40,7 @@ Byddwn yn casglu eich cyfeiriad e-bost er mwyn hwyluso'r gweithgareddau canlynol
 * eich hysbysu am hysbysiadau newydd sy'n cyfateb i'r meini prawf chwilio y gwnaethoch eu cadw  
 * eich hysbysu am ddyddiadau cau ar gyfer hysbysiadau rydych yn eu dilyn   
 * rhoi'r wybodaeth ddiweddaraf i chi am newidiadau i'r gwasanaeth  
-* eich gwahodd i gymryd rhan mewn chiymchwil defnyddiwr neu gwerthuso lle mae diddordeb cyfreithlon   
+* eich gwahodd i gymryd rhan mewn ymchwil defnyddiwr neu gwerthuso lle mae diddordeb cyfreithlon   
 * lleihau nifer yr achosion pan fydd angen mewnbynnu'r wybodaeth hon eto o fewn y gwasanaeth 
 
 Mae data personol sy’n ymwneud â’r Offer Datganiad Gwaith yn gyfyngedig i gyfeiriadau e-bost awdurdod cyswllt a gwybodaeth mewngofnodi defnyddiwr, a ddefnyddir i reoli mynediad ac i ddadansoddi defnydd y gwasanaeth. Efallai y byddwch yn cael eich gwahodd i gymryd rhan mewn ymchwil defnyddiwr.
