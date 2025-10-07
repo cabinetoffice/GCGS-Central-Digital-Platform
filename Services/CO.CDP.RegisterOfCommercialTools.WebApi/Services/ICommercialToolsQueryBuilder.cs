@@ -16,7 +16,7 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType);
     ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId);
     ICommercialToolsQueryBuilder ExcludeBuyerClassificationRestrictions(string restrictionId);
-    ICommercialToolsQueryBuilder ContractLocation(string region);
+    ICommercialToolsQueryBuilder WithLocation(string location);
     ICommercialToolsQueryBuilder WithCpv(string cpv);
     ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod);
     ICommercialToolsQueryBuilder WithSkip(int skip);

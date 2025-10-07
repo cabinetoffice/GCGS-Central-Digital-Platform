@@ -114,6 +114,12 @@ public class SearchService(
             var filter => queryBuilder.WithCustomFilter(filter)
         };
 
+        queryBuilder = BuildLocationFilter(request.LocationCodes) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
+
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
@@ -155,6 +161,23 @@ public class SearchService(
 
     private static string BuildMultipleCpvFilter(List<string> codes) =>
         $"(tender/classification/scheme eq 'CPV' and ({string.Join(" or ", codes.Select(c => $"tender/classification/classificationId eq '{c}'"))}))";
+
+    private static string? BuildLocationFilter(List<string>? codes)
+    {
+        var validCodes = (codes ?? [])
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .ToList();
+
+        return validCodes.Count switch
+        {
+            0 => null,
+            1 => $"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{validCodes[0]}'))",
+            _ => BuildMultipleLocationFilter(validCodes)
+        };
+    }
+
+    private static string BuildMultipleLocationFilter(List<string> codes) =>
+        $"tender/items/any(i: i/deliveryAddresses/any(d: {string.Join(" or ", codes.Select(c => $"d/region eq '{c}'"))}))";
 
     private static string? BuildFeeFilter(decimal? minProportion, decimal? maxProportion)
     {
