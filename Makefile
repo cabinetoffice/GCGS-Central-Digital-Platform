@@ -4,6 +4,7 @@ REPO_URL := $(AWS_ACCOUNT_ID).dkr.ecr.eu-west-2.amazonaws.com
 IMAGE_VERSION ?= latest
 
 export DOCKER_BUILDKIT=1
+export COMPOSE_DOCKER_CLI_BUILD=1
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -25,8 +26,18 @@ test: ## Run tests
 
 build-docker-parallel: VERSION ?= "undefined"
 build-docker-parallel: ## Build Docker images in parallel
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker buildx bake --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker-parallel
+
+build-docker: ## Build Docker images sequentially to reduce memory usage
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation person forms
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
+.PHONY: build-docker
 
 # Default to empty cache args
 DOCKER_CACHE_ARGS ?=
@@ -37,14 +48,15 @@ DOCKER_CACHE_ARGS = \
   --set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=min
 endif
 
-build-docker: VERSION ?= "undefined"
-build-docker: ## Build Docker images with bake
-	@docker buildx bake
-		--allow=fs=/tmp \
-		-f compose.yml \
-		--set *.args.VERSION=$(VERSION) \
-		$(DOCKER_CACHE_ARGS)
-.PHONY: build-docker
+buildx-docker: VERSION ?= "undefined"
+buildx-docker: ## Build Docker images with bake
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) authority tenant
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation person forms
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) data-sharing entity-verification
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-app commercial-tools-app commercial-tools-api
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
+.PHONY: buildx-docker
 
 up: render-compose-override ## Start Docker containers
 	@docker compose ls
