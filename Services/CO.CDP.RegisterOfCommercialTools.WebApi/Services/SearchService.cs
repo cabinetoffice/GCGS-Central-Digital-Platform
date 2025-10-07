@@ -16,6 +16,9 @@ public class SearchService(
 
     public async Task<SearchResponse> Search(SearchRequestDto request)
     {
+        logger.LogInformation("Search request received: Keyword={Keyword}, PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
+            request.Keyword ?? "(none)", request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
+
         const int fixedPageSize = 20;
 
         var skip = request.Skip ?? (request.PageNumber - 1) * fixedPageSize;
@@ -123,6 +126,8 @@ public class SearchService(
 
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
+        logger.LogInformation("Executing OData query: {QueryUrl}", queryUrl);
+
         return await ExecuteSearchWithFallback(queryUrl, pageNumber, top);
     }
 
@@ -130,9 +135,13 @@ public class SearchService(
     {
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
 
+        var searchResultDtos = results.ToList();
+        logger.LogInformation("Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
+            searchResultDtos.ToList().Count, totalCount, pageNumber);
+
         return new SearchResponse
         {
-            Results = results,
+            Results = searchResultDtos,
             TotalCount = totalCount,
             PageNumber = pageNumber,
             PageSize = pageSize
