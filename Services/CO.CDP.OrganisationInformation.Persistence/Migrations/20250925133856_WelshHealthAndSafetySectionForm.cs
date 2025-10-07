@@ -149,7 +149,7 @@ migrationBuilder.Sql($@"
                     RETURNING id INTO q11Id;
 
                     INSERT INTO form_questions (guid, next_question_id, next_question_alternative_id, section_id, ""type"", is_required, title, description, ""options"",  caption, summary_title, ""name"", sort_order)
-                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 6, true, 'Global_CheckYourAnswers', '', '{{}}', NULL, NULL, '_WelshHealthAndSafetyQuestion12', 16)
+                    VALUES('{Guid.NewGuid()}', NULL, NULL, sectionId, 6, true, 'Global_CheckYourAnswers', '', '{{}}', NULL, NULL, '_WelshHealthAndSafetyQuestion12', 18)
                     RETURNING id INTO q12Id;
 
                     UPDATE form_questions SET next_question_id = q2Id WHERE id = q1Id;

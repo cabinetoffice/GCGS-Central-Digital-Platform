@@ -618,7 +618,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_04_Title" xml:space="preserve">
-    <value>Are you registered with an industrial or occupational safety group</value>
+    <value>Are you registered with an industrial or occupational safety group?</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_04_SummaryTitle" xml:space="preserve">
     <value>Safety group registration</value>
@@ -650,7 +650,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
     <value>Other details</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_06_Title" xml:space="preserve">
-    <value>Is your organisation registered with an industrial or occupational safety group</value>
+    <value>Is your organisation registered with an industrial or occupational safety group?</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_06_SummaryTitle" xml:space="preserve">
     <value>Safety group registration</value>
