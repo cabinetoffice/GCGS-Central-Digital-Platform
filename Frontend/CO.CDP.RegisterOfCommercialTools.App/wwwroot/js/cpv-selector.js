@@ -241,6 +241,17 @@ const CpvSelector = (() => {
                 }
             });
 
+            state.treeContainer.addEventListener('keydown', (e) => {
+                if (e.target.matches('[data-action="toggle-selection"]') && e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!e.target.disabled) {
+                        e.target.checked = !e.target.checked;
+                        toggleSelection(e.target.dataset.code);
+                    }
+                }
+            });
+
             state.treeContainer.addEventListener('toggle', async (e) => {
                 if (e.target.matches(`details[data-${config.codeType.toLowerCase()}-code]`)) {
                     const details = e.target;
