@@ -150,7 +150,7 @@ localization-import-from-csv:
 
 render-compose-override: ## Render compose override from template and inject secrets (WIP)
 	@if [ ! -f compose.override.yml ]; then \
-		cp compose.override.yml.template compose.override.yml; \
+		envsubst < compose.override.yml.template > compose.override.yml; \
 		echo "compose.override.yml created from template."; \
 	else \
 		echo "compose.override.yml already exists. Skipping."; \
@@ -164,5 +164,5 @@ render-compose-override-force: ## Force overwrite compose override from template
 
 e2e-test: up ## Build & run e2e tests in Docker
 	docker network ls
-	@cd E2ETests && docker compose up --build
+	@cd E2ETests && docker compose up --build --abort-on-container-exit --exit-code-from e2e-tests
 .PHONY: make-e2e

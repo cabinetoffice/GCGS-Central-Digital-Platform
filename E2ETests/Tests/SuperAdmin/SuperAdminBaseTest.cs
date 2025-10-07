@@ -13,17 +13,19 @@ public class SuperAdminBaseTest : BaseTest
     protected OrganisationDetailsPage _organisationDetailsPage;
     protected OrganisationName _organisationName;
 
+    // TODO: When we have multiple support admin tests later, we will need to implement a similar one time login as BaseTest
+
     [SetUp]
     public async Task SetupSuperAdminData()
     {
-        // Login as normal user
-        await Setup();
+        await Login();
         string accessToken = GetAccessToken();
 
         string storageKey = "OrganisationDetails_Org";
         await OrganisationApi.CreateOrganisation(accessToken, "OrganisationDetailsOrg", storageKey);
         _organisationId = OrganisationApi.GetOrganisationId(storageKey);
         Console.WriteLine($"📌 Stored Organisation ID for SuperAdmin Tests: {_organisationId}");
+        
         await Logout();
 
         // Login as SuperAdmin user

@@ -202,7 +202,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
-      Issuer: 'http://gateway:${CDP_AUTHORITY_PORT:-8092}'
+      Issuer: *organisation-authority
 
   tenant:
     container_name: co-cdp-tenant

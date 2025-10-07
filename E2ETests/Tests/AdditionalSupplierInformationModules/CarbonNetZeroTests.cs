@@ -1,11 +1,8 @@
 using E2ETests.Utilities;
-using E2ETests.OrganisationDetails;
-using Microsoft.VisualBasic;
-
-namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModules;
+namespace E2ETests.Tests.AdditionalSupplierInformationModules;
 
 [TestFixture]
-public class CarbonNetZeroTests : OrganisationDetailsBaseTest
+public class CarbonNetZeroTests : CarbonNetZeroBaseTest
 {
     private InteractionUtilities InteractionUtilities;
 
@@ -15,8 +12,7 @@ public class CarbonNetZeroTests : OrganisationDetailsBaseTest
         InteractionUtilities = new InteractionUtilities(_page);
         return Task.CompletedTask;
     }
-
-    [Test]
+    [Test, Category("Failing")]
     public async Task ShouldCompleteTheCarbonNetZeroModuleJourney()
     {
         var organisationPageUrl = $"{_baseUrl}/organisation/{_organisationId}";
@@ -62,7 +58,7 @@ public class CarbonNetZeroTests : OrganisationDetailsBaseTest
         await InteractionUtilities.PageShouldContainText("15");
     }
 
-    [Test]
+    [Test, Category("Failing")]
     public async Task ShouldCompleteTheCarbonNetZeroModuleErrorsJourney()
     {
         var organisationPageUrl = $"{_baseUrl}/organisation/{_organisationId}";

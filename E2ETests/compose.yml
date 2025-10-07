@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   e2e-tests:
+    shm_size: "1gb"
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,6 +12,17 @@ services:
     working_dir: /app
     networks:
       - cdp-sirsi
+    environment:
+      TestSettings__BaseUrl: http://organisation-app:8080
+      TestSettings__ApiUrl: http://organisation:8080
+      TestSettings__Email:
+      TestSettings__Password:
+      TestSettings__SecretKey:
+      TestSettings__TestSupportAdminEmail: 
+      TestSettings__TestSupportAdminPassword: 
+      TestSettings__TestSupportAdminSecretKey:
+      TestSettings__DatabaseConnectionString: "Server=db;Database=cdp;User Id=cdp_user;Password=cdp123;"
+
 
 networks:
   cdp-sirsi:

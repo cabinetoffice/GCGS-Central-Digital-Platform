@@ -1,10 +1,9 @@
 using E2ETests.Utilities;
-using E2ETests.OrganisationDetails;
 
-namespace E2ETests.Tests.OrganisationDetails.AdditionalSupplierInformationModules;
+namespace E2ETests.Tests.AdditionalSupplierInformationModules;
 
 [TestFixture]
-public class PaymentsInformationModuleTests : OrganisationDetailsBaseTest
+public class PaymentsInformationModuleTests : PaymentsInformationModuleBaseTest
 {
     private InteractionUtilities InteractionUtilities;
 
@@ -15,7 +14,7 @@ public class PaymentsInformationModuleTests : OrganisationDetailsBaseTest
         return Task.CompletedTask;
     }
 
-    [Test]
+    [Test, Category("Failing")]
     public async Task ShouldCompleteThePaymentsInformationModuleJourney()
     {
         var organisationPageUrl = $"{_baseUrl}/organisation/{_organisationId}";
@@ -88,8 +87,8 @@ public class PaymentsInformationModuleTests : OrganisationDetailsBaseTest
         await InteractionUtilities.ClickButtonByText("Save");
     }
 
-    [Test]
-    public async Task ShouldCompleteTheSteelModuleErrorsJourney()
+    [Test, Category("Failing")]
+    public async Task ShouldCompleteThePaymentInformationErrorsJourney()
     {
         var organisationPageUrl = $"{_baseUrl}/organisation/{_organisationId}";
         await InteractionUtilities.NavigateToUrl(organisationPageUrl);

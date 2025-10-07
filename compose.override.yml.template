@@ -43,19 +43,18 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       OneLogin__AccountUrl: "https://home.integration.account.gov.uk"
       OneLogin__Authority: "https://oidc.integration.account.gov.uk"
-      OneLogin__ClientId: "<get this from other team members>"
-      OneLogin__PrivateKey: "<get this from other team members>"
+      OneLogin__ClientId: "${SIRSI_ONELOGIN_CLIENTID}"
+      OneLogin__PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
       CompaniesHouse__Url: "https://api.company-information.service.gov.uk"
-      CompaniesHouse__User: "--UserId--"
-      CompaniesHouse__Password: ""
+      CompaniesHouse__User: "${SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER}"
       CharityCommission__Url: "https://api.charitycommission.gov.uk/register/api/"
-      CharityCommission__SubscriptionKey: "--SubscriptionKey --"
+      CharityCommission__SubscriptionKey: "${SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY}"
     deploy:
       replicas: 1
   authority:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      PrivateKey: "<get this from other team members, also can be generated using make command>"
+      PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
       OneLogin__Authority: "https://oidc.integration.account.gov.uk"
     deploy:
       replicas: 1
@@ -67,6 +66,8 @@ services:
   organisation:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      GOVUKNotify__ApiKey: "fakekey-aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa-bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      Features__SendNotifyEmails: false
     deploy:
       replicas: 1
   person:
@@ -92,7 +93,8 @@ services:
   av-scanner:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      GOVUKNotify__ApiKey: ""
+      GOVUKNotify__ApiKey: "fakekey-aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa-bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"
+      Features__SendNotifyEmails: false
     deploy:
       replicas: 1
   clamav-rest:
