@@ -151,6 +151,11 @@ const LocationSelector = (() => {
             const formData = new FormData();
             getCurrentSelection().forEach(code => formData.append('selectedCodes', code));
 
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
+
             const response = await fetch(`/${config.routePrefix}/selection-fragment`, {
                 method: 'POST',
                 body: formData
@@ -455,6 +460,11 @@ const LocationSelector = (() => {
 
         const formData = new FormData();
         Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (token) {
+            formData.append('__RequestVerificationToken', token);
+        }
 
         try {
             const response = await fetch(`/${config.routePrefix}/accordion-selection-fragment`, {
