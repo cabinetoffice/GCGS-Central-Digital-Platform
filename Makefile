@@ -29,6 +29,7 @@ build-docker-parallel: ## Build Docker images in parallel
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --build-arg VERSION=$(VERSION)
 .PHONY: build-docker-parallel
 
+build-docker: VERSION ?= "undefined"
 build-docker: ## Build Docker images sequentially to reduce memory usage
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
