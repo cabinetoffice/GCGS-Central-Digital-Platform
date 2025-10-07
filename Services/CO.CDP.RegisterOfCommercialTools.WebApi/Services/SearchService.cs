@@ -16,8 +16,8 @@ public class SearchService(
 
     public async Task<SearchResponse> Search(SearchRequestDto request)
     {
-        logger.LogInformation("Search request received: Keyword={Keyword}, PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
-            request.Keyword ?? "(none)", request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
+        logger.LogInformation("Search request received: PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
+            request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
 
         const int fixedPageSize = 20;
 
