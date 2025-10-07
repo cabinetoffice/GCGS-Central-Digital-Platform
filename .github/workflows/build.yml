@@ -77,6 +77,10 @@ jobs:
           VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
       - name: Build
         run: make buildx-docker VERSION=${IMAGE_VERSION}
         env:
