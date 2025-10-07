@@ -164,17 +164,6 @@ variable "is_production" {
   type        = bool
 }
 
-variable "pgadmin_config" {
-  description = "Pgadmin services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
-  })
-}
-
 variable "postgres_engine_version" {
   description = "DB engine version"
   type        = string
@@ -306,11 +295,6 @@ variable "user_pool_arn_healthcheck" {
   type    = string
 }
 
-variable "user_pool_arn_pgadmin" {
-  default = null
-  type    = string
-}
-
 variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
@@ -321,22 +305,12 @@ variable "user_pool_client_id_healthcheck" {
   type    = string
 }
 
-variable "user_pool_client_id_pgadmin" {
-  default = null
-  type    = string
-}
-
 variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
 }
 
 variable "user_pool_domain_healthcheck" {
-  default = null
-  type    = string
-}
-
-variable "user_pool_domain_pgadmin" {
   default = null
   type    = string
 }

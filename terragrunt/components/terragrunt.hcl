@@ -46,7 +46,9 @@ locals {
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
-      fts_service_allowed_origins       = []
+      fts_service_allowed_origins       = [
+        "http://localhost:3000"
+      ]
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
@@ -82,7 +84,10 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
       cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = [
+        "cabinetoffice.gov.uk",
+        "goaco.com"
+      ]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
@@ -531,13 +536,6 @@ locals {
       name      = "k6"
       port      = 4040
       port_host = null
-    }
-    pgadmin = {
-      cpu       = 256
-      memory    = 512
-      name      = "pgadmin"
-      port      = 5050
-      port_host = 5050
     }
   }
 

@@ -24,12 +24,3 @@ resource "aws_route53_record" "healthcheck_to_entrypoint_alias" {
 
   records = [aws_lb.tools.dns_name]
 }
-
-resource "aws_route53_record" "pgadmin_to_entrypoint_alias" {
-  zone_id = var.public_hosted_zone_id
-  name    = var.pgadmin_config.name
-  type    = "CNAME"
-  ttl     = 60
-
-  records = [aws_lb.tools.dns_name]
-}
