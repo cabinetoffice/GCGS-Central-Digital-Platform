@@ -46,7 +46,9 @@ locals {
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
-      fts_service_allowed_origins       = []
+      fts_service_allowed_origins       = [
+        "http://localhost:3000"
+      ]
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
