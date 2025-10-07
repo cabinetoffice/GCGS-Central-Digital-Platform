@@ -41,7 +41,4 @@ locals {
 
   commercial_tools_app_domain = "${local.auth_domain}-commercial_tools_app"
   commercial_tools_app_url    = "https://commercial-tools-api.${var.public_domain}"
-
-  pgadmin_domain = "${local.auth_domain}-pgadmin"
-  pgadmin_url    = "https://pgadmin.${var.public_domain}"
 }

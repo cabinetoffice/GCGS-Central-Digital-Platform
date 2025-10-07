@@ -46,7 +46,9 @@ locals {
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
-      fts_service_allowed_origins       = []
+      fts_service_allowed_origins       = [
+        "http://localhost:3000"
+      ]
       mail_from_domains                 = []
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family               = "aurora-mysql5.7"
@@ -82,7 +84,10 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)"
       cfs_allowed_target_email_domains  = ["goaco.com"]
       cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
-      fts_allowed_target_email_domains  = ["goaco.com"]
+      fts_allowed_target_email_domains  = [
+        "cabinetoffice.gov.uk",
+        "goaco.com"
+      ]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
       fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
@@ -101,7 +106,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "2025-09-29-notice-performance-improvements-experiment"
+      pinned_service_version_fts        = "1.0.21"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -234,9 +239,11 @@ locals {
         "gov.wales",
         "homeoffice.gov.uk",
         "in-tend.co.uk",
+        "ivalua.com",
         "jaggaer.com",
         "justice.gov.uk",
         "Kainos.com",
+        "kcfmcglobal.com",
         "klickstream.co.uk",
         "maistro.com",
         "mastek.com",
@@ -292,7 +299,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.19"
+      pinned_service_version_fts        = "1.0.20"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -344,7 +351,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.19"
+      pinned_service_version_fts        = "1.0.20"
       pinned_service_version            = "1.0.78"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -529,13 +536,6 @@ locals {
       name      = "k6"
       port      = 4040
       port_host = null
-    }
-    pgadmin = {
-      cpu       = 256
-      memory    = 512
-      name      = "pgadmin"
-      port      = 5050
-      port_host = 5050
     }
   }
 

@@ -1,6 +1,10 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
+@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 @{
-    var cpvSelection = ViewData["CpvSelection"] as CpvCodeSelection ?? new CpvCodeSelection();
+    var cpvSelection = new CpvCodeSelection
+    {
+        SelectedCodes = Model.CpvCodes
+    };
     var selectorOptions = new HierarchicalCodeSelectorOptions
     {
         CodeType = "CPV",
@@ -21,30 +25,25 @@
     <p class="govuk-body-s govuk-!-padding-left-2">The common procurement vocabulary (CPV) is used to classify contracts
         in a standardised way</p>
 
-    @if (cpvSelection.HasSelections)
-    {
-        <div class="govuk-!-margin-bottom-3 govuk-!-padding-left-2">
-            <p class="govuk-body-s govuk-!-font-weight-bold">@cpvSelection.SelectionSummary:</p>
-            <div class="govuk-!-margin-top-2">
-                @foreach (var selectedItem in cpvSelection.SelectedItems)
-                {
-                    <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                        @selectedItem.GetDescription()
-                    </div>
-                }
-            </div>
-        </div>
-    }
-
     <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
         <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
             @cpvSelection.BrowseLinkText
         </a>
     </div>
 
-    @foreach (var (name, value) in cpvSelection.GetHiddenInputs())
+    @if (cpvSelection.HasSelections)
     {
-        <input type="hidden" name="@name" value="@value" />
+        <div class="govuk-!-margin-bottom-3 govuk-!-padding-left-2">
+            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">@cpvSelection.SelectionSummary:</p>
+            <div class="govuk-!-margin-top-2">
+                @foreach (var selectedCode in cpvSelection.SelectedCodes)
+                {
+                    <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
+                        @selectedCode
+                    </div>
+                }
+            </div>
+        </div>
     }
 </div>
 

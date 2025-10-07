@@ -21,7 +21,8 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             ContractEndDateTo = searchModel.ContractEndDateTo?.ToDateTime(TimeOnly.MinValue),
             MinFees = searchModel.NoFees != null ? 0 : searchModel.FeeMin / 100,
             MaxFees = searchModel.NoFees != null ? 0 : searchModel.FeeMax / 100,
-            AwardMethod = searchModel.AwardMethod,
+            AwardMethod = searchModel.AwardMethod.Any() ? searchModel.AwardMethod : null,
+            CpvCodes = searchModel.CpvCodes.Any() ? searchModel.CpvCodes : null,
             PageNumber = pageNumber
         };
 

@@ -8,6 +8,7 @@ public class LoginPage
     private readonly IPage _page;
 
     private readonly string SignInToAccountLink = "a.govuk-link[href='/one-login/sign-in']";
+    private readonly string SignOutLink = "a.govuk-header__link[href='/one-login/sign-out']";
     private readonly string OneLoginSignInButton = "#sign-in-button";
     private readonly string OneLoginEmailAddressInputBox = "input.govuk-input#email";
     private readonly string OneLoginPasswordTextBox = "input.govuk-input#password";
@@ -15,7 +16,6 @@ public class LoginPage
     private readonly string ContinueButton = "button.govuk-button[type='submit']";
     private readonly string EnterYourNameFirstNameTextBox = "input.govuk-input#FirstName";
     private readonly string EnterYourNameLastNameTextBox = "input.govuk-input#LastName";
-    private readonly string MyAccountHeading = "h1.govuk-heading-l";
     private readonly string OtpInputBox = "input.govuk-input.govuk-input--width-10#code";
 
     public LoginPage(IPage page)
@@ -27,20 +27,25 @@ public class LoginPage
     {
         await _page.GotoAsync(loginUrl);
         await _page.ClickAsync(SignInToAccountLink);
-        await _page.ClickAsync(OneLoginSignInButton);
-        await _page.FillAsync(OneLoginEmailAddressInputBox, email);
-        await _page.ClickAsync(ContinueButton);
-        await _page.FillAsync(OneLoginPasswordTextBox, password);
-        await _page.ClickAsync(ContinueButton);
 
-        await _page.WaitForSelectorAsync(OtpInputBox);
-        string otpCode = TOTPUtility.GenerateTOTP(secretKey);
-        await _page.FillAsync(OtpInputBox, otpCode);
-        await _page.ClickAsync(ContinueButton);
+        bool isSignOutVisible = await _page.Locator(SignOutLink).IsVisibleAsync();
 
-        bool isMyAccountVisible = await _page.Locator(MyAccountHeading).IsVisibleAsync();
+        if (!isSignOutVisible) {
+            await _page.ClickAsync(OneLoginSignInButton);
+            await _page.FillAsync(OneLoginEmailAddressInputBox, email);
+            await _page.ClickAsync(ContinueButton);
+            await _page.FillAsync(OneLoginPasswordTextBox, password);
+            await _page.ClickAsync(ContinueButton);
 
-        if (!isMyAccountVisible)
+            await _page.WaitForSelectorAsync(OtpInputBox);
+            string otpCode = TOTPUtility.GenerateTOTP(secretKey);
+            await _page.FillAsync(OtpInputBox, otpCode);
+            await _page.ClickAsync(ContinueButton);
+        }
+
+        bool isPrivacyNoticeCheckboxVisible = await _page.Locator(AgreePrivacyNoticeCheckBox).IsVisibleAsync();
+
+        if (isPrivacyNoticeCheckboxVisible)
         {
             await _page.ClickAsync(AgreePrivacyNoticeCheckBox);
             await _page.ClickAsync(ContinueButton);
