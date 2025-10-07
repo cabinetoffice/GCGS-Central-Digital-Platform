@@ -45,7 +45,7 @@
         }
     </div>
 
-    @foreach (var (name, value) in cpvSelection.GetHiddenInputs())
+    @foreach (var (name, value) in cpvSelection.GetHiddenInputs("cpv"))
     {
         <input type="hidden" name="@name" value="@value" />
     }

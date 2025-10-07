@@ -51,7 +51,7 @@
         }
     </div>
 
-    @foreach (var (name, value) in locationSelection.GetHiddenInputs())
+    @foreach (var (name, value) in locationSelection.GetHiddenInputs("location"))
     {
         <input type="hidden" name="@name" value="@value" />
     }

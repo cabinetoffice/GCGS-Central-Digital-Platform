@@ -52,7 +52,7 @@ public class LocationCodeSelectionTests
             SelectedCodes = ["UKC"]
         };
 
-        selection.BrowseLinkText.Should().Be("Edit selected locations");
+        selection.BrowseLinkText.Should().Be("Edit locations");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class LocationCodeSelectionTests
             SelectedCodes = ["UKC", "UKD", "UKE"]
         };
 
-        var hiddenInputs = selection.GetHiddenInputs().ToList();
+        var hiddenInputs = selection.GetHiddenInputs("location").ToList();
 
         hiddenInputs.Should().HaveCount(3);
         hiddenInputs.Should().Contain(("location", "UKC"));
@@ -99,7 +99,7 @@ public class LocationCodeSelectionTests
     {
         var selection = new LocationCodeSelection();
 
-        var hiddenInputs = selection.GetHiddenInputs();
+        var hiddenInputs = selection.GetHiddenInputs("location");
 
         hiddenInputs.Should().BeEmpty();
     }

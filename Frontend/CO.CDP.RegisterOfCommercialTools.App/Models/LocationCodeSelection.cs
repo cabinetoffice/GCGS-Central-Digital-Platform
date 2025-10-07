@@ -2,11 +2,11 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
-public class LocationCodeSelection : HierarchicalCodeSelection<NutsCodeDto>
+public sealed class LocationCodeSelection : HierarchicalCodeSelection<NutsCodeDto>
 {
-    public override string BrowseLinkText => HasSelections ? "Edit selected locations" : "Browse locations";
+    public string BrowseLinkText => HasSelections ? "Edit locations" : "Browse locations";
 
-    public override IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName = "location") =>
+    public IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName) =>
         SelectedCodes.Select(code => (fieldName, code));
 
 

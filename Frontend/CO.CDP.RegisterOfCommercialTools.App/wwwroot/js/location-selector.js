@@ -71,14 +71,14 @@ const LocationSelector = (() => {
 
     const updateTriggerText = () => {
         const count = state.selectedCodes.size;
-        const originalText = state.trigger.dataset.originalText || `Browse ${config.codeType} codes`;
+        const originalText = state.trigger.dataset.originalText || `Browse ${config.codeType.toLowerCase()}s`;
 
         if (!state.trigger.dataset.originalText) {
             state.trigger.dataset.originalText = originalText;
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType} code selection`
+            ? `Edit ${config.codeType.toLowerCase()}s`
             : originalText;
     };
 
