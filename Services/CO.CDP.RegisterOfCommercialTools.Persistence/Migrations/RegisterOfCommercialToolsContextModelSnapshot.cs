@@ -67,13 +67,76 @@ namespace CO.CDP.RegisterOfCommercialTools.Persistence.Migrations
                     b.HasKey("Code")
                         .HasName("pk_commercial_tools_cpv_codes");
 
-                    b.HasIndex("ParentCode")
-                        .HasDatabaseName("ix_commercial_tools_cpv_codes_parent_code");
-
                     b.HasIndex("Code", "IsActive")
                         .HasDatabaseName("ix_commercial_tools_cpv_codes_code_is_active");
 
+                    b.HasIndex("ParentCode", "IsActive")
+                        .HasDatabaseName("ix_commercial_tools_cpv_codes_parent_code_is_active");
+
                     b.ToTable("commercial_tools_cpv_codes", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.RegisterOfCommercialTools.Persistence.NutsCode", b =>
+                {
+                    b.Property<string>("Code")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("code");
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_on");
+
+                    b.Property<string>("DescriptionCy")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("description_cy");
+
+                    b.Property<string>("DescriptionEn")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)")
+                        .HasColumnName("description_en");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsSelectable")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_selectable");
+
+                    b.Property<int>("Level")
+                        .HasColumnType("integer")
+                        .HasColumnName("level");
+
+                    b.Property<string>("ParentCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("character varying(10)")
+                        .HasColumnName("parent_code");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_on");
+
+                    b.HasKey("Code")
+                        .HasName("pk_commercial_tools_nuts_codes");
+
+                    b.HasIndex("Code", "IsActive")
+                        .HasDatabaseName("ix_commercial_tools_nuts_codes_code_is_active");
+
+                    b.HasIndex("IsActive", "IsSelectable")
+                        .HasDatabaseName("ix_commercial_tools_nuts_codes_is_active_is_selectable");
+
+                    b.HasIndex("ParentCode", "IsActive")
+                        .HasDatabaseName("ix_commercial_tools_nuts_codes_parent_code_is_active");
+
+                    b.ToTable("commercial_tools_nuts_codes", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.RegisterOfCommercialTools.Persistence.CpvCode", b =>
@@ -87,7 +150,23 @@ namespace CO.CDP.RegisterOfCommercialTools.Persistence.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("CO.CDP.RegisterOfCommercialTools.Persistence.NutsCode", b =>
+                {
+                    b.HasOne("CO.CDP.RegisterOfCommercialTools.Persistence.NutsCode", "Parent")
+                        .WithMany("Children")
+                        .HasForeignKey("ParentCode")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_commercial_tools_nuts_codes_commercial_tools_nuts_codes_par");
+
+                    b.Navigation("Parent");
+                });
+
             modelBuilder.Entity("CO.CDP.RegisterOfCommercialTools.Persistence.CpvCode", b =>
+                {
+                    b.Navigation("Children");
+                });
+
+            modelBuilder.Entity("CO.CDP.RegisterOfCommercialTools.Persistence.NutsCode", b =>
                 {
                     b.Navigation("Children");
                 });

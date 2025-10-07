@@ -14,27 +14,27 @@ else if (string.IsNullOrEmpty(Model.SearchQuery))
 }
 else if (Model.SearchQuery.Length < 2)
 {
-    <p class="govuk-body-s">Please enter at least 2 characters to search.</p>
+    <p class="govuk-body-s govuk-!-margin-top-2">Please enter at least 2 characters to search.</p>
 }
 else if (!Model.SearchResults.Any())
 {
-    <p class="govuk-body-s">No CPV codes found. Please check your spelling.</p>
+    <p class="govuk-body-s govuk-!-margin-top-2">No CPV codes found. Please check your spelling.</p>
 }
 else
 {
-    <div class="cpv-search-dropdown">
+    <div class="code-search-dropdown">
         @foreach (var (item, _) in Model.SearchResults.Take(10).Select((x, i) => (x, i)))
         {
             var isSelected = Model.IsSelected(item.Code);
 
-            <div class="cpv-search-item @(isSelected ? "cpv-search-item--selected" : "")"
+            <div class="code-search-item @(isSelected ? "code-search-item--selected" : "")"
                  data-code="@item.Code"
                  data-action="toggle-selection"
                  role="button"
                  tabindex="0">
-                <div class="cpv-search-text">
-                    <span class="govuk-body-s govuk-!-font-weight-bold cpv-code">@item.Code</span>
-                    <span class="govuk-body-s cpv-description">@item.DescriptionEn</span>
+                <div class="code-search-text">
+                    <span class="govuk-body-s govuk-!-font-weight-bold result-title">@item.Code</span>
+                    <span class="govuk-body-s result-description">@item.DescriptionEn</span>
                 </div>
             </div>
         }

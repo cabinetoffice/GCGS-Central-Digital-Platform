@@ -53,6 +53,53 @@ public static class EntityFactory
         return [construction, transport, services];
     }
 
+    public static NutsCode GivenNutsCode(
+        string? code = null,
+        string? descriptionEn = null,
+        string? parentCode = null,
+        int level = 1,
+        bool isActive = true,
+        bool isSelectable = true,
+        string? descriptionCy = null)
+    {
+        var theCode = code ?? GenerateRandomNutsCode(level);
+        var theDescriptionEn = descriptionEn ?? $"Description for {theCode}";
+        var theDescriptionCy = descriptionCy ?? $"Disgrifiad ar gyfer {theCode}";
+
+        return new NutsCode
+        {
+            Code = theCode,
+            DescriptionEn = theDescriptionEn,
+            DescriptionCy = theDescriptionCy,
+            ParentCode = parentCode,
+            Level = level,
+            IsActive = isActive,
+            IsSelectable = isSelectable,
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        };
+    }
+
+    public static List<NutsCode> GivenNutsCodeHierarchy()
+    {
+        var region = "UKC";
+        var rootCode = GivenNutsCode($"{region}", "North East (England)", null, 1, true, true, "Gogledd Ddwyrain (Lloegr)");
+        var childCode1 = GivenNutsCode($"{region}1", "Tees Valley and Durham", $"{region}", 2, true, true, "Cwm Tees a Durham");
+        var childCode2 = GivenNutsCode($"{region}2", "Northumberland and Tyne and Wear", $"{region}", 2, true, true, "Northumberland a Tyne a Wear");
+        var grandChildCode = GivenNutsCode($"{region}11", "Hartlepool and Stockton-on-Tees", $"{region}1", 3, true, true, "Hartlepool a Stockton-on-Tees");
+
+        return [rootCode, childCode1, childCode2, grandChildCode];
+    }
+
+    public static List<NutsCode> GivenMultipleRootNutsCodes()
+    {
+        var northEast = GivenNutsCode("UKC", "North East (England)", null, 1, true, true, "Gogledd Ddwyrain (Lloegr)");
+        var northWest = GivenNutsCode("UKD", "North West (England)", null, 1, true, true, "Gogledd Orllewin (Lloegr)");
+        var yorkshire = GivenNutsCode("UKE", "Yorkshire and The Humber", null,1, true, true, "Yorkshire a'r Humber");
+
+        return [northEast, northWest, yorkshire];
+    }
+
     private static string GenerateRandomCpvCode(int level)
     {
         var digits = level switch
@@ -63,5 +110,19 @@ public static class EntityFactory
             _ => $"{Random.Next(10, 99)}000000"
         };
         return digits;
+    }
+
+    private static string GenerateRandomNutsCode(int level)
+    {
+        var letters = new[] { "UK", "FR", "DE", "ES", "IT" };
+        var baseRegion = letters[Random.Next(letters.Length)];
+
+        return level switch
+        {
+            1 => $"{baseRegion}{(char)('A' + Random.Next(0, 26))}",
+            2 => $"{baseRegion}{(char)('A' + Random.Next(0, 26))}{Random.Next(1, 9)}",
+            3 => $"{baseRegion}{(char)('A' + Random.Next(0, 26))}{Random.Next(1, 9)}{Random.Next(1, 9)}",
+            _ => $"{baseRegion}{(char)('A' + Random.Next(0, 26))}"
+        };
     }
 }

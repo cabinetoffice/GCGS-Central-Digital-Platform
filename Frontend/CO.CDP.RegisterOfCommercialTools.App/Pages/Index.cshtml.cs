@@ -11,13 +11,21 @@ public class IndexModel(
     ISearchService searchService,
     ISirsiUrlService sirsiUrlService,
     IFtsUrlService ftsUrlService,
+    ICpvCodeService cpvCodeService,
+    ILocationCodeService locationCodeService,
     ILogger<IndexModel> logger)
     : PageModel
 {
     [BindProperty(SupportsGet = true)] public SearchModel SearchParams { get; set; } = new();
 
+    [BindProperty(SupportsGet = true, Name = "acc")]
+    public List<string> OpenAccordions { get; set; } = new();
+
     public List<SearchResult> SearchResults { get; set; } = [];
     public PaginationPartialModel? Pagination { get; set; }
+
+    public CpvCodeSelection CpvSelection { get; set; } = new();
+    public LocationCodeSelection LocationSelection { get; set; } = new();
 
     [BindProperty(SupportsGet = true, Name = "pageNumber")]
     public int PageNumber { get; set; } = 1;
@@ -44,6 +52,17 @@ public class IndexModel(
         try
         {
             SetHomeUrl();
+
+            if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
+            {
+                OpenAccordions =
+                [
+                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
+                    "industry-cpv-code", "contract-location", "fees", "date-range"
+                ];
+            }
+
+            await PopulateCodeSelections();
 
             var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
@@ -78,6 +97,34 @@ public class IndexModel(
         else
         {
             HomeUrl = ftsUrlService.BuildUrl("/Search");
+        }
+    }
+
+    private async Task PopulateCodeSelections()
+    {
+        CpvSelection = new CpvCodeSelection
+        {
+            SelectedCodes = SearchParams.CpvCodes
+        };
+
+        if (SearchParams.CpvCodes.Any())
+        {
+            var selectedCpvCodes = await cpvCodeService.GetByCodesAsync(SearchParams.CpvCodes);
+            foreach (var cpvCode in selectedCpvCodes)
+            {
+                CpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
+            }
+        }
+
+        LocationSelection = new LocationCodeSelection
+        {
+            SelectedCodes = SearchParams.LocationCodes
+        };
+
+        if (SearchParams.LocationCodes.Any())
+        {
+            var selectedLocationCodes = await locationCodeService.GetByCodesAsync(SearchParams.LocationCodes);
+            LocationSelection.SelectedItems.AddRange(selectedLocationCodes);
         }
     }
 }

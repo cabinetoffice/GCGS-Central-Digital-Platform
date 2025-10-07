@@ -255,13 +255,36 @@ public class CommercialToolsQueryBuilderTests
 
 
     [Fact]
-    public void ContractLocation_WhenRegionProvided_ShouldAddContractLocationFilter()
+    public void WithLocation_WhenRegionProvided_ShouldAddLocationFilter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.ContractLocation("London").Build(BaseUrl);
+        var result = builder.WithLocation("UKN06").Build(BaseUrl);
 
-        result.Should().Contain("filter[tender.items.deliveryAddresses.region]=London");
+        result.Should().Contain("$filter=");
+        result.Should().Contain("tender%2Fitems%2Fany");
+        result.Should().Contain("deliveryAddresses%2Fany");
+        result.Should().Contain("region%20eq%20%27UKN06%27");
+    }
+
+    [Fact]
+    public void WithLocation_WhenEmpty_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocation("");
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithLocation_WhenNull_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocation(null!);
+
+        result.Should().BeSameAs(builder);
     }
 
     [Fact]

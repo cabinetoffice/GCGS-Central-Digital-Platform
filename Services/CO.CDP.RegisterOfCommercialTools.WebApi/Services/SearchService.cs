@@ -6,7 +6,8 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 public class SearchService(
     ICommercialToolsQueryBuilder builder,
     ICommercialToolsService service,
-    IConfiguration configuration)
+    IConfiguration configuration,
+    ILogger<SearchService> logger)
     : ISearchService
 {
     private readonly string _odataBaseUrl = configuration.GetSection("ODataApi:BaseUrl").Value ??
@@ -15,6 +16,9 @@ public class SearchService(
 
     public async Task<SearchResponse> Search(SearchRequestDto request)
     {
+        logger.LogInformation("Search request received: PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
+            request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
+
         const int fixedPageSize = 20;
 
         var skip = request.Skip ?? (request.PageNumber - 1) * fixedPageSize;
@@ -24,8 +28,8 @@ public class SearchService(
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithSkip(skip)
-            .WithTop(top)
-            .WithOrderBy(request.SortBy ?? "relevance");
+            .WithTop(top);
+            // .WithOrderBy(request.SortBy ?? "relevance"); // Temporarily disabled until API supports it
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {
@@ -114,16 +118,33 @@ public class SearchService(
             var filter => queryBuilder.WithCustomFilter(filter)
         };
 
+        queryBuilder = BuildLocationFilter(request.LocationCodes) switch
+        {
+            null => queryBuilder,
+            var filter => queryBuilder.WithCustomFilter(filter)
+        };
+
         var queryUrl = queryBuilder.Build($"{_odataBaseUrl}/concepts/CommercialTools");
 
+        logger.LogInformation("Executing OData query: {QueryUrl}", queryUrl);
+
+        return await ExecuteSearchWithFallback(queryUrl, pageNumber, top);
+    }
+
+    private async Task<SearchResponse> ExecuteSearchWithFallback(string queryUrl, int pageNumber, int pageSize)
+    {
         var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
+
+        var searchResultDtos = results.ToList();
+        logger.LogInformation("Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
+            searchResultDtos.ToList().Count, totalCount, pageNumber);
 
         return new SearchResponse
         {
-            Results = results,
+            Results = searchResultDtos,
             TotalCount = totalCount,
             PageNumber = pageNumber,
-            PageSize = top
+            PageSize = pageSize
         };
     }
 
@@ -155,6 +176,23 @@ public class SearchService(
 
     private static string BuildMultipleCpvFilter(List<string> codes) =>
         $"(tender/classification/scheme eq 'CPV' and ({string.Join(" or ", codes.Select(c => $"tender/classification/classificationId eq '{c}'"))}))";
+
+    private static string? BuildLocationFilter(List<string>? codes)
+    {
+        var validCodes = (codes ?? [])
+            .Where(code => !string.IsNullOrWhiteSpace(code))
+            .ToList();
+
+        return validCodes.Count switch
+        {
+            0 => null,
+            1 => $"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{validCodes[0]}'))",
+            _ => BuildMultipleLocationFilter(validCodes)
+        };
+    }
+
+    private static string BuildMultipleLocationFilter(List<string> codes) =>
+        $"tender/items/any(i: i/deliveryAddresses/any(d: {string.Join(" or ", codes.Select(c => $"d/region eq '{c}'"))}))";
 
     private static string? BuildFeeFilter(decimal? minProportion, decimal? maxProportion)
     {

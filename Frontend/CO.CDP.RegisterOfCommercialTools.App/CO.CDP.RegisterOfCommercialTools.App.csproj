@@ -11,6 +11,7 @@
         <Content Remove="wwwroot\lib\jquery\LICENSE.txt"/>
         <Content Remove="wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt"/>
         <Content Remove="wwwroot\lib\bootstrap\LICENSE"/>
+        <Content Remove="wwwroot\js\hierarchical-code-selector.js" />
     </ItemGroup>
 
     <ItemGroup>

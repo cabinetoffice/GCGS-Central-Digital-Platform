@@ -2,11 +2,11 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
-public class CpvCodeSelection : HierarchicalCodeSelection<CpvCodeDto>
+public sealed class CpvCodeSelection : HierarchicalCodeSelection<CpvCodeDto>
 {
-    public override string BrowseLinkText => HasSelections ? "Edit CPV code selection" : "Browse CPV codes";
+    public string BrowseLinkText => HasSelections ? "Edit selected CPV codes" : "Browse CPV codes";
 
-    public override IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName = "cpv") =>
+    public IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName) =>
         SelectedCodes.Select(code => (fieldName, code));
 
     protected override CpvCodeDto CreateCodeItem(string code, string descriptionEn, string descriptionCy)

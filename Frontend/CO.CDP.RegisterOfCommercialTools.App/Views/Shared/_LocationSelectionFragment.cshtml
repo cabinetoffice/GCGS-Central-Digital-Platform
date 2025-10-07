@@ -1,0 +1,46 @@
+@using CO.CDP.RegisterOfCommercialTools.App.Models
+@using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
+@model HierarchicalCodeSelectionViewModel<NutsCodeDto>
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+    <div class="govuk-error-message" role="alert">
+        <span class="govuk-visually-hidden">Error: </span>@Model.ErrorMessage
+    </div>
+}
+else
+{
+    var selectedItems = ViewData["SelectedItems"] as List<NutsCodeDto> ?? new List<NutsCodeDto>();
+    var selectionCount = (int)(ViewData["SelectionCount"] ?? 0);
+
+    @if (selectedItems.Any())
+    {
+        @foreach (var item in selectedItems.OrderBy(x => x.DescriptionEn))
+        {
+            var isCountryLevel = string.IsNullOrEmpty(item.ParentCode);
+
+            <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 code-selected-tag"
+                 data-code="@item.Code">
+                <button type="button"
+                        class="govuk-tag__remove"
+                        aria-label="Remove @item.Code @item.DescriptionEn"
+                        data-code="@item.Code"
+                        data-action="remove-selection">
+                    &times;
+                </button>
+                <div class="code-selected-tag__content">
+                    <div class="code-selected-tag__title">@item.DescriptionEn</div>
+                    @if (!isCountryLevel && !string.IsNullOrEmpty(item.GetParentDescription()))
+                    {
+                        <div class="code-selected-tag__description">@item.GetParentDescription()</div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="govuk-body-s govuk-!-margin-bottom-0">No locations selected</p>
+    }
+
+}

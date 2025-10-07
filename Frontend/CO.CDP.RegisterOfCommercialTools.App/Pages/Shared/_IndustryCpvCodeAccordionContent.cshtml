@@ -1,10 +1,8 @@
 @using CO.CDP.RegisterOfCommercialTools.App.Models
-@model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
+@using CO.CDP.RegisterOfCommercialTools.App.Pages
+@model IndexModel
 @{
-    var cpvSelection = new CpvCodeSelection
-    {
-        SelectedCodes = Model.CpvCodes
-    };
+    var cpvSelection = Model.CpvSelection;
     var selectorOptions = new HierarchicalCodeSelectorOptions
     {
         CodeType = "CPV",
@@ -17,11 +15,12 @@
         SearchInputId = "cpv-search",
         TreeContainerId = "cpv-tree",
         SearchContainerId = "search-results-list",
-        SelectionContainerId = "selected-codes-list"
+        SelectionContainerId = "selected-codes-list",
+        AccordionContentId = "industry-cpv-code-content"
     };
 }
 
-<div class="govuk-!-margin-top-0">
+<div class="govuk-!-margin-top-0" id="industry-cpv-code-content">
     <p class="govuk-body-s govuk-!-padding-left-2">The common procurement vocabulary (CPV) is used to classify contracts
         in a standardised way</p>
 
@@ -29,22 +28,47 @@
         <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
             @cpvSelection.BrowseLinkText
         </a>
+
+        @if (cpvSelection.HasSelections)
+        {
+            <div class="govuk-!-margin-bottom-0 govuk-!-margin-top-3" id="cpv-selected-codes-display">
+                <p class="govuk-body-s govuk-!-font-weight-bold">@cpvSelection.SelectionSummary:</p>
+                <div class="govuk-!-margin-top-2">
+                    @foreach (var selectedCode in cpvSelection.SelectedCodes)
+                    {
+                        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
+                            @selectedCode
+                        </div>
+                    }
+                </div>
+            </div>
+        }
     </div>
 
-    @if (cpvSelection.HasSelections)
+    @foreach (var (name, value) in cpvSelection.GetHiddenInputs("cpv"))
     {
-        <div class="govuk-!-margin-bottom-3 govuk-!-padding-left-2">
-            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">@cpvSelection.SelectionSummary:</p>
-            <div class="govuk-!-margin-top-2">
-                @foreach (var selectedCode in cpvSelection.SelectedCodes)
-                {
-                    <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                        @selectedCode
-                    </div>
-                }
-            </div>
-        </div>
+        <input type="hidden" name="@name" value="@value" />
     }
 </div>
 
 <partial name="_HierarchicalCodeSelector" model="(selectorOptions, (IHierarchicalCodeSelection)cpvSelection)" />
+
+<script src="~/js/cpv-selector.js" nonce-csp></script>
+<script nonce-csp>
+document.addEventListener("DOMContentLoaded", function () {
+    if (typeof CpvSelector !== 'undefined') {
+        CpvSelector.init({
+            codeType: '@selectorOptions.CodeType',
+            routePrefix: '@selectorOptions.RoutePrefix',
+            fieldName: '@selectorOptions.FieldName',
+            modalId: '@selectorOptions.ModalId',
+            triggerId: '@selectorOptions.BrowseButtonId',
+            searchInputId: '@selectorOptions.SearchInputId',
+            treeContainerId: '@selectorOptions.TreeContainerId',
+            searchContainerId: '@selectorOptions.SearchContainerId',
+            selectionContainerId: '@selectorOptions.SelectionContainerId',
+            accordionContentId: '@selectorOptions.AccordionContentId'
+        });
+    }
+});
+</script>

@@ -8,10 +8,12 @@ namespace CO.CDP.RegisterOfCommercialTools.Persistence;
 public class RegisterOfCommercialToolsContext(DbContextOptions<RegisterOfCommercialToolsContext> options) : DbContext(options)
 {
     public DbSet<CpvCode> CpvCodes { get; set; } = null!;
+    public DbSet<NutsCode> NutsCodes { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ConfigureCpvCodes();
+        modelBuilder.ConfigureNutsCodes();
         base.OnModelCreating(modelBuilder);
     }
 

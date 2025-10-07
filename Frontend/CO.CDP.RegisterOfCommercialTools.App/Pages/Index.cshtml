@@ -22,12 +22,17 @@
         "award-method",
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
-    ) { IsOpen = true };
+    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
-        "_IndustryCpvCodeAccordionContent", Model.SearchParams
-        ) { IsOpen = true };
+        "_IndustryCpvCodeAccordionContent", Model
+        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
+    var contractLocationAccordion = new Accordion(
+        "contract-location",
+        "Contract location",
+        "_ContractLocationAccordionContent", Model
+    ) { IsOpen = Model.OpenAccordions.Contains("contract-location") };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
@@ -41,7 +46,22 @@
 }
 
 <script src="/js/search.js" nonce-csp></script>
-<script src="/js/hierarchical-code-selector.js" nonce-csp></script>
+<script nonce-csp>
+document.addEventListener('DOMContentLoaded', function() {
+    const resetButton = document.getElementById('reset-filters');
+    if (resetButton) {
+        resetButton.addEventListener('click', function() {
+            sessionStorage.removeItem('cpv-selected-codes');
+            sessionStorage.removeItem('cpv-location-names');
+
+            sessionStorage.removeItem('location-selected-codes');
+            sessionStorage.removeItem('location-location-names');
+        });
+    }
+});
+</script>
+
+
 
 @section BeforeContent {
     <govuk-breadcrumbs>
@@ -106,6 +126,10 @@
                 @foreach (var cpv in Model.SearchParams.CpvCodes)
                 {
                     <input type="hidden" name="cpv" value="@cpv"/>
+                }
+                @foreach (var locationCode in Model.SearchParams.LocationCodes)
+                {
+                    <input type="hidden" name="location" value="@locationCode"/>
                 }
                 <input type="hidden" name="sub_from" value="@Model.SearchParams.SubmissionDeadlineFrom"/>
                 <input type="hidden" name="sub_to" value="@Model.SearchParams.SubmissionDeadlineTo"/>
@@ -197,6 +221,7 @@
                     <partial name="_Accordion" model="contractingAuthorityUsageAccordion"/>
                     <partial name="_Accordion" model="awardMethodAccordion"/>
                     <partial name="_Accordion" model="industryCpvCodeAccordion"/>
+                    <partial name="_Accordion" model="contractLocationAccordion"/>
                     <partial name="_Accordion" model="feesAccordion"/>
                     <partial name="_Accordion" model="dateRangeAccordion"/>
                 </div>
@@ -205,7 +230,7 @@
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Update results
                     </button>
-                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
                 </div>

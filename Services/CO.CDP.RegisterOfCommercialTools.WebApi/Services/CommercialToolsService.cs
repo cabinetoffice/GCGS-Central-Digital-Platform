@@ -1,29 +1,23 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using System.Text.Json;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
-public class CommercialToolsService : ICommercialToolsService
+public class CommercialToolsService(
+    HttpClient httpClient,
+    IConfiguration configuration,
+    ILogger<CommercialToolsService> logger,
+    IMapper mapper) : ICommercialToolsService
 {
-    private readonly HttpClient _httpClient;
-    private readonly ILogger<CommercialToolsService> _logger;
-    private readonly IMapper _mapper;
-
-    public CommercialToolsService(HttpClient httpClient, IConfiguration configuration,
-        ILogger<CommercialToolsService> logger, IMapper mapper)
-    {
-        _httpClient = httpClient;
-        _logger = logger;
-        _mapper = mapper;
-        _httpClient.DefaultRequestHeaders.Add("x-api-key", configuration.GetValue<string>("ODataApi:ApiKey"));
-    }
-
-
     public async Task<(IEnumerable<SearchResultDto> results, int totalCount)> SearchCommercialToolsWithCount(
         string queryUrl)
     {
-        var response = await _httpClient.GetAsync(queryUrl);
+        httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", configuration.GetValue<string>("ODataApi:ApiKey"));
+        logger.LogDebug("Calling ODI Commercial Tools API: {QueryUrl}", queryUrl);
+
+        var response = await httpClient.GetAsync(queryUrl);
 
         if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -33,31 +27,27 @@ public class CommercialToolsService : ICommercialToolsService
         if (!response.IsSuccessStatusCode)
         {
             var errorContent = await response.Content.ReadAsStringAsync();
-            throw new HttpRequestException($"Commercial Tools API returned {response.StatusCode}: {errorContent}");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.BadRequest &&
+                errorContent.Contains("Could not find a property"))
+            {
+                logger.LogWarning("Query contains unsupported property. Returning empty results. Query: {QueryUrl}", queryUrl);
+                return ([], 0);
+            }
+
+            logger.LogError("ODI Commercial Tools API error: {StatusCode} - {ErrorContent}", response.StatusCode, errorContent);
+            response.EnsureSuccessStatusCode();
         }
 
         var content = await response.Content.ReadAsStringAsync();
-        var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var apiResponse = JsonSerializer.Deserialize<List<CommercialToolApiItem>>(
+            content,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-        var apiResponse = JsonSerializer.Deserialize<List<CommercialToolApiItem>>(content, options);
+        var results = apiResponse?
+            .Select(mapper.Map<SearchResultDto>)
+            .ToList() ?? [];
 
-        if (apiResponse == null)
-        {
-            _logger.LogWarning("Failed to deserialise API response");
-            return (Enumerable.Empty<SearchResultDto>(), 0);
-        }
-
-        var results = new List<SearchResultDto>();
-        foreach (var item in apiResponse)
-        {
-            var searchResult = _mapper.Map<SearchResultDto>(item);
-            results.Add(searchResult);
-        }
-
-        // Total count will be provided in future update
-        var totalCount = 0;
-        _logger.LogInformation("Processed {ProcessedCount} results, total count: {TotalCount}", results.Count, totalCount);
-        return (results, totalCount);
+        return (results, results.IsNullOrEmpty() ? 0 : 1000); // totalCount is not currently provided by the API
     }
-
 }

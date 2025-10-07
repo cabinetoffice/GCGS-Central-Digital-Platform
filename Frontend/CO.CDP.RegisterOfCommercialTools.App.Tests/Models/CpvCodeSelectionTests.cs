@@ -52,7 +52,7 @@ public class CpvCodeSelectionTests
             SelectedCodes = ["03000000"]
         };
 
-        selection.BrowseLinkText.Should().Be("Edit CPV code selection");
+        selection.BrowseLinkText.Should().Be("Edit selected CPV codes");
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class CpvCodeSelectionTests
             SelectedCodes = ["03000000", "03100000", "09000000"]
         };
 
-        var hiddenInputs = selection.GetHiddenInputs().ToList();
+        var hiddenInputs = selection.GetHiddenInputs("cpv").ToList();
 
         hiddenInputs.Should().HaveCount(3);
         hiddenInputs.Should().Contain(("cpv", "03000000"));
@@ -84,7 +84,7 @@ public class CpvCodeSelectionTests
     {
         var selection = new CpvCodeSelection();
 
-        var hiddenInputs = selection.GetHiddenInputs();
+        var hiddenInputs = selection.GetHiddenInputs("cpv");
 
         hiddenInputs.Should().BeEmpty();
     }

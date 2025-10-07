@@ -35,12 +35,14 @@ builder.Services.AddTransient<ISearchService, SearchService>();
 
 builder.Services.AddAutoMapper(typeof(ApiResponseProfile));
 
+
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 builder.Services.AddDbContext<RegisterOfCommercialToolsContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<ICpvCodeRepository, DatabaseCpvCodeRepository>();
+builder.Services.AddScoped<INutsCodeRepository, DatabaseNutsCodeRepository>();
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)

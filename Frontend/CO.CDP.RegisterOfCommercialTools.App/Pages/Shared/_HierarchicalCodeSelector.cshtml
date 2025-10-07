@@ -21,10 +21,24 @@
         <div class="govuk-modal__body">
             <div class="govuk-form-group">
                 <label class="govuk-label govuk-!-font-weight-bold" for="@options.SearchInputId">
-                    Search @options.CodeType codes
+                    @if (options.CodeType == "Location")
+                    {
+                        <text>Search locations</text>
+                    }
+                    else
+                    {
+                        <text>Search @options.CodeType codes</text>
+                    }
                 </label>
                 <div id="@(options.SearchInputId)-hint" class="govuk-hint">
-                    Search by code or description
+                    @if (options.CodeType == "Location")
+                    {
+                        <text>Search by code or location</text>
+                    }
+                    else
+                    {
+                        <text>Search by code or description</text>
+                    }
                 </div>
                 <input class="govuk-input" id="@options.SearchInputId" type="text"
                        aria-describedby="@(options.SearchInputId)-hint"
@@ -39,7 +53,16 @@
                 <div id="code-hierarchy">
                     <h3 class="govuk-heading-s">Browse by category</h3>
                     <div id="@options.TreeContainerId" role="tree" aria-label="@options.CodeType code hierarchy">
-                        <div class="govuk-body">Loading @options.CodeType codes...</div>
+                        <div class="govuk-body">
+                            @if (options.CodeType == "Location")
+                            {
+                                <text>Loading locations...</text>
+                            }
+                            else
+                            {
+                                <text>Loading @options.CodeType codes...</text>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
@@ -47,8 +70,15 @@
             <div class="code-selections-box govuk-!-margin-top-6">
                 <div class="govuk-inset-text">
                     <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
-                        Selected @options.CodeType codes
-                        (<span id="selection-count">@selection.SelectedCodes.Count</span>)
+                        @if (options.CodeType == "Location")
+                        {
+                            <text>Selected locations</text>
+                        }
+                        else
+                        {
+                            <text>Selected @options.CodeType codes</text>
+                        }
+                        (<span id="@(options.ModalId)-selection-count">@selection.SelectedCodes.Count</span>)
                     </h3>
 
                     <div id="@options.SelectionContainerId">
@@ -70,7 +100,16 @@
                         }
                         else
                         {
-                            <p class="govuk-body-s govuk-!-margin-bottom-0">No @options.CodeType codes selected</p>
+                            <p class="govuk-body-s govuk-!-margin-bottom-0">
+                                @if (options.CodeType == "Location")
+                                {
+                                    <text>No locations selected</text>
+                                }
+                                else
+                                {
+                                    <text>No @options.CodeType codes selected</text>
+                                }
+                            </p>
                         }
                     </div>
                 </div>
@@ -79,34 +118,13 @@
 
         <div class="govuk-modal__footer">
             <div class="govuk-button-group">
-                <button type="button" class="govuk-button" id="apply-selection">
+                <button type="button" class="govuk-button" id="@(options.ModalId)-apply-selection">
                     Apply selection
                 </button>
-                <button type="button" class="govuk-button govuk-button--secondary" id="clear-all">
+                <button type="button" class="govuk-button govuk-button--secondary" id="@(options.ModalId)-clear-all">
                     Clear all
-                </button>
-                <button type="button" class="govuk-button govuk-button--secondary" data-dismiss="modal">
-                    Cancel
                 </button>
             </div>
         </div>
     </div>
 </div>
-
-<script nonce-csp>
-document.addEventListener("DOMContentLoaded", function () {
-    if (typeof HierarchicalCodeSelector !== 'undefined') {
-        HierarchicalCodeSelector.init({
-            codeType: '@options.CodeType',
-            routePrefix: '@options.RoutePrefix',
-            fieldName: '@options.FieldName',
-            modalId: '@options.ModalId',
-            triggerId: '@options.BrowseButtonId',
-            searchInputId: '@options.SearchInputId',
-            treeContainerId: '@options.TreeContainerId',
-            searchContainerId: '@options.SearchContainerId',
-            selectionContainerId: '@options.SelectionContainerId'
-        });
-    }
-});
-</script>

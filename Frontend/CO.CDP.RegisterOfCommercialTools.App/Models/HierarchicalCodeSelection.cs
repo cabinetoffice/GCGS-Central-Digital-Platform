@@ -8,18 +8,11 @@ public class HierarchicalCodeSelection<T> : IHierarchicalCodeSelection where T :
 
     public List<T> SelectedItems { get; set; } = [];
 
-    public string? SearchQuery { get; set; }
-
     public List<string> ExpandedNodes { get; set; } = [];
 
     public bool HasSelections => SelectedCodes.Count > 0;
 
     public string SelectionSummary => $"Selected ({SelectedCodes.Count})";
-
-    public virtual string BrowseLinkText => HasSelections ? "Edit selection" : "Browse codes";
-
-    public virtual IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName = "codes") =>
-        SelectedCodes.Select(code => (fieldName, code));
 
     public void AddSelection(string code, string descriptionEn, string descriptionCy)
     {
@@ -40,8 +33,6 @@ public class HierarchicalCodeSelection<T> : IHierarchicalCodeSelection where T :
         SelectedCodes.Remove(code);
         SelectedItems.RemoveAll(x => x.Code == code);
     }
-
-    public bool IsSelected(string code) => SelectedCodes.Contains(code);
 
     public void Clear()
     {

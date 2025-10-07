@@ -2,6 +2,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Services;
@@ -20,7 +21,8 @@ public class SearchServiceTests
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns("https://test-api.example.com/v1/tender");
         mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
-        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, mockConfiguration.Object);
+        var mockLogger = new Mock<ILogger<SearchService>>();
+        _searchService = new SearchService(_mockQueryBuilder.Object, _mockRepository.Object, mockConfiguration.Object, mockLogger.Object);
     }
 
     [Fact]
@@ -212,8 +214,9 @@ public class SearchServiceTests
         var mockBaseUrlSection = new Mock<IConfigurationSection>();
         mockBaseUrlSection.Setup(s => s.Value).Returns((string?)null);
         mockConfiguration.Setup(c => c.GetSection("ODataApi:BaseUrl")).Returns(mockBaseUrlSection.Object);
+        var mockLogger = new Mock<ILogger<SearchService>>();
 
-        var action = () => new SearchService(mockQueryBuilder.Object, mockRepository.Object, mockConfiguration.Object);
+        var action = () => new SearchService(mockQueryBuilder.Object, mockRepository.Object, mockConfiguration.Object, mockLogger.Object);
 
         action.Should().Throw<InvalidOperationException>()
             .WithMessage("ODataApi:BaseUrl configuration is required");
@@ -423,5 +426,98 @@ public class SearchServiceTests
 
         mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
             f.Contains("tender/classification") && f.Contains("CPV"))), Times.Never);
+    }
+
+    [Fact]
+    public async Task Search_WhenSingleLocationCodeProvided_ShouldAddLocationFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            LocationCodes = ["UKN06"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/items/any") &&
+            f.Contains("deliveryAddresses/any") &&
+            f.Contains("region eq 'UKN06'"))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenMultipleLocationCodesProvided_ShouldCombineWithOr()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            LocationCodes = ["UKN06", "UKC", "UKD"],
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("tender/items/any") &&
+            f.Contains("deliveryAddresses/any") &&
+            f.Contains("region eq 'UKN06'") &&
+            f.Contains("region eq 'UKC'") &&
+            f.Contains("region eq 'UKD'") &&
+            f.Contains(" or "))), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenNoLocationCodesProvided_ShouldNotAddLocationFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keyword = "test",
+            LocationCodes = null,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(f =>
+            f.Contains("deliveryAddresses") && f.Contains("region"))), Times.Never);
     }
 }

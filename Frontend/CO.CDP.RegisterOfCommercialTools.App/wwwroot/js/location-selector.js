@@ -1,4 +1,4 @@
-const HierarchicalCodeSelector = (() => {
+const LocationSelector = (() => {
     let config, state;
 
     const fetchHtml = async (url) => {
@@ -71,14 +71,14 @@ const HierarchicalCodeSelector = (() => {
 
     const updateTriggerText = () => {
         const count = state.selectedCodes.size;
-        const originalText = state.trigger.dataset.originalText || `Browse ${config.codeType} codes`;
+        const originalText = state.trigger.dataset.originalText || `Browse ${config.codeType.toLowerCase()}s`;
 
         if (!state.trigger.dataset.originalText) {
             state.trigger.dataset.originalText = originalText;
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType} code selection`
+            ? `Edit ${config.codeType.toLowerCase()}s`
             : originalText;
     };
 
@@ -137,9 +137,24 @@ const HierarchicalCodeSelector = (() => {
     };
 
     const updateSelectionDisplay = async () => {
+        const countElement = document.getElementById(`${config.modalId}-selection-count`);
+        if (countElement) {
+            countElement.textContent = state.selectedCodes.size.toString();
+        }
+
+        if (state.selectedCodes.size === 0) {
+            updateContainer(state.selectionContainer, '<p class="govuk-body-s govuk-!-margin-bottom-0">No locations selected</p>');
+            return;
+        }
+
         try {
             const formData = new FormData();
             getCurrentSelection().forEach(code => formData.append('selectedCodes', code));
+
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+            if (token) {
+                formData.append('__RequestVerificationToken', token);
+            }
 
             const response = await fetch(`/${config.routePrefix}/selection-fragment`, {
                 method: 'POST',
@@ -150,12 +165,6 @@ const HierarchicalCodeSelector = (() => {
                 const html = await response.text();
                 updateContainer(state.selectionContainer, html);
                 setupSelectionEventHandlers();
-
-                const countElement = document.getElementById('selection-count');
-                if (countElement) {
-                    countElement.textContent = state.selectedCodes.size.toString();
-                }
-
                 refreshCheckboxStates();
             }
         } catch (error) {
@@ -177,6 +186,7 @@ const HierarchicalCodeSelector = (() => {
         refreshCheckboxStates();
         updateUrlParams();
         updateHiddenInputs();
+        updateAccordionContent();
     };
 
     const refreshCheckboxStates = (container = document) => {
@@ -233,6 +243,17 @@ const HierarchicalCodeSelector = (() => {
                 if (e.target.matches('[data-action="toggle-selection"]') && !e.target.disabled) {
                     e.stopPropagation();
                     toggleSelection(e.target.dataset.code);
+                }
+            });
+
+            state.treeContainer.addEventListener('keydown', (e) => {
+                if (e.target.matches('[data-action="toggle-selection"]') && e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (!e.target.disabled) {
+                        e.target.checked = !e.target.checked;
+                        toggleSelection(e.target.dataset.code);
+                    }
                 }
             });
 
@@ -342,14 +363,20 @@ const HierarchicalCodeSelector = (() => {
             }
         });
 
-        document.querySelector('#apply-selection')?.addEventListener('click', applySelection);
-        document.querySelector('#clear-all')?.addEventListener('click', clearAllSelections);
+        document.querySelector(`#${config.modalId}-apply-selection`)?.addEventListener('click', applySelection);
+        document.querySelector(`#${config.modalId}-clear-all`)?.addEventListener('click', clearAllSelections);
     };
 
     const openModal = async () => {
         state.modal.style.display = 'block';
         state.modal.setAttribute('aria-hidden', 'false');
         document.body.style.overflow = 'hidden';
+
+        const searchResults = document.getElementById(`${config.searchInputId}-results`);
+        if (searchResults) {
+            searchResults.classList.add('govuk-!-display-none');
+            searchResults.classList.remove('govuk-!-display-block');
+        }
 
         loadSelectedCodes();
         updateTriggerText();
@@ -415,14 +442,14 @@ const HierarchicalCodeSelector = (() => {
         updateAccordionContent();
     };
 
-    const updateAccordionContent = () => {
-        const accordionContent = document.querySelector('#industry-cpv-code-content');
+    const updateAccordionContent = async () => {
+        const accordionContent = document.querySelector(`#${config.accordionContentId}`);
         if (!accordionContent) return;
 
         const browseLink = accordionContent.querySelector('.accordion-highlight');
         if (!browseLink) return;
 
-        const existingDisplay = document.getElementById('cpv-selected-codes-display');
+        const existingDisplay = document.getElementById(`${config.fieldName}-selected-codes-display`);
         if (existingDisplay) {
             existingDisplay.remove();
         }
@@ -430,22 +457,31 @@ const HierarchicalCodeSelector = (() => {
         if (state.selectedCodes.size === 0) {
             return;
         }
-        const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = 'cpv-selected-display govuk-!-margin-bottom-3 govuk-!-padding-left-2';
-        selectedCodesDisplay.id = 'cpv-selected-codes-display';
 
-        selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-top-3">
-                Selected (${state.selectedCodes.size}):
-            </p>
-            <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
-        ).join('')}
-            </div>
-        `;
+        const formData = new FormData();
+        Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
 
-        browseLink.parentNode.insertBefore(selectedCodesDisplay, browseLink.nextSibling);
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (token) {
+            formData.append('__RequestVerificationToken', token);
+        }
+
+        try {
+            const response = await fetch(`/${config.routePrefix}/accordion-selection-fragment`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const selectedCodesDisplay = document.createElement('div');
+                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
+                selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
+                selectedCodesDisplay.innerHTML = html;
+                browseLink.appendChild(selectedCodesDisplay);
+            }
+        } catch (error) {
+        }
     };
 
     const debounce = (func, wait) => {

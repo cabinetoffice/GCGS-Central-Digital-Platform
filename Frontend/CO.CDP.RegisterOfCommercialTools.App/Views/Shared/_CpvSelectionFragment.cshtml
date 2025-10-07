@@ -10,7 +10,7 @@ else
 {
     @foreach (var item in selectedItems)
     {
-        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 cpv-selected-tag"
+        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 code-selected-tag"
              data-code="@item.Code">
             <button type="button"
                     class="govuk-tag__remove"
@@ -19,9 +19,9 @@ else
                     data-action="remove-selection">
                 &times;
             </button>
-            <div class="cpv-selected-tag__content">
-                <div class="cpv-selected-tag__code">@item.Code</div>
-                <div class="cpv-selected-tag__description">@item.DescriptionEn</div>
+            <div class="code-selected-tag__content">
+                <div class="code-selected-tag__title">@item.Code</div>
+                <div class="code-selected-tag__description">@item.DescriptionEn</div>
             </div>
         </div>
     }

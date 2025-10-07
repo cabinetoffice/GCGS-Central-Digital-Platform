@@ -135,8 +135,14 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to) =>
         WithParameter("filter[tender.lots.contractPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
 
-    public ICommercialToolsQueryBuilder ContractLocation(string region) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(region), "filter[tender.items.deliveryAddresses.region]", region);
+    public ICommercialToolsQueryBuilder WithLocation(string location)
+    {
+        if (string.IsNullOrWhiteSpace(location))
+            return this;
+
+        var odataFilter = $"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{location}'))";
+        return WithCustomFilter(odataFilter);
+    }
 
     public ICommercialToolsQueryBuilder WithCpv(string cpv)
     {
