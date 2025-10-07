@@ -25,8 +25,8 @@ public class SearchService(
         var queryBuilder = builder
             .WithKeywords(request.Keyword ?? string.Empty)
             .WithSkip(skip)
-            .WithTop(top)
-            .WithOrderBy(request.SortBy ?? "relevance");
+            .WithTop(top);
+            // .WithOrderBy(request.SortBy ?? "relevance"); // Temporarily disabled until API supports it
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {
