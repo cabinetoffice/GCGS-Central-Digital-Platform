@@ -4,7 +4,7 @@ Mae'r hysbysiad hwn yn nodi sut y bydd y gwasanaeth Canfod Tendr (FTS) yn defnyd
 
 ### Diben
    
-Gwasanaeth digidol sy'n cael ei redeg gan Swyddfa'r Cabinet yw'r gwasanaeth Canfod Tendr. 
+Gwasanaeth digidol sy'n cael ei redeg gan Swyddfa'r Cabinet yw'r gwasanaeth Canfod Tendr. Mae awdurdodau contractio yn gweithredu fel rheolwyr data cydweithredol ar gyfer y gwasanaeth hwn. 
 
 Diben y gwasanaeth yw cyhoeddi hysbysiadau caffael a gwybodaeth gysylltiedig fel sy'n ofynnol gan Ddeddf Caffael 2023 a Rheoliadau Caffael 2024 a chyfundrefnau caffael perthnasol eraill, er enghraifft, Rheoliadau Contractau Cyhoeddus 2015\. 
 
@@ -15,6 +15,7 @@ Rydym yn casglu ac yn defnyddio data personol er mwyn hwyluso:
 * y broses o gofrestru ar y system ddigidol, gan gynnwys paru defnyddwyr One Login GOV.UK â chyfrifon sy'n bodoli eisoes a throsglwyddo gwybodaeth am gyfrifon sy'n bodoli eisoes 
 * cydymffurfiaeth â Rheoliadau Caffael 2024 a chyfundrefnau caffael perthnasol eraill gan awdurdod contractio sydd â chaffaeliad yr hoffai cyflenwr gymryd rhan ynddo 
 
+Mae Swyddfa'r Cabinet yn rheolwr data annibynnol ar gyfer data personol sydd ei angen i ddefnyddio'r Offeryn Datganiad Gwaith sydd ar gael dim ond i awdurdodau cysylltu ar y llwyfan hwn.
 
 ### Y mathau o ddata personol y gellid eu casglu
 
@@ -39,9 +40,10 @@ Byddwn yn casglu eich cyfeiriad e-bost er mwyn hwyluso'r gweithgareddau canlynol
 * eich hysbysu am hysbysiadau newydd sy'n cyfateb i'r meini prawf chwilio y gwnaethoch eu cadw  
 * eich hysbysu am ddyddiadau cau ar gyfer hysbysiadau rydych yn eu dilyn   
 * rhoi'r wybodaeth ddiweddaraf i chi am newidiadau i'r gwasanaeth  
-* eich gwahodd i gymryd rhan mewn gwaith ymchwil os ydych wedi rhoi caniatâd i ni gysylltu â chi   
+* eich gwahodd i gymryd rhan mewn chiymchwil defnyddiwr neu gwerthuso lle mae diddordeb cyfreithlon   
 * lleihau nifer yr achosion pan fydd angen mewnbynnu'r wybodaeth hon eto o fewn y gwasanaeth 
 
+Mae data personol sy’n ymwneud â’r Offer Datganiad Gwaith yn gyfyngedig i gyfeiriadau e-bost awdurdod cyswllt a gwybodaeth mewngofnodi defnyddiwr, a ddefnyddir i reoli mynediad ac i ddadansoddi defnydd y gwasanaeth. Efallai y byddwch yn cael eich gwahodd i gymryd rhan mewn ymchwil defnyddiwr.
 
 ### Y mathau o ddata sensitif y gellid eu casglu
 
@@ -50,6 +52,8 @@ Byddwn yn casglu data am euogfarnau troseddol cyflenwyr a'u 'pobl gysylltiedig',
 #### Y sail gyfreithlon dros brosesu
 
 Y sail gyfreithlon dros brosesu'r data personol hyn yw Erthygl 6(1)(c) UK GDPR, sef bod angen prosesu er mwyn cydymffurfio â rhwymedigaeth gyfreithiol a osodwyd arnom fel y rheolydd data. Yn yr achos hwn, mae rhwymedigaeth ar Weinidog y Goron (Swyddfa'r Cabinet) i ddarparu platfform ar-lein (gwasanaeth Canfod Tendr) er mwyn cyhoeddi gwybodaeth sy'n ofynnol gan Ddeddf Caffael 2023 a chasglu gwybodaeth am gyflenwyr a hwyluso'r broses o rannu'r wybodaeth honno fel sy'n ofynnol gan Reoliadau Caffael 2024\.  
+
+Y sail gyfreithiol ar gyfer prosesu data personol mewn perthynas â defnyddio'r Offeryn Datganiad o Waith yw buddiant cyfreithlon, yn achos hwn yw darparu a gwella'r gwasanaeth.
 
 #### Data personol am euogfarnau troseddol
 
@@ -125,7 +129,9 @@ Mae Google Analytics yn casglu eich Cyfeiriad IP ac yn aseinio cwci i'ch dyfais 
 
 Ni fyddwn yn olrhain eich gweithgarwch yn y ffordd hon oni bai eich bod wedi rhoi caniatâd. Gallwch reoli p'un a yw Google Analytics yn eich olrhain drwy addasu eich [cwcis](/cookies). 
 
-Ein sail gyfreithlon dros brosesu eich data dadansoddol yw cydsyniad (Erthygl 6 (1)(a) UK GDPR).    
+Ein sail gyfreithlon dros brosesu eich data dadansoddol yw cydsyniad (Erthygl 6 (1)(a) UK GDPR).
+
+Mae'r darpariaethau uchod ar ddata dadansoddol yn gymwys yn yr un modd i'r Offeryn Datganiad o Waith.
    
 ### Derbynwyr eich data
 
@@ -140,7 +146,7 @@ Byddwn hefyd yn rhannu eich data â'n cyflenwyr pan fo angen. Mae'r rhain yn cyn
 Roeddem wedi cael eich data personol gan gyflenwyr y mae'n ofynnol iddynt ddarparu gwybodaeth am 'bobl gysylltiedig' â'u sefydliad. Mae rhwymedigaeth ar y cyflenwr i roi gwybodaeth er mwyn hwyluso cydymffurfiaeth â Deddf Caffael 2023 fel sy'n ofynnol gan yr awdurdod contractio. Yna gellir defnyddio'r wybodaeth hon wedyn i benderfynu a oes unrhyw seiliau dros eithrio at ddibenion caffael cyhoeddus yn gymwys.  
 
 #### Dolenni i wefannau eraill
-Mae'r hysbysiad preifatrwydd hwn yn gymwys i'r gwasanaeth Canfod Tendr ond nid yw'n cwmpasu gwasanaethau llywodraeth eraill na gwefannau rydym yn darparu dolenni iddynt. Mae gan y gwasanaethau hyn, fel GOV.UK One Login, eu telerau ac amodau a'u hysbysiadau preifatrwydd eu hunain. 
+Mae'r hysbysiad preifatrwydd hwn yn gymwys i'r gwasanaeth Canfod Tendr a'r Offeryn Datganiad o Waith ond nid yw'n cwmpasu gwasanaethau llywodraeth eraill na gwefannau rydym yn darparu dolenni iddynt. Mae gan y gwasanaethau hyn, fel GOV.UK One Login, eu telerau ac amodau a'u hysbysiadau preifatrwydd eu hunain. 
 
 Os byddwch yn mynd i wefan arall o'r wefan hon, gallwch ddarllen ei hysbysiad preifatrwydd i wybod beth mae'n ei wneud â'ch gwybodaeth. 
 
@@ -161,7 +167,8 @@ Mae gennych yr hawl:
 * i ofyn bod eich data personol yn cael eu dileu os nad oes cyfiawnhad mwyach dros eu prosesu    
 * o dan amgylchiadau arbennig (er enghraifft, lle ceir dadlau ynghylch cywirdeb) i ofyn bod trefniadau prosesu eich data personol yn cael eu cyfyngu  
 
-   
+Mewn perthynas ag cysylltu â defnyddwyr awdurdod sy'n defnyddio'r Offer Datganiad o Waith, mae gennych hawl i wrthwynebu prosesu eich data personol.
+
 ## Trosglwyddiadau rhyngwladol
 
 Caiff yr holl ddata personol a sensitif a gesglir gan y gwasanaeth Canfod Tendr eu rhannu ag Amazon Web Services (AWS) a'u storio yn y DU. Gall data a gesglir gan Google Analytics gael eu trosglwyddo y tu allan i'r [Ardal Economaidd Ewropeaidd (AEE)]https://www.gov.uk/eu-eea) i'w prosesu. 
