@@ -4,9 +4,9 @@ This notice sets out how the Find a Tender service (FTS) will use your personal 
 
 ### Purpose
    
-Find a Tender service (FTS) is a digital service run by the Cabinet Office. 
+The Find a Tender service (FTS) is provided by the Cabinet Office. Contracting authorities act as joint data controllers for this service. 
 
-The purpose of FTS is to publish procurement notices and related information as required by the Procurement Act 2023 and Procurement Regulations 2024 and other relevant procurement regimes for example, Public Contracts Regulations 2015\.  
+The purpose of FTS is to publish procurement notices and related information as required by the Procurement Act 2023 and Procurement Regulations 2024 and other relevant procurement regimes, for example the Public Contracts Regulations 2015\.  
 
 It is also to facilitate participation in public procurement under the Procurement Act 2023 where contracting authorities require suppliers to register with the service provided by the Cabinet Office and complete their 'supplier information'. This supplier information can then be shared from the Cabinet Office FTS by the supplier to the relevant contracting authority to process and review at the time of bidding.  
 
@@ -15,6 +15,7 @@ We collect and use personal data to facilitate:
 * the registration process onto the digital system, including matching GOV.UK One Login users to existing accounts and transferring existing account information    
 * compliance with the Procurement Regulations 2024 and other relevant procurement regimes by a contracting authority in whose procurement a supplier wishes to participate 
 
+The Cabinet Office is an independent data controller for personal data required for using the Statement of Work (SoW) Tool that is only available to contacting authorities on this platform.
 
 ### Types of personal data that may be collected
 
@@ -39,9 +40,10 @@ We will collect your email address to facilitate the following activities on the
 * alert you about new notices that match your saved search criteria   
 * alert you about deadlines for notices you are following   
 * keep you updated with changes to the service   
-* invite you to participate in user research if you have given us consent to contact you   
-* reduce the number of times this information is required to be inputted manually within the service 
+* invite you to participate in user or evaluation research where there is a legitimate interest  
+* reduce the number of times this information is required to be inputted manually within the service
 
+Personal data relating to the SoW Tool is limited to the contacting authority’s email addresses and user login information, which are used for managing access and analysing use of the service. You may be invited to participate in user research.
 
 ### Types of sensitive data that may be collected
 
@@ -50,6 +52,8 @@ We will collect criminal convictions data of suppliers and their 'connected peop
 #### Lawful basis for the processing
 
 The legal basis for processing this personal data is UK GDPR Article 6(1)(c), namely that processing is necessary to comply with a legal obligation placed on us as the data controller. In this case that is the obligation of a Minister of the Crown (the Cabinet Office) to provide an online platform (Find a Tender service) for the publication of information required by the Procurement Act 2023 and for the collection and facilitation of sharing supplier information as required by the Procurement Regulations 2024\.  
+
+The lawful basis for processing personal data in relation to using the SoW Tool is legitimate interest, in this case that is to provide and improve the service.
 
 #### Criminal convictions personal data
 
@@ -70,20 +74,20 @@ The criminal convictions data we may collect on individuals connected to the sup
   * (b) sections 17 to 20 (fraud and blackmail)   
   * (c) sections 21 and 22 (offences relating to stolen goods)   
   * (d) section 23A (dishonestly retaining a wrongful credit)   
-  * (e) section 24 (going equipped for stealing )   
+  * (e) section 24 (going equipped for stealing)   
 * an offence under section 3 of the Theft Act 1978 (making off without payment)   
 * an offence under section 5 of the Theft Act (Northern Ireland) Order 1978 (S.I. 1978/1407 (N.I. 23)) (making off without payment)   
 * an offence under Article 172 or 172A of the Road Traffic (Northern Ireland) Order 1981 (S.I. 1981/154 (N.I. 1)) (taking vehicle without authority)   
 * an offence under section 58 of the Civic Government (Scotland) Act 1982 (convicted thief in possession)   
 * an offence under section 113 of the Representation of the People Act 1983 (bribery of electors)   
-* an offence under section 178 of the Road Traffic Act 1988 (taking motor vehicle without authority )   
+* an offence under section 178 of the Road Traffic Act 1988 (taking motor vehicle without authority)   
 * an offence under section 327, 328 or 329 of the Proceeds of Crime Act 2002 (money laundering offences)   
 * an offence under section 2, 3, 4, 6 or 7 of the Fraud Act 2006 (fraud offences)   
 * an offence under section 993 of the Companies Act 2006 (fraudulent trading)   
 * an offence under section 1, 2 or 6 of the Bribery Act 2010 (bribery offences)   
 * an offence under section 49 of the Criminal Justice and Licensing (Scotland) Act 2010 (asp 13\) (offences relating to articles for use in fraud)   
 * an offence under the Employment Agencies Act 1973 (offences relating to employment agencies) other than an offence under section 9(4)(b) of that act   
-* an offence under the Employment (Miscellaneous Provisions) (Northern Ireland) Order 1981 (S.I. 1981/839) (N.I. 20)) (offences relating to employment agencies) other than an offence under Article 7B(11) of that order   
+* an offence under the Employment (Miscellaneous Provisions) (Northern Ireland) Order 1981 (S.I. 1981/839) (N.I. 20)) (offences relating to employment agencies) other than an offence under Article 7B (11) of that order   
 * an offence under section 31(1) of the National Minimum Wage Act 1998 (refusal or wilful neglect to pay the national minimum wage)   
 * an offence under the Gangmasters (Licensing) Act 2004 (offences relating to gangmasters)   
 * an offence under section 1, 2, 4 or 30 of the Modern Slavery Act 2015 (slavery and human trafficking offences)   
@@ -126,7 +130,9 @@ Google Analytics collects your IP Address and assigns to your device a cookie co
 We will only track your activity in this way if you have given consent. You can control whether Google Analytics tracks you by adjusting your [cookies](/cookies). 
 
 Our lawful basis for processing your analytics data is consent (Article 6 (1)(a) UK GDPR).    
-   
+
+The above provisions on analytical data apply in the same way to the SoW Tool.
+
 ### Recipients of your data
 
 For all users, the Cabinet Office has access to your data in line with this privacy notice.  
@@ -140,14 +146,14 @@ We will also share your data when necessary with our suppliers. These comprise o
 Your personal data was obtained by us from suppliers who are obliged to provide information on 'connected people' to their organisation. The supplier is obliged to provide information to facilitate compliance with the Procurement Act 2023 as required by the contracting authority. This information may then be used to determine whether any exclusion grounds for the purposes of public procurement apply.  
 
 #### Links to other websites
-This privacy notice applies to FTS but does not cover other government services or websites that we link to. These services, such as GOV.UK One Login, have their own terms and conditions and privacy notices. 
+This privacy notice applies to FTS and the SoW Tool but does not cover other government services or websites that we link to. These services, such as GOV.UK One Login, have their own terms and conditions and privacy notices. 
 
 If you go to another website from this one, you can read its privacy notice to find out what it does with your information. 
 
 If you come to this service from another website we may receive personal information about you. Read the privacy notice of the website you came from to find out more. 
 
 #### Data retention
-We are required to retain data published on FTS in order to meet the obligations of the Procurement Act 2023, which require us to establish and maintain this platform. If a contract is awarded the data is required to be published on the platform for the duration of the procurement. Once the contract has ended we will retain the information for 7 years.   
+We are required to retain data published on FTS in order to meet the obligations of the Procurement Act 2023, which require us to establish and maintain this platform. If a contract is awarded the data is required to be published on the platform for the duration of the procurement. Once the contract has ended, we will retain the information for 7 years.   
    
 We will review your account if you have not used it for 5 years and will contact you to ask if you want us to delete your data or not.    
    
@@ -161,7 +167,8 @@ You have the right:
 * to request that your personal data are erased if there is no longer a justification for them to be processed    
 * in certain circumstances (for example, where accuracy is contested) to request that the processing of your personal data is restricted  
 
-   
+In relation to contacting authority users accessing the SoW Tool, you have a right to object to the processing of your personal data.
+
 ## International transfers
 
 All personal and sensitive data collected by FTS is shared with Amazon Web Services (AWS) and is stored in the UK. Data collected by Google Analytics may be transferred outside the [European Economic Area (EEA)](https://www.gov.uk/eu-eea) for processing. 
