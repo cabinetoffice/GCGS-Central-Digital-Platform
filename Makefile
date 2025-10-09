@@ -51,12 +51,7 @@ endif
 
 buildx-docker: VERSION ?= "undefined"
 buildx-docker: ## Build Docker images with bake
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) authority tenant
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation person forms
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) data-sharing entity-verification
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-app commercial-tools-app commercial-tools-api
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
-	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
 .PHONY: buildx-docker
 
 up: render-compose-override ## Start Docker containers
