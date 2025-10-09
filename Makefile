@@ -5,6 +5,7 @@ IMAGE_VERSION ?= latest
 
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
+export BUILDKIT_PROGRESS=plain
 
 # Extracts targets and their comments
 help: ## List available commands
@@ -39,6 +40,20 @@ build-docker: ## Build Docker images sequentially to reduce memory usage
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
 .PHONY: build-docker
+
+# Default to empty cache args
+DOCKER_CACHE_ARGS ?=
+
+ifdef GITHUB_ACTIONS
+DOCKER_CACHE_ARGS = \
+  --set *.cache-from=type=gha \
+  --set *.cache-to=type=gha,mode=min
+endif
+
+buildx-docker: VERSION ?= "undefined"
+buildx-docker: ## Build Docker images with bake
+	docker buildx bake --allow fs=/tmp -f compose.yml --set *.args.VERSION=$(VERSION) $(DOCKER_CACHE_ARGS)
+.PHONY: buildx-docker
 
 up: render-compose-override ## Start Docker containers
 	@docker compose ls
