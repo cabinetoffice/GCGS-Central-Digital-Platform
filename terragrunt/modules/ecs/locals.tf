@@ -21,7 +21,8 @@ locals {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
   }
 
-  name_prefix = var.product.resource_name
+  name_prefix     = var.product.resource_name
+  name_prefix_php = "${local.name_prefix}-php"
 
   one_login = {
     credential_locations = {
