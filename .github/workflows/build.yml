@@ -74,6 +74,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           driver: docker-container
+          driver-opts: |
+            memory=5g
       - name: Build
         run: make buildx-docker VERSION=${IMAGE_VERSION}
         env:

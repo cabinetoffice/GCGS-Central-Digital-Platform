@@ -5,6 +5,7 @@ IMAGE_VERSION ?= latest
 
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
+export BUILDKIT_PROGRESS=plain
 
 # Extracts targets and their comments
 help: ## List available commands
