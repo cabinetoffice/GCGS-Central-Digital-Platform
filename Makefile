@@ -45,8 +45,8 @@ DOCKER_CACHE_ARGS ?=
 
 ifdef GITHUB_ACTIONS
 DOCKER_CACHE_ARGS = \
-  --set *.cache-from=type=local,src=/tmp/.buildx-cache \
-  --set *.cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=min
+  --set *.cache-from=type=gha \
+  --set *.cache-to=type=gha,mode=min
 endif
 
 buildx-docker: VERSION ?= "undefined"
