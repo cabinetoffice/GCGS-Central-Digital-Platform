@@ -1,0 +1,73 @@
+@using CO.CDP.Localization
+@using CO.CDP.UI.Foundation.Cookies
+@using Microsoft.AspNetCore.Http.Extensions;
+@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.WebUtilities;
+@inject ICookiePreferencesService cookiePreferencesService;
+
+@{
+    var cookieSettings = new CookieSettings();
+    var queryDict = QueryHelpers.ParseQuery(Context.Request.QueryString.Value);
+    queryDict.Remove(cookieSettings.FtsHandoverParameter);
+    var queryBuilder = new QueryBuilder(queryDict);
+    QueryString updatedQueryString = queryBuilder.ToQueryString();
+    string currentUrl = Context.Request.PathBase + Context.Request.Path + updatedQueryString;
+}
+
+@if (cookiePreferencesService.IsUnknown() && !Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString) && !Context.Request.Path.StartsWithSegments("/cookies"))
+{
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-cookie-banner__heading govuk-heading-m">
+                        @StaticTextResource.CookieBanner_Title
+                    </h2>
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph1</p>
+                        <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph2</p>
+                        <p class="govuk-body"><b>COOKIE TEST!!!!</b></p>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/cookies" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="@cookieSettings.CookieSettingsPageReturnUrlFieldName" value="@currentUrl" />
+
+                <div class="govuk-button-group">
+                    <govuk-button name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">@StaticTextResource.CookieBanner_AcceptButton</govuk-button>
+                    <govuk-button name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">@StaticTextResource.CookieBanner_RejectButton</govuk-button>
+                    <a class="govuk-link" href="/cookies">@StaticTextResource.CookieBanner_ViewCookies</a>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (!cookiePreferencesService.IsUnknown() && Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString))
+{
+    var acceptedRejectedStatement = cookiePreferencesService.IsAccepted() ? @StaticTextResource.CookieBanner_AcceptedStatement : @StaticTextResource.CookieBanner_RejectedStatement;
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">
+                            @acceptedRejectedStatement @Html.Raw(@StaticTextResource.CookieBanner_ChangeCookieSettings)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-button-group">
+                @{
+                    var currentQueryString = Context.Request.QueryString.ToString();
+                    var cleanedQueryString = currentQueryString.Replace($"{cookieSettings.CookieBannerInteractionQueryString}=true", "");
+                    cleanedQueryString = cleanedQueryString == "?" ? "" : cleanedQueryString;
+                }
+                <a class="govuk-button" role="button" data-module="govuk-button" href="@(Context.Request.PathBase + Context.Request.Path + cleanedQueryString)">@StaticTextResource.CookieBanner_HideCookieMessage</a>
+            </div>
+        </div>
+    </div>
+}
