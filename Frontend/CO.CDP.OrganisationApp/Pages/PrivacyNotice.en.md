@@ -87,7 +87,7 @@ The criminal convictions data we may collect on individuals connected to the sup
 * an offence under section 1, 2 or 6 of the Bribery Act 2010 (bribery offences)   
 * an offence under section 49 of the Criminal Justice and Licensing (Scotland) Act 2010 (asp 13\) (offences relating to articles for use in fraud)   
 * an offence under the Employment Agencies Act 1973 (offences relating to employment agencies) other than an offence under section 9(4)(b) of that act   
-* an offence under the Employment (Miscellaneous Provisions) (Northern Ireland) Order 1981 (S.I. 1981/839) (N.I. 20)) (offences relating to employment agencies) other than an offence under Article 7B (11) of that order   
+* an offence under the Employment (Miscellaneous Provisions) (Northern Ireland) Order 1981 (S.I. 1981/839) (N.I. 20)) (offences relating to employment agencies) other than an offence under Article 7B(11) of that order   
 * an offence under section 31(1) of the National Minimum Wage Act 1998 (refusal or wilful neglect to pay the national minimum wage)   
 * an offence under the Gangmasters (Licensing) Act 2004 (offences relating to gangmasters)   
 * an offence under section 1, 2, 4 or 30 of the Modern Slavery Act 2015 (slavery and human trafficking offences)   
@@ -153,7 +153,7 @@ If you go to another website from this one, you can read its privacy notice to f
 If you come to this service from another website we may receive personal information about you. Read the privacy notice of the website you came from to find out more. 
 
 #### Data retention
-We are required to retain data published on FTS in order to meet the obligations of the Procurement Act 2023, which require us to establish and maintain this platform. If a contract is awarded the data is required to be published on the platform for the duration of the procurement. Once the contract has ended, we will retain the information for 7 years.   
+We are required to retain data published on FTS in order to meet the obligations of the Procurement Act 2023, which require us to establish and maintain this platform. If a contract is awarded the data is required to be published on the platform for the duration of the procurement. Once the contract has ended we will retain the information for 7 years.   
    
 We will review your account if you have not used it for 5 years and will contact you to ask if you want us to delete your data or not.    
    
