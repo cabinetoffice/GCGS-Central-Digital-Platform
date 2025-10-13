@@ -21,8 +21,10 @@ public class CookiesModel(
     [BindProperty]
     public string? ReturnUrl { get; set; }
 
-    public void OnGet()
+    public void OnGet(string? returnUrl = null)
     {
+        ReturnUrl = returnUrl;
+
         var cookieSettings = new CookieSettings();
         var cookieValue = Request.Cookies[cookieSettings.CookieName];
 
