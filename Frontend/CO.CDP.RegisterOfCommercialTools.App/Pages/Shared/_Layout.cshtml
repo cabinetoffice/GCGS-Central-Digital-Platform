@@ -105,7 +105,6 @@
         @await RenderSectionAsync("BeforeContent", required: false)
 
         <main class="govuk-main-wrapper" id="main-content">
-            <partial name="/Pages/Shared/_FlashMessage.cshtml" />
             @RenderBody()
         </main>
     </div>

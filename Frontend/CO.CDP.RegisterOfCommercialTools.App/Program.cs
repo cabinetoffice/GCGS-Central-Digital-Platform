@@ -37,21 +37,12 @@ var cookieSettings = new CookieSettings();
 builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
 builder.Services.AddSingleton(cookieSettings);
 
-builder.Services.AddTransient(provider =>
-{
-    var httpContextAccessor = provider.GetRequiredService<IHttpContextAccessor>();
-    var factory = provider.GetRequiredService<ITempDataDictionaryFactory>();
-    var context = httpContextAccessor.HttpContext;
-    return factory.GetTempData(context);
-});
-
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
     uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
     uiFoundationBuilder.AddCookiePreferenceService();
-    uiFoundationBuilder.AddFlashMessageServices();
 });
 
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();

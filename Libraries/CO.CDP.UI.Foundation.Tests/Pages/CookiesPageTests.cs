@@ -1,7 +1,5 @@
-using CO.CDP.Localization;
 using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Pages;
-using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -14,7 +12,6 @@ namespace CO.CDP.UI.Foundation.Tests.Pages;
 
 public class CookiesPageTests
 {
-    private readonly Mock<IFlashMessageService> _mockFlashMessageService;
     private readonly Mock<ICookiePreferencesService> _mockCookiePreferencesService;
     private readonly Mock<IUrlHelper> _mockUrlHelper;
     private readonly CookiesModel _model;
@@ -22,7 +19,6 @@ public class CookiesPageTests
 
     public CookiesPageTests()
     {
-        _mockFlashMessageService = new Mock<IFlashMessageService>();
         _mockCookiePreferencesService = new Mock<ICookiePreferencesService>();
         _mockUrlHelper = new Mock<IUrlHelper>();
         _requestCookies = new Dictionary<string, string>();
@@ -33,7 +29,7 @@ public class CookiesPageTests
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
         mockRequest.Setup(r => r.Cookies).Returns(new TestRequestCookieCollection(_requestCookies));
 
-        _model = new CookiesModel(_mockFlashMessageService.Object, _mockCookiePreferencesService.Object)
+        _model = new CookiesModel(_mockCookiePreferencesService.Object)
         {
             PageContext = new PageContext
             {
@@ -318,45 +314,6 @@ public class CookiesPageTests
         Assert.Contains("query=test", redirectResult.Url);
         Assert.Contains("page=2", redirectResult.Url);
         Assert.Contains("cookieBannerInteraction=true", redirectResult.Url);
-    }
-
-    #endregion
-
-    #region Flash Message Tests
-
-    [Fact]
-    public void OnPost_WithoutReturnUrl_SetsFlashMessageAndRedirectsToCookiesPage()
-    {
-        _model.CookieAcceptance = CookieAcceptanceValues.Accept;
-
-        var result = _model.OnPost();
-
-        _mockFlashMessageService.Verify(
-            s => s.SetFlashMessage(
-                FlashMessageType.Success,
-                StaticTextResource.Cookies_SetCookiePreferences,
-                null,
-                null,
-                null,
-                null),
-            Times.Once);
-
-        var redirectResult = Assert.IsType<RedirectToPageResult>(result);
-        Assert.Equal("/Cookies", redirectResult.PageName);
-    }
-
-    [Fact]
-    public void OnPost_WithValidReturnUrl_DoesNotSetFlashMessage()
-    {
-        _model.CookieAcceptance = CookieAcceptanceValues.Accept;
-        _model.ReturnUrl = "/test-page";
-        _mockUrlHelper.Setup(u => u.IsLocalUrl("/test-page")).Returns(true);
-
-        _model.OnPost();
-
-        _mockFlashMessageService.Verify(
-            s => s.SetFlashMessage(It.IsAny<FlashMessageType>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<Dictionary<string, string>>()),
-            Times.Never);
     }
 
     #endregion

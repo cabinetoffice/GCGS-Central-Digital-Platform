@@ -120,18 +120,6 @@ public class UiFoundationBuilder
     }
 
     /// <summary>
-    /// Adds UI Foundation FlashMessage services with TempData support
-    /// </summary>
-    /// <returns>The builder for method chaining</returns>
-    public UiFoundationBuilder AddFlashMessageServices()
-    {
-        _services
-            .AddScoped<ITempDataService, TempDataService>()
-            .AddScoped<IFlashMessageService, FlashMessageService>();
-        return this;
-    }
-
-    /// <summary>
     /// Adds UI Foundation CookiePreferences service
     /// </summary>
     /// <returns>The builder for method chaining</returns>

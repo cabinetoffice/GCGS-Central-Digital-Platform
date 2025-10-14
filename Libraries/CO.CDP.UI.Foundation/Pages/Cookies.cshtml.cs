@@ -4,14 +4,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.UI.Foundation.Cookies;
-using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.UI.Foundation.Pages;
 
 [AllowAnonymous]
 public class CookiesModel(
-    IFlashMessageService flashMessageService,
     ICookiePreferencesService cookiePreferencesService) : PageModel
 {
     [BindProperty]
@@ -59,8 +57,6 @@ public class CookiesModel(
             var cookieSettings = new CookieSettings();
             return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, cookieSettings.CookieBannerInteractionQueryString, "true"));
         }
-
-        flashMessageService.SetFlashMessage(FlashMessageType.Success, StaticTextResource.Cookies_SetCookiePreferences);
 
         return RedirectToPage("/Cookies");
     }

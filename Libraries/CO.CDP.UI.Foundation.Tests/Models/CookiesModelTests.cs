@@ -1,7 +1,5 @@
-using CO.CDP.Localization;
 using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Pages;
-using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -12,7 +10,6 @@ namespace CO.CDP.UI.Foundation.Tests.Models;
 
 public class CookiesModelTests
 {
-    private readonly Mock<IFlashMessageService> _mockFlashMessageService;
     private readonly Mock<ICookiePreferencesService> _mockCookiePreferencesService;
     private readonly Mock<IUrlHelper> _mockUrlHelper;
     private readonly CookiesModel _model;
@@ -20,7 +17,6 @@ public class CookiesModelTests
 
     public CookiesModelTests()
     {
-        _mockFlashMessageService = new Mock<IFlashMessageService>();
         _mockCookiePreferencesService = new Mock<ICookiePreferencesService>();
         _mockUrlHelper = new Mock<IUrlHelper>();
         _requestCookies = new Dictionary<string, string>();
@@ -31,7 +27,7 @@ public class CookiesModelTests
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
         mockRequest.Setup(r => r.Cookies).Returns(new CookieTestHelper(_requestCookies));
 
-        _model = new CookiesModel(_mockFlashMessageService.Object, _mockCookiePreferencesService.Object)
+        _model = new CookiesModel(_mockCookiePreferencesService.Object)
         {
             PageContext = new PageContext
             {
@@ -179,25 +175,6 @@ public class CookiesModelTests
         var result = _model.OnPost();
 
         Assert.IsType<RedirectToPageResult>(result);
-    }
-
-    [Fact]
-    public void OnPost_WithoutValidReturnUrl_SetsFlashMessage()
-    {
-        _model.CookieAcceptance = CookieAcceptanceValues.Accept;
-        _model.ReturnUrl = null;
-
-        _model.OnPost();
-
-        _mockFlashMessageService.Verify(
-            s => s.SetFlashMessage(
-                FlashMessageType.Success,
-                StaticTextResource.Cookies_SetCookiePreferences,
-                null,
-                null,
-                null,
-                null),
-            Times.Once);
     }
 
     [Fact]
