@@ -16,13 +16,8 @@ public class CookiesModel(
     [Required(ErrorMessageResourceName = nameof(StaticTextResource.Cookies_ChooseCookiePreferences), ErrorMessageResourceType = typeof(StaticTextResource))]
     public CookieAcceptanceValues? CookieAcceptance { get; set; }
 
-    [BindProperty]
-    public string? ReturnUrl { get; set; }
-
-    public void OnGet(string? returnUrl = null)
+    public void OnGet()
     {
-        ReturnUrl = returnUrl;
-
         var cookieSettings = new CookieSettings();
         var cookieValue = Request.Cookies[cookieSettings.CookieName];
 
@@ -52,12 +47,6 @@ public class CookiesModel(
                 break;
         }
 
-        if (!string.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
-        {
-            var cookieSettings = new CookieSettings();
-            return LocalRedirect(QueryHelpers.AddQueryString(ReturnUrl, cookieSettings.CookieBannerInteractionQueryString, "true"));
-        }
-
-        return RedirectToPage("/Cookies");
+        return Redirect("/");
     }
 }

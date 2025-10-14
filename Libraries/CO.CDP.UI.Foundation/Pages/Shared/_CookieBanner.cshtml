@@ -26,6 +26,7 @@
                     <div class="govuk-cookie-banner__content">
                         <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph1</p>
                         <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph2</p>
+                        <a class="govuk-link" href="/cookies">@StaticTextResource.CookieBanner_ViewCookies</a>
                     </div>
                 </div>
             </div>
@@ -38,7 +39,7 @@
                 <div class="govuk-button-group">
                     <govuk-button name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">@StaticTextResource.CookieBanner_AcceptButton</govuk-button>
                     <govuk-button name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">@StaticTextResource.CookieBanner_RejectButton</govuk-button>
-                    <a class="govuk-link" href="/cookies?returnUrl=@Uri.EscapeDataString(currentUrl)">@StaticTextResource.CookieBanner_ViewCookies</a>
+                    <a class="govuk-link" href="/cookies">@StaticTextResource.CookieBanner_ViewCookies</a>
                 </div>
             </form>
         </div>
@@ -54,22 +55,16 @@
                 <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-cookie-banner__content">
                         <p class="govuk-body">
-                            @acceptedRejectedStatement You can <a class="govuk-link" href="/cookies?returnUrl=@Uri.EscapeDataString(currentUrl)">change your cookie settings</a> at any time.
+                            @acceptedRejectedStatement @Html.Raw(@StaticTextResource.CookieBanner_ChangeCookieSettings)
                         </p>
                     </div>
                 </div>
             </div>
             <div class="govuk-button-group">
                 @{
-                    var hideCookieQueryDict = QueryHelpers.ParseQuery(Context.Request.QueryString.Value);
-                    if (hideCookieQueryDict.TryGetValue(cookieSettings.CookieBannerInteractionQueryString, out var values) &&
-                        values.Any(v => v != null && v.Equals("true", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        hideCookieQueryDict.Remove(cookieSettings.CookieBannerInteractionQueryString);
-                    }
-
-                    var hideCookieQueryBuilder = new QueryBuilder(hideCookieQueryDict);
-                    var cleanedQueryString = hideCookieQueryBuilder.ToQueryString();
+                    var currentQueryString = Context.Request.QueryString.ToString();
+                    var cleanedQueryString = currentQueryString.Replace($"{cookieSettings.CookieBannerInteractionQueryString}=true", "");
+                    cleanedQueryString = cleanedQueryString == "?" ? "" : cleanedQueryString;
                 }
                 <a class="govuk-button" role="button" data-module="govuk-button" href="@(Context.Request.PathBase + Context.Request.Path + cleanedQueryString)">@StaticTextResource.CookieBanner_HideCookieMessage</a>
             </div>
