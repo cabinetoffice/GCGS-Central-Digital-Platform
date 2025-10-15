@@ -248,7 +248,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
             var queryOptionsValue = string.Join("&", odataParams);
             var separator = baseUrl.Contains('?') ? '&' : '?';
-            return $"{baseUrl}{separator}queryOptions={queryOptionsValue}";
+            return $"{baseUrl}{separator}{queryOptionsValue}";
         }
 
         return baseUrl;
