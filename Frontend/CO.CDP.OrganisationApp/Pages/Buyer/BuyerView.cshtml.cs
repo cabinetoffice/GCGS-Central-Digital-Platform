@@ -62,14 +62,21 @@ public class BuyerView(
         var commercialToolsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools);
         if (commercialToolsEnabled)
         {
-            var cookiesAccepted = cookiePreferencesService.IsAccepted();
+            var cookiesAccepted = cookiePreferencesService.GetValue();
+            bool? cookiesAcceptedValue = cookiesAccepted switch
+            {
+                CookieAcceptanceValues.Accept => true,
+                CookieAcceptanceValues.Reject => false,
+                _ => null
+            };
+
             var originParams = new Dictionary<string, string?> { { "origin", "buyer-view" } };
 
             tiles.Add(new Tile
             {
                 Title = StaticTextResource.BuyerView_TileFour_Title,
                 Body = StaticTextResource.BuyerView_TileFour_Body,
-                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAccepted, originParams)
+                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAcceptedValue, originParams)
             });
         }
 

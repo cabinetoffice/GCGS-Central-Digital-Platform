@@ -81,7 +81,7 @@ public class BuyerViewTests
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
         _commercialToolsUrlServiceMock.Setup(c => c.BuildUrl("", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com");
 
         await _model.OnGet();
@@ -176,7 +176,7 @@ public class BuyerViewTests
     public async Task OnGet_WhenCommercialToolsEnabled_CallsBuildUrlWithCorrectParameters()
     {
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
         _commercialToolsUrlServiceMock.Setup(c => c.BuildUrl("", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com");
 
         await _model.OnGet();
@@ -195,13 +195,13 @@ public class BuyerViewTests
     {
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
 
-        _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
         _commercialToolsUrlServiceMock.Setup(c => c.BuildUrl("", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com/with-cookies");
 
         await _model.OnGet();
 
         _commercialToolsUrlServiceMock.Verify(c => c.BuildUrl("", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.IsAccepted(), Times.Once);
+        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.Once);
     }
 
     [Fact]
@@ -209,13 +209,13 @@ public class BuyerViewTests
     {
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
 
-        _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(false);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
         _commercialToolsUrlServiceMock.Setup(c => c.BuildUrl("", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com/no-cookies");
 
         await _model.OnGet();
 
         _commercialToolsUrlServiceMock.Verify(c => c.BuildUrl("", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.IsAccepted(), Times.Once);
+        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.Once);
     }
 
     [Fact]
@@ -223,7 +223,7 @@ public class BuyerViewTests
     {
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(true);
-        
+
         Dictionary<string, string?>? capturedParams = null;
         _commercialToolsUrlServiceMock.Setup(c => c.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
             .Callback<string, Guid?, string?, bool?, Dictionary<string, string?>?>((_, _, _, _, additionalParams) => capturedParams = additionalParams)
