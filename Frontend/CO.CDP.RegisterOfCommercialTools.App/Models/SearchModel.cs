@@ -185,7 +185,7 @@ public class SearchModel : IValidatableObject
             yield break;
         }
 
-        if (!int.TryParse(year, out _) || year?.Length != 4)
+        if (!int.TryParse(year, out _) || year.Length != 4)
         {
             yield return (DateValidationMessages.GetInvalidYearMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Year)]);
             yield break;
