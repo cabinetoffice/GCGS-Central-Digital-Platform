@@ -2,7 +2,8 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 public class SearchRequestDto
 {
-    public string? Keyword { get; set; }
+    public List<string>? Keywords { get; set; }
+    public KeywordSearchMode SearchMode { get; set; } = KeywordSearchMode.Any;
     public string? Status { get; set; }
     public DateTime? SubmissionDeadlineFrom { get; set; }
     public DateTime? SubmissionDeadlineTo { get; set; }

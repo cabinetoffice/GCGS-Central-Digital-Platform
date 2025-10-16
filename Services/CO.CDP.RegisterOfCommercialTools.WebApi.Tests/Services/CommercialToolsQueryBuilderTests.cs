@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
 using System.Globalization;
 
@@ -23,7 +24,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test").Build(BaseUrl);
+        var result = builder.WithKeywords(["test"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -35,7 +36,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("");
+        var result = builder.WithKeywords([], KeywordSearchMode.Any);
 
         result.Should().BeSameAs(builder);
     }
@@ -45,39 +46,39 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords(null!);
+        var result = builder.WithKeywords(null, KeywordSearchMode.Any);
 
         result.Should().BeSameAs(builder);
     }
 
     [Fact]
-    public void WithKeywords_WhenSpaceSeparatedWords_ShouldUseOrLogic()
+    public void WithKeywords_WhenMultipleTermsWithAnyMode_ShouldUseOrLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("radio televisions").Build(BaseUrl);
+        var result = builder.WithKeywords(["radio", "televisions"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20or%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenPlusOperatorUsed_ShouldUseAndLogic()
+    public void WithKeywords_WhenMultipleTermsWithAllMode_ShouldUseAndLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("administration + defence").Build(BaseUrl);
+        var result = builder.WithKeywords(["administration", "defence"], KeywordSearchMode.All).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20and%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenQuotedPhrase_ShouldSearchForExactPhrase()
+    public void WithKeywords_WhenExactMode_ShouldSearchForExactPhrase()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("\"market research\"").Build(BaseUrl);
+        var result = builder.WithKeywords(["market research"], KeywordSearchMode.Exact).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -85,11 +86,11 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithKeywords_WhenMultiplePlusOperators_ShouldUseAndLogicForAll()
+    public void WithKeywords_WhenMultipleTermsWithAllMode_ShouldUseAndLogicForAll()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("technology + innovation + digital").Build(BaseUrl);
+        var result = builder.WithKeywords(["technology", "innovation", "digital"], KeywordSearchMode.All).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20and%20");
@@ -336,7 +337,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test").Build(BaseUrl);
+        var result = builder.WithKeywords(["test"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -346,7 +347,7 @@ public class CommercialToolsQueryBuilderTests
     public void ChainedOperations_ShouldReturnImmutableInstances()
     {
         var builder1 = new CommercialToolsQueryBuilder();
-        var builder2 = builder1.WithKeywords("test");
+        var builder2 = builder1.WithKeywords(["test"], KeywordSearchMode.Any);
         var builder3 = builder2.WithStatus("Active");
 
         builder1.Should().NotBeSameAs(builder2);
@@ -372,7 +373,7 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder
-            .WithKeywords("IT services")
+            .WithKeywords(["IT", "services"], KeywordSearchMode.Any)
             .WithStatus("Active")
             .FeeFrom(100.50m)
             .FeeTo(999.99m)
