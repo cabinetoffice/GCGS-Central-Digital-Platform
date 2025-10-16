@@ -33,14 +33,14 @@
         (searches submission deadline, contract start/end date, open framework end date and start/end date of the
         DM)</p>
 
-    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-2"
+    <details class="govuk-details accordion-highlight govuk-!-padding-top-2 govuk-!-padding-bottom-2 govuk-!-padding-left-2 govuk-!-padding-right-0 govuk-!-margin-left-2 govuk-!-margin-right-4"
              data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text govuk-!-font-size-14">
                 Submission deadline
             </span>
         </summary>
-        <div class="govuk-details__text govuk-!-padding-0 no-border">
+        <div class="govuk-details__text govuk-!-padding-0 govuk-!-padding-left-1 govuk-!-padding-right-1 no-border">
             <div class="govuk-form-group @(submissionDeadlineFromHasError ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
                 <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16">
@@ -49,9 +49,29 @@
                     <div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    <span asp-validation-for="SubmissionDeadlineFromDay" class="govuk-error-message"></span>
+                    @if (submissionDeadlineFromDayError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineFromDay", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (submissionDeadlineFromMonthError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineFromMonth", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (submissionDeadlineFromYearError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineFromYear", "", new { @class = "" })
+                        </p>
+                    }
                     <div class="govuk-date-input">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineFromDay">
                                     Day
@@ -59,7 +79,7 @@
                                 <input asp-for="SubmissionDeadlineFromDay" name="sub_from_day" class="govuk-input govuk-date-input__input govuk-input--width-2 @(submissionDeadlineFromDayError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineFromMonth">
                                     Month
@@ -72,19 +92,40 @@
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineFromYear">
                                     Year
                                 </label>
-                                <input asp-for="SubmissionDeadlineFromYear" name="sub_from_year" class="govuk-input govuk-date-input__input govuk-input--width-4 @(submissionDeadlineFromYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
+                                <input asp-for="SubmissionDeadlineFromYear" name="sub_from_year" class="govuk-input govuk-date-input__input govuk-input--width-3 @(submissionDeadlineFromYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        To
-                    </legend>
-                    <span asp-validation-for="SubmissionDeadlineToDay" class="govuk-error-message"></span>
+                <div class="govuk-form-group @(submissionDeadlineToHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" role="group">
+                        <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                            To
+                        </legend>
+                        @if (submissionDeadlineToDayError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineToDay", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (submissionDeadlineToMonthError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineToMonth", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (submissionDeadlineToYearError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("SubmissionDeadlineToYear", "", new { @class = "" })
+                        </p>
+                    }
                     <div class="govuk-date-input">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineToDay">
                                     Day
@@ -92,7 +133,7 @@
                                 <input asp-for="SubmissionDeadlineToDay" name="sub_to_day" class="govuk-input govuk-date-input__input govuk-input--width-2 @(submissionDeadlineToDayError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineToMonth">
                                     Month
@@ -105,23 +146,24 @@
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="SubmissionDeadlineToYear">
                                     Year
                                 </label>
-                                <input asp-for="SubmissionDeadlineToYear" name="sub_to_year" class="govuk-input govuk-date-input__input govuk-input--width-4 @(submissionDeadlineToYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
+                                <input asp-for="SubmissionDeadlineToYear" name="sub_to_year" class="govuk-input govuk-date-input__input govuk-input--width-3 @(submissionDeadlineToYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                    </fieldset>
+                </div>
             </div>
         </div>
     </details>
 
-    <details class="govuk-details accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-2"
+    <details class="govuk-details accordion-highlight govuk-!-padding-top-2 govuk-!-padding-bottom-2 govuk-!-padding-left-2 govuk-!-padding-right-0 govuk-!-margin-left-2 govuk-!-margin-right-4"
              data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text govuk-!-font-size-14">
                 Commercial tool dates
             </span>
         </summary>
-        <div class="govuk-details__text govuk-!-padding-0 no-border">
+        <div class="govuk-details__text govuk-!-padding-0 govuk-!-padding-left-1 govuk-!-padding-right-1 no-border">
             <div class="govuk-form-group @(contractStartDateFromHasError ? "govuk-form-group--error" : "") govuk-!-margin-bottom-0">
                 <fieldset class="govuk-fieldset govuk-!-margin-bottom-4" role="group">
                     <legend class="govuk-fieldset__legend govuk-!-font-size-16">
@@ -130,9 +172,29 @@
                     <div class="govuk-hint govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         For example, 25 05 2025
                     </div>
-                    <span asp-validation-for="ContractStartDateFromDay" class="govuk-error-message"></span>
+                    @if (contractStartDateFromDayError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateFromDay", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (contractStartDateFromMonthError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateFromMonth", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (contractStartDateFromYearError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateFromYear", "", new { @class = "" })
+                        </p>
+                    }
                     <div class="govuk-date-input">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateFromDay">
                                     Day
@@ -140,7 +202,7 @@
                                 <input asp-for="ContractStartDateFromDay" name="start_from_day" class="govuk-input govuk-date-input__input govuk-input--width-2 @(contractStartDateFromDayError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateFromMonth">
                                     Month
@@ -153,19 +215,40 @@
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateFromYear">
                                     Year
                                 </label>
-                                <input asp-for="ContractStartDateFromYear" name="start_from_year" class="govuk-input govuk-date-input__input govuk-input--width-4 @(contractStartDateFromYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
+                                <input asp-for="ContractStartDateFromYear" name="start_from_year" class="govuk-input govuk-date-input__input govuk-input--width-3 @(contractStartDateFromYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="govuk-fieldset" role="group">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        To
-                    </legend>
-                    <span asp-validation-for="ContractStartDateToDay" class="govuk-error-message"></span>
+                <div class="govuk-form-group @(contractStartDateToHasError ? "govuk-form-group--error" : "")">
+                    <fieldset class="govuk-fieldset" role="group">
+                        <legend class="govuk-fieldset__legend govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                            To
+                        </legend>
+                        @if (contractStartDateToDayError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateToDay", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (contractStartDateToMonthError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateToMonth", "", new { @class = "" })
+                        </p>
+                    }
+                    @if (contractStartDateToYearError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessage("ContractStartDateToYear", "", new { @class = "" })
+                        </p>
+                    }
                     <div class="govuk-date-input">
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateToDay">
                                     Day
@@ -173,7 +256,7 @@
                                 <input asp-for="ContractStartDateToDay" name="start_to_day" class="govuk-input govuk-date-input__input govuk-input--width-2 @(contractStartDateToDayError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
-                        <div class="govuk-date-input__item govuk-!-margin-right-3">
+                        <div class="govuk-date-input__item govuk-!-margin-right-2">
                             <div class="govuk-form-group">
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateToMonth">
                                     Month
@@ -186,11 +269,12 @@
                                 <label class="govuk-label govuk-date-input__label govuk-!-font-size-16" asp-for="ContractStartDateToYear">
                                     Year
                                 </label>
-                                <input asp-for="ContractStartDateToYear" name="start_to_year" class="govuk-input govuk-date-input__input govuk-input--width-4 @(contractStartDateToYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
+                                <input asp-for="ContractStartDateToYear" name="start_to_year" class="govuk-input govuk-date-input__input govuk-input--width-3 @(contractStartDateToYearError ? "govuk-input--error" : "")" type="text" inputmode="numeric" />
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                    </fieldset>
+                </div>
             </div>
         </div>
     </details>

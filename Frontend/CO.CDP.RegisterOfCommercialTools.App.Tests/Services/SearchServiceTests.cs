@@ -27,22 +27,20 @@ public class SearchServiceTests
             Status = ["Active"],
             FeeMin = 1m,
             FeeMax = 5m,
-            AwardMethod = ["With competition"]
+            AwardMethod = ["With competition"],
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "31",
+            SubmissionDeadlineToMonth = "12",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "6",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "30",
+            ContractStartDateToMonth = "6",
+            ContractStartDateToYear = "2025"
         };
-
-        searchModel.SubmissionDeadline.From.Day = "1";
-        searchModel.SubmissionDeadline.From.Month = "1";
-        searchModel.SubmissionDeadline.From.Year = "2025";
-        searchModel.SubmissionDeadline.To.Day = "31";
-        searchModel.SubmissionDeadline.To.Month = "12";
-        searchModel.SubmissionDeadline.To.Year = "2025";
-
-        searchModel.ContractStartDate.From.Day = "1";
-        searchModel.ContractStartDate.From.Month = "6";
-        searchModel.ContractStartDate.From.Year = "2025";
-        searchModel.ContractStartDate.To.Day = "30";
-        searchModel.ContractStartDate.To.Month = "6";
-        searchModel.ContractStartDate.To.Year = "2025";
 
         var responseDto = new SearchResponse
         {

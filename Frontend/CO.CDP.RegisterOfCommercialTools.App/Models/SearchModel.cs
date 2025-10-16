@@ -173,25 +173,26 @@ public class SearchModel : IValidatableObject
             yield break;
         }
 
-        if (!int.TryParse(day, out var dayInt) || dayInt < 1 || dayInt > 31)
+        var dayValid = int.TryParse(day, out var dayInt) && dayInt >= 1 && dayInt <= 31;
+        var monthValid = int.TryParse(month, out var monthInt) && monthInt >= 1 && monthInt <= 12;
+        var yearValid = int.TryParse(year, out _) && year.Length == 4;
+
+        if (!dayValid)
         {
             yield return (DateValidationMessages.GetInvalidDayMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Day)]);
-            yield break;
         }
 
-        if (!int.TryParse(month, out var monthInt) || monthInt < 1 || monthInt > 12)
+        if (!monthValid)
         {
             yield return (DateValidationMessages.GetInvalidMonthMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Month)]);
-            yield break;
         }
 
-        if (!int.TryParse(year, out _) || year.Length != 4)
+        if (!yearValid)
         {
             yield return (DateValidationMessages.GetInvalidYearMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Year)]);
-            yield break;
         }
 
-        if (!DateTime.TryParse($"{year}-{monthInt:D2}-{dayInt:D2}", out _))
+        if (dayValid && monthValid && yearValid && !DateTime.TryParse($"{year}-{monthInt:D2}-{dayInt:D2}", out _))
         {
             yield return (DateValidationMessages.GetInvalidDateMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Day)]);
         }
