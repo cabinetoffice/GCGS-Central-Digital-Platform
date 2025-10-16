@@ -11,7 +11,7 @@ module "ecs_service_fts_scheduler" {
     )
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.php_cluster_id
   container_port         = var.service_configs.fts_scheduler.port
   cpu                    = var.service_configs.fts_scheduler.cpu
   desired_count          = var.service_configs.fts_scheduler.desired_count

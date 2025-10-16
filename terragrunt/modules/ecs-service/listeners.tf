@@ -2,7 +2,7 @@ resource "aws_lb_target_group" "this" {
   count = var.host_port != null ? 1 : 0
 
   deregistration_delay = 30
-  name                 = local.listener_name
+  name_prefix          = local.tg_name_prefix
   port                 = var.host_port
   protocol             = "HTTP"
   target_type          = "ip"
@@ -26,8 +26,13 @@ resource "aws_lb_target_group" "this" {
   }
 
   lifecycle {
-    create_before_destroy = false
+    create_before_destroy = true
   }
+
+  tags = merge(
+    {Service = var.name},
+    var.tags
+  )
 }
 
 resource "aws_lb_listener_rule" "this" {

@@ -25,12 +25,12 @@ module "ecs_service_fts_healthcheck" {
     }
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = aws_ecs_cluster.that.id
   container_port         = var.service_configs.fts_healthcheck.port
   cpu                    = var.service_configs.fts_healthcheck.cpu
   desired_count          = var.service_configs.fts_healthcheck.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_listener_arn       = aws_lb_listener.ecs_php.arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
