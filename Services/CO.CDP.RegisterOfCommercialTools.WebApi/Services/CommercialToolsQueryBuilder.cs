@@ -210,7 +210,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         {
             "a-z" => "tender/title asc",
             "z-a" => "tender/title desc",
-            "relevance" => "tender/status desc,tender/tenderPeriod/endDate asc,tender/title asc",
+            "relevance" => "tender/createdDate desc",
             _ => null
         };
 
@@ -248,7 +248,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
             var queryOptionsValue = string.Join("&", odataParams);
             var separator = baseUrl.Contains('?') ? '&' : '?';
-            return $"{baseUrl}{separator}queryOptions={queryOptionsValue}";
+            return $"{baseUrl}{separator}{queryOptionsValue}";
         }
 
         return baseUrl;
