@@ -52,10 +52,10 @@ public abstract class UrlServiceBase
     /// </summary>
     /// <param name="endpoint">The endpoint path.</param>
     /// <param name="organisationId">Optional organisation ID.</param>
-    /// <param name="redirectUrl">Optional redirect URL.</param>
+    /// <param name="redirectUri">Optional redirect URI.</param>
     /// <param name="cookieAcceptance">Optional cookie acceptance override.</param>
     /// <returns>The complete URL to the service endpoint.</returns>
-    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null, bool? cookieAcceptance = null)
+    protected string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null)
     {
         var queryParams = new Dictionary<string, string?>();
 
@@ -67,16 +67,16 @@ public abstract class UrlServiceBase
             queryParams.Add("organisation_id", organisationId.Value.ToString());
         }
 
-        if (!string.IsNullOrEmpty(redirectUrl))
+        if (!string.IsNullOrEmpty(redirectUri))
         {
-            queryParams.Add("redirect_url", redirectUrl);
+            queryParams.Add("redirectUri", redirectUri);
         }
 
         if (cookieAcceptance.HasValue)
         {
             queryParams.Add("cookies_accepted", cookieAcceptance.Value.ToString().ToLower());
         }
-        else if (_cookiePreferencesService != null)
+        else if (_cookiePreferencesService != null && string.IsNullOrEmpty(redirectUri))
         {
             var cookiesAccepted = _cookiePreferencesService.GetValue();
             string cookiesAcceptedValue = cookiesAccepted switch
@@ -97,11 +97,16 @@ public abstract class UrlServiceBase
     /// <param name="endpoint">The endpoint path.</param>
     /// <param name="queryParams">The query parameters.</param>
     /// <returns>The complete URL to the service endpoint.</returns>
-    private string BuildUrl(string endpoint, Dictionary<string, string?> queryParams)
+    protected string BuildUrl(string endpoint, Dictionary<string, string?> queryParams)
     {
         var baseUrl = GetBaseUrl();
         var url = new Uri(new Uri(baseUrl), endpoint).ToString();
-        return QueryHelpers.AddQueryString(url, queryParams);
+        var uniqueParams = queryParams
+            .GroupBy(kvp => kvp.Key, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+        return QueryHelpers.AddQueryString(url, uniqueParams);
     }
 
     /// <summary>

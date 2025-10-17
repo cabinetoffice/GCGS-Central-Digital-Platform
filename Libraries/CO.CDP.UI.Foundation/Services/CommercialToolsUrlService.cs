@@ -38,13 +38,13 @@ public class CommercialToolsUrlService : UrlServiceBase, ICommercialToolsUrlServ
     /// </summary>
     /// <param name="endpoint">The endpoint path</param>
     /// <param name="organisationId">Optional organisation ID</param>
-    /// <param name="redirectUrl">Optional redirect URL</param>
+    /// <param name="redirectUri">Optional redirect URI</param>
     /// <param name="cookieAcceptance">Optional cookie acceptance override</param>
     /// <param name="additionalParams">Additional query parameters to include</param>
     /// <returns>The complete URL to the Commercial Tools service endpoint</returns>
-    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null, bool? cookieAcceptance = null, Dictionary<string, string?>? additionalParams = null)
+    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, Dictionary<string, string?>? additionalParams = null)
     {
-        var url = base.BuildUrl(endpoint, organisationId, redirectUrl, cookieAcceptance);
+        var url = base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
 
         if (additionalParams != null && additionalParams.Any())
         {

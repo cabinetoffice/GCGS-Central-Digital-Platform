@@ -27,6 +27,8 @@ public class IndexModelTest
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
         mockSirsiUrlService.Setup(s => s.BuildUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), null, null, null))
             .Returns<string, Guid?, string?, bool?>((path, _, _, _) => $"https://sirsi.home{path}");
+        mockSirsiUrlService.Setup(s => s.BuildAuthenticatedUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), It.IsAny<Guid?>(), null))
+            .Returns<string, Guid?, bool?>((path, orgId, _) => $"https://sirsi.home/one-login/sign-in?redirectUri={Uri.EscapeDataString($"https://sirsi.home{path}?language=en_GB&organisation_id={orgId}")}&language=en_GB");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
         mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
         var mockCpvCodeService = new Mock<ICpvCodeService>();
@@ -233,7 +235,8 @@ public class IndexModelTest
 
         await _model.OnGetAsync();
 
-        _model.HomeUrl.Should().Be($"https://sirsi.home/organisation/{organisationId}/buyer");
+        _model.HomeUrl.Should().StartWith("https://sirsi.home/one-login/sign-in?");
+        _model.HomeUrl.Should().Contain($"%2Forganisation%2F{organisationId}%2Fbuyer");
     }
 
     [Fact]
