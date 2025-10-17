@@ -48,6 +48,27 @@ public class CommercialToolsService(
             .Select(mapper.Map<SearchResultDto>)
             .ToList() ?? [];
 
-        return (results, results.IsNullOrEmpty() ? 0 : 1000); // totalCount is not currently provided by the API
+        int totalCount;
+        if (response.Headers.TryGetValues("x-total-count", out var totalCountValues))
+        {
+            var totalCountHeader = totalCountValues.FirstOrDefault();
+            if (int.TryParse(totalCountHeader, out var parsedTotalCount))
+            {
+                totalCount = parsedTotalCount;
+                logger.LogDebug("Total count read from x-total-count header: {TotalCount}", totalCount);
+            }
+            else
+            {
+                logger.LogWarning("Failed to parse x-total-count header value: {HeaderValue}", totalCountHeader);
+                totalCount = results.Count;
+            }
+        }
+        else
+        {
+            totalCount = results.Count;
+            logger.LogDebug("x-total-count header not found, using result count: {Count}", totalCount);
+        }
+
+        return (results, totalCount);
     }
 }
