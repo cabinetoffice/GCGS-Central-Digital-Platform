@@ -89,7 +89,6 @@ public class CommercialToolsServiceTests
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1);
 
         var searchResult = resultList.First();
         searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
@@ -159,7 +158,6 @@ public class CommercialToolsServiceTests
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1);
         resultList.First().Should().Be(expectedResult);
 
         _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(

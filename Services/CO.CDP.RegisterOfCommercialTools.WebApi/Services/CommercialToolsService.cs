@@ -1,7 +1,6 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using System.Text.Json;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -48,26 +47,11 @@ public class CommercialToolsService(
             .Select(mapper.Map<SearchResultDto>)
             .ToList() ?? [];
 
-        int totalCount;
-        if (response.Headers.TryGetValues("x-total-count", out var totalCountValues))
-        {
-            var totalCountHeader = totalCountValues.FirstOrDefault();
-            if (int.TryParse(totalCountHeader, out var parsedTotalCount))
-            {
-                totalCount = parsedTotalCount;
-                logger.LogDebug("Total count read from x-total-count header: {TotalCount}", totalCount);
-            }
-            else
-            {
-                logger.LogWarning("Failed to parse x-total-count header value: {HeaderValue}", totalCountHeader);
-                totalCount = results.Count;
-            }
-        }
-        else
-        {
-            totalCount = results.Count;
-            logger.LogDebug("x-total-count header not found, using result count: {Count}", totalCount);
-        }
+        var totalCount =
+            response.Headers.TryGetValues("x-total-count", out var totalCountValues)
+            && int.TryParse(totalCountValues.FirstOrDefault(), out var parsedTotalCount)
+                ? parsedTotalCount
+                : 0;
 
         return (results, totalCount);
     }
