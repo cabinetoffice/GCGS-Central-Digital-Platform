@@ -126,7 +126,7 @@ public class SearchIntegrationTests
     {
         var searchRequest = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             PageNumber = 1
         };
 

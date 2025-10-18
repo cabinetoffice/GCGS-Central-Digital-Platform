@@ -40,7 +40,7 @@ public class AuthenticationIntegrationTests
             new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "test-token");
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = "test" };
+        var request = new SearchRequestDto { Keywords = ["test"] };
 
         await client.SearchAsync(request);
 
@@ -75,7 +75,7 @@ public class AuthenticationIntegrationTests
         };
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = "test" };
+        var request = new SearchRequestDto { Keywords = ["test"] };
 
         var result = await client.SearchAsync(request);
 

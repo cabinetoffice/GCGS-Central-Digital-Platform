@@ -80,7 +80,8 @@ public class SearchServiceTests
         totalCount.Should().Be(25);
 
         _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
-            dto.Keyword == "IT services" &&
+            dto.Keywords != null && dto.Keywords.Count == 2 && dto.Keywords.Contains("IT") && dto.Keywords.Contains("services") &&
+            dto.SearchMode == KeywordSearchMode.Any &&
             dto.MinFees == 0.01m &&
             dto.MaxFees == 0.05m &&
             dto.AwardMethod != null && dto.AwardMethod.Count == 1 && dto.AwardMethod[0] == "With competition" &&
@@ -248,5 +249,84 @@ public class SearchServiceTests
 
         results.Should().HaveCount(1);
         results.First().SubmissionDeadline.Should().Be("15 March 2025");
+    }
+
+    [Theory]
+    [InlineData("Sustainable Estates", KeywordSearchMode.Any, new[] { "Sustainable", "Estates" })]
+    [InlineData("Sustainable+Estates", KeywordSearchMode.All, new[] { "Sustainable", "Estates" })]
+    [InlineData("Sustainable + Estates", KeywordSearchMode.All, new[] { "Sustainable", "Estates" })]
+    [InlineData("\"Sustainable Estates\"", KeywordSearchMode.Exact, new[] { "Sustainable Estates" })]
+    [InlineData("technology+innovation+digital", KeywordSearchMode.All, new[] { "technology", "innovation", "digital" })]
+    [InlineData("radio televisions", KeywordSearchMode.Any, new[] { "radio", "televisions" })]
+    [InlineData("single", KeywordSearchMode.Any, new[] { "single" })]
+    public async Task SearchAsync_ShouldParseKeywordsCorrectly(string input, KeywordSearchMode expectedMode, string[] expectedTerms)
+    {
+        var searchModel = new SearchModel { Keywords = input };
+        var responseDto = new SearchResponse
+        {
+            Results = new List<SearchResultDto>(),
+            TotalCount = 0,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
+
+        await _searchService.SearchAsync(searchModel, 1, 10);
+
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.SearchMode == expectedMode &&
+            dto.Keywords != null &&
+            dto.Keywords.Count == expectedTerms.Length &&
+            expectedTerms.All(term => dto.Keywords.Contains(term))
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchAsync_WhenKeywordsNull_ShouldPassNullKeywords()
+    {
+        var searchModel = new SearchModel { Keywords = null };
+        var responseDto = new SearchResponse
+        {
+            Results = new List<SearchResultDto>(),
+            TotalCount = 0,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
+
+        await _searchService.SearchAsync(searchModel, 1, 10);
+
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.Keywords == null
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchAsync_WhenKeywordsEmpty_ShouldPassNullKeywords()
+    {
+        var searchModel = new SearchModel { Keywords = "" };
+        var responseDto = new SearchResponse
+        {
+            Results = new List<SearchResultDto>(),
+            TotalCount = 0,
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        _mockApiClient
+            .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
+            .ReturnsAsync(responseDto);
+
+        await _searchService.SearchAsync(searchModel, 1, 10);
+
+        _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
+            dto.Keywords == null
+        )), Times.Once);
     }
 }

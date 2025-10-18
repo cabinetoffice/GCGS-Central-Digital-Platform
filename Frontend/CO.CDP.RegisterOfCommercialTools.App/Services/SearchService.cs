@@ -8,9 +8,12 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
 {
     public async Task<(List<SearchResult> Results, int TotalCount)> SearchAsync(SearchModel searchModel, int pageNumber, int pageSize)
     {
+        var (keywords, searchMode) = ParseKeywords(searchModel.Keywords);
+
         var requestDto = new SearchRequestDto
         {
-            Keyword = searchModel.Keywords,
+            Keywords = keywords,
+            SearchMode = searchMode,
             Status = searchModel.Status.Any() ? string.Join(",", searchModel.Status.Where(s => !string.IsNullOrWhiteSpace(s))) : null,
             SortBy = searchModel.SortOrder,
             SubmissionDeadlineFrom = searchModel.SubmissionDeadlineFrom?.ToDateTime(TimeOnly.MinValue),
@@ -32,6 +35,33 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
         var results = response?.Results.Select(MapToSearchResult).ToList() ?? [];
         var totalCount = response?.TotalCount ?? 0;
         return (results, totalCount);
+    }
+
+    private static (List<string>? keywords, KeywordSearchMode searchMode) ParseKeywords(string? input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return (null, KeywordSearchMode.Any);
+
+        var trimmed = input.Trim();
+
+        if (trimmed.StartsWith("\"") && trimmed.EndsWith("\""))
+        {
+            var phrase = trimmed.Trim('"');
+            return ([phrase], KeywordSearchMode.Exact);
+        }
+
+        if (trimmed.Contains('+'))
+        {
+            var terms = trimmed.Split('+', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .Where(t => !string.IsNullOrWhiteSpace(t))
+                .ToList();
+            return (terms, KeywordSearchMode.All);
+        }
+
+        var words = trimmed.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(w => !string.IsNullOrWhiteSpace(w))
+            .ToList();
+        return (words.Count > 0 ? words : null, KeywordSearchMode.Any);
     }
 
     private static SearchResult MapToSearchResult(SearchResultDto dto)

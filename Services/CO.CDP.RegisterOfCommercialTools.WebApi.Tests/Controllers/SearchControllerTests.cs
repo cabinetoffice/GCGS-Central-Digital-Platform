@@ -23,7 +23,7 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "IT services",
+            Keywords = ["IT", "services"],
             Status = "Active",
             PageNumber = 1
         };
@@ -54,7 +54,7 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "nonexistent",
+            Keywords = ["nonexistent"],
             PageNumber = 1
         };
 
@@ -93,7 +93,7 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "complex search",
+            Keywords = ["complex", "search"],
             Status = "Active",
             SubmissionDeadlineFrom = new DateTime(2025, 1, 1),
             SubmissionDeadlineTo = new DateTime(2025, 12, 31),
@@ -119,7 +119,7 @@ public class SearchControllerTests
         };
 
         _mockSearchService.Setup(x => x.Search(It.Is<SearchRequestDto>(r =>
-            r.Keyword == request.Keyword &&
+            r.Keywords == request.Keywords &&
             r.Status == request.Status &&
             r.SubmissionDeadlineFrom == request.SubmissionDeadlineFrom &&
             r.SubmissionDeadlineTo == request.SubmissionDeadlineTo &&

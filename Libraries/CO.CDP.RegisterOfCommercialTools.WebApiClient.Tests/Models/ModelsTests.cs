@@ -11,7 +11,8 @@ public class SearchRequestDtoTests
         var request = new SearchRequestDto();
 
         request.PageNumber.Should().Be(1);
-        request.Keyword.Should().BeNull();
+        request.Keywords.Should().BeNull();
+        request.SearchMode.Should().Be(KeywordSearchMode.Any);
         request.Status.Should().BeNull();
         request.SortBy.Should().BeNull();
         request.AwardMethod.Should().BeNull();
@@ -31,7 +32,7 @@ public class SearchRequestDtoTests
         var testDate = DateTime.UtcNow;
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             Status = "Active",
             SortBy = "Title",
             AwardMethod = ["With competition"],
@@ -46,7 +47,7 @@ public class SearchRequestDtoTests
             ContractEndDateTo = testDate.AddDays(730)
         };
 
-        request.Keyword.Should().Be("test");
+        request.Keywords.Should().ContainSingle().Which.Should().Be("test");
         request.Status.Should().Be("Active");
         request.SortBy.Should().Be("Title");
         request.AwardMethod.Should().ContainSingle().Which.Should().Be("With competition");
