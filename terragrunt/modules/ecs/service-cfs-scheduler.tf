@@ -21,6 +21,7 @@ module "ecs_service_cfs_scheduler" {
   family                 = "standalone"
   healthcheck_path       = "/"
   host_port              = var.service_configs.cfs_scheduler.port_host
+  listener_name          = "php-${var.service_configs.cfs_scheduler.name}"
   memory                 = var.service_configs.cfs_scheduler.memory
   name                   = var.service_configs.cfs_scheduler.name
   private_subnet_ids     = var.private_subnet_ids

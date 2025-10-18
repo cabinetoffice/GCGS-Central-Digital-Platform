@@ -1,7 +1,8 @@
 locals {
 
+  php_services         = ["cfs", "cfs--scheduler", "fts", "fts-healthcheck", "fts-scheduler"]
   php_cluster_id       = contains(["development"], var.environment) ?  aws_ecs_cluster.that.id : aws_ecs_cluster.this.id
-  php_ecs_listener_arn = contains(["development"], var.environment) ?  aws_lb_listener.ecs.arn : aws_lb_listener.ecs_php.arn
+  php_ecs_listener_arn = contains(["development"], var.environment) ?  aws_lb_listener.ecs_php.arn : aws_lb_listener.ecs.arn
 
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 

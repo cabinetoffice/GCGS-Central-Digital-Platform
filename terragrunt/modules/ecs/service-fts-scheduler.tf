@@ -21,6 +21,7 @@ module "ecs_service_fts_scheduler" {
   family                 = "standalone"
   healthcheck_path       = "/" #"/healthz.php"
   host_port              = var.service_configs.fts_scheduler.port_host
+  listener_name          = "php-${var.service_configs.fts_scheduler.name}"
   memory                 = var.is_production ? var.service_configs.fts_scheduler.memory * 2 : var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
   name                   = var.service_configs.fts_scheduler.name
   private_subnet_ids     = var.private_subnet_ids

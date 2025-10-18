@@ -17,6 +17,7 @@ module "ecs_service_fts" {
   family                 = "app"
   healthcheck_path       = "/health"
   host_port              = var.service_configs.fts.port
+  listener_name          = "php-${var.service_configs.fts.name}"
   memory                 = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
   name                   = var.service_configs.fts.name
   private_subnet_ids     = var.private_subnet_ids

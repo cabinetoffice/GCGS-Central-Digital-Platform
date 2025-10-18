@@ -35,6 +35,7 @@ module "ecs_service_fts_healthcheck" {
   family                 = "app"
   healthcheck_path       = "/healthz.php"
   host_port              = var.service_configs.fts_healthcheck.port_host
+  listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids
