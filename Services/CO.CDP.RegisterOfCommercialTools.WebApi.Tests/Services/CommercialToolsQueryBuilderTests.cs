@@ -546,9 +546,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithOrderBy("relevance").Build(BaseUrl);
 
-        result.Should().Contain("$orderby=");
-        result.Should().Contain("tender%2Fstatus%20desc");
-        result.Should().Contain("tender%2FtenderPeriod%2FendDate%20asc");
+        result.Should().Contain("$orderby=tender%2FcreatedDate%20desc");
     }
 
     [Fact]

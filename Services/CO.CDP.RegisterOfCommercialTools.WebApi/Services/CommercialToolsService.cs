@@ -1,7 +1,6 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using System.Text.Json;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -48,6 +47,12 @@ public class CommercialToolsService(
             .Select(mapper.Map<SearchResultDto>)
             .ToList() ?? [];
 
-        return (results, results.IsNullOrEmpty() ? 0 : 1000); // totalCount is not currently provided by the API
+        var totalCount =
+            response.Headers.TryGetValues("x-total-count", out var totalCountValues)
+            && int.TryParse(totalCountValues.FirstOrDefault(), out var parsedTotalCount)
+                ? parsedTotalCount
+                : 0;
+
+        return (results, totalCount);
     }
 }
