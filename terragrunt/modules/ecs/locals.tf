@@ -1,5 +1,11 @@
 locals {
 
+  is_php_migrated_env  = contains(["not-development", "not-staging", "not-integration"], var.environment)
+  php_services         = ["cfs", "cfs-scheduler", "fts", "fts-healthcheck", "fts-scheduler"]
+  php_cluster_id       = local.is_php_migrated_env ?  aws_ecs_cluster.that.id : aws_ecs_cluster.this.id
+  php_cluster_name     = local.is_php_migrated_env ?  aws_ecs_cluster.that.name : aws_ecs_cluster.this.name
+  php_ecs_listener_arn = local.is_php_migrated_env ?  aws_lb_listener.ecs_php.arn : aws_lb_listener.ecs.arn
+
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
   aspcore_environment = "Aws${title(var.environment)}"
@@ -70,6 +76,5 @@ locals {
   onelogin_logout_notification_urls = var.environment == "development" ? "https://fts.${var.public_domain}" : join(",", var.onelogin_logout_notification_urls)
 
   ses_identity_domain = var.is_production ? replace(var.public_domain, "supplier-information.", "") : var.public_domain
-
 
 }

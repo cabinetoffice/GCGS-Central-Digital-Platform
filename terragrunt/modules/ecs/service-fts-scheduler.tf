@@ -11,7 +11,7 @@ module "ecs_service_fts_scheduler" {
     )
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.php_cluster_id
   container_port         = var.service_configs.fts_scheduler.port
   cpu                    = var.service_configs.fts_scheduler.cpu
   desired_count          = var.service_configs.fts_scheduler.desired_count
@@ -21,6 +21,7 @@ module "ecs_service_fts_scheduler" {
   family                 = "standalone"
   healthcheck_path       = "/" #"/healthz.php"
   host_port              = var.service_configs.fts_scheduler.port_host
+  listener_name          = local.is_php_migrated_env ? "php-${var.service_configs.fts_scheduler.name}" : null
   memory                 = var.is_production ? var.service_configs.fts_scheduler.memory * 2 : var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
   name                   = var.service_configs.fts_scheduler.name
   private_subnet_ids     = var.private_subnet_ids

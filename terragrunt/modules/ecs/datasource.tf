@@ -182,11 +182,19 @@ data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" 
 data "aws_iam_policy_document" "step_function_manage_services" {
   statement {
     actions = ["ecs:UpdateService"]
-    resources = [
-      for service, config in local.service_configs :
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.this.name}/${service}"
-    ]
-    sid = "MangeECSService"
+
+    resources = concat(
+      [
+        for service, config in local.service_configs :
+        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.this.name}/${service}"
+      ],
+      [
+        for service, config in local.service_configs :
+        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.that.name}/${service}"
+      ]
+    )
+
+    sid = "ManageECSService"
   }
 
   statement {
