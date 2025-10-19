@@ -84,13 +84,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="govuk-error-summary__body">
                         <ul class="govuk-list govuk-error-summary__list">
                             @{
-                                var uniqueErrors = new List<(string Key, string Message)>();
                                 var seenMessages = new HashSet<string>();
 
-                                foreach (var (key, value) in ModelState)
-                                {
-                                    uniqueErrors.AddRange(from error in value.Errors where !string.IsNullOrEmpty(error.ErrorMessage) && seenMessages.Add(error.ErrorMessage) select (key, error.ErrorMessage));
-                                }
+                                var uniqueErrors = ModelState
+                                    .SelectMany(kvp => kvp.Value?.Errors
+                                        .Where(error => !string.IsNullOrEmpty(error.ErrorMessage) && seenMessages.Add(error.ErrorMessage))
+                                        .Select(error => (kvp.Key, Message: error.ErrorMessage)) ?? Enumerable.Empty<(string Key, string Message)>())
+                                    .OrderBy(e => e.Message)
+                                    .ToList();
                             }
                             @foreach (var error in uniqueErrors)
                             {

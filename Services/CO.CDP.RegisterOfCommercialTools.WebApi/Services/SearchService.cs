@@ -26,10 +26,10 @@ public class SearchService(
         var pageNumber = (skip / fixedPageSize) + 1;
 
         var queryBuilder = builder
-            .WithKeywords(request.Keyword ?? string.Empty)
+            .WithKeywords(request.Keywords, request.SearchMode)
             .WithSkip(skip)
-            .WithTop(top);
-            // .WithOrderBy(request.SortBy ?? "relevance"); // Temporarily disabled until API supports it
+            .WithTop(top)
+            .WithOrderBy(request.SortBy ?? "relevance");
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {
