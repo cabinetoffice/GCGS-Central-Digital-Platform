@@ -527,7 +527,7 @@ public class SearchServiceTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             ContractingAuthorityUsage = ["yes"],
             PageNumber = 1
         };
@@ -535,7 +535,7 @@ public class SearchServiceTests
         var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
         var queryUrl = "https://api.example.com/tenders?built=query";
 
-        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
@@ -555,7 +555,7 @@ public class SearchServiceTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             ContractingAuthorityUsage = ["no"],
             PageNumber = 1
         };
@@ -563,7 +563,7 @@ public class SearchServiceTests
         var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
         var queryUrl = "https://api.example.com/tenders?built=query";
 
-        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
@@ -583,7 +583,7 @@ public class SearchServiceTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             ContractingAuthorityUsage = ["yes", "no"],
             PageNumber = 1
         };
@@ -591,7 +591,7 @@ public class SearchServiceTests
         var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
         var queryUrl = "https://api.example.com/tenders?built=query";
 
-        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
@@ -610,7 +610,7 @@ public class SearchServiceTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             ContractingAuthorityUsage = [],
             PageNumber = 1
         };
@@ -618,7 +618,7 @@ public class SearchServiceTests
         var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
         var queryUrl = "https://api.example.com/tenders?built=query";
 
-        _mockQueryBuilder.Setup(x => x.WithKeywords("test")).Returns(mockBuilder.Object);
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
