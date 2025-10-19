@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Helpers;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.AutoMapper;
 
@@ -19,7 +20,7 @@ public class ApiResponseProfile : Profile
             .ForMember(dest => dest.MaximumFee, opt => opt.MapFrom(src => GetMaximumFee(src.Tender)))
             .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Tender)))
             .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src.Tender)))
-            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src.Tender)))
+            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src)))
             .ForMember(dest => dest.CommercialTool, opt => opt.MapFrom(src => GetCommercialTool(src.Tender)))
             .ForMember(dest => dest.Techniques, opt => opt.MapFrom(src => MapTechniques(src.Tender)))
             .ForMember(dest => dest.AdditionalProperties, opt => opt.MapFrom(src => CreateAdditionalProperties(src)));
@@ -81,10 +82,39 @@ public class ApiResponseProfile : Profile
         };
     }
 
-    private static string GetContractDates(CommercialToolTender? tender)
+    private static string GetContractDates(CommercialToolApiItem item)
     {
-        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
-        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
+        var tender = item.Tender;
+
+        // Try to get end date (priority 1: frameworkAgreement)
+        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate
+            ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
+
+        // Fallback 2: awards contractPeriod endDate
+        if (endDate == null && item.Awards != null && item.Awards.Any())
+        {
+            endDate = item.Awards.FirstOrDefault()?.ContractPeriod?.EndDate;
+        }
+
+        // Try to get start date (priority 1: frameworkAgreement)
+        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate
+            ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
+
+        // Fallback 2: standstill period end date + 1 day
+        if (startDate == null && item.Awards != null && item.Awards.Any())
+        {
+            var standstillEndDate = item.Awards.FirstOrDefault()?.StandstillPeriod?.EndDate;
+            if (standstillEndDate.HasValue)
+            {
+                startDate = standstillEndDate.Value.AddDays(1);
+            }
+        }
+
+        // Fallback 3: award period end date + 8 working days
+        if (startDate == null && tender?.AwardPeriod?.EndDate != null)
+        {
+            startDate = DateHelper.AddWorkingDays(tender.AwardPeriod.EndDate.Value, 8);
+        }
 
         if (startDate == null || endDate == null)
         {
