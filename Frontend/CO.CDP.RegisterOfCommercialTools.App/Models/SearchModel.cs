@@ -8,8 +8,10 @@ public class SearchModel : IValidatableObject
 {
     [FromQuery(Name = "q")] public string? Keywords { get; set; }
     [FromQuery(Name = "sort")] public string? SortOrder { get; set; }
-    [FromQuery(Name = "framework")] public string? FrameworkOptions { get; set; }
-    [FromQuery(Name = "market")] public string? DynamicMarketOptions { get; set; }
+    [FromQuery(Name = "filter_frameworks")] public bool FilterFrameworks { get; set; }
+    [FromQuery(Name = "open_frameworks")] public bool IsOpenFrameworks { get; set; }
+    [FromQuery(Name = "filter_markets")] public bool FilterDynamicMarkets { get; set; }
+    [FromQuery(Name = "utilities_only")] public bool IsUtilitiesOnly { get; set; }
 
     [FromQuery(Name = "award")] public List<string> AwardMethod { get; set; } = [];
 

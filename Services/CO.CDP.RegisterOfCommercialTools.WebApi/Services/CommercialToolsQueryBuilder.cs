@@ -129,6 +129,12 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         return digitCount >= 4 && (digitCount + hyphenCount + letterCount) == keyword.Length;
     }
 
+    public ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true) =>
+        WithCustomFilter($"tender/techniques/hasFrameworkAgreement eq {hasFramework.ToString().ToLower()}");
+
+    public ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true) =>
+        WithCustomFilter($"tender/techniques/hasDynamicPurchasingSystem eq {hasDps.ToString().ToLower()}");
+
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
         WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
 
