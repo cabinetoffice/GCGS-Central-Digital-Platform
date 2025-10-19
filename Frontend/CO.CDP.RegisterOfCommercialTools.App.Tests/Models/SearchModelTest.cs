@@ -515,4 +515,71 @@ public class SearchModelTest
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
     }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsFalse_ShouldClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterDynamicMarketsIsFalse_ShouldClearIsUtilitiesOnly()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenBothParentFiltersAreFalse_ShouldClearBothChildren()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true,
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldNotClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeTrue();
+    }
 }

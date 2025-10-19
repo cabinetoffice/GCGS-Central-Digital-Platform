@@ -44,6 +44,16 @@ public class SearchModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (!FilterFrameworks)
+        {
+            IsOpenFrameworks = false;
+        }
+
+        if (!FilterDynamicMarkets)
+        {
+            IsUtilitiesOnly = false;
+        }
+
         if (!string.IsNullOrEmpty(NoFees))
         {
             var feeFromHasValue = FeeMin.HasValue;
