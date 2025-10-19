@@ -402,4 +402,200 @@ public class SearchModelTest
         validationResults.Should().HaveCount(1);
         validationResults[0].ErrorMessage.Should().Be("Submission deadline from must be a real date");
     }
+
+    [Fact]
+    public void SearchModel_FilterFrameworks_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.FilterFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_FilterFrameworks_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true
+        };
+
+        searchParams.FilterFrameworks.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_FilterDynamicMarkets_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.FilterDynamicMarkets.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_FilterDynamicMarkets_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = true
+        };
+
+        searchParams.FilterDynamicMarkets.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_IsOpenFrameworks_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_IsOpenFrameworks_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            IsOpenFrameworks = true
+        };
+
+        searchParams.IsOpenFrameworks.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_IsUtilitiesOnly_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_IsUtilitiesOnly_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            IsUtilitiesOnly = true
+        };
+
+        searchParams.IsUtilitiesOnly.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterDynamicMarketsIsTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = true,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenBothFiltersAreTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true,
+            FilterDynamicMarkets = true,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsFalse_ShouldClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterDynamicMarketsIsFalse_ShouldClearIsUtilitiesOnly()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenBothParentFiltersAreFalse_ShouldClearBothChildren()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true,
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldNotClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeTrue();
+    }
 }
