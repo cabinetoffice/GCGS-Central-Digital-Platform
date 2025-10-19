@@ -79,11 +79,11 @@ public class FtsUrlServiceTests
     {
         var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
-        var url = service.BuildUrl("/test-endpoint", redirectUrl: "https://return.example.com");
+        var url = service.BuildUrl("/test-endpoint", redirectUri: "https://return.example.com");
 
         url.Should()
             .Be(
-                "https://fts-service.example.com/test-endpoint?language=en_GB&redirect_url=https%3A%2F%2Freturn.example.com");
+                "https://fts-service.example.com/test-endpoint?language=en_GB&redirectUri=https%3A%2F%2Freturn.example.com");
     }
 
     [Fact]
@@ -174,7 +174,7 @@ public class FtsUrlServiceTests
 
         url.Should()
             .Be(
-                "https://fts-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirect_url=https%3A%2F%2Freturn.example.com&cookies_accepted=true");
+                "https://fts-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirectUri=https%3A%2F%2Freturn.example.com&cookies_accepted=true");
     }
 
     [Theory]

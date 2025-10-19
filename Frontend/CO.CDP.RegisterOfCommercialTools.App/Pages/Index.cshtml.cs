@@ -92,7 +92,7 @@ public class IndexModel(
     {
         if (Origin == "buyer-view" && OrganisationId.HasValue)
         {
-            HomeUrl = sirsiUrlService.BuildUrl($"/organisation/{OrganisationId}/buyer");
+            HomeUrl = sirsiUrlService.BuildAuthenticatedUrl($"/organisation/{OrganisationId}/buyer", OrganisationId);
         }
         else
         {
