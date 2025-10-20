@@ -150,7 +150,9 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             "active" => "tender/status eq 'active'",
             "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
             "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/type eq 'open' or tender/techniques/hasDynamicPurchasingSystem eq true))",
-            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "awarded" => "tender/status eq 'awarded'",
+            "complete" => "tender/status eq 'complete'",
+            "cancelled" => "tender/status eq 'cancelled'",
             "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
             _ => $"tender/status eq '{status}'"
         };
