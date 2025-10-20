@@ -1,20 +1,12 @@
+@model CO.CDP.UI.Foundation.Cookies.CookieBannerViewModel
 @using CO.CDP.Localization
 @using CO.CDP.UI.Foundation.Cookies
-@using Microsoft.AspNetCore.Http.Extensions;
-@using Microsoft.AspNetCore.Http;
-@using Microsoft.AspNetCore.WebUtilities;
-@inject ICookiePreferencesService CookiePreferencesService;
-
 @{
     var cookieSettings = new CookieSettings();
-    var queryDict = QueryHelpers.ParseQuery(Context.Request.QueryString.Value);
-    queryDict.Remove(cookieSettings.FtsHandoverParameter);
-    var queryBuilder = new QueryBuilder(queryDict);
-    QueryString updatedQueryString = queryBuilder.ToQueryString();
-    string currentUrl = Context.Request.PathBase + Context.Request.Path + updatedQueryString;
+    var hasInteractionQuery = Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString);
 }
 
-@if (CookiePreferencesService.IsUnknown() && !Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString) && !Context.Request.Path.StartsWithSegments("/cookies"))
+@if (Model.ShouldShowConsentBanner(hasInteractionQuery))
 {
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
         <div class="govuk-cookie-banner__message govuk-width-container">
@@ -33,11 +25,11 @@
             <form action="/cookies" method="post">
                 @Html.AntiForgeryToken()
 
-                <input type="hidden" name="@cookieSettings.CookieSettingsPageReturnUrlFieldName" value="@currentUrl" />
+                <input type="hidden" name="@Model.ReturnUrlFieldName" value="@Model.GetReturnUrl()" />
 
                 <div class="govuk-button-group">
-                    <button type="submit" class="govuk-button" name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">@StaticTextResource.CookieBanner_AcceptButton</button>
-                    <button type="submit" class="govuk-button" name="@cookieSettings.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">@StaticTextResource.CookieBanner_RejectButton</button>
+                    <button type="submit" class="govuk-button" name="@Model.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">@StaticTextResource.CookieBanner_AcceptButton</button>
+                    <button type="submit" class="govuk-button" name="@Model.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">@StaticTextResource.CookieBanner_RejectButton</button>
                     <a class="govuk-link" href="/cookies">@StaticTextResource.CookieBanner_ViewCookies</a>
                 </div>
             </form>
@@ -45,27 +37,21 @@
     </div>
 }
 
-@if (!CookiePreferencesService.IsUnknown() && Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString))
+@if (Model.ShouldShowConfirmationBanner(hasInteractionQuery))
 {
-    var acceptedRejectedStatement = CookiePreferencesService.IsAccepted() ? @StaticTextResource.CookieBanner_AcceptedStatement : @StaticTextResource.CookieBanner_RejectedStatement;
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
                 <div class="govuk-grid-column-two-thirds">
                     <div class="govuk-cookie-banner__content">
                         <p class="govuk-body">
-                            @acceptedRejectedStatement @Html.Raw(@StaticTextResource.CookieBanner_ChangeCookieSettings)
+                            @Model.GetConfirmationMessage() @Html.Raw(StaticTextResource.CookieBanner_ChangeCookieSettings)
                         </p>
                     </div>
                 </div>
             </div>
             <div class="govuk-button-group">
-                @{
-                    var currentQueryString = Context.Request.QueryString.ToString();
-                    var cleanedQueryString = currentQueryString.Replace($"{cookieSettings.CookieBannerInteractionQueryString}=true", "");
-                    cleanedQueryString = cleanedQueryString == "?" ? "" : cleanedQueryString;
-                }
-                <a class="govuk-button" role="button" data-module="govuk-button" href="@(Context.Request.PathBase + Context.Request.Path + cleanedQueryString)">@StaticTextResource.CookieBanner_HideCookieMessage</a>
+                <a class="govuk-button" role="button" data-module="govuk-button" href="@Model.GetHideUrl()">@StaticTextResource.CookieBanner_HideCookieMessage</a>
             </div>
         </div>
     </div>

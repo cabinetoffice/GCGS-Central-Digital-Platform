@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
+    <ProjectReference Include="..\CO.CDP.Functional\CO.CDP.Functional.csproj" />
   </ItemGroup>
 
 </Project>

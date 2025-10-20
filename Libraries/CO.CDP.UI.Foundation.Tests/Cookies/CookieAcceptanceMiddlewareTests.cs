@@ -25,7 +25,7 @@ public class CookieAcceptanceMiddlewareTests
     [Fact]
     public async Task InvokeAsync_ShouldCallAccept_WhenQueryParameterIsTrue()
     {
-        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.FtsHandoverParameter}=true");
+        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.CookiesAcceptedHandoverParameter}=true");
 
         await _middleware.InvokeAsync(_httpContext, _nextDelegateMock.Object);
 
@@ -36,7 +36,7 @@ public class CookieAcceptanceMiddlewareTests
     [Fact]
     public async Task InvokeAsync_ShouldCallReject_WhenQueryParameterIsFalse()
     {
-        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.FtsHandoverParameter}=false");
+        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.CookiesAcceptedHandoverParameter}=false");
 
         await _middleware.InvokeAsync(_httpContext, _nextDelegateMock.Object);
 
@@ -47,7 +47,7 @@ public class CookieAcceptanceMiddlewareTests
     [Fact]
     public async Task InvokeAsync_ShouldCallReset_WhenQueryParameterIsUnknown()
     {
-        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.FtsHandoverParameter}=unknown");
+        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.CookiesAcceptedHandoverParameter}=unknown");
 
         await _middleware.InvokeAsync(_httpContext, _nextDelegateMock.Object);
 
@@ -67,7 +67,7 @@ public class CookieAcceptanceMiddlewareTests
     [Fact]
     public async Task InvokeAsync_ShouldNotCallAnyMethod_WhenQueryParameterHasInvalidValue()
     {
-        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.FtsHandoverParameter}=invalid");
+        _httpContext.Request.QueryString = new QueryString($"?{_cookieSettings.CookiesAcceptedHandoverParameter}=invalid");
 
         await _middleware.InvokeAsync(_httpContext, _nextDelegateMock.Object);
 

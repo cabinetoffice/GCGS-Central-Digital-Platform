@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.Http;
 
@@ -8,24 +9,38 @@ public class CookieAcceptanceMiddleware(ICookiePreferencesService cookiePreferen
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         var cookieSettings = new CookieSettings();
-        if (context.Request.Query.TryGetValue(cookieSettings.FtsHandoverParameter, out var cookiesAcceptedValue))
+        if (context.Request.Query.TryGetValue(cookieSettings.CookiesAcceptedHandoverParameter, out var cookiesAcceptedValue))
         {
-            string cookiesAccepted = cookiesAcceptedValue.ToString().ToLower();
-
-            switch (cookiesAccepted)
-            {
-                case "true":
-                    cookiePreferencesService.Accept();
-                    break;
-                case "false":
-                    cookiePreferencesService.Reject();
-                    break;
-                case "unknown":
-                    cookiePreferencesService.Reset();
-                    break;
-            }
+            ParseCookieValue(cookiesAcceptedValue.ToString())
+                .Match(
+                    some: ApplyCookiePreference,
+                    none: () => {});
         }
 
         await next(context);
+    }
+
+    private static Option<string> ParseCookieValue(string value)
+    {
+        var lowerValue = value.ToLower();
+        return lowerValue is "true" or "false" or "unknown"
+            ? Option<string>.Some(lowerValue)
+            : Option<string>.None;
+    }
+
+    private void ApplyCookiePreference(string value)
+    {
+        switch (value)
+        {
+            case "true":
+                cookiePreferencesService.Accept();
+                break;
+            case "false":
+                cookiePreferencesService.Reject();
+                break;
+            case "unknown":
+                cookiePreferencesService.Reset();
+                break;
+        }
     }
 }
