@@ -545,7 +545,7 @@ locals {
   }
 
   versions = {
-    postgres_engine = "16.3"
+    postgres_engine = "16.8"
   }
 
 }
@@ -573,18 +573,18 @@ generate provider {
 }
 
 inputs = {
-  environment                   = local.environment
-  externals_product             = local.external_product
-  externals_vpc_cidr            = local.environments[local.environment].externals_cidr_block
-  externals_vpc_private_subnets = local.environments[local.environment].externals_private_subnets
-  is_production                 = local.is_production
-  postgres_engine_version       = local.versions.postgres_engine
-  postgres_instance_type        = local.environments[local.environment].postgres_instance_type
-  product                       = local.product
-  tags                          = local.tags
-  vpc_cidr                      = local.environments[local.environment].cidr_block
-  vpc_private_subnets           = local.environments[local.environment].private_subnets
-  vpc_public_subnets            = local.environments[local.environment].public_subnets
+  aurora_postgres_engine_version = local.versions.postgres_engine
+  environment                    = local.environment
+  externals_product              = local.external_product
+  externals_vpc_cidr             = local.environments[local.environment].externals_cidr_block
+  externals_vpc_private_subnets  = local.environments[local.environment].externals_private_subnets
+  is_production                  = local.is_production
+  postgres_instance_type         = local.environments[local.environment].postgres_instance_type
+  product                        = local.product
+  tags                           = local.tags
+  vpc_cidr                       = local.environments[local.environment].cidr_block
+  vpc_private_subnets            = local.environments[local.environment].private_subnets
+  vpc_public_subnets             = local.environments[local.environment].public_subnets
 }
 
 terraform {
