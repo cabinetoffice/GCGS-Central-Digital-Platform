@@ -163,7 +163,7 @@ public class SearchIntegrationTests
             {
                 Id = "003033-2025",
                 Title = "Integration Test Framework 1",
-                Description = "First integration test framework",
+                BuyerName = "First integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Active,
                 MaximumFee = "2.5%",
@@ -173,7 +173,7 @@ public class SearchIntegrationTests
             {
                 Id = "004044-2025",
                 Title = "Integration Test Framework 2",
-                Description = "Second integration test framework",
+                BuyerName = "Second integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(45).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Upcoming,
                 MaximumFee = "5%",

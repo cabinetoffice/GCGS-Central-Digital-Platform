@@ -71,7 +71,7 @@ public class CommercialToolsServiceTests
         {
             Id = "ocds-h6vhtk-04f907",
             Title = "IT Services Framework",
-            Description = "Test procurement description",
+            BuyerName = "Test procurement description",
             SubmissionDeadline = "15 March 2025",
             MaximumFee = "Unknown",
             AwardMethod = "With competition",
@@ -92,7 +92,7 @@ public class CommercialToolsServiceTests
         var searchResult = resultList.First();
         searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
         searchResult.Title.Should().Be("IT Services Framework");
-        searchResult.Description.Should().Be("Test procurement description");
+        searchResult.BuyerName.Should().Be("Test procurement description");
         searchResult.SubmissionDeadline.Should().Be("15 March 2025");
         searchResult.MaximumFee.Should().Be("Unknown");
         searchResult.AwardMethod.Should().Be("With competition");

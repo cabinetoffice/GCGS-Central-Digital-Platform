@@ -21,7 +21,7 @@ public class CommercialToolsApiClientTests
                 {
                     Id = "1",
                     Title = "Test Tool",
-                    Description = "Test Description",
+                    BuyerName = "Test Description",
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "10%",
                     AwardMethod = "Open"

@@ -73,7 +73,7 @@ public class SearchResultDtoTests
         {
             Id = "test-id",
             Title = "Test Tool",
-            Description = "Test Description",
+            BuyerName = "Test Description",
             SubmissionDeadline = testDate.AddDays(30).ToString("dd MMMM yyyy"),
             Status = CommercialToolStatus.Active,
             MaximumFee = "10%",
@@ -83,7 +83,7 @@ public class SearchResultDtoTests
 
         result.Id.Should().Be("test-id");
         result.Title.Should().Be("Test Tool");
-        result.Description.Should().Be("Test Description");
+        result.BuyerName.Should().Be("Test Description");
         result.SubmissionDeadline.Should().Be(testDate.AddDays(30).ToString("dd MMMM yyyy"));
         result.Status.Should().Be(CommercialToolStatus.Active);
         result.MaximumFee.Should().Be("10%");
@@ -98,7 +98,7 @@ public class SearchResultDtoTests
         {
             Id = "test-id",
             Title = "Test Tool",
-            Description = "Test Description",
+            BuyerName = "Test Description",
             Status = CommercialToolStatus.Active,
             MaximumFee = "Unknown",
             AwardMethod = "With competition",
@@ -134,7 +134,7 @@ public class SearchResponseTests
             {
                 Id = "1",
                 Title = "Tool 1",
-                Description = "Description 1",
+                BuyerName = "Description 1",
                 Status = CommercialToolStatus.Active,
                 MaximumFee = "10%",
                 AwardMethod = "With competition"
@@ -143,7 +143,7 @@ public class SearchResponseTests
             {
                 Id = "2",
                 Title = "Tool 2",
-                Description = "Description 2",
+                BuyerName = "Description 2",
                 Status = CommercialToolStatus.Expired,
                 MaximumFee = "20%",
                 AwardMethod = "Framework"

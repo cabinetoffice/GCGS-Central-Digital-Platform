@@ -74,7 +74,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
         (
             Id: dto.Id,
             Title: dto.Title,
-            Caption: dto.Description,
+            Caption: dto.BuyerName,
             CommercialTool: dto.CommercialTool,
             Status: dto.Status,
             MaximumFee: dto.MaximumFee,

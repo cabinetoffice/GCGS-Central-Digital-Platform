@@ -50,7 +50,7 @@ public class SearchServiceTests
                 {
                     Id = "003033-2025",
                     Title = "Test Framework",
-                    Description = "Test Description",
+                    BuyerName = "Test Description",
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
@@ -195,7 +195,7 @@ public class SearchServiceTests
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
                     AwardMethod = "Open",
-                    Description = "Test"
+                    BuyerName = "Test"
                 }
             },
             TotalCount = 1,
@@ -229,7 +229,7 @@ public class SearchServiceTests
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "Unknown",
                     AwardMethod = "Open",
-                    Description = "Test",
+                    BuyerName = "Test",
                     SubmissionDeadline = submissionDeadline.ToString("dd MMMM yyyy")
                 }
             },
