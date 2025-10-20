@@ -14,7 +14,6 @@ public class ApiResponseProfile : Profile
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Tender != null ? src.Tender.Title : "Unknown"))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Buyer != null ? src.Buyer.Name ?? "Unknown" : "Unknown"))
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => GenerateFindTenderUrl(src.Ocid)))
-            .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
             .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null && src.Tender.TenderPeriod.EndDate != null ? src.Tender.TenderPeriod.EndDate.Value.ToString("dd MMMM yyyy") : "Unknown"))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
             .ForMember(dest => dest.MaximumFee, opt => opt.MapFrom(src => GetMaximumFee(src.Tender)))
@@ -196,9 +195,6 @@ public class ApiResponseProfile : Profile
         if (!string.IsNullOrEmpty(src.Tender?.TenderId))
             properties["tenderId"] = src.Tender.TenderId;
 
-        if (!string.IsNullOrEmpty(src.Ocid))
-            properties["procurementId"] = src.Ocid;
-
         if (!string.IsNullOrEmpty(src.Buyer?.Name))
             properties["buyerName"] = src.Buyer.Name;
 
@@ -206,19 +202,6 @@ public class ApiResponseProfile : Profile
             properties["effectiveEndDateUtc"] = src.Tender.TenderPeriod.EndDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
         var buyerParty = src.Parties?.FirstOrDefault(p => p.Roles?.Contains("buyer") == true);
-        if (buyerParty?.Locations?.FirstOrDefault()?.PhysicalAddress != null)
-        {
-            var address = buyerParty.Locations.First().PhysicalAddress;
-            var addressParts = new List<string>();
-
-            if (!string.IsNullOrEmpty(address?.AddressLine1)) addressParts.Add(address.AddressLine1);
-            if (!string.IsNullOrEmpty(address?.AddressLine2)) addressParts.Add(address.AddressLine2);
-            if (!string.IsNullOrEmpty(address?.Locality)) addressParts.Add(address.Locality);
-            if (!string.IsNullOrEmpty(address?.PostalCode)) addressParts.Add(address.PostalCode);
-
-            if (addressParts.Any())
-                properties["buyerAddress"] = string.Join(", ", addressParts);
-        }
 
         return properties.Any() ? properties : null;
     }

@@ -72,7 +72,6 @@ public class CommercialToolsServiceTests
             Id = "ocds-h6vhtk-04f907",
             Title = "IT Services Framework",
             Description = "Test procurement description",
-            PublishedDate = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
             SubmissionDeadline = "15 March 2025",
             MaximumFee = "Unknown",
             AwardMethod = "With competition",
@@ -85,7 +84,7 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
@@ -94,7 +93,6 @@ public class CommercialToolsServiceTests
         searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
         searchResult.Title.Should().Be("IT Services Framework");
         searchResult.Description.Should().Be("Test procurement description");
-        searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
         searchResult.SubmissionDeadline.Should().Be("15 March 2025");
         searchResult.MaximumFee.Should().Be("Unknown");
         searchResult.AwardMethod.Should().Be("With competition");
@@ -154,7 +152,7 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);

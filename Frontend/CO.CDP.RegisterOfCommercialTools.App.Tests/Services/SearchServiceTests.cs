@@ -51,7 +51,6 @@ public class SearchServiceTests
                     Id = "003033-2025",
                     Title = "Test Framework",
                     Description = "Test Description",
-                    PublishedDate = DateTime.UtcNow,
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
