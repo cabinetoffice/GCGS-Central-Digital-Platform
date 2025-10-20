@@ -534,7 +534,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithOrderBy("a-z").Build(BaseUrl);
 
-        result.Should().Contain("$orderby=tender%2Ftitle%20asc");
+        result.Should().Contain("$orderby=tolower%28tender%2Ftitle%29%20asc");
     }
 
     [Fact]
@@ -544,7 +544,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithOrderBy("z-a").Build(BaseUrl);
 
-        result.Should().Contain("$orderby=tender%2Ftitle%20desc");
+        result.Should().Contain("$orderby=tolower%28tender%2Ftitle%29%20desc");
     }
 
     [Fact]
