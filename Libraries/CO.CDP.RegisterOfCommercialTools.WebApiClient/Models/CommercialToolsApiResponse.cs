@@ -20,6 +20,7 @@ public class CommercialToolApiItem
     public List<CommercialToolParty>? Parties { get; set; }
     public CommercialToolTender? Tender { get; set; }
     public List<CommercialToolAward>? Awards { get; set; }
+    public List<CommercialToolContract>? Contracts { get; set; }
     public CreatedAt? CreatedAt { get; set; }
 }
 
@@ -145,5 +146,16 @@ public class CommercialToolStandstillPeriod
 
 public class CommercialToolAwardPeriod
 {
+    public DateTime? EndDate { get; set; }
+}
+
+public class CommercialToolContract
+{
+    public CommercialToolContractPeriod? Period { get; set; }
+}
+
+public class CommercialToolContractPeriod
+{
+    public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 }
