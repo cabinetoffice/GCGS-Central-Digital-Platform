@@ -106,8 +106,8 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.21"
-      pinned_service_version            = "1.0.78"
+      pinned_service_version_fts        = "2025-10-16-notice-performance-improvements-experiment"
+      pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -299,8 +299,8 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.20"
-      pinned_service_version            = "1.0.78"
+      pinned_service_version_fts        = "1.0.22"
+      pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
       private_subnets = [
@@ -351,8 +351,8 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.20"
-      pinned_service_version            = "1.0.78"
+      pinned_service_version_fts        = "1.0.22"
+      pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
@@ -419,7 +419,7 @@ locals {
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
     fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
-    fts_healthcheck                      = { desired_count = 1 }
+    fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
     organisation                         = {}
@@ -545,7 +545,7 @@ locals {
   }
 
   versions = {
-    postgres_engine = "16.3"
+    postgres_engine = "16.8"
   }
 
 }
@@ -573,18 +573,18 @@ generate provider {
 }
 
 inputs = {
-  environment                   = local.environment
-  externals_product             = local.external_product
-  externals_vpc_cidr            = local.environments[local.environment].externals_cidr_block
-  externals_vpc_private_subnets = local.environments[local.environment].externals_private_subnets
-  is_production                 = local.is_production
-  postgres_engine_version       = local.versions.postgres_engine
-  postgres_instance_type        = local.environments[local.environment].postgres_instance_type
-  product                       = local.product
-  tags                          = local.tags
-  vpc_cidr                      = local.environments[local.environment].cidr_block
-  vpc_private_subnets           = local.environments[local.environment].private_subnets
-  vpc_public_subnets            = local.environments[local.environment].public_subnets
+  aurora_postgres_engine_version = local.versions.postgres_engine
+  environment                    = local.environment
+  externals_product              = local.external_product
+  externals_vpc_cidr             = local.environments[local.environment].externals_cidr_block
+  externals_vpc_private_subnets  = local.environments[local.environment].externals_private_subnets
+  is_production                  = local.is_production
+  postgres_instance_type         = local.environments[local.environment].postgres_instance_type
+  product                        = local.product
+  tags                           = local.tags
+  vpc_cidr                       = local.environments[local.environment].cidr_block
+  vpc_private_subnets            = local.environments[local.environment].private_subnets
+  vpc_public_subnets             = local.environments[local.environment].public_subnets
 }
 
 terraform {

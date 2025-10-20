@@ -26,10 +26,10 @@ public class SearchService(
         var pageNumber = (skip / fixedPageSize) + 1;
 
         var queryBuilder = builder
-            .WithKeywords(request.Keyword ?? string.Empty)
+            .WithKeywords(request.Keywords, request.SearchMode)
             .WithSkip(skip)
-            .WithTop(top);
-            // .WithOrderBy(request.SortBy ?? "relevance"); // Temporarily disabled until API supports it
+            .WithTop(top)
+            .WithOrderBy(request.SortBy ?? "relevance");
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {
@@ -68,6 +68,18 @@ public class SearchService(
 
         if (request.ContractEndDateTo.HasValue)
             queryBuilder = queryBuilder.ContractEndDateTo(request.ContractEndDateTo.Value);
+
+        if (request.FilterFrameworks)
+            queryBuilder = queryBuilder.WithFrameworkAgreement();
+
+        if (request.IsOpenFrameworks)
+            queryBuilder = queryBuilder.OnlyOpenFrameworks();
+
+        if (request.FilterDynamicMarkets)
+            queryBuilder = queryBuilder.WithDynamicPurchasingSystem();
+
+        if (request.IsUtilitiesOnly)
+            queryBuilder = queryBuilder.WithBuyerClassificationRestrictions("utilities");
 
         if (!string.IsNullOrWhiteSpace(request.FrameworkOptions))
         {

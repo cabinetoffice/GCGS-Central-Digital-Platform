@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Globalization;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -28,60 +29,111 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     private ICommercialToolsQueryBuilder WithParameterIf(bool condition, string key, string value) =>
         condition ? WithParameter(key, value) : this;
 
-    public ICommercialToolsQueryBuilder WithKeywords(string keywords)
+    public ICommercialToolsQueryBuilder WithKeywords(List<string>? keywords, KeywordSearchMode searchMode)
     {
-        if (string.IsNullOrWhiteSpace(keywords))
+        if (keywords == null || keywords.Count == 0)
             return this;
 
-        var filter = BuildKeywordFilter(keywords);
+        var filter = BuildKeywordFilter(keywords, searchMode);
         return WithCustomFilter(filter);
     }
 
-    private static string BuildKeywordFilter(string keywords)
+    private static string BuildKeywordFilter(List<string> keywords, KeywordSearchMode searchMode)
     {
-        keywords = keywords.Trim();
+        if (keywords.Count == 0)
+            return string.Empty;
 
-        if (keywords.StartsWith("\"") && keywords.EndsWith("\""))
+        if (keywords.Count == 1)
         {
-            var phrase = keywords.Trim('"');
+            return BuildContainsFilterForPhrase(keywords[0]);
+        }
+
+        if (searchMode == KeywordSearchMode.Exact)
+        {
+            var phrase = string.Join(" ", keywords);
             return BuildContainsFilterForPhrase(phrase);
         }
 
-        if (keywords.Contains(" + "))
+        if (searchMode == KeywordSearchMode.Any)
         {
-            var terms = keywords.Split(" + ", StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-            var filters = terms.Select(term => BuildContainsFilterForPhrase(term)).ToList();
-            return $"({string.Join(" and ", filters)})";
+            return BuildAnyKeywordFilter(keywords);
         }
 
-        var words = keywords.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-        if (words.Length > 1)
+        var filters = keywords.Select(BuildContainsFilterForPhrase).ToList();
+        return $"({string.Join(" and ", filters)})";
+    }
+
+    private static string BuildAnyKeywordFilter(List<string> keywords)
+    {
+        var fieldFilters = new List<string>();
+
+        foreach (var keyword in keywords)
         {
-            var filters = words.Select(word => BuildContainsFilterForPhrase(word)).ToList();
-            return $"({string.Join(" or ", filters)})";
+            fieldFilters.AddRange(BuildFiltersForKeyword(keyword));
         }
 
-        return BuildContainsFilterForPhrase(keywords);
+        return $"({string.Join(" or ", fieldFilters)})";
     }
 
     private static string BuildContainsFilterForPhrase(string phrase)
     {
-        var escapedPhrase = phrase.Replace("'", "''").ToLower();
-
-        var containsFilters = new List<string>
-        {
-            $"contains(tolower(tender/title), '{escapedPhrase}')",
-            $"contains(tolower(tender/description), '{escapedPhrase}')",
-            $"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedPhrase}')",
-
-            $"parties/any(p: contains(tolower(p/name), '{escapedPhrase}'))",
-            $"parties/any(p: contains(tolower(p/identifier/id), '{escapedPhrase}'))"
-        };
-
-        containsFilters.Add($"additionalIdentifiers/any(ai: contains(tolower(ai/id), '{escapedPhrase}'))");
-
-        return $"({string.Join(" or ", containsFilters)})";
+        var filters = BuildFiltersForKeyword(phrase);
+        return $"({string.Join(" or ", filters)})";
     }
+
+    private static List<string> BuildFiltersForKeyword(string keyword)
+    {
+        var escapedKeyword = keyword.Replace("'", "''").ToLower();
+        var filters = new List<string>();
+
+        if (IsOcid(keyword))
+        {
+            filters.Add($"contains(tolower(ocid), '{escapedKeyword}')");
+        }
+        else if (IsDocumentId(keyword))
+        {
+            filters.Add($"planning/documents/any(d: contains(tolower(d/documentId), '{escapedKeyword}'))");
+            filters.Add($"tender/documents/any(d: contains(tolower(d/documentId), '{escapedKeyword}'))");
+        }
+        else if (IsIdentifier(keyword))
+        {
+            filters.Add($"parties/any(p: contains(tolower(p/identifier/id), '{escapedKeyword}'))");
+            filters.Add($"additionalIdentifiers/any(ai: contains(tolower(ai/id), '{escapedKeyword}'))");
+        }
+        else
+        {
+            filters.Add($"contains(tolower(tender/title), '{escapedKeyword}')");
+            filters.Add($"contains(tolower(tender/description), '{escapedKeyword}')");
+            filters.Add($"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedKeyword}')");
+            filters.Add($"parties/any(p: contains(tolower(p/name), '{escapedKeyword}'))");
+        }
+
+        return filters;
+    }
+
+    private static bool IsOcid(string keyword) =>
+        keyword.StartsWith("ocds-", StringComparison.OrdinalIgnoreCase);
+
+    private static bool IsDocumentId(string keyword) =>
+        System.Text.RegularExpressions.Regex.IsMatch(keyword, @"^\d{6,}-\d{4}$");
+
+    private static bool IsIdentifier(string keyword)
+    {
+        if (keyword.Length < 6)
+            return false;
+
+        var digitCount = keyword.Count(char.IsDigit);
+        var letterCount = keyword.Count(char.IsLetter);
+        var hyphenCount = keyword.Count(c => c == '-');
+
+        return digitCount >= 4 && (digitCount + hyphenCount + letterCount) == keyword.Length;
+    }
+
+    public ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true) =>
+        WithCustomFilter($"tender/techniques/hasFrameworkAgreement eq {hasFramework.ToString().ToLower()}");
+
+    public ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true) =>
+        WithCustomFilter($"tender/techniques/hasDynamicPurchasingSystem eq {hasDps.ToString().ToLower()}");
 
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
         WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
@@ -97,7 +149,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
             "active" => "tender/status eq 'active'",
             "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
-            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/type eq 'open' or tender/techniques/hasDynamicPurchasingSystem eq true))",
             "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
             "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
             _ => $"tender/status eq '{status}'"
@@ -123,17 +175,29 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to) =>
         WithParameter("filter[tender.tenderPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
 
-    public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from) =>
-        WithParameter("filter[tender.lots.contractPeriod.startDate.from]", from.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to) =>
-        WithParameter("filter[tender.lots.contractPeriod.startDate.to]", to.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from) =>
-        WithParameter("filter[tender.lots.contractPeriod.endDate.from]", from.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to) =>
-        WithParameter("filter[tender.lots.contractPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
     public ICommercialToolsQueryBuilder WithLocation(string location)
     {
@@ -210,7 +274,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         {
             "a-z" => "tender/title asc",
             "z-a" => "tender/title desc",
-            "relevance" => "tender/status desc,tender/tenderPeriod/endDate asc,tender/title asc",
+            "relevance" => "tender/createdDate desc",
             _ => null
         };
 
@@ -248,7 +312,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
             var queryOptionsValue = string.Join("&", odataParams);
             var separator = baseUrl.Contains('?') ? '&' : '?';
-            return $"{baseUrl}{separator}queryOptions={queryOptionsValue}";
+            return $"{baseUrl}{separator}{queryOptionsValue}";
         }
 
         return baseUrl;

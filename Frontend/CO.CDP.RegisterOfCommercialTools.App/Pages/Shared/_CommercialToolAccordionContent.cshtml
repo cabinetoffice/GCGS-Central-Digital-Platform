@@ -33,52 +33,54 @@
         </summary>
         <div class="govuk-details__text govuk-!-padding-0 no-border">
             <div class="govuk-form-group govuk-!-margin-bottom-0">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
-                        Frameworks
-                    </legend>
-                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-open-only" name="framework"
-                                   type="radio"
-                                   value="open" @(Model.FrameworkOptions == "open" ? "checked" : null)>
-                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-open-only">
-                                Open frameworks only
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="framework-exclude-open" name="framework"
-                                   type="radio"
-                                   value="exclude-open" @(Model.FrameworkOptions == "exclude-open" ? "checked" : null)>
-                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="framework-exclude-open">
-                                Exclude open frameworks
-                            </label>
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="filter-frameworks" name="filter_frameworks"
+                               type="checkbox" value="true"
+                               data-aria-controls="conditional-frameworks"
+                               @(Model.FilterFrameworks ? "checked" : null)>
+                        <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="filter-frameworks">
+                            Frameworks
+                        </label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional @(Model.FilterFrameworks ? "" : "govuk-checkboxes__conditional--hidden")"
+                         id="conditional-frameworks">
+                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="open-frameworks" name="open_frameworks"
+                                       type="checkbox" value="true"
+                                       @(Model.IsOpenFrameworks ? "checked" : null)>
+                                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="open-frameworks">
+                                    Open frameworks only
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </fieldset>
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-!-font-size-16">
-                        Dynamic Markets
-                    </legend>
-                    <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="dynamic-market-utilities-only"
-                                   name="market" type="radio"
-                                   value="utilities-only" @(Model.DynamicMarketOptions == "utilities-only" ? "checked" : null)>
-                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-utilities-only">
-                                Utilities dynamic markets only
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="dynamic-market-exclude-utilities"
-                                   name="market" type="radio"
-                                   value="exclude-utilities" @(Model.DynamicMarketOptions == "exclude-utilities" ? "checked" : null)>
-                            <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="dynamic-market-exclude-utilities">
-                                Excludes Utilities dynamic markets
-                            </label>
+                </div>
+                <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="filter-markets" name="filter_markets"
+                               type="checkbox" value="true"
+                               data-aria-controls="conditional-markets"
+                               @(Model.FilterDynamicMarkets ? "checked" : null)>
+                        <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="filter-markets">
+                            Dynamic Markets
+                        </label>
+                    </div>
+                    <div class="govuk-checkboxes__conditional @(Model.FilterDynamicMarkets ? "" : "govuk-checkboxes__conditional--hidden")"
+                         id="conditional-markets">
+                        <div class="govuk-checkboxes govuk-checkboxes--small">
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input" id="utilities-only" name="utilities_only"
+                                       type="checkbox" value="true"
+                                       @(Model.IsUtilitiesOnly ? "checked" : null)>
+                                <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="utilities-only">
+                                    Utilities contracts only
+                                </label>
+                            </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </details>

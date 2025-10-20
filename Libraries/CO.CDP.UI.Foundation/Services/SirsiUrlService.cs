@@ -34,8 +34,17 @@ public class SirsiUrlService : UrlServiceBase, ISirsiUrlService
     {
     }
 
-    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUrl = null, bool? cookieAcceptance = null)
+    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null)
     {
-        return base.BuildUrl(endpoint, organisationId, redirectUrl, cookieAcceptance);
+        return base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
+    }
+
+    public string BuildAuthenticatedUrl(string endpoint, Guid? organisationId = null, bool? cookieAcceptance = null)
+    {
+        var absoluteUrl = base.BuildUrl(endpoint, organisationId, cookieAcceptance: cookieAcceptance);
+        var uri = new Uri(absoluteUrl);
+        var redirectUri = uri.PathAndQuery;
+
+        return base.BuildUrl("/one-login/sign-in", redirectUri: redirectUri);
     }
 }

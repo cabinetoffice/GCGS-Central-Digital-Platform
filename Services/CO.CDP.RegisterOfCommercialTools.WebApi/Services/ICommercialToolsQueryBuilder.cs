@@ -1,8 +1,12 @@
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public interface ICommercialToolsQueryBuilder
 {
-    ICommercialToolsQueryBuilder WithKeywords(string keywords);
+    ICommercialToolsQueryBuilder WithKeywords(List<string>? keywords, KeywordSearchMode searchMode);
+    ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true);
+    ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true);
     ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true);
     ICommercialToolsQueryBuilder WithStatus(string status);
     ICommercialToolsQueryBuilder FeeFrom(decimal from);

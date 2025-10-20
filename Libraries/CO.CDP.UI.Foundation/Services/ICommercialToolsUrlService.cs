@@ -10,9 +10,9 @@ public interface ICommercialToolsUrlService
     /// </summary>
     /// <param name="endpoint">The endpoint path</param>
     /// <param name="organisationId">Optional organisation ID</param>
-    /// <param name="redirectUrl">Optional redirect URL</param>
+    /// <param name="redirectUri">Optional redirect URI</param>
     /// <param name="cookieAcceptance">Optional cookie acceptance status</param>
     /// <param name="additionalParams">Additional query parameters to include</param>
     /// <returns>The complete URL to the Commercial Tools service endpoint</returns>
-    string BuildUrl(string endpoint, Guid? organisationId, string? redirectUrl, bool? cookieAcceptance, Dictionary<string, string?>? additionalParams);
+    string BuildUrl(string endpoint, Guid? organisationId, string? redirectUri, bool? cookieAcceptance, Dictionary<string, string?>? additionalParams);
 }
