@@ -238,13 +238,15 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             ? this
             : WithCustomFilter($"tender/techniques/frameworkAgreement/type eq '{frameworkType}'");
 
-    public ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(restrictionId),
-            "filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id]", restrictionId);
+    public ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId)
+    {
+        if (string.IsNullOrWhiteSpace(restrictionId))
+            return this;
 
-    public ICommercialToolsQueryBuilder ExcludeBuyerClassificationRestrictions(string restrictionId) =>
-        WithParameterIf(!string.IsNullOrWhiteSpace(restrictionId),
-            "filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id ne]", restrictionId);
+        var classificationId = restrictionId.ToLowerInvariant() == "utilities" ? "privateUtility" : restrictionId;
+        var filter = $"parties/any(p: p/roles/any(r: r eq 'buyer') and p/detail/classifications/any(c: c/scheme eq 'UK_CA_TYPE' and c/classificationId eq '{classificationId}'))";
+        return WithCustomFilter(filter);
+    }
 
     public ICommercialToolsQueryBuilder WithSkip(int skip) =>
         new CommercialToolsQueryBuilder(_params, skip, _top);

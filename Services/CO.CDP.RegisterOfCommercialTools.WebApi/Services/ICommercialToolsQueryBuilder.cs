@@ -19,7 +19,6 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to);
     ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType);
     ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId);
-    ICommercialToolsQueryBuilder ExcludeBuyerClassificationRestrictions(string restrictionId);
     ICommercialToolsQueryBuilder WithLocation(string location);
     ICommercialToolsQueryBuilder WithCpv(string cpv);
     ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod);

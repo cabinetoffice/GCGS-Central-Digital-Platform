@@ -432,8 +432,9 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithBuyerClassificationRestrictions("utilities").Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id]=utilities");
+        decoded.Should().Contain("parties/any(p: p/roles/any(r: r eq 'buyer') and p/detail/classifications/any(c: c/scheme eq 'UK_CA_TYPE' and c/classificationId eq 'privateUtility'))");
     }
 
     [Fact]
@@ -442,26 +443,6 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithBuyerClassificationRestrictions("");
-
-        result.Should().BeSameAs(builder);
-    }
-
-    [Fact]
-    public void ExcludeBuyerClassificationRestrictions_WhenUtilities_ShouldAddNotEqualsFilter()
-    {
-        var builder = new CommercialToolsQueryBuilder();
-
-        var result = builder.ExcludeBuyerClassificationRestrictions("utilities").Build(BaseUrl);
-
-        result.Should().Contain("filter[tender.techniques.frameworkAgreement.buyerClassificationRestrictions.id ne]=utilities");
-    }
-
-    [Fact]
-    public void ExcludeBuyerClassificationRestrictions_WhenEmpty_ShouldReturnSameInstance()
-    {
-        var builder = new CommercialToolsQueryBuilder();
-
-        var result = builder.ExcludeBuyerClassificationRestrictions("");
 
         result.Should().BeSameAs(builder);
     }

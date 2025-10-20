@@ -100,14 +100,9 @@ public class SearchService(
 
         if (!string.IsNullOrWhiteSpace(request.DynamicMarketOptions))
         {
-            switch (request.DynamicMarketOptions.ToLowerInvariant())
+            if (request.DynamicMarketOptions.ToLowerInvariant() == "utilities-only")
             {
-                case "utilities-only":
-                    queryBuilder = queryBuilder.WithBuyerClassificationRestrictions("utilities");
-                    break;
-                case "exclude-utilities":
-                    queryBuilder = queryBuilder.ExcludeBuyerClassificationRestrictions("utilities");
-                    break;
+                queryBuilder = queryBuilder.WithBuyerClassificationRestrictions("utilities");
             }
         }
 
