@@ -81,8 +81,10 @@ public class IndexModelTest
         _model.SearchParams.Should().NotBeNull();
         _model.SearchParams.Keywords.Should().BeNull();
         _model.SearchParams.SortOrder.Should().BeNull();
-        _model.SearchParams.FrameworkOptions.Should().BeNull();
-        _model.SearchParams.DynamicMarketOptions.Should().BeNull();
+        _model.SearchParams.FilterFrameworks.Should().BeFalse();
+        _model.SearchParams.IsOpenFrameworks.Should().BeFalse();
+        _model.SearchParams.FilterDynamicMarkets.Should().BeFalse();
+        _model.SearchParams.IsUtilitiesOnly.Should().BeFalse();
         _model.SearchParams.AwardMethod.Should().BeEmpty();
         _model.SearchParams.Status.Should().BeEmpty();
         _model.SearchParams.ContractingAuthorityUsage.Should().BeEmpty();
@@ -114,8 +116,10 @@ public class IndexModelTest
     {
         _model.SearchParams.Keywords = "test";
         _model.SearchParams.SortOrder = "a-z";
-        _model.SearchParams.FrameworkOptions = "open";
-        _model.SearchParams.DynamicMarketOptions = "utilities-only";
+        _model.SearchParams.FilterFrameworks = true;
+        _model.SearchParams.IsOpenFrameworks = true;
+        _model.SearchParams.FilterDynamicMarkets = true;
+        _model.SearchParams.IsUtilitiesOnly = true;
         _model.SearchParams.AwardMethod = ["direct-award"];
         _model.SearchParams.Status = ["upcoming", "active-buyers"];
         _model.SearchParams.ContractingAuthorityUsage = ["yes"];
@@ -148,8 +152,10 @@ public class IndexModelTest
 
         _model.SearchParams.Keywords.Should().Be("test");
         _model.SearchParams.SortOrder.Should().Be("a-z");
-        _model.SearchParams.FrameworkOptions.Should().Be("open");
-        _model.SearchParams.DynamicMarketOptions.Should().Be("utilities-only");
+        _model.SearchParams.FilterFrameworks.Should().BeTrue();
+        _model.SearchParams.IsOpenFrameworks.Should().BeTrue();
+        _model.SearchParams.FilterDynamicMarkets.Should().BeTrue();
+        _model.SearchParams.IsUtilitiesOnly.Should().BeTrue();
         _model.SearchParams.AwardMethod.Should().BeEquivalentTo(["direct-award"]);
         _model.SearchParams.Status.Should().BeEquivalentTo(["upcoming", "active-buyers"]);
         _model.SearchParams.ContractingAuthorityUsage.Should().BeEquivalentTo(["yes"]);

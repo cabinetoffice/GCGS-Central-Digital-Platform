@@ -129,6 +129,12 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         return digitCount >= 4 && (digitCount + hyphenCount + letterCount) == keyword.Length;
     }
 
+    public ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true) =>
+        WithCustomFilter($"tender/techniques/hasFrameworkAgreement eq {hasFramework.ToString().ToLower()}");
+
+    public ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true) =>
+        WithCustomFilter($"tender/techniques/hasDynamicPurchasingSystem eq {hasDps.ToString().ToLower()}");
+
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
         WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
 
@@ -169,17 +175,29 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to) =>
         WithParameter("filter[tender.tenderPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
 
-    public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from) =>
-        WithParameter("filter[tender.lots.contractPeriod.startDate.from]", from.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to) =>
-        WithParameter("filter[tender.lots.contractPeriod.startDate.to]", to.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from) =>
-        WithParameter("filter[tender.lots.contractPeriod.endDate.from]", from.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
-    public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to) =>
-        WithParameter("filter[tender.lots.contractPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
+    public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to)
+    {
+        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        return WithCustomFilter(filter);
+    }
 
     public ICommercialToolsQueryBuilder WithLocation(string location)
     {

@@ -110,8 +110,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
             <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
-                <input type="hidden" name="framework" value="@Model.SearchParams.FrameworkOptions"/>
-                <input type="hidden" name="market" value="@Model.SearchParams.DynamicMarketOptions"/>
+                <input type="hidden" name="filter_frameworks" value="@Model.SearchParams.FilterFrameworks"/>
+                <input type="hidden" name="open_frameworks" value="@Model.SearchParams.IsOpenFrameworks"/>
+                <input type="hidden" name="filter_markets" value="@Model.SearchParams.FilterDynamicMarkets"/>
+                <input type="hidden" name="utilities_only" value="@Model.SearchParams.IsUtilitiesOnly"/>
                 @foreach (var award in Model.SearchParams.AwardMethod)
                 {
                     <input type="hidden" name="award" value="@award"/>

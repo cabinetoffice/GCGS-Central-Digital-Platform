@@ -14,6 +14,10 @@ public class SearchRequestDto
     public decimal? MinFees { get; set; }
     public decimal? MaxFees { get; set; }
     public List<string>? AwardMethod { get; set; }
+    public bool FilterFrameworks { get; set; }
+    public bool IsOpenFrameworks { get; set; }
+    public bool FilterDynamicMarkets { get; set; }
+    public bool IsUtilitiesOnly { get; set; }
     public string? FrameworkOptions { get; set; }
     public string? DynamicMarketOptions { get; set; }
     public List<string>? ContractingAuthorityUsage { get; set; }

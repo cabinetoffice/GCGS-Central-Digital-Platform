@@ -197,8 +197,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2025, 6, 1);
 
         var result = builder.ContractStartDateFrom(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2025-06-01) or tender/techniques/frameworkAgreement/periodEndDate ge 2025-06-01");
     }
 
     [Fact]
@@ -208,8 +209,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2025, 6, 30);
 
         var result = builder.ContractStartDateTo(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2025-06-30) or tender/techniques/frameworkAgreement/periodEndDate le 2025-06-30");
     }
 
     [Fact]
@@ -219,8 +221,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2026, 5, 31);
 
         var result = builder.ContractEndDateFrom(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.endDate.from]=2026-05-31");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2026-05-31) or tender/techniques/frameworkAgreement/periodEndDate ge 2026-05-31");
     }
 
     [Fact]
@@ -230,8 +233,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2026, 12, 31);
 
         var result = builder.ContractEndDateTo(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.endDate.to]=2026-12-31");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2026-12-31) or tender/techniques/frameworkAgreement/periodEndDate le 2026-12-31");
     }
 
     [Fact]
@@ -392,8 +396,11 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.to]=9.9999");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.from]=2025-01-01");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.to]=2025-12-31");
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
+
+        var decoded = Uri.UnescapeDataString(result);
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2025-06-01) or tender/techniques/frameworkAgreement/periodEndDate ge 2025-06-01");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2025-06-30) or tender/techniques/frameworkAgreement/periodEndDate le 2025-06-30");
+
         result.Should().Contain("$top=25");
         result.Should().Contain("$skip=25");
     }
