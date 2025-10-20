@@ -69,14 +69,21 @@ public class SearchService(
         if (request.ContractEndDateTo.HasValue)
             queryBuilder = queryBuilder.ContractEndDateTo(request.ContractEndDateTo.Value);
 
-        if (request.FilterFrameworks)
+        if (request.FilterFrameworks && request.FilterDynamicMarkets)
+        {
+            queryBuilder = queryBuilder.WithCustomFilter("(tender/techniques/hasFrameworkAgreement eq true or tender/techniques/hasDynamicPurchasingSystem eq true)");
+        }
+        else if (request.FilterFrameworks)
+        {
             queryBuilder = queryBuilder.WithFrameworkAgreement();
+        }
+        else if (request.FilterDynamicMarkets)
+        {
+            queryBuilder = queryBuilder.WithDynamicPurchasingSystem();
+        }
 
         if (request.IsOpenFrameworks)
             queryBuilder = queryBuilder.OnlyOpenFrameworks();
-
-        if (request.FilterDynamicMarkets)
-            queryBuilder = queryBuilder.WithDynamicPurchasingSystem();
 
         if (request.IsUtilitiesOnly)
             queryBuilder = queryBuilder.WithBuyerClassificationRestrictions("utilities");

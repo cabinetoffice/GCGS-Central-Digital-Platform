@@ -654,9 +654,8 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithFrameworkAgreement(true)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.OnlyOpenFrameworks(true)).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.WithDynamicPurchasingSystem(true)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithBuyerClassificationRestrictions("utilities")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
@@ -665,9 +664,68 @@ public class SearchServiceTests
 
         await _searchService.Search(request);
 
-        mockBuilder.Verify(x => x.WithFrameworkAgreement(true), Times.Once);
+        mockBuilder.Verify(x => x.WithCustomFilter(It.Is<string>(s => s.Contains("hasFrameworkAgreement eq true or") && s.Contains("hasDynamicPurchasingSystem eq true"))), Times.Once);
         mockBuilder.Verify(x => x.OnlyOpenFrameworks(true), Times.Once);
-        mockBuilder.Verify(x => x.WithDynamicPurchasingSystem(true), Times.Once);
         mockBuilder.Verify(x => x.WithBuyerClassificationRestrictions("utilities"), Times.Once);
+    }
+
+    [Fact]
+    public async Task Search_WhenOnlyFilterFrameworks_ShouldApplyFrameworkFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keywords = ["test"],
+            FilterFrameworks = true,
+            FilterDynamicMarkets = false,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithFrameworkAgreement(true)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithFrameworkAgreement(true), Times.Once);
+        mockBuilder.Verify(x => x.WithDynamicPurchasingSystem(It.IsAny<bool>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Search_WhenOnlyFilterDynamicMarkets_ShouldApplyDynamicMarketFilter()
+    {
+        var request = new SearchRequestDto
+        {
+            Keywords = ["test"],
+            FilterFrameworks = false,
+            FilterDynamicMarkets = true,
+            PageNumber = 1
+        };
+
+        var mockBuilder = new Mock<ICommercialToolsQueryBuilder>();
+        var queryUrl = "https://api.example.com/tenders?built=query";
+
+        _mockQueryBuilder.Setup(x => x.WithKeywords(It.IsAny<List<string>>(), It.IsAny<KeywordSearchMode>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithDynamicPurchasingSystem(true)).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
+
+        var expectedResults = new List<SearchResultDto>();
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+
+        await _searchService.Search(request);
+
+        mockBuilder.Verify(x => x.WithDynamicPurchasingSystem(true), Times.Once);
+        mockBuilder.Verify(x => x.WithFrameworkAgreement(It.IsAny<bool>()), Times.Never);
     }
 }
