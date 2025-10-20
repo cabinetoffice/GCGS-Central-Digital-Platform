@@ -23,9 +23,15 @@
                     </label>
                 </div>
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" id="status-expired" name="status" type="checkbox" value="expired" @(Model.Status.Contains("expired") ? "checked" : "")>
-                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-expired">
-                        Expired
+                    <input class="govuk-checkboxes__input" id="status-cancelled" name="status" type="checkbox" value="cancelled" @(Model.Status.Contains("cancelled") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-cancelled">
+                        Cancelled
+                    </label>
+                </div>
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="status-complete" name="status" type="checkbox" value="complete" @(Model.Status.Contains("complete") ? "checked" : "")>
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="status-complete">
+                        Complete
                     </label>
                 </div>
             </div>

@@ -144,7 +144,7 @@ public class SearchResponseTests
                 Id = "2",
                 Title = "Tool 2",
                 BuyerName = "Description 2",
-                Status = CommercialToolStatus.Expired,
+                Status = CommercialToolStatus.Cancelled,
                 MaximumFee = "20%",
                 AwardMethod = "Framework"
             }
@@ -171,9 +171,10 @@ public class CommercialToolStatusTests
     [Theory]
     [InlineData(CommercialToolStatus.Unknown)]
     [InlineData(CommercialToolStatus.Active)]
-    [InlineData(CommercialToolStatus.Expired)]
+    [InlineData(CommercialToolStatus.Cancelled)]
     [InlineData(CommercialToolStatus.Awarded)]
     [InlineData(CommercialToolStatus.Upcoming)]
+    [InlineData(CommercialToolStatus.Complete)]
     public void CommercialToolStatus_HasAllExpectedValues(CommercialToolStatus status)
     {
         Enum.IsDefined(typeof(CommercialToolStatus), status).Should().BeTrue();
@@ -183,16 +184,17 @@ public class CommercialToolStatusTests
     public void CommercialToolStatus_HasCorrectNumberOfValues()
     {
         var values = Enum.GetValues<CommercialToolStatus>();
-        values.Should().HaveCount(5);
+        values.Should().HaveCount(6);
     }
 
     [Fact]
     public void CommercialToolStatus_CanConvertToString()
     {
         CommercialToolStatus.Active.ToString().Should().Be("Active");
-        CommercialToolStatus.Expired.ToString().Should().Be("Expired");
+        CommercialToolStatus.Cancelled.ToString().Should().Be("Cancelled");
         CommercialToolStatus.Awarded.ToString().Should().Be("Awarded");
         CommercialToolStatus.Upcoming.ToString().Should().Be("Upcoming");
+        CommercialToolStatus.Complete.ToString().Should().Be("Complete");
         CommercialToolStatus.Unknown.ToString().Should().Be("Unknown");
     }
 }
