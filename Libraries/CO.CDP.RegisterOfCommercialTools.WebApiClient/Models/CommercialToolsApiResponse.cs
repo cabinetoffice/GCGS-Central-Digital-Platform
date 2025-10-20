@@ -121,6 +121,7 @@ public class CommercialToolLot
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? Status { get; set; }
+    public CommercialToolTenderPeriod? ContractPeriod { get; set; }
 }
 
 public class CommercialToolIdentifier

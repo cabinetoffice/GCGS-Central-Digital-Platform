@@ -267,7 +267,7 @@ public class CommercialToolsApiClientTests
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("SubmissionDeadlineFrom=");
-        actualQuery.Should().Contain("SubmissionDeadlineTo=");
+        actualQuery.Should().Contain("SubmissionDeadlineFrom=2024-01-15");
+        actualQuery.Should().Contain("SubmissionDeadlineTo=2024-01-22");
     }
 }

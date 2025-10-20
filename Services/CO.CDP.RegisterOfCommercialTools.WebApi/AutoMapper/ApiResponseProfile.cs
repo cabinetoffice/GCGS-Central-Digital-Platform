@@ -95,6 +95,12 @@ public class ApiResponseProfile : Profile
             endDate = item.Awards.FirstOrDefault()?.ContractPeriod?.EndDate;
         }
 
+        // Fallback 3: tender lots contractPeriod endDate
+        if (endDate == null && tender?.Lots != null && tender.Lots.Any())
+        {
+            endDate = tender.Lots.FirstOrDefault()?.ContractPeriod?.EndDate;
+        }
+
         // Try to get start date (priority 1: frameworkAgreement)
         var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate
             ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
@@ -109,7 +115,13 @@ public class ApiResponseProfile : Profile
             }
         }
 
-        // Fallback 3: award period end date + 8 working days
+        // Fallback 3: tender lots contractPeriod startDate
+        if (startDate == null && tender?.Lots != null && tender.Lots.Any())
+        {
+            startDate = tender.Lots.FirstOrDefault()?.ContractPeriod?.StartDate;
+        }
+
+        // Fallback 4: award period end date + 8 working days
         if (startDate == null && tender?.AwardPeriod?.EndDate != null)
         {
             startDate = DateHelper.AddWorkingDays(tender.AwardPeriod.EndDate.Value, 8);

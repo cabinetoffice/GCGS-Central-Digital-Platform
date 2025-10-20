@@ -177,25 +177,25 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        var filter = $"(awards/any(a: a/contractPeriod/startDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodStartDate ge {from:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/startDate ge {from:yyyy-MM-dd}))";
         return WithCustomFilter(filter);
     }
 
     public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        var filter = $"(awards/any(a: a/contractPeriod/startDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodStartDate le {to:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/startDate le {to:yyyy-MM-dd}))";
         return WithCustomFilter(filter);
     }
 
     public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd})";
+        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/endDate ge {from:yyyy-MM-dd}))";
         return WithCustomFilter(filter);
     }
 
     public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd})";
+        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/endDate le {to:yyyy-MM-dd}))";
         return WithCustomFilter(filter);
     }
 

@@ -174,7 +174,10 @@ public class CommercialToolsApiClient : ICommercialToolsApiClient
             }
             else
             {
-                parameters.Add($"{property.Name}={Uri.EscapeDataString(value.ToString() ?? string.Empty)}");
+                var stringValue = value is DateTime dateTime
+                    ? dateTime.ToString("yyyy-MM-dd")
+                    : value.ToString() ?? string.Empty;
+                parameters.Add($"{property.Name}={Uri.EscapeDataString(stringValue)}");
             }
         }
 
