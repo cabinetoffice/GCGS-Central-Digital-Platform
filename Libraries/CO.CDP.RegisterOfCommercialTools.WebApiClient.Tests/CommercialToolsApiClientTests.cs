@@ -52,7 +52,7 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             PageNumber = 1,
         };
 
@@ -86,7 +86,7 @@ public class CommercialToolsApiClientTests
         };
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = "test" };
+        var request = new SearchRequestDto { Keywords = ["test"] };
 
         var result = await client.SearchAsync(request);
 
@@ -124,12 +124,12 @@ public class CommercialToolsApiClientTests
         };
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = keyword };
+        var request = new SearchRequestDto { Keywords = [keyword] };
 
         await client.SearchAsync(request);
 
         actualQuery.Should().NotBeNullOrEmpty();
-        actualQuery.Should().Contain($"Keyword={expectedEncoded}");
+        actualQuery.Should().Contain($"Keywords={expectedEncoded}");
     }
 
     [Fact]
@@ -162,7 +162,8 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
+            SearchMode = KeywordSearchMode.Any,
             Status = "Active",
             SortBy = "Title",
             PageNumber = 2,
@@ -172,7 +173,8 @@ public class CommercialToolsApiClientTests
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("Keyword=test");
+        actualQuery.Should().Contain("Keywords=test");
+        actualQuery.Should().Contain("SearchMode=Any");
         actualQuery.Should().Contain("Status=Active");
         actualQuery.Should().Contain("SortBy=Title");
         actualQuery.Should().Contain("PageNumber=2");
@@ -210,7 +212,8 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
+            SearchMode = KeywordSearchMode.Any,
             Status = null,
             SortBy = null,
             MinFees = null,
@@ -219,7 +222,8 @@ public class CommercialToolsApiClientTests
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("Keyword=test");
+        actualQuery.Should().Contain("Keywords=test");
+        actualQuery.Should().Contain("SearchMode=Any");
         actualQuery.Should().NotContain("Status=");
         actualQuery.Should().NotContain("SortBy=");
         actualQuery.Should().NotContain("MinFees=");
@@ -257,7 +261,7 @@ public class CommercialToolsApiClientTests
         var testDate = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             SubmissionDeadlineFrom = testDate,
             SubmissionDeadlineTo = testDate.AddDays(7)
         };

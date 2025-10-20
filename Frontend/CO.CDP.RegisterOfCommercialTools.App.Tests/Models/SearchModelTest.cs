@@ -11,21 +11,18 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadline = new DateRange("Submission deadline")
-            {
-                From = new DateComponent("Submission deadline from") { Day = "1", Month = "2", Year = "2025" },
-                To = new DateComponent("Submission deadline to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractStartDate = new DateRange("Contract start date")
-            {
-                From = new DateComponent("Contract start date from") { Day = "1", Month = "2", Year = "2025" },
-                To = new DateComponent("Contract start date to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractEndDate = new DateRange("Contract end date")
-            {
-                From = new DateComponent("Contract end date from") { Day = "1", Month = "2", Year = "2025" },
-                To = new DateComponent("Contract end date to") { Day = "1", Month = "1", Year = "2025" }
-            }
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "2",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -33,10 +30,9 @@ public class SearchModelTest
         var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
-        validationResults.Should().HaveCount(3);
+        validationResults.Should().HaveCount(2);
         validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline to date must be after from date");
         validationResults.Select(r => r.ErrorMessage).Should().Contain("Contract start date to date must be after from date");
-        validationResults.Select(r => r.ErrorMessage).Should().Contain("Contract end date to date must be after from date");
     }
 
     [Fact]
@@ -44,21 +40,18 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadline = new DateRange("Submission deadline")
-            {
-                From = new DateComponent("Submission deadline from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Submission deadline to") { Day = "1", Month = "2", Year = "2025" }
-            },
-            ContractStartDate = new DateRange("Contract start date")
-            {
-                From = new DateComponent("Contract start date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract start date to") { Day = "1", Month = "2", Year = "2025" }
-            },
-            ContractEndDate = new DateRange("Contract end date")
-            {
-                From = new DateComponent("Contract end date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract end date to") { Day = "1", Month = "2", Year = "2025" }
-            }
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "2",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "2",
+            ContractStartDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -74,21 +67,18 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadline = new DateRange("Submission deadline")
-            {
-                From = new DateComponent("Submission deadline from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Submission deadline to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractStartDate = new DateRange("Contract start date")
-            {
-                From = new DateComponent("Contract start date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract start date to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractEndDate = new DateRange("Contract end date")
-            {
-                From = new DateComponent("Contract end date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract end date to") { Day = "1", Month = "1", Year = "2025" }
-            }
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -104,18 +94,12 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadline = new DateRange("Submission deadline")
-            {
-                From = new DateComponent("Submission deadline from") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractStartDate = new DateRange("Contract start date")
-            {
-                To = new DateComponent("Contract start date to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractEndDate = new DateRange("Contract end date")
-            {
-                From = new DateComponent("Contract end date from") { Day = "1", Month = "1", Year = "2025" }
-            }
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "1",
+            SubmissionDeadlineFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "1",
+            ContractStartDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -131,21 +115,18 @@ public class SearchModelTest
     {
         var searchParams = new SearchModel
         {
-            SubmissionDeadline = new DateRange("Submission deadline")
-            {
-                From = new DateComponent("Submission deadline from") { Day = "1", Month = "2", Year = "2025" },
-                To = new DateComponent("Submission deadline to") { Day = "1", Month = "1", Year = "2025" }
-            },
-            ContractStartDate = new DateRange("Contract start date")
-            {
-                From = new DateComponent("Contract start date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract start date to") { Day = "1", Month = "2", Year = "2025" }
-            },
-            ContractEndDate = new DateRange("Contract end date")
-            {
-                From = new DateComponent("Contract end date from") { Day = "1", Month = "1", Year = "2025" },
-                To = new DateComponent("Contract end date to") { Day = "1", Month = "2", Year = "2025" }
-            }
+            SubmissionDeadlineFromDay = "1",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025",
+            SubmissionDeadlineToDay = "1",
+            SubmissionDeadlineToMonth = "1",
+            SubmissionDeadlineToYear = "2025",
+            ContractStartDateFromDay = "1",
+            ContractStartDateFromMonth = "1",
+            ContractStartDateFromYear = "2025",
+            ContractStartDateToDay = "1",
+            ContractStartDateToMonth = "2",
+            ContractStartDateToYear = "2025"
         };
 
         var validationContext = new ValidationContext(searchParams);
@@ -299,24 +280,34 @@ public class SearchModelTest
     }
 
     [Fact]
-    public void DateComponent_WhenAllComponentsEmpty_ShouldBeValid()
+    public void SearchModel_WhenAllDateComponentsEmpty_ShouldBeValid()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = null, Month = null, Year = null };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = null,
+            SubmissionDeadlineFromMonth = null,
+            SubmissionDeadlineFromYear = null
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
     }
 
     [Fact]
-    public void DateComponent_WhenOnlyYearProvided_ShouldHaveValidationError()
+    public void SearchModel_WhenOnlyYearProvided_ShouldHaveValidationError()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = null, Month = null, Year = "2025" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = null,
+            SubmissionDeadlineFromMonth = null,
+            SubmissionDeadlineFromYear = "2025"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
@@ -324,24 +315,34 @@ public class SearchModelTest
     }
 
     [Fact]
-    public void DateComponent_WhenAllComponentsProvided_ShouldBeValid()
+    public void SearchModel_WhenAllDateComponentsProvided_ShouldBeValid()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = "15", Month = "6", Year = "2025" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "2025"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
     }
 
     [Fact]
-    public void DateComponent_WhenInvalidDay_ShouldHaveValidationError()
+    public void SearchModel_WhenInvalidDay_ShouldHaveValidationError()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = "32", Month = "6", Year = "2025" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "32",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "2025"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
@@ -349,12 +350,17 @@ public class SearchModelTest
     }
 
     [Fact]
-    public void DateComponent_WhenInvalidMonth_ShouldHaveValidationError()
+    public void SearchModel_WhenInvalidMonth_ShouldHaveValidationError()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = "15", Month = "13", Year = "2025" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "13",
+            SubmissionDeadlineFromYear = "2025"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
@@ -362,12 +368,17 @@ public class SearchModelTest
     }
 
     [Fact]
-    public void DateComponent_WhenInvalidYear_ShouldHaveValidationError()
+    public void SearchModel_WhenInvalidYear_ShouldHaveValidationError()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = "15", Month = "6", Year = "25" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "15",
+            SubmissionDeadlineFromMonth = "6",
+            SubmissionDeadlineFromYear = "25"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
@@ -375,15 +386,216 @@ public class SearchModelTest
     }
 
     [Fact]
-    public void DateComponent_WhenInvalidDate_ShouldHaveValidationError()
+    public void SearchModel_WhenInvalidDate_ShouldHaveValidationError()
     {
-        var dateComponent = new DateComponent("Submission deadline from") { Day = "31", Month = "2", Year = "2025" };
-        var validationContext = new ValidationContext(dateComponent);
+        var searchParams = new SearchModel
+        {
+            SubmissionDeadlineFromDay = "31",
+            SubmissionDeadlineFromMonth = "2",
+            SubmissionDeadlineFromYear = "2025"
+        };
+        var validationContext = new ValidationContext(searchParams);
         var validationResults = new List<ValidationResult>();
-        var isValid = Validator.TryValidateObject(dateComponent, validationContext, validationResults, true);
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
         validationResults[0].ErrorMessage.Should().Be("Submission deadline from must be a real date");
+    }
+
+    [Fact]
+    public void SearchModel_FilterFrameworks_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.FilterFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_FilterFrameworks_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true
+        };
+
+        searchParams.FilterFrameworks.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_FilterDynamicMarkets_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.FilterDynamicMarkets.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_FilterDynamicMarkets_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = true
+        };
+
+        searchParams.FilterDynamicMarkets.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_IsOpenFrameworks_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_IsOpenFrameworks_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            IsOpenFrameworks = true
+        };
+
+        searchParams.IsOpenFrameworks.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_IsUtilitiesOnly_DefaultsToFalse()
+    {
+        var searchParams = new SearchModel();
+
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_IsUtilitiesOnly_CanBeSetToTrue()
+    {
+        var searchParams = new SearchModel
+        {
+            IsUtilitiesOnly = true
+        };
+
+        searchParams.IsUtilitiesOnly.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterDynamicMarketsIsTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = true,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenBothFiltersAreTrue_ShouldBeValid()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true,
+            FilterDynamicMarkets = true,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        isValid.Should().BeTrue();
+        validationResults.Should().BeEmpty();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsFalse_ShouldClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterDynamicMarketsIsFalse_ShouldClearIsUtilitiesOnly()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenBothParentFiltersAreFalse_ShouldClearBothChildren()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = false,
+            IsOpenFrameworks = true,
+            FilterDynamicMarkets = false,
+            IsUtilitiesOnly = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeFalse();
+        searchParams.IsUtilitiesOnly.Should().BeFalse();
+    }
+
+    [Fact]
+    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldNotClearIsOpenFrameworks()
+    {
+        var searchParams = new SearchModel
+        {
+            FilterFrameworks = true,
+            IsOpenFrameworks = true
+        };
+
+        var validationContext = new ValidationContext(searchParams);
+        var validationResults = new List<ValidationResult>();
+        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
+
+        searchParams.IsOpenFrameworks.Should().BeTrue();
     }
 }

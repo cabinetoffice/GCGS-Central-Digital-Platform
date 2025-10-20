@@ -75,7 +75,7 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="govuk-header__navigation-item">
-                                <a class="govuk-header__link" href="@SirsiUrlService.BuildUrl("/organisation-selection")">
+                                <a class="govuk-header__link" href="@SirsiUrlService.BuildAuthenticatedUrl("/organisation-selection")">
                                     My account
                                 </a>
                             </li>

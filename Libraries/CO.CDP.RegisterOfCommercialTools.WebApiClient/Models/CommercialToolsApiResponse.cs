@@ -19,6 +19,7 @@ public class CommercialToolApiItem
     public CommercialToolBuyer? Buyer { get; set; }
     public List<CommercialToolParty>? Parties { get; set; }
     public CommercialToolTender? Tender { get; set; }
+    public List<CommercialToolAward>? Awards { get; set; }
     public CreatedAt? CreatedAt { get; set; }
 }
 
@@ -64,6 +65,7 @@ public class CommercialToolTender
     public CommercialToolValue? Value { get; set; }
     public List<CommercialToolLot>? Lots { get; set; }
     public List<CommercialToolParticipationFee>? ParticipationFees { get; set; }
+    public CommercialToolAwardPeriod? AwardPeriod { get; set; }
 }
 
 public class CommercialToolParticipationFee
@@ -127,4 +129,20 @@ public class CommercialToolIdentifier
     public string? Id { get; set; }
     public string? Name { get; set; }
     public string? Uri { get; set; }
+}
+
+public class CommercialToolAward
+{
+    public CommercialToolTenderPeriod? ContractPeriod { get; set; }
+    public CommercialToolStandstillPeriod? StandstillPeriod { get; set; }
+}
+
+public class CommercialToolStandstillPeriod
+{
+    public DateTime? EndDate { get; set; }
+}
+
+public class CommercialToolAwardPeriod
+{
+    public DateTime? EndDate { get; set; }
 }

@@ -27,6 +27,8 @@ public class IndexModelTest
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
         mockSirsiUrlService.Setup(s => s.BuildUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), null, null, null))
             .Returns<string, Guid?, string?, bool?>((path, _, _, _) => $"https://sirsi.home{path}");
+        mockSirsiUrlService.Setup(s => s.BuildAuthenticatedUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), It.IsAny<Guid?>(), null))
+            .Returns<string, Guid?, bool?>((path, orgId, _) => $"https://sirsi.home/one-login/sign-in?redirectUri={Uri.EscapeDataString($"https://sirsi.home{path}?language=en_GB&organisation_id={orgId}")}&language=en_GB");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
         mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
         var mockCpvCodeService = new Mock<ICpvCodeService>();
@@ -79,32 +81,34 @@ public class IndexModelTest
         _model.SearchParams.Should().NotBeNull();
         _model.SearchParams.Keywords.Should().BeNull();
         _model.SearchParams.SortOrder.Should().BeNull();
-        _model.SearchParams.FrameworkOptions.Should().BeNull();
-        _model.SearchParams.DynamicMarketOptions.Should().BeNull();
+        _model.SearchParams.FilterFrameworks.Should().BeFalse();
+        _model.SearchParams.IsOpenFrameworks.Should().BeFalse();
+        _model.SearchParams.FilterDynamicMarkets.Should().BeFalse();
+        _model.SearchParams.IsUtilitiesOnly.Should().BeFalse();
         _model.SearchParams.AwardMethod.Should().BeEmpty();
         _model.SearchParams.Status.Should().BeEmpty();
         _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
         _model.SearchParams.FeeMin.Should().BeNull();
         _model.SearchParams.FeeMax.Should().BeNull();
         _model.SearchParams.NoFees.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.From.Day.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.From.Month.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.From.Year.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.To.Day.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.To.Month.Should().BeNull();
-        _model.SearchParams.SubmissionDeadline.To.Year.Should().BeNull();
-        _model.SearchParams.ContractStartDate.From.Day.Should().BeNull();
-        _model.SearchParams.ContractStartDate.From.Month.Should().BeNull();
-        _model.SearchParams.ContractStartDate.From.Year.Should().BeNull();
-        _model.SearchParams.ContractStartDate.To.Day.Should().BeNull();
-        _model.SearchParams.ContractStartDate.To.Month.Should().BeNull();
-        _model.SearchParams.ContractStartDate.To.Year.Should().BeNull();
-        _model.SearchParams.ContractEndDate.From.Day.Should().BeNull();
-        _model.SearchParams.ContractEndDate.From.Month.Should().BeNull();
-        _model.SearchParams.ContractEndDate.From.Year.Should().BeNull();
-        _model.SearchParams.ContractEndDate.To.Day.Should().BeNull();
-        _model.SearchParams.ContractEndDate.To.Month.Should().BeNull();
-        _model.SearchParams.ContractEndDate.To.Year.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromDay.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromMonth.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineFromYear.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToDay.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToMonth.Should().BeNull();
+        _model.SearchParams.SubmissionDeadlineToYear.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromDay.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromMonth.Should().BeNull();
+        _model.SearchParams.ContractStartDateFromYear.Should().BeNull();
+        _model.SearchParams.ContractStartDateToDay.Should().BeNull();
+        _model.SearchParams.ContractStartDateToMonth.Should().BeNull();
+        _model.SearchParams.ContractStartDateToYear.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromDay.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromMonth.Should().BeNull();
+        _model.SearchParams.ContractEndDateFromYear.Should().BeNull();
+        _model.SearchParams.ContractEndDateToDay.Should().BeNull();
+        _model.SearchParams.ContractEndDateToMonth.Should().BeNull();
+        _model.SearchParams.ContractEndDateToYear.Should().BeNull();
     }
 
     [Fact]
@@ -112,32 +116,34 @@ public class IndexModelTest
     {
         _model.SearchParams.Keywords = "test";
         _model.SearchParams.SortOrder = "a-z";
-        _model.SearchParams.FrameworkOptions = "open";
-        _model.SearchParams.DynamicMarketOptions = "utilities-only";
+        _model.SearchParams.FilterFrameworks = true;
+        _model.SearchParams.IsOpenFrameworks = true;
+        _model.SearchParams.FilterDynamicMarkets = true;
+        _model.SearchParams.IsUtilitiesOnly = true;
         _model.SearchParams.AwardMethod = ["direct-award"];
         _model.SearchParams.Status = ["upcoming", "active-buyers"];
         _model.SearchParams.ContractingAuthorityUsage = "yes";
         _model.SearchParams.FeeMin = 0;
         _model.SearchParams.FeeMax = 100;
         _model.SearchParams.NoFees = "true";
-        _model.SearchParams.SubmissionDeadline.From.Day = "1";
-        _model.SearchParams.SubmissionDeadline.From.Month = "1";
-        _model.SearchParams.SubmissionDeadline.From.Year = "2025";
-        _model.SearchParams.SubmissionDeadline.To.Day = "31";
-        _model.SearchParams.SubmissionDeadline.To.Month = "1";
-        _model.SearchParams.SubmissionDeadline.To.Year = "2025";
-        _model.SearchParams.ContractStartDate.From.Day = "1";
-        _model.SearchParams.ContractStartDate.From.Month = "2";
-        _model.SearchParams.ContractStartDate.From.Year = "2025";
-        _model.SearchParams.ContractStartDate.To.Day = "28";
-        _model.SearchParams.ContractStartDate.To.Month = "2";
-        _model.SearchParams.ContractStartDate.To.Year = "2025";
-        _model.SearchParams.ContractEndDate.From.Day = "1";
-        _model.SearchParams.ContractEndDate.From.Month = "1";
-        _model.SearchParams.ContractEndDate.From.Year = "2026";
-        _model.SearchParams.ContractEndDate.To.Day = "31";
-        _model.SearchParams.ContractEndDate.To.Month = "1";
-        _model.SearchParams.ContractEndDate.To.Year = "2026";
+        _model.SearchParams.SubmissionDeadlineFromDay = "1";
+        _model.SearchParams.SubmissionDeadlineFromMonth = "1";
+        _model.SearchParams.SubmissionDeadlineFromYear = "2025";
+        _model.SearchParams.SubmissionDeadlineToDay = "31";
+        _model.SearchParams.SubmissionDeadlineToMonth = "1";
+        _model.SearchParams.SubmissionDeadlineToYear = "2025";
+        _model.SearchParams.ContractStartDateFromDay = "1";
+        _model.SearchParams.ContractStartDateFromMonth = "2";
+        _model.SearchParams.ContractStartDateFromYear = "2025";
+        _model.SearchParams.ContractStartDateToDay = "28";
+        _model.SearchParams.ContractStartDateToMonth = "2";
+        _model.SearchParams.ContractStartDateToYear = "2025";
+        _model.SearchParams.ContractEndDateFromDay = "1";
+        _model.SearchParams.ContractEndDateFromMonth = "1";
+        _model.SearchParams.ContractEndDateFromYear = "2026";
+        _model.SearchParams.ContractEndDateToDay = "31";
+        _model.SearchParams.ContractEndDateToMonth = "1";
+        _model.SearchParams.ContractEndDateToYear = "2026";
 
         _mockSearchService.Setup(s => s.SearchAsync(_model.SearchParams, 1, 10))
             .ReturnsAsync((new List<SearchResult>(), 0));
@@ -146,32 +152,34 @@ public class IndexModelTest
 
         _model.SearchParams.Keywords.Should().Be("test");
         _model.SearchParams.SortOrder.Should().Be("a-z");
-        _model.SearchParams.FrameworkOptions.Should().Be("open");
-        _model.SearchParams.DynamicMarketOptions.Should().Be("utilities-only");
+        _model.SearchParams.FilterFrameworks.Should().BeTrue();
+        _model.SearchParams.IsOpenFrameworks.Should().BeTrue();
+        _model.SearchParams.FilterDynamicMarkets.Should().BeTrue();
+        _model.SearchParams.IsUtilitiesOnly.Should().BeTrue();
         _model.SearchParams.AwardMethod.Should().BeEquivalentTo(["direct-award"]);
         _model.SearchParams.Status.Should().BeEquivalentTo(["upcoming", "active-buyers"]);
         _model.SearchParams.ContractingAuthorityUsage.Should().Be("yes");
         _model.SearchParams.FeeMin.Should().Be(0);
         _model.SearchParams.FeeMax.Should().Be(100);
         _model.SearchParams.NoFees.Should().Be("true");
-        _model.SearchParams.SubmissionDeadline.From.Day.Should().Be("1");
-        _model.SearchParams.SubmissionDeadline.From.Month.Should().Be("1");
-        _model.SearchParams.SubmissionDeadline.From.Year.Should().Be("2025");
-        _model.SearchParams.SubmissionDeadline.To.Day.Should().Be("31");
-        _model.SearchParams.SubmissionDeadline.To.Month.Should().Be("1");
-        _model.SearchParams.SubmissionDeadline.To.Year.Should().Be("2025");
-        _model.SearchParams.ContractStartDate.From.Day.Should().Be("1");
-        _model.SearchParams.ContractStartDate.From.Month.Should().Be("2");
-        _model.SearchParams.ContractStartDate.From.Year.Should().Be("2025");
-        _model.SearchParams.ContractStartDate.To.Day.Should().Be("28");
-        _model.SearchParams.ContractStartDate.To.Month.Should().Be("2");
-        _model.SearchParams.ContractStartDate.To.Year.Should().Be("2025");
-        _model.SearchParams.ContractEndDate.From.Day.Should().Be("1");
-        _model.SearchParams.ContractEndDate.From.Month.Should().Be("1");
-        _model.SearchParams.ContractEndDate.From.Year.Should().Be("2026");
-        _model.SearchParams.ContractEndDate.To.Day.Should().Be("31");
-        _model.SearchParams.ContractEndDate.To.Month.Should().Be("1");
-        _model.SearchParams.ContractEndDate.To.Year.Should().Be("2026");
+        _model.SearchParams.SubmissionDeadlineFromDay.Should().Be("1");
+        _model.SearchParams.SubmissionDeadlineFromMonth.Should().Be("1");
+        _model.SearchParams.SubmissionDeadlineFromYear.Should().Be("2025");
+        _model.SearchParams.SubmissionDeadlineToDay.Should().Be("31");
+        _model.SearchParams.SubmissionDeadlineToMonth.Should().Be("1");
+        _model.SearchParams.SubmissionDeadlineToYear.Should().Be("2025");
+        _model.SearchParams.ContractStartDateFromDay.Should().Be("1");
+        _model.SearchParams.ContractStartDateFromMonth.Should().Be("2");
+        _model.SearchParams.ContractStartDateFromYear.Should().Be("2025");
+        _model.SearchParams.ContractStartDateToDay.Should().Be("28");
+        _model.SearchParams.ContractStartDateToMonth.Should().Be("2");
+        _model.SearchParams.ContractStartDateToYear.Should().Be("2025");
+        _model.SearchParams.ContractEndDateFromDay.Should().Be("1");
+        _model.SearchParams.ContractEndDateFromMonth.Should().Be("1");
+        _model.SearchParams.ContractEndDateFromYear.Should().Be("2026");
+        _model.SearchParams.ContractEndDateToDay.Should().Be("31");
+        _model.SearchParams.ContractEndDateToMonth.Should().Be("1");
+        _model.SearchParams.ContractEndDateToYear.Should().Be("2026");
     }
 
     [Fact]
@@ -233,7 +241,8 @@ public class IndexModelTest
 
         await _model.OnGetAsync();
 
-        _model.HomeUrl.Should().Be($"https://sirsi.home/organisation/{organisationId}/buyer");
+        _model.HomeUrl.Should().StartWith("https://sirsi.home/one-login/sign-in?");
+        _model.HomeUrl.Should().Contain($"%2Forganisation%2F{organisationId}%2Fbuyer");
     }
 
     [Fact]

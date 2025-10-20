@@ -25,6 +25,13 @@ resource "aws_cloudwatch_log_group" "ecs" {
   tags = var.tags
 }
 
+resource "aws_cloudwatch_log_group" "ecs_php" {
+  name = "/${local.name_prefix}/ecs-pup"
+
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
+
 resource "aws_cloudwatch_log_group" "tasks" {
   for_each = toset(local.tasks)
 

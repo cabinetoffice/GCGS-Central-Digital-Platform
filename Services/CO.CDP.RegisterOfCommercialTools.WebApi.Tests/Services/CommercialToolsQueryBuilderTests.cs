@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
 using System.Globalization;
 
@@ -23,7 +24,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test").Build(BaseUrl);
+        var result = builder.WithKeywords(["test"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -35,7 +36,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("");
+        var result = builder.WithKeywords([], KeywordSearchMode.Any);
 
         result.Should().BeSameAs(builder);
     }
@@ -45,39 +46,39 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords(null!);
+        var result = builder.WithKeywords(null, KeywordSearchMode.Any);
 
         result.Should().BeSameAs(builder);
     }
 
     [Fact]
-    public void WithKeywords_WhenSpaceSeparatedWords_ShouldUseOrLogic()
+    public void WithKeywords_WhenMultipleTermsWithAnyMode_ShouldUseOrLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("radio televisions").Build(BaseUrl);
+        var result = builder.WithKeywords(["radio", "televisions"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20or%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenPlusOperatorUsed_ShouldUseAndLogic()
+    public void WithKeywords_WhenMultipleTermsWithAllMode_ShouldUseAndLogic()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("administration + defence").Build(BaseUrl);
+        var result = builder.WithKeywords(["administration", "defence"], KeywordSearchMode.All).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20and%20");
     }
 
     [Fact]
-    public void WithKeywords_WhenQuotedPhrase_ShouldSearchForExactPhrase()
+    public void WithKeywords_WhenExactMode_ShouldSearchForExactPhrase()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("\"market research\"").Build(BaseUrl);
+        var result = builder.WithKeywords(["market research"], KeywordSearchMode.Exact).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -85,11 +86,11 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithKeywords_WhenMultiplePlusOperators_ShouldUseAndLogicForAll()
+    public void WithKeywords_WhenMultipleTermsWithAllMode_ShouldUseAndLogicForAll()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("technology + innovation + digital").Build(BaseUrl);
+        var result = builder.WithKeywords(["technology", "innovation", "digital"], KeywordSearchMode.All).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("%20and%20");
@@ -196,8 +197,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2025, 6, 1);
 
         var result = builder.ContractStartDateFrom(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2025-06-01) or tender/techniques/frameworkAgreement/periodEndDate ge 2025-06-01");
     }
 
     [Fact]
@@ -207,8 +209,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2025, 6, 30);
 
         var result = builder.ContractStartDateTo(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2025-06-30) or tender/techniques/frameworkAgreement/periodEndDate le 2025-06-30");
     }
 
     [Fact]
@@ -218,8 +221,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2026, 5, 31);
 
         var result = builder.ContractEndDateFrom(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.endDate.from]=2026-05-31");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2026-05-31) or tender/techniques/frameworkAgreement/periodEndDate ge 2026-05-31");
     }
 
     [Fact]
@@ -229,8 +233,9 @@ public class CommercialToolsQueryBuilderTests
         var date = new DateTime(2026, 12, 31);
 
         var result = builder.ContractEndDateTo(date).Build(BaseUrl);
+        var decoded = Uri.UnescapeDataString(result);
 
-        result.Should().Contain("filter[tender.lots.contractPeriod.endDate.to]=2026-12-31");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2026-12-31) or tender/techniques/frameworkAgreement/periodEndDate le 2026-12-31");
     }
 
     [Fact]
@@ -336,7 +341,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithKeywords("test").Build(BaseUrl);
+        var result = builder.WithKeywords(["test"], KeywordSearchMode.Any).Build(BaseUrl);
 
         result.Should().Contain("$filter=");
         result.Should().Contain("contains");
@@ -346,7 +351,7 @@ public class CommercialToolsQueryBuilderTests
     public void ChainedOperations_ShouldReturnImmutableInstances()
     {
         var builder1 = new CommercialToolsQueryBuilder();
-        var builder2 = builder1.WithKeywords("test");
+        var builder2 = builder1.WithKeywords(["test"], KeywordSearchMode.Any);
         var builder3 = builder2.WithStatus("Active");
 
         builder1.Should().NotBeSameAs(builder2);
@@ -372,7 +377,7 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder
-            .WithKeywords("IT services")
+            .WithKeywords(["IT", "services"], KeywordSearchMode.Any)
             .WithStatus("Active")
             .FeeFrom(100.50m)
             .FeeTo(999.99m)
@@ -391,8 +396,11 @@ public class CommercialToolsQueryBuilderTests
         result.Should().Contain("filter[tender.participationFees.relativeValue.proportion.to]=9.9999");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.from]=2025-01-01");
         result.Should().Contain("filter[tender.tenderPeriod.endDate.to]=2025-12-31");
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.from]=2025-06-01");
-        result.Should().Contain("filter[tender.lots.contractPeriod.startDate.to]=2025-06-30");
+
+        var decoded = Uri.UnescapeDataString(result);
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate ge 2025-06-01) or tender/techniques/frameworkAgreement/periodEndDate ge 2025-06-01");
+        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2025-06-30) or tender/techniques/frameworkAgreement/periodEndDate le 2025-06-30");
+
         result.Should().Contain("$top=25");
         result.Should().Contain("$skip=25");
     }
@@ -546,9 +554,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithOrderBy("relevance").Build(BaseUrl);
 
-        result.Should().Contain("$orderby=");
-        result.Should().Contain("tender%2Fstatus%20desc");
-        result.Should().Contain("tender%2FtenderPeriod%2FendDate%20asc");
+        result.Should().Contain("$orderby=tender%2FcreatedDate%20desc");
     }
 
     [Fact]
