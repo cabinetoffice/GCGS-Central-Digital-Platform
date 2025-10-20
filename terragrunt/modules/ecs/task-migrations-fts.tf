@@ -13,7 +13,7 @@ module "ecs_migration_tasks_fts" {
     )
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.php_cluster_id
   container_port         = each.value.port
   cpu                    = each.value.cpu
   ecs_alb_sg_id          = "N/A"
