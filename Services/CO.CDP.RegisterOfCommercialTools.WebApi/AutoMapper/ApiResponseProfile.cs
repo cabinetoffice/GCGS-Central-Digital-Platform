@@ -32,8 +32,7 @@ public class ApiResponseProfile : Profile
         {
             "active" => CommercialToolStatus.Active,
             "planning" or "planned" => CommercialToolStatus.Upcoming,
-            "awarded" => CommercialToolStatus.Awarded,
-            "complete" => CommercialToolStatus.Complete,
+            "complete" => CommercialToolStatus.Awarded,
             "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Cancelled,
             _ => CommercialToolStatus.Unknown
         };

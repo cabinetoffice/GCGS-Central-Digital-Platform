@@ -6,6 +6,5 @@ public enum CommercialToolStatus
     Active,
     Cancelled,
     Awarded,
-    Upcoming,
-    Complete
+    Upcoming
 }
