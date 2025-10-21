@@ -276,8 +276,8 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
         var orderByClause = sortBy.ToLowerInvariant() switch
         {
-            "a-z" => "tolower(tender/title) asc",
-            "z-a" => "tolower(tender/title) desc",
+            "a-z" => "tender/title asc",
+            "z-a" => "tender/title desc",
             "relevance" => "tender/createdDate desc",
             _ => null
         };
