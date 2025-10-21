@@ -8,7 +8,7 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true);
     ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true);
     ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true);
-    ICommercialToolsQueryBuilder WithStatus(string status);
+    ICommercialToolsQueryBuilder WithStatuses(List<string>? statuses);
     ICommercialToolsQueryBuilder FeeFrom(decimal from);
     ICommercialToolsQueryBuilder FeeTo(decimal to);
     ICommercialToolsQueryBuilder SubmissionDeadlineFrom(DateTime from);
@@ -19,9 +19,9 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to);
     ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType);
     ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId);
-    ICommercialToolsQueryBuilder WithLocation(string location);
-    ICommercialToolsQueryBuilder WithCpv(string cpv);
-    ICommercialToolsQueryBuilder WithAwardMethod(string awardMethod);
+    ICommercialToolsQueryBuilder WithLocationCodes(List<string>? locationCodes);
+    ICommercialToolsQueryBuilder WithCpvCodes(List<string>? cpvCodes);
+    ICommercialToolsQueryBuilder WithAwardMethods(List<string>? awardMethods);
     ICommercialToolsQueryBuilder WithSkip(int skip);
     ICommercialToolsQueryBuilder WithTop(int top);
     ICommercialToolsQueryBuilder WithCustomFilter(string filter);

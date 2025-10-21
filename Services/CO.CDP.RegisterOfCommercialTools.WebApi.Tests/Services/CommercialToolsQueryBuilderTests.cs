@@ -117,31 +117,118 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithStatus_WhenActiveProvided_ShouldAddODataFilter()
+    public void WithStatuses_WhenActiveProvided_ShouldAddODataFilter()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithStatus("Active").Build(BaseUrl);
+        var result = builder.WithStatuses(["Active"]).Build(BaseUrl);
 
         result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
     }
 
     [Fact]
-    public void WithStatus_WhenUpcomingProvided_ShouldAddODataFilterWithOrCondition()
+    public void WithStatuses_WhenUpcomingProvided_ShouldAddODataFilterWithOrCondition()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithStatus("upcoming").Build(BaseUrl);
+        var result = builder.WithStatuses(["upcoming"]).Build(BaseUrl);
 
         result.Should().Contain("$filter=%28tender%2Fstatus%20eq%20%27planned%27%20or%20tender%2Fstatus%20eq%20%27planning%27%29");
     }
 
     [Fact]
-    public void WithStatus_WhenStatusEmpty_ShouldReturnSameInstance()
+    public void WithStatuses_WhenStatusEmpty_ShouldReturnSameInstance()
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.WithStatus("");
+        var result = builder.WithStatuses([]);
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenSingleLocationProvided_ShouldAddODataFilter()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["UKC22"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC22%27%29%29");
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenMultipleLocationsProvided_ShouldAddODataFilterWithOrCondition()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["UKC22", "UKD11"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC22%27%20or%20d%2Fregion%20eq%20%27UKD11%27%29%29");
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenEmptyList_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes([]);
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenNull_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(null);
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithCpvCodes_WhenSingleCodeProvided_ShouldSearchBothLocations()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithCpvCodes(["30000000"]).Build(BaseUrl);
+
+        result.Should().Contain("tender%2Fclassification%2Fscheme%20eq%20%27CPV%27%20and%20tender%2Fclassification%2FclassificationId%20eq%20%2730000000%27");
+        result.Should().Contain("tender%2Fitems%2Fany%28i%3A%20i%2Fclassifications%2Fany%28c%3A%20c%2Fscheme%20eq%20%27CPV%27%20and%20c%2FclassificationId%20eq%20%2730000000%27%29%29");
+        result.Should().Contain("%20or%20");
+    }
+
+    [Fact]
+    public void WithCpvCodes_WhenMultipleCodesProvided_ShouldSearchBothLocationsWithOrCondition()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithCpvCodes(["30000000", "48000000"]).Build(BaseUrl);
+
+        result.Should().Contain("tender%2Fclassification%2Fscheme%20eq%20%27CPV%27");
+        result.Should().Contain("tender%2Fclassification%2FclassificationId%20eq%20%2730000000%27");
+        result.Should().Contain("tender%2Fclassification%2FclassificationId%20eq%20%2748000000%27");
+        result.Should().Contain("tender%2Fitems%2Fany%28i%3A%20i%2Fclassifications%2Fany%28c%3A%20c%2Fscheme%20eq%20%27CPV%27");
+        result.Should().Contain("c%2FclassificationId%20eq%20%2730000000%27");
+        result.Should().Contain("c%2FclassificationId%20eq%20%2748000000%27");
+    }
+
+    [Fact]
+    public void WithCpvCodes_WhenEmptyList_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithCpvCodes([]);
+
+        result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithCpvCodes_WhenNull_ShouldReturnSameInstance()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithCpvCodes(null);
 
         result.Should().BeSameAs(builder);
     }
@@ -330,7 +417,7 @@ public class CommercialToolsQueryBuilderTests
         var builder = new CommercialToolsQueryBuilder();
         var baseUrlWithQuery = "https://api.example.com/tenders?existing=param";
 
-        var result = builder.WithStatus("Active").Build(baseUrlWithQuery);
+        var result = builder.WithStatuses(["Active"]).Build(baseUrlWithQuery);
 
         result.Should().StartWith(baseUrlWithQuery);
         result.Should().Contain("$filter=tender%2Fstatus%20eq%20%27active%27");
@@ -352,7 +439,7 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder1 = new CommercialToolsQueryBuilder();
         var builder2 = builder1.WithKeywords(["test"], KeywordSearchMode.Any);
-        var builder3 = builder2.WithStatus("Active");
+        var builder3 = builder2.WithStatuses(["Active"]);
 
         builder1.Should().NotBeSameAs(builder2);
         builder2.Should().NotBeSameAs(builder3);
@@ -378,7 +465,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder
             .WithKeywords(["IT", "services"], KeywordSearchMode.Any)
-            .WithStatus("Active")
+            .WithStatuses(["Active"])
             .FeeFrom(100.50m)
             .FeeTo(999.99m)
             .SubmissionDeadlineFrom(new DateTime(2025, 1, 1))
