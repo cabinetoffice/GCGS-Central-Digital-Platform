@@ -10,4 +10,8 @@
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\CO.CDP.Functional\CO.CDP.Functional.csproj" />
+    </ItemGroup>
+
 </Project>

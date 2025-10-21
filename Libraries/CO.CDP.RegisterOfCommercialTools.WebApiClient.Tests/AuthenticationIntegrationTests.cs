@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using FluentAssertions;
 using Moq;
@@ -79,8 +80,10 @@ public class AuthenticationIntegrationTests
 
         var result = await client.SearchAsync(request);
 
-        result.Should().NotBeNull();
-        result!.TotalCount.Should().Be(5);
+        result.IsRight().Should().BeTrue();
+        result.Match(
+            error => Assert.Fail($"Expected success but got error: {error.Message}"),
+            success => success.TotalCount.Should().Be(5));
         customHandler.RequestProcessed.Should().BeTrue();
     }
 

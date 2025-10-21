@@ -1,4 +1,6 @@
+using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
@@ -57,14 +59,19 @@ public class CommercialToolsApiClientTests
 
         var result = await client.SearchAsync(request);
 
-        result.Should().NotBeNull();
-        result!.TotalCount.Should().Be(1);
-        result.Results.Should().HaveCount(1);
-        result.Results.First().Title.Should().Be("Test Tool");
+        result.IsRight().Should().BeTrue();
+        result.Match(
+            error => Assert.Fail($"Expected success but got error: {error.Message}"),
+            success =>
+            {
+                success.TotalCount.Should().Be(1);
+                success.Results.Should().HaveCount(1);
+                success.Results.First().Title.Should().Be("Test Tool");
+            });
     }
 
     [Fact]
-    public async Task SearchAsync_ReturnsNull_WhenApiCallFails()
+    public async Task SearchAsync_ReturnsClientError_WhenApiCallFails()
     {
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
@@ -89,7 +96,15 @@ public class CommercialToolsApiClientTests
 
         var result = await client.SearchAsync(request);
 
-        result.Should().BeNull();
+        result.IsLeft().Should().BeTrue();
+        result.Match(
+            error =>
+            {
+                error.Should().BeOfType<ClientError>();
+                var clientError = (ClientError)error;
+                clientError.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            },
+            _ => Assert.Fail("Expected error but got success"));
     }
 
     [Theory]
