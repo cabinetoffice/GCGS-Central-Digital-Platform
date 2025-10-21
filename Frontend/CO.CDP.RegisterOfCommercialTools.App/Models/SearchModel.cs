@@ -26,7 +26,7 @@ public class SearchModel : IValidatableObject
 
     [FromQuery(Name = "no_fees")] public string? NoFees { get; set; }
     [FromQuery(Name = "status")] public List<string> Status { get; set; } = [];
-    [FromQuery(Name = "usage")] public string? ContractingAuthorityUsage { get; set; }
+    [FromQuery(Name = "usage")] public List<string> ContractingAuthorityUsage { get; set; } = [];
 
     [FromQuery(Name = "cpv")] public List<string> CpvCodes { get; set; } = [];
     [FromQuery(Name = "location")] public List<string> LocationCodes { get; set; } = [];

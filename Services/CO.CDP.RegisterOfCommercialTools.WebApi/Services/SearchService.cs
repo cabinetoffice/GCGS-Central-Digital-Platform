@@ -104,10 +104,17 @@ public class SearchService(
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(request.ContractingAuthorityUsage))
+        if (request.ContractingAuthorityUsage != null && request.ContractingAuthorityUsage.Count > 0)
         {
-            var frameworkType = request.ContractingAuthorityUsage.ToLowerInvariant() == "yes" ? "open" : "closed";
-            queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
+            var usageValues = request.ContractingAuthorityUsage
+                .Select(v => v.ToLowerInvariant())
+                .ToList();
+
+            if (usageValues.Count == 1)
+            {
+                var frameworkType = usageValues[0] == "yes" ? "open" : "closed";
+                queryBuilder = queryBuilder.WithFrameworkType(frameworkType);
+            }
         }
 
         if (request.AwardMethod != null && request.AwardMethod.Count > 0)

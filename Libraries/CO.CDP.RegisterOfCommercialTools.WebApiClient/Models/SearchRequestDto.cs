@@ -20,7 +20,7 @@ public class SearchRequestDto
     public bool IsUtilitiesOnly { get; set; }
     public string? FrameworkOptions { get; set; }
     public string? DynamicMarketOptions { get; set; }
-    public string? ContractingAuthorityUsage { get; set; }
+    public List<string>? ContractingAuthorityUsage { get; set; }
     public List<string>? CpvCodes { get; set; }
     public List<string>? LocationCodes { get; set; }
     public string? SortBy { get; set; }

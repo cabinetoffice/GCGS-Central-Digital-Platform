@@ -87,7 +87,7 @@ public class IndexModelTest
         _model.SearchParams.IsUtilitiesOnly.Should().BeFalse();
         _model.SearchParams.AwardMethod.Should().BeEmpty();
         _model.SearchParams.Status.Should().BeEmpty();
-        _model.SearchParams.ContractingAuthorityUsage.Should().BeNull();
+        _model.SearchParams.ContractingAuthorityUsage.Should().BeEmpty();
         _model.SearchParams.FeeMin.Should().BeNull();
         _model.SearchParams.FeeMax.Should().BeNull();
         _model.SearchParams.NoFees.Should().BeNull();
@@ -122,7 +122,7 @@ public class IndexModelTest
         _model.SearchParams.IsUtilitiesOnly = true;
         _model.SearchParams.AwardMethod = ["direct-award"];
         _model.SearchParams.Status = ["upcoming", "active-buyers"];
-        _model.SearchParams.ContractingAuthorityUsage = "yes";
+        _model.SearchParams.ContractingAuthorityUsage = ["yes"];
         _model.SearchParams.FeeMin = 0;
         _model.SearchParams.FeeMax = 100;
         _model.SearchParams.NoFees = "true";
@@ -158,7 +158,7 @@ public class IndexModelTest
         _model.SearchParams.IsUtilitiesOnly.Should().BeTrue();
         _model.SearchParams.AwardMethod.Should().BeEquivalentTo(["direct-award"]);
         _model.SearchParams.Status.Should().BeEquivalentTo(["upcoming", "active-buyers"]);
-        _model.SearchParams.ContractingAuthorityUsage.Should().Be("yes");
+        _model.SearchParams.ContractingAuthorityUsage.Should().BeEquivalentTo(["yes"]);
         _model.SearchParams.FeeMin.Should().Be(0);
         _model.SearchParams.FeeMax.Should().Be(100);
         _model.SearchParams.NoFees.Should().Be("true");

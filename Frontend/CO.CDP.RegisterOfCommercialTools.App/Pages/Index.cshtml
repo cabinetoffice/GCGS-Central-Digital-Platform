@@ -121,7 +121,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
                 <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
                 <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>
-                <input type="hidden" name="usage" value="@Model.SearchParams.ContractingAuthorityUsage"/>
+                @foreach (var usage in Model.SearchParams.ContractingAuthorityUsage)
+                {
+                    <input type="hidden" name="usage" value="@usage"/>
+                }
                 @foreach (var status in Model.SearchParams.Status)
                 {
                     <input type="hidden" name="status" value="@status"/>

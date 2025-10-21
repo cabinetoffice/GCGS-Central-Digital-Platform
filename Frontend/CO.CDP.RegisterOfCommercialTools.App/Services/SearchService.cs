@@ -31,6 +31,7 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             IsUtilitiesOnly = searchModel.IsUtilitiesOnly,
             CpvCodes = searchModel.CpvCodes.Any() ? searchModel.CpvCodes : null,
             LocationCodes = searchModel.LocationCodes.Any() ? searchModel.LocationCodes : null,
+            ContractingAuthorityUsage = searchModel.ContractingAuthorityUsage.Any() ? searchModel.ContractingAuthorityUsage : null,
             PageNumber = pageNumber
         };
 
