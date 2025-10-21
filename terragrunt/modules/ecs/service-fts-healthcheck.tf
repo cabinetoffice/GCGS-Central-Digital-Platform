@@ -16,6 +16,7 @@ module "ecs_service_fts_healthcheck" {
       lg_name                    = aws_cloudwatch_log_group.tasks[var.service_configs.fts_healthcheck.name].name
       lg_prefix                  = "app"
       lg_region                  = data.aws_region.current.name
+      listener_name              = local.is_php_migrated_env ?  "php-${var.service_configs.fts.name}" : null
       memory                     = var.service_configs.fts_healthcheck.memory
       name                       = var.service_configs.fts_healthcheck.name
       public_domain              = var.public_domain
