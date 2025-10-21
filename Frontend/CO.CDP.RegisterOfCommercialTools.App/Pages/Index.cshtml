@@ -22,17 +22,17 @@
         "award-method",
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    ) { IsOpen = true };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
         "_IndustryCpvCodeAccordionContent", Model
-        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
+        ) { IsOpen = true };
     var contractLocationAccordion = new Accordion(
         "contract-location",
         "Contract location",
         "_ContractLocationAccordionContent", Model
-    ) { IsOpen = Model.OpenAccordions.Contains("contract-location") };
+    ) { IsOpen = true };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
