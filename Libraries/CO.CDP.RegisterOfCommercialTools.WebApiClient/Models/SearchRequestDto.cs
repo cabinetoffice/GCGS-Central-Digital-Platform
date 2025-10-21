@@ -7,10 +7,8 @@ public class SearchRequestDto
     public string? Status { get; set; }
     public DateTime? SubmissionDeadlineFrom { get; set; }
     public DateTime? SubmissionDeadlineTo { get; set; }
-    public DateTime? ContractStartDateFrom { get; set; }
-    public DateTime? ContractStartDateTo { get; set; }
-    public DateTime? ContractEndDateFrom { get; set; }
-    public DateTime? ContractEndDateTo { get; set; }
+    public DateTime? ContractStartDate { get; set; }
+    public DateTime? ContractEndDate { get; set; }
     public decimal? MinFees { get; set; }
     public decimal? MaxFees { get; set; }
     public List<string>? AwardMethod { get; set; }

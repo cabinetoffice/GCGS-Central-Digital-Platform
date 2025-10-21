@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -84,7 +85,11 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
@@ -101,27 +106,33 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnEmptyResults()
+    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnFailure()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = "null";
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        results.Should().BeEmpty();
-        totalCount.Should().Be(0);
+        result.Match(
+            error => { error.Should().BeOfType<DeserialisationError>(); return true; },
+            _ => { Assert.Fail("Expected error but got success"); return false; }
+        );
     }
 
     [Fact]
-    public async Task SearchCommercialTools_WhenHttpRequestFails_ShouldThrow()
+    public async Task SearchCommercialTools_WhenHttpRequestFails_ShouldReturnServerError()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         SetupHttpResponse(HttpStatusCode.InternalServerError, "Server Error");
 
-        var action = async () => await _service.SearchCommercialToolsWithCount(queryUrl);
-        await action.Should().ThrowAsync<HttpRequestException>();
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+
+        result.Match(
+            error => { error.Should().BeOfType<ServerError>(); return true; },
+            _ => { Assert.Fail("Expected error but got success"); return false; }
+        );
     }
 
 
@@ -152,7 +163,11 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, _) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
@@ -200,7 +215,11 @@ public class CommercialToolsServiceTests
                 ItExpr.IsAny<CancellationToken>())
             .ReturnsAsync(response);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, totalCount) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);

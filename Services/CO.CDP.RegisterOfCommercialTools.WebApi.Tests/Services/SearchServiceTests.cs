@@ -1,5 +1,6 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -35,10 +36,8 @@ public class SearchServiceTests
             Status = "Active",
             SubmissionDeadlineFrom = new DateTime(2025, 1, 1),
             SubmissionDeadlineTo = new DateTime(2025, 12, 31),
-            ContractStartDateFrom = new DateTime(2025, 6, 1),
-            ContractStartDateTo = new DateTime(2025, 6, 30),
-            ContractEndDateFrom = new DateTime(2026, 1, 1),
-            ContractEndDateTo = new DateTime(2026, 12, 31),
+            ContractStartDate = new DateTime(2025, 6, 1),
+            ContractEndDate = new DateTime(2026, 12, 31),
             MinFees = 100.50m,
             MaxFees = 999.99m,
             PageNumber = 2
@@ -60,10 +59,8 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithCustomFilter(It.IsAny<string>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31))).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.ContractStartDateFrom(new DateTime(2025, 6, 1))).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.ContractStartDateTo(new DateTime(2025, 6, 30))).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.ContractEndDateFrom(new DateTime(2026, 1, 1))).Returns(mockBuilder.Object);
-        mockBuilder.Setup(x => x.ContractEndDateTo(new DateTime(2026, 12, 31))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.ContractStartDate(new DateTime(2025, 6, 1))).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.ContractEndDate(new DateTime(2026, 12, 31))).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithAwardMethods(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithCpvCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithLocationCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
@@ -73,9 +70,13 @@ public class SearchServiceTests
         {
             new() { Id = "003033-2025", Title = "Test Result" }
         };
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 100));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 100)));
 
-        var result = await _searchService.Search(request);
+        var apiResult = await _searchService.Search(request);
+        var result = apiResult.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default!; },
+            value => value
+        );
 
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(100);
@@ -87,10 +88,8 @@ public class SearchServiceTests
         mockBuilder.Verify(x => x.WithSkip(20), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
         mockBuilder.Verify(x => x.SubmissionDeadlineTo(new DateTime(2025, 12, 31)), Times.Once);
-        mockBuilder.Verify(x => x.ContractStartDateFrom(new DateTime(2025, 6, 1)), Times.Once);
-        mockBuilder.Verify(x => x.ContractStartDateTo(new DateTime(2025, 6, 30)), Times.Once);
-        mockBuilder.Verify(x => x.ContractEndDateFrom(new DateTime(2026, 1, 1)), Times.Once);
-        mockBuilder.Verify(x => x.ContractEndDateTo(new DateTime(2026, 12, 31)), Times.Once);
+        mockBuilder.Verify(x => x.ContractStartDate(new DateTime(2025, 6, 1)), Times.Once);
+        mockBuilder.Verify(x => x.ContractEndDate(new DateTime(2026, 12, 31)), Times.Once);
         _mockRepository.Verify(x => x.SearchCommercialToolsWithCount(queryUrl), Times.Once);
     }
 
@@ -119,9 +118,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
-        var result = await _searchService.Search(request);
+        var apiResult = await _searchService.Search(request);
+        var result = apiResult.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default!; },
+            value => value
+        );
 
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
@@ -130,10 +133,8 @@ public class SearchServiceTests
 
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(It.IsAny<DateTime>()), Times.Never);
         mockBuilder.Verify(x => x.SubmissionDeadlineTo(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractStartDateFrom(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractStartDateTo(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractEndDateFrom(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractEndDateTo(It.IsAny<DateTime>()), Times.Never);
+        mockBuilder.Verify(x => x.ContractStartDate(It.IsAny<DateTime>()), Times.Never);
+        mockBuilder.Verify(x => x.ContractEndDate(It.IsAny<DateTime>()), Times.Never);
     }
 
     [Fact]
@@ -164,19 +165,21 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
-        var result = await _searchService.Search(request);
+        var apiResult = await _searchService.Search(request);
+        var result = apiResult.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default!; },
+            value => value
+        );
 
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
         mockBuilder.Verify(x => x.SubmissionDeadlineFrom(new DateTime(2025, 1, 1)), Times.Once);
 
         mockBuilder.Verify(x => x.SubmissionDeadlineTo(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractStartDateFrom(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractStartDateTo(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractEndDateFrom(It.IsAny<DateTime>()), Times.Never);
-        mockBuilder.Verify(x => x.ContractEndDateTo(It.IsAny<DateTime>()), Times.Never);
+        mockBuilder.Verify(x => x.ContractStartDate(It.IsAny<DateTime>()), Times.Never);
+        mockBuilder.Verify(x => x.ContractEndDate(It.IsAny<DateTime>()), Times.Never);
     }
 
 
@@ -206,9 +209,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
-        var result = await _searchService.Search(request);
+        var apiResult = await _searchService.Search(request);
+        var result = apiResult.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default!; },
+            value => value
+        );
 
         result.Results.Should().BeEquivalentTo(expectedResults);
         result.TotalCount.Should().Be(0);
@@ -257,7 +264,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -288,7 +295,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -319,7 +326,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -350,7 +357,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -381,7 +388,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -412,7 +419,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -443,7 +450,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -475,7 +482,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -506,7 +513,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -538,7 +545,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -571,7 +578,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -603,7 +610,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -635,7 +642,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -667,7 +674,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -704,7 +711,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -739,7 +746,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -773,7 +780,7 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 

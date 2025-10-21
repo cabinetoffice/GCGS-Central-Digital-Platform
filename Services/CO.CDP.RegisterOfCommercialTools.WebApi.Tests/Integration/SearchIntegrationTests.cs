@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.TestKit.Mvc;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -183,7 +184,7 @@ public class SearchIntegrationTests
 
         mockRepository
             .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
-            .ReturnsAsync((defaultResults, 50));
+            .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((defaultResults, 50)));
 
     }
 }

@@ -13,10 +13,8 @@ public interface ICommercialToolsQueryBuilder
     ICommercialToolsQueryBuilder FeeTo(decimal to);
     ICommercialToolsQueryBuilder SubmissionDeadlineFrom(DateTime from);
     ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to);
-    ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from);
-    ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to);
-    ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from);
-    ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to);
+    ICommercialToolsQueryBuilder ContractStartDate(DateTime from);
+    ICommercialToolsQueryBuilder ContractEndDate(DateTime to);
     ICommercialToolsQueryBuilder WithFrameworkType(string frameworkType);
     ICommercialToolsQueryBuilder WithBuyerClassificationRestrictions(string restrictionId);
     ICommercialToolsQueryBuilder WithLocationCodes(List<string>? locationCodes);

@@ -1,4 +1,5 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
@@ -13,7 +14,7 @@ public class SearchService(
                                             throw new InvalidOperationException(
                                                 "ODataApi:BaseUrl configuration is required");
 
-    public async Task<SearchResponse> Search(SearchRequestDto request)
+    public async Task<ApiResult<SearchResponse>> Search(SearchRequestDto request)
     {
         logger.LogInformation("Search request received: PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
             request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
@@ -55,17 +56,11 @@ public class SearchService(
         if (request.SubmissionDeadlineTo.HasValue)
             queryBuilder = queryBuilder.SubmissionDeadlineTo(request.SubmissionDeadlineTo.Value);
 
-        if (request.ContractStartDateFrom.HasValue)
-            queryBuilder = queryBuilder.ContractStartDateFrom(request.ContractStartDateFrom.Value);
+        if (request.ContractStartDate.HasValue)
+            queryBuilder = queryBuilder.ContractStartDate(request.ContractStartDate.Value);
 
-        if (request.ContractStartDateTo.HasValue)
-            queryBuilder = queryBuilder.ContractStartDateTo(request.ContractStartDateTo.Value);
-
-        if (request.ContractEndDateFrom.HasValue)
-            queryBuilder = queryBuilder.ContractEndDateFrom(request.ContractEndDateFrom.Value);
-
-        if (request.ContractEndDateTo.HasValue)
-            queryBuilder = queryBuilder.ContractEndDateTo(request.ContractEndDateTo.Value);
+        if (request.ContractEndDate.HasValue)
+            queryBuilder = queryBuilder.ContractEndDate(request.ContractEndDate.Value);
 
         if (request.FilterFrameworks && request.FilterDynamicMarkets)
         {
@@ -90,8 +85,7 @@ public class SearchService(
         {
             queryBuilder = request.FrameworkOptions.ToLowerInvariant() switch
             {
-                "open" => queryBuilder.OnlyOpenFrameworks(),
-                "exclude-open" => queryBuilder.OnlyOpenFrameworks(false),
+                "open" => queryBuilder.WithFrameworkType("open"),
                 _ => queryBuilder
             };
         }
@@ -120,23 +114,28 @@ public class SearchService(
 
         logger.LogInformation("Executing OData query: {QueryUrl}", queryUrl);
 
-        return await ExecuteSearchWithFallback(queryUrl, pageNumber, top);
-    }
+        var searchResult = await service.SearchCommercialToolsWithCount(queryUrl);
 
-    private async Task<SearchResponse> ExecuteSearchWithFallback(string queryUrl, int pageNumber, int pageSize)
-    {
-        var (results, totalCount) = await service.SearchCommercialToolsWithCount(queryUrl);
+        return searchResult.Match(
+            error => ApiResult<SearchResponse>.Failure(error),
+            success =>
+            {
+                var (results, totalCount) = success;
+                var searchResultDtos = results.ToList();
 
-        var searchResultDtos = results.ToList();
-        logger.LogInformation("Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
-            searchResultDtos.ToList().Count, totalCount, pageNumber);
+                logger.LogInformation("Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
+                    searchResultDtos.Count, totalCount, pageNumber);
 
-        return new SearchResponse
-        {
-            Results = searchResultDtos,
-            TotalCount = totalCount,
-            PageNumber = pageNumber,
-            PageSize = pageSize
-        };
+                var response = new SearchResponse
+                {
+                    Results = searchResultDtos,
+                    TotalCount = totalCount,
+                    PageNumber = pageNumber,
+                    PageSize = top
+                };
+
+                return ApiResult<SearchResponse>.Success(response);
+            }
+        );
     }
 }

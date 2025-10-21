@@ -125,8 +125,7 @@ public class ApiResponseProfile : Profile
         var tender = item.Tender;
 
         // Try to get end date (priority 1: frameworkAgreement)
-        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate
-            ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
+        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate;
 
         // Fallback 2: awards contractPeriod endDate
         if (endDate == null && item.Awards != null && item.Awards.Any())
@@ -147,8 +146,7 @@ public class ApiResponseProfile : Profile
         }
 
         // Try to get start date (priority 1: frameworkAgreement)
-        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate
-            ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
+        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate;
 
         // Fallback 2: standstill period end date + 1 day
         if (startDate == null && item.Awards != null && item.Awards.Any())
@@ -241,15 +239,6 @@ public class ApiResponseProfile : Profile
                 PeriodStartDate = techniques.FrameworkAgreement.PeriodStartDate,
                 PeriodEndDate = techniques.FrameworkAgreement.PeriodEndDate
             };
-
-            if (techniques.FrameworkAgreement.Period != null)
-            {
-                mappedTechniques.FrameworkAgreement.Period = new FrameworkAgreementPeriod
-                {
-                    StartDate = techniques.FrameworkAgreement.Period.StartDate,
-                    EndDate = techniques.FrameworkAgreement.Period.EndDate
-                };
-            }
         }
 
         return mappedTechniques;

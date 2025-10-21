@@ -133,7 +133,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         WithCustomFilter($"tender/techniques/hasDynamicPurchasingSystem eq {hasDps.ToString().ToLower()}");
 
     public ICommercialToolsQueryBuilder OnlyOpenFrameworks(bool only = true) =>
-        WithParameter("filter[tender.techniques.frameworkAgreement.isOpenFrameworkScheme]", only.ToString().ToLower());
+        WithCustomFilter($"tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq {only.ToString().ToLower()}");
 
     public ICommercialToolsQueryBuilder WithStatuses(List<string>? statuses)
     {
@@ -171,44 +171,40 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     public ICommercialToolsQueryBuilder FeeFrom(decimal from)
     {
         var proportion = from / 100;
-        return WithParameter("filter[tender.participationFees.relativeValue.proportion.from]",
-            proportion.ToString(CultureInfo.InvariantCulture));
+        var filter = $"tender/participationFees/any(pf: pf/relativeValue/proportion ge {proportion.ToString(CultureInfo.InvariantCulture)})";
+        return WithCustomFilter(filter);
     }
 
     public ICommercialToolsQueryBuilder FeeTo(decimal to)
     {
         var proportion = to / 100;
-        return WithParameter("filter[tender.participationFees.relativeValue.proportion.to]",
-            proportion.ToString(CultureInfo.InvariantCulture));
-    }
-
-    public ICommercialToolsQueryBuilder SubmissionDeadlineFrom(DateTime from) =>
-        WithParameter("filter[tender.tenderPeriod.endDate.from]", from.ToString("yyyy-MM-dd"));
-
-    public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to) =>
-        WithParameter("filter[tender.tenderPeriod.endDate.to]", to.ToString("yyyy-MM-dd"));
-
-    public ICommercialToolsQueryBuilder ContractStartDateFrom(DateTime from)
-    {
-        var filter = $"(awards/any(a: a/contractPeriod/startDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodStartDate ge {from:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/startDate ge {from:yyyy-MM-dd}))";
+        var filter = $"tender/participationFees/any(pf: pf/relativeValue/proportion le {proportion.ToString(CultureInfo.InvariantCulture)})";
         return WithCustomFilter(filter);
     }
 
-    public ICommercialToolsQueryBuilder ContractStartDateTo(DateTime to)
+    public ICommercialToolsQueryBuilder SubmissionDeadlineFrom(DateTime from)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/startDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodStartDate le {to:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/startDate le {to:yyyy-MM-dd}))";
+        var formattedDate = from.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        var filter = $"tender/tenderPeriod/endDate ge {formattedDate}";
         return WithCustomFilter(filter);
     }
 
-    public ICommercialToolsQueryBuilder ContractEndDateFrom(DateTime from)
+    public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate ge {from:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate ge {from:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/endDate ge {from:yyyy-MM-dd}))";
+        var formattedDate = to.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        var filter = $"tender/tenderPeriod/endDate le {formattedDate}";
         return WithCustomFilter(filter);
     }
 
-    public ICommercialToolsQueryBuilder ContractEndDateTo(DateTime to)
+    public ICommercialToolsQueryBuilder ContractStartDate(DateTime from)
     {
-        var filter = $"(awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/endDate le {to:yyyy-MM-dd}))";
+        var filter = $"(tender/techniques/frameworkAgreement/periodStartDate ge {from:yyyy-MM-dd} or tender/lots/any(l: l/contractPeriod/startDate ge {from:yyyy-MM-dd}) or contracts/any(c: c/period/startDate ge {from:yyyy-MM-dd}))";
+        return WithCustomFilter(filter);
+    }
+
+    public ICommercialToolsQueryBuilder ContractEndDate(DateTime to)
+    {
+        var filter = $"(tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd} or awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/lots/any(l: l/contractPeriod/endDate le {to:yyyy-MM-dd}) or contracts/any(c: c/period/endDate le {to:yyyy-MM-dd}))";
         return WithCustomFilter(filter);
     }
 
@@ -237,15 +233,6 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
         var regionFilters = string.Join(" or ", validCodes.Select(c => $"d/region eq '{c}'"));
         return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {regionFilters}))");
-    }
-
-    public ICommercialToolsQueryBuilder WithCpv(string cpv)
-    {
-        if (string.IsNullOrWhiteSpace(cpv))
-            return this;
-
-        var odataFilter = $"(tender/classification/scheme eq 'CPV' and tender/classification/classificationId eq '{cpv}')";
-        return WithCustomFilter(odataFilter);
     }
 
     public ICommercialToolsQueryBuilder WithCpvCodes(List<string>? cpvCodes)
