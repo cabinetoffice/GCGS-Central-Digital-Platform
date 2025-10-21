@@ -17,7 +17,7 @@ resource "aws_route53_record" "main_entrypoint_alias" {
 
   alias {
     evaluate_target_health = true
-    name                   = local.is_php_migrated_env ? aws_lb.ecs_php.dns_name : aws_lb.ecs.dns_name
-    zone_id                = local.is_php_migrated_env ? aws_lb.ecs_php.zone_id : aws_lb.ecs.zone_id
+    name                   = aws_lb.ecs.dns_name
+    zone_id                = aws_lb.ecs.zone_id
   }
 }
