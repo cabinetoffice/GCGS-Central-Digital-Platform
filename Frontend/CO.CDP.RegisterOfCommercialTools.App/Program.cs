@@ -11,6 +11,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using CO.CDP.Configuration.ForwardedHeaders;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
+    options.Conventions.AllowAnonymousToPage("/cookies");
 });
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
@@ -34,14 +36,16 @@ builder.Services.AddSingleton<ISession, Session>();
 var cookieSettings = new CookieSettings();
 builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
 builder.Services.AddSingleton(cookieSettings);
-builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
     uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
+    uiFoundationBuilder.AddCookiePreferenceService();
 });
+
+builder.Services.AddScoped<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
@@ -155,6 +159,7 @@ if (!app.Environment.IsDevelopment())
 app.UseForwardedHeaders();
 app.UseMiddleware<ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

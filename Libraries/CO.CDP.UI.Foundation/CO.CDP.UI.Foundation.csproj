@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <RootNamespace>CO.CDP.UI.Foundation</RootNamespace>
     <IsPackable>false</IsPackable>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +16,11 @@
 
   <ItemGroup>
     <PackageReference Include="GovUk.Frontend.AspNetCore" Version="3.2.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Services\CO.CDP.Localization\CO.CDP.Localization.csproj" />
+    <ProjectReference Include="..\CO.CDP.Functional\CO.CDP.Functional.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,11 +1,10 @@
 @using CO.CDP.UI.Foundation.Services
 @using CO.CDP.UI.Foundation.Cookies
-@using Microsoft.AspNetCore.Http
 @inject IFtsUrlService FtsUrlService
 @inject ISirsiUrlService SirsiUrlService
 @inject ICookiePreferencesService CookiePreferencesService
-@inject IHttpContextAccessor HttpContextAccessor
 @inject CookieSettings CookieSettings
+@inject IUrlHelper Url
 @{
     ViewData["HtmlLang"] ??= "en";
     ViewData["ServiceName"] ??= "Find a Tender";
@@ -13,6 +12,15 @@
         ? ViewData["Title"] + " - " + ViewData["ServiceName"] + " - GOV.UK"
         : ViewData["ServiceName"] + " - GOV.UK";
     ViewData["Title"] = title;
+
+    var cookieBannerViewModel = new CookieBannerViewModel(
+        CookiePreferencesService,
+        CookieSettings,
+        Url,
+        Context.Request.Path,
+        Context.Request.PathBase,
+        Context.Request.QueryString.Value
+    );
 }
 
 <!DOCTYPE html>
@@ -33,12 +41,7 @@
 <body class="govuk-template__body">
     <script nonce-csp>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 
-    @Html.Raw(CookieBanner.RenderCookieBanner(
-        CookiePreferencesService,
-        HttpContextAccessor,
-        CookieSettings,
-        SirsiUrlService,
-        ViewData["ServiceName"]?.ToString() ?? "Find a Tender"))
+    <partial name="/Pages/Shared/_CookieBanner.cshtml" model="cookieBannerViewModel" />
 
     <a href="#main-content" class="govuk-skip-link" data-module="govuk-skip-link">Skip to main content</a>
 
@@ -132,12 +135,9 @@
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/privacy-notice")">Privacy</a>
                         </li>
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="govuk-footer__inline-list-item">
-                                <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/cookies")">Cookies</a>
-                            </li>
-                        }
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link" href="/cookies">Cookies</a>
+                        </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/Developer/Documentation")">Data and API</a>
                         </li>

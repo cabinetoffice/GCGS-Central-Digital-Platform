@@ -1,0 +1,58 @@
+@model CO.CDP.UI.Foundation.Cookies.CookieBannerViewModel
+@using CO.CDP.Localization
+@using CO.CDP.UI.Foundation.Cookies
+@{
+    var cookieSettings = new CookieSettings();
+    var hasInteractionQuery = Context.Request.Query.ContainsKey(cookieSettings.CookieBannerInteractionQueryString);
+}
+
+@if (Model.ShouldShowConsentBanner(hasInteractionQuery))
+{
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h2 class="govuk-cookie-banner__heading govuk-heading-m">
+                        @StaticTextResource.CookieBanner_Title
+                    </h2>
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph1</p>
+                        <p class="govuk-body">@StaticTextResource.CookieBanner_Paragraph2</p>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/cookies" method="post">
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="@Model.ReturnUrlFieldName" value="@Model.GetReturnUrl()" />
+
+                <div class="govuk-button-group">
+                    <button type="submit" class="govuk-button" name="@Model.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Accept">@StaticTextResource.CookieBanner_AcceptButton</button>
+                    <button type="submit" class="govuk-button" name="@Model.CookieAcceptanceFieldName" value="@CookieAcceptanceValues.Reject">@StaticTextResource.CookieBanner_RejectButton</button>
+                    <a class="govuk-link" href="/cookies">@StaticTextResource.CookieBanner_ViewCookies</a>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+@if (Model.ShouldShowConfirmationBanner(hasInteractionQuery))
+{
+    <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="@StaticTextResource.CookieBanner_Title">
+        <div class="govuk-cookie-banner__message govuk-width-container">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-cookie-banner__content">
+                        <p class="govuk-body">
+                            @Model.GetConfirmationMessage() @Html.Raw(StaticTextResource.CookieBanner_ChangeCookieSettings)
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="govuk-button-group">
+                <a class="govuk-button" role="button" data-module="govuk-button" href="@Model.GetHideUrl()">@StaticTextResource.CookieBanner_HideCookieMessage</a>
+            </div>
+        </div>
+    </div>
+}

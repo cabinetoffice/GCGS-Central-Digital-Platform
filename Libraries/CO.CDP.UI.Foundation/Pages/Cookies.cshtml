@@ -1,0 +1,73 @@
+@page "/cookies"
+@model CO.CDP.UI.Foundation.Pages.CookiesModel
+@using CO.CDP.Localization
+@using CO.CDP.UI.Foundation.Cookies
+
+@inject ICookiePreferencesService CookiePreferencesService;
+
+@{
+    ViewData["Title"] = StaticTextResource.Supplementary_Cookies_Title;
+    var hasError = ((TagBuilder)Html.ValidationMessageFor(m => m.CookieAcceptance)).HasInnerHtml;
+}
+
+<partial name="_ErrorSummary" model="@Model.ModelState" />
+
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+<p class="govuk-body">@StaticTextResource.Supplementary_Cookies_Intro1</p>
+<p class="govuk-body">@StaticTextResource.Supplementary_Cookies_Intro2</p>
+
+<form method="post">
+    <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+        <fieldset class="govuk-fieldset" @(hasError ? Html.Raw("aria-describedby=\"cookie-acceptance-error\"") : "")>
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">@StaticTextResource.Supplementary_Cookies_Settings</h2>
+            </legend>
+
+            <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_Settings_Intro</p>
+            <h3 class="govuk-heading-s">@StaticTextResource.Supplementary_Cookies_WebsiteUse</h3>
+            <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_GoogleAnalytics</p>
+            <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_GoogleAnalyticsInfo</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@StaticTextResource.Supplementary_Cookies_ListItem1</li>
+                <li>@StaticTextResource.Supplementary_Cookies_ListItem2</li>
+                <li>@StaticTextResource.Supplementary_Cookies_ListItem3</li>
+            </ul>
+
+            @if (hasError)
+            {
+                <p id="cookie-acceptance-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span>
+                    @Html.ValidationMessageFor(m => m.CookieAcceptance)
+                </p>
+            }
+
+            <div class="govuk-radios govuk-!-margin-bottom-8" data-module="govuk-radios">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Accept" checked="@CookiePreferencesService.IsAccepted()">
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)">
+                        @StaticTextResource.Supplementary_Cookies_UseCookies
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="@nameof(Model.CookieAcceptance)-1" name="@nameof(Model.CookieAcceptance)" type="radio" value="@CookieAcceptanceValues.Reject" checked="@CookiePreferencesService.IsRejected()">
+                    <label class="govuk-label govuk-radios__label" for="@nameof(Model.CookieAcceptance)-1">
+                        @StaticTextResource.Supplementary_Cookies_DoNotUseCookies
+                    </label>
+                </div>
+            </div>
+
+            <h2 class="govuk-heading-m">@StaticTextResource.Supplementary_Cookies_StrictlyNecessary</h2>
+            <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_StrictlyNecessary_Info1</p>
+            <p class="govuk-body">@StaticTextResource.Supplementary_Cookies_StrictlyNecessary_Info2</p>
+            <p class="govuk-body"><a class="govuk-link" href="/cookies/details">@StaticTextResource.Supplementary_Cookies_FindOutMore</a></p>
+
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button">@StaticTextResource.Supplementary_Cookies_SaveChanges</button>
+            </div>
+        </fieldset>
+    </div>
+</form>
+
+<h2 class="govuk-heading-m">@StaticTextResource.Supplementary_Cookies_GovServices</h2>
+<p class="govuk-body">@StaticTextResource.Supplementary_Cookies_GovServices_Info</p>

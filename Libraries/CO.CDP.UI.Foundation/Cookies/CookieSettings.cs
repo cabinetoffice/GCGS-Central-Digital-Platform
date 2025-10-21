@@ -26,9 +26,9 @@ public class CookieSettings
     public string CookieName { get; set; } = "SIRSI_COOKIES_PREFERENCES_SET";
 
     /// <summary>
-    /// The parameter name used when handing over to FTS services
+    /// The parameter name used when handing over to external services
     /// </summary>
-    public string FtsHandoverParameter { get; set; } = "cookies_accepted";
+    public string CookiesAcceptedHandoverParameter { get; set; } = "cookies_accepted";
 
     /// <summary>
     /// The number of days until the cookie expires
