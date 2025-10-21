@@ -168,8 +168,9 @@ public class SearchService(
             "upcoming" => "(tender/status eq 'planned' or tender/status eq 'planning')",
             "active" => "tender/status eq 'active'",
             "active-buyers" => "(tender/status eq 'active' and tender/techniques/frameworkAgreement/type eq 'open')",
-            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/isOpenFrameworkScheme eq true or tender/techniques/hasDynamicPurchasingSystem eq true))",
-            "awarded" => "(tender/status eq 'awarded' or tender/status eq 'complete')",
+            "active-suppliers" => "(tender/status eq 'active' and (tender/techniques/frameworkAgreement/type eq 'open' or tender/techniques/hasDynamicPurchasingSystem eq true))",
+            "awarded" => "tender/status eq 'awarded'",
+            "complete" => "tender/status eq 'complete'",
             "expired" => "(tender/status eq 'withdrawn' or tender/status eq 'cancelled')",
             _ => $"tender/status eq '{status}'"
         };
