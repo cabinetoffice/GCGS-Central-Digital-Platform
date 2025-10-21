@@ -44,6 +44,7 @@ public class CommercialToolsService(
             new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
         var results = apiResponse?
+            .DistinctBy(item => item.Ocid) // temporary de-dupe until DAPS issue fixed
             .Select(mapper.Map<SearchResultDto>)
             .ToList() ?? [];
 
