@@ -25,6 +25,8 @@
         { "name" : "AWS_REGION", "value" : "eu-west-2"},
         { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
         { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
+        { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
         { "name" : "CommercialToolsApi__ServiceUrl", "value" : "https://commercial-tools-api.${public_domain}"},
         { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
         { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
@@ -32,6 +34,7 @@
         { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"}
     ],
     "secrets": [
+        { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
         { "name" : "ODataApi__ApiKey", "valueFrom" : "${odataapi_apikey}"},
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
         { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}

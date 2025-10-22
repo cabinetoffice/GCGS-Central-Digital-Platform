@@ -5,6 +5,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApi;
 using CO.CDP.RegisterOfCommercialTools.WebApi.AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Constants;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Services.Caching;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
 using CO.CDP.RegisterOfCommercialTools.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -31,14 +32,43 @@ builder.Services.AddHttpClient<ICommercialToolsService, CommercialToolsService>(
     client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IConfiguration>().GetSection("ODataApi:BaseUrl").Value ?? throw new InvalidOperationException("ODataApi:BaseUrl is not configured."));
 });
 
-builder.Services.AddTransient<ISearchService, SearchService>();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+    if (awsConfig?.ElastiCache != null)
+    {
+        options.Configuration = $"{awsConfig.ElastiCache.Hostname}:{awsConfig.ElastiCache.Port}";
+        options.InstanceName = builder.Configuration.GetValue<string>("Redis:InstanceName") ?? "RoctCache:";
+    }
+});
+
+builder.Services.AddScoped<IRedisCacheService, RedisCacheService>();
+
+builder.Services.AddScoped<SearchService>();
+builder.Services.AddScoped<ISearchService>(provider =>
+{
+    var innerService = provider.GetRequiredService<SearchService>();
+    var cacheService = provider.GetRequiredService<IRedisCacheService>();
+    var configuration = provider.GetRequiredService<IConfiguration>();
+    var logger = provider.GetRequiredService<ILogger<CachedSearchService>>();
+
+    return new CachedSearchService(innerService, cacheService, configuration, logger);
+});
 
 builder.Services.AddAutoMapper(typeof(ApiResponseProfile));
 
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).Build());
-builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddHealthChecks()
+    .AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>())
+    .AddRedis(sp =>
+    {
+        var awsConfig = sp.GetRequiredService<IConfiguration>().GetSection("Aws").Get<AwsConfiguration>();
+        return awsConfig?.ElastiCache != null
+            ? $"{awsConfig.ElastiCache.Hostname}:{awsConfig.ElastiCache.Port}"
+            : "localhost:6379";
+    });
 builder.Services.AddDbContext<RegisterOfCommercialToolsContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<ICpvCodeRepository, DatabaseCpvCodeRepository>();
