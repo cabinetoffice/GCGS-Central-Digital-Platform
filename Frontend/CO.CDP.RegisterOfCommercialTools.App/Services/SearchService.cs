@@ -8,7 +8,8 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Services;
 
 public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) : ISearchService
 {
-    public async Task<Result<ApiError, (List<SearchResult> Results, int TotalCount)>> SearchAsync(SearchModel searchModel, int pageNumber, int pageSize)
+    public async Task<Result<ApiError, (List<SearchResult> Results, int TotalCount)>> SearchAsync(
+        SearchModel searchModel, int pageNumber, int pageSize)
     {
         var (keywords, searchMode) = ParseKeywords(searchModel.Keywords);
 
@@ -16,7 +17,9 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
         {
             Keywords = keywords,
             SearchMode = searchMode,
-            Status = searchModel.Status.Any() ? string.Join(",", searchModel.Status.Where(s => !string.IsNullOrWhiteSpace(s))) : null,
+            Status = searchModel.Status.Any()
+                ? string.Join(",", searchModel.Status.Where(s => !string.IsNullOrWhiteSpace(s)))
+                : null,
             SortBy = searchModel.SortOrder,
             SubmissionDeadlineFrom = searchModel.SubmissionDeadlineFrom?.ToDateTime(TimeOnly.MinValue),
             SubmissionDeadlineTo = searchModel.SubmissionDeadlineTo?.ToDateTime(TimeOnly.MinValue),
@@ -31,14 +34,18 @@ public class SearchService(ICommercialToolsApiClient commercialToolsApiClient) :
             IsUtilitiesOnly = searchModel.IsUtilitiesOnly,
             CpvCodes = searchModel.CpvCodes.Any() ? searchModel.CpvCodes : null,
             LocationCodes = searchModel.LocationCodes.Any() ? searchModel.LocationCodes : null,
-            ContractingAuthorityUsage = searchModel.ContractingAuthorityUsage.Any() ? searchModel.ContractingAuthorityUsage : null,
+            ContractingAuthorityUsage = searchModel.ContractingAuthorityUsage.Any()
+                ? searchModel.ContractingAuthorityUsage
+                : null,
             PageNumber = pageNumber
         };
 
         var apiResult = await commercialToolsApiClient.SearchAsync(requestDto);
 
         return apiResult.Match(
-            error => Result<ApiError, (List<SearchResult>, int)>.Failure(error),
+            error => error is ClientError
+                ? Result<ApiError, (List<SearchResult>, int)>.Success((new List<SearchResult>(), 0))
+                : Result<ApiError, (List<SearchResult>, int)>.Failure(error),
             searchResponse =>
             {
                 var results = searchResponse.Results.Select(MapToSearchResult).ToList();
