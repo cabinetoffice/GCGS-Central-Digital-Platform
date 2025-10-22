@@ -306,6 +306,8 @@ services:
       timeout: 10s
       retries: 3
     depends_on:
+      redis:
+        condition: service_healthy
       localstack:
         condition: service_healthy
     environment:
@@ -313,6 +315,8 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
+      Aws__ElastiCache__Hostname: "redis"
+      Aws__ElastiCache__Port: "6379"
       CloudWatch__LogGroup: "/ecs/commercial-tools-api"
       ODataApi__BaseUrl: ""
       ODataApi__ApiKey: ""

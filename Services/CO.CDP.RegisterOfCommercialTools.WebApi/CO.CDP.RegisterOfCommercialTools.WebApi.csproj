@@ -14,6 +14,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4"/>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1"/>
+        <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="8.0.1"/>
         <PackageReference Include="Microsoft.FeatureManagement.AspNetCore" Version="3.5.0"/>
     </ItemGroup>
 
@@ -24,6 +25,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.RegisterOfCommercialTools.WebApiClient\CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj"/>
         <ProjectReference Include="..\CO.CDP.RegisterOfCommercialTools.Persistence\CO.CDP.RegisterOfCommercialTools.Persistence.csproj"/>
     </ItemGroup>
