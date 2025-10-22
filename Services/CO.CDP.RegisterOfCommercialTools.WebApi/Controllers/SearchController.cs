@@ -17,10 +17,10 @@ public class SearchController(ISearchService searchService) : ControllerBase
         return result.Match<ActionResult<SearchResponse>>(
             error => error switch
             {
-                ClientError clientError => BadRequest(new { message = clientError.Message, statusCode = clientError.StatusCode }),
+                ClientError clientError => StatusCode((int)clientError.StatusCode, new { message = clientError.Message }),
                 ServerError serverError => StatusCode((int)serverError.StatusCode, new { message = serverError.Message }),
                 NetworkError networkError => StatusCode(502, new { message = "External service unavailable", details = networkError.Message }),
-                DeserialisationError deserializationError => StatusCode(502, new { message = "External service returned invalid data", details = deserializationError.Message }),
+                DeserialisationError deserialisationError => StatusCode(502, new { message = "External service returned invalid data", details = deserialisationError.Message }),
                 _ => StatusCode(500, new { message = "An unexpected error occurred", details = error.Message })
             },
             searchResponse => Ok(searchResponse)
