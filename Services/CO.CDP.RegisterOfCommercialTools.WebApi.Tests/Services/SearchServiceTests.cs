@@ -806,10 +806,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithFrameworkType("open")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethods(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCpvCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithLocationCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -834,10 +837,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithFrameworkType("closed")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethods(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCpvCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithLocationCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -861,10 +867,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethods(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCpvCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithLocationCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
@@ -888,10 +897,13 @@ public class SearchServiceTests
         mockBuilder.Setup(x => x.WithTop(20)).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithSkip(It.IsAny<int>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.WithOrderBy("relevance")).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithAwardMethods(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithCpvCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
+        mockBuilder.Setup(x => x.WithLocationCodes(It.IsAny<List<string>>())).Returns(mockBuilder.Object);
         mockBuilder.Setup(x => x.Build(It.IsAny<string>())).Returns(queryUrl);
 
         var expectedResults = new List<SearchResultDto>();
-        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync((expectedResults, 0));
+        _mockRepository.Setup(x => x.SearchCommercialToolsWithCount(queryUrl)).ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((expectedResults, 0)));
 
         await _searchService.Search(request);
 
