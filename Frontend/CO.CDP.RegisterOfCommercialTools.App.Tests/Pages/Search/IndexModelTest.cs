@@ -9,6 +9,8 @@ using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using CO.CDP.Functional;
+using CO.CDP.WebApi.Foundation;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
@@ -21,7 +23,7 @@ public class IndexModelTest
     {
         _mockSearchService = new Mock<ISearchService>();
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((new List<SearchResult>(), 0));
+            .ReturnsAsync(Result<ApiError, (List<SearchResult>, int)>.Success((new List<SearchResult>(), 0)));
 
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
@@ -66,7 +68,7 @@ public class IndexModelTest
                 "2025-01-01 to 2025-12-31", "Direct Award", "https://fts.test/")
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((searchResults, 1));
+            .ReturnsAsync(Result<ApiError, (List<SearchResult>, int)>.Success((searchResults, 1)));
 
         await _model.OnGetAsync();
 
@@ -146,7 +148,7 @@ public class IndexModelTest
         _model.SearchParams.ContractEndDateToYear = "2026";
 
         _mockSearchService.Setup(s => s.SearchAsync(_model.SearchParams, 1, 10))
-            .ReturnsAsync((new List<SearchResult>(), 0));
+            .ReturnsAsync(Result<ApiError, (List<SearchResult>, int)>.Success((new List<SearchResult>(), 0)));
 
         await _model.OnGetAsync();
 
@@ -198,7 +200,7 @@ public class IndexModelTest
                 "2025-01-01 to 2025-12-31", "Direct Award", null)
         };
         _mockSearchService.Setup(s => s.SearchAsync(It.IsAny<SearchModel>(), It.IsAny<int>(), It.IsAny<int>()))
-            .ReturnsAsync((searchResults, 42));
+            .ReturnsAsync(Result<ApiError, (List<SearchResult>, int)>.Success((searchResults, 42)));
 
         await _model.OnGetAsync();
 

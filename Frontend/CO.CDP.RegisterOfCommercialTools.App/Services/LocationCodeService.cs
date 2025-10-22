@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 
@@ -7,7 +8,8 @@ public class LocationCodeService(ICommercialToolsApiClient client, ILogger<Locat
 {
     public async Task<List<NutsCodeDto>> GetRootLocationCodesAsync()
     {
-        return await client.GetRootNutsCodesAsync() ?? [];
+        var result = await client.GetRootNutsCodesAsync();
+        return result.GetOrElse(_ => []);
     }
 
     public async Task<List<NutsCodeDto>> GetRootCodesAsync()
@@ -17,33 +19,38 @@ public class LocationCodeService(ICommercialToolsApiClient client, ILogger<Locat
 
     public async Task<List<NutsCodeDto>> GetChildrenAsync(string parentCode)
     {
-        return await client.GetNutsChildrenAsync(parentCode) ?? [];
+        var result = await client.GetNutsChildrenAsync(parentCode);
+        return result.GetOrElse(_ => []);
     }
 
     public async Task<List<NutsCodeDto>> SearchAsync(string query)
     {
         var sanitisedQuery = query.Replace("\r", "").Replace("\n", "");
         logger.LogInformation("Location code search executed: Query='{Query}'", sanitisedQuery);
-        var results = await client.SearchNutsCodesAsync(query) ?? [];
-        logger.LogInformation("Location code search completed: Query='{Query}', ResultCount={ResultCount}", sanitisedQuery, results.Count);
-        return results;
+        var result = await client.SearchNutsCodesAsync(query);
+        var codes = result.GetOrElse(_ => []);
+        logger.LogInformation("Location code search completed: Query='{Query}', ResultCount={ResultCount}", sanitisedQuery, codes.Count);
+        return codes;
     }
 
     public async Task<NutsCodeDto?> GetByCodeAsync(string code)
     {
         var result = await client.GetNutsCodesAsync([code]);
-        return result?.FirstOrDefault();
+        var codes = result.GetOrElse(_ => []);
+        return codes.FirstOrDefault();
     }
 
     public async Task<List<NutsCodeDto>> GetByCodesAsync(List<string> codes)
     {
         logger.LogInformation("Location codes retrieved by codes: Codes=[{Codes}], Count={Count}",
             string.Join(", ", codes.Select(code => code.Replace("\r", "").Replace("\n", ""))), codes.Count);
-        return await client.GetNutsCodesAsync(codes) ?? [];
+        var result = await client.GetNutsCodesAsync(codes);
+        return result.GetOrElse(_ => []);
     }
 
     public async Task<List<NutsCodeDto>> GetHierarchyAsync(string code)
     {
-        return await client.GetNutsHierarchyAsync(code) ?? [];
+        var result = await client.GetNutsHierarchyAsync(code);
+        return result.GetOrElse(_ => []);
     }
 }

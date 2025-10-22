@@ -6,9 +6,8 @@ public class SearchResultDto
 {
     public string Id { get; set; } = string.Empty;
     public string Title { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
+    public string BuyerName { get; set; } = string.Empty;
     public string? Url { get; set; }
-    public DateTime? PublishedDate { get; set; }
     public string SubmissionDeadline { get; set; } = string.Empty;
     public CommercialToolStatus Status { get; set; }
     public string MaximumFee { get; set; } = string.Empty;

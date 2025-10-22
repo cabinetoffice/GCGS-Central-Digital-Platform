@@ -2,6 +2,8 @@ using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
+using CO.CDP.WebApi.Foundation;
+using CO.CDP.Functional;
 using FluentAssertions;
 using Moq;
 
@@ -50,8 +52,7 @@ public class SearchServiceTests
                 {
                     Id = "003033-2025",
                     Title = "Test Framework",
-                    Description = "Test Description",
-                    PublishedDate = DateTime.UtcNow,
+                    BuyerName = "Test Description",
                     SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
@@ -65,9 +66,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, totalCount) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().HaveCount(1);
         var result = results.First();
@@ -108,9 +110,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, totalCount) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, totalCount) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().BeEmpty();
         totalCount.Should().Be(0);
@@ -138,9 +141,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, _) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().BeEmpty();
 
@@ -159,7 +163,7 @@ public class SearchServiceTests
             Results = new List<SearchResultDto>
             {
                 new() { Id = "1", Title = "Active", Status = CommercialToolStatus.Active, MaximumFee = "Unknown", AwardMethod = "Open" },
-                new() { Id = "2", Title = "Expired", Status = CommercialToolStatus.Expired, MaximumFee = "Unknown", AwardMethod = "Open" },
+                new() { Id = "2", Title = "Cancelled", Status = CommercialToolStatus.Cancelled, MaximumFee = "Unknown", AwardMethod = "Open" },
                 new() { Id = "3", Title = "Upcoming", Status = CommercialToolStatus.Upcoming, MaximumFee = "Unknown", AwardMethod = "Open" },
                 new() { Id = "4", Title = "Awarded", Status = CommercialToolStatus.Awarded, MaximumFee = "Unknown", AwardMethod = "Open" }
             },
@@ -170,13 +174,14 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, _) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().HaveCount(4);
         results.ElementAt(0).Status.Should().Be(CommercialToolStatus.Active);
-        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Expired);
+        results.ElementAt(1).Status.Should().Be(CommercialToolStatus.Cancelled);
         results.ElementAt(2).Status.Should().Be(CommercialToolStatus.Upcoming);
         results.ElementAt(3).Status.Should().Be(CommercialToolStatus.Awarded);
     }
@@ -196,7 +201,7 @@ public class SearchServiceTests
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "2.5%",
                     AwardMethod = "Open",
-                    Description = "Test"
+                    BuyerName = "Test"
                 }
             },
             TotalCount = 1,
@@ -206,9 +211,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, _) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().HaveCount(1);
         results.First().MaximumFee.Should().Be("2.5%");
@@ -230,7 +236,7 @@ public class SearchServiceTests
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "Unknown",
                     AwardMethod = "Open",
-                    Description = "Test",
+                    BuyerName = "Test",
                     SubmissionDeadline = submissionDeadline.ToString("dd MMMM yyyy")
                 }
             },
@@ -241,9 +247,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        var (results, _) = await _searchService.SearchAsync(searchModel, 1, 10);
+        var (results, _) = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         results.Should().HaveCount(1);
         results.First().SubmissionDeadline.Should().Be("15 March 2025");
@@ -270,9 +277,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        await _searchService.SearchAsync(searchModel, 1, 10);
+        _ = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
             dto.SearchMode == expectedMode &&
@@ -296,9 +304,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        await _searchService.SearchAsync(searchModel, 1, 10);
+        _ = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
             dto.Keywords == null
@@ -319,9 +328,10 @@ public class SearchServiceTests
 
         _mockApiClient
             .Setup(x => x.SearchAsync(It.IsAny<SearchRequestDto>()))
-            .ReturnsAsync(responseDto);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(responseDto));
 
-        await _searchService.SearchAsync(searchModel, 1, 10);
+        _ = (await _searchService.SearchAsync(searchModel, 1, 10))
+            .GetOrElse((new List<SearchResult>(), 0));
 
         _mockApiClient.Verify(x => x.SearchAsync(It.Is<SearchRequestDto>(dto =>
             dto.Keywords == null

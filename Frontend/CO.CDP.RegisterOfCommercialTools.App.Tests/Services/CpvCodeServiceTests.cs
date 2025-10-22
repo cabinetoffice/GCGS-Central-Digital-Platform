@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -36,7 +37,8 @@ public class CpvCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.GetRootCpvCodesAsync(It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetRootCpvCodesAsync(It.IsAny<WebApiCulture>()))
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.GetRootCpvCodesAsync();
 
@@ -48,9 +50,11 @@ public class CpvCodeServiceTests
     }
 
     [Fact]
-    public async Task GetRootCpvCodesAsync_WhenClientReturnsNull_ShouldReturnEmptyList()
+    public async Task GetRootCpvCodesAsync_WhenClientReturnsError_ShouldReturnEmptyList()
     {
-        _mockClient.Setup(x => x.GetRootCpvCodesAsync(It.IsAny<WebApiCulture>())).ReturnsAsync((List<CpvCodeDto>?)null);
+        _mockClient.Setup(x => x.GetRootCpvCodesAsync(It.IsAny<WebApiCulture>()))
+            .ReturnsAsync(
+                ApiResult<List<CpvCodeDto>>.Failure(new ClientError("Not found", System.Net.HttpStatusCode.NotFound)));
 
         var result = await _service.GetRootCpvCodesAsync();
 
@@ -69,7 +73,8 @@ public class CpvCodeServiceTests
                 ParentCode = parentCode
             }
         };
-        _mockClient.Setup(x => x.GetCpvChildrenAsync(parentCode, It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetCpvChildrenAsync(parentCode, It.IsAny<WebApiCulture>()))
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.GetChildrenAsync(parentCode);
 
@@ -90,7 +95,8 @@ public class CpvCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.SearchCpvCodesAsync(query, It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.SearchCpvCodesAsync(query, It.IsAny<WebApiCulture>()))
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.SearchAsync(query);
 
@@ -112,7 +118,7 @@ public class CpvCodeServiceTests
             }
         };
         _mockClient.Setup(x => x.GetCpvCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync(dtos);
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -122,11 +128,12 @@ public class CpvCodeServiceTests
     }
 
     [Fact]
-    public async Task GetByCodeAsync_WhenClientReturnsNull_ShouldReturnNull()
+    public async Task GetByCodeAsync_WhenClientReturnsError_ShouldReturnNull()
     {
         const string code = "99999999";
         _mockClient.Setup(x => x.GetCpvCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync((List<CpvCodeDto>?)null);
+            .ReturnsAsync(
+                ApiResult<List<CpvCodeDto>>.Failure(new ClientError("Not found", System.Net.HttpStatusCode.NotFound)));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -138,7 +145,7 @@ public class CpvCodeServiceTests
     {
         const string code = "99999999";
         _mockClient.Setup(x => x.GetCpvCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync(new List<CpvCodeDto>());
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(new List<CpvCodeDto>()));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -162,7 +169,7 @@ public class CpvCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.GetCpvCodesAsync(codes)).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetCpvCodesAsync(codes)).ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.GetByCodesAsync(codes);
 
@@ -192,7 +199,7 @@ public class CpvCodeServiceTests
                 Level = 3, ParentCode = "03100000"
             }
         };
-        _mockClient.Setup(x => x.GetCpvHierarchyAsync(code)).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetCpvHierarchyAsync(code)).ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(dtos));
 
         var result = await _service.GetHierarchyAsync(code);
 
@@ -207,7 +214,7 @@ public class CpvCodeServiceTests
     {
         const string parentCode = "03000000";
         _mockClient.Setup(x => x.GetCpvChildrenAsync(parentCode, WebApiCulture.English))
-            .ReturnsAsync(new List<CpvCodeDto>());
+            .ReturnsAsync(ApiResult<List<CpvCodeDto>>.Success(new List<CpvCodeDto>()));
 
         await _service.GetChildrenAsync(parentCode);
 

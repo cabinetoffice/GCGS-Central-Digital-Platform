@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.TestKit.Mvc;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -163,8 +164,7 @@ public class SearchIntegrationTests
             {
                 Id = "003033-2025",
                 Title = "Integration Test Framework 1",
-                Description = "First integration test framework",
-                PublishedDate = DateTime.UtcNow.AddDays(-10),
+                BuyerName = "First integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Active,
                 MaximumFee = "2.5%",
@@ -174,8 +174,7 @@ public class SearchIntegrationTests
             {
                 Id = "004044-2025",
                 Title = "Integration Test Framework 2",
-                Description = "Second integration test framework",
-                PublishedDate = DateTime.UtcNow.AddDays(-5),
+                BuyerName = "Second integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(45).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Upcoming,
                 MaximumFee = "5%",
@@ -185,7 +184,7 @@ public class SearchIntegrationTests
 
         mockRepository
             .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
-            .ReturnsAsync((defaultResults, 50));
+            .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((defaultResults, 50)));
 
     }
 }

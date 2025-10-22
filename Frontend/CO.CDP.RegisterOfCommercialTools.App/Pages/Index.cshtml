@@ -22,17 +22,17 @@
         "award-method",
         "Award method",
         "_AwardMethodAccordionContent", Model.SearchParams
-    ) { IsOpen = Model.OpenAccordions.Contains("award-method") };
+    ) { IsOpen = true };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
         "Industry CPV code",
         "_IndustryCpvCodeAccordionContent", Model
-        ) { IsOpen = Model.OpenAccordions.Contains("industry-cpv-code") };
+        ) { IsOpen = true };
     var contractLocationAccordion = new Accordion(
         "contract-location",
         "Contract location",
         "_ContractLocationAccordionContent", Model
-    ) { IsOpen = Model.OpenAccordions.Contains("contract-location") };
+    ) { IsOpen = true };
     var feesAccordion = new Accordion(
         "fees",
         "Fees",
@@ -110,10 +110,22 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
             <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
-                <input type="hidden" name="filter_frameworks" value="@Model.SearchParams.FilterFrameworks"/>
-                <input type="hidden" name="open_frameworks" value="@Model.SearchParams.IsOpenFrameworks"/>
-                <input type="hidden" name="filter_markets" value="@Model.SearchParams.FilterDynamicMarkets"/>
-                <input type="hidden" name="utilities_only" value="@Model.SearchParams.IsUtilitiesOnly"/>
+                @if (Model.SearchParams.FilterFrameworks)
+                {
+                    <input type="hidden" name="filter_frameworks" value="true"/>
+                }
+                @if (Model.SearchParams.IsOpenFrameworks)
+                {
+                    <input type="hidden" name="open_frameworks" value="true"/>
+                }
+                @if (Model.SearchParams.FilterDynamicMarkets)
+                {
+                    <input type="hidden" name="filter_markets" value="true"/>
+                }
+                @if (Model.SearchParams.IsUtilitiesOnly)
+                {
+                    <input type="hidden" name="utilities_only" value="true"/>
+                }
                 @foreach (var award in Model.SearchParams.AwardMethod)
                 {
                     <input type="hidden" name="award" value="@award"/>
