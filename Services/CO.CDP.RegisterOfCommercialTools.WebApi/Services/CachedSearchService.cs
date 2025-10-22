@@ -1,3 +1,4 @@
+using CO.CDP.RegisterOfCommercialTools.WebApi.Helpers;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services.Caching;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.WebApi.Foundation;
@@ -17,7 +18,7 @@ public class CachedSearchService(
     {
         var cacheKey = CacheKeyBuilder.BuildSearchKey(request);
 
-        logger.LogInformation("Searching with cache key: {CacheKey}", cacheKey);
+        logger.LogInformation("Searching with cache key: {CacheKey}", LogSanitizer.Sanitize(cacheKey));
 
         var cachedResponse = await cacheService.GetAsync<SearchResponse>(cacheKey);
 

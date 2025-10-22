@@ -1,4 +1,5 @@
 using CO.CDP.Functional;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Helpers;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text;
 using System.Text.Json;
@@ -78,11 +79,11 @@ public class RedisCacheService(
             };
 
             await cache.SetAsync(key, bytes, options, cancellationToken);
-            logger.LogDebug("Cached value for key: {Key} with expiration: {Expiration}", key, expiration);
+            logger.LogDebug("Cached value for key: {Key} with expiration: {Expiration}", LogSanitizer.Sanitize(key), expiration);
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to set cache for key: {Key}", key);
+            logger.LogWarning(ex, "Failed to set cache for key: {Key}", LogSanitizer.Sanitize(key));
         }
     }
 
@@ -108,25 +109,25 @@ public class RedisCacheService(
 
     private Option<T> LogCacheMiss<T>(string key)
     {
-        logger.LogDebug("Cache miss for key: {Key}", key);
+        logger.LogDebug("Cache miss for key: {Key}", LogSanitizer.Sanitize(key));
         return Option<T>.None;
     }
 
     private Option<T> LogCacheHit<T>(string key, T value)
     {
-        logger.LogDebug("Cache hit for key: {Key}", key);
+        logger.LogDebug("Cache hit for key: {Key}", LogSanitizer.Sanitize(key));
         return Option<T>.Some(value);
     }
 
     private Option<T> LogDeserializationError<T>(string key)
     {
-        logger.LogWarning("Failed to deserialize cached value for key: {Key}", key);
+        logger.LogWarning("Failed to deserialize cached value for key: {Key}", LogSanitizer.Sanitize(key));
         return Option<T>.None;
     }
 
     private Option<T> LogCacheError<T>(string key, Exception ex)
     {
-        logger.LogWarning(ex, "Error retrieving from cache for key: {Key}", key);
+        logger.LogWarning(ex, "Error retrieving from cache for key: {Key}", LogSanitizer.Sanitize(key));
         return Option<T>.None;
     }
 }
