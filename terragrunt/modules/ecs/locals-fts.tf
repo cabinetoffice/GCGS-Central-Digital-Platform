@@ -6,20 +6,6 @@ locals {
 
   fts_secrets_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
-  fts_one_login_logout_redirect_uris = {
-    development = "https://fts.${var.public_domain}/auth/logout"
-    staging     = "https://www-staging.find-tender.service.gov.uk/auth/logout"
-    integration = "https://www-tpp.find-tender.service.gov.uk/auth/logout"
-    production  = "https://www.find-tender.service.gov.uk/auth/logout"
-  }
-
-  fts_one_login_redirect_uris = {
-    development = "https://fts.${var.public_domain}/auth/callback"
-    staging     = "https://www-staging.find-tender.service.gov.uk/auth/callback"
-    integration = "https://www-tpp.find-tender.service.gov.uk/auth/callback"
-    production  = "https://www.find-tender.service.gov.uk/auth/callback"
-  }
-
   fts_site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
@@ -78,8 +64,8 @@ locals {
     environment                         = upper(var.environment)
     fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-    fts_one_login_logout_redirect_uri   = local.fts_one_login_logout_redirect_uris[var.environment]
-    fts_one_login_redirect_uri          = local.fts_one_login_redirect_uris[var.environment]
+    fts_one_login_logout_redirect_uri   = "https://${local.fts_site_domains[var.environment]}/auth/logout"
+    fts_one_login_redirect_uri          = "https://${local.fts_site_domains[var.environment]}/auth/callback"
     licenced_to                         = "No-one"
     local_version                       = 1100
     session_name_default                = "SRSI_FT_AUTH"
