@@ -448,16 +448,35 @@ const LocationSelector = (() => {
         const accordionContent = document.querySelector(`#${config.accordionContentId}`);
         if (!accordionContent) return;
 
-        const browseLink = accordionContent.querySelector('.accordion-highlight');
-        if (!browseLink) return;
-
         const existingDisplay = document.getElementById(`${config.fieldName}-selected-codes-display`);
         if (existingDisplay) {
             existingDisplay.remove();
         }
 
+        const existingServerCard = accordionContent.querySelector('.govuk-summary-card');
+        if (existingServerCard) {
+            existingServerCard.remove();
+        }
+
+        const browseLink = accordionContent.querySelector('.accordion-highlight') ||
+                          (() => {
+                              const newBrowseLink = document.createElement('div');
+                              newBrowseLink.className = 'accordion-highlight';
+                              accordionContent.appendChild(newBrowseLink);
+                              return newBrowseLink;
+                          })();
+
         if (state.selectedCodes.size === 0) {
+            browseLink.innerHTML = `<a href="#" class="govuk-link" id="${config.triggerId}">${state.trigger?.dataset.originalText || `Browse ${config.codeType.toLowerCase()}s`}</a>`;
             browseLink.style.display = '';
+
+            const newTrigger = browseLink.querySelector(`#${config.triggerId}`);
+            if (newTrigger) {
+                newTrigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openModal();
+                });
+            }
             return;
         }
 
@@ -483,9 +502,19 @@ const LocationSelector = (() => {
                 selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
                 selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
                 selectedCodesDisplay.innerHTML = html;
+
                 browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
+
+                const editLink = selectedCodesDisplay.querySelector(`#${config.triggerId}`);
+                if (editLink) {
+                    editLink.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openModal();
+                    });
+                }
             }
         } catch (error) {
+            console.error('Failed to update accordion content:', error);
         }
     };
 
@@ -559,6 +588,7 @@ const LocationSelector = (() => {
             treeContainerId: 'code-tree',
             searchContainerId: 'search-results-list',
             selectionContainerId: 'selected-codes-list',
+            accordionContentId: 'accordion-content',
             ...options
         };
 
@@ -575,6 +605,7 @@ const LocationSelector = (() => {
         loadSelectedCodes();
         updateTriggerText();
         setupModalHandlers();
+        updateAccordionContent();
     };
 
     return {init};
