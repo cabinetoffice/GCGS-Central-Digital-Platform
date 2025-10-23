@@ -280,7 +280,7 @@ public class CommercialToolsQueryBuilderTests
         var result = builder.SubmissionDeadlineTo(date).Build(BaseUrl);
         var decoded = Uri.UnescapeDataString(result);
 
-        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31");
+        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31T23:59:59");
     }
 
     [Fact]
@@ -307,9 +307,8 @@ public class CommercialToolsQueryBuilderTests
         var decoded = Uri.UnescapeDataString(result);
 
         decoded.Should().Contain("tender/techniques/frameworkAgreement/periodEndDate le 2026-12-31");
-        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2026-12-31)");
         decoded.Should().Contain("tender/lots/any(l: l/contractPeriod/endDate le 2026-12-31)");
-        decoded.Should().Contain("contracts/any(c: c/period/endDate le 2026-12-31)");
+        decoded.Should().Contain("contracts/any(c: c/period/endDate le 2026-12-31");
     }
 
     [Fact]
@@ -459,7 +458,7 @@ public class CommercialToolsQueryBuilderTests
         decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion ge 1.005)");
         decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion le 9.9999)");
         decoded.Should().Contain("tender/tenderPeriod/endDate ge 2025-01-01");
-        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31");
+        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31T23:59:59");
         decoded.Should().Contain("tender/techniques/frameworkAgreement/periodStartDate ge 2025-06-01");
         decoded.Should().Contain("tender/lots/any(l: l/contractPeriod/startDate ge 2025-06-01)");
         decoded.Should().Contain("contracts/any(c: c/period/startDate ge 2025-06-01)");

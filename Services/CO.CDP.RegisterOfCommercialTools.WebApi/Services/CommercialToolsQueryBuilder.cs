@@ -101,7 +101,6 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         {
             filters.Add($"contains(tolower(tender/title), '{escapedKeyword}')");
             filters.Add($"contains(tolower(tender/description), '{escapedKeyword}')");
-            filters.Add($"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedKeyword}')");
             filters.Add($"parties/any(p: contains(tolower(p/name), '{escapedKeyword}'))");
         }
 
@@ -191,7 +190,8 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to)
     {
-        var formattedDate = to.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        var endOfDay = to.Date.AddDays(1).AddTicks(-1);
+        var formattedDate = endOfDay.ToString("yyyy-MM-ddTHH:mm:sszzz");
         var filter = $"tender/tenderPeriod/endDate le {formattedDate}";
         return WithCustomFilter(filter);
     }
@@ -204,7 +204,9 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder ContractEndDate(DateTime to)
     {
-        var filter = $"(tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd} or awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/lots/any(l: l/contractPeriod/endDate le {to:yyyy-MM-dd}) or contracts/any(c: c/period/endDate le {to:yyyy-MM-dd}))";
+        var endOfDay = to.Date.AddDays(1).AddTicks(-1);
+        var formattedDate = endOfDay.ToString("yyyy-MM-dd");
+        var filter = $"(tender/techniques/frameworkAgreement/periodEndDate le {formattedDate} or tender/lots/any(l: l/contractPeriod/endDate le {formattedDate}) or contracts/any(c: c/period/endDate le {formattedDate}))";
         return WithCustomFilter(filter);
     }
 
