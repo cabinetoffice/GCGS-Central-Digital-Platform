@@ -1,21 +1,23 @@
 @using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models
 @model List<NutsCodeDto>
 
-<p class="govuk-body-s govuk-!-font-weight-bold">Selected (@Model.Count):</p>
-<div class="govuk-!-margin-top-2">
-    @foreach (var selectedItem in Model.OrderBy(x => x.GetDescription()))
-    {
-        var parentDescription = selectedItem.GetParentDescription();
-
-        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 location-filter-tag"
-             data-code="@selectedItem.Code">
-            <div>@selectedItem.GetDescription()</div>
-            @if (!string.IsNullOrEmpty(parentDescription))
-            {
-                <div class="govuk-hint govuk-!-font-size-14 location-parent-info">
-                    @parentDescription
-                </div>
-            }
-        </div>
-    }
+<div class="govuk-summary-card__title-wrapper">
+    <h3 class="govuk-summary-card__title">Selected (@Model.Count)</h3>
+    <ul class="govuk-summary-card__actions">
+        <li class="govuk-summary-card__action">
+            <a href="#" class="govuk-link" id="browse-location-codes">Edit</a>
+        </li>
+    </ul>
+</div>
+<div class="govuk-summary-card__content">
+    <dl class="govuk-summary-list">
+        @foreach (var selectedItem in Model.OrderBy(x => x.GetDescription()))
+        {
+            <div class="govuk-summary-list__row" data-code="@selectedItem.Code">
+                <dt class="govuk-summary-list__key govuk-!-width-full">
+                    @selectedItem.GetDescription()
+                </dt>
+            </div>
+        }
+    </dl>
 </div>

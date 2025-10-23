@@ -78,7 +78,7 @@ const CpvSelector = (() => {
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType} code selection`
+            ? 'Edit'
             : originalText;
     };
 
@@ -306,11 +306,13 @@ const CpvSelector = (() => {
     };
 
     const setupModalHandlers = () => {
-        if (!state.modal || !state.trigger) return;
+        if (!state.modal) return;
 
-        state.trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
+        document.addEventListener('click', (e) => {
+            if (e.target.id === config.triggerId || e.target.closest(`#${config.triggerId}`)) {
+                e.preventDefault();
+                openModal();
+            }
         });
 
         document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
@@ -455,24 +457,37 @@ const CpvSelector = (() => {
         }
 
         if (state.selectedCodes.size === 0) {
+            browseLink.style.display = '';
             return;
         }
+
+        browseLink.style.display = 'none';
+
         const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
+        selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
         selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
 
         selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold">
-                Selected (${state.selectedCodes.size}):
-            </p>
-            <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
-        ).join('')}
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">Selected (${state.selectedCodes.size})</h3>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <a href="#" class="govuk-link" id="${config.triggerId}">Edit</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
+                    ${Array.from(state.selectedCodes).sort().map(code =>
+                `<div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-width-full">${escapeHtml(code)}</dt>
+                </div>`
+            ).join('')}
+                </dl>
             </div>
         `;
 
-        browseLink.appendChild(selectedCodesDisplay);
+        browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
     };
 
     const debounce = (func, wait) => {

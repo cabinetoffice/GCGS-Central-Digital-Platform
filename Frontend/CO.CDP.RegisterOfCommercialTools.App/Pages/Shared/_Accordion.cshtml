@@ -1,9 +1,9 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.Accordion
 
-<div class="govuk-accordion no-border govuk-filter-section govuk-!-margin-bottom-1 govuk-!-padding-top-2 govuk-!-padding-bottom-3" data-accordion-section>
+<div class="govuk-accordion no-border govuk-filter-section govuk-!-margin-bottom-1 govuk-!-padding-1" data-accordion-section>
     <div class="govuk-accordion__section no-border @(Model.IsOpen ? "govuk-accordion__section--expanded" : "")">
         <button type="button"
-                class="govuk-accordion__section-button govuk-!-padding-left-2 govuk-!-padding-top-2 govuk-!-padding-right-2 govuk-!-padding-bottom-0 govuk-!-width-full no-border"
+                class="govuk-accordion__section-button govuk-!-padding-2 govuk-!-width-full no-border"
                 aria-expanded="@(Model.IsOpen)" aria-controls="@Model.Id-content" data-accordion-button>
             <span class="custom-chevron govuk-!-margin-0 govuk-!-margin-right-2" aria-hidden="true">
                 <svg class="custom-chevron-icon" xmlns="http://www.w3.org/2000/svg"
@@ -16,7 +16,7 @@
                 @Model.Title
             </span>
         </button>
-        <div id="@Model.Id-content" class="govuk-accordion__section-content no-border govuk-!-padding-bottom-0 govuk-!-margin-left-2" data-accordion-content>
+        <div id="@Model.Id-content" class="govuk-accordion__section-content no-border govuk-!-padding-bottom-0" data-accordion-content>
             <partial name="@Model.PartialViewName" model="@Model.PartialViewModel" />
         </div>
     </div>

@@ -67,9 +67,9 @@
                 </div>
             </div>
 
-            <div class="code-selections-box govuk-!-margin-top-6">
-                <div class="govuk-inset-text">
-                    <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+            <div class="govuk-summary-card govuk-!-margin-top-6">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
                         @if (options.CodeType == "Location")
                         {
                             <text>Selected locations</text>
@@ -80,23 +80,41 @@
                         }
                         (<span id="@(options.ModalId)-selection-count">@selection.SelectedCodes.Count</span>)
                     </h3>
-
+                </div>
+                <div class="govuk-summary-card__content">
                     <div id="@options.SelectionContainerId">
                         @if (selection.HasSelections)
                         {
-                            @foreach (var selectedItem in selection.SelectedItems)
-                            {
-                                <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1"
-                                     data-code="@selectedItem.Code">
-                                    <strong>@selectedItem.Code</strong> @selectedItem.GetDescription()
-                                    <button type="button" class="govuk-tag__remove"
-                                            aria-label="Remove @selectedItem.Code @selectedItem.GetDescription()"
-                                            data-code="@selectedItem.Code"
-                                            data-action="remove-selection">
-                                        &times;
-                                    </button>
-                                </div>
-                            }
+                            <dl class="govuk-summary-list">
+                                @foreach (var selectedItem in selection.SelectedItems)
+                                {
+                                    <div class="govuk-summary-list__row" data-code="@selectedItem.Code">
+                                        @if (options.CodeType == "Location")
+                                        {
+                                            <dt class="govuk-summary-list__key">
+                                                @selectedItem.GetDescription()
+                                            </dt>
+                                        }
+                                        else
+                                        {
+                                            <dt class="govuk-summary-list__key">
+                                                @selectedItem.Code
+                                            </dt>
+                                            <dd class="govuk-summary-list__value">
+                                                @selectedItem.GetDescription()
+                                            </dd>
+                                        }
+                                        <dd class="govuk-summary-list__actions">
+                                            <button type="button" class="govuk-link code-remove-button"
+                                                    aria-label="Remove @selectedItem.Code @selectedItem.GetDescription()"
+                                                    data-code="@selectedItem.Code"
+                                                    data-action="remove-selection">
+                                                Remove
+                                            </button>
+                                        </dd>
+                                    </div>
+                                }
+                            </dl>
                         }
                         else
                         {

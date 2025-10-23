@@ -21,35 +21,39 @@
 }
 
 <div class="govuk-!-margin-top-0" id="contract-location-content">
-    <div class="accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
-        <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
-            @locationSelection.BrowseLinkText
-        </a>
-
-        @if (locationSelection.HasSelections)
-        {
-            <div class="govuk-!-margin-bottom-0 govuk-!-margin-top-3" id="location-selected-codes-display">
-                <p class="govuk-body-s govuk-!-font-weight-bold">@locationSelection.SelectionSummary:</p>
-                <div class="govuk-!-margin-top-2">
+    @if (locationSelection.HasSelections)
+    {
+        <div class="govuk-summary-card filter-panel-card govuk-!-margin-top-3" id="location-selected-codes-display">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">@locationSelection.SelectionSummary</h3>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">Edit</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <dl class="govuk-summary-list">
                     @foreach (var selectedItem in locationSelection.SelectedItems.OrderBy(x => x.GetDescription()))
                     {
-                        var parentDescription = selectedItem.GetParentDescription();
-
-                        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 location-filter-tag"
-                             data-code="@selectedItem.Code">
-                            <div>@selectedItem.GetDescription()</div>
-                            @if (!string.IsNullOrEmpty(parentDescription))
-                            {
-                                <div class="govuk-hint govuk-!-font-size-14 location-parent-info">
-                                    @parentDescription
-                                </div>
-                            }
+                        <div class="govuk-summary-list__row" data-code="@selectedItem.Code">
+                            <dt class="govuk-summary-list__key govuk-!-width-full">
+                                @selectedItem.GetDescription()
+                            </dt>
                         </div>
                     }
-                </div>
+                </dl>
             </div>
-        }
-    </div>
+        </div>
+    }
+    else
+    {
+        <div class="accordion-highlight">
+            <a href="#" class="govuk-link" id="@selectorOptions.BrowseButtonId">
+                @locationSelection.BrowseLinkText
+            </a>
+        </div>
+    }
 
     @foreach (var (name, value) in locationSelection.GetHiddenInputs("location"))
     {
