@@ -514,7 +514,6 @@ const LocationSelector = (() => {
                 }
             }
         } catch (error) {
-            console.error('Failed to update accordion content:', error);
         }
     };
 
