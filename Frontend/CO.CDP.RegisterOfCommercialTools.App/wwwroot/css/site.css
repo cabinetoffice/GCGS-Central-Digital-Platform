@@ -199,8 +199,15 @@ button[aria-expanded="true"] .custom-chevron-icon {
 
 .govuk-summary-card .govuk-summary-card__title {
     color: #0b0c0c;
-    font-size: 16px;
     font-weight: 700;
+}
+
+.filter-panel-card .govuk-summary-card__title {
+    font-size: 16px;
+}
+
+.govuk-modal .govuk-summary-card .govuk-summary-card__title {
+    font-size: 19px;
 }
 
 .govuk-summary-card .govuk-summary-card__actions a {
