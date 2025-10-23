@@ -43,7 +43,6 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       cfs_allowed_target_email_domains  = ["goaco.com"]
       fts_allowed_target_email_domains  = ["goaco.com"]
-      fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
       fts_service_allowed_origins       = [
@@ -89,7 +88,6 @@ locals {
         "goaco.com"
       ]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
         "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
       ]
@@ -273,7 +271,6 @@ locals {
         "xansium.com"
       ]
       fts_extra_domains                 = ["www-tpp.find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
@@ -336,7 +333,6 @@ locals {
       ]
       fts_allowed_target_email_domains  = []
       fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
         "https://fts.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
@@ -384,7 +380,6 @@ locals {
   cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
-  fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)

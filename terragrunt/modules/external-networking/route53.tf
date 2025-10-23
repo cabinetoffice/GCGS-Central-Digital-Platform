@@ -9,14 +9,13 @@ resource "aws_route53_zone" "data_platform" {
   }
 }
 
-resource "aws_route53_record" "www_to_fts" {
-  count = var.fts_azure_frontdoor == null ? 0 : 1
+resource "aws_route53_record" "commercial_ai" {
+  count = var.is_production ? 1 : 0
 
   zone_id = var.core_hosted_zone_id
-  name    = "www"
+  name    = "commercial-ai"
   type    = "CNAME"
   ttl     = 60
 
-  records = [var.fts_azure_frontdoor]
+  records = ["d1kry5jfpfm6f7.cloudfront.net"]
 }
-

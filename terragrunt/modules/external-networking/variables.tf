@@ -8,12 +8,6 @@ variable "environment" {
   type        = string
 }
 
-variable "fts_azure_frontdoor" {
-  description = "The DNS hostname to used for routing traffic to the Find a Tender Service (FTS)"
-  type        = string
-  default     = null
-}
-
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
