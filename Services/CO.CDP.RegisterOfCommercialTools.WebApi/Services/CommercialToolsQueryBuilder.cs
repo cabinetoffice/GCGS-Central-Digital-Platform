@@ -230,11 +230,41 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
         if (validCodes.Count == 1)
         {
-            return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{validCodes[0]}'))");
+            var code = validCodes[0];
+            if (IsCountryCode(code))
+            {
+                return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/country eq '{code}'))");
+            }
+
+            var regionCode = GetBaseRegionCode(code);
+            return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{regionCode}'))");
         }
 
-        var regionFilters = string.Join(" or ", validCodes.Select(c => $"d/region eq '{c}'"));
-        return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {regionFilters}))");
+        var filters = validCodes.Select(code =>
+        {
+            if (IsCountryCode(code))
+            {
+                return $"d/country eq '{code}'";
+            }
+
+            var regionCode = GetBaseRegionCode(code);
+            return $"d/region eq '{regionCode}'";
+        });
+
+        var combinedFilters = string.Join(" or ", filters);
+        return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {combinedFilters}))");
+    }
+
+    private static bool IsCountryCode(string code) =>
+        code.Length == 2 && code.All(char.IsLetter);
+
+    private static string GetBaseRegionCode(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+            return code;
+
+        var digitIndex = code.IndexOf(code.FirstOrDefault(char.IsDigit));
+        return digitIndex > 0 ? code[..digitIndex] : code;
     }
 
     public ICommercialToolsQueryBuilder WithCpvCodes(List<string>? cpvCodes)
