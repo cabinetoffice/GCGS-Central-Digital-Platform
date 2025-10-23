@@ -444,7 +444,7 @@ const CpvSelector = (() => {
         updateAccordionContent();
     };
 
-    const updateAccordionContent = () => {
+    const updateAccordionContent = async () => {
         const accordionContent = document.querySelector(`#${config.accordionContentId}`);
         if (!accordionContent) return;
 
@@ -463,31 +463,30 @@ const CpvSelector = (() => {
 
         browseLink.style.display = 'none';
 
-        const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
-        selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
+        const formData = new FormData();
+        Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
 
-        selectedCodesDisplay.innerHTML = `
-            <div class="govuk-summary-card__title-wrapper">
-                <h3 class="govuk-summary-card__title">Selected (${state.selectedCodes.size})</h3>
-                <ul class="govuk-summary-card__actions">
-                    <li class="govuk-summary-card__action">
-                        <a href="#" class="govuk-link" id="${config.triggerId}">Edit</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="govuk-summary-card__content">
-                <dl class="govuk-summary-list">
-                    ${Array.from(state.selectedCodes).sort().map(code =>
-                `<div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key govuk-!-width-full">${escapeHtml(code)}</dt>
-                </div>`
-            ).join('')}
-                </dl>
-            </div>
-        `;
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (token) {
+            formData.append('__RequestVerificationToken', token);
+        }
 
-        browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
+        try {
+            const response = await fetch(`/${config.routePrefix}/accordion-selection-fragment`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const selectedCodesDisplay = document.createElement('div');
+                selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
+                selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
+                selectedCodesDisplay.innerHTML = html;
+                browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
+            }
+        } catch (error) {
+        }
     };
 
     const debounce = (func, wait) => {
@@ -576,6 +575,7 @@ const CpvSelector = (() => {
         loadSelectedCodes();
         updateTriggerText();
         setupModalHandlers();
+        updateAccordionContent();
     };
 
     return {init};

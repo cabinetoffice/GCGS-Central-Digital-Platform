@@ -14,7 +14,7 @@ else
 
     @if (selectedItems.Any())
     {
-        <dl class="govuk-summary-list">
+        <dl class="govuk-summary-list govuk-!-font-size-16">
             @foreach (var item in selectedItems.OrderBy(x => x.DescriptionEn))
             {
                 <div class="govuk-summary-list__row" data-code="@item.Code">

@@ -6,6 +6,8 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Controllers;
 
 public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService, ILogger<CpvCodesController> logger) : HierarchicalCodeControllerBase<CpvCodeDto>(codeService)
 {
+    private readonly IHierarchicalCodeService<CpvCodeDto> _cpvCodeService = codeService;
+
     protected override string CodeTypeName => "CPV";
     protected override string RoutePrefix => "cpv";
     protected override string TreeFragmentView => "_CpvTreeFragment";
@@ -48,5 +50,19 @@ public class CpvCodesController(IHierarchicalCodeService<CpvCodeDto> codeService
 
         return await base.GetChildrenFragment(parentCode, selectedCodes);
     }
-}
 
+    [HttpPost("/cpv/accordion-selection-fragment")]
+    public async Task<IActionResult> GetAccordionSelectionFragment([FromForm] string[]? selectedCodes = null)
+    {
+        logger.LogInformation("CPV accordion selection requested: SelectedCodes=[{SelectedCodes}]",
+            string.Join(", ", (selectedCodes ?? []).Select(code => code.Replace("\r", "").Replace("\n", ""))));
+
+        if (selectedCodes == null || selectedCodes.Length == 0)
+        {
+            return PartialView("_CpvAccordionSelectionFragment", new List<CpvCodeDto>());
+        }
+
+        var cpvCodes = await _cpvCodeService.GetByCodesAsync(selectedCodes.ToList());
+        return PartialView("_CpvAccordionSelectionFragment", cpvCodes);
+    }
+}

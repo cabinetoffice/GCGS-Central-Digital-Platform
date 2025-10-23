@@ -42,6 +42,11 @@ button[aria-expanded="true"] .custom-chevron-icon {
     background-color: #ffffff;
 }
 
+.govuk-accordion__section .filter-panel-card .govuk-summary-list__key {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
 .govuk-modal {
     position: fixed;
     top: 0;
@@ -194,7 +199,7 @@ button[aria-expanded="true"] .custom-chevron-icon {
 
 .govuk-summary-card .govuk-summary-card__title {
     color: #0b0c0c;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 700;
 }
 
