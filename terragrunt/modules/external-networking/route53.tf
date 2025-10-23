@@ -9,13 +9,3 @@ resource "aws_route53_zone" "data_platform" {
   }
 }
 
-resource "aws_route53_record" "commercial_ai" {
-  count = var.is_production ? 1 : 0
-
-  zone_id = var.core_hosted_zone_id
-  name    = "commercial-ai"
-  type    = "CNAME"
-  ttl     = 60
-
-  records = ["d1kry5jfpfm6f7.cloudfront.net"]
-}
