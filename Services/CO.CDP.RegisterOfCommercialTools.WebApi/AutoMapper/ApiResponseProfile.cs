@@ -89,11 +89,21 @@ public class ApiResponseProfile : Profile
         {
             return src.Tender.Techniques.FrameworkAgreement.Method switch
             {
-                "open" => "With competition",
-                "direct" => "Without competition",
                 "withoutReopeningCompetition" => "Without competition",
                 "withReopeningCompetition" => "With competition",
                 "withAndWithoutReopeningCompetition" => "With and without competition",
+                _ => GetFallbackText(DetermineCommercialToolStatus(src.Tender?.Status))
+            };
+        }
+
+        if (src.Tender?.ProcurementMethod != null)
+        {
+            return src.Tender.ProcurementMethod.ToLowerInvariant() switch
+            {
+                "open" => "With competition",
+                "selective" => "With competition",
+                "direct" => "Without competition",
+                "limited" => "Without competition",
                 _ => GetFallbackText(DetermineCommercialToolStatus(src.Tender?.Status))
             };
         }
