@@ -9,7 +9,9 @@ using Moq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using CO.CDP.Functional;
 using Microsoft.Extensions.Configuration;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Services.Caching;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Integration;
 
@@ -45,9 +47,24 @@ public class SearchIntegrationTests
                     services.Remove(descriptor);
                 }
 
+                // Ensure the caching layer does not affect tests by replacing the IRedisCacheService with a no-op implementation.
+                var cacheDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IRedisCacheService));
+                if (cacheDescriptor != null)
+                {
+                    services.Remove(cacheDescriptor);
+                }
+
+                var distributedCacheDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(Microsoft.Extensions.Caching.Distributed.IDistributedCache));
+                if (distributedCacheDescriptor != null)
+                {
+                    services.Remove(distributedCacheDescriptor);
+                }
+
                 var mockRepository = new Mock<ICommercialToolsService>();
                 SetupMockRepository(mockRepository);
                 services.AddSingleton(mockRepository.Object);
+
+                services.AddSingleton<IRedisCacheService, NoOpRedisCacheService>();
             });
         });
 
@@ -186,5 +203,23 @@ public class SearchIntegrationTests
             .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
             .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((defaultResults, 50)));
 
+    }
+
+    private class NoOpRedisCacheService : IRedisCacheService
+    {
+        public Task<Option<T>> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Option<T>.None);
+        }
+
+        public Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan expiration, CancellationToken cancellationToken = default)
+        {
+            return await factory();
+        }
     }
 }

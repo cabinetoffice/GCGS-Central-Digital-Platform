@@ -1,9 +1,9 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 
 <div class="govuk-!-margin-top-0">
-    <p class="govuk-body-s govuk-!-padding-left-2">Maximum percentage fees charged to suppliers</p>
+    <p class="govuk-body-s">Maximum percentage fees charged to suppliers</p>
 
-    <div class="govuk-form-group @(ViewData.ModelState.HasError("fee_min") || ViewData.ModelState.HasError("fee_max") ? "govuk-form-group--error" : "") accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+    <div class="govuk-form-group @(ViewData.ModelState.HasError("fee_min") || ViewData.ModelState.HasError("fee_max") ? "govuk-form-group--error" : "") accordion-highlight">
         <fieldset class="govuk-fieldset">
             <div class="govuk-form-group">
                 @{

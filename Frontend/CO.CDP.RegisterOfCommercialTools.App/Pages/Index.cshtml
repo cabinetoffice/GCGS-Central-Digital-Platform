@@ -25,7 +25,7 @@
     ) { IsOpen = true };
     var industryCpvCodeAccordion = new Accordion(
         "industry-cpv-code",
-        "Industry CPV code",
+        "CPV code",
         "_IndustryCpvCodeAccordionContent", Model
         ) { IsOpen = true };
     var contractLocationAccordion = new Accordion(
@@ -195,10 +195,10 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
-                <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 govuk-filter-section">
-                    <h2 class="govuk-heading-m">Keywords</h2>
+                <div class="govuk-!-padding-2 govuk-!-padding-bottom-6 govuk-!-margin-bottom-5 govuk-filter-section">
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
 
-                    <p class="govuk-body-s">
+                    <p class="govuk-body-s govuk-!-margin-bottom-3">
                         Search titles, descriptions, identifiers and organisation names
                     </p>
 

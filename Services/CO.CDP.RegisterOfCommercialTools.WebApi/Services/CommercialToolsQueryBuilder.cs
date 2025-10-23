@@ -101,7 +101,6 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         {
             filters.Add($"contains(tolower(tender/title), '{escapedKeyword}')");
             filters.Add($"contains(tolower(tender/description), '{escapedKeyword}')");
-            filters.Add($"contains(tolower(tender/techniques/frameworkAgreement/description), '{escapedKeyword}')");
             filters.Add($"parties/any(p: contains(tolower(p/name), '{escapedKeyword}'))");
         }
 
@@ -191,7 +190,8 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder SubmissionDeadlineTo(DateTime to)
     {
-        var formattedDate = to.ToString("yyyy-MM-ddTHH:mm:sszzz");
+        var endOfDay = to.Date.AddDays(1).AddTicks(-1);
+        var formattedDate = endOfDay.ToString("yyyy-MM-ddTHH:mm:sszzz");
         var filter = $"tender/tenderPeriod/endDate le {formattedDate}";
         return WithCustomFilter(filter);
     }
@@ -204,7 +204,9 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder ContractEndDate(DateTime to)
     {
-        var filter = $"(tender/techniques/frameworkAgreement/periodEndDate le {to:yyyy-MM-dd} or awards/any(a: a/contractPeriod/endDate le {to:yyyy-MM-dd}) or tender/lots/any(l: l/contractPeriod/endDate le {to:yyyy-MM-dd}) or contracts/any(c: c/period/endDate le {to:yyyy-MM-dd}))";
+        var endOfDay = to.Date.AddDays(1).AddTicks(-1);
+        var formattedDate = endOfDay.ToString("yyyy-MM-dd");
+        var filter = $"(tender/techniques/frameworkAgreement/periodEndDate le {formattedDate} or tender/lots/any(l: l/contractPeriod/endDate le {formattedDate}) or contracts/any(c: c/period/endDate le {formattedDate}))";
         return WithCustomFilter(filter);
     }
 
@@ -228,11 +230,41 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
         if (validCodes.Count == 1)
         {
-            return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{validCodes[0]}'))");
+            var code = validCodes[0];
+            if (IsCountryCode(code))
+            {
+                return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/country eq '{code}'))");
+            }
+
+            var regionCode = GetBaseRegionCode(code);
+            return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{regionCode}'))");
         }
 
-        var regionFilters = string.Join(" or ", validCodes.Select(c => $"d/region eq '{c}'"));
-        return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {regionFilters}))");
+        var filters = validCodes.Select(code =>
+        {
+            if (IsCountryCode(code))
+            {
+                return $"d/country eq '{code}'";
+            }
+
+            var regionCode = GetBaseRegionCode(code);
+            return $"d/region eq '{regionCode}'";
+        });
+
+        var combinedFilters = string.Join(" or ", filters);
+        return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {combinedFilters}))");
+    }
+
+    private static bool IsCountryCode(string code) =>
+        code.Length == 2 && code.All(char.IsLetter);
+
+    private static string GetBaseRegionCode(string code)
+    {
+        if (string.IsNullOrWhiteSpace(code))
+            return code;
+
+        var digitIndex = code.IndexOf(code.FirstOrDefault(char.IsDigit));
+        return digitIndex > 0 ? code[..digitIndex] : code;
     }
 
     public ICommercialToolsQueryBuilder WithCpvCodes(List<string>? cpvCodes)

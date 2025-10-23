@@ -11,32 +11,27 @@
 else
 {
     var selectedItems = ViewData["SelectedItems"] as List<NutsCodeDto> ?? new List<NutsCodeDto>();
-    var selectionCount = (int)(ViewData["SelectionCount"] ?? 0);
 
     @if (selectedItems.Any())
     {
-        @foreach (var item in selectedItems.OrderBy(x => x.DescriptionEn))
-        {
-            var isCountryLevel = string.IsNullOrEmpty(item.ParentCode);
-
-            <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 code-selected-tag"
-                 data-code="@item.Code">
-                <button type="button"
-                        class="govuk-tag__remove"
-                        aria-label="Remove @item.Code @item.DescriptionEn"
-                        data-code="@item.Code"
-                        data-action="remove-selection">
-                    &times;
-                </button>
-                <div class="code-selected-tag__content">
-                    <div class="code-selected-tag__title">@item.DescriptionEn</div>
-                    @if (!isCountryLevel && !string.IsNullOrEmpty(item.GetParentDescription()))
-                    {
-                        <div class="code-selected-tag__description">@item.GetParentDescription()</div>
-                    }
+        <dl class="govuk-summary-list govuk-!-font-size-16">
+            @foreach (var item in selectedItems.OrderBy(x => x.DescriptionEn))
+            {
+                <div class="govuk-summary-list__row" data-code="@item.Code">
+                    <dt class="govuk-summary-list__key">
+                        @item.DescriptionEn
+                    </dt>
+                    <dd class="govuk-summary-list__actions">
+                        <button type="button" class="govuk-link code-remove-button"
+                                aria-label="Remove @item.Code @item.DescriptionEn"
+                                data-code="@item.Code"
+                                data-action="remove-selection">
+                            Remove
+                        </button>
+                    </dd>
                 </div>
-            </div>
-        }
+            }
+        </dl>
     }
     else
     {

@@ -78,7 +78,7 @@ const LocationSelector = (() => {
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType.toLowerCase()}s`
+            ? 'Edit'
             : originalText;
     };
 
@@ -306,11 +306,13 @@ const LocationSelector = (() => {
     };
 
     const setupModalHandlers = () => {
-        if (!state.modal || !state.trigger) return;
+        if (!state.modal) return;
 
-        state.trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
+        document.addEventListener('click', (e) => {
+            if (e.target.id === config.triggerId || e.target.closest(`#${config.triggerId}`)) {
+                e.preventDefault();
+                openModal();
+            }
         });
 
         document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
@@ -455,8 +457,11 @@ const LocationSelector = (() => {
         }
 
         if (state.selectedCodes.size === 0) {
+            browseLink.style.display = '';
             return;
         }
+
+        browseLink.style.display = 'none';
 
         const formData = new FormData();
         Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
@@ -475,10 +480,10 @@ const LocationSelector = (() => {
             if (response.ok) {
                 const html = await response.text();
                 const selectedCodesDisplay = document.createElement('div');
-                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
+                selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
                 selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
                 selectedCodesDisplay.innerHTML = html;
-                browseLink.appendChild(selectedCodesDisplay);
+                browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
             }
         } catch (error) {
         }

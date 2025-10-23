@@ -149,23 +149,23 @@ public class CommercialToolsQueryBuilderTests
     }
 
     [Fact]
-    public void WithLocationCodes_WhenSingleLocationProvided_ShouldAddODataFilter()
+    public void WithLocationCodes_WhenSingleLocationProvided_ShouldAddODataFilterWithTrimmedRegion()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithLocationCodes(["UKC22"]).Build(BaseUrl);
 
-        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC22%27%29%29");
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC%27%29%29");
     }
 
     [Fact]
-    public void WithLocationCodes_WhenMultipleLocationsProvided_ShouldAddODataFilterWithOrCondition()
+    public void WithLocationCodes_WhenMultipleLocationsProvided_ShouldAddODataFilterWithOrConditionAndTrimmedRegions()
     {
         var builder = new CommercialToolsQueryBuilder();
 
         var result = builder.WithLocationCodes(["UKC22", "UKD11"]).Build(BaseUrl);
 
-        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC22%27%20or%20d%2Fregion%20eq%20%27UKD11%27%29%29");
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC%27%20or%20d%2Fregion%20eq%20%27UKD%27%29%29");
     }
 
     [Fact]
@@ -186,6 +186,46 @@ public class CommercialToolsQueryBuilderTests
         var result = builder.WithLocationCodes(null);
 
         result.Should().BeSameAs(builder);
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenCountryCodeProvided_ShouldSearchCountryField()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["GB"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%29%29");
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenRegionCodeWithDigits_ShouldTrimDigits()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["UKC1"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fregion%20eq%20%27UKC%27%29%29");
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenMixedCountryAndRegionCodes_ShouldHandleBoth()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["GB", "UKC22"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fregion%20eq%20%27UKC%27%29%29");
+    }
+
+    [Fact]
+    public void WithLocationCodes_WhenMultipleCountryCodes_ShouldSearchCountryFieldWithOr()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var result = builder.WithLocationCodes(["GB", "FR"]).Build(BaseUrl);
+
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fcountry%20eq%20%27FR%27%29%29");
     }
 
     [Fact]
@@ -280,7 +320,7 @@ public class CommercialToolsQueryBuilderTests
         var result = builder.SubmissionDeadlineTo(date).Build(BaseUrl);
         var decoded = Uri.UnescapeDataString(result);
 
-        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31");
+        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31T23:59:59");
     }
 
     [Fact]
@@ -307,9 +347,8 @@ public class CommercialToolsQueryBuilderTests
         var decoded = Uri.UnescapeDataString(result);
 
         decoded.Should().Contain("tender/techniques/frameworkAgreement/periodEndDate le 2026-12-31");
-        decoded.Should().Contain("awards/any(a: a/contractPeriod/endDate le 2026-12-31)");
         decoded.Should().Contain("tender/lots/any(l: l/contractPeriod/endDate le 2026-12-31)");
-        decoded.Should().Contain("contracts/any(c: c/period/endDate le 2026-12-31)");
+        decoded.Should().Contain("contracts/any(c: c/period/endDate le 2026-12-31");
     }
 
     [Fact]
@@ -459,7 +498,7 @@ public class CommercialToolsQueryBuilderTests
         decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion ge 1.005)");
         decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion le 9.9999)");
         decoded.Should().Contain("tender/tenderPeriod/endDate ge 2025-01-01");
-        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31");
+        decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31T23:59:59");
         decoded.Should().Contain("tender/techniques/frameworkAgreement/periodStartDate ge 2025-06-01");
         decoded.Should().Contain("tender/lots/any(l: l/contractPeriod/startDate ge 2025-06-01)");
         decoded.Should().Contain("contracts/any(c: c/period/startDate ge 2025-06-01)");
