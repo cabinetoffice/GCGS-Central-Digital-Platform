@@ -30,6 +30,10 @@ builder.Services.AddTransient<ICommercialToolsQueryBuilder, CommercialToolsQuery
 builder.Services.AddHttpClient<ICommercialToolsService, CommercialToolsService>((serviceProvider, client) =>
 {
     client.BaseAddress = new Uri(serviceProvider.GetRequiredService<IConfiguration>().GetSection("ODataApi:BaseUrl").Value ?? throw new InvalidOperationException("ODataApi:BaseUrl is not configured."));
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AutomaticDecompression = System.Net.DecompressionMethods.GZip | System.Net.DecompressionMethods.Deflate
 });
 
 builder.Services.AddStackExchangeRedisCache(options =>
