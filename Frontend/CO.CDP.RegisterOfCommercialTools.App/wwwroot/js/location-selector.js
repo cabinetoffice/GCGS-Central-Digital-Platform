@@ -308,9 +308,7 @@ const LocationSelector = (() => {
     const setupModalHandlers = () => {
         if (!state.modal) return;
 
-        // Use event delegation for trigger clicks to handle dynamically inserted elements
         document.addEventListener('click', (e) => {
-            // Check if clicked element or its parent matches the trigger ID
             const trigger = e.target.id === config.triggerId ? e.target : e.target.closest(`#${config.triggerId}`);
             if (trigger) {
                 e.preventDefault();
