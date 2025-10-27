@@ -219,6 +219,11 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         return WithCustomFilter(odataFilter);
     }
 
+    private static readonly ImmutableList<string> EnglandCodes =
+    [
+        "UKC", "UKD", "UKE", "UKF", "UKG", "UKH", "UKI", "UKJ", "UKK"
+    ];
+
     public ICommercialToolsQueryBuilder WithLocationCodes(List<string>? locationCodes)
     {
         var validCodes = (locationCodes ?? [])
@@ -228,28 +233,27 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
         if (validCodes.Count == 0)
             return this;
 
-        if (validCodes.Count == 1)
+        var filters = new List<string>();
+        foreach (var code in validCodes)
         {
-            var code = validCodes[0];
             if (IsCountryCode(code))
             {
-                return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/country eq '{code}'))");
+                filters.Add($"d/country eq '{code}'");
+                if (code == "GB")
+                {
+                    filters.Add($"d/region eq 'UK'"); // some tenders use 'UK' in region instead of 'GB' for the country code
+                }
             }
-
-            var regionCode = GetBaseRegionCode(code);
-            return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: d/region eq '{regionCode}'))");
+            else if (code == "ENG")
+            {
+                filters.AddRange(EnglandCodes.Select(c => $"d/region eq '{c}'")); // FTS does not use an England-wide code, so map to all relevant NUTS2 codes
+            }
+            else
+            {
+                var regionCode = GetBaseRegionCode(code); // FTS only provides NUTS2 codes, so strip any further detail
+                filters.Add($"d/region eq '{regionCode}'");
+            }
         }
-
-        var filters = validCodes.Select(code =>
-        {
-            if (IsCountryCode(code))
-            {
-                return $"d/country eq '{code}'";
-            }
-
-            var regionCode = GetBaseRegionCode(code);
-            return $"d/region eq '{regionCode}'";
-        });
 
         var combinedFilters = string.Join(" or ", filters);
         return WithCustomFilter($"tender/items/any(i: i/deliveryAddresses/any(d: {combinedFilters}))");
