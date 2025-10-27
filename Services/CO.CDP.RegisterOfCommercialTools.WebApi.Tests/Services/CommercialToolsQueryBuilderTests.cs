@@ -195,7 +195,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithLocationCodes(["GB"]).Build(BaseUrl);
 
-        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fcountry%20eq%20%27UK%27%29%29");
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fregion%20eq%20%27UK%27%29%29");
     }
 
     [Fact]
@@ -215,7 +215,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithLocationCodes(["GB", "UKC22"]).Build(BaseUrl);
 
-        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fcountry%20eq%20%27UK%27%20or%20d%2Fregion%20eq%20%27UKC%27%29%29");
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fregion%20eq%20%27UK%27%20or%20d%2Fregion%20eq%20%27UKC%27%29%29");
     }
 
     [Fact]
@@ -225,7 +225,7 @@ public class CommercialToolsQueryBuilderTests
 
         var result = builder.WithLocationCodes(["GB", "FR"]).Build(BaseUrl);
 
-        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fcountry%20eq%20%27UK%27%20or%20d%2Fcountry%20eq%20%27FR%27%29%29");
+        result.Should().Contain("$filter=tender%2Fitems%2Fany%28i%3A%20i%2FdeliveryAddresses%2Fany%28d%3A%20d%2Fcountry%20eq%20%27GB%27%20or%20d%2Fregion%20eq%20%27UK%27%20or%20d%2Fcountry%20eq%20%27FR%27%29%29");
     }
 
     [Fact]

@@ -241,7 +241,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
                 filters.Add($"d/country eq '{code}'");
                 if (code == "GB")
                 {
-                    filters.Add($"d/country eq 'UK'"); // some tenders use 'UK' instead of 'GB' for the UK country code
+                    filters.Add($"d/region eq 'UK'"); // some tenders use 'UK' in region instead of 'GB' for the country code
                 }
             }
             else if (code == "ENG")
