@@ -14,7 +14,7 @@ namespace CO.CDP.OrganisationApp.Pages.Buyer;
 [Authorize(OrgScopeRequirement.Viewer)]
 public class BuyerView(
     IFeatureManager featureManager,
-    ICommercialToolsUrlService commercialToolsUrlService,
+    IExternalServiceUrlBuilder externalServiceUrlBuilder,
     ICookiePreferencesService cookiePreferencesService)
     : PageModel
 {
@@ -27,6 +27,7 @@ public class BuyerView(
     {
         var searchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
         var aiToolEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AiTool);
+        var commercialToolsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools);
 
         var tiles = new List<Tile>
         {
@@ -48,19 +49,7 @@ public class BuyerView(
             });
         }
 
-
-        if (aiToolEnabled)
-        {
-            tiles.Add(new Tile
-            {
-                Title = StaticTextResource.BuyerView_TileThree_Title,
-                Body = StaticTextResource.BuyerView_TileThree_Body,
-                Href = "#"
-            });
-        }
-
-        var commercialToolsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools);
-        if (commercialToolsEnabled)
+        if (aiToolEnabled || commercialToolsEnabled)
         {
             var cookiesAccepted = cookiePreferencesService.GetValue();
             bool? cookiesAcceptedValue = cookiesAccepted switch
@@ -72,12 +61,25 @@ public class BuyerView(
 
             var originParams = new Dictionary<string, string?> { { "origin", "buyer-view" } };
 
-            tiles.Add(new Tile
+            if (aiToolEnabled)
             {
-                Title = StaticTextResource.BuyerView_TileFour_Title,
-                Body = StaticTextResource.BuyerView_TileFour_Body,
-                Href = commercialToolsUrlService.BuildUrl("", Id, null, cookiesAcceptedValue, originParams)
-            });
+                tiles.Add(new Tile
+                {
+                    Title = StaticTextResource.BuyerView_TileThree_Title,
+                    Body = StaticTextResource.BuyerView_TileThree_Body,
+                    Href = externalServiceUrlBuilder.BuildUrl(ExternalService.AiTool, "", Id, null, cookiesAcceptedValue, originParams)
+                });
+            }
+
+            if (commercialToolsEnabled)
+            {
+                tiles.Add(new Tile
+                {
+                    Title = StaticTextResource.BuyerView_TileFour_Title,
+                    Body = StaticTextResource.BuyerView_TileFour_Body,
+                    Href = externalServiceUrlBuilder.BuildUrl(ExternalService.CommercialTools, "", Id, null, cookiesAcceptedValue, originParams)
+                });
+            }
         }
 
         Tiles = tiles;

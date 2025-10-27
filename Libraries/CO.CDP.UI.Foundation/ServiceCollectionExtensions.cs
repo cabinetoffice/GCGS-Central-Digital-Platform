@@ -1,5 +1,4 @@
 using CO.CDP.UI.Foundation.Cookies;
-using CO.CDP.UI.Foundation.Middleware;
 using CO.CDP.UI.Foundation.Pages;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.Extensions.Configuration;
@@ -104,6 +103,44 @@ public class UiFoundationBuilder
         configure(options);
         _services.AddSingleton(options);
         _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds AI Tool URL service with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddAiToolUrlService()
+    {
+        var options = _configuration.GetSection("AiToolApp").Get<AiToolUrlOptions>()
+                      ?? throw new InvalidOperationException("AiToolApp configuration is missing.");
+        _services.AddSingleton(options);
+        _services.AddScoped<IAiToolUrlService, AiToolUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds AI Tool URL service with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure AI Tool URL options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddAiToolUrlService(Action<AiToolUrlOptions> configure)
+    {
+        var options = _configuration.GetSection("AiToolApp").Get<AiToolUrlOptions>()
+                      ?? throw new InvalidOperationException("AiToolApp configuration is missing.");
+        configure(options);
+        _services.AddSingleton(options);
+        _services.AddScoped<IAiToolUrlService, AiToolUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds the unified External Service URL builder
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddExternalServiceUrlBuilder()
+    {
+        _services.AddScoped<IExternalServiceUrlBuilder, ExternalServiceUrlBuilder>();
         return this;
     }
 
