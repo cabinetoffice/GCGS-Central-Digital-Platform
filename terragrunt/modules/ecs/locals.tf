@@ -1,6 +1,6 @@
 locals {
 
-  is_php_migrated_env  = contains(["development", "staging", "integration"], var.environment)
+  is_php_migrated_env  = contains(["development", "staging", "integration", "production"], var.environment)
   php_services         = ["cfs", "cfs-scheduler", "fts", "fts-healthcheck", "fts-scheduler"]
   php_cluster_id       = local.is_php_migrated_env ?  aws_ecs_cluster.that.id : aws_ecs_cluster.this.id
   php_cluster_name     = local.is_php_migrated_env ?  aws_ecs_cluster.that.name : aws_ecs_cluster.this.name
