@@ -208,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
                 <div class="govuk-!-padding-2 govuk-!-padding-bottom-6 govuk-!-margin-bottom-5 govuk-filter-section">
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
                 @if (!string.IsNullOrEmpty(Model.Origin))
                 {
                     <input type="hidden" name="origin" value="@Model.Origin"/>
@@ -237,8 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="govuk-details__text">
                             <ul class="govuk-list govuk-list--bullet govuk-body-s">
                                 <li>
-                                    To search for <span class="govuk-!-font-weight-bold">any</span> word, put a <span
-                                        class="govuk-!-font-weight-bold">space</span> between words.
+                                    To search for <span class="govuk-!-font-weight-bold">any</span> word, put a
+                                    <span class="govuk-!-font-weight-bold">space</span> between words.
                                     For example, <span class="govuk-!-font-weight-bold">radio televisions</span>
                                 </li>
                                 <li>
@@ -277,6 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <a href="@Model.ResetUrl" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
+                </div>
                 </div>
             </form>
         </div>
