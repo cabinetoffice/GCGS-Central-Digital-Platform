@@ -36,9 +36,13 @@ public class IndexModel(
     [BindProperty(SupportsGet = true, Name = "organisation_id")]
     public Guid? OrganisationId { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "cookies_accepted")]
+    public string? CookiesAccepted { get; set; }
+
     private const int PageSize = 20;
 
     public string HomeUrl { get; private set; } = string.Empty;
+    public string ResetUrl { get; private set; } = string.Empty;
 
     public int TotalCount { get; set; }
 
@@ -52,6 +56,7 @@ public class IndexModel(
         try
         {
             SetHomeUrl();
+            SetResetUrl();
 
             if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
             {
@@ -109,6 +114,28 @@ public class IndexModel(
         {
             HomeUrl = ftsUrlService.BuildUrl("/Search");
         }
+    }
+
+    private void SetResetUrl()
+    {
+        var queryParams = new List<string>();
+
+        if (!string.IsNullOrEmpty(Origin))
+        {
+            queryParams.Add($"origin={Uri.EscapeDataString(Origin)}");
+        }
+
+        if (OrganisationId.HasValue)
+        {
+            queryParams.Add($"organisation_id={OrganisationId.Value}");
+        }
+
+        if (!string.IsNullOrEmpty(CookiesAccepted))
+        {
+            queryParams.Add($"cookies_accepted={Uri.EscapeDataString(CookiesAccepted)}");
+        }
+
+        ResetUrl = queryParams.Any() ? $"/?{string.Join("&", queryParams)}" : "/";
     }
 
     private async Task PopulateCodeSelections()

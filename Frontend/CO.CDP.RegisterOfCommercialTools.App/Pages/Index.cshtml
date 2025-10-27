@@ -110,6 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
             <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
+                @if (!string.IsNullOrEmpty(Model.Origin))
+                {
+                    <input type="hidden" name="origin" value="@Model.Origin"/>
+                }
+                @if (Model.OrganisationId.HasValue)
+                {
+                    <input type="hidden" name="organisation_id" value="@Model.OrganisationId"/>
+                }
+                @if (!string.IsNullOrEmpty(Model.CookiesAccepted))
+                {
+                    <input type="hidden" name="cookies_accepted" value="@Model.CookiesAccepted"/>
+                }
                 @if (Model.SearchParams.FilterFrameworks)
                 {
                     <input type="hidden" name="filter_frameworks" value="true"/>
@@ -195,6 +207,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
+                @if (!string.IsNullOrEmpty(Model.Origin))
+                {
+                    <input type="hidden" name="origin" value="@Model.Origin"/>
+                }
+                @if (Model.OrganisationId.HasValue)
+                {
+                    <input type="hidden" name="organisation_id" value="@Model.OrganisationId"/>
+                }
+                @if (!string.IsNullOrEmpty(Model.CookiesAccepted))
+                {
+                    <input type="hidden" name="cookies_accepted" value="@Model.CookiesAccepted"/>
+                }
                 <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 govuk-filter-section">
                     <h2 class="govuk-heading-m">Keywords</h2>
 
@@ -248,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Update results
                     </button>
-                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
+                    <a href="@Model.ResetUrl" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
                 </div>
