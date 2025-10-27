@@ -17,13 +17,13 @@ public class CommercialToolsService(
         try
         {
             httpClient.DefaultRequestHeaders.TryAddWithoutValidation("x-api-key", configuration.GetValue<string>("ODataApi:ApiKey"));
-            logger.LogDebug("Calling ODI Commercial Tools API: {QueryUrl}", queryUrl);
+            logger.LogDebug("Calling ODI CommercialTools API: {QueryUrl}", queryUrl);
 
-            var response = await httpClient.GetAsync(queryUrl);
+            var response = await httpClient.GetAsync(queryUrl, HttpCompletionOption.ResponseHeadersRead);
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                logger.LogDebug("ODI Commercial Tools API returned 404 - no results found for query: {QueryUrl}", queryUrl);
+                logger.LogDebug("ODI CommercialTools API returned 404 - no results found for query: {QueryUrl}", queryUrl);
                 return ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((Enumerable.Empty<SearchResultDto>(), 0));
             }
 
@@ -31,28 +31,26 @@ public class CommercialToolsService(
             {
                 var errorContent = await response.Content.ReadAsStringAsync();
                 var logLevel = (int)response.StatusCode >= 500 ? LogLevel.Error : LogLevel.Warning;
-                logger.Log(logLevel, "ODI Commercial Tools API returned {StatusCode}: {ErrorContent}", response.StatusCode, errorContent);
+                logger.Log(logLevel, "ODI CommercialTools API returned {StatusCode}: {ErrorContent}", response.StatusCode, errorContent);
 
                 return (int)response.StatusCode >= 500
                     ? ApiResult<(IEnumerable<SearchResultDto>, int)>.Failure(new ServerError($"ODI API error: {response.StatusCode}", response.StatusCode))
                     : ApiResult<(IEnumerable<SearchResultDto>, int)>.Failure(new ClientError($"ODI API error: {response.StatusCode}", response.StatusCode));
             }
 
-            var content = await response.Content.ReadAsStringAsync();
-            var apiResponse = JsonSerializer.Deserialize<List<CommercialToolApiItem>>(
-                content,
-                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            await using var stream = await response.Content.ReadAsStreamAsync();
+            var results = new List<SearchResultDto>();
+            var seenOcids = new HashSet<string>();
 
-            if (apiResponse == null)
+            await foreach (var item in JsonSerializer.DeserializeAsyncEnumerable<CommercialToolApiItem>(stream, options))
             {
-                logger.LogWarning("ODI API returned null response for query: {QueryUrl}", queryUrl);
-                return ApiResult<(IEnumerable<SearchResultDto>, int)>.Failure(new DeserialisationError("ODI API returned null response"));
+                if (item?.Ocid == null || !seenOcids.Add(item.Ocid))
+                {
+                    continue;
+                }
+                results.Add(mapper.Map<SearchResultDto>(item));
             }
-
-            var results = apiResponse
-                .DistinctBy(item => item.Ocid) // temporary de-dupe until DAPS issue fixed
-                .Select(mapper.Map<SearchResultDto>)
-                .ToList();
 
             var totalCount =
                 response.Headers.TryGetValues("x-total-count", out var totalCountValues)
@@ -61,6 +59,11 @@ public class CommercialToolsService(
                     : 0;
 
             return ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((results, totalCount));
+        }
+        catch (JsonException jex)
+        {
+            logger.LogError(jex, "Failed to deserialise ODI API response for query: {QueryUrl}", queryUrl);
+            return ApiResult<(IEnumerable<SearchResultDto>, int)>.Failure(new DeserialisationError("ODI API returned an invalid JSON response"));
         }
         catch (Exception ex)
         {

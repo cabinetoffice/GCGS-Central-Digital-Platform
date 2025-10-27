@@ -78,7 +78,7 @@ const CpvSelector = (() => {
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType} code selection`
+            ? 'Edit'
             : originalText;
     };
 
@@ -306,11 +306,14 @@ const CpvSelector = (() => {
     };
 
     const setupModalHandlers = () => {
-        if (!state.modal || !state.trigger) return;
+        if (!state.modal) return;
 
-        state.trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
+        document.addEventListener('click', (e) => {
+            const trigger = e.target.id === config.triggerId ? e.target : e.target.closest(`#${config.triggerId}`);
+            if (trigger) {
+                e.preventDefault();
+                openModal();
+            }
         });
 
         document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
@@ -442,12 +445,11 @@ const CpvSelector = (() => {
         updateAccordionContent();
     };
 
-    const updateAccordionContent = () => {
+    const updateAccordionContent = async () => {
         const accordionContent = document.querySelector(`#${config.accordionContentId}`);
         if (!accordionContent) return;
 
         const browseLink = accordionContent.querySelector('.accordion-highlight');
-        if (!browseLink) return;
 
         const existingDisplay = document.getElementById(`${config.fieldName}-selected-codes-display`);
         if (existingDisplay) {
@@ -455,24 +457,56 @@ const CpvSelector = (() => {
         }
 
         if (state.selectedCodes.size === 0) {
+            if (browseLink) {
+                browseLink.style.display = '';
+            } else {
+                const browseLinkElement = document.createElement('div');
+                browseLinkElement.className = 'accordion-highlight';
+                browseLinkElement.innerHTML = `<a href="#" class="govuk-link" id="${config.triggerId}">Browse ${config.codeType} codes</a>`;
+                accordionContent.appendChild(browseLinkElement);
+            }
             return;
         }
-        const selectedCodesDisplay = document.createElement('div');
-        selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
-        selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
 
-        selectedCodesDisplay.innerHTML = `
-            <p class="govuk-body-s govuk-!-font-weight-bold">
-                Selected (${state.selectedCodes.size}):
-            </p>
-            <div class="govuk-!-margin-top-2">
-                ${Array.from(state.selectedCodes).sort().map(code =>
-            `<div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">${escapeHtml(code)}</div>`
-        ).join('')}
-            </div>
-        `;
+        if (browseLink) {
+            browseLink.style.display = 'none';
+        }
 
-        browseLink.appendChild(selectedCodesDisplay);
+        const formData = new FormData();
+        Array.from(state.selectedCodes).forEach(code => formData.append('selectedCodes', code));
+
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+        if (token) {
+            formData.append('__RequestVerificationToken', token);
+        }
+
+        try {
+            const response = await fetch(`/${config.routePrefix}/accordion-selection-fragment`, {
+                method: 'POST',
+                body: formData
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const selectedCodesDisplay = document.createElement('div');
+                selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
+                selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
+                selectedCodesDisplay.innerHTML = html;
+
+                const editLink = selectedCodesDisplay.querySelector('a.govuk-link');
+                if (editLink) {
+                    editLink.id = config.triggerId;
+                }
+
+                if (browseLink) {
+                    browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
+                } else if (accordionContent) {
+                    accordionContent.appendChild(selectedCodesDisplay);
+                }
+            }
+        } catch (error) {
+            console.error('Failed to update accordion content:', error);
+        }
     };
 
     const debounce = (func, wait) => {
@@ -561,6 +595,7 @@ const CpvSelector = (() => {
         loadSelectedCodes();
         updateTriggerText();
         setupModalHandlers();
+        updateAccordionContent();
     };
 
     return {init};

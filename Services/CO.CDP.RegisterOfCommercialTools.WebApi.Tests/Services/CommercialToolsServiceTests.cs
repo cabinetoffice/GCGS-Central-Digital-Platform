@@ -106,7 +106,7 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnFailure()
+    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnEmptySuccess()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = "null";
@@ -115,10 +115,13 @@ public class CommercialToolsServiceTests
 
         var result = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        result.Match(
-            error => { error.Should().BeOfType<DeserialisationError>(); return true; },
-            _ => { Assert.Fail("Expected error but got success"); return false; }
+        var (results, totalCount) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
         );
+
+        results.Should().BeEmpty();
+        totalCount.Should().Be(0);
     }
 
     [Fact]

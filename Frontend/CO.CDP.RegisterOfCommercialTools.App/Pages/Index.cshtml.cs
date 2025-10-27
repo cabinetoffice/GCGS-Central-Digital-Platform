@@ -148,10 +148,7 @@ public class IndexModel(
         if (SearchParams.CpvCodes.Any())
         {
             var selectedCpvCodes = await cpvCodeService.GetByCodesAsync(SearchParams.CpvCodes);
-            foreach (var cpvCode in selectedCpvCodes)
-            {
-                CpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
-            }
+            CpvSelection.SelectedItems.AddRange(selectedCpvCodes);
         }
 
         LocationSelection = new LocationCodeSelection
