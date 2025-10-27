@@ -26,8 +26,8 @@ module "ecs_service_fts" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn          = contains(["staging", "integration"], var.environment) ? var.user_pool_fts_arn : null
-  user_pool_client_id    = contains(["staging", "integration"], var.environment) ? var.user_pool_fts_client_id : null
-  user_pool_domain       = contains(["staging", "integration"], var.environment) ? var.user_pool_fts_domain : null
+  user_pool_arn          = contains(["staging"], var.environment) ? var.user_pool_fts_arn : null
+  user_pool_client_id    = contains(["staging"], var.environment) ? var.user_pool_fts_client_id : null
+  user_pool_domain       = contains(["staging"], var.environment) ? var.user_pool_fts_domain : null
   vpc_id                 = var.vpc_id
 }
