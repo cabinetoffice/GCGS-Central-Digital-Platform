@@ -23,7 +23,7 @@ module "ecs_service_commercial_tools_api" {
       redis_auth_token_arn           = var.redis_auth_token_arn
       redis_port                     = var.redis_port
       redis_primary_endpoint_address = var.redis_primary_endpoint
-      service_version                = var.environment == "development" ? local.service_version_sirsi : "1.0.78-854f9e915"
+      service_version                = var.environment == "development" ? local.service_version_sirsi : "1.0.80-bc425cdfd"
       vpc_cidr                       = var.vpc_cider
     }
   )
