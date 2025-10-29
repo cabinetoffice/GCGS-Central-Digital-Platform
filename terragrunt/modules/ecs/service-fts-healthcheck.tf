@@ -16,12 +16,12 @@ module "ecs_service_fts_healthcheck" {
       lg_name                    = aws_cloudwatch_log_group.tasks[var.service_configs.fts_healthcheck.name].name
       lg_prefix                  = "app"
       lg_region                  = data.aws_region.current.name
-      listener_name              = local.is_php_migrated_env ?  "php-${var.service_configs.fts.name}" : null
+      listener_name              = "php-${var.service_configs.fts.name}"
       memory                     = var.service_configs.fts_healthcheck.memory
       name                       = var.service_configs.fts_healthcheck.name
       public_domain              = var.public_domain
       ses_configuration_set_name = var.ses_configuration_set_name
-      service_version = "latest" //local.service_version
+      service_version            = "latest"
       vpc_cidr                   = var.vpc_cider
     }
   )
@@ -36,7 +36,7 @@ module "ecs_service_fts_healthcheck" {
   family                 = "app"
   healthcheck_path       = "/healthz.php"
   host_port              = var.service_configs.fts_healthcheck.port_host
-  listener_name          = local.is_php_migrated_env ? "php-${var.service_configs.fts_healthcheck.name}" : null
+  listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

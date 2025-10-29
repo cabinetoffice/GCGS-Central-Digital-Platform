@@ -26,12 +26,12 @@ module "ecs_service_forms" {
     }
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.main_cluster_id
   container_port         = var.service_configs.forms.port
   cpu                    = var.service_configs.forms.cpu
   desired_count          = var.service_configs.forms.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.forms.port
