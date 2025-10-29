@@ -201,7 +201,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -261,7 +261,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -321,7 +321,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -381,7 +381,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -626,7 +626,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -686,7 +686,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -746,7 +746,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -806,7 +806,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -866,7 +866,7 @@
                 {
                   "operator": {
                     "name": "=",
-                    "value": "app/cdp-sirsi/9e67fe66e4a0652c"
+                    "value": "app/cdp-sirsi-php/9e67fe66e4a0652c"
                   },
                   "property": {
                     "name": "LoadBalancer",
@@ -989,7 +989,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "cdp-sirsi-php",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1014,7 +1014,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "cdp-sirsi-php",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1133,7 +1133,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "cdp-sirsi-php",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1158,7 +1158,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "cdp-sirsi-php",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1210,87 +1210,32 @@
         "options": [
           {
             "selected": false,
-            "text": "authority",
-            "value": "authority"
+            "text": "cfs",
+            "value": "cfs"
           },
           {
             "selected": false,
-            "text": "av-scanner-app",
-            "value": "av-scanner-app"
+            "text": "cfs-scheduler",
+            "value": "cfs-scheduler"
           },
           {
             "selected": false,
-            "text": "clamav-rest",
-            "value": "clamav-rest"
+            "text": "fts",
+            "value": "fts"
           },
           {
             "selected": false,
-            "text": "commercial-tools-api",
-            "value": "commercial-tools-api"
-          },
-          {
-            "selected": false,
-            "text": "commercial-tools-app",
-            "value": "commercial-tools-app"
-          },
-          {
-            "selected": false,
-            "text": "data-sharing",
-            "value": "data-sharing"
-          },
-          {
-            "selected": false,
-            "text": "entity-verification",
-            "value": "entity-verification"
-          },
-          {
-            "selected": false,
-            "text": "forms",
-            "value": "forms"
-          },
-          {
-            "selected": false,
-            "text": "organisation",
-            "value": "organisation"
-          },
-          {
-            "selected": false,
-            "text": "organisation-app",
-            "value": "organisation-app"
-          },
-          {
-            "selected": false,
-            "text": "outbox-processor-entity-verification",
-            "value": "outbox-processor-entity-verification"
-          },
-          {
-            "selected": false,
-            "text": "outbox-processor-entity-verification",
-            "value": "outbox-processor-entity-verification"
-          },
-          {
-            "selected": false,
-            "text": "person",
-            "value": "person"
-          },
-          {
-            "selected": false,
-            "text": "scheduled-worker",
-            "value": "scheduled-worker"
-          },
-          {
-            "selected": false,
-            "text": "tenant",
-            "value": "tenant"
+            "text": "fts-scheduler",
+            "value": "fts-scheduler"
           }
         ],
-        "query": "authority, av-scanner-app, clamav-rest, commercial-tools-api, commercial-tools-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, scheduled-worker, tenant",
+        "query": "cfs, cfs-scheduler, fts, fts-scheduler",
         "type": "custom"
       },
       {
         "current": {
-          "text": "app/cdp-sirsi/45421bfbe34bc7a5",
-          "value": "app/cdp-sirsi/45421bfbe34bc7a5"
+          "text": "app/cdp-sirsi-php/45421bfbe34bc7a5",
+          "value": "app/cdp-sirsi-php/45421bfbe34bc7a5"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -1322,8 +1267,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ECS",
-  "uid": "ecs",
+  "title": "ECS PHP",
+  "uid": "ecs-php",
   "version": 2,
   "weekStart": ""
 }
