@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Update results
                     </button>
-                    <a href="@Model.ResetUrl" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
+                    <a asp-page="/Index" asp-route-origin="@Model.Origin" asp-route-organisation_id="@Model.OrganisationId" asp-route-cookies_accepted="@Model.CookiesAccepted" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
                 </div>
