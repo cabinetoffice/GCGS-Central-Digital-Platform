@@ -34,12 +34,12 @@ module "ecs_service_commercial_tools_app" {
     }
   )
 
-  cluster_id                    = aws_ecs_cluster.this.id
+  cluster_id                    = local.main_cluster_id
   container_port                = var.service_configs.commercial_tools_app.port
   cpu                           = var.service_configs.commercial_tools_app.cpu
   desired_count                 = contains(["development", "staging"], var.environment) ? var.service_configs.commercial_tools_api.desired_count : 0
   ecs_alb_sg_id                 = var.alb_sg_id
-  ecs_listener_arn              = aws_lb_listener.ecs.arn
+  ecs_listener_arn              = local.main_ecs_listener_arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
   host_port                     = var.service_configs.commercial_tools_app.port # this needs to stay and can't be same as host, 80

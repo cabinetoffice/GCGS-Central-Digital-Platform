@@ -11,15 +11,27 @@ output "ecs_alb_dns_name" {
 }
 
 output "ecs_cluster_id" {
-  value = aws_ecs_cluster.this.id
+  value = local.main_cluster_id
 }
 
 output "ecs_cluster_name" {
-  value = aws_ecs_cluster.this.name
+  value = local.main_cluster_name
 }
 
 output "ecs_listener_arn" {
-  value = aws_lb_listener.ecs.arn
+  value = local.main_ecs_listener_arn
+}
+
+output "php_ecs_cluster_id" {
+  value = local.php_cluster_id
+}
+
+output "php_ecs_cluster_name" {
+  value = local.php_cluster_name
+}
+
+output "php_ecs_listener_arn" {
+  value = local.php_ecs_listener_arn
 }
 
 output "service_configuration" {
