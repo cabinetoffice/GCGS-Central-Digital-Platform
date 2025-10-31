@@ -561,6 +561,18 @@ button[aria-expanded="true"] .custom-chevron-icon {
     position: relative;
 }
 
+.govuk-accordion__section-content .govuk-form-group {
+    margin-bottom: 0;
+}
+
+.govuk-accordion__section-content .govuk-details {
+    margin-bottom: 10px !important;
+}
+
+.govuk-accordion__section-content .govuk-details:last-child {
+    margin-bottom: 0 !important;
+}
+
 .code-search-dropdown {
     border: 2px solid #0b0c0c;
     background: #ffffff;
