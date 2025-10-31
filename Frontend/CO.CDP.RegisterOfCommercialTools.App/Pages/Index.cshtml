@@ -102,99 +102,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         }
+    </div>
+
+    <div class="govuk-grid-row govuk-!-margin-bottom-4">
         <div class="govuk-grid-column-one-half">
             <h1 class="govuk-heading-l govuk-!-margin-bottom-2">Search results</h1>
-            <p class="govuk-body-m">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
+            <p class="govuk-body-m govuk-!-margin-bottom-0">We've found <span class="govuk-!-font-weight-bold">@Model.TotalCount</span>
                 result@(Model.TotalCount == 1 ? "" : "s")</p>
         </div>
-        <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
-            <form id="sort-form" method="get" action="/" class="govuk-form-group">
-                <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
-                @if (Model.SearchParams.FilterFrameworks)
-                {
-                    <input type="hidden" name="filter_frameworks" value="true"/>
-                }
-                @if (Model.SearchParams.IsOpenFrameworks)
-                {
-                    <input type="hidden" name="open_frameworks" value="true"/>
-                }
-                @if (Model.SearchParams.FilterDynamicMarkets)
-                {
-                    <input type="hidden" name="filter_markets" value="true"/>
-                }
-                @if (Model.SearchParams.IsUtilitiesOnly)
-                {
-                    <input type="hidden" name="utilities_only" value="true"/>
-                }
-                @foreach (var award in Model.SearchParams.AwardMethod)
-                {
-                    <input type="hidden" name="award" value="@award"/>
-                }
-                <input type="hidden" name="fee_min" value="@Model.SearchParams.FeeMin"/>
-                <input type="hidden" name="fee_max" value="@Model.SearchParams.FeeMax"/>
-                <input type="hidden" name="no_fees" value="@Model.SearchParams.NoFees"/>
-                @foreach (var usage in Model.SearchParams.ContractingAuthorityUsage)
-                {
-                    <input type="hidden" name="usage" value="@usage"/>
-                }
-                @foreach (var status in Model.SearchParams.Status)
-                {
-                    <input type="hidden" name="status" value="@status"/>
-                }
-                @foreach (var cpv in Model.SearchParams.CpvCodes)
-                {
-                    <input type="hidden" name="cpv" value="@cpv"/>
-                }
-                @foreach (var locationCode in Model.SearchParams.LocationCodes)
-                {
-                    <input type="hidden" name="location" value="@locationCode"/>
-                }
-                <input type="hidden" name="sub_from" value="@Model.SearchParams.SubmissionDeadlineFrom"/>
-                <input type="hidden" name="sub_to" value="@Model.SearchParams.SubmissionDeadlineTo"/>
-                <input type="hidden" name="start_from" value="@Model.SearchParams.ContractStartDateFrom"/>
-                <input type="hidden" name="start_to" value="@Model.SearchParams.ContractStartDateTo"/>
-                <input type="hidden" name="end_from" value="@Model.SearchParams.ContractEndDateFrom"/>
-                <input type="hidden" name="end_to" value="@Model.SearchParams.ContractEndDateTo"/>
-                <div class="sort-results-container">
-                    <label for="sort-results" class="govuk-label govuk-!-font-weight-bold">Sort results</label>
-                    <select id="sort-results" class="govuk-select" name="sort">
-                        @if (Model.SearchParams.SortOrder == "relevance" || string.IsNullOrEmpty(Model.SearchParams.SortOrder))
-                        {
-                            <option value="relevance" selected>Relevance</option>
-                        }
-                        else
-                        {
-                            <option value="relevance">Relevance</option>
-                        }
-                        @if (Model.SearchParams.SortOrder == "a-z")
-                        {
-                            <option value="a-z" selected>Alphabetical (A-Z)</option>
-                        }
-                        else
-                        {
-                            <option value="a-z">Alphabetical (A-Z)</option>
-                        }
-                        @if (Model.SearchParams.SortOrder == "z-a")
-                        {
-                            <option value="z-a" selected>Alphabetical (Z-A)</option>
-                        }
-                        else
-                        {
-                            <option value="z-a">Alphabetical (Z-A)</option>
-                        }
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-!-text-align-right">
+                <label for="sort-results" class="govuk-label govuk-!-font-weight-bold govuk-!-display-block">Sort results</label>
+                <div>
+                    <select id="sort-results" class="govuk-select" name="sort" asp-for="SearchParams.SortOrder" form="search-form">
+                        <option value="relevance">Relevance</option>
+                        <option value="a-z">Alphabetical (A-Z)</option>
+                        <option value="z-a">Alphabetical (Z-A)</option>
                     </select>
+                    <noscript>
+                        <button type="submit" class="govuk-button govuk-!-margin-left-2" form="search-form">Sort</button>
+                    </noscript>
                 </div>
-                <noscript>
-                    <button type="submit" class="govuk-button govuk-!-margin-left-2">Sort</button>
-                </noscript>
-            </form>
+            </div>
         </div>
     </div>
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
-                <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
                 <div class="govuk-!-padding-2 govuk-!-padding-bottom-6 govuk-!-margin-bottom-5 govuk-filter-section">
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
 
