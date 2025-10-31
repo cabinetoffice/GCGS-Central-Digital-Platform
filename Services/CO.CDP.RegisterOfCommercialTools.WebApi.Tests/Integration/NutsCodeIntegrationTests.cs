@@ -24,7 +24,7 @@ public class NutsCodeIntegrationTests
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
-                config.AddInMemoryCollection(new Dictionary<string, string?>
+                var testConfig = new Dictionary<string, string?>
                 {
                     { "AWS:Region", "eu-west-2" },
                     { "AWS:ServiceURL", "http://localhost:4566" },
@@ -36,7 +36,9 @@ public class NutsCodeIntegrationTests
                     { "AWS:CognitoAuthentication:Domain", "test-domain" },
                     { "Aws:CloudWatch:LogGroup", "/test/commercial-tools-api" },
                     { "Aws:CloudWatch:LogStream", "test-serilog" }
-                });
+                };
+                AuthenticationTestHelpers.AddApiKeyConfiguration(testConfig);
+                config.AddInMemoryCollection(testConfig);
             });
             builder.ConfigureServices((_, services) =>
             {
@@ -50,6 +52,7 @@ public class NutsCodeIntegrationTests
         });
 
         _client = factory.CreateClient();
+        AuthenticationTestHelpers.AddApiKeyAuthentication(_client);
     }
 
     [Fact]
