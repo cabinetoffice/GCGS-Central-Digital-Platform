@@ -173,6 +173,8 @@ builder.Services.AddScoped<IUserInfoService, UserInfoService>();
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddCommercialToolsUrlService()
+                      .AddAiToolUrlService()
+                      .AddExternalServiceUrlBuilder()
                       .AddDiagnosticPage<DiagnosticPage>();
 });
 
