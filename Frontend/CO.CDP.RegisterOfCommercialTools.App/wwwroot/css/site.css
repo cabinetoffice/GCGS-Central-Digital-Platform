@@ -47,6 +47,27 @@ button[aria-expanded="true"] .custom-chevron-icon {
     line-height: 1.5;
 }
 
+
+.govuk-accordion__section-button:focus {
+    outline: 3px solid #ffdd00;
+    outline-offset: 0;
+    box-shadow: 0 0 0 3px #ffdd00;
+    background-color: #ffdd00;
+}
+
+.govuk-accordion__section-button:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+    background-color: inherit;
+}
+
+.govuk-accordion__section-button:focus-visible {
+    outline: 3px solid #ffdd00;
+    outline-offset: 0;
+    box-shadow: 0 0 0 3px #ffdd00;
+    background-color: #ffdd00;
+}
+
 .govuk-modal {
     position: fixed;
     top: 0;
