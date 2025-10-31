@@ -48,6 +48,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 builder.Services.AddScoped<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
 
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
+builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>();
 
 builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICommercialToolsApiClient, CO.CDP.RegisterOfCommercialTools.WebApiClient.CommercialToolsApiClient>(client =>
 {
@@ -55,6 +56,7 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
               ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
     client.BaseAddress = new Uri(url);
 })
+.AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>()
 .AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
 builder.Services.AddScoped<ISearchService, SearchService>();

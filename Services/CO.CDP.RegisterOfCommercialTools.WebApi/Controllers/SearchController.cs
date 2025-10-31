@@ -1,12 +1,14 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.WebApi.Foundation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class SearchController(ISearchService searchService) : ControllerBase
 {
     [HttpGet]

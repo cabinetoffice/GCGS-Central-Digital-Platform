@@ -8,6 +8,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services.Caching;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Middleware;
 using CO.CDP.RegisterOfCommercialTools.Persistence;
+using CO.CDP.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
@@ -22,7 +23,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => options.DocumentCommercialToolsApi(builder.Configuration));
 builder.Services.AddHealthChecks();
 
-builder.Services.AddPassThroughAuthentication();
+builder.Services.AddAuthentication(ApiKeyAuthenticationHandler.AuthenticationScheme)
+    .AddSimpleApiKeyAuthentication();
+builder.Services.AddSimpleApiKeyAuthenticationServices();
+builder.Services.AddAuthorization();
 
 builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
