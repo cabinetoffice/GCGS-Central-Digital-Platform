@@ -3,15 +3,15 @@
 
 <div class="search-result" data-result-id="@Model.Id">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-bottom-1">
-            <h2 class="govuk-heading-m govuk-!-margin-bottom-0">
+        <div class="govuk-grid-column-full govuk-grid-column-three-quarters-from-desktop govuk-!-margin-top-0">
+            <h2 class="govuk-heading-m govuk-!-static-margin-bottom-1 govuk-!-margin-top-0">
                 @if (!string.IsNullOrEmpty(Model.Url))
                 {
                     <a class="govuk-link" href="@Model.Url">@Model.Title</a>
                 }
             </h2>
         </div>
-        <div class="govuk-grid-column-full govuk-grid-column-one-quarter-from-desktop govuk-!-margin-bottom-1 govuk-!-padding-right-0 govuk-!-text-align-right">
+        <div class="govuk-grid-column-one-quarter-from-desktop search-result-status govuk-!-static-margin-bottom-1 govuk-!-margin-top-0">
             <partial name="Shared/_SearchResultStatusTag" model="Model.Status"/>
         </div>
     </div>

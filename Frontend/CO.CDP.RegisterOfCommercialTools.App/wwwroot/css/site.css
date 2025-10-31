@@ -638,6 +638,17 @@ button[aria-expanded="true"] .custom-chevron-icon {
 }
 
 
+.search-result-status .govuk-tag {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+@media (min-width: 48.0625em) {
+    .search-result-status {
+        text-align: right;
+    }
+}
+
 @media (max-width: 40.0625em) {
     .govuk-modal__dialog {
         margin: 1rem;
