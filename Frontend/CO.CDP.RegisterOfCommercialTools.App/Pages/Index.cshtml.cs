@@ -36,6 +36,9 @@ public class IndexModel(
     [BindProperty(SupportsGet = true, Name = "organisation_id")]
     public Guid? OrganisationId { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "cookies_accepted")]
+    public string? CookiesAccepted { get; set; }
+
     private const int PageSize = 20;
 
     public string HomeUrl { get; private set; } = string.Empty;
@@ -110,6 +113,7 @@ public class IndexModel(
             HomeUrl = ftsUrlService.BuildUrl("/Search");
         }
     }
+
 
     private async Task PopulateCodeSelections()
     {

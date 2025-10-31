@@ -110,6 +110,18 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="govuk-grid-column-one-half govuk-!-padding-right-0 govuk-!-text-align-right">
             <form id="sort-form" method="get" action="/" class="govuk-form-group">
                 <input type="hidden" name="q" value="@Model.SearchParams.Keywords"/>
+                @if (!string.IsNullOrEmpty(Model.Origin))
+                {
+                    <input type="hidden" name="origin" value="@Model.Origin"/>
+                }
+                @if (Model.OrganisationId.HasValue)
+                {
+                    <input type="hidden" name="organisation_id" value="@Model.OrganisationId"/>
+                }
+                @if (!string.IsNullOrEmpty(Model.CookiesAccepted))
+                {
+                    <input type="hidden" name="cookies_accepted" value="@Model.CookiesAccepted"/>
+                }
                 @if (Model.SearchParams.FilterFrameworks)
                 {
                     <input type="hidden" name="filter_frameworks" value="true"/>
@@ -196,7 +208,21 @@ document.addEventListener('DOMContentLoaded', function() {
             <form method="get" id="search-form">
                 <input type="hidden" asp-for="SearchParams.SortOrder" name="sort"/>
                 <div class="govuk-!-padding-2 govuk-!-padding-bottom-6 govuk-!-margin-bottom-5 govuk-filter-section">
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
+                @if (!string.IsNullOrEmpty(Model.Origin))
+                {
+                    <input type="hidden" name="origin" value="@Model.Origin"/>
+                }
+                @if (Model.OrganisationId.HasValue)
+                {
+                    <input type="hidden" name="organisation_id" value="@Model.OrganisationId"/>
+                }
+                @if (!string.IsNullOrEmpty(Model.CookiesAccepted))
+                {
+                    <input type="hidden" name="cookies_accepted" value="@Model.CookiesAccepted"/>
+                }
+                <div class="govuk-!-padding-3 govuk-!-margin-bottom-5 govuk-filter-section">
+                    <h2 class="govuk-heading-m">Keywords</h2>
 
                     <p class="govuk-body-s govuk-!-margin-bottom-3">
                         Search titles, descriptions, identifiers and organisation names
@@ -211,8 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="govuk-details__text">
                             <ul class="govuk-list govuk-list--bullet govuk-body-s">
                                 <li>
-                                    To search for <span class="govuk-!-font-weight-bold">any</span> word, put a <span
-                                        class="govuk-!-font-weight-bold">space</span> between words.
+                                    To search for <span class="govuk-!-font-weight-bold">any</span> word, put a
+                                    <span class="govuk-!-font-weight-bold">space</span> between words.
                                     For example, <span class="govuk-!-font-weight-bold">radio televisions</span>
                                 </li>
                                 <li>
@@ -248,9 +274,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Update results
                     </button>
-                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
+                    <a asp-page="/Index" asp-route-origin="@Model.Origin" asp-route-organisation_id="@Model.OrganisationId" asp-route-cookies_accepted="@Model.CookiesAccepted" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
+                </div>
                 </div>
             </form>
         </div>
