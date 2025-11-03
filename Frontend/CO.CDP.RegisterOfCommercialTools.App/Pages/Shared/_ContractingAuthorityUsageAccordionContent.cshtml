@@ -1,18 +1,18 @@
 @model CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel
 
 <div class="govuk-!-margin-top-0">
-    <div class="govuk-form-group accordion-highlight govuk-!-padding-2 govuk-!-margin-left-2 govuk-!-margin-right-4">
+    <div class="govuk-form-group accordion-highlight">
         <fieldset class="govuk-fieldset">
-            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="usage-can-be-used" name="usage" type="radio" value="yes" checked="@(Model.ContractingAuthorityUsage == "yes")">
-                    <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="usage-can-be-used">
+            <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="usage-can-be-used" name="usage" type="checkbox" value="yes" checked="@(Model.ContractingAuthorityUsage.Contains("yes"))">
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="usage-can-be-used">
                         Can be used by other contracting authorities
                     </label>
                 </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="usage-cannot-be-used" name="usage" type="radio" value="no" checked="@(Model.ContractingAuthorityUsage == "no")">
-                    <label class="govuk-label govuk-radios__label govuk-!-font-size-14" for="usage-cannot-be-used">
+                <div class="govuk-checkboxes__item">
+                    <input class="govuk-checkboxes__input" id="usage-cannot-be-used" name="usage" type="checkbox" value="no" checked="@(Model.ContractingAuthorityUsage.Contains("no"))">
+                    <label class="govuk-label govuk-checkboxes__label govuk-!-font-size-14" for="usage-cannot-be-used">
                         Cannot be used by other contracting authorities
                     </label>
                 </div>

@@ -52,7 +52,7 @@ public class CpvCodeSelectionTests
             SelectedCodes = ["03000000"]
         };
 
-        selection.BrowseLinkText.Should().Be("Edit selected CPV codes");
+        selection.BrowseLinkText.Should().Be("Edit");
     }
 
     [Fact]

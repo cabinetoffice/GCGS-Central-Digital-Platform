@@ -4,7 +4,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public sealed class CpvCodeSelection : HierarchicalCodeSelection<CpvCodeDto>
 {
-    public string BrowseLinkText => HasSelections ? "Edit selected CPV codes" : "Browse CPV codes";
+    public string BrowseLinkText => HasSelections ? "Edit" : "Browse CPV codes";
 
     public IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName) =>
         SelectedCodes.Select(code => (fieldName, code));

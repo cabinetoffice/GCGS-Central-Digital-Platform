@@ -1,0 +1,28 @@
+@model Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary
+@using CO.CDP.Localization
+
+@if (!Model.IsValid)
+{
+	<div class="govuk-error-summary" data-module="govuk-error-summary">
+		<div role="alert">
+			<h2 class="govuk-error-summary__title">
+                @StaticTextResource.Global_ErrorSummary_Heading
+			</h2>
+			<div class="govuk-error-summary__body">
+				<ul class="govuk-list govuk-error-summary__list">
+					@{
+						var distinctErrors = Model
+							.Where(m => m.Value != null)
+							.SelectMany(ms => ms.Value!.Errors.Select(error => new { ms.Key, error.ErrorMessage }))
+							.GroupBy(item => item.ErrorMessage)
+							.Select(group => group.First());
+					}
+					@foreach (var item in distinctErrors)
+					{
+						<li><a href="#@item.Key">@item.ErrorMessage</a></li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+}

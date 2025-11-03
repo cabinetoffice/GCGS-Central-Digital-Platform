@@ -4,7 +4,7 @@ namespace CO.CDP.RegisterOfCommercialTools.App.Models;
 
 public sealed class LocationCodeSelection : HierarchicalCodeSelection<NutsCodeDto>
 {
-    public string BrowseLinkText => HasSelections ? "Edit locations" : "Browse locations";
+    public string BrowseLinkText => HasSelections ? "Edit" : "Browse locations";
 
     public IEnumerable<(string Name, string Value)> GetHiddenInputs(string fieldName) =>
         SelectedCodes.Select(code => (fieldName, code));

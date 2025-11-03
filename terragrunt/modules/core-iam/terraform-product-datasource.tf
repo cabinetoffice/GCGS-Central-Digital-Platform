@@ -191,6 +191,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "elasticloadbalancing:Delete*",
       "elasticloadbalancing:Describe*",
       "elasticloadbalancing:RemoveListenerCertificates",
+      "elasticloadbalancing:RemoveTags",
       "elasticloadbalancing:Modify*",
       "elasticloadbalancing:SetRulePriorities",
       "elasticloadbalancing:SetWebACL",

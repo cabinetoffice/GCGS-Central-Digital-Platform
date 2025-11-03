@@ -1,4 +1,6 @@
+using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Moq;
 using Moq.Protected;
@@ -21,8 +23,7 @@ public class CommercialToolsApiClientTests
                 {
                     Id = "1",
                     Title = "Test Tool",
-                    Description = "Test Description",
-                    PublishedDate = DateTime.UtcNow,
+                    BuyerName = "Test Description",
                     Status = CommercialToolStatus.Active,
                     MaximumFee = "10%",
                     AwardMethod = "Open"
@@ -52,20 +53,25 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             PageNumber = 1,
         };
 
         var result = await client.SearchAsync(request);
 
-        result.Should().NotBeNull();
-        result!.TotalCount.Should().Be(1);
-        result.Results.Should().HaveCount(1);
-        result.Results.First().Title.Should().Be("Test Tool");
+        result.IsRight().Should().BeTrue();
+        result.Match(
+            error => Assert.Fail($"Expected success but got error: {error.Message}"),
+            success =>
+            {
+                success.TotalCount.Should().Be(1);
+                success.Results.Should().HaveCount(1);
+                success.Results.First().Title.Should().Be("Test Tool");
+            });
     }
 
     [Fact]
-    public async Task SearchAsync_ReturnsNull_WhenApiCallFails()
+    public async Task SearchAsync_ReturnsClientError_WhenApiCallFails()
     {
         var mockHttpMessageHandler = new Mock<HttpMessageHandler>();
 
@@ -86,11 +92,19 @@ public class CommercialToolsApiClientTests
         };
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = "test" };
+        var request = new SearchRequestDto { Keywords = ["test"] };
 
         var result = await client.SearchAsync(request);
 
-        result.Should().BeNull();
+        result.IsLeft().Should().BeTrue();
+        result.Match(
+            error =>
+            {
+                error.Should().BeOfType<ClientError>();
+                var clientError = (ClientError)error;
+                clientError.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            },
+            _ => Assert.Fail("Expected error but got success"));
     }
 
     [Theory]
@@ -124,12 +138,12 @@ public class CommercialToolsApiClientTests
         };
 
         var client = new CommercialToolsApiClient(httpClient);
-        var request = new SearchRequestDto { Keyword = keyword };
+        var request = new SearchRequestDto { Keywords = [keyword] };
 
         await client.SearchAsync(request);
 
         actualQuery.Should().NotBeNullOrEmpty();
-        actualQuery.Should().Contain($"Keyword={expectedEncoded}");
+        actualQuery.Should().Contain($"Keywords={expectedEncoded}");
     }
 
     [Fact]
@@ -162,7 +176,8 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
+            SearchMode = KeywordSearchMode.Any,
             Status = "Active",
             SortBy = "Title",
             PageNumber = 2,
@@ -172,7 +187,8 @@ public class CommercialToolsApiClientTests
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("Keyword=test");
+        actualQuery.Should().Contain("Keywords=test");
+        actualQuery.Should().Contain("SearchMode=Any");
         actualQuery.Should().Contain("Status=Active");
         actualQuery.Should().Contain("SortBy=Title");
         actualQuery.Should().Contain("PageNumber=2");
@@ -210,7 +226,8 @@ public class CommercialToolsApiClientTests
         var client = new CommercialToolsApiClient(httpClient);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
+            SearchMode = KeywordSearchMode.Any,
             Status = null,
             SortBy = null,
             MinFees = null,
@@ -219,7 +236,8 @@ public class CommercialToolsApiClientTests
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("Keyword=test");
+        actualQuery.Should().Contain("Keywords=test");
+        actualQuery.Should().Contain("SearchMode=Any");
         actualQuery.Should().NotContain("Status=");
         actualQuery.Should().NotContain("SortBy=");
         actualQuery.Should().NotContain("MinFees=");
@@ -257,14 +275,14 @@ public class CommercialToolsApiClientTests
         var testDate = new DateTime(2024, 1, 15, 10, 30, 0, DateTimeKind.Utc);
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             SubmissionDeadlineFrom = testDate,
             SubmissionDeadlineTo = testDate.AddDays(7)
         };
 
         await client.SearchAsync(request);
 
-        actualQuery.Should().Contain("SubmissionDeadlineFrom=");
-        actualQuery.Should().Contain("SubmissionDeadlineTo=");
+        actualQuery.Should().Contain("SubmissionDeadlineFrom=2024-01-15");
+        actualQuery.Should().Contain("SubmissionDeadlineTo=2024-01-22");
     }
 }

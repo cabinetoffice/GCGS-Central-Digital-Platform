@@ -42,7 +42,7 @@ public class IndexModel(
 
     public int TotalCount { get; set; }
 
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnGetAsync()
     {
         logger.LogInformation(
             "Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}], CpvCodes: [{CpvCodes}]",
@@ -64,21 +64,32 @@ public class IndexModel(
 
             await PopulateCodeSelections();
 
-            var (results, totalCount) = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
+            var searchResult = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
-            SearchResults = results;
-            TotalCount = totalCount;
+            return searchResult.Match(
+                error =>
+                {
+                    logger.LogError("Search failed with error: {Error}", error);
+                    return RedirectToPage("/error");
+                },
+                ((List<SearchResult>, int) success) =>
+                {
+                    var (results, totalCount) = success;
+                    SearchResults = results;
+                    TotalCount = totalCount;
 
-            logger.LogInformation("Search completed successfully. Found {TotalCount} results.",
-                totalCount);
+                    logger.LogInformation("Search completed successfully. Found {TotalCount} results.", totalCount);
 
-            Pagination = new PaginationPartialModel
-            {
-                CurrentPage = PageNumber,
-                PageSize = PageSize,
-                TotalItems = totalCount,
-                Url = Request.QueryString.HasValue ? Request.Path + Request.QueryString : Request.Path
-            };
+                    Pagination = new PaginationPartialModel
+                    {
+                        CurrentPage = PageNumber,
+                        PageSize = PageSize,
+                        TotalItems = totalCount,
+                        Url = Request.QueryString.HasValue ? Request.Path + Request.QueryString : Request.Path
+                    };
+
+                    return (IActionResult)Page();
+                });
         }
         catch (Exception ex)
         {
@@ -92,7 +103,7 @@ public class IndexModel(
     {
         if (Origin == "buyer-view" && OrganisationId.HasValue)
         {
-            HomeUrl = sirsiUrlService.BuildUrl($"/organisation/{OrganisationId}/buyer");
+            HomeUrl = sirsiUrlService.BuildAuthenticatedUrl($"/organisation/{OrganisationId}/buyer", OrganisationId);
         }
         else
         {
@@ -110,10 +121,7 @@ public class IndexModel(
         if (SearchParams.CpvCodes.Any())
         {
             var selectedCpvCodes = await cpvCodeService.GetByCodesAsync(SearchParams.CpvCodes);
-            foreach (var cpvCode in selectedCpvCodes)
-            {
-                CpvSelection.AddSelection(cpvCode.Code, cpvCode.DescriptionEn, cpvCode.DescriptionCy);
-            }
+            CpvSelection.SelectedItems.AddRange(selectedCpvCodes);
         }
 
         LocationSelection = new LocationCodeSelection

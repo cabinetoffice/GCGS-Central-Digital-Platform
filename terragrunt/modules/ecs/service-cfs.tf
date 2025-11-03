@@ -6,17 +6,18 @@ module "ecs_service_cfs" {
     local.cfs_container_parameters
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.php_cluster_id
   container_port         = var.service_configs.cfs.port
   cpu                    = var.service_configs.cfs.cpu
   desired_count          = var.service_configs.cfs.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_listener_arn       = local.php_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   extra_host_headers     = var.cfs_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
   host_port              = var.service_configs.cfs.port
+  listener_name          = "php-${var.service_configs.cfs.name}"
   memory                 = var.service_configs.cfs.memory
   name                   = var.service_configs.cfs.name
   private_subnet_ids     = var.private_subnet_ids

@@ -1,19 +1,20 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApiClient;
 
 public interface ICommercialToolsApiClient
 {
-    Task<SearchResponse?> SearchAsync(SearchRequestDto request);
-    Task<List<CpvCodeDto>?> GetRootCpvCodesAsync(Culture culture = Culture.English);
-    Task<List<CpvCodeDto>?> GetCpvChildrenAsync(string parentCode, Culture culture = Culture.English);
-    Task<List<CpvCodeDto>?> SearchCpvCodesAsync(string query, Culture culture = Culture.English);
-    Task<List<CpvCodeDto>?> GetCpvCodesAsync(List<string> codes);
-    Task<List<CpvCodeDto>?> GetCpvHierarchyAsync(string code);
+    Task<ApiResult<SearchResponse>> SearchAsync(SearchRequestDto request);
+    Task<ApiResult<List<CpvCodeDto>>> GetRootCpvCodesAsync(Culture culture = Culture.English);
+    Task<ApiResult<List<CpvCodeDto>>> GetCpvChildrenAsync(string parentCode, Culture culture = Culture.English);
+    Task<ApiResult<List<CpvCodeDto>>> SearchCpvCodesAsync(string query, Culture culture = Culture.English);
+    Task<ApiResult<List<CpvCodeDto>>> GetCpvCodesAsync(List<string> codes);
+    Task<ApiResult<List<CpvCodeDto>>> GetCpvHierarchyAsync(string code);
 
-    Task<List<NutsCodeDto>?> GetRootNutsCodesAsync(Culture culture = Culture.English);
-    Task<List<NutsCodeDto>?> GetNutsChildrenAsync(string parentCode, Culture culture = Culture.English);
-    Task<List<NutsCodeDto>?> SearchNutsCodesAsync(string query, Culture culture = Culture.English);
-    Task<List<NutsCodeDto>?> GetNutsCodesAsync(List<string> codes);
-    Task<List<NutsCodeDto>?> GetNutsHierarchyAsync(string code);
+    Task<ApiResult<List<NutsCodeDto>>> GetRootNutsCodesAsync(Culture culture = Culture.English);
+    Task<ApiResult<List<NutsCodeDto>>> GetNutsChildrenAsync(string parentCode, Culture culture = Culture.English);
+    Task<ApiResult<List<NutsCodeDto>>> SearchNutsCodesAsync(string query, Culture culture = Culture.English);
+    Task<ApiResult<List<NutsCodeDto>>> GetNutsCodesAsync(List<string> codes);
+    Task<ApiResult<List<NutsCodeDto>>> GetNutsHierarchyAsync(string code);
 }

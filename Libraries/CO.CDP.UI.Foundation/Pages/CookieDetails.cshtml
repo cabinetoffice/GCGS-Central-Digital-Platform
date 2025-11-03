@@ -1,0 +1,198 @@
+@page "/cookies/details"
+@model CO.CDP.UI.Foundation.Pages.CookieDetailsModel
+
+@using CO.CDP.Localization
+
+@{
+    ViewData["Title"] = StaticTextResource.Supplementary_CookieDetails_Title;
+}
+
+<h1 class="govuk-heading-l">@ViewData["Title"]</h1>
+
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_Intro</p>
+
+<h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_WebsiteUse</h2>
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_GoogleAnalytics</p>
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_NoGoogleShare</p>
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_GoogleAnalyticsInfo</p>
+
+<ul class="govuk-list govuk-list--bullet">
+    <li>@StaticTextResource.Supplementary_CookieDetails_ListItem1</li>
+    <li>@StaticTextResource.Supplementary_CookieDetails_ListItem2</li>
+    <li>@StaticTextResource.Supplementary_CookieDetails_ListItem3</li>
+</ul>
+
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_ListItem4</p>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_ga</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GA</td>
+            <td class="govuk-table__cell">2 years</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_gat</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GAT</td>
+            <td class="govuk-table__cell">10 minutes</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_gid</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_GID</td>
+            <td class="govuk-table__cell">24 hours</td>
+        </tr>
+    </tbody>
+</table>
+
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_ListItem5</p>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_cs_id</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_CS_ID</td>
+            <td class="govuk-table__cell">13 months 3 days</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_cs_s</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_CS_S</td>
+            <td class="govuk-table__cell">30 minutes</td>
+        </tr>
+
+    </tbody>
+</table>
+
+<h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_StrictlyNecessary</h2>
+
+<h3 class="govuk-heading-s">@StaticTextResource.Supplementary_CookieDetails_KeepingSignedIn</h3>
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_SignedInInfo</p>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_AUTH</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_Auth</td>
+            <td class="govuk-table__cell">2 hours</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">SIRSI_FT_AUTH</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_SIRSI_FT_AUTH</td>
+            <td class="govuk-table__cell">Session</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_PAGE_TIMEOUT</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_PAGE_TIMEOUT</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_PAGE_LASTPOLL</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_PAGE_LASTPOLL</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_PAGE_ACTIVE</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Antiforgery</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.Antiforgery.*</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Antiforgery</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.Cookies</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.CookiesC1</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.CookiesC2</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.Session</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Cookies</td>
+            <td class="govuk-table__cell">When you close your browser</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3 class="govuk-heading-s">@StaticTextResource.Supplementary_CookieDetails_BannerMessages</h3>
+
+<p class="govuk-body">@StaticTextResource.Supplementary_CookieDetails_BannerInfo</p>
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Name</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Purpose</th>
+            <th scope="col" class="govuk-table__header">@StaticTextResource.Supplementary_CookieDetails_TableHeader_Expires</th>
+        </tr>
+    </thead>
+    <tbody class="govuk-table__body">
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_COOKIES_ PREFERENCES_SET</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_COOKIES_PREFERENCES_SET</td>
+            <td class="govuk-table__cell">1 year</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">SIRSI_COOKIES_PREFERENCES_SET</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Preferences</td>
+            <td class="govuk-table__cell">1 year</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">_cs_c</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_CS_C</td>
+            <td class="govuk-table__cell">13 months 3 days</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_LANGUAGE</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_LANGUAGE</td>
+            <td class="govuk-table__cell">10 years</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">.AspNetCore.Culture</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_Culture</td>
+            <td class="govuk-table__cell">1 year</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_USER_RESEARCH</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_USER_RESEARCH</td>
+            <td class="govuk-table__cell">10 years</td>
+        </tr>
+        <tr class="govuk-table__row">
+            <th scope="row" class="govuk-table__header">FT_BANNER_CLOSE</th>
+            <td class="govuk-table__cell">@StaticTextResource.Supplementary_CookieDetails_TableRow_FT_BANNER_CLOSE</td>
+            <td class="govuk-table__cell">28 years</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2 class="govuk-heading-m">@StaticTextResource.Supplementary_CookieDetails_ChangeSettings</h2>
+<p class="govuk-body">@Html.Raw(StaticTextResource.Supplementary_CookieDetails_ChangeSettingsInfo)</p>

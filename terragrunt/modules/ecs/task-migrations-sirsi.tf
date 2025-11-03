@@ -23,7 +23,7 @@ module "ecs_migration_tasks" {
     }
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.main_cluster_id
   container_port         = each.value.port
   cpu                    = each.value.cpu
   ecs_alb_sg_id          = "N/A"

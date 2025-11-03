@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.WebApi.Controllers;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -23,7 +24,7 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "IT services",
+            Keywords = ["IT", "services"],
             Status = "Active",
             PageNumber = 1
         };
@@ -39,7 +40,7 @@ public class SearchControllerTests
             PageNumber = 1,
         };
 
-        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(expectedResponse);
+        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(ApiResult<SearchResponse>.Success(expectedResponse));
 
         var result = await _controller.Search(request);
 
@@ -54,7 +55,7 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "nonexistent",
+            Keywords = ["nonexistent"],
             PageNumber = 1
         };
 
@@ -64,7 +65,7 @@ public class SearchControllerTests
             TotalCount = 0,
             PageNumber = 1,
         };
-        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(expectedResponse);
+        _mockSearchService.Setup(x => x.Search(request)).ReturnsAsync(ApiResult<SearchResponse>.Success(expectedResponse));
 
         var result = await _controller.Search(request);
 
@@ -93,14 +94,12 @@ public class SearchControllerTests
     {
         var request = new SearchRequestDto
         {
-            Keyword = "complex search",
+            Keywords = ["complex", "search"],
             Status = "Active",
             SubmissionDeadlineFrom = new DateTime(2025, 1, 1),
             SubmissionDeadlineTo = new DateTime(2025, 12, 31),
-            ContractStartDateFrom = new DateTime(2025, 6, 1),
-            ContractStartDateTo = new DateTime(2025, 6, 30),
-            ContractEndDateFrom = new DateTime(2026, 1, 1),
-            ContractEndDateTo = new DateTime(2026, 12, 31),
+            ContractStartDate = new DateTime(2025, 6, 1),
+            ContractEndDate = new DateTime(2026, 12, 31),
             MinFees = 100.50m,
             MaxFees = 999.99m,
             AwardMethod = ["With competition"],
@@ -119,20 +118,18 @@ public class SearchControllerTests
         };
 
         _mockSearchService.Setup(x => x.Search(It.Is<SearchRequestDto>(r =>
-            r.Keyword == request.Keyword &&
+            r.Keywords == request.Keywords &&
             r.Status == request.Status &&
             r.SubmissionDeadlineFrom == request.SubmissionDeadlineFrom &&
             r.SubmissionDeadlineTo == request.SubmissionDeadlineTo &&
-            r.ContractStartDateFrom == request.ContractStartDateFrom &&
-            r.ContractStartDateTo == request.ContractStartDateTo &&
-            r.ContractEndDateFrom == request.ContractEndDateFrom &&
-            r.ContractEndDateTo == request.ContractEndDateTo &&
+            r.ContractStartDate == request.ContractStartDate &&
+            r.ContractEndDate == request.ContractEndDate &&
             r.MinFees == request.MinFees &&
             r.MaxFees == request.MaxFees &&
             r.AwardMethod == request.AwardMethod &&
             r.SortBy == request.SortBy &&
             r.PageNumber == request.PageNumber)))
-            .ReturnsAsync(expectedResponse);
+            .ReturnsAsync(ApiResult<SearchResponse>.Success(expectedResponse));
 
         var result = await _controller.Search(request);
 

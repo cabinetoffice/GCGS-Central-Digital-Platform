@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -71,8 +72,7 @@ public class CommercialToolsServiceTests
         {
             Id = "ocds-h6vhtk-04f907",
             Title = "IT Services Framework",
-            Description = "Test procurement description",
-            PublishedDate = new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc),
+            BuyerName = "Test procurement description",
             SubmissionDeadline = "15 March 2025",
             MaximumFee = "Unknown",
             AwardMethod = "With competition",
@@ -85,17 +85,19 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1000);
 
         var searchResult = resultList.First();
         searchResult.Id.Should().Be("ocds-h6vhtk-04f907");
         searchResult.Title.Should().Be("IT Services Framework");
-        searchResult.Description.Should().Be("Test procurement description");
-        searchResult.PublishedDate.Should().Be(new DateTime(2025, 1, 15, 10, 0, 0, DateTimeKind.Utc));
+        searchResult.BuyerName.Should().Be("Test procurement description");
         searchResult.SubmissionDeadline.Should().Be("15 March 2025");
         searchResult.MaximumFee.Should().Be("Unknown");
         searchResult.AwardMethod.Should().Be("With competition");
@@ -104,27 +106,36 @@ public class CommercialToolsServiceTests
     }
 
     [Fact]
-    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnEmptyResults()
+    public async Task SearchCommercialToolsWithCount_WhenNullApiResponse_ShouldReturnEmptySuccess()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         var jsonResponse = "null";
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+
+        var (results, totalCount) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         results.Should().BeEmpty();
         totalCount.Should().Be(0);
     }
 
     [Fact]
-    public async Task SearchCommercialTools_WhenHttpRequestFails_ShouldThrow()
+    public async Task SearchCommercialTools_WhenHttpRequestFails_ShouldReturnServerError()
     {
         var queryUrl = "https://api.example.com/tenders?filter=test";
         SetupHttpResponse(HttpStatusCode.InternalServerError, "Server Error");
 
-        var action = async () => await _service.SearchCommercialToolsWithCount(queryUrl);
-        await action.Should().ThrowAsync<HttpRequestException>();
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+
+        result.Match(
+            error => { error.Should().BeOfType<ServerError>(); return true; },
+            _ => { Assert.Fail("Expected error but got success"); return false; }
+        );
     }
 
 
@@ -155,17 +166,67 @@ public class CommercialToolsServiceTests
 
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
-        var (results, totalCount) = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, _) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
 
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
-        totalCount.Should().Be(1000);
         resultList.First().Should().Be(expectedResult);
 
         _mockMapper.Verify(m => m.Map<SearchResultDto>(It.Is<CommercialToolApiItem>(
             item => item.Id == "test-id" &&
                     item.Ocid == "ocds-test" &&
                     item.Tender != null && item.Tender.Title == "Test Tender")), Times.Once);
+    }
+
+    [Fact]
+    public async Task SearchCommercialToolsWithCount_WhenXTotalCountHeaderPresent_ShouldUseTotalCountFromHeader()
+    {
+        var queryUrl = "https://api.example.com/tenders?filter=test";
+        var jsonResponse = """
+        [
+            {
+                "id": "test-id-1",
+                "ocid": "ocds-test-1",
+                "tender": {
+                    "title": "Test Tender 1"
+                }
+            }
+        ]
+        """;
+
+        var expectedResult = new SearchResultDto { Id = "test-id-1", Title = "Test Tender 1" };
+        _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
+            .Returns(expectedResult);
+
+        var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(jsonResponse, Encoding.UTF8, "application/json")
+        };
+
+        // Add x-total-count header
+        response.Headers.Add("x-total-count", "500");
+
+        _mockHttpMessageHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, totalCount) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
+
+        var resultList = results.ToList();
+        resultList.Should().HaveCount(1);
+        totalCount.Should().Be(500);
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)

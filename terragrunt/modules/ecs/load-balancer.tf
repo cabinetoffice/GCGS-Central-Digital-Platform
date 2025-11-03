@@ -2,7 +2,7 @@ resource "aws_lb" "ecs" {
   drop_invalid_header_fields       = true
   enable_cross_zone_load_balancing = true
   enable_deletion_protection       = true
-  idle_timeout                     = var.environment != "staging" ?  60 :  60 * 5 // @TODO(ABN) To be removed, temp increase for DP-1910, DP-1929
+  idle_timeout                     = var.environment != "staging" ?  60 :  60 * 5 // @TODO(ABN) Remove, temp increase for DP-1910, DP-1929
   internal                         = false
   load_balancer_type               = "application"
   name                             = local.name_prefix
@@ -65,7 +65,7 @@ resource "aws_lb_listener" "ecs_http" {
 resource "aws_lb_listener_rule" "redirect_private_beta_to_live" {
   count = var.is_production ? 1 : 0
 
-  listener_arn = aws_lb_listener.ecs.arn
+  listener_arn = local.main_ecs_listener_arn
   priority     = 8000
 
   condition {
@@ -87,7 +87,7 @@ resource "aws_lb_listener_rule" "redirect_private_beta_to_live" {
 // To ensure overriding the authenticated rule. @TODO (ABN) (GO Live) Remove when removing Cognito
 resource "aws_lb_listener_rule" "unauthenticated_assets" {
 
-  listener_arn = aws_lb_listener.ecs.arn
+  listener_arn = local.main_ecs_listener_arn
   priority = 5
 
   action {

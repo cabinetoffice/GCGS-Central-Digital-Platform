@@ -78,7 +78,7 @@ const LocationSelector = (() => {
         }
 
         state.trigger.textContent = count > 0
-            ? `Edit ${config.codeType.toLowerCase()}s`
+            ? 'Edit'
             : originalText;
     };
 
@@ -306,11 +306,14 @@ const LocationSelector = (() => {
     };
 
     const setupModalHandlers = () => {
-        if (!state.modal || !state.trigger) return;
+        if (!state.modal) return;
 
-        state.trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
+        document.addEventListener('click', (e) => {
+            const trigger = e.target.id === config.triggerId ? e.target : e.target.closest(`#${config.triggerId}`);
+            if (trigger) {
+                e.preventDefault();
+                openModal();
+            }
         });
 
         document.querySelectorAll('[data-dismiss="modal"]').forEach(button => {
@@ -447,7 +450,6 @@ const LocationSelector = (() => {
         if (!accordionContent) return;
 
         const browseLink = accordionContent.querySelector('.accordion-highlight');
-        if (!browseLink) return;
 
         const existingDisplay = document.getElementById(`${config.fieldName}-selected-codes-display`);
         if (existingDisplay) {
@@ -455,7 +457,19 @@ const LocationSelector = (() => {
         }
 
         if (state.selectedCodes.size === 0) {
+            if (browseLink) {
+                browseLink.style.display = '';
+            } else {
+                const browseLinkElement = document.createElement('div');
+                browseLinkElement.className = 'accordion-highlight';
+                browseLinkElement.innerHTML = `<a href="#" class="govuk-link" id="${config.triggerId}">Browse locations</a>`;
+                accordionContent.appendChild(browseLinkElement);
+            }
             return;
+        }
+
+        if (browseLink) {
+            browseLink.style.display = 'none';
         }
 
         const formData = new FormData();
@@ -475,10 +489,20 @@ const LocationSelector = (() => {
             if (response.ok) {
                 const html = await response.text();
                 const selectedCodesDisplay = document.createElement('div');
-                selectedCodesDisplay.className = `${config.fieldName}-selected-display govuk-!-margin-bottom-0 govuk-!-margin-top-3`;
+                selectedCodesDisplay.className = `govuk-summary-card filter-panel-card govuk-!-margin-top-3`;
                 selectedCodesDisplay.id = `${config.fieldName}-selected-codes-display`;
                 selectedCodesDisplay.innerHTML = html;
-                browseLink.appendChild(selectedCodesDisplay);
+
+                const editLink = selectedCodesDisplay.querySelector('a.govuk-link');
+                if (editLink) {
+                    editLink.id = config.triggerId;
+                }
+
+                if (browseLink) {
+                    browseLink.insertAdjacentElement('afterend', selectedCodesDisplay);
+                } else if (accordionContent) {
+                    accordionContent.appendChild(selectedCodesDisplay);
+                }
             }
         } catch (error) {
         }
@@ -570,6 +594,7 @@ const LocationSelector = (() => {
         loadSelectedCodes();
         updateTriggerText();
         setupModalHandlers();
+        updateAccordionContent();
     };
 
     return {init};

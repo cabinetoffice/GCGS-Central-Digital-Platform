@@ -52,7 +52,7 @@ public class LocationCodeSelectionTests
             SelectedCodes = ["UKC"]
         };
 
-        selection.BrowseLinkText.Should().Be("Edit locations");
+        selection.BrowseLinkText.Should().Be("Edit");
     }
 
     [Fact]

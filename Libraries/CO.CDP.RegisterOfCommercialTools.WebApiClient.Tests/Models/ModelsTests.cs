@@ -11,7 +11,8 @@ public class SearchRequestDtoTests
         var request = new SearchRequestDto();
 
         request.PageNumber.Should().Be(1);
-        request.Keyword.Should().BeNull();
+        request.Keywords.Should().BeNull();
+        request.SearchMode.Should().Be(KeywordSearchMode.Any);
         request.Status.Should().BeNull();
         request.SortBy.Should().BeNull();
         request.AwardMethod.Should().BeNull();
@@ -19,10 +20,8 @@ public class SearchRequestDtoTests
         request.MaxFees.Should().BeNull();
         request.SubmissionDeadlineFrom.Should().BeNull();
         request.SubmissionDeadlineTo.Should().BeNull();
-        request.ContractStartDateFrom.Should().BeNull();
-        request.ContractStartDateTo.Should().BeNull();
-        request.ContractEndDateFrom.Should().BeNull();
-        request.ContractEndDateTo.Should().BeNull();
+        request.ContractStartDate.Should().BeNull();
+        request.ContractEndDate.Should().BeNull();
     }
 
     [Fact]
@@ -31,7 +30,7 @@ public class SearchRequestDtoTests
         var testDate = DateTime.UtcNow;
         var request = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             Status = "Active",
             SortBy = "Title",
             AwardMethod = ["With competition"],
@@ -40,13 +39,11 @@ public class SearchRequestDtoTests
             PageNumber = 2,
             SubmissionDeadlineFrom = testDate,
             SubmissionDeadlineTo = testDate.AddDays(30),
-            ContractStartDateFrom = testDate.AddDays(60),
-            ContractStartDateTo = testDate.AddDays(90),
-            ContractEndDateFrom = testDate.AddDays(365),
-            ContractEndDateTo = testDate.AddDays(730)
+            ContractStartDate = testDate.AddDays(60),
+            ContractEndDate = testDate.AddDays(730)
         };
 
-        request.Keyword.Should().Be("test");
+        request.Keywords.Should().ContainSingle().Which.Should().Be("test");
         request.Status.Should().Be("Active");
         request.SortBy.Should().Be("Title");
         request.AwardMethod.Should().ContainSingle().Which.Should().Be("With competition");
@@ -55,10 +52,8 @@ public class SearchRequestDtoTests
         request.PageNumber.Should().Be(2);
         request.SubmissionDeadlineFrom.Should().Be(testDate);
         request.SubmissionDeadlineTo.Should().Be(testDate.AddDays(30));
-        request.ContractStartDateFrom.Should().Be(testDate.AddDays(60));
-        request.ContractStartDateTo.Should().Be(testDate.AddDays(90));
-        request.ContractEndDateFrom.Should().Be(testDate.AddDays(365));
-        request.ContractEndDateTo.Should().Be(testDate.AddDays(730));
+        request.ContractStartDate.Should().Be(testDate.AddDays(60));
+        request.ContractEndDate.Should().Be(testDate.AddDays(730));
     }
 }
 
@@ -72,8 +67,7 @@ public class SearchResultDtoTests
         {
             Id = "test-id",
             Title = "Test Tool",
-            Description = "Test Description",
-            PublishedDate = testDate,
+            BuyerName = "Test Description",
             SubmissionDeadline = testDate.AddDays(30).ToString("dd MMMM yyyy"),
             Status = CommercialToolStatus.Active,
             MaximumFee = "10%",
@@ -83,8 +77,7 @@ public class SearchResultDtoTests
 
         result.Id.Should().Be("test-id");
         result.Title.Should().Be("Test Tool");
-        result.Description.Should().Be("Test Description");
-        result.PublishedDate.Should().Be(testDate);
+        result.BuyerName.Should().Be("Test Description");
         result.SubmissionDeadline.Should().Be(testDate.AddDays(30).ToString("dd MMMM yyyy"));
         result.Status.Should().Be(CommercialToolStatus.Active);
         result.MaximumFee.Should().Be("10%");
@@ -99,8 +92,7 @@ public class SearchResultDtoTests
         {
             Id = "test-id",
             Title = "Test Tool",
-            Description = "Test Description",
-            PublishedDate = DateTime.UtcNow,
+            BuyerName = "Test Description",
             Status = CommercialToolStatus.Active,
             MaximumFee = "Unknown",
             AwardMethod = "With competition",
@@ -136,8 +128,7 @@ public class SearchResponseTests
             {
                 Id = "1",
                 Title = "Tool 1",
-                Description = "Description 1",
-                PublishedDate = DateTime.UtcNow,
+                BuyerName = "Description 1",
                 Status = CommercialToolStatus.Active,
                 MaximumFee = "10%",
                 AwardMethod = "With competition"
@@ -146,9 +137,8 @@ public class SearchResponseTests
             {
                 Id = "2",
                 Title = "Tool 2",
-                Description = "Description 2",
-                PublishedDate = DateTime.UtcNow,
-                Status = CommercialToolStatus.Expired,
+                BuyerName = "Description 2",
+                Status = CommercialToolStatus.Cancelled,
                 MaximumFee = "20%",
                 AwardMethod = "Framework"
             }
@@ -175,7 +165,7 @@ public class CommercialToolStatusTests
     [Theory]
     [InlineData(CommercialToolStatus.Unknown)]
     [InlineData(CommercialToolStatus.Active)]
-    [InlineData(CommercialToolStatus.Expired)]
+    [InlineData(CommercialToolStatus.Cancelled)]
     [InlineData(CommercialToolStatus.Awarded)]
     [InlineData(CommercialToolStatus.Upcoming)]
     public void CommercialToolStatus_HasAllExpectedValues(CommercialToolStatus status)
@@ -194,7 +184,7 @@ public class CommercialToolStatusTests
     public void CommercialToolStatus_CanConvertToString()
     {
         CommercialToolStatus.Active.ToString().Should().Be("Active");
-        CommercialToolStatus.Expired.ToString().Should().Be("Expired");
+        CommercialToolStatus.Cancelled.ToString().Should().Be("Cancelled");
         CommercialToolStatus.Awarded.ToString().Should().Be("Awarded");
         CommercialToolStatus.Upcoming.ToString().Should().Be("Upcoming");
         CommercialToolStatus.Unknown.ToString().Should().Be("Unknown");

@@ -43,7 +43,6 @@ locals {
       canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       cfs_allowed_target_email_domains  = ["goaco.com"]
       fts_allowed_target_email_domains  = ["goaco.com"]
-      fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = []
       fts_extra_domains                 = []
       fts_service_allowed_origins       = [
@@ -89,7 +88,6 @@ locals {
         "goaco.com"
       ]
       fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = null
       cfs_service_allowed_origins       = [
         "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
       ]
@@ -106,7 +104,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "2025-10-13-notice-performance-improvements-experiment"
+      pinned_service_version_fts        = "1.0.24"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -273,7 +271,6 @@ locals {
         "xansium.com"
       ]
       fts_extra_domains                 = ["www-tpp.find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = null
       fts_service_allowed_origins       = [
         "https://fts.integration.supplier-information.find-tender.service.gov.uk",
         "https://test-findtender.nqc.com",
@@ -299,7 +296,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.22"
+      pinned_service_version_fts        = "1.0.24"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -336,7 +333,6 @@ locals {
       ]
       fts_allowed_target_email_domains  = []
       fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
-      fts_azure_frontdoor               = "nqc-front-door-uksouth.azurefd.net"
       fts_service_allowed_origins       = [
         "https://fts.supplier-information.find-tender.service.gov.uk",
         "https://www.find-tender.service.gov.uk"
@@ -351,7 +347,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.22"
+      pinned_service_version_fts        = "1.0.24"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -384,7 +380,6 @@ locals {
   cfs_service_allowed_origins       = try(local.environments[local.environment].cfs_service_allowed_origins, null)
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
-  fts_azure_frontdoor               = try(local.environments[local.environment].fts_azure_frontdoor, null)
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
   mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
@@ -419,7 +414,7 @@ locals {
     entity_verification_migrations       = { cpu = 256,  memory = 512}
     forms                                = {}
     fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
-    fts_healthcheck                      = { desired_count = 1 }
+    fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
     organisation                         = {}
@@ -545,7 +540,7 @@ locals {
   }
 
   versions = {
-    postgres_engine = "16.3"
+    postgres_engine = "16.8"
   }
 
 }
@@ -573,18 +568,18 @@ generate provider {
 }
 
 inputs = {
-  environment                   = local.environment
-  externals_product             = local.external_product
-  externals_vpc_cidr            = local.environments[local.environment].externals_cidr_block
-  externals_vpc_private_subnets = local.environments[local.environment].externals_private_subnets
-  is_production                 = local.is_production
-  postgres_engine_version       = local.versions.postgres_engine
-  postgres_instance_type        = local.environments[local.environment].postgres_instance_type
-  product                       = local.product
-  tags                          = local.tags
-  vpc_cidr                      = local.environments[local.environment].cidr_block
-  vpc_private_subnets           = local.environments[local.environment].private_subnets
-  vpc_public_subnets            = local.environments[local.environment].public_subnets
+  aurora_postgres_engine_version = local.versions.postgres_engine
+  environment                    = local.environment
+  externals_product              = local.external_product
+  externals_vpc_cidr             = local.environments[local.environment].externals_cidr_block
+  externals_vpc_private_subnets  = local.environments[local.environment].externals_private_subnets
+  is_production                  = local.is_production
+  postgres_instance_type         = local.environments[local.environment].postgres_instance_type
+  product                        = local.product
+  tags                           = local.tags
+  vpc_cidr                       = local.environments[local.environment].cidr_block
+  vpc_private_subnets            = local.environments[local.environment].private_subnets
+  vpc_public_subnets             = local.environments[local.environment].public_subnets
 }
 
 terraform {

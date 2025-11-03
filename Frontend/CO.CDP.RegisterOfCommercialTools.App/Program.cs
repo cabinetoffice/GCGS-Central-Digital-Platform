@@ -24,6 +24,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AllowAnonymousToPage("/Auth/Login");
     options.Conventions.AllowAnonymousToPage("/Auth/Logout");
     options.Conventions.AllowAnonymousToPage("/page-not-found");
+    options.Conventions.AllowAnonymousToPage("/cookies");
 });
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
@@ -34,16 +35,19 @@ builder.Services.AddSingleton<ISession, Session>();
 var cookieSettings = new CookieSettings();
 builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
 builder.Services.AddSingleton(cookieSettings);
-builder.Services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
 
 builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
     uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
+    uiFoundationBuilder.AddCookiePreferenceService();
 });
 
+builder.Services.AddScoped<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
+
 builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
+builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>();
 
 builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICommercialToolsApiClient, CO.CDP.RegisterOfCommercialTools.WebApiClient.CommercialToolsApiClient>(client =>
 {
@@ -51,6 +55,7 @@ builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICo
               ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
     client.BaseAddress = new Uri(url);
 })
+.AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>()
 .AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
 
 builder.Services.AddScoped<ISearchService, SearchService>();
@@ -107,26 +112,14 @@ builder.Services
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
-var useOneLogin = builder.Configuration.GetValue("Features:UseOneLogin", false);
-var useCognito = builder.Configuration.GetValue("Features:UseCognito", false);
 
-if (useOneLogin)
+if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
 {
-    if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
-    {
-        throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
-    }
-    builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
-    builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+    throw new Exception("Missing required OneLogin configuration: OneLogin:Authority and OneLogin:ClientId");
 }
-else if (useCognito)
-{
-    builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
-}
-else
-{
-    builder.Services.AddFallbackAuthentication(builder.Configuration, builder.Environment);
-}
+
+builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
+builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 
 builder.Services.AddAuthorization();
 
@@ -147,7 +140,7 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error");
+    app.UseExceptionHandler("/error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -155,6 +148,7 @@ if (!app.Environment.IsDevelopment())
 app.UseForwardedHeaders();
 app.UseMiddleware<ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
+app.UseMiddleware<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {

@@ -47,9 +47,10 @@ document.addEventListener("DOMContentLoaded", function () {
     sessionStorage.setItem(storageKey, JSON.stringify(states));
 
     const sortSelect = document.getElementById("sort-results");
-    if (sortSelect) {
+    const searchForm = document.getElementById("search-form");
+    if (sortSelect && searchForm) {
         sortSelect.addEventListener("change", function () {
-            this.form.submit();
+            searchForm.submit();
         });
     }
 });

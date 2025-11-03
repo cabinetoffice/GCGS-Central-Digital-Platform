@@ -28,6 +28,11 @@ resource "aws_lb_target_group" "this" {
   lifecycle {
     create_before_destroy = false
   }
+
+  tags = merge(
+    {Service = var.name},
+    var.tags
+  )
 }
 
 resource "aws_lb_listener_rule" "this" {

@@ -29,8 +29,7 @@ locals {
 }
 
 inputs = {
-  fts_azure_frontdoor = local.global_vars.locals.fts_azure_frontdoor
-  tags                = local.tags
+  tags = local.tags
 
   core_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models.TenderInfo;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Helpers;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.AutoMapper;
 
@@ -10,17 +11,16 @@ public class ApiResponseProfile : Profile
     {
         CreateMap<CommercialToolApiItem, SearchResultDto>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Tender != null ? src.Tender.Title : "Unknown"))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Buyer != null ? src.Buyer.Name ?? "Unknown" : "Unknown"))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => GetTitle(src)))
+            .ForMember(dest => dest.BuyerName, opt => opt.MapFrom(src => GetBuyerName(src)))
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => GenerateFindTenderUrl(src.Ocid)))
-            .ForMember(dest => dest.PublishedDate, opt => opt.MapFrom(src => src.Date))
-            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => src.Tender != null && src.Tender.TenderPeriod != null && src.Tender.TenderPeriod.EndDate != null ? src.Tender.TenderPeriod.EndDate.Value.ToString("dd MMMM yyyy") : "Unknown"))
+            .ForMember(dest => dest.SubmissionDeadline, opt => opt.MapFrom(src => GetSubmissionDeadline(src)))
             .ForMember(dest => dest.Status, opt => opt.MapFrom(src => DetermineCommercialToolStatus(src.Tender != null ? src.Tender.Status : null)))
             .ForMember(dest => dest.MaximumFee, opt => opt.MapFrom(src => GetMaximumFee(src.Tender)))
-            .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src.Tender)))
-            .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src.Tender)))
-            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src.Tender)))
-            .ForMember(dest => dest.CommercialTool, opt => opt.MapFrom(src => GetCommercialTool(src.Tender)))
+            .ForMember(dest => dest.AwardMethod, opt => opt.MapFrom(src => ExtractAwardMethod(src)))
+            .ForMember(dest => dest.OtherContractingAuthorityCanUse, opt => opt.MapFrom(src => GetOtherContractingAuthorityCanUse(src)))
+            .ForMember(dest => dest.ContractDates, opt => opt.MapFrom(src => GetContractDates(src)))
+            .ForMember(dest => dest.CommercialTool, opt => opt.MapFrom(src => GetCommercialTool(src)))
             .ForMember(dest => dest.Techniques, opt => opt.MapFrom(src => MapTechniques(src.Tender)))
             .ForMember(dest => dest.AdditionalProperties, opt => opt.MapFrom(src => CreateAdditionalProperties(src)));
     }
@@ -32,10 +32,42 @@ public class ApiResponseProfile : Profile
         {
             "active" => CommercialToolStatus.Active,
             "planning" or "planned" => CommercialToolStatus.Upcoming,
-            "awarded" or "complete" => CommercialToolStatus.Awarded,
-            "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Expired,
+            "complete" => CommercialToolStatus.Awarded,
+            "cancelled" or "unsuccessful" or "withdrawn" => CommercialToolStatus.Cancelled,
             _ => CommercialToolStatus.Unknown
         };
+    }
+
+    private static string GetFallbackText(CommercialToolStatus status)
+    {
+        return status == CommercialToolStatus.Upcoming || status == CommercialToolStatus.Active ? "TBC" : "Unknown";
+    }
+
+    private static string GetTitle(CommercialToolApiItem src)
+    {
+        if (src.Tender?.Title != null)
+        {
+            return src.Tender.Title;
+        }
+
+        var status = DetermineCommercialToolStatus(src.Tender?.Status);
+        return GetFallbackText(status);
+    }
+
+    private static string GetBuyerName(CommercialToolApiItem src)
+    {
+        return src.Buyer?.Name ?? "Unknown";
+    }
+
+    private static string GetSubmissionDeadline(CommercialToolApiItem src)
+    {
+        if (src.Tender?.TenderPeriod?.EndDate != null)
+        {
+            return src.Tender.TenderPeriod.EndDate.Value.ToString("dd MMMM yyyy");
+        }
+
+        var status = DetermineCommercialToolStatus(src.Tender?.Status);
+        return GetFallbackText(status);
     }
 
     private static string GetMaximumFee(CommercialToolTender? tender)
@@ -51,55 +83,127 @@ public class ApiResponseProfile : Profile
         return $"{maxPercentage:0.##}%";
     }
 
-    private static string ExtractAwardMethod(CommercialToolTender? tender)
+    private static string ExtractAwardMethod(CommercialToolApiItem src)
     {
-        if (tender?.Techniques?.FrameworkAgreement?.Method != null)
+        if (src.Tender?.Techniques?.FrameworkAgreement?.Method != null)
         {
-            return tender.Techniques.FrameworkAgreement.Method switch
+            return src.Tender.Techniques.FrameworkAgreement.Method switch
             {
-                "open" => "With competition",
-                "direct" => "Without competition",
                 "withoutReopeningCompetition" => "Without competition",
                 "withReopeningCompetition" => "With competition",
                 "withAndWithoutReopeningCompetition" => "With and without competition",
-                _ => "Unknown"
+                _ => GetFallbackText(DetermineCommercialToolStatus(src.Tender?.Status))
             };
         }
 
-        return "Unknown";
-    }
-
-    private static string GetOtherContractingAuthorityCanUse(CommercialToolTender? tender)
-    {
-        var frameworkType = tender?.Techniques?.FrameworkAgreement?.Type?.ToLowerInvariant();
-
-        return frameworkType switch
+        if (src.Tender?.ProcurementMethod != null)
         {
-            "open" => "Yes",
-            "closed" => "No",
-            _ => "Unknown"
-        };
+            return src.Tender.ProcurementMethod.ToLowerInvariant() switch
+            {
+                "open" => "With competition",
+                "selective" => "With competition",
+                "direct" => "Without competition",
+                "limited" => "Without competition",
+                _ => GetFallbackText(DetermineCommercialToolStatus(src.Tender?.Status))
+            };
+        }
+
+        var status = DetermineCommercialToolStatus(src.Tender?.Status);
+        return GetFallbackText(status);
     }
 
-    private static string GetContractDates(CommercialToolTender? tender)
+    private static string GetOtherContractingAuthorityCanUse(CommercialToolApiItem src)
     {
-        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.StartDate;
-        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate ?? tender?.Techniques?.FrameworkAgreement?.Period?.EndDate;
+        var frameworkType = src.Tender?.Techniques?.FrameworkAgreement?.Type?.ToLowerInvariant();
+
+        if (frameworkType != null)
+        {
+            return frameworkType switch
+            {
+                "open" => "Yes",
+                "closed" => "No",
+                _ => GetFallbackText(DetermineCommercialToolStatus(src.Tender?.Status))
+            };
+        }
+
+        var status = DetermineCommercialToolStatus(src.Tender?.Status);
+        return GetFallbackText(status);
+    }
+
+    private static string GetContractDates(CommercialToolApiItem item)
+    {
+        var tender = item.Tender;
+
+        // Try to get end date (priority 1: frameworkAgreement)
+        var endDate = tender?.Techniques?.FrameworkAgreement?.PeriodEndDate;
+
+        // Fallback 2: awards contractPeriod endDate
+        if (endDate == null && item.Awards != null && item.Awards.Any())
+        {
+            endDate = item.Awards.FirstOrDefault()?.ContractPeriod?.EndDate;
+        }
+
+        // Fallback 3: tender lots contractPeriod endDate
+        if (endDate == null && tender?.Lots != null && tender.Lots.Any())
+        {
+            endDate = tender.Lots.FirstOrDefault()?.ContractPeriod?.EndDate;
+        }
+
+        // Fallback 4: contracts period endDate
+        if (endDate == null && item.Contracts != null && item.Contracts.Any())
+        {
+            endDate = item.Contracts.FirstOrDefault()?.Period?.EndDate;
+        }
+
+        // Try to get start date (priority 1: frameworkAgreement)
+        var startDate = tender?.Techniques?.FrameworkAgreement?.PeriodStartDate;
+
+        // Fallback 2: standstill period end date + 1 day
+        if (startDate == null && item.Awards != null && item.Awards.Any())
+        {
+            var standstillEndDate = item.Awards.FirstOrDefault()?.StandstillPeriod?.EndDate;
+            if (standstillEndDate.HasValue)
+            {
+                startDate = standstillEndDate.Value.AddDays(1);
+            }
+        }
+
+        // Fallback 3: tender lots contractPeriod startDate
+        if (startDate == null && tender?.Lots != null && tender.Lots.Any())
+        {
+            startDate = tender.Lots.FirstOrDefault()?.ContractPeriod?.StartDate;
+        }
+
+        // Fallback 4: contracts period startDate
+        if (startDate == null && item.Contracts != null && item.Contracts.Any())
+        {
+            startDate = item.Contracts.FirstOrDefault()?.Period?.StartDate;
+        }
+
+        // Fallback 5: award period end date + 8 working days
+        if (startDate == null && tender?.AwardPeriod?.EndDate != null)
+        {
+            startDate = DateHelper.AddWorkingDays(tender.AwardPeriod.EndDate.Value, 8);
+        }
 
         if (startDate == null || endDate == null)
         {
-            return "Unknown";
+            var status = DetermineCommercialToolStatus(item.Tender?.Status);
+            return GetFallbackText(status);
         }
 
         return $"{startDate.Value:dd MMMM yyyy} to {endDate.Value:dd MMMM yyyy}";
     }
 
-    private static string GetCommercialTool(CommercialToolTender? tender)
+    private static string GetCommercialTool(CommercialToolApiItem src)
     {
-        if (tender?.Techniques == null)
-            return "Unknown";
+        if (src.Tender?.Techniques == null)
+        {
+            var status = DetermineCommercialToolStatus(src.Tender?.Status);
+            return GetFallbackText(status);
+        }
 
-        var techniques = tender.Techniques;
+        var techniques = src.Tender.Techniques;
         var tags = new List<string>();
 
         if (techniques.HasFrameworkAgreement == true)
@@ -114,7 +218,13 @@ public class ApiResponseProfile : Profile
         if (techniques.HasElectronicAuction == true)
             tags.Add("Electronic auction");
 
-        return tags.Any() ? string.Join(", ", tags) : "Unknown";
+        if (tags.Any())
+        {
+            return string.Join(", ", tags);
+        }
+
+        var fallbackStatus = DetermineCommercialToolStatus(src.Tender?.Status);
+        return GetFallbackText(fallbackStatus);
     }
 
     private static TechniquesInfo? MapTechniques(CommercialToolTender? tender)
@@ -139,15 +249,6 @@ public class ApiResponseProfile : Profile
                 PeriodStartDate = techniques.FrameworkAgreement.PeriodStartDate,
                 PeriodEndDate = techniques.FrameworkAgreement.PeriodEndDate
             };
-
-            if (techniques.FrameworkAgreement.Period != null)
-            {
-                mappedTechniques.FrameworkAgreement.Period = new FrameworkAgreementPeriod
-                {
-                    StartDate = techniques.FrameworkAgreement.Period.StartDate,
-                    EndDate = techniques.FrameworkAgreement.Period.EndDate
-                };
-            }
         }
 
         return mappedTechniques;
@@ -166,9 +267,6 @@ public class ApiResponseProfile : Profile
         if (!string.IsNullOrEmpty(src.Tender?.TenderId))
             properties["tenderId"] = src.Tender.TenderId;
 
-        if (!string.IsNullOrEmpty(src.Ocid))
-            properties["procurementId"] = src.Ocid;
-
         if (!string.IsNullOrEmpty(src.Buyer?.Name))
             properties["buyerName"] = src.Buyer.Name;
 
@@ -176,19 +274,6 @@ public class ApiResponseProfile : Profile
             properties["effectiveEndDateUtc"] = src.Tender.TenderPeriod.EndDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ");
 
         var buyerParty = src.Parties?.FirstOrDefault(p => p.Roles?.Contains("buyer") == true);
-        if (buyerParty?.Locations?.FirstOrDefault()?.PhysicalAddress != null)
-        {
-            var address = buyerParty.Locations.First().PhysicalAddress;
-            var addressParts = new List<string>();
-
-            if (!string.IsNullOrEmpty(address?.AddressLine1)) addressParts.Add(address.AddressLine1);
-            if (!string.IsNullOrEmpty(address?.AddressLine2)) addressParts.Add(address.AddressLine2);
-            if (!string.IsNullOrEmpty(address?.Locality)) addressParts.Add(address.Locality);
-            if (!string.IsNullOrEmpty(address?.PostalCode)) addressParts.Add(address.PostalCode);
-
-            if (addressParts.Any())
-                properties["buyerAddress"] = string.Join(", ", addressParts);
-        }
 
         return properties.Any() ? properties : null;
     }

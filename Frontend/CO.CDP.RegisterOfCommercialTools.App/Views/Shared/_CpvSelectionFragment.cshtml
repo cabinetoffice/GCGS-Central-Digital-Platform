@@ -8,21 +8,25 @@
 }
 else
 {
-    @foreach (var item in selectedItems)
-    {
-        <div class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1 code-selected-tag"
-             data-code="@item.Code">
-            <button type="button"
-                    class="govuk-tag__remove"
-                    aria-label="Remove @item.Code @item.DescriptionEn"
-                    data-code="@item.Code"
-                    data-action="remove-selection">
-                &times;
-            </button>
-            <div class="code-selected-tag__content">
-                <div class="code-selected-tag__title">@item.Code</div>
-                <div class="code-selected-tag__description">@item.DescriptionEn</div>
+    <dl class="govuk-summary-list govuk-!-font-size-16">
+        @foreach (var item in selectedItems)
+        {
+            <div class="govuk-summary-list__row" data-code="@item.Code">
+                <dt class="govuk-summary-list__key">
+                    @item.Code
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @item.DescriptionEn
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <button type="button" class="govuk-link code-remove-button"
+                            aria-label="Remove @item.Code @item.DescriptionEn"
+                            data-code="@item.Code"
+                            data-action="remove-selection">
+                        Remove
+                    </button>
+                </dd>
             </div>
-        </div>
-    }
+        }
+    </dl>
 }

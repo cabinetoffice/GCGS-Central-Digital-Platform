@@ -164,11 +164,6 @@ variable "is_production" {
   type        = bool
 }
 
-variable "postgres_engine_version" {
-  description = "DB engine version"
-  type        = string
-}
-
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)

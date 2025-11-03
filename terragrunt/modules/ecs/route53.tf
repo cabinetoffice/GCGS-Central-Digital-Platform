@@ -6,7 +6,7 @@ resource "aws_route53_record" "services_to_alb" {
   type    = "CNAME"
   ttl     = 60
 
-  records = [aws_lb.ecs.dns_name]
+  records = contains(local.php_services, each.value.name) ?  [aws_lb.ecs_php.dns_name] :  [aws_lb.ecs.dns_name]
 }
 
 resource "aws_route53_record" "main_entrypoint_alias" {

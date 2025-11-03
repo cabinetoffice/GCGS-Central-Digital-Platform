@@ -19,6 +19,8 @@ public class CommercialToolApiItem
     public CommercialToolBuyer? Buyer { get; set; }
     public List<CommercialToolParty>? Parties { get; set; }
     public CommercialToolTender? Tender { get; set; }
+    public List<CommercialToolAward>? Awards { get; set; }
+    public List<CommercialToolContract>? Contracts { get; set; }
     public CreatedAt? CreatedAt { get; set; }
 }
 
@@ -64,6 +66,7 @@ public class CommercialToolTender
     public CommercialToolValue? Value { get; set; }
     public List<CommercialToolLot>? Lots { get; set; }
     public List<CommercialToolParticipationFee>? ParticipationFees { get; set; }
+    public CommercialToolAwardPeriod? AwardPeriod { get; set; }
 }
 
 public class CommercialToolParticipationFee
@@ -119,6 +122,7 @@ public class CommercialToolLot
     public string? Title { get; set; }
     public string? Description { get; set; }
     public string? Status { get; set; }
+    public CommercialToolTenderPeriod? ContractPeriod { get; set; }
 }
 
 public class CommercialToolIdentifier
@@ -127,4 +131,31 @@ public class CommercialToolIdentifier
     public string? Id { get; set; }
     public string? Name { get; set; }
     public string? Uri { get; set; }
+}
+
+public class CommercialToolAward
+{
+    public CommercialToolTenderPeriod? ContractPeriod { get; set; }
+    public CommercialToolStandstillPeriod? StandstillPeriod { get; set; }
+}
+
+public class CommercialToolStandstillPeriod
+{
+    public DateTime? EndDate { get; set; }
+}
+
+public class CommercialToolAwardPeriod
+{
+    public DateTime? EndDate { get; set; }
+}
+
+public class CommercialToolContract
+{
+    public CommercialToolContractPeriod? Period { get; set; }
+}
+
+public class CommercialToolContractPeriod
+{
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
 }

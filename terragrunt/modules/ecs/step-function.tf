@@ -6,7 +6,7 @@ resource "aws_sfn_state_machine" "ecs_force_deploy" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/update-service.json.tftpl", {
-    cluster = aws_ecs_cluster.this.name,
+    cluster = contains(["fts", "cfs"], each.value.name) ? local.php_cluster_name : local.main_cluster_name,
     service = each.value.name
   })
 }
@@ -18,7 +18,7 @@ resource "aws_sfn_state_machine" "ecs_run_migration" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = aws_ecs_cluster.this.name,
+    cluster         = local.main_cluster_name,
     security_groups = var.ecs_sg_id
     subnet          = var.private_subnet_ids[0]
     task            = each.value.name
@@ -33,7 +33,7 @@ resource "aws_sfn_state_machine" "ecs_run_migration_cfs" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = aws_ecs_cluster.this.name,
+    cluster         = local.php_cluster_name
     security_groups = var.ecs_sg_id
     subnet          = var.private_subnet_ids[0]
     task            = each.value.name
@@ -48,7 +48,7 @@ resource "aws_sfn_state_machine" "ecs_run_migration_fts" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = aws_ecs_cluster.this.name,
+    cluster         = local.php_cluster_name
     security_groups = var.ecs_sg_id
     subnet          = var.private_subnet_ids[0]
     task            = each.value.name

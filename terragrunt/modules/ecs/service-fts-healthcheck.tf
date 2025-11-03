@@ -16,25 +16,27 @@ module "ecs_service_fts_healthcheck" {
       lg_name                    = aws_cloudwatch_log_group.tasks[var.service_configs.fts_healthcheck.name].name
       lg_prefix                  = "app"
       lg_region                  = data.aws_region.current.name
+      listener_name              = "php-${var.service_configs.fts.name}"
       memory                     = var.service_configs.fts_healthcheck.memory
       name                       = var.service_configs.fts_healthcheck.name
       public_domain              = var.public_domain
       ses_configuration_set_name = var.ses_configuration_set_name
-      service_version = "latest" //local.service_version
+      service_version            = "latest"
       vpc_cidr                   = var.vpc_cider
     }
   )
 
-  cluster_id             = aws_ecs_cluster.this.id
+  cluster_id             = local.php_cluster_id
   container_port         = var.service_configs.fts_healthcheck.port
   cpu                    = var.service_configs.fts_healthcheck.cpu
   desired_count          = var.service_configs.fts_healthcheck.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = aws_lb_listener.ecs.arn
+  ecs_listener_arn       = local.php_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
   host_port              = var.service_configs.fts_healthcheck.port_host
+  listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

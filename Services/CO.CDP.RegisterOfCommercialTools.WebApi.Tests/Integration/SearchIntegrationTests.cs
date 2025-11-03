@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 using CO.CDP.TestKit.Mvc;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,7 +9,9 @@ using Moq;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using CO.CDP.Functional;
 using Microsoft.Extensions.Configuration;
+using CO.CDP.RegisterOfCommercialTools.WebApi.Services.Caching;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Tests.Integration;
 
@@ -22,7 +25,7 @@ public class SearchIntegrationTests
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
-                config.AddInMemoryCollection(new Dictionary<string, string?>
+                var testConfig = new Dictionary<string, string?>
                 {
                     { "AWS:Region", "eu-west-2" },
                     { "AWS:ServiceURL", "http://localhost:4566" },
@@ -34,7 +37,9 @@ public class SearchIntegrationTests
                     { "AWS:CognitoAuthentication:Domain", "test-domain" },
                     { "Aws:CloudWatch:LogGroup", "/test/commercial-tools-api" },
                     { "Aws:CloudWatch:LogStream", "test-serilog" }
-                });
+                };
+                AuthenticationTestHelpers.AddApiKeyConfiguration(testConfig);
+                config.AddInMemoryCollection(testConfig);
             });
             builder.ConfigureServices(services =>
             {
@@ -44,13 +49,29 @@ public class SearchIntegrationTests
                     services.Remove(descriptor);
                 }
 
+                // Ensure the caching layer does not affect tests by replacing the IRedisCacheService with a no-op implementation.
+                var cacheDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(IRedisCacheService));
+                if (cacheDescriptor != null)
+                {
+                    services.Remove(cacheDescriptor);
+                }
+
+                var distributedCacheDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(Microsoft.Extensions.Caching.Distributed.IDistributedCache));
+                if (distributedCacheDescriptor != null)
+                {
+                    services.Remove(distributedCacheDescriptor);
+                }
+
                 var mockRepository = new Mock<ICommercialToolsService>();
                 SetupMockRepository(mockRepository);
                 services.AddSingleton(mockRepository.Object);
+
+                services.AddSingleton<IRedisCacheService, NoOpRedisCacheService>();
             });
         });
 
         _client = factory.CreateClient();
+        AuthenticationTestHelpers.AddApiKeyAuthentication(_client);
     }
 
     [Fact]
@@ -126,7 +147,7 @@ public class SearchIntegrationTests
     {
         var searchRequest = new SearchRequestDto
         {
-            Keyword = "test",
+            Keywords = ["test"],
             PageNumber = 1
         };
 
@@ -163,8 +184,7 @@ public class SearchIntegrationTests
             {
                 Id = "003033-2025",
                 Title = "Integration Test Framework 1",
-                Description = "First integration test framework",
-                PublishedDate = DateTime.UtcNow.AddDays(-10),
+                BuyerName = "First integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(30).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Active,
                 MaximumFee = "2.5%",
@@ -174,8 +194,7 @@ public class SearchIntegrationTests
             {
                 Id = "004044-2025",
                 Title = "Integration Test Framework 2",
-                Description = "Second integration test framework",
-                PublishedDate = DateTime.UtcNow.AddDays(-5),
+                BuyerName = "Second integration test framework",
                 SubmissionDeadline = DateTime.UtcNow.AddDays(45).ToString("dd MMMM yyyy"),
                 Status = CommercialToolStatus.Upcoming,
                 MaximumFee = "5%",
@@ -185,7 +204,25 @@ public class SearchIntegrationTests
 
         mockRepository
             .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
-            .ReturnsAsync((defaultResults, 50));
+            .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((defaultResults, 50)));
 
+    }
+
+    private class NoOpRedisCacheService : IRedisCacheService
+    {
+        public Task<Option<T>> GetAsync<T>(string key, CancellationToken cancellationToken = default)
+        {
+            return Task.FromResult(Option<T>.None);
+        }
+
+        public Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task<T> GetOrCreateAsync<T>(string key, Func<Task<T>> factory, TimeSpan expiration, CancellationToken cancellationToken = default)
+        {
+            return await factory();
+        }
     }
 }

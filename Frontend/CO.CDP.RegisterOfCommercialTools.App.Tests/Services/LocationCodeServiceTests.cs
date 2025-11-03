@@ -1,6 +1,7 @@
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
+using CO.CDP.WebApi.Foundation;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -36,7 +37,7 @@ public class LocationCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.GetRootNutsCodesAsync(It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetRootNutsCodesAsync(It.IsAny<WebApiCulture>())).ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.GetRootLocationCodesAsync();
 
@@ -51,7 +52,7 @@ public class LocationCodeServiceTests
     public async Task GetRootLocationCodesAsync_WhenClientReturnsNull_ShouldReturnEmptyList()
     {
         _mockClient.Setup(x => x.GetRootNutsCodesAsync(It.IsAny<WebApiCulture>()))
-            .ReturnsAsync((List<NutsCodeDto>?)null);
+            .ReturnsAsync(ApiResult<List<NutsCodeDto>>.Failure(new ClientError("Not found", System.Net.HttpStatusCode.NotFound)));
 
         var result = await _service.GetRootLocationCodesAsync();
 
@@ -70,7 +71,7 @@ public class LocationCodeServiceTests
                 ParentCode = parentCode
             }
         };
-        _mockClient.Setup(x => x.GetNutsChildrenAsync(parentCode, It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetNutsChildrenAsync(parentCode, It.IsAny<WebApiCulture>())).ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.GetChildrenAsync(parentCode);
 
@@ -91,7 +92,7 @@ public class LocationCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.SearchNutsCodesAsync(query, It.IsAny<WebApiCulture>())).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.SearchNutsCodesAsync(query, It.IsAny<WebApiCulture>())).ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.SearchAsync(query);
 
@@ -113,7 +114,7 @@ public class LocationCodeServiceTests
             }
         };
         _mockClient.Setup(x => x.GetNutsCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync(dtos);
+            .ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -127,7 +128,7 @@ public class LocationCodeServiceTests
     {
         const string code = "INVALID";
         _mockClient.Setup(x => x.GetNutsCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync((List<NutsCodeDto>?)null);
+            .ReturnsAsync(ApiResult<List<NutsCodeDto>>.Failure(new ClientError("Not found", System.Net.HttpStatusCode.NotFound)));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -139,7 +140,7 @@ public class LocationCodeServiceTests
     {
         const string code = "INVALID";
         _mockClient.Setup(x => x.GetNutsCodesAsync(It.Is<List<string>>(l => l.Count == 1 && l[0] == code)))
-            .ReturnsAsync(new List<NutsCodeDto>());
+            .ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(new List<NutsCodeDto>()));
 
         var result = await _service.GetByCodeAsync(code);
 
@@ -163,7 +164,7 @@ public class LocationCodeServiceTests
                 Level = 1
             }
         };
-        _mockClient.Setup(x => x.GetNutsCodesAsync(codes)).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetNutsCodesAsync(codes)).ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.GetByCodesAsync(codes);
 
@@ -194,7 +195,7 @@ public class LocationCodeServiceTests
                 Level = 3, ParentCode = "UKC1"
             }
         };
-        _mockClient.Setup(x => x.GetNutsHierarchyAsync(code)).ReturnsAsync(dtos);
+        _mockClient.Setup(x => x.GetNutsHierarchyAsync(code)).ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(dtos));
 
         var result = await _service.GetHierarchyAsync(code);
 
@@ -209,7 +210,7 @@ public class LocationCodeServiceTests
     {
         const string parentCode = "UKC";
         _mockClient.Setup(x => x.GetNutsChildrenAsync(parentCode, WebApiCulture.English))
-            .ReturnsAsync(new List<NutsCodeDto>());
+            .ReturnsAsync(ApiResult<List<NutsCodeDto>>.Success(new List<NutsCodeDto>()));
 
         await _service.GetChildrenAsync(parentCode);
 
