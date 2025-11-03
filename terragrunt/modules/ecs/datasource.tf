@@ -186,11 +186,11 @@ data "aws_iam_policy_document" "step_function_manage_services" {
     resources = concat(
       [
         for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.this.name}/${service}"
+        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/${service}"
       ],
       [
         for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${aws_ecs_cluster.that.name}/${service}"
+        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/${service}"
       ]
     )
 

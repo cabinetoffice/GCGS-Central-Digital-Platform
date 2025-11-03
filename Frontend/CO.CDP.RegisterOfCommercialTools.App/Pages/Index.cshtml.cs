@@ -73,7 +73,7 @@ public class IndexModel(
                 error =>
                 {
                     logger.LogError("Search failed with error: {Error}", error);
-                    return RedirectToPage("/Error");
+                    return RedirectToPage("/error");
                 },
                 ((List<SearchResult>, int) success) =>
                 {

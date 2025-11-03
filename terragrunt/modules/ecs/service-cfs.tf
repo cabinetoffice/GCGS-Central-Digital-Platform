@@ -17,7 +17,7 @@ module "ecs_service_cfs" {
   family                 = "app"
   healthcheck_path       = "/health"
   host_port              = var.service_configs.cfs.port
-  listener_name          = local.is_php_migrated_env ? "php-${var.service_configs.cfs.name}" : null
+  listener_name          = "php-${var.service_configs.cfs.name}"
   memory                 = var.service_configs.cfs.memory
   name                   = var.service_configs.cfs.name
   private_subnet_ids     = var.private_subnet_ids

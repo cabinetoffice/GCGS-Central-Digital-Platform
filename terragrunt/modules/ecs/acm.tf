@@ -72,5 +72,5 @@ resource "aws_lb_listener_certificate" "private_beta" {
   count = var.is_production ? 1 : 0
 
   certificate_arn = aws_acm_certificate.private_beta[0].arn
-  listener_arn    = aws_lb_listener.ecs.arn
+  listener_arn    = local.main_ecs_listener_arn
 }

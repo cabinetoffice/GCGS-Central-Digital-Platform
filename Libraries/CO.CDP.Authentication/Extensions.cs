@@ -67,10 +67,21 @@ public static class Extensions
         return builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
     }
 
+    public static AuthenticationBuilder AddSimpleApiKeyAuthentication(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationOptions>? configureOptions = null)
+    {
+        return builder.AddScheme<ApiKeyAuthenticationOptions, SimpleApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
+    }
+
     public static IServiceCollection AddApiKeyAuthenticationServices(this IServiceCollection services)
     {
         services.AddScoped<IApiKeyValidator, ApiKeyValidator>();
         services.AddScoped<IAuthenticationKeyRepository, DatabaseAuthenticationKeyRepository>();
+        return services;
+    }
+
+    public static IServiceCollection AddSimpleApiKeyAuthenticationServices(this IServiceCollection services)
+    {
+        services.AddScoped<SimpleApiKeyValidator>();
         return services;
     }
 

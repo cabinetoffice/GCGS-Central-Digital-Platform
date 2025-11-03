@@ -1,10 +1,12 @@
 using CO.CDP.RegisterOfCommercialTools.Persistence;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.RegisterOfCommercialTools.WebApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CpvCodeController(ICpvCodeRepository repository) : ControllerBase
 {
     [HttpGet("root")]
