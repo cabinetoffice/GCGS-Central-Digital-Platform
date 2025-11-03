@@ -65,3 +65,7 @@ output "organisation_app_user_pool_client_id" {
 output "user_pool_domain" {
   value = aws_cognito_user_pool_domain.auth.domain
 }
+
+output "commercial_tools_app_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.commercial_tools_app.id
+}
