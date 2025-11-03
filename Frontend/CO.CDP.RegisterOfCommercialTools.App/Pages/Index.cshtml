@@ -130,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <form method="get" id="search-form">
+                <partial name="_ContextParameterFields" model="Model.GetContextParams()" />
                 <div class="govuk-!-padding-2 govuk-!-padding-bottom-6 govuk-!-margin-bottom-5 govuk-filter-section">
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Keywords</h2>
 
@@ -183,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="submit" class="govuk-button" data-module="govuk-button">
                         Update results
                     </button>
-                    <a href="/" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
+                    <a asp-page="/Index" asp-route-origin="@Model.Origin" asp-route-organisation_id="@Model.OrganisationId" asp-route-cookies_accepted="@Model.CookiesAccepted" class="govuk-button govuk-button--secondary" data-module="govuk-button" id="reset-filters">
                         Reset
                     </a>
                 </div>
