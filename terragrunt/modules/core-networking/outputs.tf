@@ -41,6 +41,22 @@ output "public_hosted_zone_id" {
   value = aws_route53_zone.public.id
 }
 
+output "public_hosted_zone_cfs_fqdn" {
+  value = aws_route53_zone.cfs.name
+}
+
+output "public_hosted_zone_cfs_id" {
+  value = aws_route53_zone.cfs.id
+}
+
+output "public_hosted_zone_fts_fqdn" {
+  value = aws_route53_zone.fts.name
+}
+
+output "public_hosted_zone_fts_id" {
+  value = aws_route53_zone.fts.id
+}
+
 output "public_route_table_ids" {
   value = aws_route_table.private.*.id
 }

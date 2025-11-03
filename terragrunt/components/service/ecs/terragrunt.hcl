@@ -42,6 +42,8 @@ dependency core_networking {
     private_subnet_ids           = "mock"
     private_subnets_cidr_blocks  = "mock"
     public_domain                = "mock"
+    public_hosted_zone_cfs_id    = "mock"
+    public_hosted_zone_fts_id    = "mock"
     public_hosted_zone_id        = "mock"
     public_subnet_ids            = "mock"
     public_subnets_cidr_blocks   = "mock"
@@ -173,6 +175,8 @@ inputs = {
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_domain               = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_cfs_id   = dependency.core_networking.outputs.public_hosted_zone_cfs_id
+  public_hosted_zone_fts_id   = dependency.core_networking.outputs.public_hosted_zone_fts_id
   public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks

@@ -195,6 +195,16 @@ variable "public_domain" {
   type        = string
 }
 
+variable "public_hosted_zone_cfs_id" {
+  description = "ID of the CFS public hosted zone"
+  type        = string
+}
+
+variable "public_hosted_zone_fts_id" {
+  description = "ID of the FTS public hosted zone"
+  type        = string
+}
+
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
