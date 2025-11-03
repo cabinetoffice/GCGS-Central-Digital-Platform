@@ -169,15 +169,15 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
 
     public ICommercialToolsQueryBuilder FeeFrom(decimal from)
     {
-        var proportion = from / 100;
-        var filter = $"tender/participationFees/any(pf: pf/relativeValue/proportion ge {proportion.ToString(CultureInfo.InvariantCulture)})";
+        var proportion = from;
+        var filter = $"tender/participationFees/any(pf: pf/relativeValueProportion ge {proportion.ToString(CultureInfo.InvariantCulture)})";
         return WithCustomFilter(filter);
     }
 
     public ICommercialToolsQueryBuilder FeeTo(decimal to)
     {
-        var proportion = to / 100;
-        var filter = $"tender/participationFees/any(pf: pf/relativeValue/proportion le {proportion.ToString(CultureInfo.InvariantCulture)})";
+        var proportion = to;
+        var filter = $"tender/participationFees/any(pf: pf/relativeValueProportion le {proportion.ToString(CultureInfo.InvariantCulture)})";
         return WithCustomFilter(filter);
     }
 
