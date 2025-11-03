@@ -107,7 +107,7 @@ public class IndexModel(
         }
         else
         {
-            HomeUrl = ftsUrlService.BuildUrl("/login", null,"/Search");
+            HomeUrl = ftsUrlService.BuildUrl("/login", null, "/Search");
         }
     }
 
