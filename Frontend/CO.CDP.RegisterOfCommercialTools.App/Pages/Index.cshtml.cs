@@ -4,6 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Globalization;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -139,4 +140,12 @@ public class IndexModel(
             LocationSelection.SelectedItems.AddRange(selectedLocationCodes);
         }
     }
+
+    public ContextParams GetContextParams() => new()
+    {
+        Language = CultureInfo.CurrentUICulture.Name.Replace('-', '_'),
+        Origin = Origin,
+        OrganisationId = OrganisationId,
+        CookiesAccepted = CookiesAccepted
+    };
 }
