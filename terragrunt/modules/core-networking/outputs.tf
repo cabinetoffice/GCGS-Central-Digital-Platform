@@ -42,19 +42,19 @@ output "public_hosted_zone_id" {
 }
 
 output "public_hosted_zone_cfs_fqdn" {
-  value = aws_route53_zone.cfs.name
+  value = try(aws_route53_zone.cfs[0].name, null)
 }
 
 output "public_hosted_zone_cfs_id" {
-  value = aws_route53_zone.cfs.id
+  value = try(aws_route53_zone.cfs[0].id, null)
 }
 
 output "public_hosted_zone_fts_fqdn" {
-  value = aws_route53_zone.fts.name
+  value = try(aws_route53_zone.fts[0].name, null)
 }
 
 output "public_hosted_zone_fts_id" {
-  value = aws_route53_zone.fts.id
+  value = try(aws_route53_zone.fts[0].id, null)
 }
 
 output "public_route_table_ids" {
