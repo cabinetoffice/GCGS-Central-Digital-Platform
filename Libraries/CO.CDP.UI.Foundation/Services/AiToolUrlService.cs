@@ -44,13 +44,34 @@ public class AiToolUrlService : UrlServiceBase, IAiToolUrlService
     /// <returns>The complete URL to the AI Tool service endpoint</returns>
     public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, Dictionary<string, string?>? additionalParams = null)
     {
-        var url = base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
+        var path = organisationId.HasValue ? "organisation/callback" : endpoint;
 
-        if (additionalParams != null && additionalParams.Any())
+        var queryParams = new Dictionary<string, string?>();
+
+        var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.Replace('-', '_');
+        queryParams.Add("language", culture);
+
+        if (organisationId.HasValue)
         {
-            return Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(url, additionalParams);
+            queryParams.Add("organisationId", organisationId.Value.ToString());
         }
 
-        return url;
+        if (!string.IsNullOrEmpty(redirectUri))
+        {
+            queryParams.Add("redirectUri", redirectUri);
+        }
+
+        if (cookieAcceptance.HasValue)
+        {
+            queryParams.Add("cookiesAccepted", cookieAcceptance.Value.ToString().ToLower());
+        }
+
+        if (additionalParams == null) return base.BuildUrl(path, queryParams);
+        foreach (var param in additionalParams)
+        {
+            queryParams[param.Key] = param.Value;
+        }
+
+        return base.BuildUrl(path, queryParams);
     }
 }
