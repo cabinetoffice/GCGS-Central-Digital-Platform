@@ -380,6 +380,10 @@ variable "user_pool_fts_healthcheck_domain" {
   type = string
 }
 
+variable "user_pool_commercial_tools_client_id" {
+  type = string
+}
+
 variable "vpc_cider" {
   description = "VPC's IPv4 CIDR"
   type        = string

@@ -11,7 +11,6 @@ using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using CO.CDP.Configuration.ForwardedHeaders;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,26 +112,14 @@ builder.Services
 
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority");
 var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId");
-var useOneLogin = builder.Configuration.GetValue("Features:UseOneLogin", false);
-var useCognito = builder.Configuration.GetValue("Features:UseCognito", false);
 
-if (useOneLogin)
+if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
 {
-    if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClientId))
-    {
-        throw new Exception("OneLogin is enabled but missing required configuration: OneLogin:Authority and OneLogin:ClientId");
-    }
-    builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
-    builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
+    throw new Exception("Missing required OneLogin configuration: OneLogin:Authority and OneLogin:ClientId");
 }
-else if (useCognito)
-{
-    builder.Services.AddAwsCognitoAuthentication(builder.Configuration, builder.Environment);
-}
-else
-{
-    builder.Services.AddFallbackAuthentication(builder.Configuration, builder.Environment);
-}
+
+builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
+builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 
 builder.Services.AddAuthorization();
 
