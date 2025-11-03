@@ -4,7 +4,7 @@ resource "aws_route53_record" "cfs_delegations" {
   name    = each.key
   type    = "NS"
   ttl     = 300
-  zone_id = aws_route53_zone.cfs.id
+  zone_id = aws_route53_zone.cfs[0].id
 
   records = each.value
 }
@@ -15,7 +15,7 @@ resource "aws_route53_record" "fts_delegations" {
   name    = each.key
   type    = "NS"
   ttl     = 300
-  zone_id = aws_route53_zone.fts.id
+  zone_id = aws_route53_zone.fts[0].id
 
   records = each.value
 }

@@ -9,6 +9,8 @@ resource "aws_route53_zone" "public" {
 }
 
 resource "aws_route53_zone" "cfs" {
+  count = var.environment == "orchestrator" ? 0 : 1
+
   name = local.hosted_zones.cfs[var.environment]
   tags = var.tags
 
@@ -18,6 +20,8 @@ resource "aws_route53_zone" "cfs" {
 }
 
 resource "aws_route53_zone" "fts" {
+  count = var.environment == "orchestrator" ? 0 : 1
+
   name = local.hosted_zones.fts[var.environment]
   tags = var.tags
 
