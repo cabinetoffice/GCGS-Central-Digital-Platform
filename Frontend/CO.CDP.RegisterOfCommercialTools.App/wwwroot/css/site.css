@@ -47,36 +47,39 @@ button[aria-expanded="true"] .custom-chevron-icon {
     line-height: 1.5;
 }
 
-.govuk-accordion__section-button:where(:focus, :focus-visible),
-.govuk-details__summary:where(:focus, :focus-visible) {
-    outline: 3px solid #ffdd00 !important;
+
+.govuk-accordion__section-button:where(:focus),
+.govuk-details__summary:where(:focus) {
+    outline: 3px solid #ffdd00;
     outline-offset: 0;
-    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000000 !important;
-    background-color: #ffdd00 !important;
-    position: relative !important;
 }
 
-.govuk-accordion__section-button:where(:focus, :focus-visible)::after {
+.govuk-accordion__section-button:focus-visible,
+.govuk-details__summary:focus-visible {
+    background-color: #ffdd00;
+    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000;
+    position: relative;
+}
+
+.govuk-accordion__section-button:focus:not(:focus-visible),
+.govuk-details__summary:focus:not(:focus-visible) {
+    background-color: #ffdd00;
+    outline: 3px solid #ffdd00;
+    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000;
+    position: relative;
+}
+
+.govuk-accordion__section-button:focus-visible::after,
+.govuk-accordion__section-button:focus:not(:focus-visible)::after,
+.govuk-details__summary:focus-visible::after,
+.govuk-details__summary:focus:not(:focus-visible)::after {
     content: "";
     position: absolute;
     bottom: -4px;
     left: -3px;
     right: -3px;
-    width: calc(100% + 6px);
     height: 4px;
-    background-color: #000000;
-    z-index: 10;
-}
-
-.govuk-details__summary:where(:focus, :focus-visible)::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: -2px;
-    right: -2px;
-    width: calc(100% + 4px);
-    height: 4px;
-    background-color: #000000;
+    background: #000;
     z-index: 10;
 }
 
@@ -594,6 +597,18 @@ button[aria-expanded="true"] .custom-chevron-icon {
     position: relative;
 }
 
+.govuk-accordion__section-content .govuk-form-group {
+    margin-bottom: 0;
+}
+
+.govuk-accordion__section-content .govuk-details {
+    margin-bottom: 10px !important;
+}
+
+.govuk-accordion__section-content .govuk-details:last-child {
+    margin-bottom: 0 !important;
+}
+
 .code-search-dropdown {
     border: 2px solid #0b0c0c;
     background: #ffffff;
@@ -670,6 +685,16 @@ button[aria-expanded="true"] .custom-chevron-icon {
     line-height: 1.3;
 }
 
+.search-result-status .govuk-tag {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+@media (min-width: 48.0625em) {
+    .search-result-status {
+        text-align: right;
+    }
+}
 
 @media (max-width: 40.0625em) {
     .govuk-modal__dialog {
