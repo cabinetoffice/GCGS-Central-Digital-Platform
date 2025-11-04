@@ -47,25 +47,37 @@ button[aria-expanded="true"] .custom-chevron-icon {
     line-height: 1.5;
 }
 
-
-.govuk-accordion__section-button:focus {
-    outline: 3px solid #ffdd00;
+.govuk-accordion__section-button:where(:focus, :focus-visible),
+.govuk-details__summary:where(:focus, :focus-visible) {
+    outline: 3px solid #ffdd00 !important;
     outline-offset: 0;
-    box-shadow: 0 0 0 3px #ffdd00;
-    background-color: #ffdd00;
+    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000000 !important;
+    background-color: #ffdd00 !important;
+    position: relative !important;
 }
 
-.govuk-accordion__section-button:focus:not(:focus-visible) {
-    outline: none;
-    box-shadow: none;
-    background-color: inherit;
+.govuk-accordion__section-button:where(:focus, :focus-visible)::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: -3px;
+    right: -3px;
+    width: calc(100% + 6px);
+    height: 4px;
+    background-color: #000000;
+    z-index: 10;
 }
 
-.govuk-accordion__section-button:focus-visible {
-    outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    box-shadow: 0 0 0 3px #ffdd00;
-    background-color: #ffdd00;
+.govuk-details__summary:where(:focus, :focus-visible)::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: -2px;
+    right: -2px;
+    width: calc(100% + 4px);
+    height: 4px;
+    background-color: #000000;
+    z-index: 10;
 }
 
 .govuk-modal {
