@@ -25,6 +25,13 @@
     Guid? organisationId = Guid.TryParse(Context.Request.Query["organisation_id"].FirstOrDefault(), out var parsedGuid)
         ? parsedGuid
         : null;
+
+    string GetFtsUrl(string path, Guid? orgId)
+    {
+        return User.Identity?.IsAuthenticated == true
+            ? FtsUrlService.BuildUrl("/login", organisationId, path)
+            : FtsUrlService.BuildUrl(path, organisationId);
+    }
 }
 
 <!DOCTYPE html>
@@ -132,15 +139,11 @@
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link"
-                               href="@(User.Identity?.IsAuthenticated == true ?
-                                        FtsUrlService.BuildUrl("/login", organisationId, "/Home/AccessibilityStatement") :
-                                        FtsUrlService.BuildUrl("/Home/AccessibilityStatement", organisationId))">Accessibility statement</a>
+                               href="@GetFtsUrl("/Home/AccessibilityStatement", organisationId)">Accessibility statement</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link"
-                               href="@(User.Identity?.IsAuthenticated == true ?
-                                        FtsUrlService.BuildUrl("/login", organisationId, "/Home/TermsAndConditions") :
-                                        FtsUrlService.BuildUrl("/Home/TermsAndConditions", organisationId))">Terms and conditions</a>
+                               href="@GetFtsUrl("/Home/TermsAndConditions", organisationId)">Terms and conditions</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/privacy-notice")">Privacy</a>
@@ -150,9 +153,7 @@
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link"
-                               href="@(User.Identity?.IsAuthenticated == true ?
-                                         FtsUrlService.BuildUrl("/login", organisationId, "/Developer/Documentation") :
-                                         FtsUrlService.BuildUrl("/Developer/Documentation", organisationId))">Data and API</a>
+                               href="@GetFtsUrl("/Developer/Documentation", organisationId)">Data and API</a>
                         </li>
                     </ul>
                     <svg aria-hidden="true"
