@@ -352,6 +352,10 @@ variable "user_pool_client_id" {
   type = string
 }
 
+variable "user_pool_commercial_tools_client_id" {
+  type = string
+}
+
 variable "user_pool_domain" {
   type = string
 }
