@@ -25,7 +25,7 @@ public class SearchIntegrationTests
         {
             builder.ConfigureAppConfiguration((_, config) =>
             {
-                config.AddInMemoryCollection(new Dictionary<string, string?>
+                var testConfig = new Dictionary<string, string?>
                 {
                     { "AWS:Region", "eu-west-2" },
                     { "AWS:ServiceURL", "http://localhost:4566" },
@@ -37,7 +37,9 @@ public class SearchIntegrationTests
                     { "AWS:CognitoAuthentication:Domain", "test-domain" },
                     { "Aws:CloudWatch:LogGroup", "/test/commercial-tools-api" },
                     { "Aws:CloudWatch:LogStream", "test-serilog" }
-                });
+                };
+                AuthenticationTestHelpers.AddApiKeyConfiguration(testConfig);
+                config.AddInMemoryCollection(testConfig);
             });
             builder.ConfigureServices(services =>
             {
@@ -69,6 +71,7 @@ public class SearchIntegrationTests
         });
 
         _client = factory.CreateClient();
+        AuthenticationTestHelpers.AddApiKeyAuthentication(_client);
     }
 
     [Fact]

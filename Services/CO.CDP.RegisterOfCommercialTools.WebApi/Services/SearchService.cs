@@ -44,10 +44,10 @@ public class SearchService(
         else
         {
             if (request.MinFees.HasValue && request.MinFees.Value > 0)
-                queryBuilder = queryBuilder.FeeFrom(request.MinFees.Value * 100);
+                queryBuilder = queryBuilder.FeeFrom(request.MinFees.Value);
 
             if (request.MaxFees.HasValue && request.MaxFees.Value > 0)
-                queryBuilder = queryBuilder.FeeTo(request.MaxFees.Value * 100);
+                queryBuilder = queryBuilder.FeeTo(request.MaxFees.Value);
         }
 
         if (request.SubmissionDeadlineFrom.HasValue)

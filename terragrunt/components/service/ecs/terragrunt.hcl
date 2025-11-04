@@ -42,6 +42,8 @@ dependency core_networking {
     private_subnet_ids           = "mock"
     private_subnets_cidr_blocks  = "mock"
     public_domain                = "mock"
+    public_hosted_zone_cfs_id    = "mock"
+    public_hosted_zone_fts_id    = "mock"
     public_hosted_zone_id        = "mock"
     public_subnet_ids            = "mock"
     public_subnets_cidr_blocks   = "mock"
@@ -76,15 +78,16 @@ dependency common_networking {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
-    cfs_user_pool_arn                    = "mock"
-    cfs_user_pool_client_id              = "mock"
-    fts_healthcheck_user_pool_arn        = "mock"
-    fts_healthcheck_user_pool_client_id  = "mock"
-    fts_user_pool_arn                    = "mock"
-    fts_user_pool_client_id              = "mock"
-    organisation_app_user_pool_arn       = "mock"
-    organisation_app_user_pool_client_id = "mock"
-    user_pool_domain                     = "mock"
+    cfs_user_pool_arn                        = "mock"
+    cfs_user_pool_client_id                  = "mock"
+    commercial_tools_app_user_pool_client_id = "mock"
+    fts_healthcheck_user_pool_arn            = "mock"
+    fts_healthcheck_user_pool_client_id      = "mock"
+    fts_user_pool_arn                        = "mock"
+    fts_user_pool_client_id                  = "mock"
+    organisation_app_user_pool_arn           = "mock"
+    organisation_app_user_pool_client_id     = "mock"
+    user_pool_domain                         = "mock"
   }
 }
 
@@ -173,6 +176,8 @@ inputs = {
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_domain               = dependency.core_networking.outputs.public_domain
+  public_hosted_zone_cfs_id   = dependency.core_networking.outputs.public_hosted_zone_cfs_id
+  public_hosted_zone_fts_id   = dependency.core_networking.outputs.public_hosted_zone_fts_id
   public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
@@ -192,18 +197,19 @@ inputs = {
   vpce_logs_sg_id           = dependency.core_security_groups.outputs.vpce_logs_sg_id
   vpce_secretsmanager_sg_id = dependency.core_security_groups.outputs.vpce_secretsmanager_sg_id
 
-  user_pool_arn                       = dependency.service_auth.outputs.organisation_app_user_pool_arn
-  user_pool_client_id                 = dependency.service_auth.outputs.organisation_app_user_pool_client_id
-  user_pool_cfs_arn                   = dependency.service_auth.outputs.cfs_user_pool_arn
-  user_pool_cfs_client_id             = dependency.service_auth.outputs.cfs_user_pool_client_id
-  user_pool_cfs_domain                = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain                    = dependency.service_auth.outputs.user_pool_domain
-  user_pool_fts_arn                   = dependency.service_auth.outputs.fts_user_pool_arn
-  user_pool_fts_client_id             = dependency.service_auth.outputs.fts_user_pool_client_id
-  user_pool_fts_domain                = dependency.service_auth.outputs.user_pool_domain
-  user_pool_fts_healthcheck_arn       = dependency.service_auth.outputs.fts_healthcheck_user_pool_arn
-  user_pool_fts_healthcheck_client_id = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
-  user_pool_fts_healthcheck_domain    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn                        = dependency.service_auth.outputs.organisation_app_user_pool_arn
+  user_pool_client_id                  = dependency.service_auth.outputs.organisation_app_user_pool_client_id
+  user_pool_commercial_tools_client_id = dependency.service_auth.outputs.commercial_tools_app_user_pool_client_id
+  user_pool_cfs_arn                    = dependency.service_auth.outputs.cfs_user_pool_arn
+  user_pool_cfs_client_id              = dependency.service_auth.outputs.cfs_user_pool_client_id
+  user_pool_cfs_domain                 = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain                     = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_arn                    = dependency.service_auth.outputs.fts_user_pool_arn
+  user_pool_fts_client_id              = dependency.service_auth.outputs.fts_user_pool_client_id
+  user_pool_fts_domain                 = dependency.service_auth.outputs.user_pool_domain
+  user_pool_fts_healthcheck_arn        = dependency.service_auth.outputs.fts_healthcheck_user_pool_arn
+  user_pool_fts_healthcheck_client_id  = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
+  user_pool_fts_healthcheck_domain     = dependency.service_auth.outputs.user_pool_domain
 
   db_cfs_cluster_address                  = dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn          = dependency.service_database.outputs.cfs_cluster_credentials_arn

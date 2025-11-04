@@ -280,11 +280,11 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.FeeFrom(123.45m).Build(BaseUrl);
+        var result = builder.FeeFrom(0.01m).Build(BaseUrl);
         var decoded = Uri.UnescapeDataString(result);
 
-        var expectedProportion = (123.45m / 100).ToString(CultureInfo.InvariantCulture);
-        decoded.Should().Contain($"tender/participationFees/any(pf: pf/relativeValue/proportion ge {expectedProportion})");
+        var expectedProportion = 0.01m.ToString(CultureInfo.InvariantCulture);
+        decoded.Should().Contain($"tender/participationFees/any(pf: pf/relativeValueProportion ge {expectedProportion})");
     }
 
     [Fact]
@@ -292,11 +292,11 @@ public class CommercialToolsQueryBuilderTests
     {
         var builder = new CommercialToolsQueryBuilder();
 
-        var result = builder.FeeTo(999.99m).Build(BaseUrl);
+        var result = builder.FeeTo(0.05m).Build(BaseUrl);
         var decoded = Uri.UnescapeDataString(result);
 
-        var expectedProportion = (999.99m / 100).ToString(CultureInfo.InvariantCulture);
-        decoded.Should().Contain($"tender/participationFees/any(pf: pf/relativeValue/proportion le {expectedProportion})");
+        var expectedProportion = 0.05m.ToString(CultureInfo.InvariantCulture);
+        decoded.Should().Contain($"tender/participationFees/any(pf: pf/relativeValueProportion le {expectedProportion})");
     }
 
     [Fact]
@@ -480,8 +480,8 @@ public class CommercialToolsQueryBuilderTests
         var result = builder
             .WithKeywords(["IT", "services"], KeywordSearchMode.Any)
             .WithStatuses(["Active"])
-            .FeeFrom(100.50m)
-            .FeeTo(999.99m)
+            .FeeFrom(0.01m)
+            .FeeTo(0.05m)
             .SubmissionDeadlineFrom(new DateTime(2025, 1, 1))
             .SubmissionDeadlineTo(new DateTime(2025, 12, 31))
             .ContractStartDate(new DateTime(2025, 6, 1))
@@ -495,8 +495,8 @@ public class CommercialToolsQueryBuilderTests
 
         var decoded = Uri.UnescapeDataString(result);
         decoded.Should().Contain("$filter=");
-        decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion ge 1.005)");
-        decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValue/proportion le 9.9999)");
+        decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValueProportion ge 0.01)");
+        decoded.Should().Contain("tender/participationFees/any(pf: pf/relativeValueProportion le 0.05)");
         decoded.Should().Contain("tender/tenderPeriod/endDate ge 2025-01-01");
         decoded.Should().Contain("tender/tenderPeriod/endDate le 2025-12-31T23:59:59");
         decoded.Should().Contain("tender/techniques/frameworkAgreement/periodStartDate ge 2025-06-01");

@@ -4,6 +4,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Globalization;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -35,6 +36,9 @@ public class IndexModel(
 
     [BindProperty(SupportsGet = true, Name = "organisation_id")]
     public Guid? OrganisationId { get; set; }
+
+    [BindProperty(SupportsGet = true, Name = "cookies_accepted")]
+    public string? CookiesAccepted { get; set; }
 
     private const int PageSize = 20;
 
@@ -70,7 +74,7 @@ public class IndexModel(
                 error =>
                 {
                     logger.LogError("Search failed with error: {Error}", error);
-                    return RedirectToPage("/Error");
+                    return RedirectToPage("/error");
                 },
                 ((List<SearchResult>, int) success) =>
                 {
@@ -111,6 +115,7 @@ public class IndexModel(
         }
     }
 
+
     private async Task PopulateCodeSelections()
     {
         CpvSelection = new CpvCodeSelection
@@ -135,4 +140,12 @@ public class IndexModel(
             LocationSelection.SelectedItems.AddRange(selectedLocationCodes);
         }
     }
+
+    public ContextParams GetContextParams() => new()
+    {
+        Language = CultureInfo.CurrentUICulture.Name.Replace('-', '_'),
+        Origin = Origin,
+        OrganisationId = OrganisationId,
+        CookiesAccepted = CookiesAccepted
+    };
 }

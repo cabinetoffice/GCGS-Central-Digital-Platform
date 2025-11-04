@@ -1,0 +1,7 @@
+@using CO.CDP.UI.Foundation.Services
+@model ContextParams
+
+@foreach (var param in Model.ToDictionary())
+{
+    <input type="hidden" name="@param.Key" value="@param.Value"/>
+}

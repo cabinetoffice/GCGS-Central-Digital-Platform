@@ -195,6 +195,16 @@ variable "public_domain" {
   type        = string
 }
 
+variable "public_hosted_zone_cfs_id" {
+  description = "ID of the CFS public hosted zone"
+  type        = string
+}
+
+variable "public_hosted_zone_fts_id" {
+  description = "ID of the FTS public hosted zone"
+  type        = string
+}
+
 variable "public_hosted_zone_id" {
   description = "ID of the public hosted zone"
   type        = string
@@ -339,6 +349,10 @@ variable "user_pool_cfs_domain" {
 }
 
 variable "user_pool_client_id" {
+  type = string
+}
+
+variable "user_pool_commercial_tools_client_id" {
   type = string
 }
 
