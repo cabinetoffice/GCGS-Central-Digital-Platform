@@ -48,24 +48,39 @@ button[aria-expanded="true"] .custom-chevron-icon {
 }
 
 
-.govuk-accordion__section-button:focus {
+.govuk-accordion__section-button:where(:focus),
+.govuk-details__summary:where(:focus) {
     outline: 3px solid #ffdd00;
     outline-offset: 0;
-    box-shadow: 0 0 0 3px #ffdd00;
+}
+
+.govuk-accordion__section-button:focus-visible,
+.govuk-details__summary:focus-visible {
     background-color: #ffdd00;
+    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000;
+    position: relative;
 }
 
-.govuk-accordion__section-button:focus:not(:focus-visible) {
-    outline: none;
-    box-shadow: none;
-    background-color: inherit;
-}
-
-.govuk-accordion__section-button:focus-visible {
+.govuk-accordion__section-button:focus:not(:focus-visible),
+.govuk-details__summary:focus:not(:focus-visible) {
+    background-color: #ffdd00;
     outline: 3px solid #ffdd00;
-    outline-offset: 0;
-    box-shadow: 0 0 0 3px #ffdd00;
-    background-color: #ffdd00;
+    box-shadow: 0 0 0 3px #ffdd00, 0 4px 0 0 #000;
+    position: relative;
+}
+
+.govuk-accordion__section-button:focus-visible::after,
+.govuk-accordion__section-button:focus:not(:focus-visible)::after,
+.govuk-details__summary:focus-visible::after,
+.govuk-details__summary:focus:not(:focus-visible)::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: -3px;
+    right: -3px;
+    height: 4px;
+    background: #000;
+    z-index: 10;
 }
 
 .govuk-modal {
@@ -669,7 +684,6 @@ button[aria-expanded="true"] .custom-chevron-icon {
     color: #505a5f;
     line-height: 1.3;
 }
-
 
 .search-result-status .govuk-tag {
     margin-top: 0;
