@@ -130,27 +130,30 @@
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/contact-us")">Contact us</a>
                         </li>
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="govuk-footer__inline-list-item">
-                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/AccessibilityStatement")">Accessibility statement</a>
-                            </li>
-                            <li class="govuk-footer__inline-list-item">
-                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Home/TermsAndConditions")">Terms and conditions</a>
-                            </li>
-                        }
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="@(User.Identity?.IsAuthenticated == true ?
+                                        FtsUrlService.BuildUrl("/login", organisationId, "/Home/AccessibilityStatement") :
+                                        FtsUrlService.BuildUrl("/Home/AccessibilityStatement", organisationId))">Accessibility statement</a>
+                        </li>
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="@(User.Identity?.IsAuthenticated == true ?
+                                        FtsUrlService.BuildUrl("/login", organisationId, "/Home/TermsAndConditions") :
+                                        FtsUrlService.BuildUrl("/Home/TermsAndConditions", organisationId))">Terms and conditions</a>
+                        </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/privacy-notice")">Privacy</a>
                         </li>
                         <li class="govuk-footer__inline-list-item">
                             <a class="govuk-footer__link" href="@SirsiUrlService.BuildUrl("/cookies")">Cookies</a>
                         </li>
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="govuk-footer__inline-list-item">
-                                <a class="govuk-footer__link" href="@FtsUrlService.BuildUrl("/login", organisationId, "/Developer/Documentation")">Data and API</a>
-                            </li>
-                        }
+                        <li class="govuk-footer__inline-list-item">
+                            <a class="govuk-footer__link"
+                               href="@(User.Identity?.IsAuthenticated == true ?
+                                         FtsUrlService.BuildUrl("/login", organisationId, "/Developer/Documentation") :
+                                         FtsUrlService.BuildUrl("/Developer/Documentation", organisationId))">Data and API</a>
+                        </li>
                     </ul>
                     <svg aria-hidden="true"
                          focusable="false"
