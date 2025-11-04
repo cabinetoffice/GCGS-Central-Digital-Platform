@@ -105,9 +105,13 @@ public class IndexModel(
         {
             HomeUrl = sirsiUrlService.BuildAuthenticatedUrl($"/organisation/{OrganisationId}/buyer", OrganisationId);
         }
-        else
+        else if (HttpContext?.User?.Identity?.IsAuthenticated == true)
         {
             HomeUrl = ftsUrlService.BuildUrl("/login", OrganisationId, "/Search");
+        }
+        else
+        {
+            HomeUrl = ftsUrlService.BuildUrl("/Search", OrganisationId);
         }
     }
 
