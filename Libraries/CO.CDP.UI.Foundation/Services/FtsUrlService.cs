@@ -34,8 +34,8 @@ public class FtsUrlService : UrlServiceBase, IFtsUrlService
     {
     }
 
-    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null)
+    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, string? redirectUriParamName = null)
     {
-        return base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
+        return base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, redirectUriParamName ?? "redirect_url");
     }
 }

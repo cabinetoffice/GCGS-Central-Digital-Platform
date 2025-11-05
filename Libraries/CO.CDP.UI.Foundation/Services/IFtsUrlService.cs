@@ -12,8 +12,9 @@ public interface IFtsUrlService
     /// <param name="organisationId">Optional organisation ID.</param>
     /// <param name="redirectUri">Optional redirect URI.</param>
     /// <param name="cookieAcceptance">Optional cookie acceptance override.</param>
+    /// <param name="redirectUriParamName">Optional redirect URI parameter name.</param>
     /// <returns>The complete URL to the FTS service endpoint.</returns>
-    string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null);
+    string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, string? redirectUriParamName = null);
 
     /// <summary>
     /// Returns the path for the given endpoint.
