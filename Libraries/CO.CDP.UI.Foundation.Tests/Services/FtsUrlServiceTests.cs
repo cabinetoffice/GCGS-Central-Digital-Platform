@@ -75,7 +75,7 @@ public class FtsUrlServiceTests
     }
 
     [Fact]
-    public void BuildUrl_ShouldIncludeRedirectUrl_WhenProvided()
+    public void BuildUrl_ShouldIncludeRedirectUri_WhenProvided()
     {
         var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
@@ -83,7 +83,7 @@ public class FtsUrlServiceTests
 
         url.Should()
             .Be(
-                "https://fts-service.example.com/test-endpoint?language=en_GB&redirect_url=https%3A%2F%2Freturn.example.com");
+                "https://fts-service.example.com/test-endpoint?language=en_GB&redirectUri=https%3A%2F%2Freturn.example.com");
     }
 
     [Fact]
@@ -170,11 +170,11 @@ public class FtsUrlServiceTests
             _mockCookiePreferencesService.Object);
         var organisationId = Guid.Parse("12345678-1234-1234-1234-123456789012");
 
-        var url = service.BuildUrl("/test-endpoint", organisationId, "https://return.example.com", true, "redirectUri");
+        var url = service.BuildUrl("/test-endpoint", organisationId, "https://return.example.com", true, "https://return.example.com");
 
         url.Should()
             .Be(
-                "https://fts-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirectUri=https%3A%2F%2Freturn.example.com&cookies_accepted=true");
+                "https://fts-service.example.com/test-endpoint?language=en_GB&organisation_id=12345678-1234-1234-1234-123456789012&redirectUri=https%3A%2F%2Freturn.example.com&cookies_accepted=true&redirect_url=https%3A%2F%2Freturn.example.com");
     }
 
     [Theory]
@@ -193,26 +193,15 @@ public class FtsUrlServiceTests
     }
 
     [Fact]
-    public void BuildUrl_ShouldIncludeRedirectUrlParameterName_WhenProvided()
+    public void BuildUrl_ShouldIncludeRedirectUrl_WhenProvided()
     {
         var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
 
-        var url = service.BuildUrl("/test-endpoint", redirectUri: "https://return.example.com", redirectUriParamName:"redirect_param_name_test");
-
-        url.Should()
-            .Be(
-                "https://fts-service.example.com/test-endpoint?language=en_GB&redirect_param_name_test=https%3A%2F%2Freturn.example.com");
-    }
-
-    [Fact]
-    public void BuildUrl_ShouldIncludeRedirectUrlParameterNameDefault_WhenNotProvided()
-    {
-        var service = new FtsUrlService(_ftsUrlOptions, _mockHttpContextAccessor.Object);
-
-        var url = service.BuildUrl("/test-endpoint", redirectUri: "https://return.example.com");
+        var url = service.BuildUrl("/test-endpoint", redirectUrl: "https://return.example.com");
 
         url.Should()
             .Be(
                 "https://fts-service.example.com/test-endpoint?language=en_GB&redirect_url=https%3A%2F%2Freturn.example.com");
     }
+
 }

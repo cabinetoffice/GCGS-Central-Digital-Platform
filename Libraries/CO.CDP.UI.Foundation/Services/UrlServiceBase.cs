@@ -54,9 +54,8 @@ public abstract class UrlServiceBase
     /// <param name="organisationId">Optional organisation ID.</param>
     /// <param name="redirectUri">Optional redirect URI.</param>
     /// <param name="cookieAcceptance">Optional cookie acceptance override.</param>
-    /// <param name="redirectUriParamName">Optional redirect URI parameter name.</param>
     /// <returns>The complete URL to the service endpoint.</returns>
-    protected string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, string? redirectUriParamName = null)
+    protected string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null)
     {
         var queryParams = new Dictionary<string, string?>();
 
@@ -70,8 +69,7 @@ public abstract class UrlServiceBase
 
         if (!string.IsNullOrEmpty(redirectUri))
         {
-            queryParams.Add(!string.IsNullOrEmpty(redirectUriParamName) ? redirectUriParamName : "redirectUri",
-                redirectUri);
+            queryParams.Add("redirectUri", redirectUri);
         }
 
         if (cookieAcceptance.HasValue)

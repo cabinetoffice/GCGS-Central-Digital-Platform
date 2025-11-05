@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using CO.CDP.UI.Foundation.Cookies;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CO.CDP.UI.Foundation.Services;
 
@@ -34,8 +35,15 @@ public class FtsUrlService : UrlServiceBase, IFtsUrlService
     {
     }
 
-    public new string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, string? redirectUriParamName = null)
+    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, string? redirectUrl = null)
     {
-        return base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, redirectUriParamName ?? "redirect_url");
+        var url = base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
+
+        if (!string.IsNullOrEmpty(redirectUrl))
+        {
+            url = QueryHelpers.AddQueryString(url, "redirect_url", redirectUrl);
+        }
+
+        return url;
     }
 }
