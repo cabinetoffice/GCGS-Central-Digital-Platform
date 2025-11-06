@@ -111,7 +111,7 @@ public class IndexModel(
         }
         else if (HttpContext?.User?.Identity?.IsAuthenticated == true)
         {
-            HomeUrl = ftsUrlService.BuildUrl("/login", OrganisationId, "/Search");
+            HomeUrl = ftsUrlService.BuildUrl("/login", OrganisationId, redirectUrl: "/Search");
         }
         else
         {

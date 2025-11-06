@@ -29,7 +29,7 @@
     string GetFtsUrl(string path, Guid? orgId)
     {
         return User.Identity?.IsAuthenticated == true
-            ? FtsUrlService.BuildUrl("/login", orgId, path)
+            ? FtsUrlService.BuildUrl("/login", orgId, redirectUrl: path)
             : FtsUrlService.BuildUrl(path, orgId);
     }
 }

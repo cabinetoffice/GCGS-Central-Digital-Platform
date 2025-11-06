@@ -32,7 +32,7 @@ public class IndexModelTest
         mockSirsiUrlService.Setup(s => s.BuildAuthenticatedUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), It.IsAny<Guid?>(), null))
             .Returns<string, Guid?, bool?>((path, orgId, _) => $"https://sirsi.home/one-login/sign-in?redirectUri={Uri.EscapeDataString($"https://sirsi.home{path}?language=en_GB&organisation_id={orgId}")}&language=en_GB");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
-        mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>())).Returns("https://fts.test/");
+        mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<string>())).Returns("https://fts.test/");
         var mockCpvCodeService = new Mock<ICpvCodeService>();
         mockCpvCodeService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>()))
             .ReturnsAsync(new List<CpvCodeDto>());
