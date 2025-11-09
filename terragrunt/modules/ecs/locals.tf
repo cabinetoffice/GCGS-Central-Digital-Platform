@@ -50,20 +50,27 @@ locals {
   shared_sessions_enabled    = true
   ssm_data_protection_prefix = "${local.name_prefix}-ec-sessions"
 
-  migrations_sirsi = ["organisation-information-migrations", "entity-verification-migrations", "commercial-tools-migrations"]
-
   migration_configs_sirsi = {
     for name, config in var.service_configs :
-    config.name => config if contains(local.migrations_sirsi, config.name)
+    config.name => config if config.type == "db-migration" && config.cluster == "sirsi"
   }
 
   send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
-  migrations_all = concat(local.migrations_sirsi, local.migrations_fts, local.migrations_cfs)
   service_configs = {
     for name, config in var.service_configs :
-    config.name => config if !contains(local.migrations_all, config.name)
+    config.name => config if config.type != "db-migration"
+  }
+
+  service_configs_sirsi_cluster = {
+    for name, config in var.service_configs :
+    config.name => config if config.type != "db-migration" && config.cluster == "sirsi"
+  }
+
+  service_configs_sirsi_php_cluster = {
+    for name, config in var.service_configs :
+    config.name => config if config.type != "db-migration" && config.cluster == "sirsi-php"
   }
 
   tasks = [
