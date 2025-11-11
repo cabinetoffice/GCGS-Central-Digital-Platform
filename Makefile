@@ -6,6 +6,12 @@ IMAGE_VERSION ?= latest
 export DOCKER_BUILDKIT=1
 export COMPOSE_DOCKER_CLI_BUILD=1
 
+export OneLogin__ClientId
+export PrivateKey
+export OneLogin__PrivateKey
+export CompaniesHouse__User
+export CharityCommission__SubscriptionKey
+
 # Extracts targets and their comments
 help: ## List available commands
 	@echo "Available commands:"
