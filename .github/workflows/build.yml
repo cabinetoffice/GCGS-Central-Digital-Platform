@@ -79,7 +79,6 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
           OneLogin__ClientId: ${{ secrets.SIRSI_ONELOGIN_CLIENTID }}
-          PrivateKey: ${{ secrets.SIRSI_ONELOGIN_PRIVATEKEY }}
           OneLogin__PrivateKey: ${{ secrets.SIRSI_ONELOGIN_PRIVATEKEY }}
           CompaniesHouse__User: ${{ secrets.SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER }}
           CharityCommission__SubscriptionKey: ${{ secrets.SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY }}
