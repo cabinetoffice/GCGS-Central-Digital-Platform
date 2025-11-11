@@ -31,6 +31,26 @@ public class LoginPage
         bool isSignOutVisible = await _page.Locator(SignOutLink).IsVisibleAsync();
 
         if (!isSignOutVisible) {
+
+            var url = _page.Url;
+            TestContext.WriteLine($"Page URL during login: {url}");
+
+            Directory.CreateDirectory(Path.Combine(
+                TestContext.CurrentContext.WorkDirectory,
+                "Screenshots"
+            ));
+
+            await _page.ScreenshotAsync(new()
+            {
+                Path = Path.Combine(
+                    TestContext.CurrentContext.WorkDirectory,
+                    "Screenshots",
+                    $"{TestContext.CurrentContext.Test.Name}-login.png"
+                ),
+                FullPage = true
+            });
+
+
             await _page.ClickAsync(OneLoginSignInButton);
             await _page.FillAsync(OneLoginEmailAddressInputBox, email);
             await _page.ClickAsync(ContinueButton);
