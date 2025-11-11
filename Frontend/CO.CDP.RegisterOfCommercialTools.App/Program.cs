@@ -1,16 +1,23 @@
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.RegisterOfCommercialTools.App;
+using CO.CDP.RegisterOfCommercialTools.App.Authentication;
+using CO.CDP.RegisterOfCommercialTools.App.Constants;
+using CO.CDP.RegisterOfCommercialTools.App.Handlers;
 using CO.CDP.RegisterOfCommercialTools.App.Middleware;
+using CO.CDP.RegisterOfCommercialTools.App.Pages;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
+using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.UI.Foundation;
-using GovUk.Frontend.AspNetCore;
-using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
-using Microsoft.FeatureManagement;
-using CO.CDP.RegisterOfCommercialTools.App.Constants;
 using CO.CDP.UI.Foundation.Cookies;
+using CO.CDP.UI.Foundation.Middleware;
+using CO.CDP.UI.Foundation.Pages;
+using GovUk.Frontend.AspNetCore;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
-using CO.CDP.Configuration.ForwardedHeaders;
+using Microsoft.FeatureManagement;
+using ISession = CO.CDP.RegisterOfCommercialTools.App.ISession;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,23 +46,23 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
 {
     uiFoundationBuilder.AddFtsUrlService();
     uiFoundationBuilder.AddSirsiUrlService();
-    uiFoundationBuilder.AddDiagnosticPage<CO.CDP.RegisterOfCommercialTools.App.Pages.DiagnosticPage>();
+    uiFoundationBuilder.AddDiagnosticPage<DiagnosticPage>();
     uiFoundationBuilder.AddCookiePreferenceService();
 });
 
-builder.Services.AddScoped<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
+builder.Services.AddScoped<CookieAcceptanceMiddleware>();
 
-builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
-builder.Services.AddScoped<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>();
+builder.Services.AddScoped<BearerTokenHandler>();
+builder.Services.AddScoped<ApiKeyHandler>();
 
-builder.Services.AddHttpClient<CO.CDP.RegisterOfCommercialTools.WebApiClient.ICommercialToolsApiClient, CO.CDP.RegisterOfCommercialTools.WebApiClient.CommercialToolsApiClient>(client =>
-{
-    var url = builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl")
-              ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
-    client.BaseAddress = new Uri(url);
-})
-.AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.ApiKeyHandler>()
-.AddHttpMessageHandler<CO.CDP.RegisterOfCommercialTools.App.Handlers.BearerTokenHandler>();
+builder.Services.AddHttpClient<ICommercialToolsApiClient, CommercialToolsApiClient>(client =>
+    {
+        var url = builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl")
+                  ?? throw new Exception("Missing CommercialToolsApi:ServiceUrl configuration.");
+        client.BaseAddress = new Uri(url);
+    })
+    .AddHttpMessageHandler<ApiKeyHandler>()
+    .AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddScoped<ICpvCodeService, CpvCodeService>();
@@ -66,7 +73,8 @@ builder.Services.AddScoped<IHierarchicalCodeService<NutsCodeDto>, LocationCodeSe
 builder.Services.AddControllers();
 
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
-var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
+var cookieSecurePolicy =
+    builder.Environment.IsDevelopment() ? CookieSecurePolicy.SameAsRequest : CookieSecurePolicy.Always;
 
 builder.Services.AddSession(options =>
 {
@@ -80,7 +88,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddCookiePolicy(options =>
 {
     options.MinimumSameSitePolicy = SameSiteMode.Lax;
-    options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
+    options.HttpOnly = HttpOnlyPolicy.Always;
     options.Secure = cookieSecurePolicy;
 });
 
@@ -97,10 +105,10 @@ builder.Services.AddHsts(options =>
 });
 
 builder.Services.AddDataProtection()
-   .SetApplicationName("CDP-Frontends")
-   .PersistKeysToAWSSystemsManager(
-       builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
-       ?? throw new Exception("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."));
+    .SetApplicationName("CDP-Frontends")
+    .PersistKeysToAWSSystemsManager(
+        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
+        ?? throw new Exception("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."));
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -117,13 +125,13 @@ if (string.IsNullOrEmpty(oneLoginAuthority) || string.IsNullOrEmpty(oneLoginClie
     throw new Exception("Missing required OneLogin configuration: OneLogin:Authority and OneLogin:ClientId");
 }
 
-builder.Services.AddTransient<CO.CDP.RegisterOfCommercialTools.App.Authentication.OidcEvents>();
+builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddOneLoginAuthentication(builder.Configuration, builder.Environment);
 
 builder.Services.AddAuthorization();
 
 builder.Configuration.GetValue<string>("CommercialToolsApi:ServiceUrl");
-builder.Services.AddScoped<CO.CDP.UI.Foundation.Pages.NotFoundPage>();
+builder.Services.AddScoped<NotFoundPage>();
 
 var app = builder.Build();
 
@@ -144,10 +152,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStatusCodePages(context =>
+{
+    var response = context.HttpContext.Response;
+    if (response.StatusCode >= 500)
+    {
+        response.Redirect("/error");
+    }
+
+    return Task.CompletedTask;
+});
+
 app.UseForwardedHeaders();
 app.UseMiddleware<ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
-app.UseMiddleware<CO.CDP.UI.Foundation.Middleware.CookieAcceptanceMiddleware>();
+app.UseMiddleware<CookieAcceptanceMiddleware>();
 
 if (!app.Environment.IsDevelopment())
 {
@@ -173,7 +192,7 @@ var diagnosticPage = builder.Configuration.GetValue<string?>("Features:Diagnosti
 if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
     && !string.IsNullOrWhiteSpace(diagnosticPage))
 {
-    app.MapGet(diagnosticPage, async (CO.CDP.UI.Foundation.Pages.IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
+    app.MapGet(diagnosticPage, async (IDiagnosticPage dp) => Results.Content(await dp.GetContent(), "text/html"));
 }
 
 app.MapControllers();
