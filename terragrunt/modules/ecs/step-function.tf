@@ -6,7 +6,7 @@ resource "aws_sfn_state_machine" "ecs_force_deploy" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/update-service.json.tftpl", {
-    cluster = contains(["fts", "cfs"], each.value.name) ? local.php_cluster_name : local.main_cluster_name,
+    cluster = each.value.cluster == "sirsi-php" ? local.php_cluster_name : local.main_cluster_name,
     service = each.value.name
   })
 }
