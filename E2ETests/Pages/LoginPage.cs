@@ -33,7 +33,7 @@ public class LoginPage
         if (!isSignOutVisible) {
 
             var url = _page.Url;
-            TestContext.WriteLine($"Page URL during login: {url}");
+            TestContext.Progress.WriteLine($"Page URL during login: {url}");
 
             Directory.CreateDirectory(Path.Combine(
                 TestContext.CurrentContext.WorkDirectory,
