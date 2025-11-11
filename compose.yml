@@ -181,6 +181,8 @@ services:
       CompaniesHouse__Password: ""
       CharityCommission__Url: ""
       CharityCommission__SubscriptionKey: '${CharityCommission__SubscriptionKey:-}'
+      OneLogin__ClientId: '${OneLogin__ClientId:-test}'
+      OneLogin__PrivateKey: '${OneLogin__PrivateKey:-test}'
   authority:
     container_name: co-cdp-authority
     build:
