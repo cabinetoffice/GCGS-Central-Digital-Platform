@@ -1344,7 +1344,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
           &lt;li&gt;the above measures are regularly tested and reviewed&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
-      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, continue to the next question&lt;/p&gt;
+      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
     </value>
   </data>
   <data name="DataProtection_05_Title" xml:space="preserve">
