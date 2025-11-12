@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using System.Security.Principal;
 using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
