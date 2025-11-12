@@ -59,14 +59,6 @@ public class IndexModel(
         try
         {
             await SetCpvAndLocationCodes();
-            if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
-            {
-                OpenAccordions =
-                [
-                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
-                    "industry-cpv-code", "contract-location", "fees", "date-range"
-                ];
-            }
 
             var searchResult = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
