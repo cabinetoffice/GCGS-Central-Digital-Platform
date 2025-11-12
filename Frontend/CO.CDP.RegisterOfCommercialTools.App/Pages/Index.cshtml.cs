@@ -54,11 +54,11 @@ public class IndexModel(
             string.Join(", ", SearchParams.CpvCodes));
 
         SetFrameworksAndMarketsChildValues();
+        SetHomeUrl();
 
         try
         {
-            SetHomeUrl();
-
+            await SetCpvAndLocationCodes();
             if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
             {
                 OpenAccordions =
@@ -67,8 +67,6 @@ public class IndexModel(
                     "industry-cpv-code", "contract-location", "fees", "date-range"
                 ];
             }
-
-            await PopulateCodeSelections();
 
             var searchResult = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
@@ -135,7 +133,7 @@ public class IndexModel(
     }
 
 
-    private async Task PopulateCodeSelections()
+    private async Task SetCpvAndLocationCodes()
     {
         CpvSelection = new CpvCodeSelection
         {
