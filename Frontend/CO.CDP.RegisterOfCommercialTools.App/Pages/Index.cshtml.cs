@@ -1,10 +1,10 @@
+using System.Globalization;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Globalization;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -53,6 +53,8 @@ public class IndexModel(
             PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status),
             string.Join(", ", SearchParams.CpvCodes));
 
+        SetFrameworksAndMarketsChildValues();
+
         try
         {
             SetHomeUrl();
@@ -99,7 +101,20 @@ public class IndexModel(
         {
             logger.LogError(ex, "Error processing search request: Page {PageNumber}, Keywords: {Keywords}",
                 PageNumber, SearchParams.Keywords);
-            throw;
+            return RedirectToPage("/error");
+        }
+    }
+
+    private void SetFrameworksAndMarketsChildValues()
+    {
+        if (!SearchParams.FilterFrameworks)
+        {
+            SearchParams.IsOpenFrameworks = false;
+        }
+
+        if (!SearchParams.FilterDynamicMarkets)
+        {
+            SearchParams.IsUtilitiesOnly = false;
         }
     }
 
