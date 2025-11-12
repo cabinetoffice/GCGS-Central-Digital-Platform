@@ -1,3 +1,4 @@
+using CO.CDP.RegisterOfCommercialTools.WebApi.Helpers;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.WebApi.Foundation;
 
@@ -16,8 +17,7 @@ public class SearchService(
 
     public async Task<ApiResult<SearchResponse>> Search(SearchRequestDto request)
     {
-        logger.LogInformation("Search request received: PageNumber={PageNumber}, CpvCodes={CpvCount}, LocationCodes={LocationCount}",
-            request.PageNumber, request.CpvCodes?.Count ?? 0, request.LocationCodes?.Count ?? 0);
+        LogSearchRequest(request);
 
         const int fixedPageSize = 20;
 
@@ -33,13 +33,16 @@ public class SearchService(
 
         if (!string.IsNullOrWhiteSpace(request.Status))
         {
-            var statuses = request.Status.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
+            var statuses = request.Status
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries).ToList();
             queryBuilder = queryBuilder.WithStatuses(statuses);
         }
 
-        if (request.MinFees.HasValue && request.MinFees.Value == 0 && request.MaxFees.HasValue && request.MaxFees.Value == 0)
+        if (request.MinFees.HasValue && request.MinFees.Value == 0 && request.MaxFees.HasValue &&
+            request.MaxFees.Value == 0)
         {
-            queryBuilder = queryBuilder.WithCustomFilter("tender/participationFees/all(fee: fee/relativeValueProportion eq 0)");
+            queryBuilder =
+                queryBuilder.WithCustomFilter("tender/participationFees/all(fee: fee/relativeValueProportion eq 0)");
         }
         else
         {
@@ -64,7 +67,8 @@ public class SearchService(
 
         if (request.FilterFrameworks && request.FilterDynamicMarkets)
         {
-            queryBuilder = queryBuilder.WithCustomFilter("(tender/techniques/hasFrameworkAgreement eq true or tender/techniques/hasDynamicPurchasingSystem eq true)");
+            queryBuilder = queryBuilder.WithCustomFilter(
+                "(tender/techniques/hasFrameworkAgreement eq true or tender/techniques/hasDynamicPurchasingSystem eq true)");
         }
         else if (request.FilterFrameworks)
         {
@@ -130,7 +134,8 @@ public class SearchService(
                 var (results, totalCount) = success;
                 var searchResultDtos = results.ToList();
 
-                logger.LogInformation("Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
+                logger.LogInformation(
+                    "Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
                     searchResultDtos.Count, totalCount, pageNumber);
 
                 var response = new SearchResponse
@@ -144,5 +149,23 @@ public class SearchService(
                 return ApiResult<SearchResponse>.Success(response);
             }
         );
+    }
+
+    private void LogSearchRequest(SearchRequestDto request)
+    {
+        logger.LogInformation(
+            "Search request received: PageNumber={PageNumber}, Keywords=[{Keywords}], SearchMode={SearchMode}, Status={Status}, " +
+            "CpvCodes=[{CpvCodes}], LocationCodes=[{LocationCodes}], FilterFrameworks={FilterFrameworks}, FilterDynamicMarkets={FilterDynamicMarkets}, " +
+            "AwardMethods=[{AwardMethods}], ContractingAuthorityUsage=[{ContractingAuthorityUsage}]",
+            request.PageNumber,
+            LogSanitizer.SanitizeList(request.Keywords),
+            request.SearchMode,
+            LogSanitizer.Sanitize(request.Status),
+            LogSanitizer.SanitizeList(request.CpvCodes),
+            LogSanitizer.SanitizeList(request.LocationCodes),
+            request.FilterFrameworks,
+            request.FilterDynamicMarkets,
+            LogSanitizer.SanitizeList(request.AwardMethod),
+            LogSanitizer.SanitizeList(request.ContractingAuthorityUsage));
     }
 }

@@ -23,4 +23,18 @@ public static partial class LogSanitizer
 
         return ControlCharactersRegex().Replace(input, string.Empty);
     }
+
+    /// <summary>
+    /// Sanitizes a list of strings by removing control characters from each item and joining them with a separator.
+    /// </summary>
+    /// <param name="items">The list of strings to sanitize</param>
+    /// <param name="separator">The separator to use when joining (defaults to ", ")</param>
+    /// <returns>Sanitized comma-separated string safe for logging</returns>
+    public static string SanitizeList(List<string>? items, string separator = ", ")
+    {
+        if (items == null || items.Count == 0)
+            return string.Empty;
+
+        return string.Join(separator, items.Select(Sanitize));
+    }
 }
