@@ -64,6 +64,12 @@ public class IndexModelTest
         mockRequest.Setup(r => r.Query).Returns(new QueryCollection());
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
 
+        var mockIdentity = new Mock<IIdentity>();
+        mockIdentity.Setup(i => i.IsAuthenticated).Returns(false);
+        var mockUser = new Mock<ClaimsPrincipal>();
+        mockUser.Setup(u => u.Identity).Returns(mockIdentity.Object);
+        mockHttpContext.Setup(c => c.User).Returns(mockUser.Object);
+
         var actionContext = new ActionContext(mockHttpContext.Object, new RouteData(), new ActionDescriptor());
         var pageContext = new PageContext(actionContext)
         {
