@@ -5,6 +5,7 @@ using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -48,12 +49,16 @@ public class IndexModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        SetFrameworksAndMarketsChildValues();
         SetHomeUrl();
 
         try
         {
             await SetCpvAndLocationCodes();
+
+            if (ShouldRedirectToCleanQueryParams())
+            {
+                return RedirectWithCleanedQueryParams(["open_frameworks", "utilities_only"]);
+            }
 
             var searchResult = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
@@ -89,17 +94,28 @@ public class IndexModel(
         }
     }
 
-    private void SetFrameworksAndMarketsChildValues()
+    private bool ShouldRedirectToCleanQueryParams()
     {
-        if (!SearchParams.FilterFrameworks)
+        var query = Request.Query;
+        var hasOpenFrameworks = query.ContainsKey("open_frameworks") && query["open_frameworks"] == "true";
+        var hasUtilitiesOnly = query.ContainsKey("utilities_only") && query["utilities_only"] == "true";
+        var hasFilterFrameworks = query.ContainsKey("filter_frameworks") && query["filter_frameworks"] == "true";
+        var hasFilterMarkets = query.ContainsKey("filter_markets") && query["filter_markets"] == "true";
+
+        return (hasOpenFrameworks && !hasFilterFrameworks) || (hasUtilitiesOnly && !hasFilterMarkets);
+    }
+
+    private RedirectToPageResult RedirectWithCleanedQueryParams(string[] paramsToRemove)
+    {
+        var queryString = Request.QueryString.Value ?? string.Empty;
+        var cleanedParams = QueryHelpers.ParseQuery(queryString);
+
+        foreach (var param in paramsToRemove)
         {
-            SearchParams.IsOpenFrameworks = false;
+            cleanedParams.Remove(param);
         }
 
-        if (!SearchParams.FilterDynamicMarkets)
-        {
-            SearchParams.IsUtilitiesOnly = false;
-        }
+        return RedirectToPage("/Index", cleanedParams.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString()));
     }
 
     private void SetHomeUrl()

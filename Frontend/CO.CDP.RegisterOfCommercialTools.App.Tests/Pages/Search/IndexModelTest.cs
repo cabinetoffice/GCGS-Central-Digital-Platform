@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
 using Moq;
 using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
 
@@ -289,24 +290,40 @@ public class IndexModelTest
     }
 
     [Fact]
-    public async Task OnGetAsync_WhenFilterFrameworksIsFalseAndIsOpenFrameworksIsTrue_ShouldClearIsOpenFrameworks()
+    public async Task OnGetAsync_WhenFilterFrameworksIsFalseAndIsOpenFrameworksIsTrue_ShouldRedirect()
     {
-        _model.SearchParams.FilterFrameworks = false;
-        _model.SearchParams.IsOpenFrameworks = true;
+        var queryParams = new Dictionary<string, StringValues>
+        {
+            { "open_frameworks", "true" }
+        };
+        var mockRequest = Mock.Get(_model.PageContext.HttpContext.Request);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection(queryParams));
+        mockRequest.Setup(r => r.QueryString).Returns(new QueryString("?open_frameworks=true"));
 
-        await _model.OnGetAsync();
+        var result = await _model.OnGetAsync();
 
-        _model.SearchParams.IsOpenFrameworks.Should().BeFalse();
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult?.PageName.Should().Be("/Index");
+        redirectResult?.RouteValues.Should().NotContainKey("open_frameworks");
     }
 
     [Fact]
-    public async Task OnGetAsync_WhenFilterDynamicMarketsIsFalseAndIsUtilitiesOnlyIsTrue_ShouldClearIsUtilitiesOnly()
+    public async Task OnGetAsync_WhenFilterDynamicMarketsIsFalseAndIsUtilitiesOnlyIsTrue_ShouldRedirect()
     {
-        _model.SearchParams.FilterDynamicMarkets = false;
-        _model.SearchParams.IsUtilitiesOnly = true;
+        var queryParams = new Dictionary<string, StringValues>
+        {
+            { "utilities_only", "true" }
+        };
+        var mockRequest = Mock.Get(_model.PageContext.HttpContext.Request);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection(queryParams));
+        mockRequest.Setup(r => r.QueryString).Returns(new QueryString("?utilities_only=true"));
 
-        await _model.OnGetAsync();
+        var result = await _model.OnGetAsync();
 
-        _model.SearchParams.IsUtilitiesOnly.Should().BeFalse();
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult?.PageName.Should().Be("/Index");
+        redirectResult?.RouteValues.Should().NotContainKey("utilities_only");
     }
 }
