@@ -48,11 +48,6 @@ public class IndexModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        logger.LogInformation(
-            "Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}], CpvCodes: [{CpvCodes}]",
-            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status),
-            string.Join(", ", SearchParams.CpvCodes));
-
         SetFrameworksAndMarketsChildValues();
         SetHomeUrl();
 
@@ -65,7 +60,8 @@ public class IndexModel(
             return searchResult.Match(
                 error =>
                 {
-                    logger.LogError("Search failed with error: {Error}", error);
+                    logger.LogError("Search API call failed: ErrorType={ErrorType}, Message={Message}",
+                        error.GetType().Name, error.Message);
                     return RedirectToPage("/error");
                 },
                 ((List<SearchResult>, int) success) =>
@@ -73,8 +69,6 @@ public class IndexModel(
                     var (results, totalCount) = success;
                     SearchResults = results;
                     TotalCount = totalCount;
-
-                    logger.LogInformation("Search completed successfully. Found {TotalCount} results.", totalCount);
 
                     Pagination = new PaginationPartialModel
                     {
