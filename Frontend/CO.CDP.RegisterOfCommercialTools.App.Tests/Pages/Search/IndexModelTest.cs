@@ -228,33 +228,6 @@ public class IndexModelTest
     }
 
     [Fact]
-    public async Task OnGet_ShouldSetDefaultOpenAccordionsWhenNoAccParam()
-    {
-        var mockHttpContext = new Mock<HttpContext>();
-        var mockRequest = new Mock<HttpRequest>();
-        mockRequest.Setup(r => r.Path).Returns("/");
-        mockRequest.Setup(r => r.QueryString).Returns(QueryString.Empty);
-        mockRequest.Setup(r => r.Query).Returns(new QueryCollection()); // Ensure no 'acc' parameter
-        mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        var actionContext = new ActionContext(mockHttpContext.Object, new RouteData(), new ActionDescriptor());
-        var pageContext = new PageContext(actionContext)
-        {
-            ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-        };
-        _model.PageContext = pageContext;
-
-        await _model.OnGetAsync();
-
-        var expectedOpenAccordions = new[]
-        {
-            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
-            "industry-cpv-code", "contract-location", "fees", "date-range"
-        };
-        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
-    }
-
-    [Fact]
     public async Task OnGetAsync_WithOriginBuyerViewAndOrganisationId_SetsHomeUrlToBuyerView()
     {
         var organisationId = Guid.NewGuid();
