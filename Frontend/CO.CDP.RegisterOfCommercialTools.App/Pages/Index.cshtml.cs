@@ -88,8 +88,7 @@ public class IndexModel(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing search request: Page {PageNumber}, Keywords: {Keywords}",
-                PageNumber, SearchParams.Keywords);
+            logger.LogError(ex, "Unexpected error in search page");
             return RedirectToPage("/error");
         }
     }
