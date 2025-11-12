@@ -16,7 +16,7 @@
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
-- [Update ODI Data Platform Secrets](#update-odi-data-platform-secret)
+- [Update ODI Data Platform Secrets](#update-odi-data-platform-secrets)
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
