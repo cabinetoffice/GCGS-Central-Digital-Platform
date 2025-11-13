@@ -422,7 +422,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
           Sustainable supply of steel refers to the sourcing and production of steel that is environmentally, socially and economically responsible. It involves practices that limit environmental impact, such as reducing carbon emissions whilst ensuring fair labour practices and supporting local communities.
         &lt;/div&gt;
       &lt;/details&gt;
-      &lt;p class=&quot;govuk-hint&quot;&gt;If you would like to provide this information in a document format, continue to the next question&lt;/p&gt;
+      &lt;p class=&quot;govuk-hint&quot;&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
     </value>
   </data>
   <data name="SteelQuestion_03_Title" xml:space="preserve">
@@ -802,7 +802,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
       &lt;/p&gt;
 
       &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
-        If you would like to provide this information in a document format, continue to the next question.
+        If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question.
       &lt;/div&gt;
     </value>
   </data>
@@ -1344,7 +1344,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
           &lt;li&gt;the above measures are regularly tested and reviewed&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
-      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, continue to the next question&lt;/p&gt;
+      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
     </value>
   </data>
   <data name="DataProtection_05_Title" xml:space="preserve">
