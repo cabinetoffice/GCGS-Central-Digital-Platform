@@ -8,7 +8,10 @@ public class SearchModel : IValidatableObject
 {
     [FromQuery(Name = "q")] public string? Keywords { get; set; }
     [FromQuery(Name = "sort")] public string? SortOrder { get; set; }
-    [FromQuery(Name = "filter_frameworks")] public bool FilterFrameworks { get; set; }
+
+    [FromQuery(Name = "filter_frameworks")]
+    public bool FilterFrameworks { get; set; }
+
     [FromQuery(Name = "open_frameworks")] public bool IsOpenFrameworks { get; set; }
     [FromQuery(Name = "filter_markets")] public bool FilterDynamicMarkets { get; set; }
     [FromQuery(Name = "utilities_only")] public bool IsUtilitiesOnly { get; set; }
@@ -55,12 +58,23 @@ public class SearchModel : IValidatableObject
     [FromQuery(Name = "end_to_month")] public string? ContractEndDateToMonth { get; set; }
     [FromQuery(Name = "end_to_year")] public string? ContractEndDateToYear { get; set; }
 
-    public DateOnly? SubmissionDeadlineFrom => TryParseDate(SubmissionDeadlineFromDay, SubmissionDeadlineFromMonth, SubmissionDeadlineFromYear);
-    public DateOnly? SubmissionDeadlineTo => TryParseDate(SubmissionDeadlineToDay, SubmissionDeadlineToMonth, SubmissionDeadlineToYear);
-    public DateOnly? ContractStartDateFrom => TryParseDate(ContractStartDateFromDay, ContractStartDateFromMonth, ContractStartDateFromYear);
-    public DateOnly? ContractStartDateTo => TryParseDate(ContractStartDateToDay, ContractStartDateToMonth, ContractStartDateToYear);
-    public DateOnly? ContractEndDateFrom => TryParseDate(ContractEndDateFromDay, ContractEndDateFromMonth, ContractEndDateFromYear);
-    public DateOnly? ContractEndDateTo => TryParseDate(ContractEndDateToDay, ContractEndDateToMonth, ContractEndDateToYear);
+    public DateOnly? SubmissionDeadlineFrom => TryParseDate(SubmissionDeadlineFromDay, SubmissionDeadlineFromMonth,
+        SubmissionDeadlineFromYear);
+
+    public DateOnly? SubmissionDeadlineTo =>
+        TryParseDate(SubmissionDeadlineToDay, SubmissionDeadlineToMonth, SubmissionDeadlineToYear);
+
+    public DateOnly? ContractStartDateFrom =>
+        TryParseDate(ContractStartDateFromDay, ContractStartDateFromMonth, ContractStartDateFromYear);
+
+    public DateOnly? ContractStartDateTo =>
+        TryParseDate(ContractStartDateToDay, ContractStartDateToMonth, ContractStartDateToYear);
+
+    public DateOnly? ContractEndDateFrom =>
+        TryParseDate(ContractEndDateFromDay, ContractEndDateFromMonth, ContractEndDateFromYear);
+
+    public DateOnly? ContractEndDateTo =>
+        TryParseDate(ContractEndDateToDay, ContractEndDateToMonth, ContractEndDateToYear);
 
     private static DateOnly? TryParseDate(string? day, string? month, string? year)
     {
@@ -79,16 +93,6 @@ public class SearchModel : IValidatableObject
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (!FilterFrameworks)
-        {
-            IsOpenFrameworks = false;
-        }
-
-        if (!FilterDynamicMarkets)
-        {
-            IsUtilitiesOnly = false;
-        }
-
         if (!string.IsNullOrEmpty(NoFees))
         {
             var feeFromHasValue = FeeMin.HasValue;
@@ -123,38 +127,44 @@ public class SearchModel : IValidatableObject
             }
         }
 
-        var submissionFromErrors = ValidateDateComponents(SubmissionDeadlineFromDay, SubmissionDeadlineFromMonth, SubmissionDeadlineFromYear, "Submission deadline from");
+        var submissionFromErrors = ValidateDateComponents(SubmissionDeadlineFromDay, SubmissionDeadlineFromMonth,
+            SubmissionDeadlineFromYear, "Submission deadline from");
         foreach (var error in submissionFromErrors)
         {
             yield return new ValidationResult(error.Message, error.Members);
         }
 
-        var submissionToErrors = ValidateDateComponents(SubmissionDeadlineToDay, SubmissionDeadlineToMonth, SubmissionDeadlineToYear, "Submission deadline to");
+        var submissionToErrors = ValidateDateComponents(SubmissionDeadlineToDay, SubmissionDeadlineToMonth,
+            SubmissionDeadlineToYear, "Submission deadline to");
         foreach (var error in submissionToErrors)
         {
             yield return new ValidationResult(error.Message, error.Members);
         }
 
-        if (SubmissionDeadlineFrom.HasValue && SubmissionDeadlineTo.HasValue && SubmissionDeadlineTo < SubmissionDeadlineFrom)
+        if (SubmissionDeadlineFrom.HasValue && SubmissionDeadlineTo.HasValue &&
+            SubmissionDeadlineTo < SubmissionDeadlineFrom)
         {
             yield return new ValidationResult(
                 DateValidationMessages.GetDateRangeMessage("Submission deadline"),
                 [nameof(SubmissionDeadlineToDay), nameof(SubmissionDeadlineToMonth), nameof(SubmissionDeadlineToYear)]);
         }
 
-        var contractStartFromErrors = ValidateDateComponents(ContractStartDateFromDay, ContractStartDateFromMonth, ContractStartDateFromYear, "Contract start date from");
+        var contractStartFromErrors = ValidateDateComponents(ContractStartDateFromDay, ContractStartDateFromMonth,
+            ContractStartDateFromYear, "Contract start date from");
         foreach (var error in contractStartFromErrors)
         {
             yield return new ValidationResult(error.Message, error.Members);
         }
 
-        var contractStartToErrors = ValidateDateComponents(ContractStartDateToDay, ContractStartDateToMonth, ContractStartDateToYear, "Contract start date to");
+        var contractStartToErrors = ValidateDateComponents(ContractStartDateToDay, ContractStartDateToMonth,
+            ContractStartDateToYear, "Contract start date to");
         foreach (var error in contractStartToErrors)
         {
             yield return new ValidationResult(error.Message, error.Members);
         }
 
-        if (ContractStartDateFrom.HasValue && ContractStartDateTo.HasValue && ContractStartDateTo < ContractStartDateFrom)
+        if (ContractStartDateFrom.HasValue && ContractStartDateTo.HasValue &&
+            ContractStartDateTo < ContractStartDateFrom)
         {
             yield return new ValidationResult(
                 DateValidationMessages.GetDateRangeMessage("Contract start date"),
@@ -162,7 +172,8 @@ public class SearchModel : IValidatableObject
         }
     }
 
-    private IEnumerable<(string Message, string[] Members)> ValidateDateComponents(string? day, string? month, string? year, string fieldName)
+    private IEnumerable<(string Message, string[] Members)> ValidateDateComponents(string? day, string? month,
+        string? year, string fieldName)
     {
         var hasDay = !string.IsNullOrWhiteSpace(day);
         var hasMonth = !string.IsNullOrWhiteSpace(month);
@@ -191,22 +202,26 @@ public class SearchModel : IValidatableObject
 
         if (!dayValid)
         {
-            yield return (DateValidationMessages.GetInvalidDayMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Day)]);
+            yield return (DateValidationMessages.GetInvalidDayMessage(fieldName),
+                [GetMemberName(propertyPrefix, DateComponentType.Day)]);
         }
 
         if (!monthValid)
         {
-            yield return (DateValidationMessages.GetInvalidMonthMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Month)]);
+            yield return (DateValidationMessages.GetInvalidMonthMessage(fieldName),
+                [GetMemberName(propertyPrefix, DateComponentType.Month)]);
         }
 
         if (!yearValid)
         {
-            yield return (DateValidationMessages.GetInvalidYearMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Year)]);
+            yield return (DateValidationMessages.GetInvalidYearMessage(fieldName),
+                [GetMemberName(propertyPrefix, DateComponentType.Year)]);
         }
 
         if (dayValid && monthValid && yearValid && !DateTime.TryParse($"{year}-{monthInt:D2}-{dayInt:D2}", out _))
         {
-            yield return (DateValidationMessages.GetInvalidDateMessage(fieldName), [GetMemberName(propertyPrefix, DateComponentType.Day)]);
+            yield return (DateValidationMessages.GetInvalidDateMessage(fieldName),
+                [GetMemberName(propertyPrefix, DateComponentType.Day)]);
         }
     }
 
@@ -221,15 +236,21 @@ public class SearchModel : IValidatableObject
 
     private string GetMemberName(string propertyPrefix, DateComponentType component) => component switch
     {
-        DateComponentType.Day when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(SubmissionDeadlineFromDay),
-        DateComponentType.Month when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(SubmissionDeadlineFromMonth),
-        DateComponentType.Year when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(SubmissionDeadlineFromYear),
+        DateComponentType.Day when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(
+            SubmissionDeadlineFromDay),
+        DateComponentType.Month when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(
+            SubmissionDeadlineFromMonth),
+        DateComponentType.Year when propertyPrefix == nameof(SubmissionDeadlineFrom) => nameof(
+            SubmissionDeadlineFromYear),
         DateComponentType.Day when propertyPrefix == nameof(SubmissionDeadlineTo) => nameof(SubmissionDeadlineToDay),
-        DateComponentType.Month when propertyPrefix == nameof(SubmissionDeadlineTo) => nameof(SubmissionDeadlineToMonth),
+        DateComponentType.Month when propertyPrefix == nameof(SubmissionDeadlineTo) => nameof(
+            SubmissionDeadlineToMonth),
         DateComponentType.Year when propertyPrefix == nameof(SubmissionDeadlineTo) => nameof(SubmissionDeadlineToYear),
         DateComponentType.Day when propertyPrefix == nameof(ContractStartDateFrom) => nameof(ContractStartDateFromDay),
-        DateComponentType.Month when propertyPrefix == nameof(ContractStartDateFrom) => nameof(ContractStartDateFromMonth),
-        DateComponentType.Year when propertyPrefix == nameof(ContractStartDateFrom) => nameof(ContractStartDateFromYear),
+        DateComponentType.Month when propertyPrefix == nameof(ContractStartDateFrom) => nameof(
+            ContractStartDateFromMonth),
+        DateComponentType.Year when propertyPrefix == nameof(ContractStartDateFrom) => nameof(
+            ContractStartDateFromYear),
         DateComponentType.Day when propertyPrefix == nameof(ContractStartDateTo) => nameof(ContractStartDateToDay),
         DateComponentType.Month when propertyPrefix == nameof(ContractStartDateTo) => nameof(ContractStartDateToMonth),
         DateComponentType.Year when propertyPrefix == nameof(ContractStartDateTo) => nameof(ContractStartDateToYear),
@@ -245,7 +266,6 @@ public class SearchModel : IValidatableObject
 
     private static class DateValidationMessages
     {
-
         public static string GetMissingComponentsMessage(string fieldName, List<DateComponentType> missing)
         {
             var components = missing.Select(m => m.ToString().ToLower()).ToList();
@@ -253,7 +273,8 @@ public class SearchModel : IValidatableObject
             {
                 1 => $"{fieldName} must include a {components[0]}",
                 2 => $"{fieldName} must include a {string.Join(" and ", components)}",
-                _ => $"{fieldName} must include a {string.Join(", ", components.Take(components.Count - 1))} and {components.Last()}"
+                _ =>
+                    $"{fieldName} must include a {string.Join(", ", components.Take(components.Count - 1))} and {components.Last()}"
             };
         }
 

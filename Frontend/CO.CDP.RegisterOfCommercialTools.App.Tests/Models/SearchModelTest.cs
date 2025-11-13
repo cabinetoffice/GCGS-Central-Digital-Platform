@@ -1,6 +1,6 @@
-using FluentAssertions;
 using System.ComponentModel.DataAnnotations;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
+using FluentAssertions;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Models;
 
@@ -31,8 +31,10 @@ public class SearchModelTest
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(2);
-        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline to date must be after from date");
-        validationResults.Select(r => r.ErrorMessage).Should().Contain("Contract start date to date must be after from date");
+        validationResults.Select(r => r.ErrorMessage).Should()
+            .Contain("Submission deadline to date must be after from date");
+        validationResults.Select(r => r.ErrorMessage).Should()
+            .Contain("Contract start date to date must be after from date");
     }
 
     [Fact]
@@ -311,7 +313,8 @@ public class SearchModelTest
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
-        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline from must include a day and month");
+        validationResults.Select(r => r.ErrorMessage).Should()
+            .Contain("Submission deadline from must include a day and month");
     }
 
     [Fact]
@@ -364,7 +367,8 @@ public class SearchModelTest
 
         isValid.Should().BeFalse();
         validationResults.Should().HaveCount(1);
-        validationResults.Select(r => r.ErrorMessage).Should().Contain("Submission deadline from must have a valid month");
+        validationResults.Select(r => r.ErrorMessage).Should()
+            .Contain("Submission deadline from must have a valid month");
     }
 
     [Fact]
@@ -530,72 +534,5 @@ public class SearchModelTest
 
         isValid.Should().BeTrue();
         validationResults.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void SearchModel_WhenFilterFrameworksIsFalse_ShouldClearIsOpenFrameworks()
-    {
-        var searchParams = new SearchModel
-        {
-            FilterFrameworks = false,
-            IsOpenFrameworks = true
-        };
-
-        var validationContext = new ValidationContext(searchParams);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
-
-        searchParams.IsOpenFrameworks.Should().BeFalse();
-    }
-
-    [Fact]
-    public void SearchModel_WhenFilterDynamicMarketsIsFalse_ShouldClearIsUtilitiesOnly()
-    {
-        var searchParams = new SearchModel
-        {
-            FilterDynamicMarkets = false,
-            IsUtilitiesOnly = true
-        };
-
-        var validationContext = new ValidationContext(searchParams);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
-
-        searchParams.IsUtilitiesOnly.Should().BeFalse();
-    }
-
-    [Fact]
-    public void SearchModel_WhenBothParentFiltersAreFalse_ShouldClearBothChildren()
-    {
-        var searchParams = new SearchModel
-        {
-            FilterFrameworks = false,
-            IsOpenFrameworks = true,
-            FilterDynamicMarkets = false,
-            IsUtilitiesOnly = true
-        };
-
-        var validationContext = new ValidationContext(searchParams);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
-
-        searchParams.IsOpenFrameworks.Should().BeFalse();
-        searchParams.IsUtilitiesOnly.Should().BeFalse();
-    }
-
-    [Fact]
-    public void SearchModel_WhenFilterFrameworksIsTrue_ShouldNotClearIsOpenFrameworks()
-    {
-        var searchParams = new SearchModel
-        {
-            FilterFrameworks = true,
-            IsOpenFrameworks = true
-        };
-
-        var validationContext = new ValidationContext(searchParams);
-        var validationResults = new List<ValidationResult>();
-        Validator.TryValidateObject(searchParams, validationContext, validationResults, true);
-
-        searchParams.IsOpenFrameworks.Should().BeTrue();
     }
 }
