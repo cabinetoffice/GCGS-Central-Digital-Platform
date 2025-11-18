@@ -505,7 +505,6 @@ const CpvSelector = (() => {
                 }
             }
         } catch (error) {
-            console.error('Failed to update accordion content:', error);
         }
     };
 
