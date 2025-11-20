@@ -177,10 +177,12 @@ services:
       EntityVerificationService: '${EntityVerificationService:-http://gateway:${CDP_ENTITY_VERIFICATION_PORT:-8094}}'
       CommercialToolsApp__ServiceBaseUrl: '${CommercialToolsApp:-http://gateway:${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}}'
       CompaniesHouse__Url: ""
-      CompaniesHouse__User: ""
+      CompaniesHouse__User: '${CompaniesHouse__User:-}'
       CompaniesHouse__Password: ""
       CharityCommission__Url: ""
-      CharityCommission__SubscriptionKey: ""
+      CharityCommission__SubscriptionKey: '${CharityCommission__SubscriptionKey:-}'
+      OneLogin__ClientId: '${OneLogin__ClientId:-test}'
+      OneLogin__PrivateKey: '${OneLogin__PrivateKey:-test}'
   authority:
     container_name: co-cdp-authority
     build:
@@ -202,6 +204,7 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
+      PrivateKey: '${OneLogin__PrivateKey:-}'
       Issuer: *organisation-authority
 
   tenant:
@@ -288,8 +291,8 @@ services:
       CommercialToolsApi__ServiceUrl: '${CommercialToolsApi:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
       SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
       OneLogin__Authority: "test"
-      OneLogin__ClientId: "test"
-      OneLogin__PrivateKey: "test"
+      OneLogin__ClientId: '${OneLogin__ClientId:-test}'
+      OneLogin__PrivateKey: '${OneLogin__PrivateKey:-test}'
       OneLogin:AccountUrl: "test"
 
   commercial-tools-api:

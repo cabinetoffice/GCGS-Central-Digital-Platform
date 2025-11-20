@@ -43,18 +43,18 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       OneLogin__AccountUrl: "https://home.integration.account.gov.uk"
       OneLogin__Authority: "https://oidc.integration.account.gov.uk"
-      OneLogin__ClientId: "${SIRSI_ONELOGIN_CLIENTID}"
-      OneLogin__PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
+      # OneLogin__ClientId: ""
+      # OneLogin__PrivateKey: ""
       CompaniesHouse__Url: "https://api.company-information.service.gov.uk"
-      CompaniesHouse__User: "${SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER}"
+      # CompaniesHouse__User: ""
       CharityCommission__Url: "https://api.charitycommission.gov.uk/register/api/"
-      CharityCommission__SubscriptionKey: "${SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY}"
+      # CharityCommission__SubscriptionKey: ""
     deploy:
       replicas: 1
   authority:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
+      # PrivateKey: ""
       OneLogin__Authority: "https://oidc.integration.account.gov.uk"
     deploy:
       replicas: 1
