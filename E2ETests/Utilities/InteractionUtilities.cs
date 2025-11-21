@@ -544,91 +544,139 @@ public class InteractionUtilities(IPage page)
     }
 }
 
-     public async Task EnterYear(int year)
+
+
+      public async Task EnterTextIntoInputFieldByLabel(string labelText, string text)
+{
+    try
     {
-        try
+        // Locate the label with the specified text
+        var labelLocator = page.Locator($"label.govuk-label.govuk-label--m:has-text('{labelText}')");
+
+        int labelCount = await labelLocator.CountAsync();
+
+        if (labelCount == 0)
         {
-            var yearInput = page.Locator("input[name='Year']");
-
-            // Check if the year input exists
-            if (await yearInput.CountAsync() == 0)
-            {
-                Assert.Fail("No input element found for Year. Please ensure the input exists.");
-            }
-
-            // Fill in the Year
-            await yearInput.FillAsync(year.ToString(), new LocatorFillOptions { Timeout = 10000 });
-
-            Console.WriteLine($"✅ Entered Year: {year} into the respective input field.");
+            Assert.Fail($"No label found with the text '{labelText}'. Please ensure the label exists.");
         }
-        catch (PlaywrightException pe)
+
+        if (labelCount > 1)
         {
-            string errorMessage = $"Playwright error while entering year '{year}'. Error: {pe.Message}";
-            if (pe.Message.Contains("Timeout"))
-            {
-                errorMessage =
-                    $"Timeout while trying to enter year '{year}'. The element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
-            }
-            else if (pe.Message.ToLower().Contains("element is not visible") ||
-                     pe.Message.ToLower().Contains("element is hidden"))
-            {
-                errorMessage =
-                    $"Input field found but it is not visible. Cannot enter year '{year}'. Error: {pe.Message}";
-            }
+            Assert.Fail(
+                $"Expected a unique label with the text '{labelText}', but found {labelCount} labels. Please ensure only one label exists or use a more specific selector.");
+        }
 
-            Assert.Fail(errorMessage);
-        }
-        catch (System.Exception ex)
+        // Get the 'for' attribute of the label to find the associated input
+        var inputId = await labelLocator.GetAttributeAsync("for");
+        var inputField = page.Locator($"#{inputId}");
+
+        int inputCount = await inputField.CountAsync();
+
+        if (inputCount == 0)
         {
-            Assert.Fail($"Failed to enter year '{year}'. Error: {ex.Message}");
+            Assert.Fail($"No input element found with the ID '{inputId}'. Please ensure the input exists.");
         }
+
+        if (inputCount > 1)
+        {
+            Assert.Fail(
+                $"Expected a unique input field with the ID '{inputId}', but found {inputCount} input elements. Please ensure only one input exists or use a more specific selector.");
+        }
+
+        await inputField.FillAsync(text, new LocatorFillOptions { Timeout = 10000 });
+
+        Console.WriteLine($"✅ Entered text '{text}' into the input field associated with the label '{labelText}'.");
     }
-    public async Task EnterTextIntoInputField(string fieldName, string text)
+    catch (PlaywrightException pe)
     {
-        try
+        string errorMessage =
+            $"Playwright error while entering text '{text}' into the input field associated with the label '{labelText}'. Error: {pe.Message}";
+        if (pe.Message.Contains("Timeout"))
         {
-            // Use the field name to locate the input
-            var inputField = page.Locator($"input[name=\"{fieldName}\"]");
-
-            int count = await inputField.CountAsync();
-
-            if (count == 0)
-            {
-                Assert.Fail($"No input element found with the name '{fieldName}'. Please ensure the input exists.");
-            }
-
-            if (count > 1)
-            {
-                Assert.Fail(
-                    $"Expected a unique input field with the name '{fieldName}', but found {count} input elements. Please ensure only one input exists or use a more specific selector.");
-            }
-
-            await inputField.FillAsync(text, new LocatorFillOptions { Timeout = 10000 });
-
-            Console.WriteLine($"✅ Entered text '{text}' into the input field with name '{fieldName}'.");
+            errorMessage =
+                $"Timeout while trying to enter text '{text}' into the input field associated with the label '{labelText}'. Element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
         }
-        catch (PlaywrightException pe)
+        else if (pe.Message.ToLower().Contains("element is not visible") ||
+                 pe.Message.ToLower().Contains("element is hidden"))
         {
-            string errorMessage =
-                $"Playwright error while entering text '{text}' into the input field with name '{fieldName}'. Error: {pe.Message}";
-            if (pe.Message.Contains("Timeout"))
-            {
-                errorMessage =
-                    $"Timeout while trying to enter text '{text}' into the input field with name '{fieldName}'. Element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
-            }
-            else if (pe.Message.ToLower().Contains("element is not visible") ||
-                     pe.Message.ToLower().Contains("element is hidden"))
-            {
-                errorMessage =
-                    $"Input field found but it is not visible. Cannot enter text '{text}' into the input field with name '{fieldName}'. Error: {pe.Message}";
-            }
+            errorMessage =
+                $"Input field found but it is not visible. Cannot enter text '{text}' into the input field associated with the label '{labelText}'. Error: {pe.Message}";
+        }
 
-            Assert.Fail(errorMessage);
-        }
-        catch (System.Exception ex)
-        {
-            Assert.Fail($"Failed to enter text '{text}' into the input field with name '{fieldName}'. Error: {ex.Message}");
-        }
+        Assert.Fail(errorMessage);
     }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to enter text '{text}' into the input field associated with the label '{labelText}'. Error: {ex.Message}");
+    }
+
+
+}
+
+            public async Task EnterDateIntoInputFieldByLabel(string labelText, string text)
+{
+    try
+    {
+        // Locate the label with the specified text
+        var labelLocator = page.Locator($"label.govuk-label.govuk-date-input__label:has-text('{labelText}')");
+        int labelCount = await labelLocator.CountAsync();
+
+        if (labelCount == 0)
+        {
+            Assert.Fail($"No label found with the text '{labelText}'. Please ensure the label exists.");
+        }
+
+        if (labelCount > 1)
+        {
+            Assert.Fail(
+                $"Expected a unique label with the text '{labelText}', but found {labelCount} labels. Please ensure only one label exists or use a more specific selector.");
+        }
+
+        // Get the 'for' attribute of the label to find the associated input
+        var inputId = await labelLocator.GetAttributeAsync("for");
+        var inputField = page.Locator($"#{inputId}");
+
+        int inputCount = await inputField.CountAsync();
+
+        if (inputCount == 0)
+        {
+            Assert.Fail($"No input element found with the ID '{inputId}'. Please ensure the input exists.");
+        }
+
+        if (inputCount > 1)
+        {
+            Assert.Fail(
+                $"Expected a unique input field with the ID '{inputId}', but found {inputCount} input elements. Please ensure only one input exists or use a more specific selector.");
+        }
+
+        await inputField.FillAsync(text, new LocatorFillOptions { Timeout = 10000 });
+
+        Console.WriteLine($"✅ Entered text '{text}' into the input field associated with the label '{labelText}'.");
+    }
+    catch (PlaywrightException pe)
+    {
+        string errorMessage =
+            $"Playwright error while entering text '{text}' into the input field associated with the label '{labelText}'. Error: {pe.Message}";
+        if (pe.Message.Contains("Timeout"))
+        {
+            errorMessage =
+                $"Timeout while trying to enter text '{text}' into the input field associated with the label '{labelText}'. Element might not be visible, enabled, or found within the timeout period. Error: {pe.Message}";
+        }
+        else if (pe.Message.ToLower().Contains("element is not visible") ||
+                 pe.Message.ToLower().Contains("element is hidden"))
+        {
+            errorMessage =
+                $"Input field found but it is not visible. Cannot enter text '{text}' into the input field associated with the label '{labelText}'. Error: {pe.Message}";
+        }
+
+        Assert.Fail(errorMessage);
+    }
+    catch (System.Exception ex)
+    {
+        Assert.Fail($"Failed to enter text '{text}' into the input field associated with the label '{labelText}'. Error: {ex.Message}");
+    }
+
+
+}
 
 }
