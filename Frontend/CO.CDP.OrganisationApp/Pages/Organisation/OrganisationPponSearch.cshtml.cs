@@ -69,7 +69,7 @@ public partial class OrganisationPponSearchModel(
             Organisations = ImmutableList<OrganisationSearchByPponResult>.Empty;
             TotalOrganisations = 0;
             TotalPages = 0;
-            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder);
+            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder, Origin);
             return Page();
         }
 
@@ -84,7 +84,7 @@ public partial class OrganisationPponSearchModel(
             TotalOrganisations = 0;
             TotalPages = 0;
             ErrorMessage = null;
-            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder);
+            Pagination = CreatePaginationModel(PageNumber, TotalOrganisations, 10, Id, SearchText, SortOrder, Origin);
         }
         return Page();
     }
@@ -180,7 +180,7 @@ public partial class OrganisationPponSearchModel(
         CurrentPage = result.CurrentPage;
         ErrorMessage = result.ErrorMessage;
         FeedbackMessage = result.FeedbackMessage;
-        Pagination = CreatePaginationModel(CurrentPage, TotalOrganisations, PageSize, Id, SearchText, SortOrder);
+        Pagination = CreatePaginationModel(CurrentPage, TotalOrganisations, PageSize, Id, SearchText, SortOrder, Origin);
     }
 
     private void LogApiError(Exception ex)
@@ -259,14 +259,21 @@ public partial class OrganisationPponSearchModel(
     };
 
     public static Shared.PaginationPartialModel CreatePaginationModel(int currentPage, int totalItems, int pageSize,
-        Guid id, string? searchText, string sortOrder)
+        Guid id, string? searchText, string sortOrder, string? origin = null)
     {
+        var url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}&sortOrder={sortOrder}&pageSize={pageSize}";
+
+        if (!string.IsNullOrEmpty(origin))
+        {
+            url += $"&origin={Uri.EscapeDataString(origin)}";
+        }
+
         return new Shared.PaginationPartialModel
         {
             CurrentPage = currentPage,
             TotalItems = totalItems,
             PageSize = pageSize,
-            Url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}&sortOrder={sortOrder}&pageSize={pageSize}"
+            Url = url
         };
     }
 
