@@ -360,13 +360,16 @@ public class OrganisationOverviewTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOriginIsBuyerView_SetsBackLinkToBuyerView()
+    public async Task OnGet_WithBuyerOrganisation_SetsBackLinkToBuyerView()
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.Origin = "buyer-view";
+
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(GivenOrganisationClientModel(id));
+            .ReturnsAsync(GivenOrganisationClientModel(id: id, roles: [PartyRole.Buyer]));
+
+        _organisationClientMock.Setup(o => o.GetOrganisationBuyerInformationAsync(id))
+            .ReturnsAsync(new BuyerInformation("RegionalAndLocalGovernment", new List<DevolvedRegulation>()));
 
         await _model.OnGet();
 

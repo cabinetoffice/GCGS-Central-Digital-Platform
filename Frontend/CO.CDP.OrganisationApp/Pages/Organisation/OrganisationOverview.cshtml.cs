@@ -48,16 +48,13 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
             SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
 
-            BackLinkUrl = Origin switch
-            {
-                "buyer-view" => $"/organisation/{Id}/buyer",
-                _ => "/organisation-selection"
-            };
-
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {
                 return RedirectToPage("/Consortium/ConsortiumOverview", new { Id });
             }
+
+            BackLinkUrl = OrganisationDetails.IsBuyer() ?
+                            $"/organisation/{Id}/buyer" : "/organisation-selection";
 
             IdentifierRegistriesDetails = await GetIdentifierDetails(OrganisationDetails);
 
