@@ -131,17 +131,18 @@ public class SearchService(
             error => ApiResult<SearchResponse>.Failure(error),
             success =>
             {
-                var (results, totalCount) = success;
+                var (results, totalCount, filteredCount) = success;
                 var searchResultDtos = results.ToList();
+                var effectiveCount = queryBuilder.HasFilter ? filteredCount : totalCount;
 
                 logger.LogInformation(
                     "Search completed: ResultCount={ResultCount}, TotalCount={TotalCount}, PageNumber={PageNumber}",
-                    searchResultDtos.Count, totalCount, pageNumber);
+                    searchResultDtos.Count, effectiveCount, pageNumber);
 
                 var response = new SearchResponse
                 {
                     Results = searchResultDtos,
-                    TotalCount = totalCount,
+                    TotalCount = effectiveCount,
                     PageNumber = pageNumber,
                     PageSize = top
                 };
