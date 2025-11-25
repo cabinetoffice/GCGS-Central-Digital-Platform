@@ -2,6 +2,8 @@
 # act --container-architecture linux/amd64 --artifact-server-path ./build/artifacts -W ./.github/workflows/build.yml
 
 name: Build
+permissions:
+  contents: read
 
 on:
   push:
