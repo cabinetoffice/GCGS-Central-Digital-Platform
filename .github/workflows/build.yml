@@ -66,36 +66,36 @@ jobs:
 
     steps:
       - name: Short-circuit for infra-only PRs
-        if: needs.changes.outputs.only_infra == 'true'
+        if: needs.pipeline_check.outputs.only_infra == 'true'
         run: echo "Infra-only PR (terragrunt/**); skipping tests."
       - uses: actions/checkout@v4
-        if: needs.changes.outputs.only_infra != 'true'      
+        if: needs.pipeline_check.outputs.only_infra != 'true'      
       - name: Setup dotnet ${{ matrix.dotnet-version }}
-        if: needs.changes.outputs.only_infra != 'true'
+        if: needs.pipeline_check.outputs.only_infra != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}      
       - uses: actions/cache@v4
-        if: needs.changes.outputs.only_infra != 'true'
+        if: needs.pipeline_check.outputs.only_infra != 'true'
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget
       - name: Build
-        if: needs.changes.outputs.only_infra != 'true'
+        if: needs.pipeline_check.outputs.only_infra != 'true'
         run: make build OpenAPI
       - name: Test
-        if: needs.changes.outputs.only_infra != 'true'
+        if: needs.pipeline_check.outputs.only_infra != 'true'
         run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
       - name: Upload test results
-        if: always() && needs.changes.outputs.only_infra != 'true'
+        if: always() && needs.pipeline_check.outputs.only_infra != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: test-results-dotnet-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
       - name: Upload OpenAPI contracts
-        if: needs.changes.outputs.only_infra != 'true'
+        if: needs.pipeline_check.outputs.only_infra != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: OpenAPI
