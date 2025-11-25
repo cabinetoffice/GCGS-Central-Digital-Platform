@@ -5,5 +5,5 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public interface ICommercialToolsService
 {
-    Task<ApiResult<(IEnumerable<SearchResultDto> results, int totalCount)>> SearchCommercialToolsWithCount(string queryUrl);
+    Task<ApiResult<(IEnumerable<SearchResultDto> results, int totalCount, int filteredCount)>> SearchCommercialToolsWithCount(string queryUrl);
 }
