@@ -9,6 +9,7 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
     private readonly ImmutableDictionary<string, string> _params;
     private readonly int? _skip;
     private readonly int? _top;
+    public bool HasFilter { get; private set; }
 
     public CommercialToolsQueryBuilder() : this(
         ImmutableDictionary.Create<string, string>(StringComparer.OrdinalIgnoreCase))
@@ -399,6 +400,8 @@ public class CommercialToolsQueryBuilder : ICommercialToolsQueryBuilder
             throw new ArgumentNullException(nameof(baseUrl));
 
         var odataParams = new List<string>();
+
+        HasFilter = _params.Count > 0 && _params.Any(p => p.Key != "$orderby");
 
         if (_skip.HasValue)
         {

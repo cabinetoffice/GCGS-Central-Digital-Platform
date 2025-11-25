@@ -653,4 +653,49 @@ public class CommercialToolsQueryBuilderTests
 
         result.Should().BeSameAs(builder);
     }
+
+    [Fact]
+    public void Build_WhenNoFilter_ShouldSetHasFilterToFalse()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        builder.Build(BaseUrl);
+
+        builder.HasFilter.Should().BeFalse();
+    }
+
+    [Fact]
+    public void Build_WhenOnlyOrderByPresent_ShouldSetHasFilterToFalse()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var builtBuilder = builder.WithOrderBy("a-z");
+        builtBuilder.Build(BaseUrl);
+
+        builtBuilder.HasFilter.Should().BeFalse("because orderby is not a filter");
+    }
+
+    [Fact]
+    public void Build_WhenFilterPresent_ShouldSetHasFilterToTrue()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var builtBuilder = builder.WithStatuses(["Active"]);
+        builtBuilder.Build(BaseUrl);
+
+        builtBuilder.HasFilter.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Build_WhenMultipleFiltersPresent_ShouldSetHasFilterToTrue()
+    {
+        var builder = new CommercialToolsQueryBuilder();
+
+        var builtBuilder = builder
+            .WithKeywords(["test"], KeywordSearchMode.Any)
+            .WithStatuses(["Active"]);
+        builtBuilder.Build(BaseUrl);
+
+        builtBuilder.HasFilter.Should().BeTrue();
+    }
 }
