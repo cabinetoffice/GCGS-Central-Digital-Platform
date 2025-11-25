@@ -10,7 +10,53 @@ on:
   pull_request:
 
 jobs:
+  pipeline_check:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_pipeline: ${{ steps.set.outputs.skip_pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: calculate_skip_pipeline
+        shell: bash
+        run: |
+          # Default for non-PR events: always run the pipeline
+          if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          HEAD_SHA='${{ github.event.pull_request.head.sha }}'
+
+          echo "Base: $BASE_SHA"
+          echo "Head: $HEAD_SHA"
+
+          # List changed files between base and head
+          mapfile -t files < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          if [[ "${#files[@]}" -eq 0 ]]; then
+            # No changes? Be safe and run the pipeline
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          skip_pipeline=true
+          for f in "${files[@]}"; do
+            echo "Changed: $f"
+            if [[ "$f" != terragrunt/* ]]; then
+              skip_pipeline=false
+              break
+            fi
+          done
+
+          echo "skip_pipeline=$skip_pipeline" >> "$GITHUB_OUTPUT"
+
   test:
+    needs: pipeline_check
+    if: github.event_name != 'pull_request' || needs.pipeline_check.outputs.skip_pipeline == 'false'
 
     runs-on: ubuntu-latest
     name: Tests
@@ -47,6 +93,9 @@ jobs:
           path: OpenAPI
 
   package:
+    needs: pipeline_check
+    if: github.event_name != 'pull_request' || needs.pipeline_check.outputs.skip_pipeline == 'false'
+
     runs-on: ubuntu-latest
     name: Build containers
     env:
