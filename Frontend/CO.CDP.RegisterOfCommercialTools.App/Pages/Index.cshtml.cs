@@ -1,10 +1,11 @@
+using System.Globalization;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages.Shared;
 using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Globalization;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Pages;
 
@@ -48,32 +49,24 @@ public class IndexModel(
 
     public async Task<IActionResult> OnGetAsync()
     {
-        logger.LogInformation(
-            "Processing search request: Page {PageNumber}, Keywords: {Keywords}, Status: [{Status}], CpvCodes: [{CpvCodes}]",
-            PageNumber, SearchParams.Keywords, string.Join(", ", SearchParams.Status),
-            string.Join(", ", SearchParams.CpvCodes));
+        SetHomeUrl();
 
         try
         {
-            SetHomeUrl();
+            await SetCpvAndLocationCodes();
 
-            if (!Request.Query.ContainsKey("acc") && !OpenAccordions.Any())
+            if (ShouldRedirectToCleanQueryParams())
             {
-                OpenAccordions =
-                [
-                    "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
-                    "industry-cpv-code", "contract-location", "fees", "date-range"
-                ];
+                return RedirectWithCleanedQueryParams(["open_frameworks", "utilities_only"]);
             }
-
-            await PopulateCodeSelections();
 
             var searchResult = await searchService.SearchAsync(SearchParams, PageNumber, PageSize);
 
             return searchResult.Match(
                 error =>
                 {
-                    logger.LogError("Search failed with error: {Error}", error);
+                    logger.LogError("Search API call failed: ErrorType={ErrorType}, Message={Message}",
+                        error.GetType().Name, error.Message);
                     return RedirectToPage("/error");
                 },
                 ((List<SearchResult>, int) success) =>
@@ -81,8 +74,6 @@ public class IndexModel(
                     var (results, totalCount) = success;
                     SearchResults = results;
                     TotalCount = totalCount;
-
-                    logger.LogInformation("Search completed successfully. Found {TotalCount} results.", totalCount);
 
                     Pagination = new PaginationPartialModel
                     {
@@ -97,10 +88,33 @@ public class IndexModel(
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error processing search request: Page {PageNumber}, Keywords: {Keywords}",
-                PageNumber, SearchParams.Keywords);
-            throw;
+            logger.LogError(ex, "Unexpected error in search page");
+            return RedirectToPage("/error");
         }
+    }
+
+    private bool ShouldRedirectToCleanQueryParams()
+    {
+        var query = Request.Query;
+        var hasOpenFrameworks = query.ContainsKey("open_frameworks") && query["open_frameworks"] == "true";
+        var hasUtilitiesOnly = query.ContainsKey("utilities_only") && query["utilities_only"] == "true";
+        var hasFilterFrameworks = query.ContainsKey("filter_frameworks") && query["filter_frameworks"] == "true";
+        var hasFilterMarkets = query.ContainsKey("filter_markets") && query["filter_markets"] == "true";
+
+        return (hasOpenFrameworks && !hasFilterFrameworks) || (hasUtilitiesOnly && !hasFilterMarkets);
+    }
+
+    private RedirectToPageResult RedirectWithCleanedQueryParams(string[] paramsToRemove)
+    {
+        var queryString = Request.QueryString.Value ?? string.Empty;
+        var cleanedParams = QueryHelpers.ParseQuery(queryString);
+
+        foreach (var param in paramsToRemove)
+        {
+            cleanedParams.Remove(param);
+        }
+
+        return RedirectToPage("/Index", cleanedParams.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.ToString()));
     }
 
     private void SetHomeUrl()
@@ -109,7 +123,7 @@ public class IndexModel(
         {
             HomeUrl = sirsiUrlService.BuildAuthenticatedUrl($"/organisation/{OrganisationId}/buyer", OrganisationId);
         }
-        else if (HttpContext?.User?.Identity?.IsAuthenticated == true)
+        else if (HttpContext.User.Identity?.IsAuthenticated == true)
         {
             HomeUrl = ftsUrlService.BuildUrl("/login", OrganisationId, redirectUrl: "/Search");
         }
@@ -120,7 +134,7 @@ public class IndexModel(
     }
 
 
-    private async Task PopulateCodeSelections()
+    private async Task SetCpvAndLocationCodes()
     {
         CpvSelection = new CpvCodeSelection
         {

@@ -1,16 +1,24 @@
-using CO.CDP.RegisterOfCommercialTools.App.Services;
-using CO.CDP.UI.Foundation.Services;
-using FluentAssertions;
-using Moq;
+using System.Security.Claims;
+using System.Security.Principal;
+using CO.CDP.Functional;
 using CO.CDP.RegisterOfCommercialTools.App.Models;
 using CO.CDP.RegisterOfCommercialTools.App.Pages;
+using CO.CDP.RegisterOfCommercialTools.App.Services;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
-using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using CO.CDP.Functional;
+using CO.CDP.UI.Foundation.Services;
 using CO.CDP.WebApi.Foundation;
+using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+using Moq;
+using SearchModel = CO.CDP.RegisterOfCommercialTools.App.Models.SearchModel;
 
 namespace CO.CDP.RegisterOfCommercialTools.App.Tests.Pages.Search;
 
@@ -27,12 +35,20 @@ public class IndexModelTest
 
         var mockSirsiUrlService = new Mock<ISirsiUrlService>();
         mockSirsiUrlService.Setup(s => s.BuildUrl("/", null, null, null)).Returns("https://sirsi.home/");
-        mockSirsiUrlService.Setup(s => s.BuildUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), null, null, null))
+        mockSirsiUrlService.Setup(s =>
+                s.BuildUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), null,
+                    null, null))
             .Returns<string, Guid?, string?, bool?>((path, _, _, _) => $"https://sirsi.home{path}");
-        mockSirsiUrlService.Setup(s => s.BuildAuthenticatedUrl(It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")), It.IsAny<Guid?>(), null))
-            .Returns<string, Guid?, bool?>((path, orgId, _) => $"https://sirsi.home/one-login/sign-in?redirectUri={Uri.EscapeDataString($"https://sirsi.home{path}?language=en_GB&organisation_id={orgId}")}&language=en_GB");
+        mockSirsiUrlService.Setup(s =>
+                s.BuildAuthenticatedUrl(
+                    It.Is<string>(path => path.Contains("/organisation/") && path.Contains("/buyer")),
+                    It.IsAny<Guid?>(), null))
+            .Returns<string, Guid?, bool?>((path, orgId, _) =>
+                $"https://sirsi.home/one-login/sign-in?redirectUri={Uri.EscapeDataString($"https://sirsi.home{path}?language=en_GB&organisation_id={orgId}")}&language=en_GB");
         var mockFtsUrlService = new Mock<IFtsUrlService>();
-        mockFtsUrlService.Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<string>())).Returns("https://fts.test/");
+        mockFtsUrlService
+            .Setup(s => s.BuildUrl(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string>(), It.IsAny<bool?>(),
+                It.IsAny<string>())).Returns("https://fts.test/");
         var mockCpvCodeService = new Mock<ICpvCodeService>();
         mockCpvCodeService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>()))
             .ReturnsAsync(new List<CpvCodeDto>());
@@ -41,7 +57,8 @@ public class IndexModelTest
         mockLocationCodeService.Setup(s => s.GetByCodesAsync(It.IsAny<List<string>>()))
             .ReturnsAsync(new List<NutsCodeDto>());
         var mockLogger = new Mock<ILogger<IndexModel>>();
-        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockFtsUrlService.Object, mockCpvCodeService.Object, mockLocationCodeService.Object, mockLogger.Object);
+        _model = new IndexModel(_mockSearchService.Object, mockSirsiUrlService.Object, mockFtsUrlService.Object,
+            mockCpvCodeService.Object, mockLocationCodeService.Object, mockLogger.Object);
 
         var mockHttpContext = new Mock<HttpContext>();
         var mockRequest = new Mock<HttpRequest>();
@@ -50,10 +67,16 @@ public class IndexModelTest
         mockRequest.Setup(r => r.Query).Returns(new QueryCollection());
         mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
 
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(mockHttpContext.Object, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
+        var mockIdentity = new Mock<IIdentity>();
+        mockIdentity.Setup(i => i.IsAuthenticated).Returns(false);
+        var mockUser = new Mock<ClaimsPrincipal>();
+        mockUser.Setup(u => u.Identity).Returns(mockIdentity.Object);
+        mockHttpContext.Setup(c => c.User).Returns(mockUser.Object);
+
+        var actionContext = new ActionContext(mockHttpContext.Object, new RouteData(), new ActionDescriptor());
         var pageContext = new PageContext(actionContext)
         {
-            ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
+            ViewData = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
         };
         _model.PageContext = pageContext;
     }
@@ -208,33 +231,6 @@ public class IndexModelTest
     }
 
     [Fact]
-    public async Task OnGet_ShouldSetDefaultOpenAccordionsWhenNoAccParam()
-    {
-        var mockHttpContext = new Mock<HttpContext>();
-        var mockRequest = new Mock<HttpRequest>();
-        mockRequest.Setup(r => r.Path).Returns("/");
-        mockRequest.Setup(r => r.QueryString).Returns(QueryString.Empty);
-        mockRequest.Setup(r => r.Query).Returns(new QueryCollection()); // Ensure no 'acc' parameter
-        mockHttpContext.Setup(c => c.Request).Returns(mockRequest.Object);
-
-        var actionContext = new Microsoft.AspNetCore.Mvc.ActionContext(mockHttpContext.Object, new Microsoft.AspNetCore.Routing.RouteData(), new Microsoft.AspNetCore.Mvc.Abstractions.ActionDescriptor());
-        var pageContext = new PageContext(actionContext)
-        {
-            ViewData = new Microsoft.AspNetCore.Mvc.ViewFeatures.ViewDataDictionary(new Microsoft.AspNetCore.Mvc.ModelBinding.EmptyModelMetadataProvider(), new Microsoft.AspNetCore.Mvc.ModelBinding.ModelStateDictionary())
-        };
-        _model.PageContext = pageContext;
-
-        await _model.OnGetAsync();
-
-        var expectedOpenAccordions = new[]
-        {
-            "commercial-tool", "commercial-tool-status", "contracting-authority-usage", "award-method",
-            "industry-cpv-code", "contract-location", "fees", "date-range"
-        };
-        _model.OpenAccordions.Should().BeEquivalentTo(expectedOpenAccordions);
-    }
-
-    [Fact]
     public async Task OnGetAsync_WithOriginBuyerViewAndOrganisationId_SetsHomeUrlToBuyerView()
     {
         var organisationId = Guid.NewGuid();
@@ -291,5 +287,43 @@ public class IndexModelTest
         await _model.OnGetAsync();
 
         _model.HomeUrl.Should().Be("https://fts.test/");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenFilterFrameworksIsFalseAndIsOpenFrameworksIsTrue_ShouldRedirect()
+    {
+        var queryParams = new Dictionary<string, StringValues>
+        {
+            { "open_frameworks", "true" }
+        };
+        var mockRequest = Mock.Get(_model.PageContext.HttpContext.Request);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection(queryParams));
+        mockRequest.Setup(r => r.QueryString).Returns(new QueryString("?open_frameworks=true"));
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult?.PageName.Should().Be("/Index");
+        redirectResult?.RouteValues.Should().NotContainKey("open_frameworks");
+    }
+
+    [Fact]
+    public async Task OnGetAsync_WhenFilterDynamicMarketsIsFalseAndIsUtilitiesOnlyIsTrue_ShouldRedirect()
+    {
+        var queryParams = new Dictionary<string, StringValues>
+        {
+            { "utilities_only", "true" }
+        };
+        var mockRequest = Mock.Get(_model.PageContext.HttpContext.Request);
+        mockRequest.Setup(r => r.Query).Returns(new QueryCollection(queryParams));
+        mockRequest.Setup(r => r.QueryString).Returns(new QueryString("?utilities_only=true"));
+
+        var result = await _model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>();
+        var redirectResult = result as RedirectToPageResult;
+        redirectResult?.PageName.Should().Be("/Index");
+        redirectResult?.RouteValues.Should().NotContainKey("utilities_only");
     }
 }

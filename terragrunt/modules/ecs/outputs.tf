@@ -34,8 +34,12 @@ output "php_ecs_listener_arn" {
   value = local.php_ecs_listener_arn
 }
 
-output "service_configuration" {
+output "service_configs" {
   value = local.service_configs
+}
+
+output "service_configs_php" {
+  value = local.service_configs_sirsi_php_cluster
 }
 
 output "service_version_cfs" {
@@ -78,3 +82,4 @@ output "services_target_group_arn_suffix_map" {
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
   }
 }
+

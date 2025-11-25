@@ -6,8 +6,25 @@ data "aws_iam_role" "terraform" {
   name = "${local.name_prefix}-${var.environment}-terraform"
 }
 
+data "aws_iam_policy_document" "ecr_pull_policy" {
+  statement {
+    sid = "PullFromSirsiRepos"
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:DescribeImages",
+      "ecr:GetDownloadUrlForLayer",
+    ]
+    resources = [
+      "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/cdp-*"
+    ]
+    effect = "Allow"
+  }
+}
+
 data "aws_iam_policy_document" "ecr_push_policy" {
   statement {
+    sid = "PushToSirsiRepos"
     actions = [
       "ecr:BatchCheckLayerAvailability",
       "ecr:BatchGetImage",

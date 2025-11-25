@@ -44,7 +44,8 @@ locals {
       cfs_allowed_target_email_domains  = ["goaco.com"]
       fts_allowed_target_email_domains  = ["goaco.com"]
       cfs_service_allowed_origins       = []
-      fts_extra_domains                 = []
+      cfs_extra_domains                 = ["www-development.contractsfinder.service.gov.uk"]
+      fts_extra_domains                 = ["www-development.find-tender.service.gov.uk"]
       fts_service_allowed_origins       = [
         "http://localhost:3000"
       ]
@@ -103,8 +104,8 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.25"
+      pinned_service_version_cfs        = "1.0.6"
+      pinned_service_version_fts        = "1.0.28"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -295,8 +296,8 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.24"
+      pinned_service_version_cfs        = "1.0.6"
+      pinned_service_version_fts        = "1.0.27"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.large"
@@ -346,8 +347,8 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs        = "1.0.4"
-      pinned_service_version_fts        = "1.0.24"
+      pinned_service_version_cfs        = "1.0.6"
+      pinned_service_version_fts        = "1.0.27"
       pinned_service_version            = "1.0.80"
       postgres_instance_type            = "db.t4g.micro"
       postgres_aurora_instance_type     = "db.r5.8xlarge"
@@ -381,11 +382,11 @@ locals {
   fts_allowed_target_email_domains  = try(local.environments[local.environment].fts_allowed_target_email_domains, null)
   fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
   fts_service_allowed_origins       = try(local.environments[local.environment].fts_service_allowed_origins, null)
-  mail_from_domains                  = try(local.environments[local.environment].mail_from_domains, [])
+  mail_from_domains                 = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_service_version                   = try(local.environments[local.environment].pinned_service_version, null)
-  pinned_service_version_cfs               = try(local.environments[local.environment].pinned_service_version_cfs, null)
-  pinned_service_version_fts               = try(local.environments[local.environment].pinned_service_version_fts, null)
+  pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
+  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
   product = {
@@ -417,6 +418,7 @@ locals {
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
+    fts_search_indexer                   = { desired_count = 0 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256,  memory = 512}
@@ -453,30 +455,31 @@ locals {
   }
 
   service_configs_common = {
-    authority                            = { port = 8092, port_host = 8092, name = "authority"}
-    av_scanner_app                       = { port = 8095, port_host = 8095, name = "av-scanner-app"}
-    cfs                                  = { port = 8060, port_host = 8060, name = "cfs"}
-    cfs_migrations                       = { port = 8062, port_host = null, name = "cfs-migrations"}
-    cfs_scheduler                        = { port = 8064, port_host = null, name = "cfs-scheduler"}
-    commercial_tools_app                 = { port = 8192, port_host = 8192, name = "commercial-tools-app"}
-    commercial_tools_api                 = { port = 8184, port_host = 8184, name = "commercial-tools-api"}
-    commercial_tools_migrations          = { port = 9192, port_host = null, name = "commercial-tools-migrations"}
-    data_sharing                         = { port = 8088, port_host = 8088, name = "data-sharing"}
-    entity_verification                  = { port = 8094, port_host = 8094, name = "entity-verification"}
-    entity_verification_migrations       = { port = 9191, port_host = null, name = "entity-verification-migrations"}
-    forms                                = { port = 8086, port_host = 8086, name = "forms"}
-    fts                                  = { port = 8070, port_host = 8070, name = "fts"}
-    fts_healthcheck                      = { port = 8071, port_host = 8071, name = "fts-healthcheck"}
-    fts_migrations                       = { port = 8072, port_host = null, name = "fts-migrations"}
-    fts_scheduler                        = { port = 8074, port_host = null, name = "fts-scheduler"}
-    organisation                         = { port = 8082, port_host = 8082, name = "organisation"}
-    organisation_app                     = { port = 8090, port_host = 80  , name = "organisation-app"}
-    organisation_information_migrations  = { port = 9090, port_host = null, name = "organisation-information-migrations"}
-    outbox_processor_entity_verification = { port = 9096, port_host = 9096, name = "outbox-processor-entity-verification"}
-    outbox_processor_organisation        = { port = 9098, port_host = 9098, name = "outbox-processor-organisation"}
-    person                               = { port = 8084, port_host = 8084, name = "person" }
-    scheduled_worker                     = { port = 9094, port_host = 9094, name = "scheduled-worker"}
-    tenant                               = { port = 8080, port_host = 8080, name = "tenant" }
+    authority                            = { port = 8092, port_host = 8092, cluster = "sirsi",     type = "web-service",  name = "authority"}
+    av_scanner_app                       = { port = 8095, port_host = 8095, cluster = "sirsi",     type = "web-service",  name = "av-scanner-app"}
+    cfs                                  = { port = 8060, port_host = 8060, cluster = "sirsi-php", type = "web-service",  name = "cfs"}
+    cfs_migrations                       = { port = 8062, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "cfs-migrations"}
+    cfs_scheduler                        = { port = 8064, port_host = null, cluster = "sirsi-php", type = "service",      name = "cfs-scheduler"}
+    commercial_tools_app                 = { port = 8192, port_host = 8192, cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app"}
+    commercial_tools_api                 = { port = 8184, port_host = 8184, cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api"}
+    commercial_tools_migrations          = { port = 9192, port_host = null, cluster = "sirsi",     type = "db-migration", name = "commercial-tools-migrations"}
+    data_sharing                         = { port = 8088, port_host = 8088, cluster = "sirsi",     type = "web-service",  name = "data-sharing"}
+    entity_verification                  = { port = 8094, port_host = 8094, cluster = "sirsi",     type = "web-service",  name = "entity-verification"}
+    entity_verification_migrations       = { port = 9191, port_host = null, cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations"}
+    forms                                = { port = 8086, port_host = 8086, cluster = "sirsi",     type = "web-service",  name = "forms"}
+    fts                                  = { port = 8070, port_host = 8070, cluster = "sirsi-php", type = "web-service",  name = "fts"}
+    fts_healthcheck                      = { port = 8071, port_host = 8071, cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck"}
+    fts_migrations                       = { port = 8072, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "fts-migrations"}
+    fts_scheduler                        = { port = 8074, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-scheduler"}
+    fts_search_indexer                   = { port = 8076, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-search-indexer"}
+    organisation                         = { port = 8082, port_host = 8082, cluster = "sirsi",     type = "web-service",  name = "organisation"}
+    organisation_app                     = { port = 8090, port_host = 80  , cluster = "sirsi",     type = "web-service",  name = "organisation-app"}
+    organisation_information_migrations  = { port = 9090, port_host = null, cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations"}
+    outbox_processor_entity_verification = { port = 9096, port_host = 9096, cluster = "sirsi",     type = "service",      name = "outbox-processor-entity-verification"}
+    outbox_processor_organisation        = { port = 9098, port_host = 9098, cluster = "sirsi",     type = "service",      name = "outbox-processor-organisation"}
+    person                               = { port = 8084, port_host = 8084, cluster = "sirsi",     type = "web-service",  name = "person" }
+    scheduled_worker                     = { port = 9094, port_host = 9094, cluster = "sirsi",     type = "service",      name = "scheduled-worker"}
+    tenant                               = { port = 8080, port_host = 8080, cluster = "sirsi",     type = "web-service",  name = "tenant" }
   }
 
   service_configs = {

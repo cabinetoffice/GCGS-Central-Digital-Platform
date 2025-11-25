@@ -56,7 +56,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
+          "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
           "id": "",
           "label": "",
           "logGroups": [

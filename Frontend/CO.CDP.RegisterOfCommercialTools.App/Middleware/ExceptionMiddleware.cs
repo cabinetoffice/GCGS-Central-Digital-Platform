@@ -10,6 +10,11 @@ public class ExceptionMiddleware(
         {
             await next.Invoke(context);
         }
+        catch (HttpRequestException hex) when (hex.StatusCode.HasValue && (int)hex.StatusCode >= 500)
+        {
+            logger.LogError(hex, "Server error ({StatusCode}) received from API", hex.StatusCode);
+            context.Response.Redirect("/error");
+        }
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);

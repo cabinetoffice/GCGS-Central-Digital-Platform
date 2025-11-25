@@ -308,13 +308,27 @@ variable "role_terraform_arn" {
 variable "service_configs" {
   description = "Map of services to their ports"
   type = map(object({
+    cluster       = string
     cpu           = number
     desired_count = number
     memory        = number
     name          = string
     port          = number
     port_host     = number
+    type          = string
   }))
+}
+
+variable "cfs_extra_domains" {
+  description = "Optional list of additional host headers to be added for CFS service"
+  type        = list(string)
+  default     = []
+}
+
+variable "fts_extra_domains" {
+  description = "Optional list of additional host headers to be added for FTS service"
+  type        = list(string)
+  default     = []
 }
 
 variable "ses_configuration_set_arn" {
