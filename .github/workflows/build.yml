@@ -15,7 +15,7 @@ jobs:
   pipeline_check:
     runs-on: ubuntu-latest
     outputs:
-      skip_pipeline: ${{ steps.set.outputs.skip_pipeline }}
+      skip_pipeline: ${{ steps.calculate_skip_pipeline.outputs.skip_pipeline }}
     steps:
       - uses: actions/checkout@v4
         with:
