@@ -78,6 +78,7 @@ locals {
     ssl_service                         = true
     submission_log_globally_enabled     = contains(["integration"], var.environment) ? true : false
     uk9_enabled                         = contains(["development"], var.environment) ? true : false
+    uk11_240_enabled                    = contains(["development"], var.environment) ? true : false
     use_srsi                            = true
     use_srsi_for_api                    = true
     valid_until                         = 1924990799

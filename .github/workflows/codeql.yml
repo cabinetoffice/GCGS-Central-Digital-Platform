@@ -8,6 +8,8 @@ on:
 
 jobs:
   pipeline_check:
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     outputs:
       skip_pipeline: ${{ steps.calculate_skip_pipeline.outputs.skip_pipeline }}
