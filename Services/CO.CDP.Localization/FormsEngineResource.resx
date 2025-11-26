@@ -1968,6 +1968,9 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
       &lt;p class="govuk-body"&gt;
         Failure to complete this module may result in your tenders being deemed insufficient where WPPN 008 has been applied.
       &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/p&gt;
       &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You'll need to provide information on steel specific, supply chain projects or programmes. This may include relevant examples of your:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
@@ -2042,20 +2045,24 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     </value>
   </data>
   <data name="WelshSteel_06_Title" xml:space="preserve">
-    <value>Competition law breaches</value>
+    <value>Do you ensure your supply chain members avoid anti-competitive agreements?</value>
   </data>
   <data name="WelshSteel_06_SummaryTitle" xml:space="preserve">
     <value>Competition law breaches</value>
   </data>
   <data name="WelshSteel_06_Description" xml:space="preserve">
     <value>
-     &lt;p class="govuk-body"&gt;
-    Do you take steps to ensure that members of your supply chain do not make agreements with other economic operators aimed at distorting competition as described in Schedule 7 of the Procurement Act 2023, paragraphs 7-9?
-    &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+      The term 'anti-competitive' refers to actions or agreements that unfairly limit competition among suppliers. For example, fixing artificially low prices with other suppliers.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+      Refer to paragraphs 7 to 9 in &lt;a href="https://www.legislation.gov.uk/ukpga/2023/54/schedule/7" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      Schedule 7 of the Procurement Act 2023 (opens in a new tab)&lt;/a&gt; for more information.
+      &lt;/p&gt;
     </value>
   </data>
   <data name="WelshSteel_07_Title" xml:space="preserve">
-    <value>Health and safety policy requirements</value>
+    <value>Do you ensure members of your supply chain have suitable health and safety policies?</value>
   </data>
   <data name="WelshSteel_07_SummaryTitle" xml:space="preserve">
     <value>Health and safety policy requirements</value>
@@ -2063,14 +2070,14 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   <data name="WelshSteel_07_Description" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;
-        Do you take steps to ensure that all members of your supply chain have in place appropriate health and safety policies dealing with at least the following:
+        Suitable policies must include, at a minimum, all of the following:
       &lt;/p&gt;
       &lt;div class="govuk-body"&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt;a policy statement that is signed and dated&lt;/li&gt;
-        &lt;li&gt;the organisation and responsibilities such as how health and safety requirements are implemented and &lt;/li&gt;
-        &lt;li&gt;the arrangements including standards and procedures adopted in practice&lt;/li&gt;
-        &lt;li&gt;and that is reviewed at least evey 2 years&lt;/li&gt;
+        &lt;li&gt;a signed and dated policy statement&lt;/li&gt;
+        &lt;li&gt;details on your organisation and responsibilities for example, how health and safety requirements are applied&lt;/li&gt;
+        &lt;li&gt;standards and procedures used&lt;/li&gt;
+        &lt;li&gt;review of the policy at least every 2 years&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;&lt;/p&gt;
     </value>
