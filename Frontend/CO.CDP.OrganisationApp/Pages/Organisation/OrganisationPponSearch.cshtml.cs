@@ -261,19 +261,14 @@ public partial class OrganisationPponSearchModel(
     public static Shared.PaginationPartialModel CreatePaginationModel(int currentPage, int totalItems, int pageSize,
         Guid id, string? searchText, string sortOrder, string? origin = null)
     {
-        var url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}&sortOrder={sortOrder}&pageSize={pageSize}";
-
-        if (!string.IsNullOrEmpty(origin))
-        {
-            url += $"&origin={Uri.EscapeDataString(origin)}";
-        }
-
         return new Shared.PaginationPartialModel
         {
             CurrentPage = currentPage,
             TotalItems = totalItems,
             PageSize = pageSize,
-            Url = url
+            Url = $"/organisation/{id}/buyer/search?SearchText={Uri.EscapeDataString(searchText ?? string.Empty)}" +
+                  $"&sortOrder={sortOrder}&pageSize={pageSize}" +
+                  $"{(!string.IsNullOrEmpty(origin) ? $"&origin={Uri.EscapeDataString(origin)}" : string.Empty)}"
         };
     }
 
