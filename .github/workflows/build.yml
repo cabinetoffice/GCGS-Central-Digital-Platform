@@ -2,6 +2,8 @@
 # act --container-architecture linux/amd64 --artifact-server-path ./build/artifacts -W ./.github/workflows/build.yml
 
 name: Build
+permissions:
+  contents: read
 
 on:
   push:
@@ -10,8 +12,52 @@ on:
   pull_request:
 
 jobs:
-  test:
+  pipeline_check:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_pipeline: ${{ steps.calculate_skip_pipeline.outputs.skip_pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
+      - id: calculate_skip_pipeline
+        shell: bash
+        run: |
+          # Default for non-PR events: always run the pipeline
+          if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          HEAD_SHA='${{ github.event.pull_request.head.sha }}'
+
+          echo "Base: $BASE_SHA"
+          echo "Head: $HEAD_SHA"
+
+          # List changed files between base and head
+          mapfile -t files < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          if [[ "${#files[@]}" -eq 0 ]]; then
+            # No changes? Be safe and run the pipeline
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          skip_pipeline=true
+          for f in "${files[@]}"; do
+            echo "Changed: $f"
+            if [[ "$f" != terragrunt/* ]]; then
+              skip_pipeline=false
+              break
+            fi
+          done
+
+          echo "skip_pipeline=$skip_pipeline" >> "$GITHUB_OUTPUT"
+
+  test:
+    needs: pipeline_check
     runs-on: ubuntu-latest
     name: Tests
     strategy:
@@ -19,34 +65,45 @@ jobs:
         dotnet-version: [ '8.0.x' ]
 
     steps:
+      - name: Short-circuit for infra-only PRs
+        if: needs.pipeline_check.outputs.skip_pipeline == 'true'
+        run: echo "Infra-only PR (terragrunt/**); skipping tests."
       - uses: actions/checkout@v4
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'      
       - name: Setup dotnet ${{ matrix.dotnet-version }}
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}
+          dotnet-version: ${{ matrix.dotnet-version }}      
       - uses: actions/cache@v4
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget
       - name: Build
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make build OpenAPI
       - name: Test
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
       - name: Upload test results
+        if: always() && needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: test-results-dotnet-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
-        if: ${{ always() }}
       - name: Upload OpenAPI contracts
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: OpenAPI
           path: OpenAPI
 
   package:
+    needs: pipeline_check
+    if: github.event_name != 'pull_request' || needs.pipeline_check.outputs.skip_pipeline == 'false'
     runs-on: ubuntu-latest
     name: Build containers
     env:
