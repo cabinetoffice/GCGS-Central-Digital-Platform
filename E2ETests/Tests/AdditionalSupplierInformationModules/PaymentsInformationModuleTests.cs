@@ -22,7 +22,7 @@ public class PaymentsInformationModuleTests : PaymentsInformationModuleBaseTest
         await InteractionUtilities.ClickLinkByText("Complete supplier information");
         await InteractionUtilities.ClickLinkByText("Payments Information");
         await InteractionUtilities.PageTitleShouldBe("Submitting your payments information - Find a Tender - GOV.UK");
-        await InteractionUtilities.ClickButtonByText("Continue");
+        await InteractionUtilities.ClickButtonByText("Start");
         await InteractionUtilities.PageTitleShouldBe("Do you have processes to ensure you pay your supply chain on time? - Find a Tender - GOV.UK");
         await InteractionUtilities.ClickRadioButtonByText("Yes");
         await InteractionUtilities.ClickButtonByText("Continue");
@@ -95,7 +95,7 @@ public class PaymentsInformationModuleTests : PaymentsInformationModuleBaseTest
          await InteractionUtilities.ClickLinkByText("Complete supplier information");
          await InteractionUtilities.ClickLinkByText("Payments Information");
          await InteractionUtilities.PageTitleShouldBe("Submitting your payments information - Find a Tender - GOV.UK");
-         await InteractionUtilities.ClickButtonByText("Continue");
+         await InteractionUtilities.ClickButtonByText("Start");
          await InteractionUtilities.PageTitleShouldBe("Do you have processes to ensure you pay your supply chain on time? - Find a Tender - GOV.UK");
          await InteractionUtilities.ClickRadioButtonByText("Yes");
          await InteractionUtilities.ClickButtonByText("Continue");
