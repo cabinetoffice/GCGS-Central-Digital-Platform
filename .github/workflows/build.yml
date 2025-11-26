@@ -229,6 +229,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Scan for vulnerabilities
     needs: [test, package]
+    permissions:
+      contents: read
+      security-events: write  # needed for upload-sarif / code scanning
     strategy:
       matrix:
         image: ${{ fromJSON(needs.package.outputs.images_json) }}
