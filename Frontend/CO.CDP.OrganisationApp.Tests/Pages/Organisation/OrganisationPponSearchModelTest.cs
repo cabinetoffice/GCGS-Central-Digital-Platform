@@ -469,6 +469,41 @@ public class OrganisationPponSearchModelTest
         _testOrganisationPponSearchModel.TotalPages.Should().Be(0);
     }
 
+    [Fact]
+    public void CreatePaginationModel_WithOrigin_IncludesOriginInUrl()
+    {
+        var organisationId = Guid.NewGuid();
+        var currentPage = 1;
+        var totalItems = 50;
+        var pageSize = 10;
+        var searchText = "Test Organisation";
+        var sortOrder = "rel";
+        var origin = "buyer-view";
+
+        var result = OrganisationPponSearchModel.CreatePaginationModel(
+            currentPage, totalItems, pageSize, organisationId, searchText, sortOrder, origin);
+
+        result.Url.Should().Contain($"origin={Uri.EscapeDataString(origin)}");
+        result.Url.Should().Be($"/organisation/{organisationId}/buyer/search?SearchText={Uri.EscapeDataString(searchText)}&sortOrder={sortOrder}&pageSize={pageSize}&origin={Uri.EscapeDataString(origin)}");
+    }
+
+    [Fact]
+    public void CreatePaginationModel_WithNullOrigin_DoesNotIncludeOriginInUrl()
+    {
+        var organisationId = Guid.NewGuid();
+        var currentPage = 1;
+        var totalItems = 50;
+        var pageSize = 10;
+        var searchText = "Test Organisation";
+        var sortOrder = "rel";
+
+        var result = OrganisationPponSearchModel.CreatePaginationModel(
+            currentPage, totalItems, pageSize, organisationId, searchText, sortOrder, null);
+
+        result.Url.Should().NotContain("origin=");
+        result.Url.Should().Be($"/organisation/{organisationId}/buyer/search?SearchText={Uri.EscapeDataString(searchText)}&sortOrder={sortOrder}&pageSize={pageSize}");
+    }
+
     private void SetupRouteData(Guid organisationId)
     {
         var routeData = new RouteData();
