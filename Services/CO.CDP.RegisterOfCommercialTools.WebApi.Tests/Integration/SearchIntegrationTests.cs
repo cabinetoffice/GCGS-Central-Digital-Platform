@@ -204,7 +204,7 @@ public class SearchIntegrationTests
 
         mockRepository
             .Setup(x => x.SearchCommercialToolsWithCount(It.IsAny<string>()))
-            .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int)>.Success((defaultResults, 50)));
+            .ReturnsAsync(ApiResult<(IEnumerable<SearchResultDto>, int, int)>.Success((defaultResults, 50, 50)));
 
     }
 

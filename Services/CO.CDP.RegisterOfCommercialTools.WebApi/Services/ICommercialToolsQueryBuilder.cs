@@ -4,6 +4,7 @@ namespace CO.CDP.RegisterOfCommercialTools.WebApi.Services;
 
 public interface ICommercialToolsQueryBuilder
 {
+    bool HasFilter { get; }
     ICommercialToolsQueryBuilder WithKeywords(List<string>? keywords, KeywordSearchMode searchMode);
     ICommercialToolsQueryBuilder WithFrameworkAgreement(bool hasFramework = true);
     ICommercialToolsQueryBuilder WithDynamicPurchasingSystem(bool hasDps = true);

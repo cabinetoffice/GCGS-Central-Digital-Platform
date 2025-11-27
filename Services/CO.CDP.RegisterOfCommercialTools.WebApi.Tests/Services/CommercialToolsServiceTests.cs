@@ -86,7 +86,7 @@ public class CommercialToolsServiceTests
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
         var result = await _service.SearchCommercialToolsWithCount(queryUrl);
-        var (results, _) = result.Match(
+        var (results, _, _) = result.Match(
             error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
             value => value
         );
@@ -115,13 +115,14 @@ public class CommercialToolsServiceTests
 
         var result = await _service.SearchCommercialToolsWithCount(queryUrl);
 
-        var (results, totalCount) = result.Match(
+        var (results, totalCount, filteredCount) = result.Match(
             error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
             value => value
         );
 
         results.Should().BeEmpty();
         totalCount.Should().Be(0);
+        filteredCount.Should().Be(0);
     }
 
     [Fact]
@@ -167,7 +168,7 @@ public class CommercialToolsServiceTests
         SetupHttpResponse(HttpStatusCode.OK, jsonResponse);
 
         var result = await _service.SearchCommercialToolsWithCount(queryUrl);
-        var (results, _) = result.Match(
+        var (results, _, _) = result.Match(
             error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
             value => value
         );
@@ -219,7 +220,7 @@ public class CommercialToolsServiceTests
             .ReturnsAsync(response);
 
         var result = await _service.SearchCommercialToolsWithCount(queryUrl);
-        var (results, totalCount) = result.Match(
+        var (results, totalCount, filteredCount) = result.Match(
             error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
             value => value
         );
@@ -227,6 +228,52 @@ public class CommercialToolsServiceTests
         var resultList = results.ToList();
         resultList.Should().HaveCount(1);
         totalCount.Should().Be(500);
+    }
+
+    [Fact]
+    public async Task SearchCommercialToolsWithCount_WhenXFilteredCountHeaderPresent_ShouldUseFilteredCountFromHeader()
+    {
+        var queryUrl = "https://api.example.com/tenders?filter=test";
+        var jsonResponse = """
+                           [
+                               {
+                                   "id": "test-id-1",
+                                   "ocid": "ocds-test-1",
+                                   "tender": {
+                                       "title": "Test Tender 1"
+                                   }
+                               }
+                           ]
+                           """;
+
+        var expectedResult = new SearchResultDto { Id = "test-id-1", Title = "Test Tender 1" };
+        _mockMapper.Setup(m => m.Map<SearchResultDto>(It.IsAny<CommercialToolApiItem>()))
+            .Returns(expectedResult);
+
+        var response = new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(jsonResponse, Encoding.UTF8, "application/json")
+        };
+
+        response.Headers.Add("x-filtered-count", "500");
+
+        _mockHttpMessageHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(response);
+
+        var result = await _service.SearchCommercialToolsWithCount(queryUrl);
+        var (results, totalCount, filteredCount) = result.Match(
+            error => { Assert.Fail($"Expected success but got error: {error}"); return default; },
+            value => value
+        );
+
+        var resultList = results.ToList();
+        resultList.Should().HaveCount(1);
+        filteredCount.Should().Be(500);
     }
 
     private void SetupHttpResponse(HttpStatusCode statusCode, string content)
