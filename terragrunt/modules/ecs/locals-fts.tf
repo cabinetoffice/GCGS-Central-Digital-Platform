@@ -62,7 +62,7 @@ locals {
     database_server_port                = 3306
     database_ssl                        = false
     environment                         = upper(var.environment)
-    fts_allowed_target_email_domains    = join(",", var.fts_allowed_target_email_domains)
+    fts_allowed_target_email_domains    = join(",", local.fts_allowed_target_email_domains[var.environment])
     fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
     fts_one_login_logout_redirect_uri   = "https://${local.fts_site_domains[var.environment]}/auth/logout"
     fts_one_login_redirect_uri          = "https://${local.fts_site_domains[var.environment]}/auth/callback"
@@ -154,4 +154,96 @@ locals {
     config.name => config if contains(local.migrations_fts, config.name)
   }
 
+  fts_allowed_target_email_domains = {
+    development = [
+      "goaco.com"
+    ]
+    staging = [
+      "cabinetoffice.gov.uk",
+      "goaco.com"
+    ]
+    integration = [
+      "ace-advice.co.uk",
+      "adamprocure.co.uk",
+      "adb.co.uk",
+      "ansarada.com",
+      "atamis.co.uk",
+      "axians.com",
+      "bidful.com",
+      "bipsolutions.com",
+      "cabinetoffice.gov.uk",
+      "cloudsmiths.co.za",
+      "crowncommercial.gov.uk",
+      "dft.gov.uk",
+      "dotmodus.com",
+      "eu-supply.com",
+      "eurodyn.com",
+      "evosysglobal.com",
+      "excelerateds2p.com",
+      "fcdo.gov.uk",
+      "fusionpractices.com",
+      "gep.com",
+      "goaco.com",
+      "gov.wales",
+      "homeoffice.gov.uk",
+      "in-tend.co.uk",
+      "ivalua.com",
+      "jaggaer.com",
+      "justice.gov.uk",
+      "Kainos.com",
+      "kcfmcglobal.com",
+      "klickstream.co.uk",
+      "maistro.com",
+      "mastek.com",
+      "mastersoftware.co.uk",
+      "mercell.com",
+      "mod.gov.uk",
+      "mytenders.co.uk",
+      "nda.gov.uk",
+      "nepo.org",
+      "nhs.net",
+      "oneadvanced.com",
+      "panacea-software.com",
+      "proactis.com",
+      "proactisinterfaces.com",
+      "publiccontractsscotland.gov.uk",
+      "sell2wales.gov.wales",
+      "sourcedogg.com",
+      "sproc.net",
+      "supplychainpartner.com",
+      "tcs.com",
+      "tenderlake.com",
+      "theupside.io",
+      "trisaas.com",
+      "useadam-tech.com",
+      "useadam.co.uk",
+      "waxdigital.com",
+      "xansium.com"
+    ]
+    production = []
+  }
+
+  fts_service_allowed_origins = {
+    development = [
+      "http://localhost:3000"
+    ]
+    staging = [
+      "https://fts.staging.supplier-information.find-tender.service.gov.uk",
+    ]
+    integration = [
+      "https://fts.integration.supplier-information.find-tender.service.gov.uk",
+      "https://test-findtender.nqc.com",
+      "https://truk-alpha.nqc.com",
+      "https://truk-performance.nqc.com",
+      "https://truk-prod.nqc.com",
+      "https://www-integration.find-tender.service.gov.uk",
+      "https://www-preview.find-tender.service.gov.uk",
+      "https://www-tpp-preview.find-tender.service.gov.uk",
+      "https://www-tpp.find-tender.service.gov.uk",
+    ]
+    production = [
+      "https://fts.supplier-information.find-tender.service.gov.uk",
+      "https://www.find-tender.service.gov.uk"
+    ]
+  }
 }

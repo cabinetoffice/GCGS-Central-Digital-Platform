@@ -52,7 +52,7 @@ locals {
     db_port                             = 3306
     database_user_host_address          = "%"
     demo                                = false
-    cfs_allowed_target_email_domains    = join(",", var.cfs_allowed_target_email_domains)
+    cfs_allowed_target_email_domains    = join(",", local.cfs_allowed_target_email_domains[var.environment])
     environment                         = upper(var.environment)
     http_basic_auth_enabled             = 0
     include_devel                       = false
@@ -131,6 +131,110 @@ locals {
   migration_configs_cfs = {
     for name, config in var.service_configs :
     config.name => config if contains(local.migrations_cfs, config.name)
+  }
+
+  cfs_allowed_target_email_domains = {
+    development = [
+      "goaco.com"
+    ]
+    staging = [
+      "goaco.com"
+    ]
+    integration = [
+      "adb.co.uk",
+      "atamis.co.uk",
+      "axians.com",
+      "b2bquote.co.uk",
+      "bankofengland.co.uk",
+      "bipsolutions.com",
+      "bravosolution.com",
+      "cabinetoffice.gov.uk",
+      "caeser.org",
+      "cimple.uk",
+      "cognizant.com",
+      "commercedecisions.com",
+      "crowncommercial.gov.uk",
+      "curtisfitchglobal.com",
+      "dfid.gov.uk",
+      "digital.cabinet-office.gov.uk",
+      "eu-supply.com",
+      "eurodyn.com",
+      "evosysglobal.com",
+      "excelerateds2p.com",
+      "firefly-online.net",
+      "fusionpractices.com",
+      "geometrasystems.co.uk",
+      "goaco.com",
+      "govfsl.com",
+      "gpa.gov.uk",
+      "guinness.org.uk",
+      "hillingdon.gov.uk",
+      "homeoffice.gov.uk",
+      "hull.ac.uk",
+      "in-tend.co.uk",
+      "incic.org.uk",
+      "jaggaer.com",
+      "londoncouncils.gov.uk",
+      "maistro.com",
+      "mastersoftware.co.uk",
+      "millstream.eu",
+      "mk9-development.com",
+      "multiquote.com",
+      "mytenders.co.uk",
+      "ne1procurementservices.com",
+      "nepo.org",
+      "nitrous.city",
+      "nqc.com",
+      "nqcltd.com",
+      "Olenick.com",
+      "oneadvanced.com",
+      "oracle.com",
+      "panacea-software.com",
+      "platformhg.com",
+      "Proactis.com",
+      "proactisinterfaces.com",
+      "prologic.ie",
+      "publiccontractsscotland.gov.uk",
+      "sap.com",
+      "sell2wales.gov.wales",
+      "somerset.gov.uk",
+      "sourcedogg.com",
+      "spendnetwork.com",
+      "supplychainpartner.com",
+      "sussex.ac.uk",
+      "tcs.com",
+      "technologyonecorp.com",
+      "tenderlake.com",
+      "testpartners.co.uk",
+      "trisaas.com",
+      "useadam-tech.com",
+      "useadam.co.uk",
+      "viaem.co.uk",
+      "waxdigital.com"
+    ]
+    production = []
+  }
+
+  cfs_service_allowed_origins = {
+    development = []
+    staging = [
+      "https://cfs.staging.supplier-information.find-tender.service.gov.uk",
+    ]
+    integration = [
+      "https://cfs.integration.supplier-information.find-tender.service.gov.uk",
+      "https://test-findtender.nqc.com",
+      "https://truk-alpha.nqc.com",
+      "https://truk-performance.nqc.com",
+      "https://truk-prod.nqc.com",
+      "https://www-integration.find-tender.service.gov.uk",
+      "https://www-preview.find-tender.service.gov.uk",
+      "https://www-tpp-preview.find-tender.service.gov.uk",
+      "https://www-tpp.find-tender.service.gov.uk",
+    ]
+    production = [
+      "https://cfs.supplier-information.find-tender.service.gov.uk",
+      "https://www.find-tender.service.gov.uk"
+    ]
   }
 
 }
