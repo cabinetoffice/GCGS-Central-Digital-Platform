@@ -8,20 +8,10 @@ variable "alb_sg_id" {
   type        = string
 }
 
-variable "cfs_allowed_target_email_domains" {
-  description = "A list of allowed Domain origins"
-  type        = list(string)
-}
-
 variable "cfs_extra_host_headers" {
   description = "Optional list of additional host headers to be added for CFS service"
   type        = list(string)
   default     = []
-}
-
-variable "cfs_service_allowed_origins" {
-  description = "A list of allowed URLs"
-  type        = list(string)
 }
 
 variable "commercial_tools_session_timeout" {
@@ -32,11 +22,6 @@ variable "commercial_tools_session_timeout" {
 
 variable "db_cfs_cluster_address" {
   description = "CFS DB address"
-  type        = string
-}
-
-variable "db_cfs_cluster_credentials_arn" {
-  description = "ARN of the secret holding CFS DB credentials"
   type        = string
 }
 
@@ -120,20 +105,10 @@ variable "environment" {
   type        = string
 }
 
-variable "fts_allowed_target_email_domains" {
-  description = "A list of allowed Domain origins"
-  type        = list(string)
-}
-
 variable "fts_extra_host_headers" {
   description = "Optional list of additional host headers to be added for FTS service"
   type        = list(string)
   default     = []
-}
-
-variable "fts_service_allowed_origins" {
-  description = "A list of allowed URLs"
-  type        = list(string)
 }
 
 variable "is_production" {
