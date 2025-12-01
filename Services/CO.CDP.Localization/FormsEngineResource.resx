@@ -601,10 +601,39 @@ Failure to complete this module may result in your tenders being deemed insuffic
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_02_Title" xml:space="preserve">
-    <value>Has your organisation or any connected person been in receipt of enforcement/remedial orders in relation to the Health and Safety Executive (or equivalent body) in the last three years?</value>
+    <value>Health and safety enforcement orders</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Enforcement and remedial order declaration</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_02_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      Contracting authorities need to understand if your organisation or any connected person has received an enforcement or remedial order that meets both of the following conditions:
+    &lt;/p&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;is in relation to the &lt;a href=&quot;https://www.hse.gov.uk/&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+          Health and Safety Executive (opens in a new tab)&lt;/a&gt; or an equivalent body&lt;/li&gt;
+        &lt;li&gt;has occurred in the last three years&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    &lt;details class=&quot;govuk-details&quot;&gt;
+      &lt;summary class=&quot;govuk-details__summary&quot;&gt;
+        &lt;span class=&quot;govuk-details__summary-text&quot;&gt;
+          What is a connected person?
+        &lt;/span&gt;
+      &lt;/summary&gt;
+      &lt;div class=&quot;govuk-details__text&quot;&gt;
+        A 'connected person' is an individual or an entity with significant control or influence over the supplier. For example, directors, parent or subsidiary companies, predecessor companies, and others in similar positions. You can find out more information in
+        &lt;a href=&quot;https://www.gov.uk/placeholder&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
+          schedule 6(45) of the Procurement Act 2023 Placeholder (opens in a new tab)
+        &lt;/a&gt;.
+      &lt;/div&gt;
+    &lt;/details&gt;
+      &lt;p class="govuk-body"&gt;&lt;p class="govuk-body govuk-!-font-weight-bold"&gt;Has your organisation or connected person received health and safety enforcement or remedial orders?&lt;/p&gt;
+      &lt;/p&gt;
+    </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_03_Title" xml:space="preserve">
     <value>Please provide details of the enforcement and remedial orders served</value>
@@ -726,7 +755,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
         &lt;/span&gt;
       &lt;/summary&gt;
       &lt;div class=&quot;govuk-details__text&quot;&gt;
-          Competence can be described as the combination of training, skills, experience and knowledge that a person has and their ability to apply them to perform a task safely. For more information read &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;what is competence? Placeholder (opens in a new tab)&lt;/a&gt;.
+          Competence can be described as the combination of training, skills, experience and knowledge that a person has and their ability to apply them to perform a task safely. For more information read &lt;a href="https://www.hse.gov.uk/competence/what-is-competence.htm" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;what is competence? (opens in a new tab)&lt;/a&gt;.
       &lt;/div&gt;
     &lt;/details&gt;
     &lt;p class="govuk-body"&gt;If you are successful, you must be able to provide evidence, if required, prior to contract award. For example, CVs and copies of qualification certificates relevant to the role of health and safety advisor.&lt;/p&gt;
