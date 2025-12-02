@@ -4,7 +4,7 @@ terraform {
 }
 
 include {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("root.hcl")
 }
 
 dependency core_networking {
@@ -16,7 +16,7 @@ dependency core_networking {
 }
 
 locals {
-  global_vars   = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars   = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   external_vars = read_terragrunt_config(find_in_parent_folders("external.hcl"))
 
   tags = merge(
