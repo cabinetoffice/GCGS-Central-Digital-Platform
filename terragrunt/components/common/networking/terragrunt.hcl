@@ -3,11 +3,11 @@ terraform {
 }
 
 include {
-  path = find_in_parent_folders()
+  path = find_in_parent_folders("root.hcl")
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("terragrunt.hcl"))
+  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   common_vars = read_terragrunt_config(find_in_parent_folders("common.hcl"))
 
   tags = merge(
