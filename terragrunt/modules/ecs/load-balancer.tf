@@ -62,28 +62,6 @@ resource "aws_lb_listener" "ecs_http" {
 
 }
 
-resource "aws_lb_listener_rule" "redirect_private_beta_to_live" {
-  count = var.is_production ? 1 : 0
-
-  listener_arn = local.main_ecs_listener_arn
-  priority     = 8000
-
-  condition {
-    host_header {
-      values = ["supplier-information.${var.private_beta_domain}"]
-    }
-  }
-
-  action {
-    type = "redirect"
-    redirect {
-      status_code = "HTTP_301"
-      host        = var.public_domain
-    }
-  }
-
-}
-
 // To ensure overriding the authenticated rule. @TODO (ABN) (GO Live) Remove when removing Cognito
 resource "aws_lb_listener_rule" "unauthenticated_assets" {
 

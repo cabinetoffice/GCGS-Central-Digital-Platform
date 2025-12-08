@@ -30,13 +30,3 @@ resource "aws_route53_zone" "fts" {
   }
 }
 
-resource "aws_route53_zone" "production_private_beta" {
-  count = var.is_production ? 1 : 0
-
-  name = "private-beta.find-tender.service.gov.uk"
-  tags = var.tags
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}

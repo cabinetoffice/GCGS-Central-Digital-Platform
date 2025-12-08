@@ -10,7 +10,6 @@ include {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    production_private_beta_hosted_zone_id = "mock"
     public_hosted_zone_id                  = "mock"
   }
 }
