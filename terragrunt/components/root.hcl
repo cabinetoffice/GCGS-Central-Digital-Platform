@@ -145,7 +145,6 @@ locals {
       account_id                        = 471112843276
       canary_schedule_expression        = "rate(15 minutes)"
       cfs_extra_domains                 = ["www.contractsfinder.service.gov.uk"]
-      fts_extra_domains                 = []
       fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       mail_from_domains                 = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
