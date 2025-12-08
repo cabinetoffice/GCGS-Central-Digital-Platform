@@ -169,7 +169,6 @@ inputs = {
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 
-  private_beta_hosted_zone_id = local.global_vars.locals.is_production ? dependency.core_networking.outputs.private_beta_hosted_zone_id : null
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_domain               = dependency.core_networking.outputs.public_domain

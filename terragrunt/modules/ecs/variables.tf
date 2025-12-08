@@ -139,12 +139,6 @@ variable "pinned_service_version_sirsi" {
   default     = null
 }
 
-variable "private_beta_hosted_zone_id" {
-  description = "Optional Private Beta Domain's Hosted Zone ID"
-  type        = string
-  default     = null
-}
-
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
