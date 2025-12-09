@@ -15,9 +15,15 @@ resource "aws_wafv2_web_acl" "php" {
     content_type = "TEXT_PLAIN"
   }
 
+  custom_response_body {
+    key          = "${local.name_prefix_php}_rate_limit_exceeded"
+    content      = "${local.rate_limit_ocdss_releasepac_kages_count} request limit in ${local.rate_limit_ocdss_releasepac_kages_window} minute exceeded"
+    content_type = "TEXT_PLAIN"
+  }
+
   rule {
     name     = "${local.name_prefix_php}-allow-known-ips"
-    priority = 0
+    priority = 1
 
     action {
       allow {}
@@ -85,6 +91,51 @@ resource "aws_wafv2_web_acl" "php" {
       }
     }
   }
+
+  rule {
+    name     = "${local.name_prefix_php}-RateLimitOcdsSReleasePackages"
+    priority = 0
+
+    action {
+      block {
+        custom_response {
+          response_code            = 429
+          custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
+        }
+      }
+    }
+
+    statement {
+      rate_based_statement {
+        limit                 = local.rate_limit_ocdss_releasepac_kages_count
+        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window * 60
+        aggregate_key_type    = "IP"
+
+        scope_down_statement {
+          byte_match_statement {
+            field_to_match {
+              uri_path {}
+            }
+
+            positional_constraint = "STARTS_WITH"
+            search_string         = "/api/1.0/ocdsReleasePackages"
+
+            text_transformation {
+              priority = 0
+              type     = "NONE"
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-RateLimitOcdsSReleasePackages"
+      sampled_requests_enabled   = true
+    }
+  }
+
 
   visibility_config {
     cloudwatch_metrics_enabled = true
