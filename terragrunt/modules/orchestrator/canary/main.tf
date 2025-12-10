@@ -1,5 +1,5 @@
 resource "aws_synthetics_canary" "canary" {
-  for_each = var.canary_configs
+  for_each = var.disabled_canary_configs
 
   depends_on = [aws_iam_role_policy_attachment.canary_role_policy_attachment]
 

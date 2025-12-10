@@ -17,7 +17,7 @@ locals {
     key => {
       name                = env.name
       pinned_service_version = try(env.pinned_service_version, null)
-      api_url             = "https://api.${env.name}.supplier.information.${env.top_level_domain}"
+      api_url             = "https://api.${env.name}.supplier-information.find-tender.service.gov.uk"
       schedule_expression = env.canary_schedule_expression
     } if !(contains(local.canary_exclude_list, env.name))
   }

@@ -3,6 +3,10 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "disabled_canary_configs" {
+  default = {}
+}
+
 variable "canary_configs" {
   description = "Configuration for each environment's canary, including the name and pinned service version."
   type = map(object({
