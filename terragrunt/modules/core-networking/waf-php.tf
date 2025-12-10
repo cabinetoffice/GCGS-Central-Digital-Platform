@@ -112,13 +112,12 @@ resource "aws_wafv2_web_acl" "php" {
         aggregate_key_type    = "IP"
 
         scope_down_statement {
-          byte_match_statement {
+          regex_match_statement {
+            regex_string = "^/api/[^/]+/ocdsReleasePackages.*$"
+
             field_to_match {
               uri_path {}
             }
-
-            positional_constraint = "STARTS_WITH"
-            search_string         = "/api/1.0/ocdsReleasePackages"
 
             text_transformation {
               priority = 0
