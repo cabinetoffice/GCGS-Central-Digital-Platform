@@ -29,4 +29,3 @@ resource "aws_route53_zone" "fts" {
     prevent_destroy = true
   }
 }
-
