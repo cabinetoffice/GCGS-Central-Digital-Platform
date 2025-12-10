@@ -32,7 +32,6 @@ locals {
         "10.${local.cidr_b_orchestrator}.3.0/24"
       ]
       redis_node_type  = "cache.t2.micro"
-      top_level_domain = "supplier.information.findatender.codatt.net"
     }
 
     development = {
@@ -65,7 +64,6 @@ locals {
         "10.${local.cidr_b_development}.3.0/24"
       ]
       redis_node_type  = "cache.t3.small"
-      top_level_domain = "supplier-information.find-tender.service.gov.uk"
     }
 
     staging = {
@@ -99,7 +97,6 @@ locals {
         "10.${local.cidr_b_staging}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier-information.find-tender.service.gov.uk"
     }
 
     integration = {
@@ -137,7 +134,6 @@ locals {
         "10.${local.cidr_b_integration}.3.0/24"
       ]
       redis_node_type  = "cache.t3.medium"
-      top_level_domain = "supplier-information.find-tender.service.gov.uk"
     }
 
     production = {
@@ -172,7 +168,6 @@ locals {
         "10.${local.cidr_b_production}.3.0/24"
       ]
       redis_node_type  = "cache.r5.xlarge"
-      top_level_domain = "supplier-information.find-tender.service.gov.uk"
     }
   }
 
@@ -190,10 +185,12 @@ locals {
   pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
   redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
 
+  top_level_domain = "supplier-information.find-tender.service.gov.uk"
+
   product = {
     name               = "CDP SIRSI"
     resource_name      = "cdp-sirsi"
-    public_hosted_zone = local.environment == "production" ? local.environments[local.environment].top_level_domain : "${local.environments[local.environment].name}.${local.environments[local.environment].top_level_domain}"
+    public_hosted_zone = local.environment == "production" ? local.top_level_domain : "${local.environments[local.environment].name}.${local.top_level_domain}"
   }
 
   external_product = {
