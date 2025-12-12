@@ -135,6 +135,34 @@ public class UiFoundationBuilder
     }
 
     /// <summary>
+    /// Adds Payments URL service with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddPaymentsUrlService()
+    {
+        var options = _configuration.GetSection("PaymentsApp").Get<PaymentsUrlOptions>()
+                      ?? throw new InvalidOperationException("PaymentsApp configuration is missing.");
+        _services.AddSingleton(options);
+        _services.AddScoped<IPaymentsUrlService, PaymentsUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds Payments URL service with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure Payments URL options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddPaymentsUrlService(Action<PaymentsUrlOptions> configure)
+    {
+        var options = _configuration.GetSection("PaymentsApp").Get<PaymentsUrlOptions>()
+                      ?? throw new InvalidOperationException("PaymentsApp configuration is missing.");
+        configure(options);
+        _services.AddSingleton(options);
+        _services.AddScoped<IPaymentsUrlService, PaymentsUrlService>();
+        return this;
+    }
+
+    /// <summary>
     /// Adds the unified External Service URL builder
     /// </summary>
     /// <returns>The builder for method chaining</returns>

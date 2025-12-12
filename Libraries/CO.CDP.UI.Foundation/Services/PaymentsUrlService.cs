@@ -1,0 +1,56 @@
+using CO.CDP.UI.Foundation.Cookies;
+using Microsoft.AspNetCore.Http;
+
+namespace CO.CDP.UI.Foundation.Services;
+
+/// <summary>
+/// Configuration options for the Payments URL service
+/// </summary>
+public class PaymentsUrlOptions : ServiceUrlOptions
+{
+    public PaymentsUrlOptions()
+    {
+        SessionKey = "PaymentsServiceOrigin";
+    }
+}
+
+/// <summary>
+/// Service for building URLs to the Payments service
+/// </summary>
+public class PaymentsUrlService : UrlServiceBase, IPaymentsUrlService
+{
+    /// <summary>
+    /// Initialises a new instance of the PaymentsUrlService
+    /// </summary>
+    /// <param name="options">Payments URL options</param>
+    /// <param name="httpContextAccessor">HTTP context accessor for session access</param>
+    /// <param name="cookiePreferencesService">Optional cookie preferences service</param>
+    public PaymentsUrlService(
+        PaymentsUrlOptions options,
+        IHttpContextAccessor httpContextAccessor,
+        ICookiePreferencesService? cookiePreferencesService = null)
+        : base(options, httpContextAccessor, cookiePreferencesService)
+    {
+    }
+
+    /// <summary>
+    /// Builds a URL to a Payments service endpoint with optional additional query parameters
+    /// </summary>
+    /// <param name="endpoint">The endpoint path</param>
+    /// <param name="organisationId">Optional organisation ID</param>
+    /// <param name="redirectUri">Optional redirect URI</param>
+    /// <param name="cookieAcceptance">Optional cookie acceptance override</param>
+    /// <param name="additionalParams">Additional query parameters to include</param>
+    /// <returns>The complete URL to the Payments service endpoint</returns>
+    public string BuildUrl(string endpoint, Guid? organisationId = null, string? redirectUri = null, bool? cookieAcceptance = null, Dictionary<string, string?>? additionalParams = null)
+    {
+        var url = base.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance);
+
+        if (additionalParams != null && additionalParams.Any())
+        {
+            return Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(url, additionalParams);
+        }
+
+        return url;
+    }
+}

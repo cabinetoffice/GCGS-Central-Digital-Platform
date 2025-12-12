@@ -28,6 +28,7 @@ public class BuyerView(
         var searchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
         var aiToolEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AiTool);
         var commercialToolsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.CommercialTools);
+        var paymentsEnabled = await featureManager.IsEnabledAsync(FeatureFlags.Payments);
 
         var tiles = new List<Tile>
         {
@@ -49,7 +50,7 @@ public class BuyerView(
             });
         }
 
-        if (aiToolEnabled || commercialToolsEnabled)
+        if (aiToolEnabled || commercialToolsEnabled || paymentsEnabled)
         {
             var cookiesAccepted = cookiePreferencesService.GetValue();
             bool? cookiesAcceptedValue = cookiesAccepted switch
@@ -78,6 +79,16 @@ public class BuyerView(
                     Title = StaticTextResource.BuyerView_TileFour_Title,
                     Body = StaticTextResource.BuyerView_TileFour_Body,
                     Href = externalServiceUrlBuilder.BuildUrl(ExternalService.CommercialTools, "", Id, null, cookiesAcceptedValue, originParams)
+                });
+            }
+
+            if (paymentsEnabled)
+            {
+                tiles.Add(new Tile
+                {
+                    Title = StaticTextResource.BuyerView_TileFive_Title,
+                    Body = StaticTextResource.BuyerView_TileFive_Body,
+                    Href = externalServiceUrlBuilder.BuildUrl(ExternalService.Payments, "", Id, null, cookiesAcceptedValue, originParams)
                 });
             }
         }

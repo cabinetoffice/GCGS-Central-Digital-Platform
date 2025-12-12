@@ -4418,6 +4418,12 @@
   <data name="BuyerView_TileFour_Body">
     <value>Search for frameworks and dynamic markets.</value>
   </data>
+  <data name="BuyerView_TileFive_Title">
+    <value>Publish and update your payments</value>
+  </data>
+  <data name="BuyerView_TileFive_Body">
+    <value>For public contracts that start on 1 April 2026.</value>
+  </data>
   <data name="Global_Decimal_InvalidError" xml:space="preserve">
     <value>Enter a valid number</value>
   </data>
