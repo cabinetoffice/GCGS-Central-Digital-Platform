@@ -17,7 +17,7 @@ resource "aws_wafv2_web_acl" "php" {
 
   custom_response_body {
     key          = "${local.name_prefix_php}_rate_limit_exceeded"
-    content      = "${local.rate_limit_ocdss_releasepac_kages_count} request limit in ${local.rate_limit_ocdss_releasepac_kages_window} minute exceeded"
+    content      = "Rate limit of ${local.rate_limit_ocdss_releasepac_kages_count} exceeded. Please retry after ${local.rate_limit_ocdss_releasepac_kages_window_seconds} seconds."
     content_type = "TEXT_PLAIN"
   }
 
@@ -101,6 +101,11 @@ resource "aws_wafv2_web_acl" "php" {
         custom_response {
           response_code            = 429
           custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
+
+          response_header {
+            name  = "Retry-After"
+            value = local.rate_limit_ocdss_releasepac_kages_window_seconds
+          }
         }
       }
     }
@@ -108,7 +113,7 @@ resource "aws_wafv2_web_acl" "php" {
     statement {
       rate_based_statement {
         limit                 = local.rate_limit_ocdss_releasepac_kages_count
-        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window * 60
+        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {
