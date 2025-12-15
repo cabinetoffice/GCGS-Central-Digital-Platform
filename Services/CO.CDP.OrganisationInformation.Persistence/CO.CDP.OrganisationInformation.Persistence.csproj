@@ -34,4 +34,9 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Migrations\20251211151617_UpdateWelshExlusions.cs" />
+      <Compile Remove="Migrations\20251211151617_UpdateWelshExlusions.Designer.cs" />
+    </ItemGroup>
+
 </Project>
