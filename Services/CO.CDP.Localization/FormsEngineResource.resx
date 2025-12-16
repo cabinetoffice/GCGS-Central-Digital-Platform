@@ -1910,14 +1910,14 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   <data name="WelshExclusions_01_Description" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;
-      'Blacklisting' or the use of prohibited lists to deny individuals employment opportunities is known to have been used by construction companies operating in Wales. The blacklisting of individuals is an unlawful practice, and legislation has been put in place to ban its use.
-      This module aims to identify organisations that have engaged in blacklisting activity.
+      'Blacklisting' or the use of prohibited lists to deny individuals employment opportunities is known to have been used by construction companies operating in Wales. The 'blacklisting' of individuals is an unlawful practice, and legislation has been put in place to ban its use.
+      This module aims to identify organisations that have engaged in 'blacklisting' activity.
       &lt;/p&gt;
       &lt;p class="govuk-body"&gt;
         You are only required to complete this module if requested by the contracting authority you are bidding for.
       &lt;/p&gt;
       &lt;p class="govuk-body"&gt;
-        Failure to complete this module may result in your tenders being deemed insufficient where WPPN 10/21 has been applied. For more information read WPPN 10/21 in the construction industry (opens in a new tab).
+        Failure to complete this module may result in your tenders being deemed insufficient.
       &lt;/p&gt;
       &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You&#39;ll need to declare if you or your company has been found to engage in 'blacklisting' and provide the following details where relevant:&lt;/div&gt;
@@ -1925,13 +1925,13 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt;date of conviction&lt;/li&gt;
         &lt;li&gt;judicial decision&lt;/li&gt;
-        &lt;li&gt;corrective measures (where applicable)&lt;/li&gt;
+        &lt;li&gt;Self-cleaning measures (where applicable)&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;
     </value>
   </data>
   <data name="WelshExclusions_02_Title" xml:space="preserve">
-    <value>Have you, or has your organisation, been found to have employed the practise of 'blacklisting' in the last three years?</value>
+    <value>Have you, or has your organisation, been found to have employed the practice of 'blacklisting' in the last three years?</value>
   </data>
   <data name="WelshExclusions_02_SummaryTitle" xml:space="preserve">
     <value>Blacklisting within the last three years</value>
@@ -1945,37 +1945,45 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
         &lt;/span&gt;
       &lt;/summary&gt;
       &lt;div class=&quot;govuk-details__text&quot;&gt;
-        &quot;Blacklisting&quot;, or use of prohibited lists, is the unlawful practice of gathering information on employees on their Trade Union membership and related activities, in order to discriminate against them. For more information read
-        &lt;a href=&quot;https://www.gov.wales/wppn-10-21-blacklisting-in-the-construction-industry-advice-for-the-welsh-public-sector-html&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-          Welsh Procurement Policy Note WPPN 10/21: Blacklisting (opens in a new tab)
-        &lt;/a&gt;.
+        'Blacklisting', or use of prohibited lists, is the unlawful practice of gathering information on employees on their Trade Union membership and related activities, in order to discriminate against them.
       &lt;/div&gt;
     &lt;/details&gt;
   </value>
 </data>
   <data name="WelshExclusions_03_Title" xml:space="preserve">
-    <value>When did the 'blacklisting' breach occur?</value>
+    <value>Provide details of blacklisting breaches within the last three years</value>
   </data>
   <data name="WelshExclusions_03_SummaryTitle" xml:space="preserve">
-    <value>Date of conviction</value>
+    <value>Blacklisting breach details</value>
   </data>
   <data name="WelshExclusions_03_Description" xml:space="preserve">
-    <value> </value>
+    <value>&lt;div class="govuk-body"&gt;This should include:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;date of the conviction(s)&lt;/li&gt;
+        &lt;li&gt;if the blacklisting breach was confirmed by a judicial decision that is final and binding&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
   </data>
   <data name="WelshExclusions_04_Title" xml:space="preserve">
-    <value>Has a final judicial decision been made on the conviction?</value>
+    <value>Describe the 'self-cleaning' measures you have taken to demonstrate your reliability</value>
   </data>
   <data name="WelshExclusions_04_SummaryTitle" xml:space="preserve">
-    <value>Judicial decision</value>
+    <value>Self-cleaning measures</value>
   </data>
   <data name="WelshExclusions_04_Description" xml:space="preserve">
-    <value>&lt;p class="govuk-body"&gt;This means the conviction has been confirmed in court with final and binding effect.&lt;/p&gt;</value>
+  <value>&lt;p class="govuk-body"&gt;Read more about 'self-cleaning' in &lt;a href="https://www.gov.wales/procurement-act-2023-guidance-exclusions-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+    Procurement Act 2023 exclusions guidance (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
-  <data name="WelshExclusions_05_Title" xml:space="preserve">
-    <value>What steps are you taking to show that you are reliable?</value>
+  <data name="WelshExclusions_Group1_SummaryTitle" xml:space="preserve">
+    <value>Blacklisting declaration</value>
   </data>
-  <data name="WelshExclusions_05_SummaryTitle" xml:space="preserve">
-    <value>Corrective measures</value>
+  <data name="WelshExclusions_Group2_SummaryTitle" xml:space="preserve">
+    <value>Conviction information</value>
+  </data>
+  <data name="WelshExclusions_Group3_SummaryTitle" xml:space="preserve">
+    <value>Self-cleaning</value>
   </data>
   <!-- Welsh Steel -->
   <data name="WelshSteel_SectionTitle" xml:space="preserve">
