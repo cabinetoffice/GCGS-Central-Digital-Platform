@@ -468,25 +468,30 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="QualityManagementQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Quality management system</value>
-    <data name="QualityManagementQuestion_02_Description" xml:space="preserve">
-    <value>
-      View the &lt;a href="www.link.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.
-    </value>
   </data>
+  <data name="QualityManagementQuestion_02_Description" xml:space="preserve">
+  <value>
+    &lt;p class="govuk-body"&gt;View the &lt;a href="www.Placeholder.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.&lt;/p&gt;
+  </value>
+</data>
+  <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
+    <value>Do you want to upload evidence of your quality management system certification now?</value>
   </data>
-  <data name="QualityManagementQuestion_02_CustomInsetText" xml:space="preserve">
+  <data name="QualityManagementQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Evidence upload</value>
+  </data>
+  <data name="QualityManagementQuestion_03_CustomInsetText" xml:space="preserve">
     <value>
       &lt;div class=&quot;govuk-inset-text&quot;&gt;
         If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
       &lt;/div&gt;
     </value>
   </data>
-  <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
+  <data name="QualityManagementQuestion_04_Title" xml:space="preserve">
     <value>Do you have a documented process designed to ensure that the quality of your products or services is consistent?
 </value>
   </data>
-  <data name="QualityManagementQuestion_03_SummaryTitle" xml:space="preserve">
+  <data name="QualityManagementQuestion_04_SummaryTitle" xml:space="preserve">
     <value>Product quality processes</value>
   </data>
 
