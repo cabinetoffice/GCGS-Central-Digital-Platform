@@ -7,18 +7,22 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
 {
     private readonly ICommercialToolsUrlService _commercialToolsUrlService;
     private readonly IAiToolUrlService _aiToolUrlService;
+    private readonly IPaymentsUrlService _paymentsUrlService;
 
     /// <summary>
     /// Initialises a new instance of the ExternalServiceUrlBuilder
     /// </summary>
     /// <param name="commercialToolsUrlService">Commercial Tools URL service</param>
     /// <param name="aiToolUrlService">AI Tool URL service</param>
+    /// <param name="paymentsUrlService">Payments URL service</param>
     public ExternalServiceUrlBuilder(
         ICommercialToolsUrlService commercialToolsUrlService,
-        IAiToolUrlService aiToolUrlService)
+        IAiToolUrlService aiToolUrlService,
+        IPaymentsUrlService paymentsUrlService)
     {
         _commercialToolsUrlService = commercialToolsUrlService;
         _aiToolUrlService = aiToolUrlService;
+        _paymentsUrlService = paymentsUrlService;
     }
 
     /// <summary>
@@ -39,6 +43,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
         {
             ExternalService.CommercialTools => _commercialToolsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.AiTool => _aiToolUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
+            ExternalService.Payments => _paymentsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             _ => throw new ArgumentOutOfRangeException(nameof(service), service, $@"Unsupported external service: {service}")
         };
     }

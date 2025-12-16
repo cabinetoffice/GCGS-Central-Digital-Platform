@@ -56,14 +56,16 @@ public class BuyerViewTests
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.IsAccepted()).Returns(true);
         _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com");
         _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.CommercialTools, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com");
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com");
 
         await _model.OnGet();
 
         _model.Tiles.Should().NotBeEmpty();
-        _model.Tiles.Should().HaveCount(4);
+        _model.Tiles.Should().HaveCount(5);
         _model.Tiles[0].Title.Should().Be(StaticTextResource.BuyerView_TileOne_Title);
         _model.Tiles[0].Body.Should().Be(StaticTextResource.BuyerView_TileOne_Body);
         _model.Tiles[1].Title.Should().Be(StaticTextResource.BuyerView_TileTwo_Title);
@@ -72,6 +74,8 @@ public class BuyerViewTests
         _model.Tiles[2].Body.Should().Be(StaticTextResource.BuyerView_TileThree_Body);
         _model.Tiles[3].Title.Should().Be(StaticTextResource.BuyerView_TileFour_Title);
         _model.Tiles[3].Body.Should().Be(StaticTextResource.BuyerView_TileFour_Body);
+        _model.Tiles[4].Title.Should().Be(StaticTextResource.BuyerView_TileFive_Title);
+        _model.Tiles[4].Body.Should().Be(StaticTextResource.BuyerView_TileFive_Body);
     }
 
     [Fact]
@@ -82,9 +86,11 @@ public class BuyerViewTests
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.CommercialTools)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
         _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com");
         _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.CommercialTools, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://commercial-tools.example.com");
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com");
 
         await _model.OnGet();
 
@@ -93,6 +99,7 @@ public class BuyerViewTests
         _model.Tiles[1].Href.Should().Be($"/organisation/{_model.Id}/buyer/search?origin=buyer-view");
         _model.Tiles[2].Href.Should().Be("https://ai-tool.example.com");
         _model.Tiles[3].Href.Should().Be("https://commercial-tools.example.com");
+        _model.Tiles[4].Href.Should().Be("https://payments.example.com");
     }
 
     [Fact]
@@ -252,5 +259,30 @@ public class BuyerViewTests
         await _model.OnGet();
 
         _model.Tiles.Should().Contain(tile => tile.Href == expectedUrl);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenPaymentsDisabled_TileFiveIsNotPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.BuyerView_TileFive_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenPaymentsEnabled_TileFiveIsPresent()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: new List<PartyRole> { PartyRole.Buyer });
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com");
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.BuyerView_TileFive_Title);
     }
 }
