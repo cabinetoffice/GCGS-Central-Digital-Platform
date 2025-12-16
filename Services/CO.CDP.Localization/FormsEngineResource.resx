@@ -585,10 +585,10 @@ Failure to complete this module may result in your tenders being deemed insuffic
       You are only required to complete this module if requested by the contracting authority you are bidding for.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-Failure to complete this module may result in your tenders being deemed insufficient where WPPN 10/21 has been applied. For more information read WPPN 10/21 in the construction industry &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;Placeholder (opens in a new tab)&lt;/a&gt;.
+      Failure to complete this module may result in your tenders being deemed insufficient.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-    &lt;div class="govuk-body"&gt;You'll need to provide health and safety information related to your organisation or consortium members (where relevant). This may include:&lt;/div&gt;
+    &lt;div class="govuk-body"&gt;You'll need to provide health and safety information related to your organisation. This may include:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt; health and safety enforcement or remedial orders including those of any connected person &lt;/li&gt;
@@ -601,49 +601,22 @@ Failure to complete this module may result in your tenders being deemed insuffic
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_02_Title" xml:space="preserve">
-    <value>Health and safety enforcement orders</value>
+    <value>Has your organisation been in receipt of enforcement/remedial orders in relation to the Health and Safety Executive (or equivalent body) in the last three years?</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Enforcement and remedial order declaration</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_02_Description" xml:space="preserve">
-    <value>
-    &lt;p class="govuk-body"&gt;
-      Contracting authorities need to understand if your organisation or any connected person has received an enforcement or remedial order that meets both of the following conditions:
-    &lt;/p&gt;
-    &lt;div class="govuk-body"&gt;
-      &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt;is in relation to the &lt;a href=&quot;https://www.hse.gov.uk/&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-          Health and Safety Executive (opens in a new tab)&lt;/a&gt; or an equivalent body&lt;/li&gt;
-        &lt;li&gt;has occurred in the last three years&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    &lt;details class=&quot;govuk-details&quot;&gt;
-      &lt;summary class=&quot;govuk-details__summary&quot;&gt;
-        &lt;span class=&quot;govuk-details__summary-text&quot;&gt;
-          What is a connected person?
-        &lt;/span&gt;
-      &lt;/summary&gt;
-      &lt;div class=&quot;govuk-details__text&quot;&gt;
-        A 'connected person' is an individual or an entity with significant control or influence over the supplier. For example, directors, parent or subsidiary companies, predecessor companies, and others in similar positions. You can find out more information in
-        &lt;a href=&quot;https://www.legislation.gov.uk/ukpga/2023/54/schedule/6&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-          schedule 6(45) of the Procurement Act 2023 (opens in a new tab)
-        &lt;/a&gt;.
-      &lt;/div&gt;
-    &lt;/details&gt;
-      &lt;p class="govuk-body"&gt;&lt;p class="govuk-body govuk-!-font-weight-bold"&gt;Has your organisation or connected person received health and safety enforcement or remedial orders?&lt;/p&gt;
-      &lt;/p&gt;
-    </value>
-  </data>
   <data name="WelshHealthAndSafetyQuestion_03_Title" xml:space="preserve">
-    <value>Please provide details of the enforcement and remedial orders served</value>
+    <value>Provide details of the enforcement and remedial orders served</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
     <value>Enforcement and remedial order details</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_03_Description" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;In your answer, give details of any remedial action or changes to procedures you have made as a result.&lt;/p&gt;
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        Provide details of any remedial action or changes to procedures you have made as a result, or indicate that you plan to provide this later
+      &lt;/div&gt;
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_04_Title" xml:space="preserve">
@@ -655,10 +628,13 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="WelshHealthAndSafetyQuestion_04_Description" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;For example, a member of SSIP or equivalent.&lt;/p&gt;
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        If you select ‘Yes’, you will need to provide details of your registration
+      &lt;/div&gt;
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_05_Title" xml:space="preserve">
-    <value>Please provide your membership number, your membership level, and other details of what your registration covers</value>
+    <value>Provide your membership number, your membership level, and other details of what your registration covers</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_05_01_Title" xml:space="preserve">
     <value>Membership number</value>
@@ -687,10 +663,13 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="WelshHealthAndSafetyQuestion_06_Description" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;For example, a member of SSIP or equivalent.&lt;/p&gt;
+      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
+        If you select ‘Yes’, you will need to provide details of your organisation’s registration
+      &lt;/div&gt;
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_07_Title" xml:space="preserve">
-    <value>Please provide your organisation’s membership number, membership level, and other details of what the registration covers</value>
+    <value>Provide your organisation’s membership number, membership level, and other details of what the registration covers</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_07_01_Title" xml:space="preserve">
     <value>Membership number</value>
@@ -710,43 +689,48 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="WelshHealthAndSafetyQuestion_07_03_SummaryTitle" xml:space="preserve">
     <value>Other details</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_08_Title" xml:space="preserve">
-    <value>Please confirm that your organisation has a health and safety policy that includes the following?</value>
+  <data name="WelshHealthAndSafetyQuestion_08_01_Title" xml:space="preserve">
+    <value>Confirm that your organisation has a health and safety policy</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_08_SummaryTitle" xml:space="preserve">
+  <data name="WelshHealthAndSafetyQuestion_08_01_SummaryTitle" xml:space="preserve">
     <value>Policy requirements</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_08_Description" xml:space="preserve">
+  <data name="WelshHealthAndSafetyQuestion_08_01_Description" xml:space="preserve">
     <value>
-      &lt;div class="govuk-body"&gt;
+        &lt;p class="govuk-body"&gt;This should include:&lt;/p&gt;
         &lt;ul class="govuk-list govuk-list--bullet"&gt;
           &lt;li&gt; a policy statement – signed and dated &lt;/li&gt;
           &lt;li&gt; the organisation and responsibilities – how health and safety requirements are implemented &lt;/li&gt;
           &lt;li&gt; the arrangements – standards and procedures adopted in practice &lt;/li&gt;
         &lt;/ul&gt;
-      &lt;/div&gt;
     </value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_08_Title" xml:space="preserve">
+    <value>Do you want to upload evidence of your organisation’s health and safety policy now?</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_08_SummaryTitle" xml:space="preserve">
+    <value>Evidence upload</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_08_CustomInsetText" xml:space="preserve">
     <value>
       &lt;div class=&quot;govuk-inset-text&quot;&gt;
-        If you are successful you must be in a position to provide evidence, if required, prior to contract award, and without delay.
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
       &lt;/div&gt;
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_09_Title" xml:space="preserve">
-    <value>Please confirm that your health and safety policy has been reviewed within the past two years</value>
+    <value>Confirm that your health and safety policy has been reviewed within the past two years</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_09_SummaryTitle" xml:space="preserve">
     <value>Policy review requirements</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_10_Title" xml:space="preserve">
+  <data name="WelshHealthAndSafetyQuestion_10_01_Title" xml:space="preserve">
     <value>Do you have a nominated competent person responsible for health and safety advice?</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_10_SummaryTitle" xml:space="preserve">
+  <data name="WelshHealthAndSafetyQuestion_10_01_SummaryTitle" xml:space="preserve">
     <value>Health and safety advisor</value>
   </data>
-  <data name="WelshHealthAndSafetyQuestion_10_Description" xml:space="preserve">
+  <data name="WelshHealthAndSafetyQuestion_10_01_Description" xml:space="preserve">
     <value>
     &lt;details class=&quot;govuk-details&quot;&gt;
       &lt;summary class=&quot;govuk-details__summary&quot;&gt;
@@ -758,14 +742,39 @@ Failure to complete this module may result in your tenders being deemed insuffic
           Competence can be described as the combination of training, skills, experience and knowledge that a person has and their ability to apply them to perform a task safely. For more information read &lt;a href="https://www.hse.gov.uk/competence/what-is-competence.htm" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;what is competence? (opens in a new tab)&lt;/a&gt;.
       &lt;/div&gt;
     &lt;/details&gt;
-    &lt;p class="govuk-body"&gt;If you are successful, you must be able to provide evidence, if required, prior to contract award. For example, CVs and copies of qualification certificates relevant to the role of health and safety advisor.&lt;/p&gt;
+    </value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_10_Title" xml:space="preserve">
+    <value>Do you want to upload evidence of your nominated competent person now?</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_10_SummaryTitle" xml:space="preserve">
+    <value>Evidence upload</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_10_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful, you must be able to provide evidence, if required, prior to contract award. For example, CVs and copies of qualification certificates relevant to the role of health and safety advisor.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_11_01_Title" xml:space="preserve">
+    <value>Confirm that you have arrangements in place to manage chemicals used under the Control of Substances Hazardous to Health (COSHH) Regulations</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_11_01_SummaryTitle" xml:space="preserve">
+    <value>Managing hazardous chemicals</value>
+  </data>
+  <data name="WelshHealthAndSafetyQuestion_11_01_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
     </value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_11_Title" xml:space="preserve">
-    <value>Please confirm that you have arrangements in place to manage chemicals used under the Control of Substances Hazardous to Health (COSHH) Regulations?</value>
+    <value>Do you want to provide evidence that you have arrangements to manage chemicals under COSHH regulations now?</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_11_SummaryTitle" xml:space="preserve">
-    <value>Managing hazardous chemicals</value>
+    <value>Evidence upload</value>
   </data>
   <data name="WelshHealthAndSafetyQuestion_11_CustomInsetText" xml:space="preserve">
     <value>
