@@ -448,17 +448,15 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
       You are only required to complete this module if requested by the contracting authority you are bidding for.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-      Failure to complete this module may result in your tenders being deemed insufficient where XXX has been applied. For more information read
-      &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      Placeholder (opens in a new tab)&lt;/a&gt;.
+      Failure to complete this module may result in your tenders being deemed insufficient.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You'll need to provide information on quality management in your organisation including:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt; the accrediting body of your QMS certification &lt;/li&gt;
-        &lt;li&gt; the standard (ISO 9001 or equivalent) assessed against &lt;/li&gt;
-        &lt;li&gt; whether you have documented processes for ensuring product quality&lt;/li&gt;
+        &lt;li&gt;the accrediting body of your QMS certification&lt;/li&gt;
+        &lt;li&gt;the standard (ISO 9001 or equivalent) assessed against&lt;/li&gt;
+        &lt;li&gt;whether you have documented processes for ensuring product quality&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;
     </value>
@@ -470,6 +468,12 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="QualityManagementQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Quality management system</value>
+    <data name="QualityManagementQuestion_02_Description" xml:space="preserve">
+    <value>
+      View the &lt;a href="www.link.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+      United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.
+    </value>
+  </data>
   </data>
   <data name="QualityManagementQuestion_02_CustomInsetText" xml:space="preserve">
     <value>
