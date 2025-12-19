@@ -82,6 +82,7 @@ locals {
     use_srsi                            = true
     use_srsi_for_api                    = true
     valid_until                         = 1924990799
+    validation_weight                   = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
   }
 
   fts_service_paremeters = {
