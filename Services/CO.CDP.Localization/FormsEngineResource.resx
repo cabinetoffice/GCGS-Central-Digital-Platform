@@ -471,7 +471,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="QualityManagementQuestion_02_Description" xml:space="preserve">
   <value>
-    &lt;p class="govuk-body"&gt;View the &lt;a href="www.Placeholder.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.&lt;/p&gt;
+    &lt;p class="govuk-body"&gt;View the &lt;a href="https://www.ukas.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.&lt;/p&gt;
   </value>
 </data>
   <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
