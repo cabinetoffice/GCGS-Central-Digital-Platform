@@ -135,10 +135,10 @@ jobs:
         run: make up
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
-          SIRSI_ONELOGIN_CLIENTID: ${{ secrets.SIRSI_ONELOGIN_CLIENTID }}
-          SIRSI_ONELOGIN_PRIVATEKEY: ${{ secrets.SIRSI_ONELOGIN_PRIVATEKEY }}
-          SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER: ${{ secrets.SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER }}
-          SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY: ${{ secrets.SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY }}
+          OneLogin__ClientId: ${{ secrets.SIRSI_ONELOGIN_CLIENTID }}
+          OneLogin__PrivateKey: ${{ secrets.SIRSI_ONELOGIN_PRIVATEKEY }}
+          CompaniesHouse__User: ${{ secrets.SIRSI_ORGANISATION_APP_COMPANIESHOUSE_USER }}
+          CharityCommission__SubscriptionKey: ${{ secrets.SIRSI_ORGANISATION_APP_CHARITYCOMMISSION_SUBSCRIPTIONKEY }}
           Organisation__Authority: http://authority:8080
           OrganisationService: http://organisation:8080
           FormsService: http://forms:8080
