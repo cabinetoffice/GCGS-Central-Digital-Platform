@@ -143,7 +143,7 @@ No changes have been made to the Data Sharing API contract:
 
 * *Policy Answers*: Mix of text, file upload and Yes/No answers
 * *Evidence Documents*: Optional uploads for details, policies, standards and procedure
-* *Textual Responses*: Descriptions, Policies, standards or procedures, some are optional.
+* *Textual Responses*: Descriptions, policies, standards or procedures, some are optional
 
 === Welsh Health and Safety Module
 
