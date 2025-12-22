@@ -151,12 +151,12 @@ No changes have been made to the Data Sharing API contract:
 * *Evidence Documents*: Optional uploads for CVs, certificates and policies
 * *Structured Answers*: Safety group membership details grouped logically
 * *Optional Answers*: Some answers may not appear based on branching logic from Yes/No responses
-* *Textual Responses*: Membership numbers, descriptions, some mult-line text
+* *Textual Responses*: Membership numbers, descriptions, some multi-line text
 
 === Welsh Exclusions Module
 
 * *Policy Answers*: Mix of multi-line text and Yes/No answer
-* *Textual Responses*:  Mult-line text descriptions for exclusion details
+* *Textual Responses*:  Multi-line text descriptions for exclusion details
 * *Optional Answers*: Some answers will not appear based on branching logic from Yes/No response
 
 === Welsh Environmental Module
