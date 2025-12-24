@@ -296,12 +296,12 @@ variable "fts_extra_domains" {
 
 variable "ses_configuration_set_arn" {
   description = "ARN of the SES Configuration set"
-  type = string
+  type        = string
 }
 
 variable "ses_configuration_set_name" {
   description = "Name of the SES Configuration set"
-  type = string
+  type        = string
 }
 
 variable "tags" {

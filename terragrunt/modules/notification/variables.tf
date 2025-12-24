@@ -52,7 +52,7 @@ variable "role_ses_logs_ingestor_step_function_name" {
 variable "ses_logging_event_types" {
   description = "SES event types to capture"
   type        = list(string)
-  default     = [
+  default = [
     "bounce",
     "complaint",
     "delivery",

@@ -30,7 +30,7 @@ resource "aws_lb_target_group" "this" {
   }
 
   tags = merge(
-    {Service = var.name},
+    { Service = var.name },
     var.tags
   )
 }

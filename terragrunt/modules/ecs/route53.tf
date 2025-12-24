@@ -6,7 +6,7 @@ resource "aws_route53_record" "services_to_alb" {
   type    = "CNAME"
   ttl     = 60
 
-  records = each.value.cluster == "sirsi-php" ?  [aws_lb.ecs_php.dns_name] :  [aws_lb.ecs.dns_name]
+  records = each.value.cluster == "sirsi-php" ? [aws_lb.ecs_php.dns_name] : [aws_lb.ecs.dns_name]
 }
 
 resource "aws_route53_record" "cfs_services_to_alb" {
