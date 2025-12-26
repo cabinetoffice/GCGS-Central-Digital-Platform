@@ -4,7 +4,7 @@ locals {
   orchestrator_account_id = var.account_ids["orchestrator"]
   pipeline_iam_name       = "${local.name_prefix}-${var.environment}-ci-pipeline"
 
-  pen_testing_config  = jsondecode(data.aws_secretsmanager_secret_version.pen_testing_configuration.secret_string)
+  pen_testing_config = jsondecode(data.aws_secretsmanager_secret_version.pen_testing_configuration.secret_string)
   terraform_operators = concat(
     jsondecode(data.aws_secretsmanager_secret_version.terraform_operators.secret_string)["operators"],
     var.environment == "development" ? ["arn:aws:iam::043309357622:user/eran-inventur"] : []

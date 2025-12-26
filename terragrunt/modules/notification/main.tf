@@ -25,7 +25,7 @@ resource "aws_ses_configuration_set" "json_logging" {
 }
 
 resource "aws_ses_event_destination" "json_logging" {
-  count               = var.enable_ses_logs ? 1 : 0
+  count = var.enable_ses_logs ? 1 : 0
 
   name                   = "${local.logging_prefix}-to-sns"
   configuration_set_name = aws_ses_configuration_set.json_logging.name
