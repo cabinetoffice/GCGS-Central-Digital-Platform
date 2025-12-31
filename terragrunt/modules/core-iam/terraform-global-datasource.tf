@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:apigateway:${data.aws_region.current.name}:*",
+      "arn:aws:apigateway:${data.aws_region.current.region}:*",
     ]
     sid = "ManageAPIGateway"
   }
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "terraform_global" {
     }
     condition {
       test     = "ForAnyValue:StringEquals"
-      values   = ["secretsmanager.${data.aws_region.current.name}.amazonaws.com"]
+      values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
       variable = "kms:ViaService"
     }
   }
@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:*",
     ]
     sid = "ManageLogs"
   }
@@ -164,7 +164,7 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:*",
     ]
     sid = "ManageRDS"
   }
@@ -239,7 +239,7 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:cognito-idp:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:userpool/*"
+      "arn:aws:cognito-idp:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:userpool/*"
     ]
     sid = "ManageCognito"
   }
@@ -278,7 +278,7 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
+      "arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
     ]
     sid = "ManageStateMachines"
   }
@@ -291,8 +291,8 @@ data "aws_iam_policy_document" "terraform_global" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/*/*",
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/*/*",
     ]
     sid = "ManageWAF"
   }

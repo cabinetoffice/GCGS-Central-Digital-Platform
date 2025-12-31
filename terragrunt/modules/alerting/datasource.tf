@@ -23,6 +23,6 @@ data "aws_iam_policy_document" "awsbot" {
       "cloudwatch:Get*",
       "cloudwatch:List*"
     ]
-    resources = ["arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
+    resources = ["arn:aws:cloudwatch:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:*"]
   }
 }

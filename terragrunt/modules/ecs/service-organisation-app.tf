@@ -41,7 +41,7 @@ module "ecs_service_organisation_app" {
       diagnostic_page_path_arn            = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
       lg_prefix                           = "app"
-      lg_region                           = data.aws_region.current.name
+      lg_region                           = data.aws_region.current.region
       memory                              = var.service_configs.organisation_app.memory
       name                                = var.service_configs.organisation_app.name
       onelogin_account_url                = local.one_login.credential_locations.account_url

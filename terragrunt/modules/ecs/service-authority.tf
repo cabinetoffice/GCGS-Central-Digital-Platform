@@ -16,7 +16,7 @@ module "ecs_service_authority" {
       image                 = local.ecr_urls[var.service_configs.authority.name]
       lg_name               = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
       lg_prefix             = "app"
-      lg_region             = data.aws_region.current.name
+      lg_region             = data.aws_region.current.region
       memory                = var.service_configs.authority.memory
       name                  = var.service_configs.authority.name
       onelogin_authority    = local.one_login.credential_locations.authority

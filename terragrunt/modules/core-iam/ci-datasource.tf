@@ -68,7 +68,7 @@ data "aws_iam_policy_document" "ci_build_generic" {
     ]
 
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/codebuild/*:log-stream:*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/codebuild/*:log-stream:*",
     ]
   }
 
@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "ci_build_generic" {
       "ec2:CreateNetworkInterfacePermission"
     ]
     resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:network-interface/*"
+      "arn:aws:ec2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:network-interface/*"
     ]
     effect = "Allow"
     condition {
