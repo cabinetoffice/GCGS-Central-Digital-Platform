@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   orchestrator_vars = read_terragrunt_config(find_in_parent_folders("orchestrator.hcl"))
 
   canary_exclude_list = ["orchestrator", "production"]
@@ -15,10 +15,10 @@ locals {
   canary_configs = {
     for key, env in local.global_vars.locals.environments :
     key => {
-      name                = env.name
+      name                   = env.name
       pinned_service_version = try(env.pinned_service_version, null)
-      api_url             = "https://api.${env.name}.supplier-information.find-tender.service.gov.uk"
-      schedule_expression = env.canary_schedule_expression
+      api_url                = "https://api.${env.name}.supplier-information.find-tender.service.gov.uk"
+      schedule_expression    = env.canary_schedule_expression
     } if !(contains(local.canary_exclude_list, env.name))
   }
 

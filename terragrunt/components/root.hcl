@@ -4,11 +4,11 @@ locals {
     for name, env in local.environments : name => env.account_id
   }
 
-  cidr_b_production           = 1
-  cidr_b_staging              = 2
-  cidr_b_development          = 3
-  cidr_b_integration          = 4
-  cidr_b_orchestrator         = 5
+  cidr_b_production   = 1
+  cidr_b_staging      = 2
+  cidr_b_development  = 3
+  cidr_b_integration  = 4
+  cidr_b_orchestrator = 5
 
   environment = get_env("TG_ENVIRONMENT", "development")
 
@@ -31,28 +31,28 @@ locals {
         "10.${local.cidr_b_orchestrator}.2.0/24",
         "10.${local.cidr_b_orchestrator}.3.0/24"
       ]
-      redis_node_type  = "cache.t2.micro"
+      redis_node_type = "cache.t2.micro"
     }
 
     development = {
-      cidr_block                        = "10.${local.cidr_b_development}.0.0/16"
-      account_id                        = 471112892058
-      canary_schedule_expression        = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
-      cfs_extra_domains                 = ["www-development.contractsfinder.service.gov.uk"]
-      fts_extra_domains                 = ["www-development.find-tender.service.gov.uk"]
-      mail_from_domains                 = []
-      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
-      mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.large"
-      name                              = "dev"
+      cidr_block                  = "10.${local.cidr_b_development}.0.0/16"
+      account_id                  = 471112892058
+      canary_schedule_expression  = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
+      cfs_extra_domains           = ["www-development.contractsfinder.service.gov.uk"]
+      fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
+      mail_from_domains           = []
+      mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family         = "aurora-mysql5.7"
+      mysql_aurora_instance_type  = "db.r5.large"
+      name                        = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = null
-      pinned_service_version_fts        = null
-      pinned_service_version            = null
-      postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.large"
+      pinned_service_version_cfs    = null
+      pinned_service_version_fts    = null
+      pinned_service_version        = null
+      postgres_instance_type        = "db.t4g.micro"
+      postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_development}.101.0/24",
         "10.${local.cidr_b_development}.102.0/24",
@@ -63,29 +63,29 @@ locals {
         "10.${local.cidr_b_development}.2.0/24",
         "10.${local.cidr_b_development}.3.0/24"
       ]
-      redis_node_type  = "cache.t3.small"
+      redis_node_type = "cache.t3.small"
     }
 
     staging = {
-      cidr_block                        = "10.${local.cidr_b_staging}.0.0/16"
-      account_id                        = 905418042182
-      canary_schedule_expression        = "rate(30 minutes)"
-      cfs_extra_domains                 = ["www-preview.contractsfinder.service.gov.uk"]
-      fts_extra_domains                 = ["www-staging.find-tender.service.gov.uk"]
-      name                              = "staging"
-      mail_from_domains                 = []
-      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
-      mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.xlarge"
+      cidr_block                  = "10.${local.cidr_b_staging}.0.0/16"
+      account_id                  = 905418042182
+      canary_schedule_expression  = "rate(30 minutes)"
+      cfs_extra_domains           = ["www-preview.contractsfinder.service.gov.uk"]
+      fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
+      name                        = "staging"
+      mail_from_domains           = []
+      mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family         = "aurora-mysql5.7"
+      mysql_aurora_instance_type  = "db.r5.xlarge"
       onelogin_logout_notification_urls = [
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.7"
-      pinned_service_version_fts        = "1.1.1"
-      pinned_service_version            = "1.0.81"
-      postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.large"
+      pinned_service_version_cfs    = "1.0.7"
+      pinned_service_version_fts    = "1.1.1"
+      pinned_service_version        = "1.0.81"
+      postgres_instance_type        = "db.t4g.micro"
+      postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -96,20 +96,20 @@ locals {
         "10.${local.cidr_b_staging}.2.0/24",
         "10.${local.cidr_b_staging}.3.0/24"
       ]
-      redis_node_type  = "cache.t3.medium"
+      redis_node_type = "cache.t3.medium"
     }
 
     integration = {
-      cidr_block                        = "10.${local.cidr_b_integration}.0.0/16"
-      account_id                        = 767397666448
-      canary_schedule_expression        = "rate(30 minutes)"
-      cfs_extra_domains                 = ["www-integration.contractsfinder.service.gov.uk"]
-      fts_extra_domains                 = ["www-tpp.find-tender.service.gov.uk"]
-      mail_from_domains                 = []
-      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
-      mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.xlarge"
-      name                              = "integration"
+      cidr_block                  = "10.${local.cidr_b_integration}.0.0/16"
+      account_id                  = 767397666448
+      canary_schedule_expression  = "rate(30 minutes)"
+      cfs_extra_domains           = ["www-integration.contractsfinder.service.gov.uk"]
+      fts_extra_domains           = ["www-tpp.find-tender.service.gov.uk"]
+      mail_from_domains           = []
+      mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family         = "aurora-mysql5.7"
+      mysql_aurora_instance_type  = "db.r5.xlarge"
+      name                        = "integration"
       onelogin_logout_notification_urls = [
         "https://truk-alpha.nqc.com/auth/backchannellogout",
         "https://truk-performance.nqc.com/auth/backchannellogout",
@@ -118,11 +118,11 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs        = "1.0.7"
-      pinned_service_version_fts        = "1.0.35"
-      pinned_service_version            = "1.0.81"
-      postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.large"
+      pinned_service_version_cfs    = "1.0.7"
+      pinned_service_version_fts    = "1.0.35"
+      pinned_service_version        = "1.0.81"
+      postgres_instance_type        = "db.t4g.micro"
+      postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
         "10.${local.cidr_b_integration}.102.0/24",
@@ -133,30 +133,30 @@ locals {
         "10.${local.cidr_b_integration}.2.0/24",
         "10.${local.cidr_b_integration}.3.0/24"
       ]
-      redis_node_type  = "cache.t3.medium"
+      redis_node_type = "cache.t3.medium"
     }
 
     production = {
-      cidr_block                        = "10.${local.cidr_b_production}.0.0/16"
-      account_id                        = 471112843276
-      canary_schedule_expression        = "rate(15 minutes)"
-      cfs_extra_domains                 = ["www.contractsfinder.service.gov.uk"]
-      fts_extra_domains                 = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
-      mail_from_domains                 = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
-      mysql_aurora_engine_version       = "5.7.mysql_aurora.2.12.5"
-      mysql_aurora_family               = "aurora-mysql5.7"
-      mysql_aurora_instance_type        = "db.r5.8xlarge"
-      name                              = "production"
+      cidr_block                  = "10.${local.cidr_b_production}.0.0/16"
+      account_id                  = 471112843276
+      canary_schedule_expression  = "rate(15 minutes)"
+      cfs_extra_domains           = ["www.contractsfinder.service.gov.uk"]
+      fts_extra_domains           = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
+      mail_from_domains           = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
+      mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
+      mysql_aurora_family         = "aurora-mysql5.7"
+      mysql_aurora_instance_type  = "db.r5.8xlarge"
+      name                        = "production"
       onelogin_logout_notification_urls = [
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs        = "1.0.7"
-      pinned_service_version_fts        = "1.0.35"
-      pinned_service_version            = "1.0.80"
-      postgres_instance_type            = "db.t4g.micro"
-      postgres_aurora_instance_type     = "db.r5.8xlarge"
-      postgres_aurora_instance_type_ev  = "db.r5.4xlarge"
+      pinned_service_version_cfs       = "1.0.7"
+      pinned_service_version_fts       = "1.0.35"
+      pinned_service_version           = "1.0.80"
+      postgres_instance_type           = "db.t4g.micro"
+      postgres_aurora_instance_type    = "db.r5.8xlarge"
+      postgres_aurora_instance_type_ev = "db.r5.4xlarge"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -167,7 +167,7 @@ locals {
         "10.${local.cidr_b_production}.2.0/24",
         "10.${local.cidr_b_production}.3.0/24"
       ]
-      redis_node_type  = "cache.r5.xlarge"
+      redis_node_type = "cache.r5.xlarge"
     }
   }
 
@@ -194,32 +194,32 @@ locals {
   }
 
   external_product = {
-    name          = "CDP FTS"
-    resource_name = "cdp-sirsi-ext-fts"
+    name                           = "CDP FTS"
+    resource_name                  = "cdp-sirsi-ext-fts"
     mysql_access_allowed_ip_ranges = ["0.0.0.0/0"]
   }
 
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
-    cfs                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    cfs                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
-    commercial_tools_migrations          = { cpu = 256,  memory = 512}
+    commercial_tools_migrations          = { cpu = 256, memory = 512 }
     data_sharing                         = {}
     entity_verification                  = {}
-    entity_verification_migrations       = { cpu = 256,  memory = 512}
+    entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 4096,  memory = 8192}
+    fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
-    fts_scheduler                        = { desired_count = 1, cpu = 4096,  memory = 8192 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_indexer                   = { desired_count = 0 }
     organisation                         = {}
     organisation_app                     = {}
-    organisation_information_migrations  = { cpu = 256,  memory = 512}
+    organisation_information_migrations  = { cpu = 256, memory = 512 }
     outbox_processor_entity_verification = { desired_count = 1 }
     outbox_processor_organisation        = { desired_count = 1 }
     person                               = {}
@@ -236,10 +236,10 @@ locals {
   }
 
   resource_defaults = {
-    development  = { cpu = 256,  memory = 512  }
-    orchestrator = { cpu = 256,  memory = 512  }
-    integration  = { cpu = 512,  memory = 1024 }
-    staging      = { cpu = 512,  memory = 1024 }
+    development  = { cpu = 256, memory = 512 }
+    orchestrator = { cpu = 256, memory = 512 }
+    integration  = { cpu = 512, memory = 1024 }
+    staging      = { cpu = 512, memory = 1024 }
     production   = { cpu = 1024, memory = 2048 }
   }
 
@@ -365,7 +365,7 @@ remote_state {
 generate provider {
   path      = "temp_providers.tf"
   if_exists = "overwrite_terragrunt"
-  contents = file("../providers.tf")
+  contents  = file("../providers.tf")
 }
 
 inputs = {
@@ -383,7 +383,7 @@ inputs = {
 
 terraform {
   extra_arguments disable_input {
-    commands = get_terraform_commands_that_need_input()
+    commands  = get_terraform_commands_that_need_input()
     arguments = ["-input=false"]
   }
 }
