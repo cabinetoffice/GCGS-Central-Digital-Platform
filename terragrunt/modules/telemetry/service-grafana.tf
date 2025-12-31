@@ -11,10 +11,10 @@ module "ecs_service_grafana" {
       gf_admin_password     = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
       gf_admin_user         = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
       host_port             = var.grafana_config.port
-      image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.grafana_config.name}:latest"
+      image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.grafana_config.name}:latest"
       lg_name               = aws_cloudwatch_log_group.grafana.name
       lg_prefix             = "telemetry"
-      lg_region             = data.aws_region.current.name
+      lg_region             = data.aws_region.current.region
       memory                = var.grafana_config.memory
       name                  = var.grafana_config.name
       role_telemetry_arn    = var.role_telemetry_arn

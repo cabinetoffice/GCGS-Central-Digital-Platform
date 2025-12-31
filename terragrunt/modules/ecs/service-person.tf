@@ -15,7 +15,7 @@ module "ecs_service_person" {
       image               = local.ecr_urls[var.service_configs.person.name]
       lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.person.name].name
       lg_prefix           = "app"
-      lg_region           = data.aws_region.current.name
+      lg_region           = data.aws_region.current.region
       memory              = var.service_configs.person.memory
       name                = var.service_configs.person.name
       public_domain       = var.public_domain

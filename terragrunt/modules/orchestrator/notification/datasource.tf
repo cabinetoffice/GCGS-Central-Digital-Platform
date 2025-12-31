@@ -58,7 +58,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "secretsmanager:DescribeSecret",
     ]
     resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*"
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*"
     ]
   }
 
@@ -101,7 +101,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "states:StartExecution"
     ]
     resources = [
-      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
+      "arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
     ]
   }
 }

@@ -86,9 +86,9 @@ data "aws_iam_policy_document" "ecs_task_access_secrets" {
       "secretsmanager:GetSecretValue"
     ]
     resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds-*"
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds-*"
     ]
   }
   statement {
@@ -133,7 +133,7 @@ data "aws_iam_policy_document" "ecs_task_access_elasticache" {
       "ssm:PutParameter"
     ]
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-ec-*"
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-ec-*"
     ]
   }
 }
@@ -147,9 +147,9 @@ data "aws_iam_policy_document" "ecs_task_access_ses" {
       "ses:SendRawEmail"
     ]
     resources = [
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${local.ses_identity_domain}",
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*.service.gov.uk",
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/*goaco.com",
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${local.ses_identity_domain}",
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/*.service.gov.uk",
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/*goaco.com",
       var.ses_configuration_set_arn
     ]
   }
@@ -165,7 +165,7 @@ data "aws_iam_policy_document" "ecs_task_serilog" {
       "logs:Put*",
 
     ]
-    resources = ["arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"]
+    resources = ["arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:*"]
   }
 }
 
@@ -186,11 +186,11 @@ data "aws_iam_policy_document" "step_function_manage_services" {
     resources = concat(
       [
         for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/${service}"
+        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/${service}"
       ],
       [
         for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/${service}"
+        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/${service}"
       ]
     )
 
@@ -201,7 +201,7 @@ data "aws_iam_policy_document" "step_function_manage_services" {
     actions = ["ecs:RunTask"]
     resources = [
       for task in local.tasks :
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
     ]
     sid = "MangeECSTask"
   }
@@ -212,7 +212,7 @@ data "aws_iam_policy_document" "step_function_manage_services" {
       "events:PutTargets",
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
     sid = "MangeEvents"
   }

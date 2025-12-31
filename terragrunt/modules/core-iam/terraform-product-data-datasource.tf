@@ -19,10 +19,10 @@ data "aws_iam_policy_document" "terraform_product_data" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:${local.name_prefix}-*",
-      "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parametergroup:${local.name_prefix}-*",
-      "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:replicationgroup:${local.name_prefix}-*",
-      "arn:aws:elasticache:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:subnetgroup:${local.name_prefix}-*",
+      "arn:aws:elasticache:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster:${local.name_prefix}-*",
+      "arn:aws:elasticache:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parametergroup:${local.name_prefix}-*",
+      "arn:aws:elasticache:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:replicationgroup:${local.name_prefix}-*",
+      "arn:aws:elasticache:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:subnetgroup:${local.name_prefix}-*",
     ]
     sid = "ManageProductCache"
   }
@@ -42,11 +42,11 @@ data "aws_iam_policy_document" "terraform_product_data" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster-pg:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:db:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:pg:cdp-*",
-      "arn:aws:rds:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:subgrp:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-pg:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:pg:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:subgrp:cdp-*",
     ]
     sid = "ManageProductRDS"
   }
@@ -73,7 +73,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
+      "arn:aws:sqs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
     ]
     sid = "ManageProductSQS"
   }
