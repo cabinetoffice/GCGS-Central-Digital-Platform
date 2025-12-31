@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -160,18 +160,18 @@ inputs = {
   ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
 
-  db_cfs_cluster_address                 = dependency.service_database.outputs.cfs_cluster_address
-  db_cfs_cluster_credentials_arn         = dependency.service_database.outputs.cfs_cluster_credentials_arn
-  db_cfs_cluster_name                    = dependency.service_database.outputs.cfs_cluster_name
-  db_ev_cluster_address                  = dependency.service_database.outputs.entity_verification_cluster_address
-  db_ev_cluster_credentials_arn          = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
-  db_ev_cluster_name                     = dependency.service_database.outputs.entity_verification_cluster_name
-  db_fts_cluster_address                 = dependency.service_database.outputs.fts_cluster_address
-  db_fts_cluster_credentials_arn         = dependency.service_database.outputs.fts_cluster_credentials_arn
-  db_fts_cluster_name                    = dependency.service_database.outputs.fts_cluster_name
-  db_sirsi_cluster_address               = dependency.service_database.outputs.sirsi_cluster_address
-  db_sirsi_cluster_credentials_arn       = dependency.service_database.outputs.sirsi_cluster_credentials_arn
-  db_sirsi_cluster_name                  = dependency.service_database.outputs.sirsi_cluster_name
+  db_cfs_cluster_address           = dependency.service_database.outputs.cfs_cluster_address
+  db_cfs_cluster_credentials_arn   = dependency.service_database.outputs.cfs_cluster_credentials_arn
+  db_cfs_cluster_name              = dependency.service_database.outputs.cfs_cluster_name
+  db_ev_cluster_address            = dependency.service_database.outputs.entity_verification_cluster_address
+  db_ev_cluster_credentials_arn    = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
+  db_ev_cluster_name               = dependency.service_database.outputs.entity_verification_cluster_name
+  db_fts_cluster_address           = dependency.service_database.outputs.fts_cluster_address
+  db_fts_cluster_credentials_arn   = dependency.service_database.outputs.fts_cluster_credentials_arn
+  db_fts_cluster_name              = dependency.service_database.outputs.fts_cluster_name
+  db_sirsi_cluster_address         = dependency.service_database.outputs.sirsi_cluster_address
+  db_sirsi_cluster_credentials_arn = dependency.service_database.outputs.sirsi_cluster_credentials_arn
+  db_sirsi_cluster_name            = dependency.service_database.outputs.sirsi_cluster_name
 
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
