@@ -8,7 +8,7 @@ include {
 
 locals {
 
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   orchestrator_vars = read_terragrunt_config(find_in_parent_folders("orchestrator.hcl"))
 
   tags = merge(
@@ -21,6 +21,6 @@ locals {
 }
 
 inputs = {
-  account_ids         = local.global_vars.locals.account_ids
-  tags                = local.tags
+  account_ids = local.global_vars.locals.account_ids
+  tags        = local.tags
 }

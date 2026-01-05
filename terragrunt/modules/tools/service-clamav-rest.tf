@@ -9,10 +9,10 @@ module "clamav_rest" {
       cpu                            = var.is_production || var.environment == "staging" ? 4096 : var.tools_configs.clamav_rest.cpu
       environment                    = title(var.environment)
       host_port                      = var.tools_configs.clamav_rest.port
-      image                          = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.tools_configs.clamav_rest.name}:latest"
+      image                          = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.tools_configs.clamav_rest.name}:latest"
       lg_name                        = aws_cloudwatch_log_group.clamav_rest.name
       lg_prefix                      = "tools"
-      lg_region                      = data.aws_region.current.name
+      lg_region                      = data.aws_region.current.region
       memory                         = var.is_production || var.environment == "staging" ? 8192 : var.tools_configs.clamav_rest.memory
       name                           = var.tools_configs.clamav_rest.name
       sqs_entity_verification_url    = var.sqs_entity_verification_url

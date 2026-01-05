@@ -17,7 +17,7 @@ module "ecs_service_organisation" {
       image                           = local.ecr_urls[var.service_configs.organisation.name]
       lg_name                         = aws_cloudwatch_log_group.tasks[var.service_configs.organisation.name].name
       lg_prefix                       = "app"
-      lg_region                       = data.aws_region.current.name
+      lg_region                       = data.aws_region.current.region
       memory                          = var.service_configs.organisation.memory
       name                            = var.service_configs.organisation.name
       public_domain                   = var.public_domain

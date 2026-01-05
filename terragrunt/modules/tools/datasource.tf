@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "step_function_manage_tools_services" {
     actions = ["ecs:UpdateService"]
     resources = [
       for service, config in local.auto_redeploy_tools_service_configs :
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/${var.ecs_cluster_name}/${service}"
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${var.ecs_cluster_name}/${service}"
     ]
     sid = "MangeECSService"
   }
@@ -25,7 +25,7 @@ data "aws_iam_policy_document" "step_function_manage_tools_services" {
     actions = ["ecs:RunTask"]
     resources = [
       for task in local.executable_tasks_by_step_functions :
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
     ]
     sid = "MangeECSTask"
   }
@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "step_function_manage_tools_services" {
       "events:PutTargets",
     ]
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForECSTaskRule"
     ]
     sid = "MangeEvents"
   }

@@ -15,7 +15,7 @@ module "ecs_service_outbox_processor_entity_verification" {
       image                  = local.ecr_urls[var.service_configs.outbox_processor_entity_verification.name]
       lg_name                = aws_cloudwatch_log_group.tasks[var.service_configs.outbox_processor_entity_verification.name].name
       lg_prefix              = "app"
-      lg_region              = data.aws_region.current.name
+      lg_region              = data.aws_region.current.region
       memory                 = var.service_configs.outbox_processor_entity_verification.memory
       name                   = var.service_configs.outbox_processor_entity_verification.name
       queue_organisation_url = var.queue_organisation_url

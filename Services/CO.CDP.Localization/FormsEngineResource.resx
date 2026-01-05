@@ -448,17 +448,15 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
       You are only required to complete this module if requested by the contracting authority you are bidding for.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-      Failure to complete this module may result in your tenders being deemed insufficient where XXX has been applied. For more information read
-      &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      Placeholder (opens in a new tab)&lt;/a&gt;.
+      Failure to complete this module may result in your tenders being deemed insufficient.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You'll need to provide information on quality management in your organisation including:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt; the accrediting body of your QMS certification &lt;/li&gt;
-        &lt;li&gt; the standard (ISO 9001 or equivalent) assessed against &lt;/li&gt;
-        &lt;li&gt; whether you have documented processes for ensuring product quality&lt;/li&gt;
+        &lt;li&gt;the accrediting body of your QMS certification&lt;/li&gt;
+        &lt;li&gt;the standard (ISO 9001 or equivalent) assessed against&lt;/li&gt;
+        &lt;li&gt;whether you have documented processes for ensuring product quality&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;
     </value>
@@ -471,18 +469,29 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="QualityManagementQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Quality management system</value>
   </data>
-  <data name="QualityManagementQuestion_02_CustomInsetText" xml:space="preserve">
+  <data name="QualityManagementQuestion_02_Description" xml:space="preserve">
+  <value>
+    &lt;p class="govuk-body"&gt;View the &lt;a href="https://www.ukas.com" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;United Kingdom Accreditation Service website (opens in a new tab)&lt;/a&gt; to find out more about UKAS accreditation.&lt;/p&gt;
+  </value>
+</data>
+  <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
+    <value>Do you want to upload evidence of your quality management system certification now?</value>
+  </data>
+  <data name="QualityManagementQuestion_03_SummaryTitle" xml:space="preserve">
+    <value>Evidence upload</value>
+  </data>
+  <data name="QualityManagementQuestion_03_CustomInsetText" xml:space="preserve">
     <value>
       &lt;div class=&quot;govuk-inset-text&quot;&gt;
         If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
       &lt;/div&gt;
     </value>
   </data>
-  <data name="QualityManagementQuestion_03_Title" xml:space="preserve">
+  <data name="QualityManagementQuestion_04_Title" xml:space="preserve">
     <value>Do you have a documented process designed to ensure that the quality of your products or services is consistent?
 </value>
   </data>
-  <data name="QualityManagementQuestion_03_SummaryTitle" xml:space="preserve">
+  <data name="QualityManagementQuestion_04_SummaryTitle" xml:space="preserve">
     <value>Product quality processes</value>
   </data>
 
@@ -496,22 +505,20 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="EnvironmentalQuestion_01_Description" xml:space="preserve">
     <value>
     &lt;p class="govuk-body"&gt;
-      For some procurements it may be necessary for bidders to provide information on their environmental management system (EMS) and its certification standard. An EMS is a set of processes that help an organisation to reduce its environmental impact. Your contracting authority will provide you with specific requirements that your EMS must meet. For further information read WPPN &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      Placeholder (opens in a new tab)&lt;/a&gt;.
+      For some procurements it may be necessary for bidders to provide information on their environmental management system (EMS) and its certification standard. An EMS is a set of processes that help an organisation to reduce its environmental impact. Your contracting authority will provide you with specific requirements that your EMS must meet.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
       You are only required to complete this module if requested by the contracting authority you are bidding for.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-Failure to complete this module may result in your tenders being deemed insufficient where WPPN 10/21 has been applied. For more information read WPPN 10/21 in the construction industry &lt;a href="https://www.gov.uk/placeholder" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;Placeholder (opens in a new tab)&lt;/a&gt;.
+      Failure to complete this module may result in your tenders being deemed insufficient.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You'll need to provide information on your environmental management policies and systems. This may include:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt; confirmation you have an EMS certified by a UKAS-accredited organisation or equivalent &lt;/li&gt;
-        &lt;li&gt; how your consortium members are covered under the EMS (where relevant) &lt;/li&gt;
-        &lt;li&gt; information about your environmental policy statement and how this covers your consortium members (where relevant) &lt;/li&gt;
+        &lt;li&gt; information about your environmental policy statement &lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;
     </value>
@@ -522,7 +529,7 @@ Failure to complete this module may result in your tenders being deemed insuffic
     </value>
   </data>
   <data name="EnvironmentalQuestion_02_SummaryTitle" xml:space="preserve">
-    <value>Environmental management system certification</value>
+    <value>Environmental management system</value>
   </data>
   <data name="EnvironmentalQuestion_02_CustomInsetText" xml:space="preserve">
     <value>
@@ -533,17 +540,17 @@ Failure to complete this module may result in your tenders being deemed insuffic
   </data>
   <data name="EnvironmentalQuestion_03_Title" xml:space="preserve">
     <value>
-      If you're bidding as a consortium, explain which members have an environmental management system certified by a UKAS-accredited (or national equivalent) organisation
+      Do you want to upload evidence of your environmental management system (EMS) certification now?
     </value>
   </data>
   <data name="EnvironmentalQuestion_03_SummaryTitle" xml:space="preserve">
-    <value>Consortium member certification</value>
+    <value>Evidence upload</value>
   </data>
-  <data name="EnvironmentalQuestion_03_Description" xml:space="preserve">
+  <data name="EnvironmentalQuestion_03_CustomInsetText" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;
-        In your answer, explain how this covers the work of the consortium.
-      &lt;/p&gt;
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
     </value>
   </data>
   <data name="EnvironmentalQuestion_04_Title" xml:space="preserve">
@@ -554,22 +561,21 @@ Failure to complete this module may result in your tenders being deemed insuffic
   <data name="EnvironmentalQuestion_04_SummaryTitle" xml:space="preserve">
     <value>Environmental policy statement</value>
   </data>
-  <data name="EnvironmentalQuestion_04_CustomInsetText" xml:space="preserve">
+  <data name="EnvironmentalQuestion_05_Title" xml:space="preserve">
+    <value>
+      Do you want to upload evidence of your environmental policy statement certification now?
+    </value>
+  </data>
+  <data name="EnvironmentalQuestion_05_SummaryTitle" xml:space="preserve">
+    <value>Evidence upload</value>
+  </data>
+  <data name="EnvironmentalQuestion_05_CustomInsetText" xml:space="preserve">
     <value>
       &lt;div class=&quot;govuk-inset-text&quot;&gt;
         If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
       &lt;/div&gt;
     </value>
   </data>
-  <data name="EnvironmentalQuestion_05_Title" xml:space="preserve">
-    <value>
-      If you are bidding as a consortium, please explain how your environmental policy statement covers the work of the consortium
-    </value>
-  </data>
-  <data name="EnvironmentalQuestion_05_SummaryTitle" xml:space="preserve">
-    <value>Consortium environmental policy statement</value>
-  </data>
-
   <data name="WelshHealthAndSafety_SectionTitle" xml:space="preserve">
     <value>Health and Safety</value>
   </data>

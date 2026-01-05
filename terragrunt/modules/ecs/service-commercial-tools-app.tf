@@ -13,7 +13,7 @@ module "ecs_service_commercial_tools_app" {
       image                             = local.ecr_urls[var.service_configs.commercial_tools_app.name]
       lg_name                           = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_app.name].name
       lg_prefix                         = "app"
-      lg_region                         = data.aws_region.current.name
+      lg_region                         = data.aws_region.current.region
       memory                            = var.service_configs.commercial_tools_app.memory
       name                              = var.service_configs.commercial_tools_app.name
       onelogin_account_url              = local.one_login.credential_locations.account_url
@@ -26,7 +26,7 @@ module "ecs_service_commercial_tools_app" {
       redis_auth_token_arn              = var.redis_auth_token_arn
       redis_port                        = var.redis_port
       redis_primary_endpoint_address    = var.redis_primary_endpoint
-      service_version                   = var.environment == "development" ?  local.service_version_sirsi : "1.0.80-98036a04a"
+      service_version                   = var.environment == "development" ? local.service_version_sirsi : "1.0.80-98036a04a"
       sessiontimeoutinminutes           = var.commercial_tools_session_timeout
       shared_sessions_enabled           = local.shared_sessions_enabled
       ssm_data_protection_prefix        = local.ssm_data_protection_prefix

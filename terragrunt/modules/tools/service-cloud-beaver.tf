@@ -16,10 +16,10 @@ module "ecs_service_cloud_beaver" {
       efs_access_point_id        = aws_efs_access_point.cloudbeaver.id
       efs_file_system_id         = aws_efs_file_system.cloudbeaver.id
       host_port                  = var.cloud_beaver_config.port
-      image                      = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.cloud_beaver_config.name}:latest"
+      image                      = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.cloud_beaver_config.name}:latest"
       lg_name                    = aws_cloudwatch_log_group.cloud_beaver.name
       lg_prefix                  = "tools"
-      lg_region                  = data.aws_region.current.name
+      lg_region                  = data.aws_region.current.region
       memory                     = var.cloud_beaver_config.memory
       name                       = var.cloud_beaver_config.name
       source_volume              = local.cloud_beaver_volume_name

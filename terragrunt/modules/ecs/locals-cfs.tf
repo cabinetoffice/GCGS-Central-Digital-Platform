@@ -70,7 +70,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.cfs.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.cfs.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.service_configs.cfs.memory
     name            = var.service_configs.cfs.name
     public_domain   = var.public_domain
@@ -85,7 +85,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.cfs_scheduler.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.cfs_scheduler.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.service_configs.cfs_scheduler.memory
     name            = var.service_configs.cfs_scheduler.name
     public_domain   = var.public_domain
@@ -100,7 +100,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.cfs_migrations.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.cfs_migrations.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.service_configs.cfs_migrations.memory
     name            = var.service_configs.cfs_migrations.name
     public_domain   = var.public_domain

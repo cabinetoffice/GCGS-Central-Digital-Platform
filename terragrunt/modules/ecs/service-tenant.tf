@@ -15,7 +15,7 @@ module "ecs_service_tenant" {
       image               = local.ecr_urls[var.service_configs.tenant.name]
       lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.tenant.name].name
       lg_prefix           = "app"
-      lg_region           = data.aws_region.current.name
+      lg_region           = data.aws_region.current.region
       memory              = var.service_configs.tenant.memory
       name                = var.service_configs.tenant.name
       public_domain       = var.public_domain

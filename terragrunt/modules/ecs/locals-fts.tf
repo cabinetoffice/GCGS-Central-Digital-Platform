@@ -82,6 +82,7 @@ locals {
     use_srsi                            = true
     use_srsi_for_api                    = true
     valid_until                         = 1924990799
+    validation_weight                   = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
   }
 
   fts_service_paremeters = {
@@ -91,7 +92,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.fts.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
     name            = var.service_configs.fts.name
     public_domain   = var.public_domain
@@ -106,7 +107,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.fts_scheduler.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.is_production ? var.service_configs.fts_scheduler.memory * 2 : var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
     name            = var.service_configs.fts_scheduler.name
     public_domain   = var.public_domain
@@ -121,7 +122,7 @@ locals {
     image           = local.ecr_urls[var.service_configs.fts_migrations.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_migrations.name].name
     lg_prefix       = "app"
-    lg_region       = data.aws_region.current.name
+    lg_region       = data.aws_region.current.region
     memory          = var.service_configs.fts_migrations.memory
     name            = var.service_configs.fts_migrations.name
     public_domain   = var.public_domain

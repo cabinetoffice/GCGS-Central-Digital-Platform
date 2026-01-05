@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "ses_send" {
       "ses:SendRawEmail"
     ]
     resources = [
-      "arn:aws:ses:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:identity/${each.key}"
+      "arn:aws:ses:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:identity/${each.key}"
     ]
     principals {
       type        = "Service"
@@ -90,7 +90,7 @@ data "aws_iam_policy_document" "ses_logs_ingestor" {
     ]
     resources = [
       "${aws_cloudwatch_log_group.ses_logs_ingestor.arn}:*",
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.ses_logs_ingestor.name}:*"
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:${aws_cloudwatch_log_group.ses_logs_ingestor.name}:*"
     ]
   }
 }

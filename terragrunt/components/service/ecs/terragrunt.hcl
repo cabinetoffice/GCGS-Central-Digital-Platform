@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -39,17 +39,17 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnet_ids           = "mock"
-    private_subnets_cidr_blocks  = "mock"
-    public_domain                = "mock"
-    public_hosted_zone_cfs_id    = "mock"
-    public_hosted_zone_fts_id    = "mock"
-    public_hosted_zone_id        = "mock"
-    public_subnet_ids            = "mock"
-    public_subnets_cidr_blocks   = "mock"
-    vpc_id                       = "mock"
-    waf_acl_arn                  = "mock"
-    waf_acl_php_arn              = "mock"
+    private_subnet_ids          = "mock"
+    private_subnets_cidr_blocks = "mock"
+    public_domain               = "mock"
+    public_hosted_zone_cfs_id   = "mock"
+    public_hosted_zone_fts_id   = "mock"
+    public_hosted_zone_id       = "mock"
+    public_subnet_ids           = "mock"
+    public_subnets_cidr_blocks  = "mock"
+    vpc_id                      = "mock"
+    waf_acl_arn                 = "mock"
+    waf_acl_php_arn             = "mock"
   }
 }
 
