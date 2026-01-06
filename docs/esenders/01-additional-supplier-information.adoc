@@ -16,6 +16,16 @@ The following modules have been added to the Standard Questions form:
 . *Data Protection* - Data protection and GDPR compliance
 . *Payments* - Payment practices and reporting
 
+== New Welsh Additional SI Modules
+
+The following Welsh modules have been added to the Standard Questions form:
+
+. *Steel* - Steel industry-specific requirements and certifications
+. *Health & Safety* - Health and safety management systems
+. *Exclusions* - Identifying organisations in relation to prohibited lists
+. *Quality Management* - Quality management systems, certifications and processes
+. *Environmental* - Environmental management systems, certifications and policies
+
 == Question Types in Additional SI Modules
 
 The new modules use these question types that eSenders will encounter in the shared data:
@@ -68,6 +78,10 @@ While eSenders won't see the validation configuration, they should be aware that
 
 * *Document requirements*: Policies, certificates, reports
 * *Optional uploads*: May have boolean "No document" responses
+
+=== Multi-line Validation
+
+* *Optional text*: May have boolean "No text" responses
 
 == Data Handling Considerations for eSenders
 
@@ -125,6 +139,38 @@ No changes have been made to the Data Sharing API contract:
 * *Certification Data*: Dates, reference numbers, and document uploads
 * *Evidence Requirements*: Document uploads for certificates and policies
 
+=== Welsh Steel Module
+
+* *Policy Answers*: Mix of text, file upload and Yes/No answers
+* *Evidence Documents*: Optional uploads for details, policies, standards and procedure
+* *Textual Responses*: Descriptions, policies, standards or procedures, some are optional
+
+=== Welsh Health and Safety Module
+
+* *Policy Answers*: Mix of text/multi-line, file upload and Yes/No answers
+* *Evidence Documents*: Optional uploads for CVs, certificates and policies
+* *Structured Answers*: Safety group membership details grouped logically
+* *Optional Answers*: Some answers may not appear based on branching logic from Yes/No responses
+* *Textual Responses*: Membership numbers, descriptions, some multi-line text
+
+=== Welsh Exclusions Module
+
+* *Policy Answers*: Mix of multi-line text and Yes/No answer
+* *Textual Responses*:  Multi-line text descriptions for exclusion details
+* *Optional Answers*: Some answers will not appear based on branching logic from Yes/No response
+
+=== Welsh Environmental Module
+
+* *Policy Answers*: Mix of file uploads and Yes/No answers
+* *Evidence Documents*: Optional uploads for certificates and policies
+* *Optional Answers*: Some answers may not appear based on branching logic from Yes/No responses
+
+=== Welsh Quality Management Module
+
+* *Policy Answers*: Mix of file uploads and Yes/No answer
+* *Evidence Documents*: Optional uploads for certifications and policies
+* *Optional Answers*: Some answers may not appear based on branching logic from Yes/No responses
+
 == Recommendations for eSenders
 
 * *Test Integration*: Thoroughly test against integration environment to understand answer structures
@@ -136,5 +182,5 @@ For technical queries regarding the Additional SI modules or integration support
 
 '''
 
-_Last Updated: 3 September 2025_ +
+_Last Updated: 18 December 2025_ +
 _Target Audience: eSender Technical Teams_
