@@ -213,6 +213,7 @@ locals {
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
     fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    fts_app                              = { desired_count = 0 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
@@ -266,6 +267,7 @@ locals {
     entity_verification_migrations       = { port = 9191, port_host = null, cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations"}
     forms                                = { port = 8086, port_host = 8086, cluster = "sirsi",     type = "web-service",  name = "forms"}
     fts                                  = { port = 8070, port_host = 8070, cluster = "sirsi-php", type = "web-service",  name = "fts"}
+    fts_app                              = { port = 8078, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-app"}
     fts_healthcheck                      = { port = 8071, port_host = 8071, cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck"}
     fts_migrations                       = { port = 8072, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "fts-migrations"}
     fts_scheduler                        = { port = 8074, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-scheduler"}
