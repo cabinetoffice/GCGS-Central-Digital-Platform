@@ -9,12 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
-using Microsoft.FeatureManagement.Mvc;
 using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
-[FeatureGate(FeatureFlags.BuyerView)]
 [Authorize(OrgScopeRequirement.Viewer)]
 
 public class OrganisationHomeModel(
@@ -72,7 +70,7 @@ public class OrganisationHomeModel(
     private List<Tile> BuildTiles(
         FeatureConfiguration featureConfig)
     {
-        var originParams = new Dictionary<string, string?> { { "origin", "home" } };
+        var originParams = new Dictionary<string, string?> { { "origin", "organisation-home" } };
         var cookiesAcceptedValue = GetCookiesAcceptedValue();
 
         var tiles = new List<Tile>
@@ -81,7 +79,7 @@ public class OrganisationHomeModel(
             {
                 Title = StaticTextResource.OrganisationHome_TileOne_Title,
                 Body = StaticTextResource.OrganisationHome_TileOne_Body,
-                Href = $"/organisation/{Id}?origin=home"
+                Href = $"/organisation/{Id}?origin=organisation-home"
             }
         };
 
@@ -91,7 +89,7 @@ public class OrganisationHomeModel(
             {
                 Title = StaticTextResource.OrganisationHome_TileSeven_Title,
                 Body = StaticTextResource.OrganisationHome_TileSeven_Body,
-                Href = $"/organisation/{Id}/supplier-information?origin=home"
+                Href = $"/organisation/{Id}/supplier-information?origin=organisation-home"
             });
         }
 
@@ -103,7 +101,7 @@ public class OrganisationHomeModel(
                 {
                     Title = StaticTextResource.OrganisationHome_TileTwo_Title,
                     Body = StaticTextResource.OrganisationHome_TileTwo_Body,
-                    Href = $"/organisation/{Id}/buyer/search?origin=home"
+                    Href = $"/organisation/{Id}/buyer/search?origin=organisation-home"
                 });
             }
 
@@ -141,7 +139,7 @@ public class OrganisationHomeModel(
             {
                 Title = StaticTextResource.OrganisationHome_TileSix_Title,
                 Body = StaticTextResource.OrganisationHome_TileSix_Body,
-                Href = ""
+                Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "", Id, null, cookiesAcceptedValue, originParams)
             });
         }
 
