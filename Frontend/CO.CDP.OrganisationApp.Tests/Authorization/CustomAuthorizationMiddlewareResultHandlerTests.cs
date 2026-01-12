@@ -45,7 +45,7 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
     public async Task HandleAsync_WhenBuyerMouRequirementForbidden_WithOriginParameter_PreservesOriginInRedirect()
     {
         var organisationId = Guid.NewGuid();
-        var origin = "buyer-view";
+        var origin = "organisation-home";
         _httpContext.Request.QueryString = new QueryString($"?origin={origin}");
 
         _userInfoServiceMock.Setup(u => u.GetUserInfo()).ReturnsAsync(new UserInfo
@@ -75,7 +75,7 @@ public class CustomAuthorizationMiddlewareResultHandlerTests
 
         _httpContext.Response.StatusCode.Should().Be(302);
         _httpContext.Response.Headers.Location.ToString()
-            .Should().Be($"/organisation/{organisationId}/not-signed-memorandum?origin=buyer-view");
+            .Should().Be($"/organisation/{organisationId}/not-signed-memorandum?origin=organisation-home");
     }
 
     [Fact]

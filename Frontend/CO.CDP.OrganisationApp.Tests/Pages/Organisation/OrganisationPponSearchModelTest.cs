@@ -54,13 +54,13 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOriginIsBuyerView_SetsCorrectBackLinkUrl()
+    public async Task OnGet_WhenOriginIsOrganisationHome_SetsCorrectBackLinkUrl()
     {
-        _testOrganisationPponSearchModel.Origin = "buyer-view";
+        _testOrganisationPponSearchModel.Origin = "organisation-home";
 
         await _testOrganisationPponSearchModel.OnGet();
 
-        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}/buyer");
+        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}/home");
     }
 
     [Fact]
@@ -478,7 +478,7 @@ public class OrganisationPponSearchModelTest
         var pageSize = 10;
         var searchText = "Test Organisation";
         var sortOrder = "rel";
-        var origin = "buyer-view";
+        var origin = "organisation-home";
 
         var result = OrganisationPponSearchModel.CreatePaginationModel(
             currentPage, totalItems, pageSize, organisationId, searchText, sortOrder, origin);

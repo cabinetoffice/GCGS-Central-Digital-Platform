@@ -360,10 +360,11 @@ public class OrganisationOverviewTest
     }
 
     [Fact]
-    public async Task OnGet_WithBuyerOrganisation_SetsBackLinkToBuyerView()
+    public async Task OnGet_WhenOriginIsOrganisationHome_SetsBackLinkToHome()
     {
         var id = Guid.NewGuid();
         _model.Id = id;
+        _model.Origin = "organisation-home";
 
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id: id, roles: [PartyRole.Buyer]));
@@ -373,7 +374,7 @@ public class OrganisationOverviewTest
 
         await _model.OnGet();
 
-        _model.BackLinkUrl.Should().Be($"/organisation/{id}/buyer");
+        _model.BackLinkUrl.Should().Be($"/organisation/{id}/home");
     }
 
     [Fact]

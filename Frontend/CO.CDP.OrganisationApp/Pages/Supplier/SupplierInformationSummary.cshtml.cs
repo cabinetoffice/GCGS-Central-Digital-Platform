@@ -34,11 +34,18 @@ public class SupplierInformationSummaryModel(
     [BindProperty]
     public bool HasSupplierType { get; set; }
 
+    [BindProperty(SupportsGet = true, Name = "origin")]
+    public string? Origin { get; set; }
+
+    public string BackLinkUrl { get; private set; } = string.Empty;
+
     public Guid FormId { get; set; }
     public Guid SectionId { get; set; }
 
     public async Task<IActionResult> OnGet(Guid id)
     {
+        SetBackLinkUrl();
+
         CDP.Organisation.WebApiClient.SupplierInformation? supplierInfo;
         try
         {
@@ -70,5 +77,14 @@ public class SupplierInformationSummaryModel(
     public async Task<int> GetShareCodesCount()
     {
         return (await dataSharingClient.GetShareCodeListAsync(Id)).Count;
+    }
+
+    private void SetBackLinkUrl()
+    {
+        BackLinkUrl = Origin switch
+        {
+            "organisation-home" => $"/organisation/{Id}/home",
+            _ => $"/organisation/{Id}"
+        };
     }
 }
