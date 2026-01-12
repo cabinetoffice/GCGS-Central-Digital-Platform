@@ -177,6 +177,8 @@
 .govuk-blue-banner h1,
 .govuk-blue-banner p,
 .govuk-blue-banner .govuk-body,
+.govuk-blue-banner .govuk-caption-l,
+.govuk-blue-banner .govuk-heading-l,
 .govuk-blue-banner .govuk-heading-xl {
     color: #fff !important;
 }
