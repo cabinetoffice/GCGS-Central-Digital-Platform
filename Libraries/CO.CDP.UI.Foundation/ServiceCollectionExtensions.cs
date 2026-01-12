@@ -163,6 +163,35 @@ public class UiFoundationBuilder
     }
 
     /// <summary>
+    /// Adds FVRA URL service with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddFvraUrlService()
+    {
+        var options = _configuration.GetSection("FvraToolApp").Get<FvraUrlOptions>()
+                      ?? throw new InvalidOperationException("FvraToolApp configuration is missing.");
+        _services.AddSingleton(options);
+        _services.AddScoped<IFvraUrlService, FvraUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds FVRA URL service with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure FVRA URL options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddFvraUrlService(Action<FvraUrlOptions> configure)
+    {
+        var options = _configuration.GetSection("FvraToolApp").Get<FvraUrlOptions>()
+                      ?? throw new InvalidOperationException("FvraToolApp configuration is missing.");
+        configure(options);
+        _services.AddSingleton(options);
+        _services.AddScoped<IFvraUrlService, FvraUrlService>();
+        return this;
+    }
+
+
+    /// <summary>
     /// Adds the unified External Service URL builder
     /// </summary>
     /// <returns>The builder for method chaining</returns>
