@@ -13,7 +13,7 @@ locals {
   tools_repositories = concat([
     for name, config in var.tools_configs :
     config.name
-  ], ["codebuild"] )
+  ], ["codebuild"])
 
   repositories = concat(local.service_repositories, local.tools_repositories)
 

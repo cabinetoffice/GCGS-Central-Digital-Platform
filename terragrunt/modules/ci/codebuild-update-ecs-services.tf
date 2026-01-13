@@ -11,12 +11,12 @@ resource "aws_codebuild_project" "update_ecs_services" {
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
     image_pull_credentials_type = "SERVICE_ROLE"
-    image                       = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-codebuild:latest"
+    image                       = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-codebuild:latest"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     environment_variable {
       name  = "AWS_REGION"
-      value = data.aws_region.current.name
+      value = data.aws_region.current.region
     }
     environment_variable {
       name  = "AWS_ACCOUNT_ID"

@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "notification_step_function_assume" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = ["arn:aws:states:${data.aws_region.current.name}:${local.orchestrator_account_id}:stateMachine:*"]
+      values   = ["arn:aws:states:${data.aws_region.current.region}:${local.orchestrator_account_id}:stateMachine:*"]
     }
   }
 }

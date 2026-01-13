@@ -36,9 +36,9 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:cwsyn-${local.name_prefix}-*",
-      "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:layer:cwsyn-${local.name_prefix}-*",
-      "arn:aws:lambda:${data.aws_region.current.name}:*:layer:Synthetics_*",
+      "arn:aws:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:function:cwsyn-${local.name_prefix}-*",
+      "arn:aws:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:layer:cwsyn-${local.name_prefix}-*",
+      "arn:aws:lambda:${data.aws_region.current.region}:*:layer:Synthetics_*",
     ]
     sid = "ManageProductCanarysLambda"
   }
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/${local.name_prefix}-*",
+      "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:table/${local.name_prefix}-*",
     ]
     sid = "ManageProductDynamoDB"
   }
@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:synthetics:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:canary:${local.name_prefix}-*"
+      "arn:aws:synthetics:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:canary:${local.name_prefix}-*"
     ]
     sid = "ManageProductCanary"
   }
@@ -82,8 +82,8 @@ data "aws_iam_policy_document" "terraform_product" {
     effect = "Allow"
     resources = [
       "arn:aws:cloudwatch::${data.aws_caller_identity.current.account_id}:dashboard/${local.name_prefix}-*",
-      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*",
-      "arn:aws:cloudwatch:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alarm:canary/*/${local.name_prefix}-*"
+      "arn:aws:cloudwatch:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:alarm:${local.name_prefix}-*",
+      "arn:aws:cloudwatch:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:alarm:canary/*/${local.name_prefix}-*"
     ]
     sid = "ManageProductCloudwatch"
   }
@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "terraform_product" {
     actions = ["ec2:*"]
     effect  = "Allow"
     resources = [
-      "arn:aws:ec2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*/${local.name_prefix}-*"
+      "arn:aws:ec2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:*/${local.name_prefix}-*"
     ]
     sid = "ManageProductEC2"
   }
@@ -104,14 +104,14 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/cdp-*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/cdp-*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:service/cdp-*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/app*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/db*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/standalone-*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/telemetry*",
-      "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:task-definition/tools*",
+      "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:repository/cdp-*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster/cdp-*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/cdp-*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/app*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/db*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/standalone-*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/telemetry*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/tools*",
     ]
     sid = "ManageProductECS"
   }
@@ -127,10 +127,10 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/${local.name_prefix}*",
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vendedlogs/${local.name_prefix}*",
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
-      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/${local.name_prefix}*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vendedlogs/${local.name_prefix}*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
+      "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-*",
     ]
     sid = "ManageProductLogs"
   }
@@ -153,9 +153,9 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:connection/${local.name_prefix}-*",
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/${local.name_prefix}-*",
-      "arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule",
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:connection/${local.name_prefix}-*",
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/${local.name_prefix}-*",
+      "arn:aws:events:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule",
     ]
     sid = "ManageProductEvents"
   }
@@ -172,13 +172,13 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/rds-${local.name_prefix}-*",
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!cluster*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds!db*",
-      "arn:aws:secretsmanager:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:secret:rds-db*",
+      "arn:aws:kms:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:alias/rds-${local.name_prefix}-*",
+      "arn:aws:kms:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:key*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!cluster*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds!db*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:rds-db*",
     ]
     sid = "ManageProductSecrets"
   }
@@ -198,10 +198,10 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener/app/cdp-*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:listener-rule/app/cdp-*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/cdp-*",
-      "arn:aws:elasticloadbalancing:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:targetgroup/cdp-*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:listener/app/cdp-*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:listener-rule/app/cdp-*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:loadbalancer/app/cdp-*",
+      "arn:aws:elasticloadbalancing:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:targetgroup/cdp-*",
     ]
     sid = "ManageProductLBs"
   }
@@ -218,7 +218,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:states:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
+      "arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:${local.name_prefix}-*"
     ]
     sid = "ManageProductStateMachines"
   }
@@ -230,8 +230,8 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:codebuild:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:project/${local.name_prefix}-*",
-      "arn:aws:codepipeline:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
+      "arn:aws:codebuild:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:project/${local.name_prefix}-*",
+      "arn:aws:codepipeline:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*"
     ]
     sid = "ManageProductCodebuild"
   }
@@ -255,9 +255,9 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*",
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*/*",
-      "arn:aws:wafv2:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*",
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*/*",
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
     ]
     sid = "ManageProductWAF"
   }
@@ -276,7 +276,7 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*",
+      "arn:aws:sns:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${local.name_prefix}-*",
     ]
     sid = "ManageProductSNS"
   }

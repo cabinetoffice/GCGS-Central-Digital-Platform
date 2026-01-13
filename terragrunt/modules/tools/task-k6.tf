@@ -12,10 +12,10 @@
 #       cpu           = var.tools_configs.k6.cpu
 #       duration      = "10s"
 #       endpoints     = "getOrgs, postOrgs",
-#       image         = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/cdp-${var.tools_configs.k6.name}:latest"
+#       image         = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.tools_configs.k6.name}:latest"
 #       lg_name       = aws_cloudwatch_log_group.k6.name
 #       lg_prefix     = "tools"
-#       lg_region     = data.aws_region.current.name
+#       lg_region     = data.aws_region.current.region
 #       max_vus       = 100
 #       memory        = var.tools_configs.k6.memory
 #       name          = var.tools_configs.k6.name

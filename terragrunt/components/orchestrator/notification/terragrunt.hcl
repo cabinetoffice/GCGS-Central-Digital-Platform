@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   orchestrator_vars = read_terragrunt_config(find_in_parent_folders("orchestrator.hcl"))
 
   tags = merge(
@@ -39,10 +39,10 @@ dependency core_iam {
 dependency orchestrator_ci {
   config_path = "../ci"
   mock_outputs = {
-    deployment_pipeline_name                   = "mock"
+    deployment_pipeline_name                         = "mock"
     event_rule_ci_sirsi_service_version_updated_name = "mock"
-    ssm_service_version_arn                    = "mock"
-    ssm_service_version_name                   = "mock"
+    ssm_service_version_arn                          = "mock"
+    ssm_service_version_name                         = "mock"
   }
 }
 

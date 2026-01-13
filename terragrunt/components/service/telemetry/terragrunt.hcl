@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -61,17 +61,17 @@ dependency service_auth {
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
-    ecs_cluster_id                = "mock"
-    ecs_cluster_id                = "mock"
-    ecs_alb_dns_name              = "mock"
+    ecs_cluster_id   = "mock"
+    ecs_cluster_id   = "mock"
+    ecs_alb_dns_name = "mock"
   }
 }
 
 inputs = {
-  account_ids      = local.global_vars.locals.account_ids
-  grafana_config   = local.global_vars.locals.tools_configs.grafana
-  service_configs  = local.global_vars.locals.service_configs
-  tags             = local.tags
+  account_ids     = local.global_vars.locals.account_ids
+  grafana_config  = local.global_vars.locals.tools_configs.grafana
+  service_configs = local.global_vars.locals.service_configs
+  tags            = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
@@ -91,7 +91,7 @@ inputs = {
   user_pool_client_id_grafana = dependency.service_auth.outputs.grafana_user_pool_client_id
   user_pool_domain_grafana    = dependency.service_auth.outputs.user_pool_domain
 
-  ecs_alb_dns_name              = dependency.service_ecs.outputs.ecs_alb_dns_name
-  ecs_cluster_id                = dependency.service_ecs.outputs.ecs_cluster_id
-  ecs_listener_arn              = dependency.service_ecs.outputs.ecs_listener_arn
+  ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
+  ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
+  ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 }

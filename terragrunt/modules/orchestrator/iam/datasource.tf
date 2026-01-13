@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "ecr_pull_policy" {
       "ecr:GetDownloadUrlForLayer",
     ]
     resources = [
-      "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/cdp-*"
+      "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:repository/cdp-*"
     ]
     effect = "Allow"
   }
@@ -35,7 +35,7 @@ data "aws_iam_policy_document" "ecr_push_policy" {
       "ecr:UploadLayerPart",
     ]
     resources = [
-      "arn:aws:ecr:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:repository/cdp-*"
+      "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:repository/cdp-*"
     ]
     effect = "Allow"
   }
@@ -77,11 +77,11 @@ data "aws_iam_policy_document" "orchestrator_read_service_version_assume_role" {
 
 data "aws_iam_policy_document" "orchestrator_read_service_version" {
   statement {
-    actions   = ["ssm:GetParameter"]
+    actions = ["ssm:GetParameter"]
     resources = [
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-cfs-service-version",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-fts-service-version",
-      "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-service-version"
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-cfs-service-version",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-fts-service-version",
+      "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:parameter/${local.name_prefix}-service-version"
     ]
   }
 }

@@ -7,7 +7,7 @@ include {
 }
 
 locals {
-  global_vars = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
@@ -22,7 +22,7 @@ locals {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    public_hosted_zone_id        = "mock"
+    public_hosted_zone_id = "mock"
   }
 }
 

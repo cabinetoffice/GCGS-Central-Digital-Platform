@@ -900,6 +900,256 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="ModernSlavery_SectionTitle" xml:space="preserve">
     <value>Caethwasiaeth Fodern</value>
   </data>
+  <data name="Payments_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am daliadau</value>
+  </data>
+  <data name="Payments_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        Mae'r Llywodraeth wedi ymrwymo i fynd i'r afael â thaliadau hwyr fel rhan o'i Chynllun ar gyfer Busnesau Bach. Mae'r modiwl hwn yn canolbwyntio ar nodi pa mor ddibynadwy yw systemau talu cyflenwr, er mwyn sicrhau cydymffurfedd â pholisïau talu'r llywodraeth a hyrwyddo llif arian parod teg ar gyfer busnesau. Am ragor o wybodaeth, darllenwch
+        &lt;a href="https://www.gov.uk/government/publications/ppn-015-how-to-take-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts/ppn-015-taking-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+        PPN 015: Ystyried dull gweithredu cyflenwr mewn perthynas â thaliadau wrth gaffael contractau mawr (yn agor mewn tab newydd)&lt;/a&gt;.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 015 wedi'i gymhwyso.
+      &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth fydd ei hangen arnoch&lt;/h2&gt;
+      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich taliadau a'ch anfonebau. Gall hyn gynnwys:&lt;/div&gt;
+      &lt;div class="govuk-body"&gt;
+        &lt;ul class="govuk-list govuk-list--bullet"&gt;
+          &lt;li&gt;cydymffurfedd â'ch telerau talu&lt;/li&gt;
+          &lt;li&gt;manylion taliadau ac anfonebau ar gyfer y ddau gyfnod adrodd diwethaf o chwe mis&lt;/li&gt;
+          &lt;li&gt;cynllun gweithredu ar gyfer lleihau nifer y taliadau hwyr (lle y bo'n berthnasol)&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_02_Title" xml:space="preserve">
+    <value>A oes gennych brosesau er mwyn sicrhau eich bod yn talu eich cadwyn gyflenwi yn brydlon?</value>
+  </data>
+  <data name="Payments_02_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
+        Er enghraifft, yn unol â'ch telerau cytundebol y cytunwyd arnynt
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_03_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
+        Er enghraifft, yn unol â'ch telerau cytundebol y cytunwyd arnynt
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_03_Title" xml:space="preserve">
+    <value>A oes gennych brosesau i ddatrys taliadau ac anfonebau y mae anghydfod yn eu cylch yn eich cadwyn gyflenwi yn brydlon?</value>
+  </data>
+  <data name="Payments_04_Title" xml:space="preserve">
+    <value>Cadarnhau telerau talu ar gyfer contractau sector cyhoeddus</value>
+  </data>
+  <data name="Payments_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
+        Mae'r cwestiwn canlynol yn cyfeirio at gontractau sector cyhoeddus a ddyfernir o dan Ddeddf Caffael 2023
+      &lt;/div&gt;
+      &lt;p class="govuk-body"&gt;Cadarnhewch fod gennych:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;systemau ar waith i gynnwys telerau talu o fewn 30 diwrnod o leiaf ym mhob un o'ch contractau cadwyn gyflenwi&lt;/li&gt;
+        &lt;li&gt;y gofyniad bod y telerau talu hyn yn cael eu trosglwyddo drwy'ch cadwyn gyflenwi &lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="Payments_05_Title" xml:space="preserve">
+    <value>Ydych chi'n cyflwyno adroddiadau o dan y Rheoliadau Adroddiadau ar Arferion Talu?</value>
+  </data>
+  <data name="Payments_05_Caption" xml:space="preserve">
+    <value>Cofiwch gynnwys y ddolen i'ch adroddiad mwyaf diweddar</value>
+  </data>
+  <data name="Payments_06_Caption" xml:space="preserve">
+    <value>Cyfnod adrodd 1</value>
+  </data>
+  <data name="Payments_06_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Nodwch fanylion eich taliadau a'ch anfonebau ar gyfer eich cyfnod adrodd mwyaf diweddar o chwe mis.&lt;/p&gt;</value>
+  </data>
+  <data name="Payments_06_ReportingStartDate" xml:space="preserve">
+    <value>Dyddiad dechrau'r cyfnod adrodd</value>
+  </data>
+  <data name="Payments_06_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dechrau'r cyfnod adrodd</value>
+  </data>
+  <data name="Payments_06_AverageDaysToPayInvoice" xml:space="preserve">
+    <value>Nifer cyfartalog y diwrnodau i dalu anfoneb</value>
+  </data>
+  <data name="Payments_06_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Nifer cyfartalog y diwrnodau i dalu anfoneb</value>
+  </data>
+  <data name="Payments_06_InvoicesPaid_Label" xml:space="preserve">
+    <value>Anfonebau a dalwyd:</value>
+  </data>
+  <data name="Payments_06_PctPaidWithin30Days" xml:space="preserve">
+    <value>O fewn 30 diwrnod</value>
+  </data>
+  <data name="Payments_06_PctPaid31To60Days" xml:space="preserve">
+    <value>31-60 diwrnod</value>
+  </data>
+  <data name="Payments_06_PctPaid61OrMoreDays" xml:space="preserve">
+    <value>61 diwrnod neu fwy</value>
+  </data>
+  <data name="Payments_06_PctPaidOverdue" xml:space="preserve">
+    <value>Yn hwyr yn y cyfnod adrodd hwn</value>
+  </data>
+  <data name="Payments_06_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Yn hwyr yn y cyfnod adrodd</value>
+  </data>
+  <data name="Payments_07_Caption" xml:space="preserve">
+    <value>Cyfnod adrodd 2</value>
+  </data>
+  <data name="Payments_07_Title" xml:space="preserve">
+    <value>Adrodd ar daliadau ac anfonebau yn eich cadwyn gyflenwi uniongyrchol</value>
+  </data>
+  <data name="Payments_06_Title" xml:space="preserve">
+    <value>Adrodd ar daliadau ac anfonebau yn eich cadwyn gyflenwi uniongyrchol</value>
+  </data>
+  <data name="Payments_07_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;Nodwch fanylion eich taliadau a'ch anfonebau ar gyfer y cyfnod adrodd o chwe mis cyn eich cyfnod adrodd mwyaf diweddar.&lt;/p&gt;</value>
+  </data>
+  <data name="Payments_07_ReportingStartDate" xml:space="preserve">
+    <value>Dyddiad dechrau'r cyfnod adrodd</value>
+  </data>
+  <data name="Payments_07_ReportingStartDate_SummaryTitle" xml:space="preserve">
+    <value>Dyddiad dechrau'r cyfnod adrodd</value>
+  </data>
+  <data name="Payments_07_AverageDaysToPayInvoice" xml:space="preserve">
+    <value>Nifer cyfartalog y diwrnodau i dalu anfoneb</value>
+  </data>
+  <data name="Payments_07_AverageDaysToPayInvoice_SummaryTitle" xml:space="preserve">
+    <value>Nifer cyfartalog y diwrnodau i dalu anfoneb</value>
+  </data>
+  <data name="Payments_Days" xml:space="preserve">
+    <value>Diwrnodau</value>
+  </data>
+  <data name="Payments_07_InvoicesPaid_Label" xml:space="preserve">
+    <value>Anfonebau a dalwyd:</value>
+  </data>
+  <data name="Payments_07_PctPaidWithin30Days" xml:space="preserve">
+    <value>O fewn 30 diwrnod</value>
+  </data>
+  <data name="Payments_07_PctPaid31To60Days" xml:space="preserve">
+    <value>31-60 diwrnod</value>
+  </data>
+  <data name="Payments_07_PctPaid61OrMoreDays" xml:space="preserve">
+    <value>61 diwrnod neu fwy</value>
+  </data>
+  <data name="Payments_07_PctPaidOverdue" xml:space="preserve">
+    <value>Yn hwyr yn y cyfnod adrodd hwn</value>
+  </data>
+  <data name="Payments_07_PctPaidOverdue_SummaryTitle" xml:space="preserve">
+    <value>Yn hwyr yn y cyfnod adrodd</value>
+  </data>
+  <data name="Payments_08_Title" xml:space="preserve">
+    <value>Esboniwch pam nad ydych wedi talu pob anfoneb yn unol â thelerau cytundebol y cytunwyd arnynt (lle y bo'n berthnasol)</value>
+  </data>
+  <data name="Payments_08_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
+        Nid oes angen i chi gwblhau'r cwestiwn hwn os ydych wedi talu pob anfoneb yn unol â thelerau contract y cytunwyd arnynt.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_09_Title" xml:space="preserve">
+    <value>Ydych chi wedi dangos bod 95% neu fwy o'ch anfonebau taladwy wedi'u talu?</value>
+  </data>
+  <data name="Payments_09_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Rhaid bod eich anfonebau i gyflenwyr wedi'u talu:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;o fewn 60 diwrnod i dderbyn yr anfoneb&lt;/li&gt;
+        &lt;li&gt;yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="Payments_10_Title" xml:space="preserve">
+    <value>Allwch chi gadarnhau eich bod wedi talu pob un o'ch anfonebau o fewn 55 diwrnod, ar gyfartaledd?</value>
+  </data>
+  <data name="Payments_10_Description" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-body"&gt;
+        Rhaid bod eich anfonebau i gyflenwyr wedi'u talu o fewn 55 diwrnod, ar gyfartaledd, yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis.
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="Payments_11_Title" xml:space="preserve">
+    <value>Cyflwyno eich cynllun gweithredu (lle y bo'n berthnasol)</value>
+  </data>
+  <data name="Payments_11_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;Rhaid i'ch cynllun gynnwys, o leiaf:&lt;/p&gt;
+      &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li&gt;prif achosion eich methiant i dalu 95% o holl anfonebau'r gadwyn gyflenwi a dalwyd o fewn 60 diwrnod a thaliadau hwyr (lle y bo'n berthnasol)&lt;/li&gt;
+        &lt;li&gt;camau gweithredu i fynd i'r afael â phob methiant i dalu&lt;/li&gt;
+        &lt;li&gt;ymrwymiad i broses ar gyfer cyflwyno adroddiadau rheolaidd ar gynnydd i bwyllgor archwilio cynigiwr cyflenwyr (neu gorff sy'n cyfateb iddo)&lt;/li&gt;
+        &lt;li&gt;cynllun a gymeradwywyd gan eich cyfarwyddwr&lt;/li&gt;
+        &lt;li&gt;cynllun a gyhoeddwyd ar eich gwefan (gall fod yn gynllun cryno byrrach)&lt;/li&gt;
+      &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="Payments_11_InsetText" xml:space="preserve">
+    <value>&lt;div class="govuk-inset-text"&gt;Gallwch gyflwyno cynllun gweithredu presennol a baratowyd at ddiben gwahanol, ond rhaid iddo ymdrin â'r pwyntiau a nodir ar y dudalen hon.&lt;/div&gt;</value>
+  </data>
+  <data name="Payments_Group1_SummaryTitle" xml:space="preserve">
+    <value>Telerau a phrosesau</value>
+  </data>
+  <data name="Payments_02_SummaryTitle" xml:space="preserve">
+    <value>Y broses dalu</value>
+  </data>
+  <data name="Payments_03_SummaryTitle" xml:space="preserve">
+    <value>Y broses datrys anghydfodau</value>
+  </data>
+  <data name="Payments_04_SummaryTitle" xml:space="preserve">
+    <value>Telerau talu</value>
+  </data>
+  <data name="Payments_05_SummaryTitle" xml:space="preserve">
+    <value>Cyflwyno adroddiadau o dan y Rheoliadau Adroddiadau ar Arferion Talu</value>
+  </data>
+  <data name="Payments_Group2_SummaryTitle" xml:space="preserve">
+    <value>Cyfnod adrodd 1</value>
+  </data>
+  <data name="Payments_06_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 30 diwrnod</value>
+  </data>
+  <data name="Payments_06_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 31-60 diwrnod</value>
+  </data>
+  <data name="Payments_06_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 61 diwrnod neu fwy</value>
+  </data>
+  <data name="Payments_Group3_SummaryTitle" xml:space="preserve">
+    <value>Cyfnod adrodd 2</value>
+  </data>
+  <data name="Payments_07_PctPaidWithin30Days_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 30 diwrnod</value>
+  </data>
+  <data name="Payments_07_PctPaid31To60Days_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 31-60 diwrnod</value>
+  </data>
+  <data name="Payments_07_PctPaid61OrMoreDays_SummaryTitle" xml:space="preserve">
+    <value>Talwyd o fewn 61 diwrnod neu fwy</value>
+  </data>
+  <data name="Payments_Group4_SummaryTitle" xml:space="preserve">
+    <value>Manylion diffyg cydymffurfio</value>
+  </data>
+  <data name="Payments_08_SummaryTitle" xml:space="preserve">
+    <value>Ni thalwyd anfonebau yn unol â thelerau cytundebol</value>
+  </data>
+  <data name="Payments_09_SummaryTitle" xml:space="preserve">
+    <value>Talwyd 95% o anfonebau o fewn 60 diwrnod</value>
+  </data>
+  <data name="Payments_10_SummaryTitle" xml:space="preserve">
+    <value>Talwyd anfonebau o fewn 55 diwrnod, ar gyfartaledd</value>
+  </data>
+  <data name="Payments_11_SummaryTitle" xml:space="preserve">
+    <value>Lanlwythwyd cynllun gweithredu</value>
+  </data>
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;

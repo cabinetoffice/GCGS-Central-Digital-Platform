@@ -11,7 +11,7 @@ module "ecs_migration_tasks" {
       image               = local.ecr_urls[each.value.name]
       lg_name             = aws_cloudwatch_log_group.tasks[each.value.name].name
       lg_prefix           = "db"
-      lg_region           = data.aws_region.current.name
+      lg_region           = data.aws_region.current.region
       memory              = each.value.memory
       name                = each.value.name
       db_address          = each.value.name == "entity-verification-migrations" ? var.db_ev_cluster_address : var.db_sirsi_cluster_address

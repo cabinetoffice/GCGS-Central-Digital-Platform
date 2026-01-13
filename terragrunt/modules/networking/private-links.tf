@@ -1,7 +1,7 @@
 resource "aws_vpc_endpoint" "s3" {
 
   vpc_id       = var.vpc_id
-  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name = "com.amazonaws.${data.aws_region.current.region}.s3"
   policy       = var.vpce_policy
 
   tags = merge(
@@ -21,7 +21,7 @@ resource "aws_vpc_endpoint_route_table_association" "vpc_route_table_association
 
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.api"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ecr.api"
   subnet_ids          = var.private_subnet_ids
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
@@ -38,7 +38,7 @@ resource "aws_vpc_endpoint" "ecr_api" {
 
 resource "aws_vpc_endpoint" "ecr_dkr" {
   vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ecr.dkr"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.ecr.dkr"
   subnet_ids          = var.private_subnet_ids
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
@@ -55,7 +55,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
 resource "aws_vpc_endpoint" "logs" {
   vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.logs"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.logs"
   subnet_ids          = var.private_subnet_ids
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
@@ -72,7 +72,7 @@ resource "aws_vpc_endpoint" "logs" {
 
 resource "aws_vpc_endpoint" "secrets" {
   vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.secretsmanager"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.secretsmanager"
   subnet_ids          = var.private_subnet_ids
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
