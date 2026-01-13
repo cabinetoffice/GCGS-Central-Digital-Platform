@@ -900,4 +900,129 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="ModernSlavery_SectionTitle" xml:space="preserve">
     <value>Caethwasiaeth Fodern</value>
   </data>
+  <data name="CarbonNetZero_01_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-body"&gt;
+        Carbon Sero Net yw'r ymrwymiad i gydbwyso allyriadau nwyon tŷ gwydr â symiau cyfatebol a ddilëir erbyn 2025.
+        Efallai y bydd angen i sefydliadau sydd o fewn y cwmpas gyflwyno Cynllun Lleihau Carbon wrth gynnig am gontractau penodol gan y llywodraeth. Dylai hyn fod yn unol â &lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue"
+        class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
+        PPN 006 a safonau adrodd cysylltiedig (yn agor mewn tab newydd)&lt;/a&gt;.
+      &lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 006 wedi'i gymhwyso.
+      &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys:
+        &lt;ul class="govuk-list govuk-list--bullet"&gt;
+          &lt;li class="govuk-!-margin-top-2"&gt; y dyddiad y daw eich Cynllun Lleihau Carbon i ben&lt;/li&gt;
+          &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;
+          &lt;li class="govuk-!-margin-top-2"&gt; eich data blwyddyn sylfaen a blwyddyn adrodd&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_01_Title" xml:space="preserve">
+    <value>Cyflwyno eich gwybodaeth am Garbon Sero Net</value>
+  </data>
+  <data name="CarbonNetZero_02_Description" xml:space="preserve">
+    <value>
+     &lt;p class="govuk-body"&gt;Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;PPN 006: Ystyried Cylluniau Lleihau Carbon wrth gaffael contractau mawr y llywodraeth (yn agor mewn tab newydd)&lt;/a&gt;.&lt;/p&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_02_Title" xml:space="preserve">
+    <value>Ydych chi wedi cyhoeddi Cynllun Lleihau Carbon sy'n cyrraedd y safon adrodd ofynnol?</value>
+  </data>
+  <data name="CarbonNetZero_03_Title" xml:space="preserve">
+    <value>A oes gennych ddolen i'r Cynllun Lleihau Carbon mwyaf diweddar a gyhoeddwyd gennych?</value>
+  </data>
+  <data name="CarbonNetZero_04_Title" xml:space="preserve">
+    <value>Nodwch y dyddiad y daw eich Cynllun Lleihau Carbon i ben</value>
+  </data>
+  <data name="CarbonNetZero_05_Title" xml:space="preserve">
+    <value>Nodwch ein blwyddyn darged i gyrraedd Sero Net</value>
+  </data>
+  <data name="CarbonNetZero_06_BaselineContainer_Title" xml:space="preserve">
+    <value>Nodwch eich data allyriadau llinell sylfaen</value>
+  </data>
+  <data name="CarbonNetZero_06_SummaryTitle" xml:space="preserve">
+    <value>Blwyddyn sylfaen</value>
+  </data>
+  <data name="CarbonNetZero_06_Title" xml:space="preserve">
+    <value>Blwyddyn sylfaen</value>
+  </data>
+  <data name="CarbonNetZero_07_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 1</value>
+  </data>
+  <data name="CarbonNetZero_07_Title" xml:space="preserve">
+    <value>Cwmpas 1</value>
+  </data>
+  <data name="CarbonNetZero_08_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 2</value>
+  </data>
+  <data name="CarbonNetZero_08_Title" xml:space="preserve">
+    <value>Cwmpas 2</value>
+  </data>
+  <data name="CarbonNetZero_09_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 3</value>
+  </data>
+  <data name="CarbonNetZero_09_Title" xml:space="preserve">
+    <value>Cwmpas 3</value>
+  </data>
+  <data name="CarbonNetZero_10_ReportingContainer_Title" xml:space="preserve">
+    <value>Nodwch eich data allyriadau cyfredol</value>
+  </data>
+  <data name="CarbonNetZero_10_SummaryTitle" xml:space="preserve">
+    <value>Blwyddyn adrodd</value>
+  </data>
+  <data name="CarbonNetZero_10_Title" xml:space="preserve">
+    <value>Blwyddyn adrodd</value>
+  </data>
+  <data name="CarbonNetZero_11_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 1</value>
+  </data>
+  <data name="CarbonNetZero_11_Title" xml:space="preserve">
+    <value>Cwmpas 1</value>
+  </data>
+  <data name="CarbonNetZero_12_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 2</value>
+  </data>
+  <data name="CarbonNetZero_12_Title" xml:space="preserve">
+    <value>Cwmpas 2</value>
+  </data>
+  <data name="CarbonNetZero_13_SummaryTitle" xml:space="preserve">
+    <value>Cwmpas 3</value>
+  </data>
+  <data name="CarbonNetZero_13_Title" xml:space="preserve">
+    <value>Cwmpas 3</value>
+  </data>
+  <data name="CarbonNetZero_BaselineEmissions_Group" xml:space="preserve">
+    <value>Datganiad Allyriadau Cyflenwyr</value>
+  </data>
+  <data name="CarbonNetZero_CarbonReductionPlan" xml:space="preserve">
+    <value>Cynllun Lleihau Carbon</value>
+  </data>
+  <data name="CarbonNetZero_ReportingEmissions_Group" xml:space="preserve">
+    <value>Datganiad Allyriadau Cyflenwyr</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_SupplierEmissionsDeclaration_Text" xml:space="preserve">
+    <value>Datganiad Allyriadau Cyflenwyr</value>
+  </data>
+  <data name="CarbonNetZero_CarbonNetZeroDetails_RelevantEmissionsData_Heading" xml:space="preserve">
+    <value>Nodwch y data allyriadau perthnasol:</value>
+  </data>
+  <data name="CarbonNetZero_03_Caption" xml:space="preserve">
+    <value>cyfeiriad gwefan</value>
+  </data>
+  <data name="CarbonNetZero_05_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-hint"&gt;er enghraifft 2027&lt;/p&gt;
+      &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;blwyddyn&lt;/p&gt;
+    </value>
+  </data>
+  <data name="CarbonNetZero_SectionTitle" xml:space="preserve">
+    <value>Sero Carbon Net</value>
+  </data>
+  <data name="DateForm_FutureDate_Hint" xml:space="preserve">
+    <value>&lt;div class="govuk-hint"&gt;er enghraifft 27 3 2027&lt;/div&gt;</value>
+  </data>
 </root>

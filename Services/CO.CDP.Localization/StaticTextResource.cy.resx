@@ -1749,6 +1749,9 @@
   <data name="Global_DateInput_YearRequiredError" xml:space="preserve">
     <value>Mae'n rhaid i'r dyddiad gynnwys blwyddyn</value>
   </data>
+  <data name="Global_DateInput_DateMustBeInTheFuture" xml:space="preserve">
+    <value>Rhaid i’r dyddiad fod yn y dyfodol</value>
+  </data>
   <data name="Global_Download" xml:space="preserve">
     <value>Lawrlwytho</value>
   </data>
