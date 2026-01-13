@@ -31,6 +31,8 @@ public class OrganisationHomeModel(
 
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
+    public string BackLinkUrl => "/organisation-selection";
+
     private readonly ILogger<OrganisationHomeModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
 

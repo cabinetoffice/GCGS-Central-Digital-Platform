@@ -337,6 +337,12 @@ public class OrganisationHomeTest
     }
 
     [Fact]
+    public void BackLinkUrl_ReturnsOrganisationSelectionUrl()
+    {
+        _model.BackLinkUrl.Should().Be("/organisation-selection");
+    }
+
+    [Fact]
     public async Task OnGet_WhenAiToolEnabled_CallsBuildUrlWithCorrectParameters()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
@@ -561,5 +567,4 @@ public class OrganisationHomeTest
         capturedParams!["origin"].Should().Be("organisation-home");
     }
 }
-
 
