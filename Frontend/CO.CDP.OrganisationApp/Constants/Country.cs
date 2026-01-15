@@ -191,7 +191,6 @@ public static class Country
             {"TR", "Turkey"},
             {"TM", "Turkmenistan"},
             {"TV", "Tuvalu"},
-            {"TW", "Taiwan"},
             {"UG", "Uganda"},
             {"UA", "Ukraine"},
             {"AE", "United Arab Emirates"},

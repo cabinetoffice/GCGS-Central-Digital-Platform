@@ -82,7 +82,7 @@ public class CountryTests
             {"SS", "South Sudan"}, {"ES", "Spain"}, {"LK", "Sri Lanka"}, {"SD", "Sudan"}, {"SR", "Suriname"}, {"SE", "Sweden"},
             {"CH", "Switzerland"}, {"SY", "Syria"}, {"TJ", "Tajikistan"}, {"TZ", "Tanzania"}, {"TH", "Thailand"}, {"BS", "The Bahamas"},
             {"GM", "The Gambia"}, {"TG", "Togo"}, {"TO", "Tonga"}, {"TT", "Trinidad and Tobago"}, {"TN", "Tunisia"}, {"TR", "Turkey"},
-            {"TM", "Turkmenistan"}, {"TV", "Tuvalu"}, {"TW", "Taiwan"}, {"UG", "Uganda"}, {"UA", "Ukraine"}, {"AE", "United Arab Emirates"},
+            {"TM", "Turkmenistan"}, {"TV", "Tuvalu"}, {"UG", "Uganda"}, {"UA", "Ukraine"}, {"AE", "United Arab Emirates"},
             {"US", "United States"}, {"UY", "Uruguay"}, {"UZ", "Uzbekistan"}, {"VU", "Vanuatu"}, {"VA", "Vatican City"},
             {"VE", "Venezuela"}, {"VN", "Vietnam"}, {"YE", "Yemen"}, {"ZM", "Zambia"}, {"ZW", "Zimbabwe"}
         };
