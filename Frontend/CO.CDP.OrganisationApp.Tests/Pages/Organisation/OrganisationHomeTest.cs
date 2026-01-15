@@ -31,6 +31,7 @@ public class OrganisationHomeTest
         _cookiePreferencesServiceMock = new Mock<ICookiePreferencesService>();
         _ftsUrlServiceMock = new Mock<IFtsUrlService>();
         _loggerMock = new Mock<ILogger<OrganisationHomeModel>>();
+
         _model = new OrganisationHomeModel(
             _featureManagerMock.Object,
             _externalServiceUrlBuilderMock.Object,
@@ -41,26 +42,17 @@ public class OrganisationHomeTest
         {
             Id = Guid.NewGuid()
         };
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.BuyerView)).ReturnsAsync(true);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationExists_ReturnsPage()
+    public async Task OnGet_WhenOrganisationExists_ReturnsPageResult()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
         var result = await _model.OnGet();
-        result.Should().BeOfType<PageResult>();
-    }
 
-    [Fact]
-    public async Task OnGet_WhenOrganisationExists_PopulatesOrganisationDetails()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        await _model.OnGet();
-        _model.OrganisationDetails.Should().NotBeNull();
-        _model.OrganisationDetails.Should().Be(organisation);
+        result.Should().BeOfType<PageResult>();
     }
 
     [Fact]
@@ -68,7 +60,9 @@ public class OrganisationHomeTest
     {
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id))
             .ReturnsAsync((CO.CDP.Organisation.WebApiClient.Organisation?)null);
+
         var result = await _model.OnGet();
+
         result.Should().BeOfType<RedirectResult>();
         ((RedirectResult)result).Url.Should().Be("/page-not-found");
     }
@@ -78,7 +72,9 @@ public class OrganisationHomeTest
     {
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id))
             .ReturnsAsync((CO.CDP.Organisation.WebApiClient.Organisation?)null);
+
         await _model.OnGet();
+
         _loggerMock.Verify(
             x => x.Log(
                 LogLevel.Warning,
@@ -90,49 +86,69 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationApiThrowsException_RedirectsToErrorPage()
+    public async Task OnGet_WhenApiThrowsException_RedirectsToErrorPage()
     {
         var apiException = new OrganisationApiException("API Error", 500, "", null, null);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ThrowsAsync(apiException);
+
         var result = await _model.OnGet();
+
         result.Should().BeOfType<RedirectToPageResult>();
         ((RedirectToPageResult)result).PageName.Should().Be("/Error");
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationApiThrowsException_LogsError()
+    public async Task OnGet_WhenApiThrowsException_LogsError()
     {
         var apiException = new OrganisationApiException("API Error", 500, "", null, null);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ThrowsAsync(apiException);
+
         await _model.OnGet();
+
         _loggerMock.Verify(
             x => x.Log(
                 LogLevel.Error,
                 It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) =>
-                    v.ToString()!.Contains("Error occurred while retrieving organisation details")),
+                It.IsAny<It.IsAnyType>(),
                 It.IsAny<Exception>(),
                 It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
             Times.Once);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyer_PopulatesTileOne()
+    public async Task OnGet_PopulatesOrganisationDetails()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
         await _model.OnGet();
-        _model.Tiles.Should().NotBeEmpty();
-        _model.Tiles[0].Title.Should().Be(StaticTextResource.OrganisationHome_TileOne_Title);
-        _model.Tiles[0].Body.Should().Be(StaticTextResource.OrganisationHome_TileOne_Body);
-        _model.Tiles[0].Href.Should().Be($"/organisation/{_model.Id}?origin=organisation-home");
+
+        _model.OrganisationDetails.Should().NotBeNull();
+        _model.OrganisationDetails.Should().Be(organisation);
     }
 
-    [Fact] public async Task OnGet_WhenOrganisationIsSupplier_PopulatesTileOne()
+    [Fact]
+    public async Task BackLinkUrl_ReturnsOrganisationSelectionUrl()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Supplier]);
+        var id = Guid.NewGuid();
+        _model.Id = id;
+
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
         await _model.OnGet();
+
+        _model.BackLinkUrl.Should().Be("/organisation-selection");
+    }
+
+    [Fact]
+    public async Task OnGet_AlwaysPopulatesTileOne()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
         _model.Tiles.Should().NotBeEmpty();
         _model.Tiles[0].Title.Should().Be(StaticTextResource.OrganisationHome_TileOne_Title);
         _model.Tiles[0].Body.Should().Be(StaticTextResource.OrganisationHome_TileOne_Body);
@@ -140,11 +156,13 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsTenderer_PopulatesTileSeven()
+    public async Task OnGet_WhenSupplier_PopulatesTileSeven()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
         await _model.OnGet();
+
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSeven_Title);
         var tileSeven = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileSeven_Title);
         tileSeven.Body.Should().Be(StaticTextResource.OrganisationHome_TileSeven_Body);
@@ -152,21 +170,45 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsNotTenderer_TileSevenIsNotPresent()
+    public async Task OnGet_WhenSupplierWithFvraTool_PopulatesTileEight()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier)).ReturnsAsync(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
+        _externalServiceUrlBuilderMock
+            .Setup(c => c.BuildUrl(ExternalService.FvraTool, "/supplier", _model.Id, null, true,
+                It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com/supplier");
+
         await _model.OnGet();
-        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSeven_Title);
+
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileEight_Title);
+        var tileEight = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileEight_Title);
+        tileEight.Body.Should().Be(StaticTextResource.OrganisationHome_TileEight_Body);
+        tileEight.Href.Should().Be("https://fvra-tool.example.com/supplier");
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerAndSearchRegistryPponEnabled_PopulatesTileTwo()
+    public async Task OnGet_WhenSupplierWithoutFvraTool_DoesNotPopulateTileEight()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileEight_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerWithSearchRegistryPpon_PopulatesTileTwo()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+
         await _model.OnGet();
+
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
         var tileTwo = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
         tileTwo.Body.Should().Be(StaticTextResource.OrganisationHome_TileTwo_Body);
@@ -174,27 +216,19 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerButSearchRegistryPponDisabled_TileTwoIsNotPresent()
+    public async Task OnGet_WhenBuyerWithoutSearchRegistryPpon_DoesNotPopulateTileTwo()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(false);
+
         await _model.OnGet();
+
         _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsNotBuyer_TileTwoIsNotPresent()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
-        await _model.OnGet();
-        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerAndAiToolEnabled_PopulatesTileThree()
+    public async Task OnGet_WhenBuyerWithAiTool_PopulatesTileThree()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
@@ -203,7 +237,9 @@ public class OrganisationHomeTest
         _externalServiceUrlBuilderMock
             .Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true,
                 It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com");
+
         await _model.OnGet();
+
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
         var tileThree = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
         tileThree.Body.Should().Be(StaticTextResource.OrganisationHome_TileThree_Body);
@@ -211,27 +247,19 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerButAiToolDisabled_TileThreeIsNotPresent()
+    public async Task OnGet_WhenBuyerWithoutAiTool_DoesNotPopulateTileThree()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
         await _model.OnGet();
+
         _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsNotBuyer_TileThreeIsNotPresent()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
-        await _model.OnGet();
-        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerAndPaymentsEnabled_PopulatesTileFour()
+    public async Task OnGet_WhenBuyerWithPayments_PopulatesTileFour()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
@@ -240,7 +268,9 @@ public class OrganisationHomeTest
         _externalServiceUrlBuilderMock
             .Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true,
                 It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com");
+
         await _model.OnGet();
+
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
         var tileFour = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
         tileFour.Body.Should().Be(StaticTextResource.OrganisationHome_TileFour_Body);
@@ -248,33 +278,27 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerButPaymentsDisabled_TileFourIsNotPresent()
+    public async Task OnGet_WhenBuyerWithoutPayments_DoesNotPopulateTileFour()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(false);
+
         await _model.OnGet();
+
         _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsNotBuyer_TileFourIsNotPresent()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
-        await _model.OnGet();
-        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyer_PopulatesTileFive()
+    public async Task OnGet_WhenBuyer_AlwaysPopulatesTileFive()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _ftsUrlServiceMock.Setup(f => f.BuildUrl("/login", _model.Id, "/dashboard"))
             .Returns("https://fts.example.com/login");
+
         await _model.OnGet();
+
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFive_Title);
         var tileFive = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileFive_Title);
         tileFive.Body.Should().Be(StaticTextResource.OrganisationHome_TileFive_Body);
@@ -282,289 +306,190 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsNotBuyer_TileFiveIsNotPresent()
+    public async Task OnGet_WhenBuyerWithFvraTool_PopulatesTileSix()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer)).ReturnsAsync(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
+        _externalServiceUrlBuilderMock
+            .Setup(c => c.BuildUrl(ExternalService.FvraTool, "/buyer", _model.Id, null, true,
+                It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com/buyer");
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().Contain(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
+        var tileSix = _model.Tiles.First(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
+        tileSix.Body.Should().Be(StaticTextResource.OrganisationHome_TileSix_Body);
+        tileSix.Href.Should().Be("https://fvra-tool.example.com/buyer");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerWithoutFvraTool_DoesNotPopulateTileSix()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenNotBuyer_DoesNotPopulateBuyerTiles()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer)).ReturnsAsync(true);
+
         await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
         _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFive_Title);
+        _model.Tiles.Should().NotContain(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsBuyerAndFvraToolEnabled_PopulatesTileSix()
+    public async Task OnGet_WhenNotSupplier_DoesNotPopulateSupplierTiles()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock
-            .Setup(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, true,
-                It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com");
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier)).ReturnsAsync(true);
 
         await _model.OnGet();
-        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSix_Title);
-        var tileSix = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileSix_Title);
-        tileSix.Body.Should().Be(StaticTextResource.OrganisationHome_TileSix_Body);
-        tileSix.Href.Should().Be("https://fvra-tool.example.com");
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSeven_Title);
+        _model.Tiles.Should().NotContain(tile => tile.Body == StaticTextResource.OrganisationHome_TileEight_Body);
     }
 
     [Fact]
-    public async Task OnGet_WhenOrganisationIsSupplierAndFvraToolEnabled_PopulatesTileSix()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Supplier]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock
-            .Setup(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, true,
-                It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com");
-
-        await _model.OnGet();
-        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSix_Title);
-        var tileSix = _model.Tiles.First(tile => tile.Title == StaticTextResource.OrganisationHome_TileSix_Title);
-        tileSix.Body.Should().Be(StaticTextResource.OrganisationHome_TileSix_Body);
-        tileSix.Href.Should().Be("https://fvra-tool.example.com");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenFvraToolDisabled_TileSixIsNotPresent()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(false);
-        await _model.OnGet();
-        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSix_Title);
-    }
-
-    [Fact]
-    public void BackLinkUrl_ReturnsOrganisationSelectionUrl()
-    {
-        _model.BackLinkUrl.Should().Be("/organisation-selection");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenAiToolEnabled_CallsBuildUrlWithCorrectParameters()
+    public async Task OnGet_WhenCookiesAccepted_PassesTrueToExternalServices()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(
-            ExternalService.AiTool,
-            "",
-            _model.Id,
-            null,
-            true,
-            It.IsAny<Dictionary<string, string?>>()
-        ), Times.Once);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenAiToolEnabled_PassesCookiePreferenceCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com/with-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenAiToolEnabled_PassesCookieRejectionCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>())).Returns("https://ai-tool.example.com/no-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.AiTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenAiToolEnabled_PassesOriginParameterCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-
-        Dictionary<string, string?>? capturedParams = null;
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
-            .Callback<ExternalService, string, Guid?, string?, bool?, Dictionary<string, string?>?>((service, _, _, _, _, additionalParams) =>
-            {
-                if (service == ExternalService.AiTool)
-                    capturedParams = additionalParams;
-            })
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
+            ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()))
             .Returns("https://ai-tool.example.com");
 
         await _model.OnGet();
 
-        capturedParams.Should().NotBeNull();
-        capturedParams.Should().ContainKey("origin");
-        capturedParams!["origin"].Should().Be("organisation-home");
+        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(
+            ExternalService.AiTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task OnGet_WhenPaymentsEnabled_CallsBuildUrlWithCorrectParameters()
+    public async Task OnGet_WhenCookiesRejected_PassesFalseToExternalServices()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com");
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
+            ExternalService.AiTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()))
+            .Returns("https://ai-tool.example.com");
 
         await _model.OnGet();
 
         _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(
-            ExternalService.Payments,
-            "",
-            _model.Id,
-            null,
-            true,
-            It.IsAny<Dictionary<string, string?>>()
-        ), Times.Once);
+            ExternalService.AiTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task OnGet_WhenPaymentsEnabled_PassesCookiePreferenceCorrectly()
+    public async Task OnGet_WhenCookiesUnknown_PassesNullToExternalServices()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com/with-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenPaymentsEnabled_PassesCookieRejectionCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>())).Returns("https://payments.example.com/no-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.Payments, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenPaymentsEnabled_PassesOriginParameterCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-
-        Dictionary<string, string?>? capturedParams = null;
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
-            .Callback<ExternalService, string, Guid?, string?, bool?, Dictionary<string, string?>?>((service, _, _, _, _, additionalParams) =>
-            {
-                if (service == ExternalService.Payments)
-                    capturedParams = additionalParams;
-            })
-            .Returns("https://payments.example.com");
-
-        await _model.OnGet();
-
-        capturedParams.Should().NotBeNull();
-        capturedParams.Should().ContainKey("origin");
-        capturedParams!["origin"].Should().Be("organisation-home");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenFvraToolEnabled_CallsBuildUrlWithCorrectParameters()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com");
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Unknown);
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
+            ExternalService.AiTool, "", _model.Id, null, null, It.IsAny<Dictionary<string, string?>>()))
+            .Returns("https://ai-tool.example.com");
 
         await _model.OnGet();
 
         _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(
-            ExternalService.FvraTool,
-            "",
-            _model.Id,
-            null,
-            true,
-            It.IsAny<Dictionary<string, string?>>()
-        ), Times.Once);
+            ExternalService.AiTool, "", _model.Id, null, null, It.IsAny<Dictionary<string, string?>>()),
+            Times.Once);
     }
 
     [Fact]
-    public async Task OnGet_WhenFvraToolEnabled_PassesCookiePreferenceCorrectly()
+    public async Task OnGet_PassesOriginParameterToExternalServices()
     {
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com/with-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, true, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenFvraToolEnabled_PassesCookieRejectionCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
-        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>())).Returns("https://fvra-tool.example.com/no-cookies");
-
-        await _model.OnGet();
-
-        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(ExternalService.FvraTool, "", _model.Id, null, false, It.IsAny<Dictionary<string, string?>>()), Times.Once);
-        _cookiePreferencesServiceMock.Verify(c => c.GetValue(), Times.AtLeastOnce);
-    }
-
-    [Fact]
-    public async Task OnGet_WhenFvraToolEnabled_PassesOriginParameterCorrectly()
-    {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
-        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
-        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraTool)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
 
         Dictionary<string, string?>? capturedParams = null;
-        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
-            .Callback<ExternalService, string, Guid?, string?, bool?, Dictionary<string, string?>?>((service, _, _, _, _, additionalParams) =>
-            {
-                if (service == ExternalService.FvraTool)
-                    capturedParams = additionalParams;
-            })
-            .Returns("https://fvra-tool.example.com");
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
+            It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(),
+            It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
+            .Callback<ExternalService, string, Guid?, string?, bool?, Dictionary<string, string?>?>(
+                (_, _, _, _, _, additionalParams) => capturedParams = additionalParams)
+            .Returns("https://example.com");
 
         await _model.OnGet();
 
         capturedParams.Should().NotBeNull();
         capturedParams.Should().ContainKey("origin");
         capturedParams!["origin"].Should().Be("organisation-home");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenBuyerAndSupplier_PopulatesBothBuyerAndSupplierTiles()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer, PartyRole.Tenderer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
+        _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
+            It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(),
+            It.IsAny<string?>(), It.IsAny<bool?>(), It.IsAny<Dictionary<string, string?>>()))
+            .Returns("https://example.com");
+        _ftsUrlServiceMock.Setup(f => f.BuildUrl(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>()))
+            .Returns("https://fts.example.com");
+
+        await _model.OnGet();
+
+        // Should have supplier tiles
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileSeven_Title);
+        _model.Tiles.Should().Contain(tile => tile.Body == StaticTextResource.OrganisationHome_TileEight_Body);
+
+        // Should have buyer tiles
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileTwo_Title);
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFive_Title);
+        _model.Tiles.Should().Contain(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
+    }
+
+    [Fact]
+    public async Task OnGet_VerifiesAllFeatureFlagsAreChecked()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon), Times.Once);
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.AiTool), Times.Once);
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.Payments), Times.Once);
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer), Times.Once);
+        _featureManagerMock.Verify(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier), Times.Once);
     }
 }
 

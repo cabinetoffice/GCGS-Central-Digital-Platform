@@ -4467,12 +4467,18 @@
     <value>Financial Viability Risk Assessment (FVRA) tool</value>
   </data>
   <data name="OrganisationHome_TileSix_Body">
-    <value>Submit or update an FVRA, or check its status.</value>
+    <value>Set up and share an FVRA with suppliers, assess and quality assure submissions, track progress and assign operational roles.</value>
   </data>
   <data name="OrganisationHome_TileSeven_Title">
     <value>Supplier information</value>
   </data>
   <data name="OrganisationHome_TileSeven_Body">
     <value>Share the required information with contracting authorities for above-threshold contracts.</value>
+  </data>
+  <data name="OrganisationHome_TileEight_Title">
+    <value>Financial Viability Risk Assessment (FVRA) tool</value>
+  </data>
+  <data name="OrganisationHome_TileEight_Body">
+    <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
   </data>
 </root>
