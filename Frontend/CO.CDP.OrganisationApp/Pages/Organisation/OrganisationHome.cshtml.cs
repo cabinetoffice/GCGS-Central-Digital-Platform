@@ -13,8 +13,8 @@ using OrganisationApiException = CO.CDP.Organisation.WebApiClient.ApiException;
 using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
-[Authorize(OrgScopeRequirement.Viewer)]
 
+[Authorize(OrgScopeRequirement.Viewer)]
 public class OrganisationHomeModel(
     IFeatureManager featureManager,
     IExternalServiceUrlBuilder externalServiceUrlBuilder,
@@ -31,7 +31,7 @@ public class OrganisationHomeModel(
 
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    public string BackLinkUrl { get; private set; } = "";
+    public string BackLinkUrl { get; private set; } = string.Empty;
 
     private readonly ILogger<OrganisationHomeModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));

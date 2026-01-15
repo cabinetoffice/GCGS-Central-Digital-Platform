@@ -190,7 +190,6 @@ public class UiFoundationBuilder
         return this;
     }
 
-
     /// <summary>
     /// Adds the unified External Service URL builder
     /// </summary>
