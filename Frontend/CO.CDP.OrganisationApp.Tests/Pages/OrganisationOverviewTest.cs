@@ -360,11 +360,10 @@ public class OrganisationOverviewTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOriginIsOrganisationHome_SetsBackLinkToHome()
+    public async Task OnGet_SetsBackLinkToHome()
     {
         var id = Guid.NewGuid();
         _model.Id = id;
-        _model.Origin = "organisation-home";
 
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
             .ReturnsAsync(GivenOrganisationClientModel(id: id, roles: [PartyRole.Buyer]));
@@ -375,34 +374,6 @@ public class OrganisationOverviewTest
         await _model.OnGet();
 
         _model.BackLinkUrl.Should().Be($"/organisation/{id}/home");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOriginIsSelection_SetsBackLinkToOrganisationSelection()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.Origin = "selection";
-        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(GivenOrganisationClientModel(id));
-
-        await _model.OnGet();
-
-        _model.BackLinkUrl.Should().Be("/organisation-selection");
-    }
-
-    [Fact]
-    public async Task OnGet_WhenOriginIsNull_SetsBackLinkToOrganisationSelection()
-    {
-        var id = Guid.NewGuid();
-        _model.Id = id;
-        _model.Origin = null;
-        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
-            .ReturnsAsync(GivenOrganisationClientModel(id));
-
-        await _model.OnGet();
-
-        _model.BackLinkUrl.Should().Be("/organisation-selection");
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(
