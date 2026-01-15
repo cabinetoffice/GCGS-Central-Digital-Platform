@@ -8,6 +8,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     private readonly ICommercialToolsUrlService _commercialToolsUrlService;
     private readonly IAiToolUrlService _aiToolUrlService;
     private readonly IPaymentsUrlService _paymentsUrlService;
+    private readonly IFvraUrlService _fvraUrlService;
 
     /// <summary>
     /// Initialises a new instance of the ExternalServiceUrlBuilder
@@ -15,14 +16,17 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     /// <param name="commercialToolsUrlService">Commercial Tools URL service</param>
     /// <param name="aiToolUrlService">AI Tool URL service</param>
     /// <param name="paymentsUrlService">Payments URL service</param>
+    /// <param name="fvraUrlService">FVRA Tool URL service</param>
     public ExternalServiceUrlBuilder(
         ICommercialToolsUrlService commercialToolsUrlService,
         IAiToolUrlService aiToolUrlService,
-        IPaymentsUrlService paymentsUrlService)
+        IPaymentsUrlService paymentsUrlService,
+        IFvraUrlService fvraUrlService)
     {
         _commercialToolsUrlService = commercialToolsUrlService;
         _aiToolUrlService = aiToolUrlService;
         _paymentsUrlService = paymentsUrlService;
+        _fvraUrlService = fvraUrlService;
     }
 
     /// <summary>
@@ -44,6 +48,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
             ExternalService.CommercialTools => _commercialToolsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.AiTool => _aiToolUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.Payments => _paymentsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
+            ExternalService.FvraTool => _fvraUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             _ => throw new ArgumentOutOfRangeException(nameof(service), service, $@"Unsupported external service: {service}")
         };
     }

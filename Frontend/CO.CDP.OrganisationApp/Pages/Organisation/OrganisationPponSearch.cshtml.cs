@@ -104,7 +104,7 @@ public partial class OrganisationPponSearchModel(
     {
         BackLinkUrl = Origin switch
         {
-            "buyer-view" => $"/organisation/{Id}/buyer",
+            "organisation-home" => $"/organisation/{Id}/home",
             _ => $"/organisation/{Id}"
         };
         return Task.CompletedTask;

@@ -1,0 +1,33 @@
+@page "/organisation/{id:guid}/home"
+@model CO.CDP.OrganisationApp.Pages.Organisation.OrganisationHomeModel
+@using CO.CDP.Localization
+
+@{
+    var organisationDetails = Model.OrganisationDetails!;
+    ViewData["Title"] = organisationDetails.Name;
+}
+
+@section BeforeContent {
+    <a href="@Model.BackLinkUrl" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full govuk-blue-banner">
+        <span class="govuk-caption-l">@StaticTextResource.OrganisationHome_Caption</span>
+        <h1 class="govuk-heading-l">
+            @ViewData["Title"]
+        </h1>
+        <p class="govuk-body">
+            @StaticTextResource.OrganisationHome_Body
+        </p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    @foreach (var tile in Model.Tiles)
+    {
+        <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+            <partial name="Shared/_Tile" model="tile"/>
+        </div>
+    }
+</div>

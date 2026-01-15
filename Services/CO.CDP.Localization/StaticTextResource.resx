@@ -4427,4 +4427,58 @@
   <data name="Global_Decimal_InvalidError" xml:space="preserve">
     <value>Enter a valid number</value>
   </data>
+  <data name="OrganisationHome_Caption">
+    <value>Organisation home</value>
+  </data>
+  <data name="OrganisationHome_Body">
+    <value>Information and tools supporting public procurement.</value>
+  </data>
+  <data name="OrganisationHome_TileOne_Title">
+    <value>Registered organisation details</value>
+  </data>
+  <data name="OrganisationHome_TileOne_Body">
+    <value>View or update your organisation's name, address and other basic details, or manage users and API keys.</value>
+  </data>
+  <data name="OrganisationHome_TileTwo_Title">
+    <value>Public Procurement Organisation Number (PPON) register</value>
+  </data>
+  <data name="OrganisationHome_TileTwo_Body">
+    <value>Find an organisation's PPON.</value>
+  </data>
+  <data name="OrganisationHome_TileThree_Title">
+    <value>Statement of work assessment tool</value>
+  </data>
+  <data name="OrganisationHome_TileThree_Body" xml:space="preserve">
+    <value>Assess statements of work against quality standards.</value>
+  </data>
+  <data name="OrganisationHome_TileFour_Title">
+    <value>Publish and update your payments</value>
+  </data>
+  <data name="OrganisationHome_TileFour_Body">
+    <value>For public contracts that start on 1 April 2026.</value>
+  </data>
+  <data name="OrganisationHome_TileFive_Title">
+    <value>My notices</value>
+  </data>
+  <data name="OrganisationHome_TileFive_Body">
+    <value>Publish the required notices about tender opportunities, awarded contracts and more.</value>
+  </data>
+  <data name="OrganisationHome_TileSix_Title">
+    <value>Financial Viability Risk Assessment (FVRA) tool</value>
+  </data>
+  <data name="OrganisationHome_TileSix_Body">
+    <value>Set up and share an FVRA with suppliers, assess and quality assure submissions, track progress and assign operational roles.</value>
+  </data>
+  <data name="OrganisationHome_TileSeven_Title">
+    <value>Supplier information</value>
+  </data>
+  <data name="OrganisationHome_TileSeven_Body">
+    <value>Share the required information with contracting authorities for above-threshold contracts.</value>
+  </data>
+  <data name="OrganisationHome_TileEight_Title">
+    <value>Financial Viability Risk Assessment (FVRA) tool</value>
+  </data>
+  <data name="OrganisationHome_TileEight_Body">
+    <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
+  </data>
 </root>

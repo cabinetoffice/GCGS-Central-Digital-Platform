@@ -7,5 +7,6 @@ public enum ExternalService
 {
     CommercialTools,
     AiTool,
-    Payments
+    Payments,
+    FvraTool
 }

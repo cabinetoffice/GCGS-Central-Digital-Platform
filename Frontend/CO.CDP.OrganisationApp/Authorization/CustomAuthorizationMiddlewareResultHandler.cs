@@ -10,7 +10,7 @@ public class CustomAuthorizationMiddlewareResultHandler(IServiceScopeFactory ser
 
     private static readonly HashSet<string> AllowedOrigins =
     [
-        "buyer-view",
+        "organisation-home",
         "overview"
     ];
 

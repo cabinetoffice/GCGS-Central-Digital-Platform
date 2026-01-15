@@ -107,6 +107,42 @@ public class SupplierInformationSummaryTest
             .Which.Url.Should().Be("/page-not-found");
     }
 
+    [Theory]
+    [InlineData("organisation-home", "/organisation/{0}/home")]
+    [InlineData(null, "/organisation/{0}")]
+    [InlineData("", "/organisation/{0}")]
+    [InlineData("some-other-value", "/organisation/{0}")]
+    public async Task OnGet_ShouldSetBackLinkUrlBasedOnOrigin(string? origin, string expectedUrlPattern)
+    {
+        var organisationId = Guid.NewGuid();
+        var supplierInformation = new CDP.Organisation.WebApiClient.SupplierInformation(
+            organisationName: "FakeOrg",
+            supplierType: SupplierType.Organisation,
+            operationTypes: null,
+            completedRegAddress: true,
+            completedPostalAddress: true,
+            completedVat: true,
+            completedWebsiteAddress: true,
+            completedEmailAddress: true,
+            completedOperationType: true,
+            completedLegalForm: true,
+            completedConnectedPerson: true,
+            legalForm: null);
+
+        _organisationClientMock.Setup(o => o.GetOrganisationSupplierInformationAsync(organisationId))
+            .ReturnsAsync(supplierInformation);
+        _organisationClientMock.Setup(o => o.GetConnectedEntitiesAsync(organisationId))
+            .ReturnsAsync(ConnectedEntities);
+
+        _model.Origin = origin;
+        _model.Id = organisationId;
+
+        await _model.OnGet(organisationId);
+
+        var expectedUrl = string.Format(expectedUrlPattern, organisationId);
+        _model.BackLinkUrl.Should().Be(expectedUrl);
+    }
+
     private static List<ConnectedEntityLookup> ConnectedEntities =>
     [
         new(endDate: It.IsAny<DateTimeOffset>(), entityId: Guid.NewGuid(), entityType: ConnectedEntityType.Organisation, name: "e1", uri: It.IsAny<Uri>(), deleted: false, isInUse: false, formGuid: null, sectionGuid: null),
