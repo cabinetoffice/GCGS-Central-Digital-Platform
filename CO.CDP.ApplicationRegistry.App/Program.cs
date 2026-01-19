@@ -1,8 +1,18 @@
+using CO.CDP.ApplicationRegistry.App;
 using GovUk.Frontend.AspNetCore;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddRouting(options =>
+{
+    options.LowercaseUrls = true;
+    options.ConstraintMap["snake_case"] = typeof(SnakeCaseParameterTransformer);
+});
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Conventions.Add(new RouteTokenTransformerConvention(new SnakeCaseParameterTransformer()));
+});
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
 

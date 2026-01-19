@@ -1,1 +1,52 @@
 /* Site-specific styles for Application Registry */
+
+/* Dashboard stat cards */
+.app-dashboard-stat {
+    text-align: center;
+    padding: 20px;
+    background: #d2e2f1;
+    margin-bottom: 20px;
+}
+
+/* Navigation tiles */
+.app-tile {
+    border: 1px solid #b1b4b6;
+    background: #f3f2f1;
+    padding: 15px 15px 0 15px;
+    min-height: 13rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.1rem;
+}
+
+.app-tile__link {
+    text-decoration: none;
+}
+
+/* Application cards */
+.app-card {
+    border: 1px solid #b1b4b6;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fff;
+}
+
+.app-card--enabled {
+    border-left: 5px solid #00703c;
+}
+
+.app-card--disabled {
+    border-left: 5px solid #b1b4b6;
+}
+
+.app-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* Secondary text colour */
+.govuk-\!-colour-secondary {
+    color: #505a5f;
+}

@@ -17,7 +17,46 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        var model = new HomeViewModel
+        {
+            OrganisationName = "Cabinet Office",
+            Stats = new DashboardStats
+            {
+                ApplicationsEnabled = 3,
+                TotalUsers = 12,
+                ActiveAssignments = 8,
+                RolesAssigned = 5
+            },
+            EnabledApplications =
+            [
+                new EnabledApplicationViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Find a Tender",
+                    Description = "Search and manage public procurement opportunities. Create, publish and manage contract notices.",
+                    UsersAssigned = 3,
+                    RolesAvailable = 2
+                },
+                new EnabledApplicationViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Contracts Finder",
+                    Description = "Publish contract awards and find information about contracts with the government and public sector.",
+                    UsersAssigned = 2,
+                    RolesAvailable = 3
+                },
+                new EnabledApplicationViewModel
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Spend Data Service",
+                    Description = "Upload and publish government spending data. View and analyse procurement spend across departments.",
+                    UsersAssigned = 3,
+                    RolesAvailable = 2
+                }
+            ]
+        };
+
+        return View(model);
     }
 
     public IActionResult Privacy()

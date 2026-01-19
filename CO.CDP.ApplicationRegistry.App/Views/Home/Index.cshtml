@@ -1,9 +1,94 @@
+@model CO.CDP.ApplicationRegistry.App.Models.HomeViewModel
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "Manage your services";
 }
 
-<h1 class="govuk-heading-xl">Application Registry</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Manage your services</h1>
+        <p class="govuk-body-l">Configure which applications your organisation can access, and manage user permissions.</p>
+    </div>
+</div>
 
-<p class="govuk-body">
-    Welcome to the Application Registry service.
+<div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l govuk-!-margin-bottom-1">@Model.Stats.ApplicationsEnabled.ToString("N0")</span>
+            <span class="govuk-body">Applications enabled</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l govuk-!-margin-bottom-1">@Model.Stats.TotalUsers.ToString("N0")</span>
+            <span class="govuk-body">Users</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l govuk-!-margin-bottom-1">@Model.Stats.ActiveAssignments.ToString("N0")</span>
+            <span class="govuk-body">Active assignments</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l govuk-!-margin-bottom-1">@Model.Stats.RolesAssigned.ToString("N0")</span>
+            <span class="govuk-body">Roles assigned</span>
+        </div>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+        <div class="app-tile">
+            <h2 class="govuk-heading-m">
+                <a href="@Url.Action("Index", "Applications")" class="govuk-link app-tile__link">Manage applications</a>
+            </h2>
+            <p class="govuk-body">Enable or disable applications for your organisation. View available applications and their descriptions.</p>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+        <div class="app-tile">
+            <h2 class="govuk-heading-m">
+                <a href="@Url.Action("Index", "Users")" class="govuk-link app-tile__link">Manage users</a>
+            </h2>
+            <p class="govuk-body">Add users to your organisation and assign them access to applications with specific roles and permissions.</p>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third govuk-!-margin-bottom-6">
+        <div class="app-tile">
+            <h2 class="govuk-heading-m">
+                <a href="@Url.Action("Index", "Assignments")" class="govuk-link app-tile__link">Assign users to applications</a>
+            </h2>
+            <p class="govuk-body">Give users access to enabled applications by assigning roles that control what they can do.</p>
+        </div>
+    </div>
+</div>
+
+<h2 class="govuk-heading-l govuk-!-margin-top-8">Enabled applications</h2>
+
+@foreach (var app in Model.EnabledApplications)
+{
+    <div class="app-card app-card--enabled">
+        <div class="app-card__header">
+            <div>
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                    <a href="@Url.Action("Details", "Applications", new { id = app.Id })" class="govuk-link govuk-link--no-visited-state">@app.Name</a>
+                </h3>
+                <p class="govuk-body govuk-!-margin-bottom-2">@app.Description</p>
+            </div>
+            <strong class="govuk-tag govuk-tag--green">Enabled</strong>
+        </div>
+        <p class="govuk-body-s govuk-!-colour-secondary govuk-!-margin-bottom-2">
+            @app.UsersAssigned @(app.UsersAssigned == 1 ? "user" : "users") assigned · @app.RolesAvailable @(app.RolesAvailable == 1 ? "role" : "roles") available
+        </p>
+        <p class="govuk-body govuk-!-margin-bottom-0">
+            <a href="@Url.Action("Index", "Assignments", new { applicationId = app.Id })" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
+            <a href="@Url.Action("Details", "Applications", new { id = app.Id })" class="govuk-link">View details</a>
+        </p>
+    </div>
+}
+
+<p class="govuk-body govuk-!-margin-top-6">
+    <a href="@Url.Action("Index", "Applications")" class="govuk-link">View all available applications</a>
 </p>
