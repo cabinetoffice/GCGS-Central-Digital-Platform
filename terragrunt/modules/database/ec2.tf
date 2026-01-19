@@ -27,7 +27,7 @@ resource "aws_instance" "fts_db_import" {
 resource "aws_ec2_instance_state" "fts_db_import" {
   count       = local.has_import_instance ? 1 : 0
   instance_id = aws_instance.fts_db_import[0].id
-  state       = "stopped"
+  state       = local.import_instance_state
 }
 
 resource "aws_ebs_volume" "import_data_disk" {
