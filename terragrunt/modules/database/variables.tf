@@ -87,6 +87,16 @@ variable "public_subnet_ids" { # @TODO (ABN) burn me once migration is done
   default     = []
 }
 
+variable "role_db_import_arn" {
+  description = "The ARN for the IAM role to be used as instance profile for dp-import boxes (EC2)."
+  type        = string
+}
+
+variable "role_db_import_name" {
+  description = "Name the IAM role to be used as instance profile for dp-import boxes (EC2)."
+  type        = string
+}
+
 variable "role_rds_backup_arn" {
   description = "The ARN for the IAM role that permits users to access to S3 buckets holding dump files."
   type        = string
