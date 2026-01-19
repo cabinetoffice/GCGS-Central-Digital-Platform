@@ -59,5 +59,5 @@ data "aws_iam_policy_document" "db_import_handover_s3" {
       "kms:GenerateDataKey",
     ]
     resources = [ module.sql_dump_upload_bucket.key_arn ]
-}
+  }
 }

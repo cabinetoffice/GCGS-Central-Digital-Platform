@@ -70,7 +70,7 @@ inputs = {
   ec2_sg_id         = dependency.core_security_groups.outputs.ec2_sg_id
 
   role_db_import_arn      = dependency.core_iam.outputs.db_import_arn
-  role_db_import_name      = dependency.core_iam.outputs.db_import_name
+  role_db_import_name     = dependency.core_iam.outputs.db_import_name
   role_rds_backup_arn     = dependency.core_iam.outputs.rds_backup_arn
   role_rds_cloudwatch_arn = dependency.core_iam.outputs.rds_cloudwatch_arn
   role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
