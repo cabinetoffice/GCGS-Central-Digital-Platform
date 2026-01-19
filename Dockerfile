@@ -103,6 +103,10 @@ COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCo
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/
+COPY --link Services/CO.CDP.ApplicationRegistry.Api/CO.CDP.ApplicationRegistry.Api.csproj Services/CO.CDP.ApplicationRegistry.Api/
+COPY --link Services/CO.CDP.ApplicationRegistry.Core/CO.CDP.ApplicationRegistry.Core.csproj Services/CO.CDP.ApplicationRegistry.Core/
+COPY --link Services/CO.CDP.ApplicationRegistry.Infrastructure/CO.CDP.ApplicationRegistry.Infrastructure.csproj Services/CO.CDP.ApplicationRegistry.Infrastructure/
+COPY --link Services/CO.CDP.ApplicationRegistry.UnitTests/CO.CDP.ApplicationRegistry.UnitTests.csproj Services/CO.CDP.ApplicationRegistry.UnitTests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
