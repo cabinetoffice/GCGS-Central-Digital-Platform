@@ -1,0 +1,107 @@
+@model CO.CDP.ApplicationRegistry.App.Models.ApplicationsViewModel
+@{
+    ViewData["Title"] = "Available applications";
+}
+
+@section BeforeContent {
+    <a href="@Url.Action("Index", "Home")" class="govuk-back-link">Back to dashboard</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Available applications</h1>
+        <p class="govuk-body-l">Enable applications for your organisation to allow users to be assigned access.</p>
+    </div>
+</div>
+
+<div class="app-filter-section">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="filter-status">Status</label>
+                <select class="govuk-select" id="filter-status" name="filter-status">
+                    <option value="all" selected>All applications</option>
+                    <option value="enabled">Enabled only</option>
+                    <option value="available">Available to enable</option>
+                </select>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="filter-category">Category</label>
+                <select class="govuk-select" id="filter-category" name="filter-category">
+                    <option value="all" selected>All categories</option>
+                    <option value="procurement">Procurement</option>
+                    <option value="data">Data & Analytics</option>
+                </select>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="search">Search</label>
+                <input class="govuk-input" id="search" name="search" type="text" placeholder="Search applications...">
+            </div>
+        </div>
+    </div>
+</div>
+
+<p class="govuk-body govuk-!-margin-bottom-6">Showing <strong>@Model.TotalCount applications</strong></p>
+
+@if (Model.EnabledApplications.Any())
+{
+    <h2 class="govuk-heading-l">Enabled for your organisation</h2>
+
+    @foreach (var app in Model.EnabledApplications)
+    {
+        <div class="app-card app-card--enabled">
+            <div class="app-card__header">
+                <div>
+                    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                        <a href="@Url.Action("Details", "Applications", new { slug = app.Slug })" class="govuk-link">@app.Name</a>
+                    </h3>
+                    <p class="govuk-body govuk-!-margin-bottom-2">@app.Description</p>
+                </div>
+                <strong class="govuk-tag govuk-tag--green">Enabled</strong>
+            </div>
+            <p class="govuk-body-s govuk-!-colour-secondary govuk-!-margin-bottom-2">
+                <span class="govuk-!-margin-right-4">Category: @app.Category</span>
+                <span class="govuk-!-margin-right-4">@app.UsersAssigned @(app.UsersAssigned == 1 ? "user" : "users") assigned</span>
+                <span>@app.RolesAvailable @(app.RolesAvailable == 1 ? "role" : "roles") available</span>
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a href="@Url.Action("Index", "UserAssignments", new { slug = app.Slug })" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
+                <a href="@Url.Action("Details", "Applications", new { slug = app.Slug })" class="govuk-link govuk-!-margin-right-4">View details</a>
+                <a href="@Url.Action("Disable", "Applications", new { slug = app.Slug })" class="govuk-link">Disable</a>
+            </p>
+        </div>
+    }
+}
+
+@if (Model.AvailableApplications.Any())
+{
+    <h2 class="govuk-heading-l govuk-!-margin-top-8">Available to enable</h2>
+
+    @foreach (var app in Model.AvailableApplications)
+    {
+        <div class="app-card app-card--disabled">
+            <div class="app-card__header">
+                <div>
+                    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">
+                        <a href="@Url.Action("Details", "Applications", new { slug = app.Slug })" class="govuk-link">@app.Name</a>
+                    </h3>
+                    <p class="govuk-body govuk-!-margin-bottom-2">@app.Description</p>
+                </div>
+                <strong class="govuk-tag govuk-tag--grey">Not enabled</strong>
+            </div>
+            <p class="govuk-body-s govuk-!-colour-secondary govuk-!-margin-bottom-2">
+                <span class="govuk-!-margin-right-4">Category: @app.Category</span>
+                <span>@app.RolesAvailable @(app.RolesAvailable == 1 ? "role" : "roles") available</span>
+            </p>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                <a href="@Url.Action("Enable", "Applications", new { slug = app.Slug })" class="govuk-button govuk-button--secondary govuk-!-margin-bottom-0" data-module="govuk-button">Enable for your organisation</a>
+                <a href="@Url.Action("Details", "Applications", new { slug = app.Slug })" class="govuk-link govuk-!-margin-left-4">View details</a>
+            </p>
+        </div>
+    }
+}

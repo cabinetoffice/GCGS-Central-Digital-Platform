@@ -44,6 +44,22 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 20px;
+}
+
+.app-card__header > div:first-child {
+    flex: 1;
+}
+
+.app-card__header > .govuk-tag {
+    flex-shrink: 0;
+}
+
+/* Filter section */
+.app-filter-section {
+    background: #f3f2f1;
+    padding: 20px;
+    margin-bottom: 30px;
 }
 
 /* Secondary text colour */
