@@ -30,6 +30,26 @@ resource "aws_security_group_rule" "db_from_fts_db_import_ec2" {
   source_security_group_id = var.ec2_sg_id
 }
 
+resource "aws_security_group_rule" "fts_db_import_to_sirsi_db" {
+  description              = "FTS DB Import EC2 to t5he Postgres DB"
+  type                     = "egress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  source_security_group_id = var.db_postgres_sg_id
+  security_group_id        = var.ec2_sg_id
+}
+
+resource "aws_security_group_rule" "sirsi_db_from_fts_db_import_ec2" {
+  description              = "Allow Postgres from FTS DB import EC2"
+  type                     = "ingress"
+  from_port                = 5432
+  to_port                  = 5432
+  protocol                 = "tcp"
+  security_group_id        = var.db_postgres_sg_id
+  source_security_group_id = var.ec2_sg_id
+}
+
 resource "aws_security_group_rule" "fts_db_import_to_public" {
   description       = "Temporary allow all outbound traffic for updates and installing tools"
   type              = "egress"

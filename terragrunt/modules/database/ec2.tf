@@ -8,12 +8,18 @@ resource "aws_key_pair" "import_key" {
   public_key = tls_private_key.import_key.public_key_openssh
 }
 
+resource "aws_iam_instance_profile" "db_import" {
+  name = "${local.name_prefix}-dp-import"
+  role = var.role_db_import_name
+}
+
 resource "aws_instance" "fts_db_import" {
   count = local.has_import_instance ? 1 : 0
 
   ami                     = "ami-028a245ba118f4c66"
   disable_api_stop        = false
   disable_api_termination = true
+  iam_instance_profile    = aws_iam_instance_profile.db_import.name
   instance_type           = "c7i.2xlarge"
   subnet_id               = var.public_subnet_ids[0]
 
