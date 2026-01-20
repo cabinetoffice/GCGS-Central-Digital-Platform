@@ -13,7 +13,6 @@ using OrganisationSearchFilter = CO.CDP.Organisation.WebApiClient.OrganisationSe
 using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
 using PartyRoleStatus = CO.CDP.Organisation.WebApiClient.PartyRoleStatus;
 using PartyRoleWithStatus = CO.CDP.Organisation.WebApiClient.PartyRoleWithStatus;
-using Microsoft.FeatureManagement;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
@@ -34,10 +33,9 @@ public class OrganisationPponSearchModelTest
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
-        var mockFeatureManager = new Mock<IFeatureManager>();
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object, mockFeatureManager.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel

@@ -31,7 +31,7 @@ public class OrganisationHomeModel(
 
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
-    public string BackLinkUrl { get; private set; } = string.Empty;
+    public string BackLinkUrl { get; private set; } = "/organisation-selection";
 
     private readonly ILogger<OrganisationHomeModel> _logger =
         logger ?? throw new ArgumentNullException(nameof(logger));
@@ -56,8 +56,6 @@ public class OrganisationHomeModel(
             _logger.LogError(cdpException, errorMessage);
             return RedirectToPage("/Error");
         }
-
-        BackLinkUrl = "/organisation-selection";
 
         var featureConfig = new FeatureConfiguration(
             SearchRegistryPponEnabled: await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon),
@@ -194,11 +192,10 @@ public class OrganisationHomeModel(
         };
     }
 
-    private record FeatureConfiguration(
+    private sealed record FeatureConfiguration(
         bool SearchRegistryPponEnabled,
         bool AiToolEnabled,
         bool PaymentsEnabled,
         bool FvraToolBuyerEnabled,
         bool FvraToolSupplierEnabled);
 }
-
