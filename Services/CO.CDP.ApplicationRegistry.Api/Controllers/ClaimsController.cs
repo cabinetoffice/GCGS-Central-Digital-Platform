@@ -1,6 +1,6 @@
 using CO.CDP.ApplicationRegistry.Api.Models;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.ApplicationRegistry.Core.Models.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

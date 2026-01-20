@@ -1,5 +1,4 @@
 using CO.CDP.ApplicationRegistry.Api.Authorization;
-using CO.CDP.ApplicationRegistry.Core;
 using CO.CDP.ApplicationRegistry.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -118,7 +117,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHealthChecks("/health");

@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Core.Models;
+namespace CO.CDP.ApplicationRegistry.Core.Models.Claims;
 
 /// <summary>
 /// Represents the complete set of claims for a user across all organisations and applications.

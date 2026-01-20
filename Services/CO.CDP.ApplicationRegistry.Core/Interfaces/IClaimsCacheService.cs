@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.ApplicationRegistry.Core.Models.Claims;
 
 namespace CO.CDP.ApplicationRegistry.Core.Interfaces;
 

@@ -1,6 +1,6 @@
 using System.Text.Json;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.ApplicationRegistry.Core.Models.Claims;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace CO.CDP.ApplicationRegistry.Infrastructure.Services;
