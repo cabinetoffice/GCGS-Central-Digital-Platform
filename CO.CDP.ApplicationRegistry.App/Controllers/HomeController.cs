@@ -2,61 +2,20 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.ApplicationRegistry.App.Models;
+using CO.CDP.ApplicationRegistry.App.Services;
 
 namespace CO.CDP.ApplicationRegistry.App.Controllers;
 
 // [Authorize]
-public class HomeController : Controller
+public class HomeController(IApplicationService applicationService) : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    // TODO: Get from authenticated user claims
+    private const int CurrentOrgId = 1;
 
-    public HomeController(ILogger<HomeController> logger)
+    public async Task<IActionResult> Index(CancellationToken ct)
     {
-        _logger = logger;
-    }
-
-    public IActionResult Index()
-    {
-        var model = new HomeViewModel
-        {
-            OrganisationName = "Cabinet Office",
-            Stats = new DashboardStats
-            {
-                ApplicationsEnabled = 3,
-                TotalUsers = 12,
-                ActiveAssignments = 8,
-                RolesAssigned = 5
-            },
-            EnabledApplications =
-            [
-                new EnabledApplicationViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Find a Tender",
-                    Description = "Search and manage public procurement opportunities. Create, publish and manage contract notices.",
-                    UsersAssigned = 3,
-                    RolesAvailable = 2
-                },
-                new EnabledApplicationViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Contracts Finder",
-                    Description = "Publish contract awards and find information about contracts with the government and public sector.",
-                    UsersAssigned = 2,
-                    RolesAvailable = 3
-                },
-                new EnabledApplicationViewModel
-                {
-                    Id = Guid.NewGuid(),
-                    Name = "Spend Data Service",
-                    Description = "Upload and publish government spending data. View and analyse procurement spend across departments.",
-                    UsersAssigned = 3,
-                    RolesAvailable = 2
-                }
-            ]
-        };
-
-        return View(model);
+        var viewModel = await applicationService.GetHomeViewModelAsync(CurrentOrgId, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     public IActionResult Privacy()
