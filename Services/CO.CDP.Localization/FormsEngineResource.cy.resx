@@ -1275,4 +1275,16 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="DateForm_FutureDate_Hint" xml:space="preserve">
     <value>&lt;div class="govuk-hint"&gt;er enghraifft 27 3 2027&lt;/div&gt;</value>
   </data>
+  <data name="DataProtection_03_Custom_Yes" xml:space="preserve">
+    <value>Mae gen i'r adnoddau ar hyn o bryd</value>
+  </data>
+  <data name="DataProtection_03_Custom_No" xml:space="preserve">
+    <value>Nid oes gen i'r adnoddau, ond bydd gen i'r adnoddau erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="DataProtection_02_Custom_Yes" xml:space="preserve">
+    <value>Oes, mae gen i'r adnoddau neu bydd gennyf yr adnoddau erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="DataProtection_02_Custom_No" xml:space="preserve">
+    <value>Nac oes, nid oes gen i'r adnoddau</value>
+  </data>
 </root>
