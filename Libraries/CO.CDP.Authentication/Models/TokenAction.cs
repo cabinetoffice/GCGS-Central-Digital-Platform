@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Core.Tokens;
+namespace CO.CDP.Authentication.Models;
 
 /// <summary>
 /// Discriminated union representing the action to take based on token state analysis.
@@ -7,14 +7,9 @@ namespace CO.CDP.ApplicationRegistry.Core.Tokens;
 public abstract record TokenAction
 {
     /// <summary>
-    /// No user is authenticated (userUrn is null).
-    /// </summary>
-    public sealed record NoUser : TokenAction;
-
-    /// <summary>
     /// Use the existing valid tokens from session.
     /// </summary>
-    public sealed record UseExisting(AuthTokens Tokens) : TokenAction;
+    public sealed record UseExisting(AuthorityTokenSet Tokens) : TokenAction;
 
     /// <summary>
     /// Fetch new tokens using the OneLogin access token.
@@ -36,4 +31,3 @@ public abstract record TokenAction
     /// </summary>
     public sealed record UserLoggedOut : TokenAction;
 }
-

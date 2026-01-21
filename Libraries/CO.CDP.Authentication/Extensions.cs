@@ -1,4 +1,6 @@
 using CO.CDP.Authentication.Authorization;
+using CO.CDP.Authentication.Http;
+using CO.CDP.Authentication.Services;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -42,10 +44,22 @@ public static class Extensions
         return services;
     }
 
+    public static IServiceCollection AddCdpAuthentication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<ISessionManager, SessionService>();
+        services.AddScoped<OidcEventsService>();
+        services.AddTransient<AuthorityBearerTokenHandler>();
+
+        return services;
+    }
+
     public static AuthenticationBuilder AddJwtBearerAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         var authority = configuration["Organisation:Authority"]
-            ?? throw new Exception("Missing configuration key: Organisation:Authority.");
+            ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
 
         return builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
