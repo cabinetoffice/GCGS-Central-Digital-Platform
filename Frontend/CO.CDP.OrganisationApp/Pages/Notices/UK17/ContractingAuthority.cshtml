@@ -1,0 +1,235 @@
+@page "/organisation/{id}/notices/uk17/contracting-authority"
+@using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Extensions
+@model ContractingAuthorityModel
+
+@{
+    ViewData["Title"] = "Contracting Authority";
+}
+
+@section BeforeContent {
+    <a class="govuk-back-link" href="@Model.BackLinkUrl">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    @StaticTextResource.Global_ErrorSummary_Heading
+                </h2>
+                <div class="govuk-error-summary__body" role="alert" aria-labelledby="error-summary-title">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li><a href="#organisation-search-input">@Model.ErrorMessage</a></li>
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">UK17: Payment compliance notice</h1>
+
+        <h2 class="govuk-heading-m">Contracting authority</h2>
+
+        <form method="post">
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--s" for="organisation-search-input">
+                    Search for the contracting authority name
+                </label>
+                <div class="govuk-hint">
+                    The fields below will be populated with the information provided when registering on Find a Tender. You must
+                    check that it is correct before publishing this notice.
+                </div>
+                <input class="govuk-input" id="organisation-search-input" name="authority-search" type="text" autocomplete="organization" />
+            </div>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Unable to find the organisation?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    Use the fields below to enter the contracting authority details manually.
+                </div>
+            </details>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="authority-name">
+                    Contracting authority name
+                </label>
+                <div class="govuk-hint">
+                    Enter the lead authority's details first.
+                </div>
+                <input class="govuk-input" id="authority-name" name="authority-name" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="identification-register">
+                    Identification register
+                </label>
+                <select class="govuk-select" id="identification-register" name="identification-register">
+                    <option value=""></option>
+                    <option value="companies-house">Companies House</option>
+                    <option value="charity-commission">Charity Commission</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="identifier">
+                    Identifier
+                </label>
+                <input class="govuk-input" id="identifier" name="identifier" type="text" />
+            </div>
+
+            <p class="govuk-body">
+                <a class="govuk-link" href="#">Add another identifier</a>
+            </p>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="street-address">
+                    Street address
+                </label>
+                <input class="govuk-input" id="street-address" name="street-address" type="text" autocomplete="address-line1" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="town-city">
+                    Town/city
+                </label>
+                <input class="govuk-input" id="town-city" name="town-city" type="text" autocomplete="address-level2" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="postcode">
+                    Postcode
+                </label>
+                <div class="govuk-hint">
+                    For UK postcodes, the related region will also be shown on the notice.
+                </div>
+                <input class="govuk-input govuk-input--width-10" id="postcode" name="postcode" type="text" autocomplete="postal-code" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="country">
+                    Country
+                </label>
+                <select class="govuk-select" id="country" name="country">
+                    <option value="united-kingdom" selected>United Kingdom</option>
+                    <option value="ireland">Ireland</option>
+                    <option value="france">France</option>
+                    <option value="germany">Germany</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="website">
+                    Website (optional)
+                </label>
+                <div class="govuk-hint">
+                    For example, https://www.example.com/.
+                </div>
+                <input class="govuk-input" id="website" name="website" type="url" autocomplete="url" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="contact-name">
+                    Contact name (optional)
+                </label>
+                <input class="govuk-input" id="contact-name" name="contact-name" type="text" autocomplete="name" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="email">
+                    Email
+                </label>
+                <div class="govuk-hint">
+                    For example, name@example.com.
+                </div>
+                <input class="govuk-input" id="email" name="email" type="email" autocomplete="email" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="telephone">
+                    Telephone (optional)
+                </label>
+                <div class="govuk-hint">
+                    Include the country code for non-UK numbers, for example +3531 234 5678.
+                </div>
+                <input class="govuk-input" id="telephone" name="telephone" type="tel" autocomplete="tel" />
+            </div>
+
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="otherOrgReporting-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">
+                            Is another organisation reporting on behalf of the contracting authority?
+                        </h2>
+                    </legend>
+
+                    <div class="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="otherOrgReporting" name="otherOrgReporting" type="radio" value="yes" />
+                            <label class="govuk-label govuk-radios__label" for="otherOrgReporting">
+                                Yes
+                            </label>
+                        </div>
+
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="otherOrgReporting-2" name="otherOrgReporting" type="radio" value="no" />
+                            <label class="govuk-label govuk-radios__label" for="otherOrgReporting-2">
+                                No
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                </button>
+
+                <button class="govuk-button govuk-button--secondary" type="button" onclick="window.location.href='/buyer-view'">
+                    Exit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <ul class="app-section-nav__list">
+            <li class="app-section-nav__item">
+                <span class="app-section-nav__current">Contracting authority</span>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" asp-page="./OtherOrganisation" asp-route-id='@RouteData.Values["id"]'>Other organisation</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/payments_report">Payments report</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/approval">Approval</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/changes_to_notice">Changes to notice</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/summary">Summary</a>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -91,6 +91,13 @@ public class BuyerView(
                     Href = externalServiceUrlBuilder.BuildUrl(ExternalService.Payments, "", Id, null, cookiesAcceptedValue, originParams)
                 });
             }
+
+            tiles.Add(new Tile
+            {
+                Title = "UK17",
+                Body = "I'm going to take you to UK17 and back",
+                Href = $"/organisation/{Id}/notices/uk17/contracting-authority"
+            });
         }
 
         Tiles = tiles;

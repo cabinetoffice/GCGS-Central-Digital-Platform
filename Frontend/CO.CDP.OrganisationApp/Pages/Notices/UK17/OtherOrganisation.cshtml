@@ -1,0 +1,226 @@
+@page "/organisation/{id}/notices/uk17/other-organisation"
+@using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Extensions
+@model OtherOrganisationModel
+
+@{
+    ViewData["Title"] = "Other organisation";
+}
+
+@section BeforeContent {
+    <a class="govuk-back-link" href="@Model.BackLinkUrl">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    @StaticTextResource.Global_ErrorSummary_Heading
+                </h2>
+                <div class="govuk-error-summary__body" role="alert" aria-labelledby="error-summary-title">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li><a href="#other-org-search">@Model.ErrorMessage</a></li>
+                    </ul>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-l">UK17: Payment compliance notice</h1>
+
+        <h2 class="govuk-heading-m">Other organisation</h2>
+
+        <p class="govuk-body">
+            Enter the details of the other organisation reporting on behalf of the contracting authority.
+        </p>
+
+        <form method="post">
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-label--m" for="other-org-search">
+                    Search for the organisation name
+                </label>
+
+                <input class="govuk-input" id="other-org-search" name="otherOrgSearch" type="text" />
+            </div>
+
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Unable to find the organisation?
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">You can enter the organisation's details manually below.</p>
+                </div>
+            </details>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-name">
+                    Organisation name
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-name" name="otherOrgName" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-id-register">
+                    Identification register
+                </label>
+
+                <select class="govuk-select" id="other-org-id-register" name="otherOrgIdRegister">
+                    <option value="">Select an option</option>
+                    <option value="GB-COH">Companies House</option>
+                    <option value="GB-CHC">Charity Commission for England and Wales</option>
+                    <option value="GB-SC">Scottish Charity Register</option>
+                    <option value="GB-NIC">Charity Commission for Northern Ireland</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <p class="govuk-body">
+                <a class="govuk-link" href="#">Add another identification register</a>
+            </p>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-identifier">
+                    Identifier
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-identifier" name="otherOrgIdentifier" type="text" />
+            </div>
+
+            <p class="govuk-body">
+                <a class="govuk-link" href="#">Add another identifier</a>
+            </p>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-street">
+                    Street address
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-street" name="otherOrgStreet" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-town">
+                    Town/city
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-town" name="otherOrgTown" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-postcode">
+                    Postcode
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-postcode" name="otherOrgPostcode" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-country">
+                    Country
+                </label>
+
+                <select class="govuk-select" id="other-org-country" name="otherOrgCountry">
+                    <option value="GB" selected>United Kingdom</option>
+                    <option value="IE">Ireland</option>
+                    <option value="FR">France</option>
+                    <option value="DE">Germany</option>
+                    <option value="ES">Spain</option>
+                    <option value="US">United States</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-website">
+                    Website (optional)
+                </label>
+
+                <div id="other-org-website-hint" class="govuk-hint">
+                    For example, https://www.example.com
+                </div>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-website" name="otherOrgWebsite" type="text" aria-describedby="other-org-website-hint" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-contact-name">
+                    Contact name (optional)
+                </label>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-contact-name" name="otherOrgContactName" type="text" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-email">
+                    Email
+                </label>
+
+                <div id="other-org-email-hint" class="govuk-hint">
+                    For example, name@example.com
+                </div>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-email" name="otherOrgEmail" type="text" aria-describedby="other-org-email-hint" />
+            </div>
+
+            <div class="govuk-form-group">
+                <label class="govuk-label" for="other-org-telephone">
+                    Telephone (optional)
+                </label>
+
+                <div id="other-org-telephone-hint" class="govuk-hint">
+                    Include the country code for non-UK numbers, for example +3531 234 5678.
+                </div>
+
+                <input class="govuk-input govuk-!-width-two-thirds" id="other-org-telephone" name="otherOrgTelephone" type="text" aria-describedby="other-org-telephone-hint" />
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button" type="submit">
+                    Save and continue
+                </button>
+
+                <button class="govuk-button govuk-button--secondary" type="button" onclick="window.location.href='/buyer-view'">
+                    Exit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="govuk-grid-column-one-third">
+        <ul class="app-section-nav__list">
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" asp-page="./ContractingAuthority" asp-route-id='@RouteData.Values["id"]'>Contracting authority</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <span class="app-section-nav__current">Other organisation</span>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/payments_report">Payments report</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/approval">Approval</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/changes_to_notice">Changes to notice</a>
+            </li>
+
+            <li class="app-section-nav__item">
+                <a class="govuk-link govuk-link--no-visited-state app-section-nav__link" href="/summary">Summary</a>
+            </li>
+        </ul>
+    </div>
+</div>

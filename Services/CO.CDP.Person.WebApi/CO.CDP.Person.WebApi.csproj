@@ -9,6 +9,7 @@
         <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenAPI</OpenApiDocumentsDirectory>
         <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
         <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
+        <UserSecretsId>444aa25a-cbc4-43c9-b872-2673e2b94cca</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
