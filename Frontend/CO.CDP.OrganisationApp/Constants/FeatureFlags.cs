@@ -14,4 +14,6 @@ public static class FeatureFlags
     public const string CommercialTools = "CommercialTools";
     public const string WelshProcurementAdditionalModule = "WelshProcurementAdditionalModule";
     public const string Payments = "Payments";
+    public const string FvraToolBuyer = "FvraToolBuyer";
+    public const string FvraToolSupplier = "FvraToolSupplier";
 }

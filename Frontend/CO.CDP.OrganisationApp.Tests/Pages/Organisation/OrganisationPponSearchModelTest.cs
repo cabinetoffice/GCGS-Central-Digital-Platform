@@ -13,7 +13,6 @@ using OrganisationSearchFilter = CO.CDP.Organisation.WebApiClient.OrganisationSe
 using PartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
 using PartyRoleStatus = CO.CDP.Organisation.WebApiClient.PartyRoleStatus;
 using PartyRoleWithStatus = CO.CDP.Organisation.WebApiClient.PartyRoleWithStatus;
-using Microsoft.FeatureManagement;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
@@ -34,10 +33,9 @@ public class OrganisationPponSearchModelTest
     {
         _mockOrganisationClient = new Mock<IOrganisationClient>();
         _mockLogger = new Mock<ILogger<OrganisationPponSearchModel>>();
-        var mockFeatureManager = new Mock<IFeatureManager>();
 
         _testOrganisationPponSearchModel =
-            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object, mockFeatureManager.Object)
+            new OrganisationPponSearchModel(_mockOrganisationClient.Object, Mock.Of<ISession>(), _mockLogger.Object)
             {
                 Id = Id,
                 Pagination = new CO.CDP.OrganisationApp.Pages.Shared.PaginationPartialModel
@@ -54,13 +52,13 @@ public class OrganisationPponSearchModelTest
     }
 
     [Fact]
-    public async Task OnGet_WhenOriginIsBuyerView_SetsCorrectBackLinkUrl()
+    public async Task OnGet_WhenOriginIsOrganisationHome_SetsCorrectBackLinkUrl()
     {
-        _testOrganisationPponSearchModel.Origin = "buyer-view";
+        _testOrganisationPponSearchModel.Origin = "organisation-home";
 
         await _testOrganisationPponSearchModel.OnGet();
 
-        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}/buyer");
+        _testOrganisationPponSearchModel.BackLinkUrl.Should().Be($"/organisation/{Id}/home");
     }
 
     [Fact]
@@ -478,7 +476,7 @@ public class OrganisationPponSearchModelTest
         var pageSize = 10;
         var searchText = "Test Organisation";
         var sortOrder = "rel";
-        var origin = "buyer-view";
+        var origin = "organisation-home";
 
         var result = OrganisationPponSearchModel.CreatePaginationModel(
             currentPage, totalItems, pageSize, organisationId, searchText, sortOrder, origin);
