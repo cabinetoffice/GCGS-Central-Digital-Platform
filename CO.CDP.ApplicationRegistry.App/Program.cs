@@ -2,6 +2,7 @@ using CO.CDP.ApplicationRegistry.App;
 using CO.CDP.ApplicationRegistry.App.Services;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
+using CO.CDP.AwsServices;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -27,17 +28,15 @@ builder.Services.AddControllersWithViews(options =>
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
 
-// Session configuration
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
-        ? CookieSecurePolicy.SameAsRequest
-        : CookieSecurePolicy.Always;
-});
+// AWS configuration
+builder.Services.AddAwsConfiguration(builder.Configuration);
+
+// Logging and session configuration
+builder.Services
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration)
+    .AddSharedSessions(builder.Configuration);
 
 builder.Services.AddScoped<IAppSession, Session>();
 builder.Services.AddCdpAuthentication(builder.Configuration);
@@ -66,6 +65,15 @@ var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId
 var cookieSecurePolicy = builder.Environment.IsDevelopment()
     ? CookieSecurePolicy.SameAsRequest
     : CookieSecurePolicy.Always;
+
+var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
+    options.Cookie.IsEssential = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
+});
 
 builder.Services.AddAuthentication(options =>
 {
