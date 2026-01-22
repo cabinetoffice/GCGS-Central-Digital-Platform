@@ -7,6 +7,7 @@ using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
@@ -31,11 +32,17 @@ builder.Services.AddGovUkFrontend();
 // AWS configuration
 builder.Services.AddAwsConfiguration(builder.Configuration);
 
-// Logging and session configuration
+// Logging, data protection, and session configuration
 builder.Services
     .AddLoggingConfiguration(builder.Configuration)
     .AddAmazonCloudWatchLogsService()
     .AddCloudWatchSerilog(builder.Configuration)
+    .AddDataProtection()
+        .SetApplicationName("CDP-Frontends")
+        .PersistKeysToAWSSystemsManager(
+            builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
+            ?? throw new InvalidOperationException("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."))
+    .Services
     .AddSharedSessions(builder.Configuration);
 
 builder.Services.AddScoped<IAppSession, Session>();
