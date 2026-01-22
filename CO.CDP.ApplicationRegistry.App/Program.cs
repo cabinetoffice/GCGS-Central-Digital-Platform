@@ -91,6 +91,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
+    options.EventsType = typeof(CO.CDP.Authentication.Services.CookieEventsService);
 })
 .AddOpenIdConnect(options =>
 {
