@@ -1,3 +1,4 @@
+using Amazon.Runtime.Internal.Transform;
 using CO.CDP.OrganisationApp.Constants;
 using FluentAssertions;
 
@@ -55,7 +56,7 @@ public class CountryTests
             {"AZ", "Azerbaijan"}, {"BH", "Bahrain"}, {"BD", "Bangladesh"}, {"BB", "Barbados"}, {"BY", "Belarus"},
             {"BE", "Belgium"}, {"BZ", "Belize"}, {"BJ", "Benin"}, {"BM", "Bermuda"}, {"BT", "Bhutan"},
             {"BO", "Bolivia"}, {"BQ", "Bonaire"}, {"BA", "Bosnia and Herzegovina"}, {"BW", "Botswana"}, {"BV", "Bouvet Island"},
-            {"BR", "Brazil"}, {"IO", "British Indian Ocean Territory"}, {"BN", "Brunei"}, {"BG", "Bulgaria"}, {"BF", "Burkina Faso"},
+            {"BR", "Brazil"}, {"IO", "British Indian Ocean Territory"}, {"VG", "British Virgin Islands"}, { "BN", "Brunei"}, {"BG", "Bulgaria"}, {"BF", "Burkina Faso"},
             {"BI", "Burundi"}, {"KH", "Cambodia"}, {"CM", "Cameroon"}, {"CA", "Canada"}, {"KY", "Cayman Islands"},
             {"CV", "Cape Verde"}, {"CF", "Central African Republic"}, {"TD", "Chad"}, {"CX", "Christmas Island"}, {"CL", "Chile"},
             {"CN", "China"}, {"CP", "Clipperton"}, {"CC", "Cocos Islands"}, {"CO", "Colombia"}, {"KM", "Comoros"},
@@ -93,7 +94,7 @@ public class CountryTests
             {"TK", "Tokelau"}, {"TO", "Tonga"}, {"TT", "Trinidad and Tobago"}, {"TN", "Tunisia"}, {"TR", "Turkey"}, {"TM", "Turkmenistan"},
             {"TC", "Turks and Caicos Islands"}, {"TV", "Tuvalu"}, {"UG", "Uganda"}, {"UA", "Ukraine"}, {"AE", "United Arab Emirates"},
             {"US", "United States"}, {"UM", "United States Minor Outlying Islands"}, {"VI", "United States Virgin Islands"}, {"UY", "Uruguay"}, {"UZ", "Uzbekistan"},
-            {"VU", "Vanuatu"}, {"VA", "Vatican City"}, {"VE", "Venezuela"}, {"VG", "British Virgin Islands"}, {"VN", "Vietnam"},
+            {"VU", "Vanuatu"}, {"VA", "Vatican City"}, {"VE", "Venezuela"}, {"VG", {"VN", "Vietnam"},
             {"WF", "Wallis and Futuna"}, {"EH", "Western Sahara"}, {"YE", "Yemen"}, {"ZM", "Zambia"}, {"ZW", "Zimbabwe"}
         };
 
