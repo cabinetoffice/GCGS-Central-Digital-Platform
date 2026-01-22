@@ -53,8 +53,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
                 return RedirectToPage("/Consortium/ConsortiumOverview", new { Id });
             }
 
-            BackLinkUrl = OrganisationDetails.IsBuyer() ?
-                            $"/organisation/{Id}/buyer" : "/organisation-selection";
+            BackLinkUrl = $"/organisation/{Id}/home";
 
             IdentifierRegistriesDetails = await GetIdentifierDetails(OrganisationDetails);
 

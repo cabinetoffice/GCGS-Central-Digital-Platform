@@ -659,11 +659,23 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
     <value>Bodlonwyd y gofynion</value>
   </data>
+  <data name="CyberEssentials_02_CustomYesText" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_02_CustomNoText" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
   <data name="CyberEssentials_03_SummaryTitle" xml:space="preserve">
     <value>Statws y gofynion</value>
   </data>
   <data name="CyberEssentials_03_Title" xml:space="preserve">
     <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials? </value>
+  </data>
+  <data name="CyberEssentials_03_CustomYesText" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
+  </data>
+  <data name="CyberEssentials_03_CustomNoText" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
   </data>
   <data name="CyberEssentials_04_SummaryTitle" xml:space="preserve">
     <value>Lanlwytho'r ardystiad</value>
@@ -683,11 +695,23 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="CyberEssentials_06_Title" xml:space="preserve">
     <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials Plus? </value>
   </data>
+  <data name="CyberEssentials_06_CustomYesText" xml:space="preserve">
+    <value>Ydw, rwy'n bodloni'r gofynion neu byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
+  </data>
+  <data name="CyberEssentials_06_CustomNoText" xml:space="preserve">
+    <value>Nac ydw, nid wyf yn bodloni'r gofynion</value>
+  </data>
   <data name="CyberEssentials_07_SummaryTitle" xml:space="preserve">
     <value>Statws y gofynion</value>
   </data>
   <data name="CyberEssentials_07_Title" xml:space="preserve">
     <value>Pryd byddwch yn bodloni gofynion ardystio Cyber Essentials Plus? </value>
+  </data>
+  <data name="CyberEssentials_07_CustomYesText" xml:space="preserve">
+    <value>Rwy'n bodloni'r gofynion ar hyn o bryd</value>
+  </data>
+  <data name="CyberEssentials_07_CustomNoText" xml:space="preserve">
+    <value>Nid wyf yn bodloni'r gofynion ar hyn o bryd, ond byddaf yn eu bodloni erbyn i'r contract gael ei ddyfarnu</value>
   </data>
   <data name="CyberEssentials_08_SummaryTitle" xml:space="preserve">
     <value>Lanlwytho'r ardystiad</value>
@@ -1274,6 +1298,9 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   </data>
   <data name="DateForm_FutureDate_Hint" xml:space="preserve">
     <value>&lt;div class="govuk-hint"&gt;er enghraifft 27 3 2027&lt;/div&gt;</value>
+  </data>
+  <data name="Global_Start" xml:space="preserve">
+    <value>Dechrau</value>
   </data>
   <data name="DataProtection_03_Custom_Yes" xml:space="preserve">
     <value>Mae gen i'r adnoddau ar hyn o bryd</value>
