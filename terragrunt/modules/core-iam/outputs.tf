@@ -46,6 +46,14 @@ output "cloudwatch_events_name" {
   value = aws_iam_role.cloudwatch_events.name
 }
 
+output "db_import_arn" {
+  value = aws_iam_role.db_import.arn
+}
+
+output "db_import_name" {
+  value = aws_iam_role.db_import.name
+}
+
 output "ecs_task_arn" {
   value = aws_iam_role.ecs_task.arn
 }

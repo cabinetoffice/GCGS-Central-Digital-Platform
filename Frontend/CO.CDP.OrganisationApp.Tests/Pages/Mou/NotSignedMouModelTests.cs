@@ -114,12 +114,12 @@ public class NotSignedMouModelTests
     }
 
     [Fact]
-    public async Task OnGetAsync_WhenOriginIsBuyerView_SetsBackLinkToBuyerView()
+    public async Task OnGetAsync_WhenOriginIsOrganisationHome_SetsBackLinkToOrganisationHome()
     {
         var organisationId = Guid.NewGuid();
         var organisation = OrganisationFactory.CreateOrganisation(id: organisationId, name: "Test Org");
         _model.OrganisationId = organisationId;
-        _model.Origin = "buyer-view";
+        _model.Origin = "organisation-home";
 
         _sessionMock.Setup(s => s.Get<UserDetails>(It.IsAny<string>())).Returns(UserDetailsFactory.CreateUserDetails());
         _organisationClientMock.Setup(o => o.GetOrganisationAsync(organisationId)).ReturnsAsync(organisation);
@@ -129,7 +129,7 @@ public class NotSignedMouModelTests
         var result = await _model.OnGetAsync();
 
         result.Should().BeOfType<PageResult>();
-        _model.BackLinkUrl.Should().Be($"/organisation/{organisationId}/buyer");
+        _model.BackLinkUrl.Should().Be($"/organisation/{organisationId}/home");
     }
 
     [Fact]
