@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Api.Models;
+namespace CO.CDP.ApplicationRegistry.Shared.Responses;
 
 /// <summary>
 /// Response model for a user application assignment.

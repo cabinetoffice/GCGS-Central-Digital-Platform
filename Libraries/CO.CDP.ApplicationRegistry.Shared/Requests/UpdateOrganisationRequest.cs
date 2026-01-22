@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Api.Models;
+namespace CO.CDP.ApplicationRegistry.Shared.Requests;
 
 /// <summary>
 /// Request model for updating an organisation.

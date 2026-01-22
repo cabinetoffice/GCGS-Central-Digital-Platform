@@ -6,6 +6,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <InvariantGlobalization>false</InvariantGlobalization>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/OpenAPI</OpenApiDocumentsDirectory>
+        <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
+        <OpenApiGenerateDocumentsOnBuild>true</OpenApiGenerateDocumentsOnBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>$(NoWarn);1591</NoWarn>
         <UserSecretsId>d15a1777-1165-4f69-8b98-434020a464c3</UserSecretsId>
@@ -13,7 +16,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+        <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     </ItemGroup>
@@ -21,10 +24,15 @@
     <ItemGroup>
         <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj" />
         <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="IMPLEMENTATION_COMPLETE.md" />
     </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="../../Libraries/CO.CDP.Configuration/CO.CDP.Configuration.csproj" />
+  </ItemGroup>
 </Project>

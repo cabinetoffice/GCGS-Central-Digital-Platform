@@ -87,7 +87,7 @@ public class OrganisationScopeAuthorizationHandler(
         {
             case OrganisationIdLocation.Path:
                 if (currentRequest.Path.Value == null) return null;
-                var pathMatch = Regex.Match(currentRequest.Path.Value, $"/organisations/({RegexGuid})");
+                var pathMatch = Regex.Match(currentRequest.Path.Value, $"/organisations?/({RegexGuid})");
                 if (pathMatch.Success) return pathMatch.Groups[1].Value;
                 break;
 

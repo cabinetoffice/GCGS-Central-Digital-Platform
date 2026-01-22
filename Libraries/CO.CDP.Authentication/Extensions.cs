@@ -53,6 +53,17 @@ public static class Extensions
         services.AddScoped<OidcEventsService>();
         services.AddTransient<AuthorityBearerTokenHandler>();
 
+        var authorityBaseUrl = configuration["Organisation:Authority"]
+            ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
+
+        services.AddHttpClient(TokenExchangeService.HttpClientName, client =>
+        {
+            client.BaseAddress = new Uri(authorityBaseUrl);
+        });
+
+        services.AddSingleton(TimeProvider.System);
+        services.AddScoped<ITokenExchangeService, TokenExchangeService>();
+
         return services;
     }
 

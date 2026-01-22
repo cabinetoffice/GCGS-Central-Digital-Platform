@@ -1,5 +1,5 @@
-using CO.CDP.ApplicationRegistry.App.Api;
 using CO.CDP.ApplicationRegistry.App.Models;
+using CO.CDP.ApplicationRegistry.WebApiClient;
 
 namespace CO.CDP.ApplicationRegistry.App.Mapping;
 

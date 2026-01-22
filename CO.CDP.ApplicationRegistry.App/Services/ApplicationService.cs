@@ -1,26 +1,22 @@
-using System.Net;
-using CO.CDP.ApplicationRegistry.App.Api;
 using CO.CDP.ApplicationRegistry.App.Mapping;
 using CO.CDP.ApplicationRegistry.App.Models;
-using Refit;
+using CO.CDP.ApplicationRegistry.WebApiClient;
 
 namespace CO.CDP.ApplicationRegistry.App.Services;
 
 public sealed class ApplicationService(
-    IApplicationsApi applicationsApi,
-    IOrganisationsApi organisationsApi,
-    IOrganisationApplicationsApi organisationApplicationsApi) : IApplicationService
+    ApplicationRegistryClient apiClient) : IApplicationService
 {
     public async Task<HomeViewModel?> GetHomeViewModelAsync(int orgId, CancellationToken ct = default)
     {
         try
         {
-            var org = await organisationsApi.OrganisationsGet(orgId, ct);
-            var apps = await organisationApplicationsApi.ApplicationsGet(orgId, ct);
+            var org = await apiClient.OrganisationsGETAsync(orgId, ct);
+            var apps = (await apiClient.ApplicationsAllAsync(orgId, ct)).ToList();
             var roles = await GetAllRolesForApplicationsAsync(apps, ct);
             return ViewModelMapper.ToHomeViewModel(org, apps, roles);
         }
-        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
         }
@@ -30,12 +26,12 @@ public sealed class ApplicationService(
     {
         try
         {
-            var org = await organisationsApi.OrganisationsGet(orgId, ct);
-            var allApps = await applicationsApi.ApplicationsGet(ct);
-            var enabledApps = await organisationApplicationsApi.ApplicationsGet(orgId, ct);
+            var org = await apiClient.OrganisationsGETAsync(orgId, ct);
+            var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
+            var enabledApps = (await apiClient.ApplicationsAllAsync(orgId, ct)).ToList();
             return ViewModelMapper.ToApplicationsViewModel(org, allApps, enabledApps);
         }
-        catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        catch (ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
         }
@@ -51,10 +47,10 @@ public sealed class ApplicationService(
         {
             try
             {
-                var roles = await applicationsApi.RolesGet(app.ApplicationId, ct);
+                var roles = (await apiClient.RolesAllAsync(app.ApplicationId, ct)).ToList();
                 allRoles.AddRange(roles);
             }
-            catch (ApiException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+            catch (ApiException ex) when (ex.StatusCode == 404)
             {
                 // Application not found, skip
             }

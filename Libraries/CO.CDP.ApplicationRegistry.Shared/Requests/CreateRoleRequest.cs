@@ -1,9 +1,9 @@
-namespace CO.CDP.ApplicationRegistry.Api.Models;
+namespace CO.CDP.ApplicationRegistry.Shared.Requests;
 
 /// <summary>
-/// Request model for updating a role.
+/// Request model for creating a role.
 /// </summary>
-public record UpdateRoleRequest
+public record CreateRoleRequest
 {
     /// <summary>
     /// Gets or sets the role name.
@@ -18,5 +18,5 @@ public record UpdateRoleRequest
     /// <summary>
     /// Gets or sets whether the role is active.
     /// </summary>
-    public required bool IsActive { get; init; }
+    public bool IsActive { get; init; } = true;
 }

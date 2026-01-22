@@ -1,19 +1,14 @@
-namespace CO.CDP.ApplicationRegistry.Api.Models;
+namespace CO.CDP.ApplicationRegistry.Shared.Requests;
 
 /// <summary>
-/// Request model for creating an application.
+/// Request model for updating an application.
 /// </summary>
-public record CreateApplicationRequest
+public record UpdateApplicationRequest
 {
     /// <summary>
     /// Gets or sets the application name.
     /// </summary>
     public required string Name { get; init; }
-
-    /// <summary>
-    /// Gets or sets the unique client identifier.
-    /// </summary>
-    public required string ClientId { get; init; }
 
     /// <summary>
     /// Gets or sets the application description.
@@ -23,5 +18,5 @@ public record CreateApplicationRequest
     /// <summary>
     /// Gets or sets whether the application is active.
     /// </summary>
-    public bool IsActive { get; init; } = true;
+    public required bool IsActive { get; init; }
 }

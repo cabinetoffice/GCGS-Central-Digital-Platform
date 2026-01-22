@@ -5,7 +5,7 @@ namespace CO.CDP.Authentication.Services;
 
 internal sealed class TokenExchangeService : ITokenExchangeService
 {
-    private const string HttpClientName = "AuthorityApi";
+    public const string HttpClientName = "AuthorityApi";
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly TimeProvider _timeProvider;
 
