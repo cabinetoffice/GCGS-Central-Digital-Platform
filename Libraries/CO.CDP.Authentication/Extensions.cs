@@ -34,6 +34,7 @@ public static class Extensions
                     {
                         return ApiKeyAuthenticationHandler.AuthenticationScheme;
                     }
+
                     return JwtBearerDefaults.AuthenticationScheme;
                 };
             });
@@ -54,23 +55,27 @@ public static class Extensions
         services.AddTransient<AuthorityBearerTokenHandler>();
 
         var authorityBaseUrl = configuration["Organisation:Authority"]
-            ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
+                               ?? throw new InvalidOperationException(
+                                   "Missing configuration key: Organisation:Authority.");
 
-        services.AddHttpClient(TokenExchangeService.HttpClientName, client =>
-        {
-            client.BaseAddress = new Uri(authorityBaseUrl);
-        });
+        services.AddHttpClient(TokenExchangeService.HttpClientName,
+            client => { client.BaseAddress = new Uri(authorityBaseUrl); });
 
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<ITokenExchangeService, TokenExchangeService>();
 
+        services.AddScoped<ILogoutManager, LogoutManager>();
+        services.AddScoped<CookieEventsService>();
+
         return services;
     }
 
-    public static AuthenticationBuilder AddJwtBearerAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+
+    public static AuthenticationBuilder AddJwtBearerAuthentication(this AuthenticationBuilder builder,
+        IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
     {
         var authority = configuration["Organisation:Authority"]
-            ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
+                        ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
 
         return builder.AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
         {
@@ -87,14 +92,18 @@ public static class Extensions
         });
     }
 
-    public static AuthenticationBuilder AddApiKeyAuthentication(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationOptions>? configureOptions = null)
+    public static AuthenticationBuilder AddApiKeyAuthentication(this AuthenticationBuilder builder,
+        Action<ApiKeyAuthenticationOptions>? configureOptions = null)
     {
-        return builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
+        return builder.AddScheme<ApiKeyAuthenticationOptions, ApiKeyAuthenticationHandler>(
+            ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
     }
 
-    public static AuthenticationBuilder AddSimpleApiKeyAuthentication(this AuthenticationBuilder builder, Action<ApiKeyAuthenticationOptions>? configureOptions = null)
+    public static AuthenticationBuilder AddSimpleApiKeyAuthentication(this AuthenticationBuilder builder,
+        Action<ApiKeyAuthenticationOptions>? configureOptions = null)
     {
-        return builder.AddScheme<ApiKeyAuthenticationOptions, SimpleApiKeyAuthenticationHandler>(ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
+        return builder.AddScheme<ApiKeyAuthenticationOptions, SimpleApiKeyAuthenticationHandler>(
+            ApiKeyAuthenticationHandler.AuthenticationScheme, configureOptions);
     }
 
     public static IServiceCollection AddApiKeyAuthenticationServices(this IServiceCollection services)
