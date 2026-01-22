@@ -27,6 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.DataSharing.WebApiClient\CO.CDP.DataSharing.WebApiClient.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.EntityVerificationClient\CO.CDP.EntityVerificationClient.csproj" />

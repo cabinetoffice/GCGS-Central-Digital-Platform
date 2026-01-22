@@ -64,6 +64,7 @@ public static class Extensions
         services.AddSingleton(TimeProvider.System);
         services.AddScoped<ITokenExchangeService, TokenExchangeService>();
 
+        services.AddScoped<ICacheService, DistributedCacheService>();
         services.AddScoped<ILogoutManager, LogoutManager>();
         services.AddScoped<CookieEventsService>();
 

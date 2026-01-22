@@ -4,7 +4,7 @@ using CO.CDP.UI.Foundation.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CO.CDP.UI.Foundation;
+namespace CO.CDP.UI.Foundation.Extensions;
 
 /// <summary>
 /// Builder for configuring UI Foundation services
@@ -191,6 +191,15 @@ public class UiFoundationBuilder
     public UiFoundationBuilder AddCookiePreferenceService()
     {
         _services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds the shared AppSessionService for generic session access
+    /// </summary>
+    public UiFoundationBuilder AddAppSessionService()
+    {
+        _services.AddScoped<IAppSession, AppSessionService>();
         return this;
     }
 }

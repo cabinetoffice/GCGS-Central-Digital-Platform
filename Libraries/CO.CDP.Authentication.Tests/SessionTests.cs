@@ -1,20 +1,20 @@
-using CO.CDP.ApplicationRegistry.App;
-using CO.CDP.ApplicationRegistry.App.Models;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Moq;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
+using ISession = Microsoft.AspNetCore.Http.ISession;
+using CO.CDP.UI.Foundation.Services;
 
-namespace CO.CDP.ApplicationRegistry.UnitTests;
+namespace CO.CDP.Authentication.Tests;
 
 public class SessionTests
 {
     private readonly Mock<IHttpContextAccessor> _httpContextAccessorMock;
     private readonly Mock<HttpContext> _httpContextMock;
     private readonly MockSession _mockSession;
-    private readonly Session _session;
+    private readonly AppSessionService _session;
 
     public SessionTests()
     {
@@ -25,7 +25,7 @@ public class SessionTests
         _httpContextMock.Setup(c => c.Session).Returns(_mockSession);
         _httpContextAccessorMock.Setup(a => a.HttpContext).Returns(_httpContextMock.Object);
 
-        _session = new Session(_httpContextAccessorMock.Object);
+        _session = new AppSessionService(_httpContextAccessorMock.Object);
     }
 
     [Fact]
@@ -134,7 +134,7 @@ public class SessionTests
     public void Get_ThrowsInvalidOperationException_WhenHttpContextIsNull()
     {
         _httpContextAccessorMock.Setup(a => a.HttpContext).Returns((HttpContext?)null);
-        var session = new Session(_httpContextAccessorMock.Object);
+        var session = new AppSessionService(_httpContextAccessorMock.Object);
 
         var act = () => session.Get<UserDetails>("TestKey");
 

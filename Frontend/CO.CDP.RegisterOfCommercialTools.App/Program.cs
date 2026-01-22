@@ -11,6 +11,7 @@ using CO.CDP.RegisterOfCommercialTools.WebApiClient;
 using CO.CDP.RegisterOfCommercialTools.WebApiClient.Models;
 using CO.CDP.UI.Foundation;
 using CO.CDP.UI.Foundation.Cookies;
+using CO.CDP.UI.Foundation.Extensions;
 using CO.CDP.UI.Foundation.Middleware;
 using CO.CDP.UI.Foundation.Pages;
 using GovUk.Frontend.AspNetCore;

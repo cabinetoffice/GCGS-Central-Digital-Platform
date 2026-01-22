@@ -3,6 +3,7 @@ using CO.CDP.ApplicationRegistry.App.Services;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.UI.Foundation.Extensions;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -45,8 +46,9 @@ builder.Services
     .Services
     .AddSharedSessions(builder.Configuration);
 
-builder.Services.AddScoped<IAppSession, Session>();
-builder.Services.AddCdpAuthentication(builder.Configuration);
+builder.Services.AddUiFoundation(builder.Configuration, ui => ui.AddAppSessionService());
+builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>(); // Auth tokens only, not generic session // Auth tokens only, not generic session
+builder.Services.AddCdpAuthentication(builder.Configuration); // Auth tokens only, not generic session // Auth tokens only, not generic session
 
 // API client configuration with bearer token handler
 var apiBaseUrl = builder.Configuration["ApplicationRegistryApi:BaseUrl"]

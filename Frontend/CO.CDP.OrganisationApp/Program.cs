@@ -32,14 +32,14 @@ using Microsoft.Extensions.Options;
 using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Globalization;
-using CO.CDP.UI.Foundation;
+using CO.CDP.Authentication.Services;
 using CO.CDP.UI.Foundation.Pages;
 using Microsoft.AspNetCore.DataProtection;
 using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using CookiePreferencesService = CO.CDP.OrganisationApp.CookiePreferencesService;
-using ICookiePreferencesService = CO.CDP.OrganisationApp.ICookiePreferencesService;
-using ISession = CO.CDP.OrganisationApp.ISession;
+using CO.CDP.UI.Foundation.Extensions;
+using ILogoutManager = CO.CDP.Authentication.Services.ILogoutManager;
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
@@ -126,7 +126,7 @@ builder.Services.AddSession(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSingleton<ISession, Session>();
+builder.Services.AddSingleton<CO.CDP.OrganisationApp.ISession, CO.CDP.OrganisationApp.Session>();
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
@@ -156,7 +156,7 @@ builder.Services.AddTransient(provider =>
     return factory.GetTempData(context);
 });
 builder.Services.AddScoped<ITempDataService, TempDataService>();
-builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<ICacheService, DistributedCacheService>();
 builder.Services.AddScoped<ApiBearerTokenHandler>();
 builder.Services.AddScoped<CultureDelegatingHandler>();
 builder.Services.AddScoped<ICompaniesHouseApi, CompaniesHouseApi>();
@@ -242,9 +242,9 @@ var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Au
             ?? throw new Exception("Missing configuration key: Organisation:Authority.");
 builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
 
-builder.Services.AddTransient<CookieEvents>();
+builder.Services.AddScoped<ILogoutManager, LogoutManager>();
+builder.Services.AddScoped<CookieEventsService>();
 builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
-builder.Services.AddTransient<ILogoutManager, LogoutManager>();
 builder.Services.AddTransient<ITokenService, TokenService>();
 builder.Services.AddTransient<OidcEvents>();
 builder.Services.AddTransient<IAuthorityClient, AuthorityClient>();
@@ -273,7 +273,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.SlidingExpiration = true;
-    options.EventsType = typeof(CookieEvents);
+    options.EventsType = typeof(CO.CDP.Authentication.Services.CookieEventsService);
 })
 .AddOpenIdConnect(options =>
 {
