@@ -94,7 +94,7 @@ public class CountryTests
             {"TK", "Tokelau"}, {"TO", "Tonga"}, {"TT", "Trinidad and Tobago"}, {"TN", "Tunisia"}, {"TR", "Turkey"}, {"TM", "Turkmenistan"},
             {"TC", "Turks and Caicos Islands"}, {"TV", "Tuvalu"}, {"UG", "Uganda"}, {"UA", "Ukraine"}, {"AE", "United Arab Emirates"},
             {"US", "United States"}, {"UM", "United States Minor Outlying Islands"}, {"VI", "United States Virgin Islands"}, {"UY", "Uruguay"}, {"UZ", "Uzbekistan"},
-            {"VU", "Vanuatu"}, {"VA", "Vatican City"}, {"VE", "Venezuela"}, {"VG", {"VN", "Vietnam"},
+            {"VU", "Vanuatu"}, {"VA", "Vatican City"}, {"VE", "Venezuela"}, {"VN", "Vietnam"},
             {"WF", "Wallis and Futuna"}, {"EH", "Western Sahara"}, {"YE", "Yemen"}, {"ZM", "Zambia"}, {"ZW", "Zimbabwe"}
         };
 
