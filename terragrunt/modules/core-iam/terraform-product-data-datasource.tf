@@ -78,4 +78,19 @@ data "aws_iam_policy_document" "terraform_product_data" {
     sid = "ManageProductSQS"
   }
 
+  statement {
+    actions = [
+      "es:Add*",
+      "es:Create*",
+      "es:Describe*",
+      "es:Delete*",
+      "es:List*",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:es:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:domain/${local.name_prefix}",
+    ]
+    sid = "ManageProductOpenSearch"
+  }
+
 }
