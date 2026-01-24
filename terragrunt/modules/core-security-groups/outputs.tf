@@ -38,6 +38,10 @@ output "elasticache_redis_sg_id" {
   value = aws_security_group.elasticache_redis.id
 }
 
+output "opensearch_sg_id" {
+  value = aws_security_group.opensearch.id
+}
+
 output "vpce_ecr_api_sg_id" {
   value = aws_security_group.vpce_ecr_api.id
 }
