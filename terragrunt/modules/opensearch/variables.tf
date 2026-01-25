@@ -80,6 +80,26 @@ variable "product" {
   })
 }
 
+variable "role_ecs_task_arn" {
+  description = "Task IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_name" {
+  description = "Task IAM role Name"
+  type        = string
+}
+
+variable "role_ecs_task_opensearch_admin_arn" {
+  description = "OpenSearch Admin Task IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_opensearch_admin_name" {
+  description = "OpenSearch Admin Task IAM role Name"
+  type        = string
+}
+
 variable "role_opensearch_admin_arn" {
   description = "ARN the IAM role to be used to administrate OpenSearch"
   type        = string
