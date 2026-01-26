@@ -12,8 +12,8 @@ data "aws_secretsmanager_secret_version" "allowed_ips" {
 
 data "aws_iam_policy_document" "db_import_handover_s3" {
   statement {
-    sid     = "ListBucket"
-    effect  = "Allow"
+    sid    = "ListBucket"
+    effect = "Allow"
     actions = [
       "s3:ListBucket",
       "s3:GetBucketLocation",
@@ -51,13 +51,13 @@ data "aws_iam_policy_document" "db_import_handover_s3" {
   }
 
   statement {
-    sid = "AllowDbImportRoleUseOfKeyForS3"
+    sid    = "AllowDbImportRoleUseOfKeyForS3"
     effect = "Allow"
     actions = [
       "kms:Decrypt",
       "kms:Encrypt",
       "kms:GenerateDataKey",
     ]
-    resources = [ module.sql_dump_upload_bucket.key_arn ]
+    resources = [module.sql_dump_upload_bucket.key_arn]
   }
 }

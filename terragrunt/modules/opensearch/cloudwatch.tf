@@ -17,6 +17,6 @@ resource "aws_cloudwatch_log_group" "es_application" {
 }
 
 resource "aws_cloudwatch_log_resource_policy" "opensearch" {
-  policy_name = "${local.name_prefix}-opensearch-log-policy"
+  policy_name     = "${local.name_prefix}-opensearch-log-policy"
   policy_document = data.aws_iam_policy_document.opensearch_logs.json
 }
