@@ -1,4 +1,4 @@
-using CO.CDP.OrganisationApp.Authentication;
+using CO.CDP.Authentication.Services;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Models;
 using CO.CDP.OrganisationApp.WebApiClients;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.FeatureManagement;
 using System.Net;
 using System.Web;
+using CO.CDP.OrganisationApp.Authentication;
 
 namespace CO.CDP.OrganisationApp.Pages;
 

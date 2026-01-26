@@ -39,7 +39,7 @@ using static IdentityModel.OidcConstants;
 using static System.Net.Mime.MediaTypeNames;
 using CookiePreferencesService = CO.CDP.OrganisationApp.CookiePreferencesService;
 using CO.CDP.UI.Foundation.Extensions;
-using ILogoutManager = CO.CDP.Authentication.Services.ILogoutManager;
+using ILogoutManager = CO.CDP.Authentication.Services.ILogoutManager; // Explicit registration due to missing extension method
 
 const string FormsHttpClientName = "FormsHttpClient";
 const string TenantHttpClientName = "TenantHttpClient";
@@ -242,7 +242,7 @@ var organisationAuthority = builder.Configuration.GetValue<Uri>("Organisation:Au
             ?? throw new Exception("Missing configuration key: Organisation:Authority.");
 builder.Services.AddHttpClient(AuthorityClient.OrganisationAuthorityHttpClientName, c => { c.BaseAddress = organisationAuthority; });
 
-builder.Services.AddScoped<ILogoutManager, LogoutManager>();
+builder.Services.AddScoped<ILogoutManager, CO.CDP.Authentication.Services.LogoutManager>();
 builder.Services.AddScoped<CookieEventsService>();
 builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
 builder.Services.AddTransient<ITokenService, TokenService>();

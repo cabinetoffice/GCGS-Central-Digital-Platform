@@ -20,6 +20,9 @@
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
     </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="../../Libraries/CO.CDP.Authentication/CO.CDP.Authentication.csproj" />
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj" />
