@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moq;
 using System.Security.Claims;
+using CO.CDP.Authentication.Services;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
