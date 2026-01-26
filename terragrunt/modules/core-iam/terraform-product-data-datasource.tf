@@ -85,6 +85,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "es:Describe*",
       "es:Delete*",
       "es:List*",
+      "es:Update*",
     ]
     effect = "Allow"
     resources = [
