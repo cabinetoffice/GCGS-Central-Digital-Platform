@@ -182,6 +182,7 @@ public static class Country
             {"TJ", "Tajikistan"},
             {"TZ", "Tanzania"},
             {"TH", "Thailand"},
+            {"TW", "Taiwan"},
             {"BS", "The Bahamas"},
             {"GM", "The Gambia"},
             {"TG", "Togo"},
