@@ -1,11 +1,21 @@
 using CO.CDP.ApplicationRegistry.Api.Authorization;
 using CO.CDP.ApplicationRegistry.Infrastructure;
+using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// AWS configuration
+builder.Services.AddAwsConfiguration(builder.Configuration);
+
+// Logging configuration
+builder.Services
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAmazonCloudWatchLogsService()
+    .AddCloudWatchSerilog(builder.Configuration);
 
 // Add services to the container
 builder.Services.AddHttpContextAccessor();
@@ -101,6 +111,12 @@ builder.Services.AddSwaggerGen(c =>
 // Health checks
 builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString);
+
+if (!string.IsNullOrEmpty(redisConnectionString))
+{
+    builder.Services.AddHealthChecks()
+        .AddRedis(redisConnectionString, name: "redis");
+}
 
 var app = builder.Build();
 

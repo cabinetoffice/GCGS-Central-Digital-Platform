@@ -109,6 +109,7 @@ builder.Services.AddAuthentication(options =>
     options.GetClaimsFromUserInfoEndpoint = true;
     options.UsePkce = false;
     options.ClaimActions.MapAll();
+    options.EventsType = typeof(CO.CDP.Authentication.Services.OidcEventsService);
 
     options.CorrelationCookie.SameSite = SameSiteMode.Lax;
     options.CorrelationCookie.SecurePolicy = cookieSecurePolicy;
