@@ -33,6 +33,11 @@ variable "engine_version" {
   default     = "OpenSearch_2.13"
 }
 
+variable "environment" {
+  description = "The environment we are provisioning"
+  type        = string
+}
+
 variable "instance_count" {
   description = "Number of data nodes."
   type        = number
