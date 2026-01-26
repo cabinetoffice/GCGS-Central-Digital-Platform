@@ -70,6 +70,14 @@ output "ecs_task_name" {
   value = aws_iam_role.ecs_task.name
 }
 
+output "ecs_task_opensearch_admin_arn" {
+  value = aws_iam_role.ecs_task_opensearch_admin.arn
+}
+
+output "ecs_task_opensearch_admin_name" {
+  value = aws_iam_role.ecs_task_opensearch_admin.name
+}
+
 output "notification_step_function_arn" {
   value = aws_iam_role.notification_step_function.arn
 }

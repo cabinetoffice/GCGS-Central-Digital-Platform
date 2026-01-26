@@ -12,7 +12,7 @@ locals {
 
   tools_repositories = concat([
     for name, config in var.tools_configs :
-    config.name
+    config.name if !contains(["opensearch_admin", "opensearch_gateway"], name)
   ], ["codebuild"])
 
   repositories = concat(local.service_repositories, local.tools_repositories)

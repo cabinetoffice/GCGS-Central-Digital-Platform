@@ -335,6 +335,20 @@ locals {
       port      = 4040
       port_host = null
     }
+    opensearch_admin = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-admin"
+      port      = 5601
+      port_host = 5601
+    }
+    opensearch_gateway = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-gateway"
+      port      = 5602
+      port_host = 5602
+    }
   }
 
   tg = {
