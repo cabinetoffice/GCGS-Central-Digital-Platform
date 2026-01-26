@@ -1,4 +1,6 @@
 resource "aws_opensearch_domain" "this" {
+  count = var.environment == "development" ? 1 : 0
+
   domain_name    = local.domain_name
   engine_version = var.engine_version
 

@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment == "development" ? "../../../modules//opensearch" : null
+  source = local.global_vars.locals.environment == "orchestrator" ? null : "../../../modules//opensearch"
 }
 
 include {
