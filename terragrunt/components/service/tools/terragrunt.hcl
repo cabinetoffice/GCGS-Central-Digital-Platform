@@ -110,6 +110,7 @@ dependency service_opensearch {
   config_path = "../../service/opensearch"
   mock_outputs = {
     dashboard_endpoint = "mock"
+    endpoint           = "mock"
   }
 }
 
