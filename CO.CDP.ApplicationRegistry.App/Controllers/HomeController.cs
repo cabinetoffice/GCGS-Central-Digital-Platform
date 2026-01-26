@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.ApplicationRegistry.App.Models;
 using CO.CDP.ApplicationRegistry.App.Services;
+using CO.CDP.Authentication.Services;
 
 namespace CO.CDP.ApplicationRegistry.App.Controllers;
 
-// [Authorize]
-public class HomeController(IApplicationService applicationService) : Controller
+[Authorize]
+public class HomeController(
+    IApplicationService applicationService) : Controller
 {
     // TODO: Get from authenticated user claims
     private const int CurrentOrgId = 1;

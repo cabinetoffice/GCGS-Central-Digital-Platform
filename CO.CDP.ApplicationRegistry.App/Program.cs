@@ -47,24 +47,22 @@ builder.Services
     .AddSharedSessions(builder.Configuration);
 
 builder.Services.AddUiFoundation(builder.Configuration, ui => ui.AddAppSessionService());
-builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>(); // Auth tokens only, not generic session // Auth tokens only, not generic session
-builder.Services.AddCdpAuthentication(builder.Configuration); // Auth tokens only, not generic session // Auth tokens only, not generic session
+builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>();
+builder.Services.AddCdpAuthentication(builder.Configuration);
 
 // API client configuration with bearer token handler
 var apiBaseUrl = builder.Configuration["ApplicationRegistryApi:BaseUrl"]
     ?? throw new InvalidOperationException("Missing configuration key: ApplicationRegistryApi:BaseUrl.");
 
-builder.Services.AddHttpClient("ApplicationRegistryHttpClient")
+const string ApiHttpClientName = "ApplicationRegistryHttpClient";
+builder.Services.AddHttpClient(ApiHttpClientName)
     .AddHttpMessageHandler<AuthorityBearerTokenHandler>();
 
-builder.Services.AddHttpClient<CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient>()
-    .ConfigureHttpClient((sp, client) =>
-    {
-        client.BaseAddress = new Uri(apiBaseUrl);
-    })
-    .AddHttpMessageHandler<AuthorityBearerTokenHandler>();
-builder.Services.AddTransient(sp =>
-    new CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient(apiBaseUrl, sp.GetRequiredService<System.Net.Http.HttpClient>()));
+builder.Services.AddTransient<CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient>(sp =>
+{
+    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(ApiHttpClientName);
+    return new CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient(apiBaseUrl, httpClient);
+});
 
 // Authentication configuration
 var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
@@ -78,6 +76,7 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment()
 var sessionTimeoutInMinutes = builder.Configuration.GetValue<double>("SessionTimeoutInMinutes", 60);
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = ".AspNetCore.CDP.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;

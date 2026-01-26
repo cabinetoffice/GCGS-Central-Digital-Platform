@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.ApplicationRegistry.App.Services;
 
 namespace CO.CDP.ApplicationRegistry.App.Controllers;
 
+[Authorize]
 public class ApplicationsController(IApplicationService applicationService) : Controller
 {
     // TODO: Get from authenticated user claims

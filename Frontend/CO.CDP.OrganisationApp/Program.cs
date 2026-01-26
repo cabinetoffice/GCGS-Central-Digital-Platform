@@ -119,6 +119,7 @@ var cookieSecurePolicy = builder.Environment.IsDevelopment() ? CookieSecurePolic
 
 builder.Services.AddSession(options =>
 {
+    options.Cookie.Name = ".AspNetCore.CDP.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
     options.Cookie.SameSite = SameSiteMode.Lax;

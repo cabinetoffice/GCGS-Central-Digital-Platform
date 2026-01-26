@@ -1,21 +1,14 @@
+using System.Reflection;
 using CO.CDP.ApplicationRegistry.Api.Authorization;
 using CO.CDP.ApplicationRegistry.Infrastructure;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-// AWS configuration
-builder.Services.AddAwsConfiguration(builder.Configuration);
-
-// Logging configuration
-builder.Services
-    .AddLoggingConfiguration(builder.Configuration)
-    .AddAmazonCloudWatchLogsService()
-    .AddCloudWatchSerilog(builder.Configuration);
 
 // Add services to the container
 builder.Services.AddHttpContextAccessor();
@@ -30,13 +23,33 @@ builder.Services.AddApplicationRegistryInfrastructure(connectionString, cdpConne
 
 builder.Services.AddApplicationRegistryCaching(redisConnectionString);
 
+// AWS and logging - only when running as the actual API (not during OpenAPI generation)
+if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.ApplicationRegistry.Api") ||
+    Assembly.GetEntryAssembly().IsRunAs("testhost"))
+{
+    builder.Services
+        .AddAwsConfiguration(builder.Configuration)
+        .AddLoggingConfiguration(builder.Configuration)
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration);
+}
+
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = builder.Configuration["Authentication:Authority"];
-        options.Audience = builder.Configuration["Authentication:Audience"];
-        options.RequireHttpsMetadata = builder.Environment.IsProduction();
+        var authority = builder.Configuration["Organisation:Authority"]
+            ?? throw new InvalidOperationException("Missing configuration key: Organisation:Authority.");
+        options.Authority = authority;
+        options.RequireHttpsMetadata = !builder.Environment.IsDevelopment();
+        options.MapInboundClaims = false;
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = authority,
+            ValidateAudience = false,
+            ValidateIssuerSigningKey = true
+        };
     });
 
 // Authorization
