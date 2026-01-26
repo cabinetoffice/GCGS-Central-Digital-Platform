@@ -71,8 +71,8 @@ public class ClaimServiceTests
         mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
             .ReturnsAsync(new OrganisationPerson
             {
-                Organisation = Mock.Of<Organisation>(),
-                Person = Mock.Of<Person>(),
+                Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>(),
+                Person = Mock.Of<OrganisationInformation.Persistence.Person>(),
                 Scopes = ["Admin"]
             });
 
@@ -92,8 +92,8 @@ public class ClaimServiceTests
         mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
             .ReturnsAsync(new OrganisationPerson
             {
-                Organisation = Mock.Of<Organisation>(),
-                Person = Mock.Of<Person>(),
+                Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>(),
+                Person = Mock.Of<OrganisationInformation.Persistence.Person>(),
                 Scopes = []
             });
 
@@ -113,8 +113,8 @@ public class ClaimServiceTests
         mockOrgRepo.Setup(m => m.FindOrganisationPerson(organisationId, userUrn))
             .ReturnsAsync(new OrganisationPerson
             {
-                Organisation = Mock.Of<Organisation>(),
-                Person = Mock.Of<Person>(),
+                Organisation = Mock.Of<OrganisationInformation.Persistence.Organisation>(),
+                Person = Mock.Of<OrganisationInformation.Persistence.Person>(),
                 Scopes = []
             });
 
