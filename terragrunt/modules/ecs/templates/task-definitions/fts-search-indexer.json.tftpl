@@ -1,0 +1,38 @@
+[
+  {
+    "name" : "${name}",
+    "image" : "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol" : "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "${lg_prefix}"
+      }
+    },
+    "environment": [
+      { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+      { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+      { "name" : "FTSDatabase__Database", "value" : "${db_name}"},
+      { "name" : "FTSDatabase__Host", "value" : "${db_address}"},
+      { "name" : "FTSDatabase__Server", "value" : "${db_address}"},
+      { "name" : "OpenSearch__Endpoint", "value" : "${opensearch_endpoint}"}
+    ],
+    "secrets": [
+      { "name" : "FTSDatabase__Password", "valueFrom" : "${db_password}"},
+      { "name" : "FTSDatabase__Username", "valueFrom" : "${db_username}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

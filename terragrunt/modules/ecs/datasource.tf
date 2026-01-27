@@ -138,6 +138,23 @@ data "aws_iam_policy_document" "ecs_task_access_elasticache" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_task_access_opensearch" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "es:ESHttpGet",
+      "es:ESHttpHead",
+      "es:ESHttpPost",
+      "es:ESHttpPut",
+      "es:ESHttpDelete",
+    ]
+    resources = [
+      var.opensearch_domain_arn,
+      "${var.opensearch_domain_arn}/*",
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "ecs_task_access_ses" {
   statement {
     sid    = "AllowAppToSendEmails"

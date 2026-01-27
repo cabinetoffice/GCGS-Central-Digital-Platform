@@ -133,6 +133,16 @@ variable "onelogin_logout_notification_urls" {
   type        = list(string)
 }
 
+variable "opensearch_domain_arn" {
+  description = "OpenSearch Domain ARN"
+  type        = string
+}
+
+variable "opensearch_endpoint" {
+  description = "OpenSearch RUL"
+  type        = string
+}
+
 variable "pinned_service_version_cfs" {
   description = "The CFS service version for the this environment."
   type        = string

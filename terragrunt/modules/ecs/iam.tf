@@ -31,6 +31,17 @@ resource "aws_iam_role_policy_attachment" "ecs_task_access_elasticache" {
   role       = var.role_ecs_task_name
 }
 
+resource "aws_iam_policy" "ecs_task_access_opensearch" {
+  name   = "${local.name_prefix}-ecs-task-opensearch"
+  policy = data.aws_iam_policy_document.ecs_task_access_opensearch.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_opensearch" {
+  role       = var.role_ecs_task_name
+  policy_arn = aws_iam_policy.ecs_task_access_opensearch.arn
+}
+
 resource "aws_iam_policy" "ecs_task_access_ses" {
   name   = "${local.name_prefix}-ecs-task-access-ses"
   policy = data.aws_iam_policy_document.ecs_task_access_ses.json
