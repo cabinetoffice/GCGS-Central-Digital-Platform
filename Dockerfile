@@ -100,6 +100,7 @@ COPY --link Services/CO.CDP.ScheduledWorker.Tests/CO.CDP.ScheduledWorker.Tests.c
 COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries/CO.CDP.UI.Foundation/
 COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
 COPY --link Libraries/CO.CDP.Logging/CO.CDP.Logging.csproj Libraries/CO.CDP.Logging/
+COPY --link Libraries/CO.CDP.Logging.Tests/CO.CDP.Logging.Tests.csproj Libraries/CO.CDP.Logging.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
