@@ -17,7 +17,19 @@ resource "aws_cloudwatch_log_group" "healthcheck" {
 }
 
 resource "aws_cloudwatch_log_group" "k6" {
-  name              = "/ecs/k6"
+  name              = "/ecs/${var.tools_configs.k6.name}"
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
+
+resource "aws_cloudwatch_log_group" "opensearch_admin" {
+  name              = "/ecs/${var.tools_configs.opensearch_admin.name}"
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
+
+resource "aws_cloudwatch_log_group" "opensearch_gateway" {
+  name              = "/ecs/${var.tools_configs.opensearch_gateway.name}"
   retention_in_days = var.environment == "production" ? 0 : 90
   tags              = var.tags
 }

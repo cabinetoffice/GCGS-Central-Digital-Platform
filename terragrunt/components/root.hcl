@@ -82,7 +82,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.4"
+      pinned_service_version_fts    = "1.1.6"
       pinned_service_version        = "1.0.81"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
@@ -119,7 +119,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.3"
+      pinned_service_version_fts    = "1.1.6"
       pinned_service_version        = "1.0.81"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
@@ -152,7 +152,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs       = "1.0.7"
-      pinned_service_version_fts       = "1.1.3"
+      pinned_service_version_fts       = "1.1.6"
       pinned_service_version           = "1.0.80"
       postgres_instance_type           = "db.t4g.micro"
       postgres_aurora_instance_type    = "db.r5.8xlarge"
@@ -334,6 +334,20 @@ locals {
       name      = "k6"
       port      = 4040
       port_host = null
+    }
+    opensearch_admin = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-admin"
+      port      = 5601
+      port_host = 5601
+    }
+    opensearch_gateway = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-gateway"
+      port      = 5602
+      port_host = 5602
     }
   }
 
