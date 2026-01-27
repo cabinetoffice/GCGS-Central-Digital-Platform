@@ -44,30 +44,51 @@ public class TokenService(
 
         try
         {
-            var config = await configService.GetOneLoginConfiguration();
-
-            var parameters = new TokenValidationParameters
+            try
             {
-                ValidateIssuer = true,
-                ValidIssuer = config.Issuer,
-                ValidateAudience = false,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKeys = config.SigningKeys
-            };
+                return await ValidateInternalAsync(token, refresh: false);
+            }
+            catch (SecurityTokenSignatureKeyNotFoundException ex)
+            {
+                logger.LogWarning(ex,
+                    "JWT validation failed due to missing signing key. Refreshing JWKS and retrying once.");
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-
-            var sub = ((JwtSecurityToken)validatedToken).Subject ?? throw new Exception($"Missing 'sub' claim from JWT token.");
-
-            return (true, sub);
+                // Retry ONCE with refreshed JWKS
+                return await ValidateInternalAsync(token, refresh: true);
+            }
         }
         catch (Exception ex)
         {
             logger.LogError(ex, ex.Message);
             return (false, null);
         }
+    }
+
+    private async Task<(bool valid, string? urn)> ValidateInternalAsync(string token, bool refresh)
+    {
+        var config = await configService.GetOneLoginConfiguration(refresh);
+
+        var parameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = config.Issuer,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKeys = config.SigningKeys,
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+
+        tokenHandler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+
+        var jwt = (JwtSecurityToken)validatedToken;
+
+        var sub = jwt.Subject
+            ?? throw new Exception("Missing 'sub' claim from JWT token.");
+
+        return (true, sub);
     }
 
     public async Task<(bool valid, string? urn)> ValidateAndRevokeRefreshToken(string? token)
