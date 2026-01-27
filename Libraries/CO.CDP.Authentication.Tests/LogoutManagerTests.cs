@@ -12,7 +12,7 @@ namespace CO.CDP.Authentication.Tests;
 public class LogoutManagerTests
 {
     private readonly Mock<ICacheService> cacheMock = new();
-    private readonly Mock<IHttpClientFactory> httpClienMockMock = new();
+    private readonly Mock<IHttpClientFactory> httpClientMock = new();
     private readonly Mock<ILogger<LogoutManager>> loggerMock = new();
     private readonly LogoutManager logoutManager;
     private const string UserUrn = "user123";
@@ -28,7 +28,7 @@ public class LogoutManagerTests
                 ])
             .Build();
 
-        logoutManager = new LogoutManager(configuration, cacheMock.Object, httpClienMockMock.Object, loggerMock.Object);
+        logoutManager = new LogoutManager(configuration, cacheMock.Object, httpClientMock.Object, loggerMock.Object);
     }
 
     // TODO: This test requires OneLogin logout notification configuration from frontend app
@@ -49,7 +49,7 @@ public class LogoutManagerTests
             .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK))
             .Verifiable();
 
-        httpClienMockMock.Setup(h => h.CreateClient(It.IsAny<string>()))
+        httpClientMock.Setup(h => h.CreateClient(It.IsAny<string>()))
             .Returns(new HttpClient(mockHandler.Object));
 
         await logoutManager.MarkAsLoggedOut(UserUrn, "token123");
@@ -83,10 +83,10 @@ public class LogoutManagerTests
     [Fact]
     public async Task HasLoggedOut_ShouldReturnFalse_WhenUserIsNotLoggedOut()
     {
-        var UserUrn = "user123";
+        var userUrn = "user123";
         cacheMock.Setup(c => c.Get<string?>(CacheKey)).ReturnsAsync((string?)null);
 
-        var result = await logoutManager.HasLoggedOut(UserUrn);
+        var result = await logoutManager.HasLoggedOut(userUrn);
 
         result.Should().BeFalse();
     }

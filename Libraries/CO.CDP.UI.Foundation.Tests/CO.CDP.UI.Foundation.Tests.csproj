@@ -28,4 +28,8 @@
         <ProjectReference Include="..\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Using Include="Xunit" />
+    </ItemGroup>
+
 </Project>

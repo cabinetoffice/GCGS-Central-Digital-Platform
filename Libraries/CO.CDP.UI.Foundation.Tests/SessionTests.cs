@@ -7,7 +7,7 @@ using System.Text.Json;
 using ISession = Microsoft.AspNetCore.Http.ISession;
 using CO.CDP.UI.Foundation.Services;
 
-namespace CO.CDP.Authentication.Tests;
+namespace CO.CDP.UI.Foundation.Tests;
 
 public class SessionTests
 {

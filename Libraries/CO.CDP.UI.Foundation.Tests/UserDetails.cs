@@ -1,4 +1,4 @@
-namespace CO.CDP.Authentication.Tests;
+namespace CO.CDP.UI.Foundation.Tests;
 
 public record UserDetails
 {

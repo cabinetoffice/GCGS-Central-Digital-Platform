@@ -21,7 +21,6 @@
         </PackageReference>
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Moq" Version="4.20.70" />
-        <ProjectReference Include="..\..\Frontend\CO.CDP.OrganisationApp\CO.CDP.OrganisationApp.csproj" />
         <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
         <ProjectReference Include="..\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
     </ItemGroup>
