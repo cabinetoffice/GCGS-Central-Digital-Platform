@@ -7,5 +7,5 @@ public interface IConfigurationService
 {
     AuthorityConfiguration GetAuthorityConfiguration();
 
-    Task<OpenIdConnectConfiguration> GetOneLoginConfiguration();
+    Task<OpenIdConnectConfiguration> GetOneLoginConfiguration(bool refresh = false);
 }

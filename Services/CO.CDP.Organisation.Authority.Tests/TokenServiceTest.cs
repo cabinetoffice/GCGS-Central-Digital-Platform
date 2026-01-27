@@ -59,7 +59,7 @@ public class TokenServiceTest
         GenerateTempKeys(out var rsaPrivateKey, out var rsaPublicParams);
         string token = GenerateOneLoginToken(rsaPrivateKey, _userUrn);
 
-        _configServiceMock.Setup(c => c.GetOneLoginConfiguration())
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
             .ReturnsAsync(GetOneLoginAuthorityConfiguration(rsaPublicParams).Object);
 
         (bool valid, string? urn) = await _tokenService.ValidateOneLoginToken(token);
@@ -74,13 +74,37 @@ public class TokenServiceTest
         GenerateTempKeys(out var rsaPrivateKey, out _);
         string token = GenerateOneLoginToken(rsaPrivateKey, _userUrn);
 
-        _configServiceMock.Setup(c => c.GetOneLoginConfiguration())
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
+            .ReturnsAsync(GetOneLoginAuthorityConfiguration().Object);
+
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(true))
             .ReturnsAsync(GetOneLoginAuthorityConfiguration().Object);
 
         (bool valid, string? urn) = await _tokenService.ValidateOneLoginToken(token);
 
         valid.Should().BeFalse();
         urn.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ValidateOneLoginToken_ShouldReturnTrueAndUrn_WhenMatchingSigningKeysOnRetry()
+    {
+        GenerateTempKeys(out var rsaPrivateKey, out var rsaPublicParams);
+        string token = GenerateOneLoginToken(rsaPrivateKey, _userUrn);
+
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
+            .ReturnsAsync(GetOneLoginAuthorityConfiguration().Object);
+
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(true))
+            .ReturnsAsync(GetOneLoginAuthorityConfiguration(rsaPublicParams).Object);
+
+        (bool valid, string? urn) = await _tokenService.ValidateOneLoginToken(token);
+
+        valid.Should().BeTrue();
+        urn.Should().Be(_userUrn);
+
+        _configServiceMock.Verify(c => c.GetOneLoginConfiguration(false), Times.Once);
+        _configServiceMock.Verify(c => c.GetOneLoginConfiguration(true), Times.Once);
     }
 
     [Fact]

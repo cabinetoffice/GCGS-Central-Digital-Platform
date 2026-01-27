@@ -38,9 +38,9 @@ public class ConfigurationService(IConfiguration config) : IConfigurationService
         return authorityConfig;
     }
 
-    public async Task<OpenIdConnectConfiguration> GetOneLoginConfiguration()
+    public async Task<OpenIdConnectConfiguration> GetOneLoginConfiguration(bool refresh = false)
     {
-        if (oneLoginConfig == null)
+        if (oneLoginConfig == null || refresh == true)
         {
             var authority = config["OneLogin:Authority"]
                 ?? throw new Exception("Missing configuration key: OneLogin:Authority.");

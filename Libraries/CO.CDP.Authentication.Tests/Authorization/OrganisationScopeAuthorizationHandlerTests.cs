@@ -168,8 +168,8 @@ public class OrganisationScopeAuthorizationHandlerTests
     {
         return new OrganisationPerson
         {
-            Organisation = Mock.Of<Organisation>(),
-            Person = Mock.Of<Person>(),
+            Organisation = Mock.Of<CO.CDP.OrganisationInformation.Persistence.Organisation>(),
+            Person = Mock.Of<CO.CDP.OrganisationInformation.Persistence.Person>(),
             Scopes = ["Admin"]
         };
     }

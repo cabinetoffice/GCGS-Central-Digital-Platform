@@ -49,10 +49,10 @@ public class ApiKeyValidatorTest
                 Name = "FTS",
                 Key = ValidApiKey,
                 OrganisationId = 42,
-                Organisation = new Organisation {
+                Organisation = new CO.CDP.OrganisationInformation.Persistence.Organisation {
                     Guid = orgId, Name = "",
                     Type = OrganisationInformation.OrganisationType.Organisation,
-                    Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" } },
+                    Tenant = new CO.CDP.OrganisationInformation.Persistence.Tenant { Guid = Guid.NewGuid(), Name = "" } },
                 Scopes = ["ADMIN"] });
 
         var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
@@ -98,12 +98,12 @@ public class ApiKeyValidatorTest
                 Name = "FTS",
                 Key = ValidApiKey,
                 OrganisationId = 42,
-                Organisation = new Organisation
+                Organisation = new CO.CDP.OrganisationInformation.Persistence.Organisation
                 {
                     Guid = orgId,
                     Name = "",
                     Type = OrganisationInformation.OrganisationType.Organisation,
-                    Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "" }
+                    Tenant = new CO.CDP.OrganisationInformation.Persistence.Tenant { Guid = Guid.NewGuid(), Name = "" }
                 },
                 Scopes = ["ADMIN"],
                 Revoked = true
