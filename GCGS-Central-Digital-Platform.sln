@@ -170,7 +170,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercialTools.Persistence.Tests", "Services\CO.CDP.RegisterOfCommercialTools.Persistence.Tests\CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj", "{1CE7ABF8-A0C3-4C57-9CEF-BC6BD78B0E5D}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicaitonRegistry", "ApplicaitonRegistry", "{625E83F9-49D1-4EA5-9C50-B6216CC530DA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApplicationRegistry", "ApplicationRegistry", "{625E83F9-49D1-4EA5-9C50-B6216CC530DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.Infrastructure", "Services\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj", "{A46B6C61-A9D0-42E8-920A-359323DA870F}"
 EndProject
