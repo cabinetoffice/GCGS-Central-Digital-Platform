@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationApp", "F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.OrganisationApp.Tests", "Frontend\CO.CDP.OrganisationApp.Tests\CO.CDP.OrganisationApp.Tests.csproj", "{F4C94C12-3FAC-4BE3-9924-5B2B2E2A5E04}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.App", "Frontend\CO.CDP.ApplicationRegistry.App\CO.CDP.ApplicationRegistry.App.csproj", "{CBC59C75-1AC1-4E1A-A952-BEC82797F3F9}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.PostgreSql.Tests", "TestKit\CO.CDP.Testcontainers.PostgreSql.Tests\CO.CDP.Testcontainers.PostgreSql.Tests.csproj", "{EAC4F0BA-22F7-4A7B-8B9E-4EF536A32E8D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.Testcontainers.PostgreSql", "TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj", "{A706D75A-4235-46FE-A2C2-DB7365BB732B}"
@@ -179,6 +181,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.UnitTests", "Services\CO.CDP.ApplicationRegistry.UnitTests\CO.CDP.ApplicationRegistry.UnitTests.csproj", "{5FFDF480-3CAB-4FC1-816A-CC3E38A2502C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging.Tests", "Libraries\CO.CDP.Logging.Tests\CO.CDP.Logging.Tests.csproj", "{E8D9E5BD-7D25-416D-855D-D49AA3E19D6A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.Core", "Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj", "{53D63863-D65D-447C-AF38-A2894AEBD60F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.Shared", "Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.WebApiClient", "Libraries\CO.CDP.ApplicationRegistry.WebApiClient\CO.CDP.ApplicationRegistry.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1066,6 +1074,42 @@ Global
 		{1CE7ABF8-A0C3-4C57-9CEF-BC6BD78B0E5D}.Release|x64.Build.0 = Release|Any CPU
 		{1CE7ABF8-A0C3-4C57-9CEF-BC6BD78B0E5D}.Release|x86.ActiveCfg = Release|Any CPU
 		{1CE7ABF8-A0C3-4C57-9CEF-BC6BD78B0E5D}.Release|x86.Build.0 = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|x64.Build.0 = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Debug|x86.Build.0 = Debug|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|x64.ActiveCfg = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|x64.Build.0 = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|x86.ActiveCfg = Release|Any CPU
+		{53D63863-D65D-447C-AF38-A2894AEBD60F}.Release|x86.Build.0 = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|x64.Build.0 = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|x64.ActiveCfg = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|x64.Build.0 = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}.Release|x86.Build.0 = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|x64.Build.0 = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Debug|x86.Build.0 = Debug|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|x64.ActiveCfg = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|x64.Build.0 = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|x86.ActiveCfg = Release|Any CPU
+		{67D07A51-B1B0-4206-A338-F0CFEBF9E308}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
