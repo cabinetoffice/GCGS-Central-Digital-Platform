@@ -1,6 +1,7 @@
 using CO.CDP.ApplicationRegistry.App.Mapping;
 using CO.CDP.ApplicationRegistry.App.Models;
 using CO.CDP.ApplicationRegistry.WebApiClient;
+using CO.CDP.ApplicationRegistry.Shared.Requests;
 
 namespace CO.CDP.ApplicationRegistry.App.Services;
 
