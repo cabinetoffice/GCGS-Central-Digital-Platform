@@ -19,7 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj" />
     </ItemGroup>
 
 </Project>
