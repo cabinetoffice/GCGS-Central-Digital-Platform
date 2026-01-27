@@ -24,6 +24,14 @@ public interface IOrganisationService
     Task<Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets an organisation by its CDP organisation GUID.
+    /// </summary>
+    /// <param name="cdpOrganisationGuid">The CDP organisation GUID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The organisation if found; otherwise, null.</returns>
+    Task<Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets all organisations.
     /// </summary>
     /// <param name="cancellationToken">Cancellation token.</param>

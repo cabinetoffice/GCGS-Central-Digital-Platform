@@ -80,6 +80,26 @@ public class OrganisationsController : ControllerBase
     }
 
     /// <summary>
+    /// Gets an organisation by CDP organisation GUID.
+    /// </summary>
+    /// <param name="cdpGuid">The CDP organisation GUID.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The organisation if found.</returns>
+    [HttpGet("by-cdp-guid/{cdpGuid:guid}")]
+    [ProducesResponseType(typeof(OrganisationResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<OrganisationResponse>> GetByCdpGuid(Guid cdpGuid, CancellationToken cancellationToken)
+    {
+        var organisation = await _organisationService.GetByCdpGuidAsync(cdpGuid, cancellationToken);
+        if (organisation == null)
+        {
+            return NotFound(new ErrorResponse { Message = $"Organisation with CDP GUID {cdpGuid} not found." });
+        }
+
+        return Ok(organisation.ToResponse());
+    }
+
+    /// <summary>
     /// Creates a new organisation.
     /// </summary>
     /// <param name="request">The create organisation request.</param>

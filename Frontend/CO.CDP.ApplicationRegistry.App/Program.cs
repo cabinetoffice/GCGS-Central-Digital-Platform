@@ -143,8 +143,12 @@ app.UseAuthorization();
 app.UseGovUkFrontend();
 
 app.MapControllerRoute(
+    name: "organisation_by_guid",
+    pattern: "organisation/by-id/{cdpOrganisationId:guid}/{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
     name: "organisation",
-    pattern: "organisation/{organisationId:guid}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "organisation/{organisationSlug}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

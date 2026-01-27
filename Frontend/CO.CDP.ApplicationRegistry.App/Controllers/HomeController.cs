@@ -3,19 +3,38 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.ApplicationRegistry.App.Models;
 using CO.CDP.ApplicationRegistry.App.Services;
+using CO.CDP.ApplicationRegistry.WebApiClient;
 
 namespace CO.CDP.ApplicationRegistry.App.Controllers;
 
 [Authorize]
 public class HomeController(
-    IApplicationService applicationService) : Controller
+    IApplicationService applicationService,
+    ApplicationRegistryClient apiClient) : Controller
 {
-    // TODO: Get from authenticated user claims
-    private const int CurrentOrgId = 1;
-
-    public async Task<IActionResult> Index(CancellationToken ct)
+    public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
     {
-        var viewModel = await applicationService.GetHomeViewModelAsync(CurrentOrgId, ct);
+        // If arriving via GUID route, lookup org and redirect to slug-based URL
+        if (cdpOrganisationId.HasValue)
+        {
+            try
+            {
+                var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
+                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug });
+            }
+            catch (ApiException ex) when (ex.StatusCode == 404)
+            {
+                return NotFound();
+            }
+        }
+
+        // Normal slug-based flow
+        if (string.IsNullOrEmpty(organisationSlug))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await applicationService.GetHomeViewModelAsync(organisationSlug, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
