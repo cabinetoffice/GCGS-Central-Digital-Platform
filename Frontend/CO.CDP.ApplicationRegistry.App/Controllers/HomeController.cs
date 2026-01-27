@@ -14,7 +14,6 @@ public class HomeController(
 {
     public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
     {
-        // If arriving via GUID route, lookup org and redirect to slug-based URL
         if (cdpOrganisationId.HasValue)
         {
             try
@@ -28,7 +27,6 @@ public class HomeController(
             }
         }
 
-        // Normal slug-based flow
         if (string.IsNullOrEmpty(organisationSlug))
         {
             return NotFound();

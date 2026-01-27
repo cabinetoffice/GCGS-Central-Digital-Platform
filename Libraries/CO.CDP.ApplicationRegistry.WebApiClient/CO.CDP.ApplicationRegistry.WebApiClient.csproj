@@ -16,6 +16,11 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="../../Services/CO.CDP.ApplicationRegistry.Api/CO.CDP.ApplicationRegistry.Api.csproj">
+            <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup>
         <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.ApplicationRegistry.Api/OpenAPI/CO.CDP.ApplicationRegistry.Api.json" Namespace="CO.CDP.ApplicationRegistry.WebApiClient" ClassName="ApplicationRegistryClient">
             <Options>/ClassStyle:Record /GenerateNativeRecords:true</Options>
         </OpenApiReference>
