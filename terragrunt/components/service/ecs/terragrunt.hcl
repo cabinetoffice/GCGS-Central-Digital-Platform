@@ -117,7 +117,8 @@ dependency service_database {
 dependency service_opensearch {
   config_path = "../../service/opensearch"
   mock_outputs = {
-    endpoint           = "mock"
+    domain_arn = "mock"
+    endpoint   = "mock"
   }
 }
 
