@@ -1,0 +1,27 @@
+@model CO.CDP.ApplicationRegistry.App.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Manage your services";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Manage your services</h1>
+        <p class="govuk-body-l">Configure which applications your organisation can access, and manage user permissions.</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.Stats.ApplicationsEnabled</span>
+            <span class="govuk-body">Applications enabled</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.Stats.TotalUsers</span>
+            <span class="govuk-body">Users</span>
+        </div>
+    </div>
+</div>
