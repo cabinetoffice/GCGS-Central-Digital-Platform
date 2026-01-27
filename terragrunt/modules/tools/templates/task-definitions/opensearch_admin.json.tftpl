@@ -1,0 +1,39 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+    ],
+    "secrets": [
+    ],
+    "command": [
+      "--region", "${lg_region}",
+      "--upstream-url-scheme", "https",
+      "--host", "${opensearch_endpoint}",
+      "--port", ":${container_port}",
+      "--name", "es",
+      "--log-failed-requests",
+      "--log-signing-process"
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

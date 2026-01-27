@@ -7,10 +7,11 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.name_prefix}-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:instance-profile/${local.name_prefix}-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-*",
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.name_prefix}-*",
       "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/aws-service-role/*",
-      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${local.name_prefix}-*"
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${local.name_prefix}-*",
     ]
     sid = "ManageProductIAMs"
   }

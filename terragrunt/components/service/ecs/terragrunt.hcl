@@ -114,6 +114,14 @@ dependency service_database {
   }
 }
 
+dependency service_opensearch {
+  config_path = "../../service/opensearch"
+  mock_outputs = {
+    domain_arn = "mock"
+    endpoint   = "mock"
+  }
+}
+
 dependency service_cache {
   config_path = "../../service/cache"
   mock_outputs = {
@@ -227,6 +235,9 @@ inputs = {
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
   redis_port             = dependency.service_cache.outputs.port
+
+  opensearch_endpoint   = dependency.service_opensearch.outputs.endpoint
+  opensearch_domain_arn = dependency.service_opensearch.outputs.domain_arn
 
   queue_av_scanner_arn          = dependency.service_queue.outputs.av_scanner_queue_arn
   queue_av_scanner_url          = dependency.service_queue.outputs.av_scanner_queue_url

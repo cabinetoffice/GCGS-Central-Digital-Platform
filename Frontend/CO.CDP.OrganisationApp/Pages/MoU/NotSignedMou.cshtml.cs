@@ -52,7 +52,7 @@ public class NotSignedMouModel(
 
             BackLinkUrl = Origin switch
             {
-                "buyer-view" => $"/organisation/{OrganisationId}/buyer",
+                "organisation-home" => $"/organisation/{OrganisationId}/home",
                 _ => $"/organisation/{OrganisationId}"
             };
         }

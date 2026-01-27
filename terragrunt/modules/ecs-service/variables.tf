@@ -91,6 +91,11 @@ variable "healthcheck_interval" {
   default     = 60
 }
 
+variable "healthcheck_matcher" {
+  description = "The HTTP or gRPC codes to use when checking for a successful response from a target"
+  default     = "200"
+}
+
 variable "healthcheck_path" {
   description = "Health-check path on the service"
   default     = "/health"

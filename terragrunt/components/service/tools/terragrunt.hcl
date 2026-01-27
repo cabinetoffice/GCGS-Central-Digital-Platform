@@ -106,6 +106,14 @@ dependency service_database {
   }
 }
 
+dependency service_opensearch {
+  config_path = "../../service/opensearch"
+  mock_outputs = {
+    dashboard_endpoint = "mock"
+    endpoint           = "mock"
+  }
+}
+
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
@@ -117,11 +125,13 @@ dependency service_queue {
 }
 
 inputs = {
-  account_ids         = local.global_vars.locals.account_ids
-  cloud_beaver_config = local.global_vars.locals.tools_configs.cloud_beaver
-  healthcheck_config  = local.global_vars.locals.tools_configs.healthcheck
-  tools_configs       = local.global_vars.locals.tools_configs
-  tags                = local.tags
+  account_ids               = local.global_vars.locals.account_ids
+  cloud_beaver_config       = local.global_vars.locals.tools_configs.cloud_beaver
+  healthcheck_config        = local.global_vars.locals.tools_configs.healthcheck
+  opensearch_admin_config   = local.global_vars.locals.tools_configs.opensearch_admin
+  opensearch_gateway_config = local.global_vars.locals.tools_configs.opensearch_gateway
+  tags                      = local.tags
+  tools_configs             = local.global_vars.locals.tools_configs
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
@@ -129,6 +139,7 @@ inputs = {
   role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
   role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
+  role_ecs_task_opensearch_admin_arn       = dependency.core_iam.outputs.ecs_task_opensearch_admin_arn
   role_rds_cloudwatch_arn                  = dependency.core_iam.outputs.rds_cloudwatch_arn
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
   role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
@@ -176,6 +187,9 @@ inputs = {
   redis_primary_endpoint = dependency.service_cache.outputs.primary_endpoint_address
   redis_auth_token_arn   = dependency.service_cache.outputs.redis_auth_token_arn
   redis_port             = dependency.service_cache.outputs.port
+
+  opensearch_dashboard_endpoint = dependency.service_opensearch.outputs.dashboard_endpoint
+  opensearch_endpoint           = dependency.service_opensearch.outputs.endpoint
 
   sqs_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
   sqs_organisation_url        = dependency.service_queue.outputs.organisation_queue_url

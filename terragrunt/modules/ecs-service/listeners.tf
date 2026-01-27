@@ -22,7 +22,7 @@ resource "aws_lb_target_group" "this" {
     path                = var.healthcheck_path
     port                = var.host_port
     protocol            = "HTTP"
-    matcher             = "200"
+    matcher             = var.healthcheck_matcher
   }
 
   lifecycle {

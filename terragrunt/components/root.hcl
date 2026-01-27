@@ -82,7 +82,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.4"
+      pinned_service_version_fts    = "2026-01-27-uk6-performance-improvements"
       pinned_service_version        = "1.0.81"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
@@ -119,7 +119,7 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.3"
+      pinned_service_version_fts    = "1.1.6"
       pinned_service_version        = "1.0.81"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
@@ -152,7 +152,7 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs       = "1.0.7"
-      pinned_service_version_fts       = "1.1.3"
+      pinned_service_version_fts       = "1.1.6"
       pinned_service_version           = "1.0.80"
       postgres_instance_type           = "db.t4g.micro"
       postgres_aurora_instance_type    = "db.r5.8xlarge"
@@ -217,6 +217,7 @@ locals {
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
+    fts_search_api                       = { desired_count = 0 }
     fts_search_indexer                   = { desired_count = 0 }
     organisation                         = {}
     organisation_app                     = {}
@@ -271,6 +272,7 @@ locals {
     fts_healthcheck                      = { port = 8071, port_host = 8071, cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck"}
     fts_migrations                       = { port = 8072, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "fts-migrations"}
     fts_scheduler                        = { port = 8074, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-scheduler"}
+    fts_search_api                       = { port = 8075, port_host = 8075, cluster = "sirsi-php", type = "service",      name = "fts-search-api"}
     fts_search_indexer                   = { port = 8076, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-search-indexer"}
     organisation                         = { port = 8082, port_host = 8082, cluster = "sirsi",     type = "web-service",  name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , cluster = "sirsi",     type = "web-service",  name = "organisation-app"}
@@ -334,6 +336,20 @@ locals {
       name      = "k6"
       port      = 4040
       port_host = null
+    }
+    opensearch_admin = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-admin"
+      port      = 5601
+      port_host = 5601
+    }
+    opensearch_gateway = {
+      cpu       = 1024
+      memory    = 3072
+      name      = "opensearch-gateway"
+      port      = 5602
+      port_host = 5602
     }
   }
 

@@ -1153,7 +1153,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     &lt;p class="govuk-body"&gt;
       You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 009 has been applied. For more information read
       &lt;a href="https://www.gov.uk/government/publications/ppn-009-tackling-modern-slavery-in-government-supply-chains/ppn-009-guidance-on-tackling-modern-slavery-in-government-supply-chains-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      PPN 009: Tackling Modern Slavery in Supply Chains (opens in a new tab)&lt;/a&gt;.
+      PPN 009: Tackling Modern Slavery in Government Supply Chains (opens in a new tab)&lt;/a&gt;.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on modern slavery and trafficking in relation to your organisation. This may include:&lt;/div&gt;
@@ -1217,10 +1217,17 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     </value>
   </data>
   <data name="ModernSlavery_06_Title" xml:space="preserve">
-    <value>Upload a copy of your latest Modern Slavery Statement</value>
+    <value>Do you want to upload evidence of your latest Modern Slavery Statement now?</value>
   </data>
   <data name="ModernSlavery_06_SummaryTitle" xml:space="preserve">
     <value>Statement upload</value>
+  </data>
+  <data name="ModernSlavery_06_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
+    </value>
   </data>
   <data name="ModernSlavery_07_Title" xml:space="preserve">
     <value>Enter the link to your relevant documentation or published statements on modern slavery</value>
@@ -1229,10 +1236,17 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
     <value>Statement link</value>
   </data>
   <data name="ModernSlavery_08_Title" xml:space="preserve">
-    <value>Upload your relevant documentation or published statements on modern slavery</value>
+    <value>Do you want to upload evidence of your latest Modern Slavery Statement now?</value>
   </data>
   <data name="ModernSlavery_08_SummaryTitle" xml:space="preserve">
     <value>Statement upload</value>
+  </data>
+  <data name="ModernSlavery_08_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-inset-text&quot;&gt;
+        If you are successful you must be in a position to provide evidence if required, prior to contract award, and without delay.
+      &lt;/div&gt;
+    </value>
   </data>
   <data name="ModernSlavery_09_Title" xml:space="preserve">
     <value>Enter instructions on how to find your organisation's Modern Slavery Statement</value>
@@ -1279,6 +1293,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
         &lt;li&gt;key performance indicators to measure the effectiveness of preventative steps being taken&lt;/li&gt;
         &lt;li&gt;training on modern slavery and trafficking available to staff&lt;/li&gt;
       &lt;/ul&gt;
+      &lt;p class="govuk-hint"&gt;If all information is included in the statement indicate this in your response.&lt;/p&gt;
     </value>
   </data>
   <data name="ModernSlavery_12_Title" xml:space="preserve">
@@ -1300,6 +1315,7 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
         &lt;li&gt;key performance indicators to measure the effectiveness of preventative steps being taken&lt;/li&gt;
         &lt;li&gt;training on modern slavery and trafficking available to staff&lt;/li&gt;
       &lt;/ul&gt;
+      &lt;p class="govuk-hint"&gt;If all information is included in the statement indicate this in your response.&lt;/p&gt;
     </value>
   </data>
   <!-- Data Protection -->

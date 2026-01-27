@@ -47,8 +47,9 @@ locals {
 
   allowed_ips = nonsensitive(jsondecode(data.aws_secretsmanager_secret_version.allowed_ips.secret_string))
 
-  has_import_instance  = true
-  import_instance_tags = merge(var.tags, { Name = "fts-db-import" })
+  has_import_instance   = true
+  import_instance_state = contains(["production"], var.environment) ? "running" : "stopped"
+  import_instance_tags  = merge(var.tags, { Name = "fts-db-import" })
 
   fts_instance_count = contains(["development", "staging", "integration"], var.environment) ? 1 : 2
   cfs_instance_count = local.fts_instance_count

@@ -8,6 +8,12 @@ variable "alb_sg_id" {
   type        = string
 }
 
+variable "cfs_extra_domains" {
+  description = "Optional list of additional host headers to be added for CFS service"
+  type        = list(string)
+  default     = []
+}
+
 variable "cfs_extra_host_headers" {
   description = "Optional list of additional host headers to be added for CFS service"
   type        = list(string)
@@ -105,6 +111,12 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_extra_domains" {
+  description = "Optional list of additional host headers to be added for FTS service"
+  type        = list(string)
+  default     = []
+}
+
 variable "fts_extra_host_headers" {
   description = "Optional list of additional host headers to be added for FTS service"
   type        = list(string)
@@ -119,6 +131,16 @@ variable "is_production" {
 variable "onelogin_logout_notification_urls" {
   description = "A list of URLs that the organisation app will call to notify other services of a logout event"
   type        = list(string)
+}
+
+variable "opensearch_domain_arn" {
+  description = "OpenSearch Domain ARN"
+  type        = string
+}
+
+variable "opensearch_endpoint" {
+  description = "OpenSearch RUL"
+  type        = string
 }
 
 variable "pinned_service_version_cfs" {
@@ -280,18 +302,6 @@ variable "service_configs" {
     port_host     = number
     type          = string
   }))
-}
-
-variable "cfs_extra_domains" {
-  description = "Optional list of additional host headers to be added for CFS service"
-  type        = list(string)
-  default     = []
-}
-
-variable "fts_extra_domains" {
-  description = "Optional list of additional host headers to be added for FTS service"
-  type        = list(string)
-  default     = []
 }
 
 variable "ses_configuration_set_arn" {
