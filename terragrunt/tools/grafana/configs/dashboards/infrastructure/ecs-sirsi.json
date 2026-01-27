@@ -1322,8 +1322,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ECS",
-  "uid": "ecs",
+  "title": "ECS Sirsi",
+  "uid": "ecs-sirsi",
   "version": 2,
   "weekStart": ""
 }

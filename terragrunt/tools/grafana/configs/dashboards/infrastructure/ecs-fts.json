@@ -1603,11 +1603,26 @@
           },
           {
             "selected": false,
+            "text": "fts-app",
+            "value": "fts-app"
+          },
+          {
+            "selected": false,
+            "text": "fts-search-api",
+            "value": "fts-search-api"
+          },
+          {
+            "selected": false,
+            "text": "fts-search-indexer",
+            "value": "fts-search-indexer"
+          },
+          {
+            "selected": false,
             "text": "fts-scheduler",
             "value": "fts-scheduler"
           }
         ],
-        "query": "cfs, cfs-scheduler, fts, fts-scheduler",
+        "query": "cfs, cfs-scheduler, fts, fts-app, fts-search-api, fts-search-indexer, fts-scheduler",
         "type": "custom"
       },
       {
@@ -1645,7 +1660,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ECS PHP",
-  "uid": "ecs-php",
+  "title": "ECS FTS",
+  "uid": "ecs-fts",
   "version": 1
 }
