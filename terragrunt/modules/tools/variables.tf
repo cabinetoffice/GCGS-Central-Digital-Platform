@@ -306,6 +306,11 @@ variable "user_pool_arn_healthcheck" {
   type    = string
 }
 
+variable "user_pool_arn_opensearch_admin" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
@@ -316,12 +321,22 @@ variable "user_pool_client_id_healthcheck" {
   type    = string
 }
 
+variable "user_pool_client_id_opensearch_admin" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
 }
 
 variable "user_pool_domain_healthcheck" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_opensearch_admin" {
   default = null
   type    = string
 }

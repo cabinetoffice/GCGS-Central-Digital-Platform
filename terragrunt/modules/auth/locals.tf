@@ -36,6 +36,9 @@ locals {
   healthcheck_domain = "${local.auth_domain}-healthcheck"
   healthcheck_url    = "https://healthcheck.${var.public_domain}"
 
+  opensearch_admin_domain = "${local.auth_domain}-opensearch-admin"
+  opensearch_admin_url    = "https://opensearch-admin.${var.public_domain}"
+
   organisation_app_domain = "${local.auth_domain}-organisatino-app"
   organisation_app_url    = "https://${var.public_domain}"
 
