@@ -52,6 +52,7 @@ COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.
 COPY --link Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
 COPY --link Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
 COPY --link Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
+COPY --link Frontend/CO.CDP.ApplicationRegistry.App/CO.CDP.ApplicationRegistry.App.csproj Frontend/CO.CDP.ApplicationRegistry.App/
 COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App/CO.CDP.RegisterOfCommercialTools.App.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App/
 COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/CO.CDP.RegisterOfCommercialTools.App.Tests.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
@@ -106,6 +107,8 @@ COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.Regist
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/
 COPY --link Libraries/CO.CDP.ApplicationRegistry.Core/CO.CDP.ApplicationRegistry.Core.csproj Libraries/CO.CDP.ApplicationRegistry.Core/
+COPY --link Libraries/CO.CDP.ApplicationRegistry.Shared/CO.CDP.ApplicationRegistry.Shared.csproj Libraries/CO.CDP.ApplicationRegistry.Shared/
+COPY --link Libraries/CO.CDP.ApplicationRegistry.WebApiClient/CO.CDP.ApplicationRegistry.WebApiClient.csproj Libraries/CO.CDP.ApplicationRegistry.WebApiClient/
 COPY --link Services/CO.CDP.ApplicationRegistry.Infrastructure/CO.CDP.ApplicationRegistry.Infrastructure.csproj Services/CO.CDP.ApplicationRegistry.Infrastructure/
 COPY --link Services/CO.CDP.ApplicationRegistry.Api/CO.CDP.ApplicationRegistry.Api.csproj Services/CO.CDP.ApplicationRegistry.Api/
 COPY --link Services/CO.CDP.ApplicationRegistry.UnitTests/CO.CDP.ApplicationRegistry.UnitTests.csproj Services/CO.CDP.ApplicationRegistry.UnitTests/

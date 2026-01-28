@@ -1,3 +1,4 @@
+using CO.CDP.ApplicationRegistry.Shared.Responses;
 using CO.CDP.ApplicationRegistry.Api.Models;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Core.Models;

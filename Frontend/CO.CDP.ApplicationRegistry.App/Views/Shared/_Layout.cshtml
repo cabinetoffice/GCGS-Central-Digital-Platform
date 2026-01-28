@@ -1,0 +1,30 @@
+@{
+    ViewData["HtmlLang"] ??= "en";
+    ViewData["ServiceName"] ??= "Application Registry";
+    var title = (ViewData.ContainsKey("Title") && !string.IsNullOrEmpty((string?)ViewData["Title"]))
+        ? ViewData["Title"] + " - " + ViewData["ServiceName"] + " - GOV.UK"
+        : ViewData["ServiceName"] + " - GOV.UK";
+    ViewData["Title"] = title;
+}
+
+<!DOCTYPE html>
+<html lang="@ViewData["HtmlLang"]" class="govuk-template">
+<head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex,nofollow">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="theme-color" content="#000000" />
+    <link rel="stylesheet" href="/css/govuk-frontend-5.7.1.min.css">
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
+    <title>@ViewData["Title"]</title>
+</head>
+
+<body class="govuk-template__body">
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper" id="main-content" role="main">
+            @RenderBody()
+        </main>
+    </div>
+    <script src="/js/govuk-frontend-5.7.1.min.js"></script>
+</body>
+</html>

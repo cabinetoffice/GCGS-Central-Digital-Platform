@@ -1,4 +1,5 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
+using CO.CDP.ApplicationRegistry.Shared.Responses;
 
 namespace CO.CDP.ApplicationRegistry.Api.Models;
 

@@ -1,11 +1,8 @@
 using CO.CDP.Authentication.Services;
 using FluentAssertions;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Moq.Protected;
-using System.Net;
 
 namespace CO.CDP.Authentication.Tests;
 

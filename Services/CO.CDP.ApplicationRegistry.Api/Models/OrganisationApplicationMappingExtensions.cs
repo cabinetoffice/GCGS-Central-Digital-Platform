@@ -1,4 +1,5 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
+using CO.CDP.ApplicationRegistry.Shared.Responses;
 
 namespace CO.CDP.ApplicationRegistry.Api.Models;
 
@@ -33,7 +34,8 @@ public static class OrganisationApplicationMappingExtensions
             EnabledBy = orgApp.EnabledBy,
             DisabledAt = orgApp.DisabledAt,
             DisabledBy = orgApp.DisabledBy,
-            CreatedAt = orgApp.CreatedAt
+            CreatedAt = orgApp.CreatedAt,
+            CreatedBy = orgApp.CreatedBy
         };
     }
 
