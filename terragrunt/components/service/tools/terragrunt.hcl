@@ -159,12 +159,15 @@ inputs = {
   ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
   efs_sg_id         = dependency.core_security_groups.outputs.efs_sg_id
 
-  user_pool_arn_cloud_beaver       = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
-  user_pool_arn_healthcheck        = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_client_id_cloud_beaver = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
-  user_pool_client_id_healthcheck  = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_domain_cloud_beaver    = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain_healthcheck     = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn_cloud_beaver           = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
+  user_pool_arn_healthcheck            = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_arn_opensearch_admin       = dependency.service_auth.outputs.opensearch_admin_user_pool_arn
+  user_pool_client_id_cloud_beaver     = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
+  user_pool_client_id_healthcheck      = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_client_id_opensearch_admin = dependency.service_auth.outputs.opensearch_admin_user_pool_client_id
+  user_pool_domain_cloud_beaver        = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_healthcheck         = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_opensearch_admin    = dependency.service_auth.outputs.user_pool_domain
 
   certificate_arn  = dependency.service_ecs.outputs.certificate_arn
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id

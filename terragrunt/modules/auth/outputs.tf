@@ -66,6 +66,14 @@ output "organisation_app_user_pool_client_id" {
   value = aws_cognito_user_pool_client.organisation_app.id
 }
 
+output "opensearch_admin_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "opensearch_admin_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.opensearch_admin.id
+}
+
 output "user_pool_domain" {
   value = aws_cognito_user_pool_domain.auth.domain
 }
