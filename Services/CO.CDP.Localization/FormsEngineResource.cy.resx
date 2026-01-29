@@ -973,9 +973,6 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   </data>
   <data name="Payments_04_Description" xml:space="preserve">
     <value>
-      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
-        Mae'r cwestiwn canlynol yn cyfeirio at gontractau sector cyhoeddus a ddyfernir o dan Ddeddf Caffael 2023
-      &lt;/div&gt;
       &lt;p class="govuk-body"&gt;Cadarnhewch fod gennych:&lt;/p&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt;systemau ar waith i gynnwys telerau talu o fewn 30 diwrnod o leiaf ym mhob un o'ch contractau cadwyn gyflenwi&lt;/li&gt;
@@ -1093,12 +1090,12 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
     </value>
   </data>
   <data name="Payments_10_Title" xml:space="preserve">
-    <value>Allwch chi gadarnhau eich bod wedi talu pob un o'ch anfonebau o fewn 55 diwrnod, ar gyfartaledd?</value>
+    <value>Allwch chi gadarnhau eich bod wedi talu pob un o'ch anfonebau o fewn 45 diwrnod, ar gyfartaledd?</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
       &lt;div class="govuk-body"&gt;
-        Rhaid bod eich anfonebau i gyflenwyr wedi'u talu o fewn 55 diwrnod, ar gyfartaledd, yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis.
+        Rhaid bod eich anfonebau i gyflenwyr wedi'u talu o fewn 45 diwrnod, ar gyfartaledd, yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis.
       &lt;/div&gt;
     </value>
   </data>
@@ -1169,7 +1166,7 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
     <value>Talwyd 95% o anfonebau o fewn 60 diwrnod</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-    <value>Talwyd anfonebau o fewn 55 diwrnod, ar gyfartaledd</value>
+    <value>Talwyd anfonebau o fewn 45 diwrnod, ar gyfartaledd</value>
   </data>
   <data name="Payments_11_SummaryTitle" xml:space="preserve">
     <value>Lanlwythwyd cynllun gweithredu</value>

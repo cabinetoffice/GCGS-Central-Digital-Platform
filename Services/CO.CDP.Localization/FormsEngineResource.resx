@@ -1634,9 +1634,6 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="Payments_04_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
-        The following question refers to public sector contracts awarded under the Procurement Act 2023
-      &lt;/div&gt;
       &lt;p class="govuk-body"&gt;Confirm you have:&lt;/p&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt;systems in place to include a minimum of 30-day payment terms in all your supply chain contracts&lt;/li&gt;
@@ -1780,15 +1777,15 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     </value>
   </data>
   <data name="Payments_10_Title" xml:space="preserve">
-    <value>Can you confirm you have paid all your invoices within an average of 55 days?</value>
+    <value>Can you confirm you have paid all your invoices within an average of 45 days?</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-    <value>Invoices paid within 55-day average</value>
+    <value>Invoices paid within 45-day average</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
       &lt;div class="govuk-body"&gt;
-        Your invoices to suppliers must have been paid within an average of 55 days in at least one of the last two 6 month reporting periods.
+        Your invoices to suppliers must have been paid within an average of 45 days in at least one of the last two 6 month reporting periods.
       &lt;/div&gt;
     </value>
   </data>
