@@ -26,6 +26,11 @@ public class Application : ISoftDelete, IAuditable
     public string? Description { get; set; }
 
     /// <summary>
+    /// Gets or sets the category of the application.
+    /// </summary>
+    public string? Category { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether this application is active.
     /// </summary>
     public bool IsActive { get; set; }

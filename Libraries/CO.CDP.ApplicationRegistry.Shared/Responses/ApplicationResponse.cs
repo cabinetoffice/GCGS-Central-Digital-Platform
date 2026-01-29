@@ -26,6 +26,11 @@ public record ApplicationResponse
     public string? Description { get; init; }
 
     /// <summary>
+    /// Gets or sets the application category.
+    /// </summary>
+    public string? Category { get; init; }
+
+    /// <summary>
     /// Gets or sets whether the application is active.
     /// </summary>
     public required bool IsActive { get; init; }
