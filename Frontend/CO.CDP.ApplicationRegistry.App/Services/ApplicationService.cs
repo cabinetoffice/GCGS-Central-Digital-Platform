@@ -1,7 +1,6 @@
 using CO.CDP.ApplicationRegistry.App.Mapping;
 using CO.CDP.ApplicationRegistry.App.Models;
 using CO.CDP.ApplicationRegistry.WebApiClient;
-using CO.CDP.ApplicationRegistry.Shared.Requests;
 
 namespace CO.CDP.ApplicationRegistry.App.Services;
 
@@ -23,14 +22,18 @@ public sealed class ApplicationService(
         }
     }
 
-    public async Task<ApplicationsViewModel?> GetApplicationsViewModelAsync(string organisationSlug, CancellationToken ct = default)
+    public async Task<ApplicationsViewModel?> GetApplicationsViewModelAsync(
+        string organisationSlug,
+        string? selectedCategory = null,
+        string? selectedStatus = null,
+        CancellationToken ct = default)
     {
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
-            return ViewModelMapper.ToApplicationsViewModel(org, allApps, enabledApps);
+            return ViewModelMapper.ToApplicationsViewModel(org, allApps, enabledApps, selectedCategory, selectedStatus);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

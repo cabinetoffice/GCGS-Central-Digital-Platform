@@ -10,14 +10,24 @@ public class ApplicationsController(
     IApplicationService applicationService,
     ApplicationRegistryClient apiClient) : Controller
 {
-    public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
+    public async Task<IActionResult> Index(
+        string? organisationSlug,
+        Guid? cdpOrganisationId,
+        string? category,
+        string? status,
+        CancellationToken ct)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         if (cdpOrganisationId.HasValue)
         {
             try
             {
                 var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
-                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug });
+                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug, category, status });
             }
             catch (ApiException ex) when (ex.StatusCode == 404)
             {
@@ -30,7 +40,7 @@ public class ApplicationsController(
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetApplicationsViewModelAsync(organisationSlug, ct);
+        var viewModel = await applicationService.GetApplicationsViewModelAsync(organisationSlug, category, status, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 }

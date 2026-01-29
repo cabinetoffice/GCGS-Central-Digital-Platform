@@ -17,3 +17,42 @@
 .app-dashboard-stat .govuk-body {
     margin-bottom: 0;
 }
+
+/* Search Input and Button */
+.search-flex-display {
+    display: flex;
+    gap: 0;
+}
+
+.search-text-input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-button {
+    color: #ffffff;
+    background-color: #1d70b8 !important;
+    box-shadow: none;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.search-button:hover {
+    background-color: #003078 !important;
+    color: #ffffff;
+}
+
+@media screen and (min-width: 768px) {
+    .search-button {
+        width: auto;
+        min-width: 44px;
+        padding: 0 8px;
+    }
+}
+
+.filter-dropdown-wrapper .govuk-select {
+    height: 40px;
+}
+

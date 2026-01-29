@@ -3,14 +3,18 @@ namespace CO.CDP.ApplicationRegistry.App.Models;
 public sealed record ApplicationsViewModel(
     string OrganisationName,
     IReadOnlyList<ApplicationViewModel> EnabledApplications,
-    IReadOnlyList<ApplicationViewModel> AvailableApplications)
+    IReadOnlyList<ApplicationViewModel> AvailableApplications,
+    IReadOnlyList<string> Categories,
+    string? SelectedCategory = null,
+    string? SelectedStatus = null)
 {
     public int TotalCount => EnabledApplications.Count + AvailableApplications.Count;
 
     public static ApplicationsViewModel Empty => new(
         OrganisationName: string.Empty,
         EnabledApplications: [],
-        AvailableApplications: []);
+        AvailableApplications: [],
+        Categories: []);
 }
 
 public sealed record ApplicationViewModel(

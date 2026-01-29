@@ -21,18 +21,37 @@ public static class ViewModelMapper
     public static ApplicationsViewModel ToApplicationsViewModel(
         OrganisationResponse organisation,
         IReadOnlyList<ApplicationResponse> allApplications,
-        IReadOnlyList<OrganisationApplicationResponse> enabledApps) =>
-        new(
+        IReadOnlyList<OrganisationApplicationResponse> enabledApps,
+        string? selectedCategory = null,
+        string? selectedStatus = null)
+    {
+        var enabledList = enabledApps
+            .Where(a => a.IsActive)
+            .Select(oa => ToApplicationViewModel(oa, isEnabled: true))
+            .ToList();
+
+        var availableList = allApplications
+            .Where(app => !enabledApps.Any(ea => ea.ApplicationId == app.Id && ea.IsActive))
+            .Select(app => ToApplicationViewModel(app, isEnabled: false))
+            .ToList();
+
+        var allApps = enabledList.Concat(availableList).ToList();
+        var categories = allApps
+            .Where(a => !string.IsNullOrEmpty(a.Category))
+            .Select(a => a.Category)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToList();
+
+        return new(
             OrganisationName: organisation.Name,
-            EnabledApplications: enabledApps
-                .Where(a => a.IsActive)
-                .Select(oa => ToApplicationViewModel(oa, isEnabled: true))
-                .ToList(),
-            AvailableApplications: allApplications
-                .Where(app => !enabledApps.Any(ea => ea.ApplicationId == app.Id && ea.IsActive))
-                .Select(app => ToApplicationViewModel(app, isEnabled: false))
-                .ToList()
+            EnabledApplications: enabledList,
+            AvailableApplications: availableList,
+            Categories: categories,
+            SelectedCategory: selectedCategory,
+            SelectedStatus: selectedStatus
         );
+    }
 
     public static EnabledApplicationViewModel ToEnabledApplicationViewModel(
         OrganisationApplicationResponse orgApp) =>
@@ -66,7 +85,7 @@ public static class ViewModelMapper
             Slug: app.ClientId, // TODO: Use slug from API when available
             Name: app.Name,
             Description: app.Description ?? string.Empty,
-            Category: string.Empty, // TODO: Add category to API
+            Category: app.Category ?? string.Empty,
             IsEnabled: isEnabled,
             UsersAssigned: 0,
             RolesAvailable: 0
