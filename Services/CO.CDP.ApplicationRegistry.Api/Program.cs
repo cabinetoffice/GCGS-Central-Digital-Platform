@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSanitisedLogging();
 builder.Services.AddSwaggerGen(options => { options.DocumentApplicationRegistryApi(builder.Configuration); });
+builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
 var connectionString = builder.Configuration.GetConnectionString("ApplicationRegistryDatabase");
@@ -29,8 +30,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.Authority = builder.Configuration["Authentication:Authority"];
-        options.Audience = builder.Configuration["Authentication:Audience"];
         options.RequireHttpsMetadata = builder.Environment.IsProduction();
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateAudience = false
+        };
     });
 
 // Authorization

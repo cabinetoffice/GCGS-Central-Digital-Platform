@@ -45,7 +45,15 @@ builder.Services.AddDataProtection()
     .PersistKeysToAWSSystemsManager(
         builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
 
-builder.Services.AddUiFoundation(builder.Configuration, ui => { });
+var cookieSettings = new CO.CDP.UI.Foundation.Cookies.CookieSettings();
+builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);
+builder.Services.AddSingleton(cookieSettings);
+
+builder.Services.AddUiFoundation(builder.Configuration, ui => {
+    ui.AddFtsUrlService();
+    ui.AddSirsiUrlService();
+    ui.AddCookiePreferenceService();
+});
 builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>();
 builder.Services.AddCdpAuthentication(builder.Configuration);
 

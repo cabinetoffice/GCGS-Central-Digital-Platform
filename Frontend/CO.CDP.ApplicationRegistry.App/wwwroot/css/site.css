@@ -1,1 +1,19 @@
 /* Site-specific styles for Application Registry */
+
+/* Dashboard Stats */
+.app-dashboard-stat {
+    background-color: #d2e2f1;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.app-dashboard-stat .govuk-heading-l {
+    margin-bottom: 0;
+}
+
+.app-dashboard-stat .govuk-body {
+    margin-bottom: 0;
+}
