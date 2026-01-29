@@ -4,6 +4,7 @@ using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
 using CO.CDP.UI.Foundation;
+using CO.CDP.UI.Foundation.Middleware;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -53,6 +54,7 @@ builder.Services.AddUiFoundation(builder.Configuration, ui => {
     ui.AddFtsUrlService();
     ui.AddSirsiUrlService();
     ui.AddCookiePreferenceService();
+    ui.AddContentSecurityPolicy();
 });
 builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>();
 builder.Services.AddCdpAuthentication(builder.Configuration);
@@ -142,6 +144,8 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseContentSecurityPolicy();
 
 app.UseSession();
 
