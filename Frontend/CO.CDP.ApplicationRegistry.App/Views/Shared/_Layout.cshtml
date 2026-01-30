@@ -1,0 +1,19 @@
+@{
+    ViewData["HtmlLang"] ??= "en";
+    ViewData["ServiceName"] ??= "Find a Tender";
+    Layout = "/Pages/Shared/_GovUkLayout.cshtml";
+}
+
+@RenderBody()
+
+@section BeforeContent {
+    @RenderSection("BeforeContent", required: false)
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true">
+}
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

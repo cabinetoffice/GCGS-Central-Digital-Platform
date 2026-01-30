@@ -1,4 +1,5 @@
 using CO.CDP.UI.Foundation.Cookies;
+using CO.CDP.UI.Foundation.Middleware;
 using CO.CDP.UI.Foundation.Pages;
 using CO.CDP.UI.Foundation.Services;
 using Microsoft.Extensions.Configuration;
@@ -219,6 +220,30 @@ public class UiFoundationBuilder
     public UiFoundationBuilder AddCookiePreferenceService()
     {
         _services.AddScoped<ICookiePreferencesService, CookiePreferencesService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds Content Security Policy with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddContentSecurityPolicy()
+    {
+        var options = new ContentSecurityPolicyOptions();
+        _services.AddSingleton(options);
+        return this;
+    }
+
+    /// <summary>
+    /// Adds Content Security Policy with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure CSP options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddContentSecurityPolicy(Action<ContentSecurityPolicyOptions> configure)
+    {
+        var options = new ContentSecurityPolicyOptions();
+        configure(options);
+        _services.AddSingleton(options);
         return this;
     }
 }

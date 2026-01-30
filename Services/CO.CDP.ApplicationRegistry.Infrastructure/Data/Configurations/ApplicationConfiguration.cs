@@ -34,6 +34,10 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
             .HasColumnName("description")
             .HasMaxLength(1000);
 
+        builder.Property(a => a.Category)
+            .HasColumnName("category")
+            .HasMaxLength(50);
+
         builder.Property(a => a.IsActive)
             .HasColumnName("is_active")
             .IsRequired();

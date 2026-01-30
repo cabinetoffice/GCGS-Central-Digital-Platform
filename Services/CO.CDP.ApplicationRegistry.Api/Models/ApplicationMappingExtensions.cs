@@ -1,4 +1,5 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
+using CO.CDP.ApplicationRegistry.Shared.Responses;
 
 namespace CO.CDP.ApplicationRegistry.Api.Models;
 
@@ -15,6 +16,7 @@ public static class ApplicationMappingExtensions
             Name = application.Name,
             ClientId = application.ClientId,
             Description = application.Description,
+            Category = application.Category,
             IsActive = application.IsActive,
             CreatedAt = application.CreatedAt
         };

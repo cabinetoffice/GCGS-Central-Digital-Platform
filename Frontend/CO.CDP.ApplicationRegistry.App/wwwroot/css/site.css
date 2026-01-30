@@ -1,0 +1,82 @@
+/* Site-specific styles for Application Registry */
+
+.tile {
+    border: 1px solid #b1b4b6;
+    background: #f3f2f1;
+    padding: 15px 15px 0 15px;
+    min-height: 13rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.1rem;
+}
+
+.tile__link {
+    text-decoration: none;
+}
+
+
+/* Dashboard Stats */
+.app-dashboard-stat {
+    background-color: #d2e2f1;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.app-dashboard-stat .govuk-heading-l {
+    margin-bottom: 0;
+}
+
+.app-dashboard-stat .govuk-body {
+    margin-bottom: 0;
+}
+
+/* Search Input and Button */
+.search-flex-display {
+    display: flex;
+    gap: 0;
+}
+
+.search-text-input {
+    height: 40px;
+    flex-grow: 1;
+}
+
+.search-button {
+    color: #ffffff;
+    background-color: #1d70b8 !important;
+    box-shadow: none;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+
+    padding: 0;
+}
+
+.search-button:hover {
+    background-color: #003078 !important;
+    color: #ffffff;
+}
+
+@media screen and (min-width: 768px) {
+    .search-button {
+
+        min-width: 44px;
+        padding: 0 8px;
+    }
+}
+
+.filter-dropdown-wrapper .govuk-select {
+    height: 40px;
+}
+
+.app-filter-container {
+    background-color: #f3f2f1;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+

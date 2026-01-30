@@ -164,7 +164,7 @@ app.UseStatusCodePages(context =>
 });
 
 app.UseForwardedHeaders();
-app.UseMiddleware<ContentSecurityPolicyMiddleware>();
+app.UseMiddleware<CO.CDP.RegisterOfCommercialTools.App.Middleware.ContentSecurityPolicyMiddleware>();
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<CookieAcceptanceMiddleware>();
 
