@@ -46,7 +46,7 @@ resource "aws_opensearch_domain" "this" {
     internal_user_database_enabled = false
 
     master_user_options {
-      master_user_arn = var.role_opensearch_admin_arn
+      master_user_arn = var.role_ecs_task_arn
     }
   }
 
