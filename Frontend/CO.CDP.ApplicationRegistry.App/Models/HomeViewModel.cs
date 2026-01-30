@@ -22,6 +22,7 @@ public sealed record DashboardStats(
 
 public sealed record EnabledApplicationViewModel(
     int Id,
+    string Slug,
     string Name,
     string Description,
     int UsersAssigned,

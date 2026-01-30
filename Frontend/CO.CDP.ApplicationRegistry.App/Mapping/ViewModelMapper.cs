@@ -57,6 +57,7 @@ public static class ViewModelMapper
         OrganisationApplicationResponse orgApp) =>
         new(
             Id: orgApp.Application?.Id ?? 0,
+            Slug: orgApp.Application?.ClientId ?? string.Empty,
             Name: orgApp.Application?.Name ?? string.Empty,
             Description: string.Empty, // TODO: Add description to ApplicationSummaryResponse
             UsersAssigned: 0, // TODO: Calculate from user assignments
