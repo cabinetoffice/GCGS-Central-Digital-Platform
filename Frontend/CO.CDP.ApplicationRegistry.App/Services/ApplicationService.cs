@@ -26,6 +26,7 @@ public sealed class ApplicationService(
         string organisationSlug,
         string? selectedCategory = null,
         string? selectedStatus = null,
+        string? searchTerm = null,
         CancellationToken ct = default)
     {
         try
@@ -33,7 +34,7 @@ public sealed class ApplicationService(
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
-            return ViewModelMapper.ToApplicationsViewModel(org, allApps, enabledApps, selectedCategory, selectedStatus);
+            return ViewModelMapper.ToApplicationsViewModel(org, allApps, enabledApps, selectedCategory, selectedStatus, searchTerm);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {

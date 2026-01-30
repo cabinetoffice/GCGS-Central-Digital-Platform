@@ -27,7 +27,7 @@ public static class OrganisationApplicationMappingExtensions
                 : null,
             ApplicationId = orgApp.ApplicationId,
             Application = includeDetails && orgApp.Application != null
-                ? orgApp.Application.ToSummaryResponse()
+                ? orgApp.Application.ToResponse()
                 : null,
             IsActive = orgApp.IsActive,
             EnabledAt = orgApp.EnabledAt,

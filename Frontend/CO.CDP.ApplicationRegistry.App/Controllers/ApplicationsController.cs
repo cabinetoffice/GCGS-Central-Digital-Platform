@@ -15,6 +15,7 @@ public class ApplicationsController(
         Guid? cdpOrganisationId,
         string? category,
         string? status,
+        string? search,
         CancellationToken ct)
     {
         if (!ModelState.IsValid)
@@ -27,7 +28,7 @@ public class ApplicationsController(
             try
             {
                 var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
-                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug, category, status });
+                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug, category, status, search });
             }
             catch (ApiException ex) when (ex.StatusCode == 404)
             {
@@ -40,7 +41,7 @@ public class ApplicationsController(
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetApplicationsViewModelAsync(organisationSlug, category, status, ct);
+        var viewModel = await applicationService.GetApplicationsViewModelAsync(organisationSlug, category, status, search, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 }

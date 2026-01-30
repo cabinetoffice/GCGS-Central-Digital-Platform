@@ -53,6 +53,7 @@
                            id="application-search"
                            name="search"
                            type="text"
+                           value="@Model.SearchTerm"
                            placeholder="e.g. registration">
 
                     <button type="submit" class="govuk-button search-button govuk-!-width-auto" data-module="govuk-button" id="search-button">
@@ -88,6 +89,98 @@
 else
 {
     <p class="govuk-body">Showing @Model.TotalCount applications</p>
+
+    @if (Model.EnabledApplications.Count > 0)
+    {
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">Enabled applications</h2>
+        
+        @foreach (var app in Model.EnabledApplications)
+        {
+            <div class="govuk-summary-card govuk-!-margin-bottom-6">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        <a href="/organisation/@organisationSlug/applications/@app.Id" class="govuk-link">@app.Name</a>
+                    </h3>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <strong class="govuk-tag govuk-tag--green">Enabled</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    @if (!string.IsNullOrEmpty(app.Description))
+                    {
+                        <p class="govuk-body">@app.Description</p>
+                    }
+                    <dl class="govuk-summary-list govuk-summary-list--no-border">
+                        @if (!string.IsNullOrEmpty(app.Category))
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Category</dt>
+                                <dd class="govuk-summary-list__value">@app.Category</dd>
+                            </div>
+                        }
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Users assigned</dt>
+                            <dd class="govuk-summary-list__value">@app.UsersAssigned</dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Roles available</dt>
+                            <dd class="govuk-summary-list__value">@app.RolesAvailable</dd>
+                        </div>
+                    </dl>
+                    <p class="govuk-body">
+                        <a href="/organisation/@organisationSlug/applications/@app.Id/users" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
+                        <a href="/organisation/@organisationSlug/applications/@app.Id" class="govuk-link">View details</a>
+                    </p>
+                </div>
+            </div>
+        }
+    }
+
+    @if (Model.AvailableApplications.Count > 0)
+    {
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">Available to enable</h2>
+        
+        @foreach (var app in Model.AvailableApplications)
+        {
+            <div class="govuk-summary-card govuk-!-margin-bottom-6">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">
+                        <a href="/organisation/@organisationSlug/applications/@app.Id" class="govuk-link">@app.Name</a>
+                    </h3>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <strong class="govuk-tag govuk-tag--grey">Not enabled</strong>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    @if (!string.IsNullOrEmpty(app.Description))
+                    {
+                        <p class="govuk-body">@app.Description</p>
+                    }
+                    <dl class="govuk-summary-list govuk-summary-list--no-border">
+                        @if (!string.IsNullOrEmpty(app.Category))
+                        {
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">Category</dt>
+                                <dd class="govuk-summary-list__value">@app.Category</dd>
+                            </div>
+                        }
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">Roles available</dt>
+                            <dd class="govuk-summary-list__value">@app.RolesAvailable</dd>
+                        </div>
+                    </dl>
+                    <p class="govuk-body">
+                        <a href="/organisation/@organisationSlug/applications/@app.Id/enable" class="govuk-button govuk-button--secondary" data-module="govuk-button">Enable for your organisation</a>
+                        <a href="/organisation/@organisationSlug/applications/@app.Id" class="govuk-link govuk-!-margin-left-4">View details</a>
+                    </p>
+                </div>
+            </div>
+        }
+    }
 }
 
 @section Scripts {

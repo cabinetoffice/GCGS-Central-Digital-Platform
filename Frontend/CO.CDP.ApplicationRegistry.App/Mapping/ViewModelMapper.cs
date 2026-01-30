@@ -23,7 +23,8 @@ public static class ViewModelMapper
         IReadOnlyList<ApplicationResponse> allApplications,
         IReadOnlyList<OrganisationApplicationResponse> enabledApps,
         string? selectedCategory = null,
-        string? selectedStatus = null)
+        string? selectedStatus = null,
+        string? searchTerm = null)
     {
         var enabledList = enabledApps
             .Where(a => a.IsActive)
@@ -35,13 +36,42 @@ public static class ViewModelMapper
             .Select(app => ToApplicationViewModel(app, isEnabled: false))
             .ToList();
 
-        var allApps = enabledList.Concat(availableList).ToList();
-        var categories = allApps
+        // Get all categories before filtering (for dropdown)
+        var allAppsUnfiltered = enabledList.Concat(availableList).ToList();
+        var categories = allAppsUnfiltered
             .Where(a => !string.IsNullOrEmpty(a.Category))
             .Select(a => a.Category)
             .Distinct()
             .OrderBy(c => c)
             .ToList();
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            enabledList = enabledList.Where(a =>
+                a.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrEmpty(a.Description) && a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
+            availableList = availableList.Where(a =>
+                a.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (!string.IsNullOrEmpty(a.Description) && a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(selectedCategory))
+        {
+            enabledList = enabledList.Where(a => a.Category == selectedCategory).ToList();
+            availableList = availableList.Where(a => a.Category == selectedCategory).ToList();
+        }
+
+        if (!string.IsNullOrEmpty(selectedStatus))
+        {
+            if (selectedStatus == "enabled")
+            {
+                availableList = new List<ApplicationViewModel>();
+            }
+            else if (selectedStatus == "available")
+            {
+                enabledList = new List<ApplicationViewModel>();
+            }
+        }
 
         return new(
             OrganisationName: organisation.Name,
@@ -49,7 +79,8 @@ public static class ViewModelMapper
             AvailableApplications: availableList,
             Categories: categories,
             SelectedCategory: selectedCategory,
-            SelectedStatus: selectedStatus
+            SelectedStatus: selectedStatus,
+            SearchTerm: searchTerm
         );
     }
 
@@ -59,7 +90,7 @@ public static class ViewModelMapper
             Id: orgApp.Application?.Id ?? 0,
             Slug: orgApp.Application?.ClientId ?? string.Empty,
             Name: orgApp.Application?.Name ?? string.Empty,
-            Description: string.Empty, // TODO: Add description to ApplicationSummaryResponse
+            Description: orgApp.Application?.Description ?? string.Empty,
             UsersAssigned: 0, // TODO: Calculate from user assignments
             RolesAvailable: 0 // TODO: Calculate from roles
         );
@@ -69,10 +100,10 @@ public static class ViewModelMapper
         bool isEnabled) =>
         new(
             Id: orgApp.Application?.Id ?? 0,
-            Slug: orgApp.Application?.ClientId ?? string.Empty, // TODO: Use slug from API when available
+            Slug: orgApp.Application?.ClientId ?? string.Empty,
             Name: orgApp.Application?.Name ?? string.Empty,
-            Description: string.Empty, // TODO: Add description to ApplicationSummaryResponse
-            Category: string.Empty, // TODO: Add category to API
+            Description: orgApp.Application?.Description ?? string.Empty,
+            Category: orgApp.Application?.Category ?? string.Empty,
             IsEnabled: isEnabled,
             UsersAssigned: 0, // TODO: Calculate from user assignments
             RolesAvailable: 0 // TODO: Calculate from roles

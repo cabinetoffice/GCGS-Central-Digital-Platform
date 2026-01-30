@@ -10,5 +10,6 @@ public interface IApplicationService
         string organisationSlug,
         string? selectedCategory = null,
         string? selectedStatus = null,
+        string? searchTerm = null,
         CancellationToken ct = default);
 }

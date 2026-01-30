@@ -28,7 +28,7 @@ public record OrganisationApplicationResponse
     /// <summary>
     /// Gets or sets the application details.
     /// </summary>
-    public ApplicationSummaryResponse? Application { get; init; }
+    public ApplicationResponse? Application { get; init; }
 
     /// <summary>
     /// Gets or sets whether this application is active for the organisation.

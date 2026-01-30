@@ -6,7 +6,8 @@ public sealed record ApplicationsViewModel(
     IReadOnlyList<ApplicationViewModel> AvailableApplications,
     IReadOnlyList<string> Categories,
     string? SelectedCategory = null,
-    string? SelectedStatus = null)
+    string? SelectedStatus = null,
+    string? SearchTerm = null)
 {
     public int TotalCount => EnabledApplications.Count + AvailableApplications.Count;
 
