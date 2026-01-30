@@ -23,24 +23,26 @@ module "ecs_service_fts_search_indexer" {
     }
   )
 
-  cluster_id             = local.php_cluster_id
-  container_port         = var.service_configs.fts_search_indexer.port
-  cpu                    = var.service_configs.fts_search_indexer.cpu
-  desired_count          = var.environment == "development" ? 1 : 0
-  ecs_alb_sg_id          = var.alb_sg_id
-  ecs_listener_arn       = local.php_ecs_listener_arn
-  ecs_service_base_sg_id = var.ecs_sg_id
-  extra_host_headers     = var.fts_extra_host_headers
-  family                 = "app"
-  host_port              = var.service_configs.fts_search_indexer.port
-  listener_name          = "dotnet-${var.service_configs.fts_search_indexer.name}"
-  memory                 = var.service_configs.fts_search_indexer.memory
-  name                   = var.service_configs.fts_search_indexer.name
-  private_subnet_ids     = var.private_subnet_ids
-  product                = var.product
-  public_domain          = var.public_domain
-  role_ecs_task_arn      = var.role_ecs_task_arn
-  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  tags                   = var.tags
-  vpc_id                 = var.vpc_id
+  cluster_id                         = local.php_cluster_id
+  container_port                     = var.service_configs.fts_search_indexer.port
+  cpu                                = var.service_configs.fts_search_indexer.cpu
+  deployment_maximum_percent         = 100
+  deployment_minimum_healthy_percent = 0
+  desired_count                      = var.environment == "development" ? 1 : 0
+  ecs_alb_sg_id                      = var.alb_sg_id
+  ecs_listener_arn                   = local.php_ecs_listener_arn
+  ecs_service_base_sg_id             = var.ecs_sg_id
+  extra_host_headers                 = var.fts_extra_host_headers
+  family                             = "app"
+  host_port                          = var.service_configs.fts_search_indexer.port
+  listener_name                      = "dotnet-${var.service_configs.fts_search_indexer.name}"
+  memory                             = var.service_configs.fts_search_indexer.memory
+  name                               = var.service_configs.fts_search_indexer.name
+  private_subnet_ids                 = var.private_subnet_ids
+  product                            = var.product
+  public_domain                      = var.public_domain
+  role_ecs_task_arn                  = var.role_ecs_task_arn
+  role_ecs_task_exec_arn             = var.role_ecs_task_exec_arn
+  tags                               = var.tags
+  vpc_id                             = var.vpc_id
 }
