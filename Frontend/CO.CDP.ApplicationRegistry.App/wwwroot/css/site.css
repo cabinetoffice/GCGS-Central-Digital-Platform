@@ -1,5 +1,21 @@
 /* Site-specific styles for Application Registry */
 
+.tile {
+    border: 1px solid #b1b4b6;
+    background: #f3f2f1;
+    padding: 15px 15px 0 15px;
+    min-height: 13rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.1rem;
+}
+
+.tile__link {
+    text-decoration: none;
+}
+
+
 /* Dashboard Stats */
 .app-dashboard-stat {
     background-color: #d2e2f1;
