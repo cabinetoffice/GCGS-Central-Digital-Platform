@@ -1,9 +1,5 @@
 /* Site-specific styles for Application Registry */
 
-.govuk-main-wrapper {
-    padding-top: 30px !important;
-}
-
 /* Dashboard Stats */
 .app-dashboard-stat {
     background-color: #d2e2f1;
@@ -41,7 +37,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    width: 44px;
+
     padding: 0;
 }
 
@@ -52,7 +48,7 @@
 
 @media screen and (min-width: 768px) {
     .search-button {
-        width: auto;
+
         min-width: 44px;
         padding: 0 8px;
     }
