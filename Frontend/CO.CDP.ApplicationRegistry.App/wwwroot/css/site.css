@@ -1,5 +1,9 @@
 /* Site-specific styles for Application Registry */
 
+.govuk-main-wrapper {
+    padding-top: 30px !important;
+}
+
 /* Dashboard Stats */
 .app-dashboard-stat {
     background-color: #d2e2f1;
