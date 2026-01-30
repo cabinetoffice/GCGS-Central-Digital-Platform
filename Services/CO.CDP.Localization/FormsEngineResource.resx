@@ -1392,16 +1392,13 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_04_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Your response should include the technical facilities and processes you have in place, or will have in place by contract award, to ensure:&lt;/div&gt;
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Please provide details of the technical facilities and measures (including systems and processes) you have in place, or will have in place by contract award, to ensure compliance with UK data protection law and to ensure the protection of the rights of data subjects. Your response should include, but should not be limited to facilities and measures:&lt;/div&gt;
       &lt;div class=&quot;govuk-body&quot;&gt;
         &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-          &lt;li&gt;the rights of data subjects are protected&lt;/li&gt;
-          &lt;li&gt;processing systems and services are kept secure and reliable&lt;/li&gt;
-          &lt;li&gt;the rights of individuals to receive privacy information and to access, correct, delete, and transfer their personal data is protected&lt;/li&gt;
-          &lt;li&gt;consent for processing personal data is clear and recorded properly&lt;/li&gt;
-          &lt;li&gt;legal protections are in place for transferring personal data outside of the UK (where relevant)&lt;/li&gt;
-          &lt;li&gt;records of personal data processing activities are maintained&lt;/li&gt;
-          &lt;li&gt;the above measures are regularly tested and reviewed&lt;/li&gt;
+          &lt;li&gt;to ensure ongoing confidentiality, integrity, availability and resilience of processing systems and services;&lt;/li&gt;
+          &lt;li&gt;to comply with the rights of data subjects in respect of receiving privacy information, and access, rectification, deletion and portability of personal data;&lt;/li&gt;
+          &lt;li&gt;to ensure that any consent based processing meets standards of active, informed consent, and that such consents are recorded and auditable;&lt;/li&gt;
+          &lt;li&gt;to ensure legal safeguards are in place to legitimise transfers of personal data outside the UK (if such transfers will take place); to maintain records of personal data processing activities; and to regularly test, assess and evaluate the effectiveness of the above measures.&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
       &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
