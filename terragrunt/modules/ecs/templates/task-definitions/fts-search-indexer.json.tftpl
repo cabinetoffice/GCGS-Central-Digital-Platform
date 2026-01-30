@@ -4,13 +4,7 @@
     "image" : "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
-    "portMappings": [
-      {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
-        "protocol" : "tcp"
-      }
-    ],
+    "portMappings": [],
     "logConfiguration": {
       "logDriver" : "awslogs",
       "options": {
@@ -21,15 +15,15 @@
     },
     "environment": [
       { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
-      { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
-      { "name" : "FTSDatabase__Database", "value" : "${db_name}"},
-      { "name" : "FTSDatabase__Host", "value" : "${db_address}"},
-      { "name" : "FTSDatabase__Server", "value" : "${db_address}"},
+      { "name" : "FtsDatabase__Database", "value" : "${db_name}"},
+      { "name" : "FtsDatabase__Host", "value" : "${db_address}"},
+      { "name" : "FtsDatabase__Port", "value" : "${db_port}"},
+      { "name" : "FtsDatabase__Server", "value" : "${db_address}"},
       { "name" : "OpenSearch__Endpoint", "value" : "${opensearch_endpoint}"}
     ],
     "secrets": [
-      { "name" : "FTSDatabase__Password", "valueFrom" : "${db_password}"},
-      { "name" : "FTSDatabase__Username", "valueFrom" : "${db_username}"}
+      { "name" : "FtsDatabase__Password", "valueFrom" : "${db_password}"},
+      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

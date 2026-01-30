@@ -5,13 +5,12 @@ module "ecs_service_fts_search_indexer" {
     "${path.module}/templates/task-definitions/${var.service_configs.fts_search_indexer.name}.json.tftpl",
     {
       aspcore_environment = local.aspcore_environment
-      container_port      = var.service_configs.fts_search_indexer.port
       cpu                 = var.service_configs.fts_search_indexer.cpu
       db_address          = var.db_fts_cluster_address
       db_name             = var.db_fts_cluster_name
       db_password         = local.db_fts_password
+      db_port             = 3306
       db_username         = local.db_fts_username
-      host_port           = var.service_configs.fts_search_indexer.port
       image               = local.ecr_urls[var.service_configs.fts_search_indexer.name]
       lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_indexer.name].name
       lg_prefix           = "app"
@@ -29,12 +28,13 @@ module "ecs_service_fts_search_indexer" {
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
   desired_count                      = var.environment == "development" ? 1 : 0
-  ecs_alb_sg_id                      = var.alb_sg_id
-  ecs_listener_arn                   = local.php_ecs_listener_arn
+  ecs_alb_sg_id                      = "N/A"
+  ecs_listener_arn                   = "N/A"
   ecs_service_base_sg_id             = var.ecs_sg_id
   extra_host_headers                 = var.fts_extra_host_headers
-  family                             = "app"
-  host_port                          = var.service_configs.fts_search_indexer.port
+  family                             = "standalone"
+  healthcheck_path                   = "/"
+  host_port                          = var.service_configs.fts_search_indexer.port_host
   listener_name                      = "dotnet-${var.service_configs.fts_search_indexer.name}"
   memory                             = var.service_configs.fts_search_indexer.memory
   name                               = var.service_configs.fts_search_indexer.name
