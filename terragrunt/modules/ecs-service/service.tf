@@ -30,6 +30,7 @@ resource "aws_ecs_task_definition" "this" {
 resource "aws_ecs_service" "this" {
   count = var.is_standalone_task ? 0 : 1
 
+  availability_zone_rebalancing      = var.deployment_maximum_percent <= 100 ? "DISABLED" : "ENABLED"
   name                               = var.name
   cluster                            = var.cluster_id
   task_definition                    = aws_ecs_task_definition.this.arn
