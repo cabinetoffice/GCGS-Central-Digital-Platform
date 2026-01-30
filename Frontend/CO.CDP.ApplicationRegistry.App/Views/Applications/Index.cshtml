@@ -86,3 +86,20 @@ else
 {
     <p class="govuk-body">Showing @Model.TotalCount applications</p>
 }
+
+@section Scripts {
+    <script nonce-csp>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryFilter = document.getElementById('category-filter');
+            const statusFilter = document.getElementById('status-filter');
+            const form = document.querySelector('.app-filter-container');
+
+            function submitOnChange() {
+                form.submit();
+            }
+
+            if (categoryFilter) categoryFilter.addEventListener('change', submitOnChange);
+            if (statusFilter) statusFilter.addEventListener('change', submitOnChange);
+        });
+    </script>
+}
