@@ -21,6 +21,8 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string BuyerDevolvedRegulationPage = "/registration/buyer-devolved-regulations";
     public const string BuyerSelectDevolvedRegulationPage = "/registration/buyer-select-devolved-regulations";
 
+    public const string SupplierOrganisationTypePage = "/registration/supplier-organisation-type";
+
     public abstract string CurrentPage { get; }
 
     public string ToRedirectPageUrl { get; protected set; } = "/";
@@ -44,6 +46,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
             OrganisationNameSearchPage => ValidType() && ValidIdentifier(),
             OrganisationEmailPage => ValidType() && ValidIdentifier() && ValidName(),
             OrganisationAddressPage or OrganisationNonUKAddressPage => ValidType() && ValidIdentifier() && ValidName() && ValidEmail(),
+            SupplierOrganisationTypePage => ValidType(OrganisationType.Supplier) && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress(),
             BuyerOrganisationTypePage => ValidType(OrganisationType.Buyer) && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress(),
             BuyerDevolvedRegulationPage => ValidType(OrganisationType.Buyer) && ValidIdentifier() && ValidName() && ValidEmail() && ValidBuyerOrganisationType(),
             BuyerSelectDevolvedRegulationPage => ValidType(OrganisationType.Buyer) && ValidIdentifier() && ValidName() && ValidEmail() && ValidBuyerOrganisationType() && ValidBuyerDevolvedRegulationsSelected(),
@@ -56,7 +59,7 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     {
         return RegistrationDetails.OrganisationType switch
         {
-            OrganisationType.Supplier => ValidType() && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress(),
+            OrganisationType.Supplier => ValidType() && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress() && ValidSupplierOrganisationType(),
             OrganisationType.Buyer => ValidType() && ValidIdentifier() && ValidName() && ValidEmail() && ValidAddress()
                                     && ValidBuyerOrganisationType() && ValidBuyerDevolvedRegulations(),
             _ => false,
@@ -122,6 +125,16 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
             || RegistrationDetails.OrganisationCountryCode == null)
         {
             ToRedirectPageUrl = OrganisationAddressPage;
+            return false;
+        }
+        return true;
+    }
+
+    private bool ValidSupplierOrganisationType()
+    {
+        if (RegistrationDetails.SupplierOrganisationOperationTypes == null || RegistrationDetails.SupplierOrganisationOperationTypes.Count == 0)
+        {
+            ToRedirectPageUrl = SupplierOrganisationTypePage;
             return false;
         }
         return true;

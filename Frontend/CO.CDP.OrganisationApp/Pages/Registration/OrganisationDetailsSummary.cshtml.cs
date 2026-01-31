@@ -46,6 +46,11 @@ public class OrganisationDetailsSummaryModel(
             tasks.Add(organisationClient.UpdateBuyerDevolvedRegulations(organisation.Id, RegistrationDetails.Regulations));
         }
 
+        if (RegistrationDetails.SupplierOrganisationOperationTypes.Count > 0)
+        {
+            tasks.Add(organisationClient.UpdateOperationType(organisation.Id, RegistrationDetails.SupplierOrganisationOperationTypes));
+        }
+
         await Task.WhenAll(tasks);
 
         SessionContext.Remove(Session.RegistrationDetailsKey);
