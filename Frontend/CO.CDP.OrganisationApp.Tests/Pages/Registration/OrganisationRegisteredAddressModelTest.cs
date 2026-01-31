@@ -144,7 +144,7 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
-    public void OnPost_WhenValidModelAndSupplier_ShouldRedirectToOrganisationDetailsPage()
+    public void OnPost_WhenValidModelAndSupplier_ShouldRedirectToSupplierOrganisationTypePage()
     {
         var model = GivenOrganisationAddressModel();
 
@@ -155,7 +155,7 @@ public class OrganisationRegisteredAddressModelTest
         var actionResult = model.OnPost();
 
         actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+            .Which.PageName.Should().Be("SupplierOrganisationType");
     }
 
     [Fact]
