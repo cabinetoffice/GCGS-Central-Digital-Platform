@@ -108,7 +108,7 @@ public class RegistrationStepModelTest
     }
 
     [Fact]
-    public void ValidateStep_SupplierOrganisationTypePage_WhenNotSupplier_ShouldRedirectToOrganisationType()
+    public void ValidateStep_SupplierOrganisationTypePage_WhenNoneSupplier_ShouldRedirectToOrganisationType()
     {
         SetupRegistrationDetails(new RegistrationDetails
         {
@@ -175,7 +175,7 @@ public class RegistrationStepModelTest
     }
 
     [Fact]
-    public void ValidateStep_OrganisationSummaryPage_WhenSupplierWithNullOperationTypes_ShouldRedirectToSupplierOrganisationType()
+    public void ValidateStep_OrganisationSummaryPage_WhenSupplierWithDefaultEmptyOperationTypes_ShouldRedirectToSupplierOrganisationType()
     {
         var details = new RegistrationDetails
         {

@@ -16,12 +16,12 @@ public abstract class RegistrationStepModel : LoggedInUserAwareModel
     public const string OrganisationAddressPage = "/registration/organisation-registered-address/uk";
     public const string OrganisationNonUKAddressPage = "/registration/organisation-registered-address/non-uk";
     public const string OrganisationSummaryPage = "/registration/organisation-details-summary";
+    public const string SupplierOrganisationTypePage = "/registration/supplier-organisation-type";
 
     public const string BuyerOrganisationTypePage = "/registration/buyer-organisation-type";
     public const string BuyerDevolvedRegulationPage = "/registration/buyer-devolved-regulations";
     public const string BuyerSelectDevolvedRegulationPage = "/registration/buyer-select-devolved-regulations";
-
-    public const string SupplierOrganisationTypePage = "/registration/supplier-organisation-type";
+        
 
     public abstract string CurrentPage { get; }
 

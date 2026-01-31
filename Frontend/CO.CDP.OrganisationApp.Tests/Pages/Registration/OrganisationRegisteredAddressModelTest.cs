@@ -159,6 +159,22 @@ public class OrganisationRegisteredAddressModelTest
     }
 
     [Fact]
+    public void OnPost_WhenValidModelAndSupplierWithRedirectToSummary_ShouldRedirectToOrganisationDetailsSummary()
+    {
+        RegistrationDetails registrationDetails = DummyRegistrationDetails();
+        registrationDetails.OrganisationType = OrganisationType.Supplier;
+        sessionMock.Setup(s => s.Get<RegistrationDetails>(Session.RegistrationDetailsKey)).Returns(registrationDetails);
+
+        var model = GivenOrganisationAddressModel();
+        model.RedirectToSummary = true;
+
+        var actionResult = model.OnPost();
+
+        actionResult.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("OrganisationDetailsSummary");
+    }
+
+    [Fact]
     public void OnPost_WhenValidModelAndBuyer_ShouldRedirectToBuyerOrganisationTypePage()
     {
         RegistrationDetails registrationDetails = DummyRegistrationDetails();
