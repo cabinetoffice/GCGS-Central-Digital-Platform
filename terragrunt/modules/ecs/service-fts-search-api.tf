@@ -14,7 +14,7 @@ module "ecs_service_fts_search_api" {
       lg_region           = data.aws_region.current.region
       memory              = var.service_configs.fts_search_api.memory
       name                = var.service_configs.fts_search_api.name
-      opensearch_endpoint = var.opensearch_endpoint
+      opensearch_endpoint = "https://${var.opensearch_endpoint}"
       service_version     = local.service_version_fts
     }
   )
