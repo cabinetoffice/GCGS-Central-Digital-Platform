@@ -41,6 +41,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationUserService, OrganisationUserService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IPersonLookupService, PersonLookupService>();
 
         // Register repositories
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();

@@ -2,6 +2,7 @@ using CO.CDP.ApplicationRegistry.Api.Api;
 using CO.CDP.ApplicationRegistry.Api.Authorization;
 using CO.CDP.ApplicationRegistry.Infrastructure;
 using CO.CDP.Logging;
+using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 
@@ -24,6 +25,15 @@ builder.Services.AddApplicationRegistryInfrastructure(
     cdpConnectionString);
 
 builder.Services.AddApplicationRegistryCaching(redisConnectionString);
+
+var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
+if (!string.IsNullOrWhiteSpace(personServiceUrl))
+{
+    const string personHttpClientName = "PersonClient";
+    builder.Services.AddHttpClient(personHttpClientName);
+    builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
+}
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
