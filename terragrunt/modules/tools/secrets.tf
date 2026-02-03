@@ -22,11 +22,6 @@ resource "aws_secretsmanager_secret" "cloud_beaver_data_sources" {
   tags = var.tags
 }
 
-resource "aws_secretsmanager_secret_version" "cloud_beaver_data_sources" {
-  secret_id     = aws_secretsmanager_secret.cloud_beaver_data_sources.id
-  secret_string = local.cloud_beaver_data_sources_json
-}
-
 data "aws_secretsmanager_secret_version" "rds_creds_sirsi" {
   secret_id = var.db_sirsi_cluster_credentials_arn
 }
