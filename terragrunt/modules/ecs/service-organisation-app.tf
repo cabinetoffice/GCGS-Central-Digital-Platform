@@ -26,6 +26,7 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
+      ai_tool_enabled                     = contains(["development", "integration"], var.environment) ? true : false
       aspcore_environment                 = local.aspcore_environment
       charity_commission_url              = "${data.aws_secretsmanager_secret.charity_commission.arn}:Url::"
       charity_commission_subscription_key = "${data.aws_secretsmanager_secret.charity_commission.arn}:SubscriptionKey::"
