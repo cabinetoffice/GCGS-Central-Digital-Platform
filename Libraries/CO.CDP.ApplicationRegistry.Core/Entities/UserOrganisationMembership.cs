@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Enums;
+using CO.CDP.ApplicationRegistry.Shared.Enums;
 
 namespace CO.CDP.ApplicationRegistry.Core.Entities;
 

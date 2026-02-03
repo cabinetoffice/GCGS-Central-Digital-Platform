@@ -1,5 +1,5 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
-using CO.CDP.ApplicationRegistry.Core.Enums;
+using CO.CDP.ApplicationRegistry.Shared.Enums;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Infrastructure.Services;
 using FluentAssertions;
