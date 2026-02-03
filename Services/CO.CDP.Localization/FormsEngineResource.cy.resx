@@ -562,23 +562,6 @@
   <data name="DataProtection_04_SummaryTitle" xml:space="preserve">
     <value>Manylion cyfleusterau a mesurau</value>
   </data>
-  <data name="DataProtection_04_Description" xml:space="preserve">
-    <value>
-      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Dylai eich ymateb gynnwys y cyfleusterau a'r prosesau technegol sydd gennych ar waith, neu a fydd ar waith erbyn i'r contract gael ei ddyfarnu, er mwyn sicrhau'r canlynol:&lt;/div&gt;
-      &lt;div class=&quot;govuk-body&quot;&gt;
-        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-          &lt;li&gt;caiff hawliau gwrthrychau data eu diogelu&lt;/li&gt;
-          &lt;li&gt;caiff systemau prosesu a gwasanaethau eu cadw'n ddiogel ac yn ddibynadwy&lt;/li&gt;
-          &lt;li&gt;caiff hawliau unigolion i dderbyn gwybodaeth am breifatrwydd ac i gael gafael ar ddata personol, eu cywiro, eu dileu a'u trosglwyddo eu diogelu&lt;/li&gt;
-          &lt;li&gt;mae cydsyniad ar gyfer prosesu data personol yn glir a chaiff ei gofnodi'n briodol&lt;/li&gt;
-          &lt;li&gt;mae amddiffyniadau cyfreithiol ar waith i drosglwyddo data personol y tu allan i'r DU (lle y bo'n berthnasol)&lt;/li&gt;
-          &lt;li&gt;caiff cofnodion o weithgareddau prosesu data personol eu cynnal&lt;/li&gt;
-          &lt;li&gt;caiff y mesurau uchod eu profi a'u hadolygu'n rheolaidd  &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;p class="govuk-hint"&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf&lt;/p&gt;
-    </value>
-  </data>
   <data name="DataProtection_05_Title" xml:space="preserve">
     <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
   </data>
