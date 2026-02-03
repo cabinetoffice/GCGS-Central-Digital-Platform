@@ -49,22 +49,22 @@ public class ApplicationsController(
     }
 
     [HttpGet]
-    [Route("{applicationSlug}/enable")]
-    public async Task<IActionResult> Enable(string organisationSlug, string applicationSlug, CancellationToken ct)
+    [Route("{application}/enable")]
+    public async Task<IActionResult> Enable(string organisationSlug, string application, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(applicationSlug))
+        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(application))
         {
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetEnableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+        var viewModel = await applicationService.GetEnableApplicationViewModelAsync(organisationSlug, application, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost]
-    [Route("{applicationSlug}/enable")]
+    [Route("{application}/enable")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Enable(string organisationSlug, string applicationSlug, bool confirm, CancellationToken ct)
+    public async Task<IActionResult> Enable(string organisationSlug, string application, bool confirm, CancellationToken ct)
     {
         if (!confirm)
         {
@@ -73,62 +73,62 @@ public class ApplicationsController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await applicationService.GetEnableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+            var viewModel = await applicationService.GetEnableApplicationViewModelAsync(organisationSlug, application, ct);
             return View(viewModel);
         }
 
-        var success = await applicationService.EnableApplicationAsync(organisationSlug, applicationSlug, ct);
+        var success = await applicationService.EnableApplicationAsync(organisationSlug, application, ct);
         if (!success)
         {
             return NotFound();
         }
 
-        return RedirectToAction(nameof(EnableSuccess), new { organisationSlug, applicationSlug });
+        return RedirectToAction(nameof(EnableSuccess), new { organisationSlug, application });
     }
 
     [HttpGet]
-    [Route("{applicationSlug}/enable-success")]
-    public async Task<IActionResult> EnableSuccess(string organisationSlug, string applicationSlug, CancellationToken ct)
+    [Route("{application}/enable-success")]
+    public async Task<IActionResult> EnableSuccess(string organisationSlug, string application, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(applicationSlug))
+        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(application))
         {
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetEnableSuccessViewModelAsync(organisationSlug, applicationSlug, ct);
+        var viewModel = await applicationService.GetEnableSuccessViewModelAsync(organisationSlug, application, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpGet]
-    [Route("{applicationSlug}")]
-    public async Task<IActionResult> Details(string organisationSlug, string applicationSlug, CancellationToken ct)
+    [Route("{application}")]
+    public async Task<IActionResult> Details(string organisationSlug, string application, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(applicationSlug))
+        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(application))
         {
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetApplicationDetailsViewModelAsync(organisationSlug, applicationSlug, ct);
+        var viewModel = await applicationService.GetApplicationDetailsViewModelAsync(organisationSlug, application, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpGet]
-    [Route("{applicationSlug}/disable")]
-    public async Task<IActionResult> Disable(string organisationSlug, string applicationSlug, CancellationToken ct)
+    [Route("{application}/disable")]
+    public async Task<IActionResult> Disable(string organisationSlug, string application, CancellationToken ct)
     {
-        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(applicationSlug))
+        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(application))
         {
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+        var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost]
-    [Route("{applicationSlug}/disable")]
+    [Route("{application}/disable")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Disable(string organisationSlug, string applicationSlug, bool confirm, CancellationToken ct)
+    public async Task<IActionResult> Disable(string organisationSlug, string application, bool confirm, CancellationToken ct)
     {
         if (!confirm)
         {
@@ -137,16 +137,16 @@ public class ApplicationsController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+            var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
             return View(viewModel);
         }
 
-        var success = await applicationService.DisableApplicationAsync(organisationSlug, applicationSlug, ct);
+        var success = await applicationService.DisableApplicationAsync(organisationSlug, application, ct);
         if (!success)
         {
             return NotFound();
         }
 
-        return RedirectToAction(nameof(Details), new { organisationSlug, applicationSlug });
+        return RedirectToAction(nameof(Details), new { organisationSlug, application });
     }
 }

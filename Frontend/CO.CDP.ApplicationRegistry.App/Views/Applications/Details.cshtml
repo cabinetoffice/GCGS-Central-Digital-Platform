@@ -133,7 +133,7 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-8">Assigned users</h2>
         
         <div class="govuk-button-group govuk-!-margin-bottom-4">
-            <a href="/organisation/@Model.OrganisationSlug/assignments/create?applicationSlug=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
+            <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
         </div>
 
         @if (Model.AssignedUsers.Count == 0)
@@ -141,7 +141,7 @@
             <div class="govuk-inset-text">
                 <p>No users are currently assigned to this application.</p>
                 <p>
-                    <a href="/organisation/@Model.OrganisationSlug/assignments/create?applicationSlug=@Model.ApplicationSlug" class="govuk-link">Assign users to this application</a>
+                    <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign users to this application</a>
                 </p>
             </div>
         }
@@ -194,10 +194,10 @@
         <h3 class="govuk-heading-s">Actions</h3>
         <ul class="govuk-list">
             <li>
-                <a href="/organisation/@Model.OrganisationSlug/assignments/create?applicationSlug=@Model.ApplicationSlug" class="govuk-link">Assign a user</a>
+                <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign a user</a>
             </li>
             <li>
-                <a href="/organisation/@Model.OrganisationSlug/assignments?applicationSlug=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
+                <a href="/organisation/@Model.OrganisationSlug/assignments?application=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
             </li>
             @if (Model.IsEnabled)
             {
