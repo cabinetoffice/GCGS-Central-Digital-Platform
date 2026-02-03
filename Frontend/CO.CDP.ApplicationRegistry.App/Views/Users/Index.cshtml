@@ -104,7 +104,7 @@ else
         <div class="govuk-summary-card govuk-!-margin-bottom-6">
             <div class="govuk-summary-card__title-wrapper">
                 <h2 class="govuk-summary-card__title">
-                    <a href="/organisation/@organisation/users/@user.UserId" class="govuk-link">@user.Name</a>
+                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link">@user.Name</a>
                 </h2>
                 <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
@@ -147,16 +147,16 @@ else
                 }
 
                 <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="/organisation/@organisation/users/@user.UserId" class="govuk-link govuk-!-margin-right-4">View details</a>
+                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
                     @if (isPending)
                     {
-                        <a href="/organisation/@organisation/users/@user.UserId/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisation/users/@user.Id/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
                     }
                     else
                     {
-                        <a href="/organisation/@organisation/assignments/create?user=@user.UserId" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
+                        <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
                     }
-                    <a href="/organisation/@organisation/users/@user.UserId/change-role" class="govuk-link">Change org role</a>
+                    <a href="/organisation/@organisation/users/@user.Id/change-role" class="govuk-link">Change org role</a>
                 </p>
             </div>
         </div>

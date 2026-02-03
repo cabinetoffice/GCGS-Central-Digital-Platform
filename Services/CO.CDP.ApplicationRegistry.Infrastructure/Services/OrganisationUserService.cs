@@ -83,4 +83,35 @@ public class OrganisationUserService : IOrganisationUserService
 
         return membership;
     }
+
+    public async Task<UserOrganisationMembership?> GetOrganisationUserByPersonIdAsync(
+        int organisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Getting membership for CDP person {CdpPersonId} in organisation ID: {OrganisationId}",
+            cdpPersonId, organisationId);
+
+        var organisation = await _organisationRepository.GetByIdAsync(organisationId, cancellationToken);
+        if (organisation == null)
+        {
+            throw new EntityNotFoundException(nameof(Organisation), organisationId);
+        }
+
+        var membership = await _membershipRepository.GetByPersonIdAndOrganisationAsync(
+            cdpPersonId, organisationId, cancellationToken);
+
+        if (membership == null)
+        {
+            return null;
+        }
+
+        var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
+        foreach (var assignment in assignments)
+        {
+            membership.ApplicationAssignments.Add(assignment);
+        }
+
+        return membership;
+    }
 }

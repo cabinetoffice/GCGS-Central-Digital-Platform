@@ -18,6 +18,11 @@ public class UserOrganisationMembership : ISoftDelete, IAuditable
     public string UserPrincipalId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the CDP person identifier.
+    /// </summary>
+    public Guid? CdpPersonId { get; set; }
+
+    /// <summary>
     /// Gets or sets the organisation identifier.
     /// </summary>
     public int OrganisationId { get; set; }

@@ -54,6 +54,7 @@ public class PersonLookupService : IPersonLookupService
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 Email = person.Email,
+                CdpPersonId = person.Id,
                 UserUrn = userPrincipalId
             };
         }

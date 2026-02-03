@@ -28,4 +28,16 @@ public interface IOrganisationUserService
         int organisationId,
         string userPrincipalId,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets a specific user membership in an organisation by CDP person ID.
+    /// </summary>
+    /// <param name="organisationId">The organisation identifier.</param>
+    /// <param name="cdpPersonId">The CDP person identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The user membership if found.</returns>
+    Task<UserOrganisationMembership?> GetOrganisationUserByPersonIdAsync(
+        int organisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken = default);
 }

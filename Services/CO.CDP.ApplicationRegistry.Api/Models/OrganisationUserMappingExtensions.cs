@@ -1,4 +1,5 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
+using CO.CDP.ApplicationRegistry.Core.Models;
 using CO.CDP.ApplicationRegistry.Shared.Enums;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
 
@@ -14,16 +15,21 @@ public static class OrganisationUserMappingExtensions
     /// </summary>
     /// <param name="membership">The user organisation membership entity.</param>
     /// <param name="includeAssignments">Whether to include application assignments.</param>
+    /// <param name="personDetails">Optional person details to include in the response.</param>
     /// <returns>The organisation user response model.</returns>
     public static OrganisationUserResponse ToResponse(
         this UserOrganisationMembership membership,
-        bool includeAssignments = false)
+        bool includeAssignments = false,
+        PersonDetails? personDetails = null)
     {
         return new OrganisationUserResponse
         {
             MembershipId = membership.Id,
             OrganisationId = membership.OrganisationId,
-            UserPrincipalId = membership.UserPrincipalId,
+            CdpPersonId = personDetails?.CdpPersonId ?? membership.CdpPersonId,
+            FirstName = personDetails?.FirstName,
+            LastName = personDetails?.LastName,
+            Email = personDetails?.Email,
             OrganisationRole = membership.OrganisationRole,
             Status = membership.IsActive ? UserStatus.Active : UserStatus.Pending,
             IsActive = membership.IsActive,

@@ -22,7 +22,7 @@ public sealed record UsersViewModel(
 }
 
 public sealed record UserSummaryViewModel(
-    string UserId,
+    Guid? Id,
     string Name,
     string Email,
     OrganisationRole OrganisationRole,

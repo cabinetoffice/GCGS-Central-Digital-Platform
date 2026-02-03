@@ -31,4 +31,13 @@ public interface IUserOrganisationMembershipRepository : IRepository<UserOrganis
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of memberships for the organisation.</returns>
     Task<IEnumerable<UserOrganisationMembership>> GetByOrganisationIdAsync(int organisationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets a specific user's membership in an organisation by CDP person ID.
+    /// </summary>
+    /// <param name="cdpPersonId">The CDP person identifier.</param>
+    /// <param name="organisationId">The organisation identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The membership if found; otherwise, null.</returns>
+    Task<UserOrganisationMembership?> GetByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default);
 }

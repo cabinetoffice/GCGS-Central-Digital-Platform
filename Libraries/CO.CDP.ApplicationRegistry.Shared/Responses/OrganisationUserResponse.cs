@@ -18,9 +18,24 @@ public record OrganisationUserResponse
     public required int OrganisationId { get; init; }
 
     /// <summary>
-    /// Gets or sets the user principal identifier.
+    /// Gets or sets the CDP person identifier (if available from person lookup).
     /// </summary>
-    public required string UserPrincipalId { get; init; }
+    public Guid? CdpPersonId { get; init; }
+
+    /// <summary>
+    /// Gets or sets the user's first name (if available from person lookup).
+    /// </summary>
+    public string? FirstName { get; init; }
+
+    /// <summary>
+    /// Gets or sets the user's last name (if available from person lookup).
+    /// </summary>
+    public string? LastName { get; init; }
+
+    /// <summary>
+    /// Gets or sets the user's email address (if available from person lookup).
+    /// </summary>
+    public string? Email { get; init; }
 
     /// <summary>
     /// Gets or sets the organisation role for the user.

@@ -19,9 +19,11 @@ public sealed class UserService(ApiClient.ApplicationRegistryClient apiClient) :
 
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
-                    UserId: user.UserPrincipalId,
-                    Name: user.UserPrincipalId,
-                    Email: user.UserPrincipalId,
+                    Id: user.CdpPersonId,
+                    Name: !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                        ? $"{user.FirstName} {user.LastName}"
+                        : string.Empty,
+                    Email: user.Email ?? string.Empty,
                     OrganisationRole: user.OrganisationRole,
                     Status: user.Status,
                     ApplicationAccess: user.ApplicationAssignments?
