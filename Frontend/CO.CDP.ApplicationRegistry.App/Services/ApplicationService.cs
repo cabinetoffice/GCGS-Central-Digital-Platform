@@ -42,6 +42,98 @@ public sealed class ApplicationService(
         }
     }
 
+    public async Task<EnableApplicationViewModel?> GetEnableApplicationViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
+            var app = allApps.FirstOrDefault(a => a.ClientId == applicationSlug);
+
+            if (app == null) return null;
+
+            var roles = (await apiClient.RolesAllAsync(app.Id, ct)).ToList();
+            return ViewModelMapper.ToEnableApplicationViewModel(org, app, roles);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> EnableApplicationAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
+            var app = allApps.FirstOrDefault(a => a.ClientId == applicationSlug);
+
+            if (app == null) return false;
+
+            var request = new EnableApplicationRequest(app.Id);
+            await apiClient.ApplicationsPOSTAsync(org.Id, request, ct);
+            return true;
+        }
+        catch (ApiException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<EnableApplicationSuccessViewModel?> GetEnableSuccessViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
+            var app = allApps.FirstOrDefault(a => a.ClientId == applicationSlug);
+
+            if (app == null) return null;
+
+            return ViewModelMapper.ToEnableSuccessViewModel(org, app);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<ApplicationDetailsViewModel?> GetApplicationDetailsViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
+            var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
+
+            if (orgApp?.Application == null) return null;
+
+            var roles = (await apiClient.RolesAllAsync(orgApp.ApplicationId, ct)).ToList();
+
+            // TODO: Get user assignments when endpoint is available to list all users for an org-app
+            var userAssignments = new List<UserAssignmentResponse>();
+
+            return ViewModelMapper.ToApplicationDetailsViewModel(org, orgApp, roles, userAssignments);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
     private async Task<IReadOnlyList<RoleResponse>> GetAllRolesForApplicationsAsync(
         IReadOnlyList<OrganisationApplicationResponse> apps,
         CancellationToken ct)
