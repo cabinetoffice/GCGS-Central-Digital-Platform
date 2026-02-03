@@ -63,6 +63,7 @@ public class ApplicationsController(
 
     [HttpPost]
     [Route("{applicationSlug}/enable")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Enable(string organisationSlug, string applicationSlug, bool confirm, CancellationToken ct)
     {
         if (!confirm)

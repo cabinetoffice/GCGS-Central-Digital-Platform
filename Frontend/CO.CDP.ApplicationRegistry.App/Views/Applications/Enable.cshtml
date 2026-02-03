@@ -90,6 +90,7 @@
         </div>
 
         <form method="post">
+            @Html.AntiForgeryToken()
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("confirm") && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
