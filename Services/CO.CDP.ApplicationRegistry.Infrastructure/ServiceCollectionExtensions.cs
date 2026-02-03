@@ -38,6 +38,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IOrganisationApplicationService, OrganisationApplicationService>();
         services.AddScoped<IUserAssignmentService, UserAssignmentService>();
+        services.AddScoped<IOrganisationUserService, OrganisationUserService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
 
