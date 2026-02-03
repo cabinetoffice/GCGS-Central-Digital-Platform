@@ -123,6 +123,108 @@ public static class ViewModelMapper
             RolesAvailable: 0
         );
 
+    public static EnableApplicationViewModel ToEnableApplicationViewModel(
+        OrganisationResponse organisation,
+        ApplicationResponse application,
+        IReadOnlyList<RoleResponse> roles) =>
+        new(
+            OrganisationName: organisation.Name,
+            OrganisationSlug: organisation.Slug,
+            ApplicationId: application.Id,
+            ApplicationSlug: application.ClientId,
+            ApplicationName: application.Name,
+            ApplicationDescription: application.Description,
+            ApplicationCategory: application.Category,
+            SupportContact: null, // TODO: Add support contact when available
+            AvailableRoles: roles.Select(ToRoleViewModel).ToList()
+        );
+
+    public static EnableApplicationSuccessViewModel ToEnableSuccessViewModel(
+        OrganisationResponse organisation,
+        ApplicationResponse application) =>
+        new(
+            OrganisationName: organisation.Name,
+            OrganisationSlug: organisation.Slug,
+            ApplicationName: application.Name,
+            ApplicationSlug: application.ClientId,
+            EnabledBy: "Current User", // TODO: Get current user when available
+            EnabledAt: DateTimeOffset.UtcNow,
+            AvailableRoles: new List<string>() // TODO: Get role names when available
+        );
+
+    public static ApplicationDetailsViewModel ToApplicationDetailsViewModel(
+        OrganisationResponse organisation,
+        OrganisationApplicationResponse orgApp,
+        IReadOnlyList<RoleResponse> roles,
+        IReadOnlyList<UserAssignmentResponse> userAssignments)
+    {
+        var app = orgApp.Application!;
+        var activeAssignments = userAssignments.Where(ua => ua.IsActive).ToList();
+        var totalPermissions = roles.SelectMany(r => r.Permissions ?? Enumerable.Empty<PermissionResponse>()).DistinctBy(p => p.Id).Count();
+
+        return new(
+            OrganisationName: organisation.Name,
+            OrganisationSlug: organisation.Slug,
+            ApplicationId: app.Id,
+            ApplicationSlug: app.ClientId,
+            ApplicationName: app.Name,
+            ClientId: app.ClientId,
+            ApplicationDescription: app.Description,
+            ApplicationCategory: app.Category,
+            SupportContact: null, // TODO: Add support contact when available
+            IsEnabled: orgApp.IsActive,
+            EnabledAt: orgApp.EnabledAt,
+            EnabledBy: orgApp.EnabledBy,
+            UsersAssigned: activeAssignments.Count,
+            RolesAvailable: roles.Count,
+            TotalPermissions: totalPermissions,
+            Roles: roles.Select(ToRoleViewModel).ToList(),
+            AssignedUsers: activeAssignments.Select(ToUserAssignmentViewModel).ToList()
+        );
+    }
+
+    public static DisableApplicationViewModel ToDisableApplicationViewModel(
+        OrganisationResponse organisation,
+        OrganisationApplicationResponse orgApp,
+        IReadOnlyList<UserAssignmentResponse> userAssignments)
+    {
+        var app = orgApp.Application!;
+        var activeAssignments = userAssignments.Where(ua => ua.IsActive).ToList();
+
+        return new(
+            OrganisationName: organisation.Name,
+            OrganisationSlug: organisation.Slug,
+            ApplicationId: app.Id,
+            ApplicationSlug: app.ClientId,
+            ApplicationName: app.Name,
+            ApplicationDescription: app.Description,
+            UsersAssigned: activeAssignments.Count,
+            ActiveAssignments: activeAssignments.Count
+        );
+    }
+
+    private static Models.RoleViewModel ToRoleViewModel(RoleResponse role) =>
+        new(
+            Id: role.Id,
+            Name: role.Name,
+            Description: role.Description,
+            Permissions: role.Permissions?.Select(p => p.Name).ToList() ?? new List<string>()
+        );
+
+    private static Models.UserAssignmentViewModel ToUserAssignmentViewModel(UserAssignmentResponse assignment)
+    {
+        var roleName = assignment.Roles?.FirstOrDefault()?.Name ?? string.Empty;
+
+        return new(
+            AssignmentId: assignment.Id,
+            UserName: assignment.UserPrincipalId ?? "Unknown User", // TODO: Get actual user name when available
+            UserEmail: assignment.UserPrincipalId ?? string.Empty, // TODO: Get actual email when available
+            RoleName: roleName,
+            AssignedAt: assignment.AssignedAt ?? assignment.CreatedAt,
+            AssignedBy: assignment.AssignedBy
+        );
+    }
+
     private static DashboardStats CalculateStats(
         IReadOnlyList<OrganisationApplicationResponse> enabledApps,
         IReadOnlyList<RoleResponse> roles) =>
