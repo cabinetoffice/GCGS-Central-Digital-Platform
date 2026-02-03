@@ -111,4 +111,42 @@ public class ApplicationsController(
         var viewModel = await applicationService.GetApplicationDetailsViewModelAsync(organisationSlug, applicationSlug, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
+
+    [HttpGet]
+    [Route("{applicationSlug}/disable")]
+    public async Task<IActionResult> Disable(string organisationSlug, string applicationSlug, CancellationToken ct)
+    {
+        if (string.IsNullOrEmpty(organisationSlug) || string.IsNullOrEmpty(applicationSlug))
+        {
+            return NotFound();
+        }
+
+        var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
+    }
+
+    [HttpPost]
+    [Route("{applicationSlug}/disable")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Disable(string organisationSlug, string applicationSlug, bool confirm, CancellationToken ct)
+    {
+        if (!confirm)
+        {
+            ModelState.AddModelError(nameof(confirm), "You must confirm to disable this application");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, applicationSlug, ct);
+            return View(viewModel);
+        }
+
+        var success = await applicationService.DisableApplicationAsync(organisationSlug, applicationSlug, ct);
+        if (!success)
+        {
+            return NotFound();
+        }
+
+        return RedirectToAction(nameof(Details), new { organisationSlug, applicationSlug });
+    }
 }

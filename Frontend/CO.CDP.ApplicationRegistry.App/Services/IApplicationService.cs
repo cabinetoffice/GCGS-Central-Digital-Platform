@@ -32,4 +32,14 @@ public interface IApplicationService
         string organisationSlug,
         string applicationSlug,
         CancellationToken ct = default);
+
+    Task<DisableApplicationViewModel?> GetDisableApplicationViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<bool> DisableApplicationAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
 }

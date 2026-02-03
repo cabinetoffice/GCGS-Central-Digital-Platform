@@ -183,6 +183,26 @@ public static class ViewModelMapper
         );
     }
 
+    public static DisableApplicationViewModel ToDisableApplicationViewModel(
+        OrganisationResponse organisation,
+        OrganisationApplicationResponse orgApp,
+        IReadOnlyList<UserAssignmentResponse> userAssignments)
+    {
+        var app = orgApp.Application!;
+        var activeAssignments = userAssignments.Where(ua => ua.IsActive).ToList();
+
+        return new(
+            OrganisationName: organisation.Name,
+            OrganisationSlug: organisation.Slug,
+            ApplicationId: app.Id,
+            ApplicationSlug: app.ClientId,
+            ApplicationName: app.Name,
+            ApplicationDescription: app.Description,
+            UsersAssigned: activeAssignments.Count,
+            ActiveAssignments: activeAssignments.Count
+        );
+    }
+
     private static Models.RoleViewModel ToRoleViewModel(RoleResponse role) =>
         new(
             Id: role.Id,

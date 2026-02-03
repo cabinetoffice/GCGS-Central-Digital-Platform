@@ -134,6 +134,53 @@ public sealed class ApplicationService(
         }
     }
 
+    public async Task<DisableApplicationViewModel?> GetDisableApplicationViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
+            var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
+            
+            if (orgApp?.Application == null) return null;
+
+            // TODO: Get user assignments when endpoint is available
+            var userAssignments = new List<UserAssignmentResponse>();
+
+            return ViewModelMapper.ToDisableApplicationViewModel(org, orgApp, userAssignments);
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> DisableApplicationAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
+            var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
+            
+            if (orgApp == null) return false;
+
+            // Call API to disable the organisation-application relationship
+            await apiClient.ApplicationsDELETEAsync(org.Id, orgApp.ApplicationId, ct);
+            return true;
+        }
+        catch (ApiException)
+        {
+            return false;
+        }
+    }
+
     private async Task<IReadOnlyList<RoleResponse>> GetAllRolesForApplicationsAsync(
         IReadOnlyList<OrganisationApplicationResponse> apps,
         CancellationToken ct)
