@@ -80,3 +80,26 @@
     margin-bottom: 20px;
 }
 
+.govuk-blue-banner {
+    background: #1d70b8;
+    padding: 30px 0;
+    margin-bottom: 45px;
+}
+
+.govuk-blue-banner h1,
+.govuk-blue-banner p,
+.govuk-blue-banner .govuk-body,
+.govuk-blue-banner .govuk-body-l,
+.govuk-blue-banner .govuk-caption-l,
+.govuk-blue-banner .govuk-caption-xl,
+.govuk-blue-banner .govuk-heading-l,
+.govuk-blue-banner .govuk-heading-m,
+.govuk-blue-banner .govuk-back-link {
+    color: #fff !important;
+}
+
+.govuk-blue-banner .govuk-width-container {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+

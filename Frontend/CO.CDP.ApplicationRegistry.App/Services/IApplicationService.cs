@@ -12,4 +12,34 @@ public interface IApplicationService
         string? selectedStatus = null,
         string? searchTerm = null,
         CancellationToken ct = default);
+
+    Task<EnableApplicationViewModel?> GetEnableApplicationViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<bool> EnableApplicationAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<EnableApplicationSuccessViewModel?> GetEnableSuccessViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<ApplicationDetailsViewModel?> GetApplicationDetailsViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<DisableApplicationViewModel?> GetDisableApplicationViewModelAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
+
+    Task<bool> DisableApplicationAsync(
+        string organisationSlug,
+        string applicationSlug,
+        CancellationToken ct = default);
 }
