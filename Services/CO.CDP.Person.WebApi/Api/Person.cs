@@ -1,3 +1,4 @@
+using CO.CDP.Authentication;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.Functional;
 using CO.CDP.Person.WebApi.Model;
@@ -126,6 +127,25 @@ public static class EndpointExtensions
 
     public static void UsePersonLookupEndpoints(this WebApplication app)
     {
+        app.MapPost("/persons/lookup",
+            [OrganisationAuthorize([AuthenticationChannel.ServiceKey], apiKeyScopes: [Constants.ApiKeyScopes.ReadPersonData])]
+        async (BulkLookupPerson command, IUseCase<BulkLookupPerson, IReadOnlyDictionary<Guid, Model.BulkLookupPersonResult>> useCase) =>
+            await useCase.Execute(command)
+                .AndThen(persons => Results.Ok(persons))
+        )
+        .Produces<IReadOnlyDictionary<Guid, Model.BulkLookupPersonResult>>(200, "application/json")
+        .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+        .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+        .WithOpenApi(operation =>
+        {
+            operation.OperationId = "BulkLookupPerson";
+            operation.Description = "Lookup persons by a list of user principal URNs.";
+            operation.Summary = "Lookup persons by URNs.";
+            operation.Tags = new List<OpenApiTag> { new() { Name = "Person Lookup" } };
+            operation.Responses["200"].Description = "Persons associated with the URNs.";
+            return operation;
+        });
+
         app.MapGet("/persons/lookup",
             async ([FromQuery] string? urn, [FromQuery] string ? email, IUseCase<LookupPerson, Model.Person?> useCase) => {
                 if (string.IsNullOrWhiteSpace(urn) && string.IsNullOrWhiteSpace(email))
@@ -165,6 +185,7 @@ public static class ApiExtensions
             var typeMap = new Dictionary<Type, string>
                 {
                     { typeof(RegisterPerson), "NewPerson" },
+                    { typeof(BulkLookupPerson), "BulkLookupPerson" },
                     { typeof(UpdatePerson), "UpdatedPerson" },
                 };
             return typeMap.GetValueOrDefault(type, type.Name);

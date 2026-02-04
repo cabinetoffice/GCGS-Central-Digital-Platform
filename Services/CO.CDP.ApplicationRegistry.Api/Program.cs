@@ -2,6 +2,9 @@ using CO.CDP.ApplicationRegistry.Api.Api;
 using CO.CDP.ApplicationRegistry.Api.Authorization;
 using CO.CDP.ApplicationRegistry.Infrastructure;
 using CO.CDP.Logging;
+using CO.CDP.Authentication;
+using CO.CDP.Authentication.Http;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -26,13 +29,24 @@ builder.Services.AddApplicationRegistryInfrastructure(
 
 builder.Services.AddApplicationRegistryCaching(redisConnectionString);
 
+builder.Services.AddCdpAuthentication(builder.Configuration);
+
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
+var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
 if (!string.IsNullOrWhiteSpace(personServiceUrl))
 {
     const string personHttpClientName = "PersonClient";
-    builder.Services.AddHttpClient(personHttpClientName);
+    builder.Services.AddHttpClient(personHttpClientName)
+        .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
     builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
+}
+if (!string.IsNullOrWhiteSpace(organisationServiceUrl))
+{
+    const string organisationHttpClientName = "OrganisationClient";
+    builder.Services.AddHttpClient(organisationHttpClientName);
+    builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
 }
 
 // Authentication

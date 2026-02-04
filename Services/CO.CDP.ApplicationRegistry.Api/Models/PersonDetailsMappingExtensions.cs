@@ -20,7 +20,7 @@ public static class PersonDetailsMappingExtensions
             FirstName = personDetails.FirstName,
             LastName = personDetails.LastName,
             Email = personDetails.Email,
-            UserUrn = personDetails.UserUrn
+            CdpPersonId = personDetails.CdpPersonId
         };
     }
 }

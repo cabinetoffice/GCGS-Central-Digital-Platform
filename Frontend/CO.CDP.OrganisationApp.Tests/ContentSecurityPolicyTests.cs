@@ -91,4 +91,3 @@ public class ContentSecurityPolicyTests
         return factory.CreateClient();
     }
 }
-

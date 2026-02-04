@@ -21,7 +21,7 @@ public record PersonDetailsResponse
     public required string Email { get; init; }
 
     /// <summary>
-    /// Gets the person's user URN (user principal identifier).
+    /// Gets the CDP person identifier.
     /// </summary>
-    public required string UserUrn { get; init; }
+    public required Guid CdpPersonId { get; init; }
 }

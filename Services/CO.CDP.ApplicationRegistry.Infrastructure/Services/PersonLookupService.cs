@@ -54,8 +54,7 @@ public class PersonLookupService : IPersonLookupService
                 FirstName = person.FirstName,
                 LastName = person.LastName,
                 Email = person.Email,
-                CdpPersonId = person.Id,
-                UserUrn = userPrincipalId
+                CdpPersonId = person.Id
             };
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

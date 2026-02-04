@@ -25,8 +25,4 @@ public record PersonDetails
     /// </summary>
     public required Guid CdpPersonId { get; init; }
 
-    /// <summary>
-    /// Gets the person's user URN (user principal identifier).
-    /// </summary>
-    public required string UserUrn { get; init; }
 }
