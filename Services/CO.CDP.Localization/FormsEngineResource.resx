@@ -844,13 +844,17 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
       &lt;p class=&quot;govuk-body&quot;&gt;
         Include examples of how you handle significant risks (like the use of contractors, where relevant).
       &lt;/p&gt;
-
       &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
         If you would like to provide this information in a document format, enter "not applicable" below and continue to the next question.
-        &lt;br /&gt;
-        Response limited to 500 words or less.
       &lt;/div&gt;
     </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_CustomInsetText" xml:space="preserve">
+  <value>
+    &lt;div class=&quot;govuk-hint&quot;&gt;
+      Response limited to 500 words or less
+    &lt;/div&gt;
+  </value>
   </data>
   <data name="HealthAndSafetyQuestion_02_SummaryTitle" xml:space="preserve">
     <value>Health and safety management</value>
@@ -861,11 +865,11 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   <data name="HealthAndSafetyQuestion_03_SummaryTitle" xml:space="preserve">
     <value>Supporting documents</value>
   </data>
-  <data name="HealthAndSafetyQuestion_03_CustomInsetText" xml:space="preserve">
+  <data name="HealthAndSafetyQuestion_03_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-inset-text&quot;&gt;
-        Document must contain 500 words or less
-      &lt;/div&gt;
+    &lt;p class=&quot;govuk-hint&quot;&gt;
+      Document must contain 500 words or less
+    &lt;/p&gt;
     </value>
   </data>
   <data name="Exclusions_07_Title" xml:space="preserve">
