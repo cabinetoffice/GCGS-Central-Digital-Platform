@@ -251,26 +251,25 @@
   </data>
   <data name="CyberEssentials_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
-      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need. For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
-      &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-      Failure to complete this module may result in your tenders being deemed insufficient where PPN 014 has been applied.
-      &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your certification&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; evidence of your certification&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
+      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for.
+      Failure to complete this module may result in your tenders being deemed insufficient where currently policy applies.
+    &lt;/p&gt;
+    &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;
+      You'll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;the expiry date of your certification&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;evidence of your certification&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
     </value>
   </data>
-
   <!--Cyber Q2 Single Choice-->
   <data name="CyberEssentials_02_Title" xml:space="preserve">
     <value>Do you meet the Cyber Essentials certification requirements?</value>
