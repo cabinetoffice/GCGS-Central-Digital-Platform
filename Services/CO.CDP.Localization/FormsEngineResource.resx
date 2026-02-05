@@ -1327,23 +1327,20 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_01_Description" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;
-        Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 020 has been applied. For more information read
-        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-          PPN 020: Guidance on data protection legislation (opens in a new tab)
-        &lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on data protection within your organisation. This may include your:&lt;/div&gt;
-      &lt;div class="govuk-body"&gt;
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li&gt;resource confirmation&lt;/li&gt;
-          &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
+    &lt;p class="govuk-body"&gt;
+      Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy applies.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;
+      You'll need to provide information on data protection within your organisation. This may include your:
+    &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;resource confirmation&lt;/li&gt;
+      &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
+    &lt;/ul&gt;
     </value>
   </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
