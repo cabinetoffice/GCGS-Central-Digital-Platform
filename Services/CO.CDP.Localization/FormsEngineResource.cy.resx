@@ -1178,11 +1178,6 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   <data name="CarbonNetZero_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am Garbon Sero Net</value>
   </data>
-  <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value>
-     &lt;p class="govuk-body"&gt;Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;PPN 006: Ystyried Cylluniau Lleihau Carbon wrth gaffael contractau mawr y llywodraeth (yn agor mewn tab newydd)&lt;/a&gt;.&lt;/p&gt;
-    </value>
-  </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
     <value>Ydych chi wedi cyhoeddi Cynllun Lleihau Carbon sy'n cyrraedd y safon adrodd ofynnol?</value>
   </data>
