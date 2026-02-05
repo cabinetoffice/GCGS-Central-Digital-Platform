@@ -10,12 +10,12 @@ using OrganisationType = CO.CDP.OrganisationApp.Constants.OrganisationType;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.Registration;
 
-public class SupplierOrganisationTypeTest
+public class SupplierOrganisationTypeModelTest
 {
     private readonly Mock<ISession> _sessionMock;
     private readonly RegistrationDetails _registrationDetails;
 
-    public SupplierOrganisationTypeTest()
+    public SupplierOrganisationTypeModelTest()
     {
         _sessionMock = new Mock<ISession>();
         _registrationDetails = new RegistrationDetails

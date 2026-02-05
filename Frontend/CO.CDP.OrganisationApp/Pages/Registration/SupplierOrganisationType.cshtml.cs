@@ -40,11 +40,6 @@ public class SupplierOrganisationTypeModel(ISession session) : RegistrationStepM
         RegistrationDetails.SupplierOrganisationOperationTypes = SelectedOperationTypes ?? [];
         SessionContext.Set(Session.RegistrationDetailsKey, RegistrationDetails);
 
-        if (RedirectToSummary == true)
-        {
-            return RedirectToPage("OrganisationDetailsSummary");
-        }
-
         return RedirectToPage("OrganisationDetailsSummary");
     }
 }
