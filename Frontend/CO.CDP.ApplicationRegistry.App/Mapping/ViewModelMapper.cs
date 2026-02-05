@@ -8,10 +8,11 @@ public static class ViewModelMapper
     public static HomeViewModel ToHomeViewModel(
         OrganisationResponse organisation,
         IReadOnlyList<OrganisationApplicationResponse> enabledApps,
-        IReadOnlyList<RoleResponse> roles) =>
+        IReadOnlyList<RoleResponse> roles,
+        IReadOnlyList<OrganisationUserResponse> users) =>
         new(
             OrganisationName: organisation.Name,
-            Stats: CalculateStats(enabledApps, roles),
+            Stats: CalculateStats(enabledApps, roles, users),
             EnabledApplications: enabledApps
                 .Where(a => a.IsActive)
                 .Select(ToEnabledApplicationViewModel)
@@ -227,10 +228,11 @@ public static class ViewModelMapper
 
     private static DashboardStats CalculateStats(
         IReadOnlyList<OrganisationApplicationResponse> enabledApps,
-        IReadOnlyList<RoleResponse> roles) =>
+        IReadOnlyList<RoleResponse> roles,
+        IReadOnlyList<OrganisationUserResponse> users) =>
         new(
             ApplicationsEnabled: enabledApps.Count(a => a.IsActive),
-            TotalUsers: 0, // TODO: Calculate from user memberships
+            TotalUsers: users.Count(user => user.Status == Shared.Enums.UserStatus.Active),
             ActiveAssignments: 0, // TODO: Calculate from user assignments
             RolesAssigned: roles.Count
         );

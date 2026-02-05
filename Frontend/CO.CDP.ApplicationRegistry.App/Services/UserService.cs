@@ -15,7 +15,7 @@ public sealed class UserService(ApiClient.ApplicationRegistryClient apiClient) :
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var usersResponse = await apiClient.UsersAll2Async(org.Id, ct);
+            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
 
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
