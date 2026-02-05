@@ -1,0 +1,99 @@
+@model CO.CDP.ApplicationRegistry.App.Models.DisableApplicationViewModel
+@{
+    ViewData["Title"] = "Disable application";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug" class="govuk-back-link">Back to application</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <h1 class="govuk-heading-xl">Disable @Model.ApplicationName</h1>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                Disabling this application will immediately remove access for all users in your organisation.
+            </strong>
+        </div>
+
+        <h2 class="govuk-heading-m">About this application</h2>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Application</dt>
+                <dd class="govuk-summary-list__value">@Model.ApplicationName</dd>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.ApplicationDescription))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Description</dt>
+                    <dd class="govuk-summary-list__value">@Model.ApplicationDescription</dd>
+                </div>
+            }
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.OrganisationName</dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Impact</h2>
+
+        <p class="govuk-body">If you disable this application:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li><strong>@Model.UsersAssigned</strong> @(Model.UsersAssigned == 1 ? "user" : "users") will lose access
+                immediately
+            </li>
+            <li>All user assignments to this application will be removed</li>
+            <li>Users will not be able to access any features provided by this application</li>
+            <li>You can re-enable this application later if needed</li>
+        </ul>
+
+        @if (Model.UsersAssigned > 0)
+        {
+            <div class="govuk-inset-text">
+                We recommend informing affected users before disabling this application.
+            </div>
+        }
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div
+                class="govuk-form-group @(ViewData.ModelState.ContainsKey("confirm") && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Confirm you want to disable this application</h2>
+                    </legend>
+                    @if (ViewData.ModelState.ContainsKey("confirm") && !ViewData.ModelState.IsValid)
+                    {
+                        <p class="govuk-error-message">
+                            <span
+                                class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["confirm"]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="confirm" name="confirm" type="checkbox"
+                                   value="true">
+                            <label class="govuk-label govuk-checkboxes__label" for="confirm">
+                                I confirm I want to disable @Model.ApplicationName for @Model.OrganisationName
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning" data-module="govuk-button">Disable application
+                </button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>
