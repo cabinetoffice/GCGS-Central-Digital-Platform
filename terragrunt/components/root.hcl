@@ -83,7 +83,7 @@ locals {
       ]
       pinned_service_version_cfs    = "1.0.7"
       pinned_service_version_fts    = "1.1.7"
-      pinned_service_version        = "1.0.81"
+      pinned_service_version        = "1.0.82"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
