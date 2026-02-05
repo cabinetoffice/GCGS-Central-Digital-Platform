@@ -4,17 +4,21 @@ module "ecs_service_fts_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_app.name}.json.tftpl",
     {
-      aspcore_environment = local.aspcore_environment
-      container_port      = var.service_configs.fts_app.port
-      cpu                 = var.service_configs.fts_app.cpu
-      host_port           = var.service_configs.fts_app.port
-      image               = local.ecr_urls[var.service_configs.fts_app.name]
-      lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
-      lg_prefix           = "app"
-      lg_region           = data.aws_region.current.region
-      memory              = var.service_configs.fts_app.memory
-      name                = var.service_configs.fts_app.name
-      service_version     = local.service_version_fts
+      aspcore_environment  = local.aspcore_environment
+      container_port       = var.service_configs.fts_app.port
+      cpu                  = var.service_configs.fts_app.cpu
+      fts_service_url      = local.fts_service_url
+      host_port            = var.service_configs.fts_app.port
+      image                = local.ecr_urls[var.service_configs.fts_app.name]
+      lg_name              = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
+      lg_prefix            = "app"
+      lg_region            = data.aws_region.current.region
+      memory               = var.service_configs.fts_app.memory
+      name                 = var.service_configs.fts_app.name
+      onelogin_authority   = local.one_login.credential_locations.authority
+      onelogin_client_id   = local.one_login.credential_locations.client_id
+      onelogin_private_key = local.one_login.credential_locations.private_key
+      service_version      = local.service_version_fts
     }
   )
 
