@@ -39,5 +39,15 @@ module "s3_bucket_fts" {
   read_roles         = [var.role_ecs_task_exec_arn]
   write_roles        = [var.role_ecs_task_arn]
 
+  cors_rules = [
+    {
+      allowed_headers = ["*"]
+      allowed_methods = ["PUT", "GET", "HEAD"]
+      allowed_origins = ["https://s3-uploader.${var.public_domain}"]
+      expose_headers  = ["ETag"]
+      max_age_seconds = 3000
+    }
+  ]
+
   tags = var.tags
 }

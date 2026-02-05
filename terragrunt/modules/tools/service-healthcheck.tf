@@ -2,7 +2,7 @@ module "ecs_service_healthcheck" {
   source = "../ecs-service"
 
   container_definitions = templatefile(
-    "${path.module}/templates/task-definitions/healthcheck.json.tftpl",
+    "${path.module}/templates/task-definitions/${var.healthcheck_config.name}.json.tftpl",
     {
       account_id                      = data.aws_caller_identity.current.account_id
       container_port                  = var.healthcheck_config.port

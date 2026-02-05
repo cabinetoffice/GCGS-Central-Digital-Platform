@@ -270,6 +270,22 @@ variable "role_terraform_arn" {
   type        = string
 }
 
+variable "s3_fts_bucket" {
+  description = "FTS S3 Bucket name"
+  type        = string
+}
+
+variable "s3_uploader_config" {
+  description = "S3 Uploader services configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
+}
+
 variable "sqs_entity_verification_url" {
   description = "URL of the Entity Verification's SQS queue"
   type        = string
