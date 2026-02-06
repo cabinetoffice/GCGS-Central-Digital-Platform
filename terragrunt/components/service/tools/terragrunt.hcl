@@ -171,6 +171,10 @@ inputs = {
   user_pool_domain_healthcheck         = dependency.service_auth.outputs.user_pool_domain
   user_pool_domain_opensearch_admin    = dependency.service_auth.outputs.user_pool_domain
 
+  user_pool_arn_tools                 = dependency.service_auth.outputs.tools_user_pool_arn
+  user_pool_client_id_tools_s3_uploader = dependency.service_auth.outputs.tools_user_pool_client_id_s3_uploader
+  user_pool_domain_tools              = dependency.service_auth.outputs.tools_user_pool_domain
+
   certificate_arn  = dependency.service_ecs.outputs.certificate_arn
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name

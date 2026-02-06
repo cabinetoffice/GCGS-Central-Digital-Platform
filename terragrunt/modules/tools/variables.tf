@@ -327,6 +327,21 @@ variable "user_pool_arn_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_arn_tools" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_tools_s3_uploader" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_tools" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string

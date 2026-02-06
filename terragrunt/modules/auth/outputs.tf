@@ -77,3 +77,17 @@ output "organisation_app_user_pool_client_id" {
 output "user_pool_domain" {
   value = aws_cognito_user_pool_domain.auth.domain
 }
+
+# To be used for multiuser sessions
+
+output "tools_user_pool_arn" {
+  value = aws_cognito_user_pool.tools.arn
+}
+
+output "tools_user_pool_client_id_s3_uploader" {
+  value = aws_cognito_user_pool_client.s3_uploader.id
+}
+
+output "tools_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.tools.domain
+}
