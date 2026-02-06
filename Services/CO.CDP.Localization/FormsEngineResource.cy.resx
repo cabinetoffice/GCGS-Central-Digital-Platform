@@ -509,9 +509,6 @@
   <data name="DataProtection_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am ddiogelu data</value>
   </data>
-  <data name="DataProtection_01_Description" xml:space="preserve">
-    <value> </value>
-  </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
     <value>A oes gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
   </data>
