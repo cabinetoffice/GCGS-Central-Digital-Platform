@@ -24,7 +24,6 @@ module "ecs_service_s3_uploader" {
   cluster_id             = var.ecs_cluster_id
   container_port         = var.s3_uploader_config.port
   cpu                    = var.s3_uploader_config.cpu
-  desired_count          = var.environment == "development" ? 1 : 0
   ecs_alb_sg_id          = var.alb_tools_sg_id
   ecs_listener_arn       = aws_lb_listener.tools.arn
   ecs_service_base_sg_id = var.ecs_sg_id
