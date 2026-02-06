@@ -20,6 +20,7 @@ module "ecs_service_fts_app" {
       onelogin_private_key = local.one_login.credential_locations.private_key
       public_domain        = var.public_domain
       service_version      = local.service_version_fts
+      vpc_cidr             = var.vpc_cider
     }
   )
 
