@@ -1419,23 +1419,21 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
-This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;
       &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+        Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
       &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for.
+        Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
+      &lt;/p&gt;
+      &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
     </value>
   </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
@@ -1443,9 +1441,6 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan published</value>
-  </data>
-  <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_03_Title" xml:space="preserve">
     <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
