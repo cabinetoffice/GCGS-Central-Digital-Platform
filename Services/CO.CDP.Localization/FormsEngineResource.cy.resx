@@ -510,25 +510,7 @@
     <value>Cyflwyno eich gwybodaeth am ddiogelu data</value>
   </data>
   <data name="DataProtection_01_Description" xml:space="preserve">
-    <value>
-      &lt;p class="govuk-body"&gt;
-        Mae a wnelo diogelu data â diogelu data personol rhag cael eu camddefnyddio, eu colli neu fynediad anawdurdodedig. Mae'r modiwl hwn yn canolbwyntio ar gydymffurfio â chyfreithiau diogelu data (fel GDPR) a sut mae cyflenwr yn rheoli, yn storio ac yn prosesu gwybodaeth bersonol.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 020 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
-        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-          PPN 020: Canllaw ar ddeddfwriaeth diogelu data (bydd yn agor mewn tab newydd)
-        &lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am ddiogelu data yn eich sefydliad. Gall hyn gynnwys:&lt;/div&gt;
-      &lt;div class="govuk-body"&gt;
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li&gt;cadarnhad ynghylch adnoddau&lt;/li&gt;
-          &lt;li&gt;cael cyfleusterau a mesurau ar waith i sicrhau cydymffurfiaeth â chyfreithiau diogelu data&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-    </value>
+    <value> </value>
   </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
     <value>A oes gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
