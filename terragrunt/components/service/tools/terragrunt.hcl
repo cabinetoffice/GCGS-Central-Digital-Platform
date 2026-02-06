@@ -84,6 +84,7 @@ dependency service_ecs {
     ecs_alb_dns_name = "mock"
     ecs_cluster_id   = "mock"
     ecs_cluster_name = "mock"
+    s3_fts_bucket    = "mock"
   }
 }
 
@@ -130,6 +131,7 @@ inputs = {
   healthcheck_config        = local.global_vars.locals.tools_configs.healthcheck
   opensearch_admin_config   = local.global_vars.locals.tools_configs.opensearch_admin
   opensearch_gateway_config = local.global_vars.locals.tools_configs.opensearch_gateway
+  s3_uploader_config        = local.global_vars.locals.tools_configs.s3_uploader
   tags                      = local.tags
   tools_configs             = local.global_vars.locals.tools_configs
 
@@ -169,10 +171,15 @@ inputs = {
   user_pool_domain_healthcheck         = dependency.service_auth.outputs.user_pool_domain
   user_pool_domain_opensearch_admin    = dependency.service_auth.outputs.user_pool_domain
 
+  user_pool_arn_tools                   = dependency.service_auth.outputs.tools_user_pool_arn
+  user_pool_client_id_tools_s3_uploader = dependency.service_auth.outputs.tools_user_pool_client_id_s3_uploader
+  user_pool_domain_tools                = dependency.service_auth.outputs.tools_user_pool_domain
+
   certificate_arn  = dependency.service_ecs.outputs.certificate_arn
   ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
+  s3_fts_bucket    = dependency.service_ecs.outputs.s3_fts_bucket
 
   db_cfs_cluster_address           = dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn   = dependency.service_database.outputs.cfs_cluster_credentials_arn

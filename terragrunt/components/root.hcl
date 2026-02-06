@@ -294,7 +294,7 @@ locals {
     managed_by  = "terragrunt"
   }
 
-  tools_configs = {
+  tools_configs_common = {
     clamav = {
       cpu       = 1024
       memory    = 3072
@@ -331,26 +331,33 @@ locals {
       port_host = 3030
     }
     k6 = {
-      cpu       = 1024
-      memory    = 3072
       name      = "k6"
       port      = 4040
       port_host = null
     }
     opensearch_admin = {
-      cpu       = 1024
-      memory    = 3072
       name      = "opensearch-admin"
       port      = 5601
       port_host = 5601
     }
     opensearch_gateway = {
-      cpu       = 1024
-      memory    = 3072
       name      = "opensearch-gateway"
       port      = 5602
       port_host = 5602
     }
+    s3_uploader = {
+      name      = "s3-uploader"
+      port      = 8000
+      port_host = 8000
+    }
+  }
+
+  tools_configs = {
+    for service, config in local.tools_configs_common :
+    service => merge(
+      local.resource_defaults[local.environment],
+      config
+    )
   }
 
   tg = {
