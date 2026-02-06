@@ -38,8 +38,8 @@ module "ecs_service_s3_uploader" {
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn           = var.user_pool_arn_tools
-  user_pool_client_id     = var.user_pool_client_id_tools_s3_uploader
-  user_pool_domain        = var.user_pool_domain_tools
-  vpc_id = var.vpc_id
+  user_pool_arn          = var.user_pool_arn_tools
+  user_pool_client_id    = var.user_pool_client_id_tools_s3_uploader
+  user_pool_domain       = var.user_pool_domain_tools
+  vpc_id                 = var.vpc_id
 }

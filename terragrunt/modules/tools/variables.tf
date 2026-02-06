@@ -332,16 +332,6 @@ variable "user_pool_arn_tools" {
   type    = string
 }
 
-variable "user_pool_client_id_tools_s3_uploader" {
-  default = null
-  type    = string
-}
-
-variable "user_pool_domain_tools" {
-  default = null
-  type    = string
-}
-
 variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
@@ -357,6 +347,11 @@ variable "user_pool_client_id_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_client_id_tools_s3_uploader" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
@@ -368,6 +363,11 @@ variable "user_pool_domain_healthcheck" {
 }
 
 variable "user_pool_domain_opensearch_admin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_tools" {
   default = null
   type    = string
 }

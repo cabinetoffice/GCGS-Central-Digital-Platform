@@ -46,6 +46,6 @@ locals {
   commercial_tools_app_url    = "https://commercial-tools-app.${var.public_domain}"
 
   tools_pool_name = "${local.name_prefix}-tools"
-  tools_domain = "${local.auth_domain}-tools"
-  tools_url    = "https://s3-uploader.${var.public_domain}"
+  tools_domain    = "${local.auth_domain}-tools"
+  tools_url       = "https://s3-uploader.${var.public_domain}"
 }

@@ -38,8 +38,8 @@ module "ecs_service_opensearch_admin" {
   role_ecs_task_arn      = var.role_ecs_task_opensearch_admin_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
-  user_pool_arn           = var.user_pool_arn_opensearch_admin
-  user_pool_client_id     = var.user_pool_client_id_opensearch_admin
-  user_pool_domain        = var.user_pool_domain_opensearch_admin
-  vpc_id = var.vpc_id
+  user_pool_arn          = var.user_pool_arn_opensearch_admin
+  user_pool_client_id    = var.user_pool_client_id_opensearch_admin
+  user_pool_domain       = var.user_pool_domain_opensearch_admin
+  vpc_id                 = var.vpc_id
 }
