@@ -1,6 +1,7 @@
 using CO.CDP.ApplicationRegistry.Core.Exceptions;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.Logging;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.Extensions.Logging;
 
@@ -12,11 +13,11 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Services;
 public class PersonLookupService : IPersonLookupService
 {
     private readonly IPersonClient _personClient;
-    private readonly ILogger<PersonLookupService> _logger;
+    private readonly SanitisingLogger<PersonLookupService> _logger;
 
     public PersonLookupService(
         IPersonClient personClient,
-        ILogger<PersonLookupService> logger)
+        SanitisingLogger<PersonLookupService> logger)
     {
         _personClient = personClient;
         _logger = logger;
