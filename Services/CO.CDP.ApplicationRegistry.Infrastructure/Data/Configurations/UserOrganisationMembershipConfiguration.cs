@@ -21,6 +21,12 @@ public class UserOrganisationMembershipConfiguration : IEntityTypeConfiguration<
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(m => m.CdpPersonId)
+            .HasColumnName("cdp_person_id");
+
+        builder.HasIndex(m => m.CdpPersonId)
+            .HasDatabaseName("ix_user_org_memberships_cdp_person_id");
+
         builder.Property(m => m.OrganisationId)
             .HasColumnName("organisation_id")
             .IsRequired();

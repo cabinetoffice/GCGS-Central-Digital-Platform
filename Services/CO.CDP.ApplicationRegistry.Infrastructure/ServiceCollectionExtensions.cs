@@ -28,7 +28,9 @@ public static class ServiceCollectionExtensions
         // Register DbContext
         services.AddDbContext<ApplicationRegistryDbContext>(options =>
             options.UseNpgsql(connectionString,
-                npgsqlOptions => npgsqlOptions.MigrationsAssembly(typeof(ApplicationRegistryDbContext).Assembly.FullName)));
+                npgsqlOptions => npgsqlOptions
+                    .MigrationsAssembly(typeof(ApplicationRegistryDbContext).Assembly.FullName)
+                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         // Register services
         services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
@@ -38,8 +40,10 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleService, RoleService>();
         services.AddScoped<IOrganisationApplicationService, OrganisationApplicationService>();
         services.AddScoped<IUserAssignmentService, UserAssignmentService>();
+        services.AddScoped<IOrganisationUserService, OrganisationUserService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
+        services.AddScoped<IPersonLookupService, PersonLookupService>();
 
         // Register repositories
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();

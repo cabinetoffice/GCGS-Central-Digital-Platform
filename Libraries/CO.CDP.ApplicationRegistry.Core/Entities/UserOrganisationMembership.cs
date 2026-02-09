@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Enums;
+using CO.CDP.ApplicationRegistry.Shared.Enums;
 
 namespace CO.CDP.ApplicationRegistry.Core.Entities;
 
@@ -16,6 +16,11 @@ public class UserOrganisationMembership : ISoftDelete, IAuditable
     /// Gets or sets the user principal identifier (subject from identity provider).
     /// </summary>
     public string UserPrincipalId { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the CDP person identifier.
+    /// </summary>
+    public Guid? CdpPersonId { get; set; }
 
     /// <summary>
     /// Gets or sets the organisation identifier.

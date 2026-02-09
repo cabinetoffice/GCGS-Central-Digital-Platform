@@ -35,5 +35,6 @@ public static class Constants
     public static class ApiKeyScopes
     {
         public const string ReadOrganisationData = "read:organisation_data";
+        public const string ReadPersonData = "read:person_data";
     }
 }

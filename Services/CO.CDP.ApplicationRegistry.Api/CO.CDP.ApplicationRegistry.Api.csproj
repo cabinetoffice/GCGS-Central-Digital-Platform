@@ -14,22 +14,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8" />
-        <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10" />
-        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.8"/>
+        <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10"/>
+        <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
+        <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="IMPLEMENTATION_COMPLETE.md" />
+        <None Remove="IMPLEMENTATION_COMPLETE.md"/>
     </ItemGroup>
 
 </Project>

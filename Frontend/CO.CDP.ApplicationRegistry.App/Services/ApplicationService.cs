@@ -14,7 +14,8 @@ public sealed class ApplicationService(
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var apps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
             var roles = await GetAllRolesForApplicationsAsync(apps, ct);
-            return ViewModelMapper.ToHomeViewModel(org, apps, roles);
+            var users = (await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct)).ToList();
+            return ViewModelMapper.ToHomeViewModel(org, apps, roles, users);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
@@ -144,7 +145,7 @@ public sealed class ApplicationService(
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
             var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
-            
+
             if (orgApp?.Application == null) return null;
 
             // TODO: Get user assignments when endpoint is available
@@ -168,10 +169,9 @@ public sealed class ApplicationService(
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
             var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
-            
+
             if (orgApp == null) return false;
 
-            // Call API to disable the organisation-application relationship
             await apiClient.ApplicationsDELETEAsync(org.Id, orgApp.ApplicationId, ct);
             return true;
         }

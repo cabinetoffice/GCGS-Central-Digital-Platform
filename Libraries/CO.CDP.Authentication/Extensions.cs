@@ -1,6 +1,6 @@
 using CO.CDP.Authentication.Authorization;
-using CO.CDP.Authentication.Http;
 using CO.CDP.Authentication.Services;
+using CO.CDP.Authentication.Http;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -53,6 +53,8 @@ public static class Extensions
         services.AddScoped<ISessionManager, SessionService>();
         services.AddScoped<OidcEventsService>();
         services.AddTransient<AuthorityBearerTokenHandler>();
+        services.AddTransient<ServiceKeyBearerTokenHandler>();
+        services.AddScoped<IServiceKeyTokenProvider, ServiceKeyTokenProvider>();
 
         var authorityBaseUrl = configuration["Organisation:Authority"]
                                ?? throw new InvalidOperationException(

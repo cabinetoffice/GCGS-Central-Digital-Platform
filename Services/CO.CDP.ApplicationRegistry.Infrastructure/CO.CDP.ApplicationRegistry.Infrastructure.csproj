@@ -21,6 +21,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
     </ItemGroup>
 
 </Project>

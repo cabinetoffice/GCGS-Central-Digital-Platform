@@ -3,6 +3,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.Person.WebApi;
 using CO.CDP.Person.WebApi.Api;
@@ -13,6 +14,7 @@ using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using System.Reflection;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -34,12 +36,14 @@ builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteReposito
 builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Person.WebApi.Model.Person?>, GetPersonUseCase>();
 builder.Services.AddScoped<IUseCase<LookupPerson, CO.CDP.Person.WebApi.Model.Person?>, LookupPersonUseCase>();
+builder.Services.AddScoped<IUseCase<BulkLookupPerson, IReadOnlyDictionary<Guid, CO.CDP.Person.WebApi.Model.BulkLookupPersonResult>>, BulkLookupPersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdatePerson), bool>, UpdatePersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), bool>, ClaimPersonInviteUseCase>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
+builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
 {

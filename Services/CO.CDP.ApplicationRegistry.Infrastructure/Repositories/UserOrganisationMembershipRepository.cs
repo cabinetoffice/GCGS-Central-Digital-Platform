@@ -32,7 +32,15 @@ public class UserOrganisationMembershipRepository : Repository<UserOrganisationM
     public async Task<IEnumerable<UserOrganisationMembership>> GetByOrganisationIdAsync(int organisationId, CancellationToken cancellationToken = default)
     {
         return await DbSet
+            .Include(m => m.ApplicationAssignments)
             .Where(m => m.OrganisationId == organisationId && m.IsActive)
             .ToListAsync(cancellationToken);
+    }
+
+    public async Task<UserOrganisationMembership?> GetByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .Include(m => m.Organisation)
+            .FirstOrDefaultAsync(m => m.CdpPersonId == cdpPersonId && m.OrganisationId == organisationId, cancellationToken);
     }
 }

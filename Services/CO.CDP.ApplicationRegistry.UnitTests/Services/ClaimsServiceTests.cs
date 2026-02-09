@@ -1,5 +1,6 @@
 using CO.CDP.ApplicationRegistry.Core.Entities;
-using CO.CDP.ApplicationRegistry.Core.Enums;
+using OrganisationEntity = CO.CDP.ApplicationRegistry.Core.Entities.Organisation;
+using CO.CDP.ApplicationRegistry.Shared.Enums;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Infrastructure.Services;
 using FluentAssertions;
@@ -45,7 +46,7 @@ public class ClaimsServiceTests
         // Arrange
         var userId = "user123";
 
-        var org = new Organisation
+        var org = new OrganisationEntity
         {
             Id = 1,
             Name = "Test Org",

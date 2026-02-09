@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Core.Enums;
+namespace CO.CDP.ApplicationRegistry.Shared.Enums;
 
 /// <summary>
 /// Defines the roles a user can have within an organisation.

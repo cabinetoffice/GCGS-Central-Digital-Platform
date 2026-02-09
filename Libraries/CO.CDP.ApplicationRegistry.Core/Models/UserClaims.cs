@@ -42,6 +42,11 @@ public record OrganisationMembershipClaim
     public required string OrganisationRole { get; init; }
 
     /// <summary>
+    /// Gets the CDP person identifier.
+    /// </summary>
+    public Guid? CdpPersonId { get; init; }
+
+    /// <summary>
     /// Gets the collection of application assignments for this organisation.
     /// </summary>
     public ICollection<ApplicationAssignmentClaim> ApplicationAssignments { get; init; } = new List<ApplicationAssignmentClaim>();

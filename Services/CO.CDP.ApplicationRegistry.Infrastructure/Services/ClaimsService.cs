@@ -66,6 +66,7 @@ public class ClaimsService : IClaimsService
                 OrganisationName = membership.Organisation.Name,
                 OrganisationSlug = membership.Organisation.Slug,
                 OrganisationRole = membership.OrganisationRole.ToString(),
+                CdpPersonId = membership.CdpPersonId,
                 ApplicationAssignments = applicationAssignmentClaims
             });
         }

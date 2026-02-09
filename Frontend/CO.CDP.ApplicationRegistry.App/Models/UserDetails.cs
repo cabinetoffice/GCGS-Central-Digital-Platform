@@ -2,8 +2,6 @@ namespace CO.CDP.ApplicationRegistry.App.Models;
 
 public record UserDetails
 {
-    public required string UserUrn { get; init; }
-
     public string? FirstName { get; init; }
 
     public string? LastName { get; init; }

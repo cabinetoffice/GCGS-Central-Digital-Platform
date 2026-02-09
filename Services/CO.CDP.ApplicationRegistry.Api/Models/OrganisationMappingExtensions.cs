@@ -1,5 +1,5 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
+using OrganisationEntity = CO.CDP.ApplicationRegistry.Core.Entities.Organisation;
 
 namespace CO.CDP.ApplicationRegistry.Api.Models;
 
@@ -8,7 +8,7 @@ namespace CO.CDP.ApplicationRegistry.Api.Models;
 /// </summary>
 public static class OrganisationMappingExtensions
 {
-    public static OrganisationResponse ToResponse(this Organisation organisation)
+    public static OrganisationResponse ToResponse(this OrganisationEntity organisation)
     {
         return new OrganisationResponse
         {
@@ -21,7 +21,7 @@ public static class OrganisationMappingExtensions
         };
     }
 
-    public static OrganisationSummaryResponse ToSummaryResponse(this Organisation organisation)
+    public static OrganisationSummaryResponse ToSummaryResponse(this OrganisationEntity organisation)
     {
         return new OrganisationSummaryResponse
         {
