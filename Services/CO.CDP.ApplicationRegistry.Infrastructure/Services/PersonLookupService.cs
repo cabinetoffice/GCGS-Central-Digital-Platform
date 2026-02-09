@@ -61,6 +61,7 @@ public class PersonLookupService : IPersonLookupService
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
             _logger.LogWarning(
+                ex,
                 "Person not found (404) for UserPrincipalId: {UserPrincipalId}",
                 userPrincipalId);
             return null;
