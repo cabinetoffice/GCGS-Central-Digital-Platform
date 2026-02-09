@@ -189,7 +189,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.App",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api", "Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.UnitTests", "Services\CO.CDP.ApplicationRegistry.UnitTests\CO.CDP.ApplicationRegistry.UnitTests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.UnitTests", "Services\CO.CDP.UserManagement.UnitTests\CO.CDP.UserManagement.UnitTests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

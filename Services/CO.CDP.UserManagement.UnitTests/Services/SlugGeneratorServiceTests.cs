@@ -1,7 +1,7 @@
 using CO.CDP.UserManagement.Infrastructure.Services;
 using FluentAssertions;
 
-namespace CO.CDP.ApplicationRegistry.UnitTests.Services;
+namespace CO.CDP.UserManagement.UnitTests.Services;
 
 public class SlugGeneratorServiceTests
 {
