@@ -706,27 +706,6 @@
   <data name="ModernSlavery_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am gaethwasiaeth fodern</value>
   </data>
-  <data name="ModernSlavery_01_Description" xml:space="preserve">
-    <value>
-    &lt;p class="govuk-body"&gt;
-      Mae caethwasiaeth fodern yn cyfeirio at droseddau caethwasiaeth, caethiwed, llafur dan orfod a masnachu mewn pobl. Er mwyn mynd i'r afael â'r troseddau hyn, mae Llywodraeth y DU wedi cyhoeddi Nodyn Polisi Caffael (PPN) 009, sy'n mynnu bod cyflenwyr sy'n cynnig am gontractau penodol yn dangos eu hymrwymiad i fynd i'r afael â chaethwasiaeth fodern.
-    &lt;/p&gt;
-    &lt;p class="govuk-body"&gt;
-      Mae ond yn ofynnol os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 009 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
-      &lt;a href="https://www.gov.uk/government/publications/ppn-009-tackling-modern-slavery-in-government-supply-chains/ppn-009-guidance-on-tackling-modern-slavery-in-government-supply-chains-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      PPN 009: Mynd i'r Afael â Chaethwasiaeth Fodern mewn Cadwyni Cyflenwi (bydd yn agor mewn tab newydd)&lt;/a&gt;.
-    &lt;/p&gt;
-    &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
-    &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am gaethwasiaeth fodern a masnachu mewn pobl mewn perthynas â'ch sefydliad. Gall hyn gynnwys:&lt;/div&gt;
-    &lt;div class="govuk-body"&gt;
-      &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt;dolen i'ch Datganiad Caethwasiaeth Fodern neu ddogfennau cyfatebol neu gopi ohonynt&lt;/li&gt;
-        &lt;li&gt;cyfarwyddiadau ar sut i ddod o hyd i'ch Datganiad Caethwasiaeth Fodern neu ddogfennau cyfatebol&lt;/li&gt;
-        &lt;li&gt;gwybodaeth rydych chi wedi'i chynnwys yn eich Datganiad Caethwasiaeth Fodern neu ddogfennaeth gyfatebol&lt;/li&gt;
-      &lt;/ul&gt;
-    &lt;/div&gt;
-    </value>
-  </data>
   <data name="ModernSlavery_02_Title" xml:space="preserve">
     <value>A ydych yn sefydliad masnachol sy'n ddarostyngedig i Adran 54 o Ddeddf Caethwasiaeth Fodern 2015?</value>
   </data>
