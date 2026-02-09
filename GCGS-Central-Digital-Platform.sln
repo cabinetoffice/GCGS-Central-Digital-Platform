@@ -172,7 +172,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging", "Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj", "{3F358BE9-D239-40BD-BAC0-7F95DB17E3C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.Infrastructure", "Services\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj", "{F3A6004C-9670-4431-8A28-578D7D8A21AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Infrastructure", "Services\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj", "{F3A6004C-9670-4431-8A28-578D7D8A21AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging.Tests", "Libraries\CO.CDP.Logging.Tests\CO.CDP.Logging.Tests.csproj", "{E8D9E5BD-7D25-416D-855D-D49AA3E19D6A}"
 EndProject

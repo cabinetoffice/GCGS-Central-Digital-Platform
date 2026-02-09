@@ -1,6 +1,6 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.ApplicationRegistry.Infrastructure;
+using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;

@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Infrastructure.Services;
+using CO.CDP.UserManagement.Infrastructure.Services;
 using FluentAssertions;
 
 namespace CO.CDP.ApplicationRegistry.UnitTests.Services;
