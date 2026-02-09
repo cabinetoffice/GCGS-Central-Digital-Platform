@@ -58,6 +58,14 @@ output "healthcheck_user_pool_client_id" {
   value = aws_cognito_user_pool_client.healthcheck.id
 }
 
+output "opensearch_admin_user_pool_arn" {
+  value = aws_cognito_user_pool.auth.arn
+}
+
+output "opensearch_admin_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.opensearch_admin.id
+}
+
 output "organisation_app_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }
@@ -66,12 +74,16 @@ output "organisation_app_user_pool_client_id" {
   value = aws_cognito_user_pool_client.organisation_app.id
 }
 
-output "opensearch_admin_user_pool_arn" {
-  value = aws_cognito_user_pool.auth.arn
+output "tools_user_pool_arn" {
+  value = aws_cognito_user_pool.tools.arn
 }
 
-output "opensearch_admin_user_pool_client_id" {
-  value = aws_cognito_user_pool_client.opensearch_admin.id
+output "tools_user_pool_client_id_s3_uploader" {
+  value = aws_cognito_user_pool_client.s3_uploader.id
+}
+
+output "tools_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.tools.domain
 }
 
 output "user_pool_domain" {

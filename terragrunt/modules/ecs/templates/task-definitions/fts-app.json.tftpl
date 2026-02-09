@@ -21,9 +21,16 @@
     },
     "environment": [
       { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
-      { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"}
+      { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+      { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+      { "name" : "FtsService", "value" : "${fts_service_url}"},
+      { "name" : "SearchApiClient__BaseUrl", "value" : "https://fts-search-api.${public_domain}"}
     ],
-    "secrets": [],
+    "secrets": [
+      { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
+      { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
+      { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"}
+    ],
     "volumesFrom": [],
     "mountPoints": [],
     "essential": true

@@ -1,0 +1,36 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+      {"name": "ALLOWED_EXTENSIONS", "value": "zip"},
+      {"name": "S3_BUCKET", "value": "${s3_bucket}"},
+      {"name": "S3_REGION", "value": "${lg_region}"},
+      {"name": "UPLOAD_BASE_PREFIX", "value": "Harvester"},
+      {"name": "LOGOUT_URL", "value": "${logout_url}"}
+    ],
+    "secrets": [
+    ],
+    "command": [],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

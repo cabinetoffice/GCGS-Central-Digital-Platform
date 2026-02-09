@@ -251,26 +251,25 @@
   </data>
   <data name="CyberEssentials_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
-      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need. For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
-      &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-      Failure to complete this module may result in your tenders being deemed insufficient where PPN 014 has been applied.
-      &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your certification&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; evidence of your certification&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
+      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for.
+      Failure to complete this module may result in your tenders being deemed insufficient where current policy applies.
+    &lt;/p&gt;
+    &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;
+      You'll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;the expiry date of your certification&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;evidence of your certification&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
     </value>
   </data>
-
   <!--Cyber Q2 Single Choice-->
   <data name="CyberEssentials_02_Title" xml:space="preserve">
     <value>Do you meet the Cyber Essentials certification requirements?</value>
@@ -1327,23 +1326,20 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_01_Description" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;
-        Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 020 has been applied. For more information read
-        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-          PPN 020: Guidance on data protection legislation (opens in a new tab)
-        &lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on data protection within your organisation. This may include your:&lt;/div&gt;
-      &lt;div class="govuk-body"&gt;
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li&gt;resource confirmation&lt;/li&gt;
-          &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
+    &lt;p class="govuk-body"&gt;
+      Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy applies.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;
+      You'll need to provide information on data protection within your organisation. This may include your:
+    &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;resource confirmation&lt;/li&gt;
+      &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
+    &lt;/ul&gt;
     </value>
   </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
@@ -1419,23 +1415,21 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
-This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;
       &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+        Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
       &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for.
+        Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
+      &lt;/p&gt;
+      &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
     </value>
   </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
@@ -1443,9 +1437,6 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan published</value>
-  </data>
-  <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_03_Title" xml:space="preserve">
     <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
