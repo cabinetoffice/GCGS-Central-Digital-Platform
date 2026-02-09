@@ -10,7 +10,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// </summary>
 public class OrganisationRepository : Repository<Organisation>, IOrganisationRepository
 {
-    public OrganisationRepository(ApplicationRegistryDbContext context) : base(context)
+    public OrganisationRepository(UserManagementDbContext context) : base(context)
     {
     }
 

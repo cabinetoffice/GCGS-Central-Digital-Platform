@@ -10,7 +10,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// </summary>
 public class UserApplicationAssignmentRepository : Repository<UserApplicationAssignment>, IUserApplicationAssignmentRepository
 {
-    public UserApplicationAssignmentRepository(ApplicationRegistryDbContext context) : base(context)
+    public UserApplicationAssignmentRepository(UserManagementDbContext context) : base(context)
     {
     }
 

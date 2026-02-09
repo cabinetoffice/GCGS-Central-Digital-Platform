@@ -3,7 +3,6 @@ using System;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,11 +11,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.UserManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(UserManagementDbContext))]
-    [Migration("20260203180945_AddCdpPersonIdToUserOrganisationMemberships")]
-    partial class AddCdpPersonIdToUserOrganisationMemberships
+    partial class UserManagementDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

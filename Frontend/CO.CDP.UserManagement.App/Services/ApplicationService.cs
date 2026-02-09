@@ -1,11 +1,13 @@
-using CO.CDP.ApplicationRegistry.WebApiClient;
+using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Mapping;
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.UserManagement.Shared.Requests;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Services;
 
 public sealed class ApplicationService(
-    ApplicationRegistryClient apiClient) : IApplicationService
+    UserManagementClient apiClient) : IApplicationService
 {
     public async Task<HomeViewModel?> GetHomeViewModelAsync(string organisationSlug, CancellationToken ct = default)
     {
@@ -78,7 +80,7 @@ public sealed class ApplicationService(
 
             if (app == null) return false;
 
-            var request = new EnableApplicationRequest(app.Id);
+            var request = new EnableApplicationRequest { ApplicationId = app.Id };
             await apiClient.ApplicationsPOSTAsync(org.Id, request, ct);
             return true;
         }

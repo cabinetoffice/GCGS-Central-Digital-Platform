@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Shared.Enums;
-using CO.CDP.ApplicationRegistry.WebApiClient;
+using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Mapping;
 

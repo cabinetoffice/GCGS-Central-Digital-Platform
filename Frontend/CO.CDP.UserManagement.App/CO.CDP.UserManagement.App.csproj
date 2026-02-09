@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <UserSecretsId>aspnet-CO.CDP.ApplicationRegistry.App-d42b5214-7b5a-4274-8a51-b5f22effd192</UserSecretsId>
+        <UserSecretsId>aspnet-CO.CDP.UserManagement.App-d42b5214-7b5a-4274-8a51-b5f22effd192</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>

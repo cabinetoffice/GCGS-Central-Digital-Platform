@@ -60,17 +60,17 @@ builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.Sessi
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
 // API client configuration with bearer token handler
-var apiBaseUrl = builder.Configuration["ApplicationRegistryApi:BaseUrl"]
-    ?? throw new InvalidOperationException("Missing configuration key: ApplicationRegistryApi:BaseUrl.");
+var apiBaseUrl = builder.Configuration["UserManagementApi:BaseUrl"]
+    ?? throw new InvalidOperationException("Missing configuration key: UserManagementApi:BaseUrl.");
 
-const string ApiHttpClientName = "ApplicationRegistryHttpClient";
-builder.Services.AddHttpClient(ApiHttpClientName)
+const string apiHttpClientName = "UserManagementHttpClient";
+builder.Services.AddHttpClient(apiHttpClientName)
     .AddHttpMessageHandler<AuthorityBearerTokenHandler>();
 
-builder.Services.AddTransient<CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient>(sp =>
+builder.Services.AddTransient<CO.CDP.UserManagement.WebApiClient.UserManagementClient>(sp =>
 {
-    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(ApiHttpClientName);
-    return new CO.CDP.ApplicationRegistry.WebApiClient.ApplicationRegistryClient(apiBaseUrl, httpClient);
+    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(apiHttpClientName);
+    return new CO.CDP.UserManagement.WebApiClient.UserManagementClient(apiBaseUrl, httpClient);
 });
 
 // Authentication configuration

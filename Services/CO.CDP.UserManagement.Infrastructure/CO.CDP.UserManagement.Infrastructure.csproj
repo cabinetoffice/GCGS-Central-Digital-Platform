@@ -19,9 +19,16 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="UserManagementDatabaseMigrationConfig\appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

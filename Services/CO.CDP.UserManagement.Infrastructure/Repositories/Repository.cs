@@ -11,10 +11,10 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// <typeparam name="TEntity">The entity type.</typeparam>
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {
-    protected readonly ApplicationRegistryDbContext Context;
+    protected readonly UserManagementDbContext Context;
     protected readonly DbSet<TEntity> DbSet;
 
-    public Repository(ApplicationRegistryDbContext context)
+    public Repository(UserManagementDbContext context)
     {
         Context = context;
         DbSet = context.Set<TEntity>();

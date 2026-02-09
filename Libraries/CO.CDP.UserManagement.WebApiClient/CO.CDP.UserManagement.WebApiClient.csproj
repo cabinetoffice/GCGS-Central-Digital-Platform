@@ -22,8 +22,8 @@
         <ProjectReference Include="..\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.ApplicationRegistry.Api/OpenAPI/CO.CDP.ApplicationRegistry.Api.json" Namespace="CO.CDP.ApplicationRegistry.WebApiClient" ClassName="ApplicationRegistryClient">
-            <Options>/ClassStyle:Record /GenerateNativeRecords:true /ExcludedTypeNames:OrganisationRole,UserStatus /AdditionalNamespaceUsages:CO.CDP.ApplicationRegistry.Shared.Enums</Options>
+        <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.UserManagement.Api/OpenAPI/CO.CDP.UserManagement.Api.json" Namespace="CO.CDP.UserManagement.WebApiClient" ClassName="UserManagementClient">
+            <Options>/ClassStyle:Record /GenerateNativeRecords:true /ExcludedTypeNames:OrganisationRole,UserStatus,ApplicationResponse,ApplicationSummaryResponse,AssignPermissionsRequest,AssignUserToApplicationRequest,CreateApplicationRequest,CreateOrganisationRequest,CreatePermissionRequest,CreateRoleRequest,EnableApplicationRequest,ErrorResponse,OrganisationApplicationResponse,OrganisationResponse,OrganisationSummaryResponse,OrganisationUserResponse,PermissionResponse,PersonDetailsResponse,RoleResponse,UpdateApplicationRequest,UpdateAssignmentRolesRequest,UpdateOrganisationRequest,UpdatePermissionRequest,UpdateRoleRequest,UserAssignmentResponse /AdditionalNamespaceUsages:CO.CDP.UserManagement.Shared.Enums,CO.CDP.UserManagement.Shared.Requests,CO.CDP.UserManagement.Shared.Responses</Options>
         </OpenApiReference>
     </ItemGroup>
 </Project>

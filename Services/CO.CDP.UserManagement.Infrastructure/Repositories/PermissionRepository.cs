@@ -10,7 +10,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// </summary>
 public class PermissionRepository : Repository<ApplicationPermission>, IPermissionRepository
 {
-    public PermissionRepository(ApplicationRegistryDbContext context) : base(context)
+    public PermissionRepository(UserManagementDbContext context) : base(context)
     {
     }
 

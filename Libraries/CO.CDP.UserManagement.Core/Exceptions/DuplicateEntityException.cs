@@ -3,7 +3,7 @@ namespace CO.CDP.UserManagement.Core.Exceptions;
 /// <summary>
 /// Exception thrown when attempting to create an entity that already exists.
 /// </summary>
-public class DuplicateEntityException : ApplicationRegistryException
+public class DuplicateEntityException : UserManagementException
 {
     public DuplicateEntityException(string entityName, string propertyName, object value)
         : base($"{entityName} with {propertyName} '{value}' already exists.")

@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CO.CDP.ApplicationRegistry.WebApiClient;
+using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Services;
 
 namespace CO.CDP.UserManagement.App.Controllers;
@@ -9,7 +9,7 @@ namespace CO.CDP.UserManagement.App.Controllers;
 [Route("organisation/{organisationSlug}/applications")]
 public class ApplicationsController(
     IApplicationService applicationService,
-    ApplicationRegistryClient apiClient) : Controller
+    UserManagementClient apiClient) : Controller
 {
     [HttpGet]
     [Route("")]

@@ -8,9 +8,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// </summary>
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly ApplicationRegistryDbContext _context;
+    private readonly UserManagementDbContext _context;
 
-    public UnitOfWork(ApplicationRegistryDbContext context)
+    public UnitOfWork(UserManagementDbContext context)
     {
         _context = context;
     }

@@ -1,8 +1,8 @@
 using CO.CDP.UserManagement.Core.Entities;
 using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
-using CO.CDP.ApplicationRegistry.Shared.Enums;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
+using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
 using Moq;
 

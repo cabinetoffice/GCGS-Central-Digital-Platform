@@ -3,7 +3,7 @@ namespace CO.CDP.UserManagement.Core.Exceptions;
 /// <summary>
 /// Exception thrown when an invalid operation is attempted.
 /// </summary>
-public class InvalidOperationException : ApplicationRegistryException
+public class InvalidOperationException : UserManagementException
 {
     public InvalidOperationException(string message) : base(message)
     {

@@ -10,7 +10,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// </summary>
 public class RoleRepository : Repository<ApplicationRole>, IRoleRepository
 {
-    public RoleRepository(ApplicationRegistryDbContext context) : base(context)
+    public RoleRepository(UserManagementDbContext context) : base(context)
     {
     }
 

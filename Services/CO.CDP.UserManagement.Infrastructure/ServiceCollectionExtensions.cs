@@ -9,27 +9,27 @@ using Microsoft.Extensions.DependencyInjection;
 namespace CO.CDP.UserManagement.Infrastructure;
 
 /// <summary>
-/// Extension methods for configuring application registry infrastructure services.
+/// Extension methods for configuring user management infrastructure services.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
-    /// Adds application registry infrastructure services to the service collection.
+    /// Adds user management infrastructure services to the service collection.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="connectionString">The database connection string.</param>
     /// <param name="cdpConnectionString">Optional CDP database connection string for organisation lookups.</param>
     /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection AddApplicationRegistryInfrastructure(
+    public static IServiceCollection AddUserManagementInfrastructure(
         this IServiceCollection services,
         string connectionString,
         string? cdpConnectionString = null)
     {
         // Register DbContext
-        services.AddDbContext<ApplicationRegistryDbContext>(options =>
+        services.AddDbContext<UserManagementDbContext>(options =>
             options.UseNpgsql(connectionString,
                 npgsqlOptions => npgsqlOptions
-                    .MigrationsAssembly(typeof(ApplicationRegistryDbContext).Assembly.FullName)
+                    .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         // Register services
@@ -61,12 +61,12 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds caching services for the application registry.
+    /// Adds caching services for user management.
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="redisConnectionString">Optional Redis connection string. If null, uses in-memory cache.</param>
     /// <returns>The service collection for chaining.</returns>
-    public static IServiceCollection AddApplicationRegistryCaching(
+    public static IServiceCollection AddUserManagementCaching(
         this IServiceCollection services,
         string? redisConnectionString = null)
     {
@@ -76,7 +76,7 @@ public static class ServiceCollectionExtensions
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnectionString;
-                options.InstanceName = "ApplicationRegistry_";
+                options.InstanceName = "UserManagement_";
             });
         }
         else

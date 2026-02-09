@@ -15,19 +15,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSanitisedLogging();
-builder.Services.AddSwaggerGen(options => { options.DocumentApplicationRegistryApi(builder.Configuration); });
+builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(builder.Configuration); });
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = builder.Configuration.GetConnectionString("ApplicationRegistryDatabase");
+var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
 var cdpConnectionString = builder.Configuration.GetConnectionString("CdpDatabase");
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 
-builder.Services.AddApplicationRegistryInfrastructure(
+builder.Services.AddUserManagementInfrastructure(
     connectionString ?? throw new InvalidOperationException("Database connection string not configured"),
     cdpConnectionString);
 
-builder.Services.AddApplicationRegistryCaching(redisConnectionString);
+builder.Services.AddUserManagementCaching(redisConnectionString);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 

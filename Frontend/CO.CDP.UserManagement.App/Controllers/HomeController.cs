@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CO.CDP.ApplicationRegistry.WebApiClient;
+using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 
@@ -10,7 +10,7 @@ namespace CO.CDP.UserManagement.App.Controllers;
 [Authorize]
 public class HomeController(
     IApplicationService applicationService,
-    ApplicationRegistryClient apiClient) : Controller
+    UserManagementClient apiClient) : Controller
 {
     public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
     {

@@ -1,9 +1,9 @@
 using CO.CDP.UserManagement.App.Models;
-using ApiClient = CO.CDP.ApplicationRegistry.WebApiClient;
+using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Services;
 
-public sealed class UserService(ApiClient.ApplicationRegistryClient apiClient) : IUserService
+public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUserService
 {
     public async Task<UsersViewModel?> GetUsersViewModelAsync(
         string organisationSlug,

@@ -1,7 +1,6 @@
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
-using CO.CDP.Logging;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.Extensions.Logging;
 
@@ -13,11 +12,11 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 public class PersonLookupService : IPersonLookupService
 {
     private readonly IPersonClient _personClient;
-    private readonly SanitisingLogger<PersonLookupService> _logger;
+    private readonly ILogger<PersonLookupService> _logger;
 
     public PersonLookupService(
         IPersonClient personClient,
-        SanitisingLogger<PersonLookupService> logger)
+        ILogger<PersonLookupService> logger)
     {
         _personClient = personClient;
         _logger = logger;
