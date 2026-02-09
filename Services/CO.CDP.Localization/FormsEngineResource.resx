@@ -251,26 +251,25 @@
   </data>
   <data name="CyberEssentials_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
-      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need. For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
-      &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-      Failure to complete this module may result in your tenders being deemed insufficient where PPN 014 has been applied.
-      &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your certification&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; evidence of your certification&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      The Cyber Essentials certification scheme is a UK government initiative that helps organisations protect themselves from common cyber threats.
+      This certification reduces risks in the supply chain and is important for building trust in government contracts. The contracting authority you are bidding for will tell you which certification you need.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for.
+      Failure to complete this module may result in your tenders being deemed insufficient where current policy applies.
+    &lt;/p&gt;
+    &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;
+      You'll need to provide information on your Cyber Essentials or Cyber Essentials Plus certification (or equivalent). This may include:
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;confirmation that you meet the requirements of the certification scheme&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;the expiry date of your certification&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;evidence of your certification&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
     </value>
   </data>
-
   <!--Cyber Q2 Single Choice-->
   <data name="CyberEssentials_02_Title" xml:space="preserve">
     <value>Do you meet the Cyber Essentials certification requirements?</value>
@@ -1327,23 +1326,20 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_01_Description" xml:space="preserve">
     <value>
-      &lt;p class="govuk-body"&gt;
-        Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 020 has been applied. For more information read
-        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-          PPN 020: Guidance on data protection legislation (opens in a new tab)
-        &lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on data protection within your organisation. This may include your:&lt;/div&gt;
-      &lt;div class="govuk-body"&gt;
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li&gt;resource confirmation&lt;/li&gt;
-          &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
+    &lt;p class="govuk-body"&gt;
+      Data protection involves safeguarding personal data from misuse, loss, or unauthorised access. This module focuses on compliance with data protection laws (such as GDPR) and how a supplier manages, stores, and processes personal information.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy applies.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;The information you'll need&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;
+      You'll need to provide information on data protection within your organisation. This may include your:
+    &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;resource confirmation&lt;/li&gt;
+      &lt;li&gt;facilities and measures in place to ensure compliance with data protection laws&lt;/li&gt;
+    &lt;/ul&gt;
     </value>
   </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
@@ -1392,16 +1388,13 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="DataProtection_04_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Your response should include the technical facilities and processes you have in place, or will have in place by contract award, to ensure:&lt;/div&gt;
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Please provide details of the technical facilities and measures (including systems and processes) you have in place, or will have in place by contract award, to ensure compliance with UK data protection law and to ensure the protection of the rights of data subjects. Your response should include, but should not be limited to facilities and measures:&lt;/div&gt;
       &lt;div class=&quot;govuk-body&quot;&gt;
         &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-          &lt;li&gt;the rights of data subjects are protected&lt;/li&gt;
-          &lt;li&gt;processing systems and services are kept secure and reliable&lt;/li&gt;
-          &lt;li&gt;the rights of individuals to receive privacy information and to access, correct, delete, and transfer their personal data is protected&lt;/li&gt;
-          &lt;li&gt;consent for processing personal data is clear and recorded properly&lt;/li&gt;
-          &lt;li&gt;legal protections are in place for transferring personal data outside of the UK (where relevant)&lt;/li&gt;
-          &lt;li&gt;records of personal data processing activities are maintained&lt;/li&gt;
-          &lt;li&gt;the above measures are regularly tested and reviewed&lt;/li&gt;
+          &lt;li&gt;to ensure ongoing confidentiality, integrity, availability and resilience of processing systems and services;&lt;/li&gt;
+          &lt;li&gt;to comply with the rights of data subjects in respect of receiving privacy information, and access, rectification, deletion and portability of personal data;&lt;/li&gt;
+          &lt;li&gt;to ensure that any consent based processing meets standards of active, informed consent, and that such consents are recorded and auditable;&lt;/li&gt;
+          &lt;li&gt;to ensure legal safeguards are in place to legitimise transfers of personal data outside the UK (if such transfers will take place); to maintain records of personal data processing activities; and to regularly test, assess and evaluate the effectiveness of the above measures.&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
       &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
@@ -1422,23 +1415,21 @@ PPN 014: Cyber Essentials scheme (opens in a new tab).&lt;/a&gt;&lt;/p&gt;
   </data>
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>
-&lt;p class=&quot;govuk-body&quot;&gt;
-Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
-This should be in line with &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot;
-class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;
-PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;
       &lt;p class=&quot;govuk-body&quot;&gt;
-    You are only required to complete this module if requested by the contracting authority you are bidding for.
-    Failure to complete this module may result in your tenders being deemed insufficient where PPN 006 has been applied.
+        Carbon Net Zero is the commitment to balance greenhouse gas emissions with equivalent removals by 2050. In-scope organisations may be required to submit a Carbon Reduction Plan (CRP) when bidding for certain government contracts.
       &lt;/p&gt;
-&lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
-&lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
-  &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
-    &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        You are only required to complete this module if requested by the contracting authority you are bidding for.
+        Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
+      &lt;/p&gt;
+      &lt;h2 class=&quot;govuk-heading-m&quot;&gt;The information you&#39;ll need&lt;/h2&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;You&#39;ll need to provide information on your Carbon Reduction Plan. This may include:
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; the expiry date of your Carbon Reduction Plan&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your Emissions Declaration&lt;/li&gt;
+          &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt; your baseline and reporting year data&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
     </value>
   </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
@@ -1446,9 +1437,6 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="CarbonNetZero_02_SummaryTitle" xml:space="preserve">
     <value>Carbon Reduction Plan published</value>
-  </data>
-  <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value> &lt;p class=&quot;govuk-body&quot;&gt; For more information read &lt;a href=&quot;https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue&quot; class=&quot;govuk-link&quot; rel=&quot;noreferrer noopener&quot; target=&quot;_blank&quot;&gt;PPN 006: Taking account of Carbon Reduction Plans in the procurement of major government contracts (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="CarbonNetZero_03_Title" xml:space="preserve">
     <value>Do you have a link to your most recently published Carbon Reduction Plan?</value>
@@ -1650,9 +1638,6 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
   </data>
   <data name="Payments_04_Description" xml:space="preserve">
     <value>
-      &lt;div class=&quot;govuk-hint govuk-!-margin-top-2&quot;&gt;
-        The following question refers to public sector contracts awarded under the Procurement Act 2023
-      &lt;/div&gt;
       &lt;p class="govuk-body"&gt;Confirm you have:&lt;/p&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt;systems in place to include a minimum of 30-day payment terms in all your supply chain contracts&lt;/li&gt;
@@ -1796,15 +1781,15 @@ PPN 006 and associated reporting standards (opens in a new tab)&lt;/a&gt;.&lt;/p
     </value>
   </data>
   <data name="Payments_10_Title" xml:space="preserve">
-    <value>Can you confirm you have paid all your invoices within an average of 55 days?</value>
+    <value>Can you confirm you have paid all your invoices within an average of 45 days?</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-    <value>Invoices paid within 55-day average</value>
+    <value>Invoices paid within 45-day average</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
       &lt;div class="govuk-body"&gt;
-        Your invoices to suppliers must have been paid within an average of 55 days in at least one of the last two 6 month reporting periods.
+        Your invoices to suppliers must have been paid within an average of 45 days in at least one of the last two 6 month reporting periods.
       &lt;/div&gt;
     </value>
   </data>

@@ -54,3 +54,12 @@ resource "aws_route53_record" "opensearch_gateway" {
 
   records = [aws_lb.tools.dns_name]
 }
+
+resource "aws_route53_record" "s3_uploader" {
+  zone_id = var.public_hosted_zone_id
+  name    = var.s3_uploader_config.name
+  type    = "CNAME"
+  ttl     = 60
+
+  records = [aws_lb.tools.dns_name]
+}

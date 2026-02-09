@@ -19,6 +19,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
   - [ECS and SQS Queue Integration](./docs/diagrams.md#cdp-sirsi-application-ecs-and-sqs-queue-integration)
   - [High-Level Overview (DNS, Networking, ECS, and Data Flow)](#cdp-sirsi-application-high-level-overview-of-dns-networking-ecs-and-data-flow)
 - [Manage Secrets](./docs/manage-secrets.md)
+   - [Manage Tools Users (Cognito)](./docs/tools-users.md)
    - [Retrieve Diagnostic URI](./docs/manage-secrets.md#retrieve-diagnostic-uri)
    - [Update Charity Commission Secrets](./docs/manage-secrets.md#update-charity-commission-secrets)
    - [Update Companies House Secrets](./docs/manage-secrets.md#update-companies-house-secrets)

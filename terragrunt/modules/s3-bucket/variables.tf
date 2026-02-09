@@ -3,6 +3,12 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "cors_rules" {
+  description = "Optional CORS rules for the bucket"
+  type        = list(any)
+  default     = []
+}
+
 variable "enable_access_logging" {
   type        = bool
   default     = false

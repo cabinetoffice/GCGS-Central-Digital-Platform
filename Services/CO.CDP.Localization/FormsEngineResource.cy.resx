@@ -509,27 +509,6 @@
   <data name="DataProtection_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am ddiogelu data</value>
   </data>
-  <data name="DataProtection_01_Description" xml:space="preserve">
-    <value>
-      &lt;p class="govuk-body"&gt;
-        Mae a wnelo diogelu data â diogelu data personol rhag cael eu camddefnyddio, eu colli neu fynediad anawdurdodedig. Mae'r modiwl hwn yn canolbwyntio ar gydymffurfio â chyfreithiau diogelu data (fel GDPR) a sut mae cyflenwr yn rheoli, yn storio ac yn prosesu gwybodaeth bersonol.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        Mae ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 020 wedi'i gymhwyso. Am ragor o wybodaeth, darllenwch
-        &lt;a href="https://www.gov.uk/government/publications/ppn-020-guidance-on-data-protection-legislation/ppn-020-guidance-on-data-protection-legislation-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-          PPN 020: Canllaw ar ddeddfwriaeth diogelu data (bydd yn agor mewn tab newydd)
-        &lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am ddiogelu data yn eich sefydliad. Gall hyn gynnwys:&lt;/div&gt;
-      &lt;div class="govuk-body"&gt;
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li&gt;cadarnhad ynghylch adnoddau&lt;/li&gt;
-          &lt;li&gt;cael cyfleusterau a mesurau ar waith i sicrhau cydymffurfiaeth â chyfreithiau diogelu data&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-    </value>
-  </data>
   <data name="DataProtection_02_Title" xml:space="preserve">
     <value>A oes gennych yr adnoddau i sicrhau cydymffurfiaeth â GDPR y DU?</value>
   </data>
@@ -561,23 +540,6 @@
   </data>
   <data name="DataProtection_04_SummaryTitle" xml:space="preserve">
     <value>Manylion cyfleusterau a mesurau</value>
-  </data>
-  <data name="DataProtection_04_Description" xml:space="preserve">
-    <value>
-      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Dylai eich ymateb gynnwys y cyfleusterau a'r prosesau technegol sydd gennych ar waith, neu a fydd ar waith erbyn i'r contract gael ei ddyfarnu, er mwyn sicrhau'r canlynol:&lt;/div&gt;
-      &lt;div class=&quot;govuk-body&quot;&gt;
-        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
-          &lt;li&gt;caiff hawliau gwrthrychau data eu diogelu&lt;/li&gt;
-          &lt;li&gt;caiff systemau prosesu a gwasanaethau eu cadw'n ddiogel ac yn ddibynadwy&lt;/li&gt;
-          &lt;li&gt;caiff hawliau unigolion i dderbyn gwybodaeth am breifatrwydd ac i gael gafael ar ddata personol, eu cywiro, eu dileu a'u trosglwyddo eu diogelu&lt;/li&gt;
-          &lt;li&gt;mae cydsyniad ar gyfer prosesu data personol yn glir a chaiff ei gofnodi'n briodol&lt;/li&gt;
-          &lt;li&gt;mae amddiffyniadau cyfreithiol ar waith i drosglwyddo data personol y tu allan i'r DU (lle y bo'n berthnasol)&lt;/li&gt;
-          &lt;li&gt;caiff cofnodion o weithgareddau prosesu data personol eu cynnal&lt;/li&gt;
-          &lt;li&gt;caiff y mesurau uchod eu profi a'u hadolygu'n rheolaidd  &lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-      &lt;p class="govuk-hint"&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, ewch ymlaen i'r cwestiwn nesaf&lt;/p&gt;
-    </value>
   </data>
   <data name="DataProtection_05_Title" xml:space="preserve">
     <value>A oes gennych ddogfennau ategol i'w lanlwytho?</value>
@@ -635,26 +597,6 @@
   </data>
   <data name="CyberEssentials_02_Title" xml:space="preserve">
     <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials? </value>
-  </data>
-  <data name="CyberEssentials_01_Description" xml:space="preserve">
-    <value>
-&lt;p class="govuk-body"&gt;
-Mae cynllun ardystio Cyber Essentials yn un o fentrau Llywodraeth y DU sy'n helpu sefydliadau i amddiffyn eu hunain rhag bygythiadau seiber cyffredin. Mae'r ardystiad hwn yn lleihau risgiau yn y gadwyn gyflenwi ac mae'n bwysig er mwyn meithrin ymddiriedaeth yng nghontractau'r llywodraeth. Bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn rhoi gwybod i chi pa ardystiad sydd ei angen arnoch. Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-014-cyber-essentials-scheme/ppn-014-cyber-essentials-scheme-html"
-class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-    Bydd ond angen i chi gwblhau'r modiwl hwn os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hyny.
-    Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 014 wedi'i gymhwyso.
-      &lt;/p&gt;
-&lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
-&lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich ardystiad Cyber Essentials neu Cyber Essentials Plus (neu ardystiad cyfatebol). Gall hyn gynnwys:
-  &lt;ul class="govuk-list govuk-list--bullet"&gt;
-    &lt;li class="govuk-!-margin-top-2"&gt; cadarnhad eich bod yn bodloni gofynion y cynllun ardystio&lt;/li&gt;
-    &lt;li class="govuk-!-margin-top-2"&gt; dyddiad dirwyn i ben eich ardystiad&lt;/li&gt;
-    &lt;li class="govuk-!-margin-top-2"&gt; tystiolaeth o'ch ardystiad&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/div&gt;
-    </value>
   </data>
   <data name="CyberEssentials_02_SummaryTitle" xml:space="preserve">
     <value>Bodlonwyd y gofynion</value>
@@ -973,9 +915,6 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
   </data>
   <data name="Payments_04_Description" xml:space="preserve">
     <value>
-      &lt;div class="govuk-hint govuk-!-margin-top-2"&gt;
-        Mae'r cwestiwn canlynol yn cyfeirio at gontractau sector cyhoeddus a ddyfernir o dan Ddeddf Caffael 2023
-      &lt;/div&gt;
       &lt;p class="govuk-body"&gt;Cadarnhewch fod gennych:&lt;/p&gt;
       &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li&gt;systemau ar waith i gynnwys telerau talu o fewn 30 diwrnod o leiaf ym mhob un o'ch contractau cadwyn gyflenwi&lt;/li&gt;
@@ -1093,12 +1032,12 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
     </value>
   </data>
   <data name="Payments_10_Title" xml:space="preserve">
-    <value>Allwch chi gadarnhau eich bod wedi talu pob un o'ch anfonebau o fewn 55 diwrnod, ar gyfartaledd?</value>
+    <value>Allwch chi gadarnhau eich bod wedi talu pob un o'ch anfonebau o fewn 45 diwrnod, ar gyfartaledd?</value>
   </data>
   <data name="Payments_10_Description" xml:space="preserve">
     <value>
       &lt;div class="govuk-body"&gt;
-        Rhaid bod eich anfonebau i gyflenwyr wedi'u talu o fewn 55 diwrnod, ar gyfartaledd, yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis.
+        Rhaid bod eich anfonebau i gyflenwyr wedi'u talu o fewn 45 diwrnod, ar gyfartaledd, yn o leiaf un o'r ddau gyfnod adrodd diwethaf o chwe mis.
       &lt;/div&gt;
     </value>
   </data>
@@ -1169,39 +1108,13 @@ PPN 014: Cynllun Cyber Essentials (bydd yn agor mewn tab newydd).&lt;/a&gt;&lt;/
     <value>Talwyd 95% o anfonebau o fewn 60 diwrnod</value>
   </data>
   <data name="Payments_10_SummaryTitle" xml:space="preserve">
-    <value>Talwyd anfonebau o fewn 55 diwrnod, ar gyfartaledd</value>
+    <value>Talwyd anfonebau o fewn 45 diwrnod, ar gyfartaledd</value>
   </data>
   <data name="Payments_11_SummaryTitle" xml:space="preserve">
     <value>Lanlwythwyd cynllun gweithredu</value>
   </data>
-  <data name="CarbonNetZero_01_Description" xml:space="preserve">
-    <value>
-      &lt;p class="govuk-body"&gt;
-        Carbon Sero Net yw'r ymrwymiad i gydbwyso allyriadau nwyon tŷ gwydr â symiau cyfatebol a ddilëir erbyn 2025.
-        Efallai y bydd angen i sefydliadau sydd o fewn y cwmpas gyflwyno Cynllun Lleihau Carbon wrth gynnig am gontractau penodol gan y llywodraeth. Dylai hyn fod yn unol â &lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue"
-        class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-        PPN 006 a safonau adrodd cysylltiedig (yn agor mewn tab newydd)&lt;/a&gt;.
-      &lt;/p&gt;
-      &lt;p class="govuk-body"&gt;
-        Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae PPN 006 wedi'i gymhwyso.
-      &lt;/p&gt;
-      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
-      &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys:
-        &lt;ul class="govuk-list govuk-list--bullet"&gt;
-          &lt;li class="govuk-!-margin-top-2"&gt; y dyddiad y daw eich Cynllun Lleihau Carbon i ben&lt;/li&gt;
-          &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;
-          &lt;li class="govuk-!-margin-top-2"&gt; eich data blwyddyn sylfaen a blwyddyn adrodd&lt;/li&gt;
-        &lt;/ul&gt;
-      &lt;/div&gt;
-    </value>
-  </data>
   <data name="CarbonNetZero_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am Garbon Sero Net</value>
-  </data>
-  <data name="CarbonNetZero_02_Description" xml:space="preserve">
-    <value>
-     &lt;p class="govuk-body"&gt;Am ragor o wybodaeth, darllenwch &lt;a href="https://www.gov.uk/government/publications/ppn-006-taking-account-of-carbon-reduction-plans-in-the-procurement-of-major-government-contracts/ppn-006-taking-account-of-carbon-reduction-plans-html#issue" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;PPN 006: Ystyried Cylluniau Lleihau Carbon wrth gaffael contractau mawr y llywodraeth (yn agor mewn tab newydd)&lt;/a&gt;.&lt;/p&gt;
-    </value>
   </data>
   <data name="CarbonNetZero_02_Title" xml:space="preserve">
     <value>Ydych chi wedi cyhoeddi Cynllun Lleihau Carbon sy'n cyrraedd y safon adrodd ofynnol?</value>

@@ -270,6 +270,22 @@ variable "role_terraform_arn" {
   type        = string
 }
 
+variable "s3_fts_bucket" {
+  description = "FTS S3 Bucket name"
+  type        = string
+}
+
+variable "s3_uploader_config" {
+  description = "S3 Uploader services configuration"
+  type = object({
+    cpu       = number
+    memory    = number
+    name      = string
+    port      = number
+    port_host = number
+  })
+}
+
 variable "sqs_entity_verification_url" {
   description = "URL of the Entity Verification's SQS queue"
   type        = string
@@ -311,6 +327,11 @@ variable "user_pool_arn_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_arn_tools" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_cloud_beaver" {
   default = null
   type    = string
@@ -326,6 +347,11 @@ variable "user_pool_client_id_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_client_id_tools_s3_uploader" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_domain_cloud_beaver" {
   default = null
   type    = string
@@ -337,6 +363,11 @@ variable "user_pool_domain_healthcheck" {
 }
 
 variable "user_pool_domain_opensearch_admin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_tools" {
   default = null
   type    = string
 }

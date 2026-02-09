@@ -83,7 +83,7 @@ locals {
       ]
       pinned_service_version_cfs    = "1.0.7"
       pinned_service_version_fts    = "1.1.7"
-      pinned_service_version        = "1.0.81"
+      pinned_service_version        = "1.0.82"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
@@ -119,8 +119,8 @@ locals {
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.6"
-      pinned_service_version        = "1.0.81"
+      pinned_service_version_fts    = "1.1.7"
+      pinned_service_version        = "1.0.82"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
@@ -152,8 +152,8 @@ locals {
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
       pinned_service_version_cfs       = "1.0.7"
-      pinned_service_version_fts       = "1.1.6"
-      pinned_service_version           = "1.0.80"
+      pinned_service_version_fts       = "1.1.7"
+      pinned_service_version           = "1.0.82"
       postgres_instance_type           = "db.t4g.micro"
       postgres_aurora_instance_type    = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev = "db.r5.4xlarge"
@@ -294,7 +294,7 @@ locals {
     managed_by  = "terragrunt"
   }
 
-  tools_configs = {
+  tools_configs_common = {
     clamav = {
       cpu       = 1024
       memory    = 3072
@@ -331,26 +331,33 @@ locals {
       port_host = 3030
     }
     k6 = {
-      cpu       = 1024
-      memory    = 3072
       name      = "k6"
       port      = 4040
       port_host = null
     }
     opensearch_admin = {
-      cpu       = 1024
-      memory    = 3072
       name      = "opensearch-admin"
       port      = 5601
       port_host = 5601
     }
     opensearch_gateway = {
-      cpu       = 1024
-      memory    = 3072
       name      = "opensearch-gateway"
       port      = 5602
       port_host = 5602
     }
+    s3_uploader = {
+      name      = "s3-uploader"
+      port      = 8000
+      port_host = 8000
+    }
+  }
+
+  tools_configs = {
+    for service, config in local.tools_configs_common :
+    service => merge(
+      local.resource_defaults[local.environment],
+      config
+    )
   }
 
   tg = {

@@ -34,6 +34,10 @@ output "php_ecs_listener_arn" {
   value = local.php_ecs_listener_arn
 }
 
+output "s3_fts_bucket" {
+  value = module.s3_bucket_fts.bucket
+}
+
 output "service_configs" {
   value = local.service_configs
 }
@@ -82,4 +86,3 @@ output "services_target_group_arn_suffix_map" {
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
   }
 }
-

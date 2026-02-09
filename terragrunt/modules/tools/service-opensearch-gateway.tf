@@ -2,7 +2,7 @@ module "ecs_service_opensearch_gateway" {
   source = "../ecs-service"
 
   container_definitions = templatefile(
-    "${path.module}/templates/task-definitions/opensearch_gateway.json.tftpl",
+    "${path.module}/templates/task-definitions/${var.opensearch_gateway_config.name}.json.tftpl",
     {
       account_id          = data.aws_caller_identity.current.account_id
       container_port      = var.opensearch_gateway_config.port
