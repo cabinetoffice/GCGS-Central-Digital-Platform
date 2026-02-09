@@ -180,7 +180,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Core"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Shared", "Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.WebApiClient", "Libraries\CO.CDP.ApplicationRegistry.WebApiClient\CO.CDP.ApplicationRegistry.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.WebApiClient", "Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
 	ProjectSection(ProjectDependencies) = postProject
 		{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802} = {44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}
 	EndProjectSection
