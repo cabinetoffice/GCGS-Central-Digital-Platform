@@ -1602,22 +1602,20 @@
   <data name="Payments_01_Description" xml:space="preserve">
     <value>
     &lt;p class="govuk-body"&gt;
-      The Government has committed to tackling late payments as part of its Plan for Small Businesses. This module focuses on identifying the reliability of a supplier's payment systems, to ensure compliance with government payment policies and promote fair cash flow for businesses. For more information read
-      &lt;a href="https://www.gov.uk/government/publications/ppn-015-how-to-take-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts/ppn-015-taking-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      PPN 015: Taking account of a supplier's approach to payment in the procurement of major contracts (opens in a new tab)&lt;/a&gt;.
+      The Government has committed to tackling late payments as part of its Plan for Small Businesses. This module focuses on identifying the reliability of a supplier's payment systems, to ensure compliance with government payment policies and promote fair cash flow for businesses.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 015 has been applied.
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-    &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on your payments and invoices. This may include:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
-      &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt;compliance with your payment terms&lt;/li&gt;
-        &lt;li&gt;payment and invoice details for the last two six month reporting periods&lt;/li&gt;
-        &lt;li&gt;an action plan for reducing late payments (where relevant)&lt;/li&gt;
-      &lt;/ul&gt;
+      You&#39;ll need to provide information on your payments and invoices. This may include:
     &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;compliance with your payment terms&lt;/li&gt;
+      &lt;li&gt;payment and invoice details for the last two six month reporting periods&lt;/li&gt;
+      &lt;li&gt;an action plan for reducing late payments (where relevant)&lt;/li&gt;
+    &lt;/ul&gt;
     </value>
   </data>
   <data name="Payments_02_Title" xml:space="preserve">
