@@ -172,24 +172,24 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.RegisterOfCommercial
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging", "Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj", "{3F358BE9-D239-40BD-BAC0-7F95DB17E3C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.Infrastructure", "Services\CO.CDP.ApplicationRegistry.Infrastructure\CO.CDP.ApplicationRegistry.Infrastructure.csproj", "{F3A6004C-9670-4431-8A28-578D7D8A21AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Infrastructure", "Services\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj", "{F3A6004C-9670-4431-8A28-578D7D8A21AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging.Tests", "Libraries\CO.CDP.Logging.Tests\CO.CDP.Logging.Tests.csproj", "{E8D9E5BD-7D25-416D-855D-D49AA3E19D6A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.Core", "Libraries\CO.CDP.ApplicationRegistry.Core\CO.CDP.ApplicationRegistry.Core.csproj", "{53D63863-D65D-447C-AF38-A2894AEBD60F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Core", "Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj", "{53D63863-D65D-447C-AF38-A2894AEBD60F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.Shared", "Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Shared", "Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.WebApiClient", "Libraries\CO.CDP.ApplicationRegistry.WebApiClient\CO.CDP.ApplicationRegistry.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.WebApiClient", "Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
 	ProjectSection(ProjectDependencies) = postProject
 		{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802} = {44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.App", "Frontend\CO.CDP.ApplicationRegistry.App\CO.CDP.ApplicationRegistry.App.csproj", "{177AD390-E2F3-431A-BCB7-1D40FAE4B323}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.App", "Frontend\CO.CDP.UserManagement.App\CO.CDP.UserManagement.App.csproj", "{177AD390-E2F3-431A-BCB7-1D40FAE4B323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.Api", "Services\CO.CDP.ApplicationRegistry.Api\CO.CDP.ApplicationRegistry.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api", "Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.UnitTests", "Services\CO.CDP.ApplicationRegistry.UnitTests\CO.CDP.ApplicationRegistry.UnitTests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.UnitTests", "Services\CO.CDP.UserManagement.UnitTests\CO.CDP.UserManagement.UnitTests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

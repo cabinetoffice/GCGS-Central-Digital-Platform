@@ -1,0 +1,210 @@
+@model CO.CDP.UserManagement.App.Models.ApplicationDetailsViewModel
+@{
+    ViewData["Title"] = Model.ApplicationName;
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug/applications" class="govuk-back-link">Back to applications</a>
+}
+
+<div class="govuk-blue-banner">
+    <div class="govuk-width-container">
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-2">@Model.ApplicationName</h1>
+        @if (!string.IsNullOrEmpty(Model.ApplicationDescription))
+        {
+            <p class="govuk-body">@Model.ApplicationDescription</p>
+        }
+    </div>
+</div>
+
+<!-- Stats Row -->
+<div class="govuk-grid-row govuk-!-margin-bottom-6">
+    <div class="govuk-grid-column-one-third">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.UsersAssigned</span>
+            <span class="govuk-body">Users assigned</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.RolesAvailable</span>
+            <span class="govuk-body">Roles available</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.TotalPermissions</span>
+            <span class="govuk-body">Permissions</span>
+        </div>
+    </div>
+</div>
+
+<!-- Application Details -->
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <h2 class="govuk-heading-l">Application details</h2>
+        
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Status</dt>
+                <dd class="govuk-summary-list__value">
+                    @if (Model.IsEnabled)
+                    {
+                        <strong class="govuk-tag govuk-tag--green">Enabled</strong>
+                    }
+                    else
+                    {
+                        <strong class="govuk-tag govuk-tag--grey">Not enabled</strong>
+                    }
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Client ID</dt>
+                <dd class="govuk-summary-list__value"><code>@Model.ClientId</code></dd>
+            </div>
+            @if (!string.IsNullOrEmpty(Model.ApplicationCategory))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Category</dt>
+                    <dd class="govuk-summary-list__value">@Model.ApplicationCategory</dd>
+                </div>
+            }
+            @if (Model.EnabledAt.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Enabled date</dt>
+                    <dd class="govuk-summary-list__value">@Model.EnabledAt.Value.ToString("d MMMM yyyy")</dd>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.EnabledBy))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Enabled by</dt>
+                    <dd class="govuk-summary-list__value">@Model.EnabledBy</dd>
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(Model.SupportContact))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Support contact</dt>
+                    <dd class="govuk-summary-list__value">
+                        <a href="mailto:@Model.SupportContact" class="govuk-link">@Model.SupportContact</a>
+                    </dd>
+                </div>
+            }
+        </dl>
+
+        <!-- Available Roles -->
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">Available roles</h2>
+        <p class="govuk-body">These roles can be assigned to users in your organisation:</p>
+
+        @foreach (var role in Model.Roles)
+        {
+            <div class="govuk-summary-card">
+                <div class="govuk-summary-card__title-wrapper">
+                    <h3 class="govuk-summary-card__title">@role.Name</h3>
+                    <ul class="govuk-summary-card__actions">
+                        <li class="govuk-summary-card__action">
+                            <span class="govuk-body-s">@role.Permissions.Count users</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="govuk-summary-card__content">
+                    @if (!string.IsNullOrEmpty(role.Description))
+                    {
+                        <p class="govuk-body">@role.Description</p>
+                    }
+                    @if (role.Permissions.Count > 0)
+                    {
+                        <p class="govuk-body-s govuk-!-margin-bottom-2"><strong>Permissions:</strong></p>
+                        <div>
+                            @foreach (var permission in role.Permissions)
+                            {
+                                <strong class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">@permission</strong>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <!-- Assigned Users -->
+        <h2 class="govuk-heading-l govuk-!-margin-top-8">Assigned users</h2>
+        
+        <div class="govuk-button-group govuk-!-margin-bottom-4">
+            <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
+        </div>
+
+        @if (Model.AssignedUsers.Count == 0)
+        {
+            <div class="govuk-inset-text">
+                <p>No users are currently assigned to this application.</p>
+                <p>
+                    <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign users to this application</a>
+                </p>
+            </div>
+        }
+        else
+        {
+            @foreach (var user in Model.AssignedUsers)
+            {
+                <div class="govuk-summary-card">
+                    <div class="govuk-summary-card__title-wrapper">
+                        <h3 class="govuk-summary-card__title">
+                            <a href="/organisation/@Model.OrganisationSlug/users/@user.UserEmail" class="govuk-link">@user.UserName</a>
+                        </h3>
+                    </div>
+                    <div class="govuk-summary-card__content">
+                        <p class="govuk-body-s">@user.UserEmail</p>
+                        <p class="govuk-body-s">
+                            <strong class="govuk-tag govuk-tag--green">@user.RoleName</strong>
+                            <span class="govuk-!-margin-left-2">Assigned @user.AssignedAt.ToString("d MMM yyyy")</span>
+                        </p>
+                        <p class="govuk-body">
+                            <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                            <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/revoke" class="govuk-link">Revoke access</a>
+                        </p>
+                    </div>
+                </div>
+            }
+        }
+
+    </div>
+
+    <!-- Sidebar -->
+    <div class="govuk-grid-column-one-third">
+        <div class="govuk-inset-text">
+            <h3 class="govuk-heading-s">Need help?</h3>
+            @if (!string.IsNullOrEmpty(Model.SupportContact))
+            {
+                <p class="govuk-body-s">Contact the @Model.ApplicationName support team:</p>
+                <p class="govuk-body-s">
+                    <a href="mailto:@Model.SupportContact" class="govuk-link">@Model.SupportContact</a>
+                </p>
+            }
+            else
+            {
+                <p class="govuk-body-s">For support with this application, contact your system administrator.</p>
+            }
+        </div>
+
+        <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+
+        <h3 class="govuk-heading-s">Actions</h3>
+        <ul class="govuk-list">
+            <li>
+                <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign a user</a>
+            </li>
+            <li>
+                <a href="/organisation/@Model.OrganisationSlug/assignments?application=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
+            </li>
+            @if (Model.IsEnabled)
+            {
+                <li>
+                    <a href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug/disable" class="govuk-link">Disable application</a>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
