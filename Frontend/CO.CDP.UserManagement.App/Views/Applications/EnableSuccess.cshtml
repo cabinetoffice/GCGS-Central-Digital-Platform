@@ -1,0 +1,64 @@
+@model CO.CDP.UserManagement.App.Models.EnableApplicationSuccessViewModel
+@{
+    ViewData["Title"] = "Application enabled";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Application enabled</h1>
+            <div class="govuk-panel__body">
+                @Model.ApplicationName has been enabled for @Model.OrganisationName
+            </div>
+        </div>
+
+        <h2 class="govuk-heading-m govuk-!-margin-top-7">What happens next</h2>
+
+        <p class="govuk-body">You can now assign users in your organisation to this application. Each user will need to be given at least one role to access the application.</p>
+
+        <h3 class="govuk-heading-s govuk-!-margin-top-5">Next steps</h3>
+        <ol class="govuk-list govuk-list--number">
+            <li>Go to <a href="/organisation/@Model.OrganisationSlug/assignments" class="govuk-link">user assignments</a> to give users access</li>
+            <li>Select the users you want to assign</li>
+            <li>Choose the appropriate role for each user</li>
+        </ol>
+
+        <div class="govuk-inset-text">
+            Users will be able to access @Model.ApplicationName as soon as you assign them a role.
+        </div>
+
+        <h3 class="govuk-heading-s govuk-!-margin-top-5">Application details</h3>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Application</dt>
+                <dd class="govuk-summary-list__value">@Model.ApplicationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.OrganisationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Enabled by</dt>
+                <dd class="govuk-summary-list__value">@Model.EnabledBy</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Date enabled</dt>
+                <dd class="govuk-summary-list__value">@Model.EnabledAt.ToString("d MMMM yyyy")</dd>
+            </div>
+            @if (Model.AvailableRoles.Count > 0)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Available roles</dt>
+                    <dd class="govuk-summary-list__value">@string.Join(", ", Model.AvailableRoles)</dd>
+                </div>
+            }
+        </dl>
+
+        <div class="govuk-button-group govuk-!-margin-top-6">
+            <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign users to this application</a>
+            <a href="/organisation/@Model.OrganisationSlug/applications" class="govuk-link">Return to applications</a>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,175 @@
+@using CO.CDP.ApplicationRegistry.Shared.Enums
+@model CO.CDP.UserManagement.App.Models.UsersViewModel
+@{
+    ViewData["Title"] = "Manage users";
+    var organisation = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@organisation" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Manage users</h1>
+        <p class="govuk-body-l">Add users to your organisation and manage their access to applications.</p>
+    </div>
+</div>
+
+<div class="govuk-button-group govuk-!-margin-bottom-6">
+    <a href="/organisation/@organisation/users/add" class="govuk-button" data-module="govuk-button">Add a user</a>
+    <a href="/organisation/@organisation/assignments" class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage application access</a>
+</div>
+
+<form method="get" aria-label="Search and filter users" class="app-filter-container">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-one-quarter">
+            <div class="govuk-form-group filter-dropdown-wrapper">
+                <label class="govuk-label govuk-!-font-weight-bold" for="role-filter">
+                    Organisation role
+                </label>
+                <select class="govuk-select" id="role-filter" name="role">
+                    <option value="">All roles</option>
+                    <option value="@OrganisationRole.Owner.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Owner.ToString().ToLower())">@OrganisationRole.Owner</option>
+                    <option value="@OrganisationRole.Admin.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Admin.ToString().ToLower())">@OrganisationRole.Admin</option>
+                    <option value="@OrganisationRole.Member.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Member.ToString().ToLower())">@OrganisationRole.Member</option>
+                </select>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+            <div class="govuk-form-group filter-dropdown-wrapper">
+                <label class="govuk-label govuk-!-font-weight-bold" for="application-filter">
+                    Has access to
+                </label>
+                <select class="govuk-select" id="application-filter" name="application">
+                    <option value="">All applications</option>
+                    @* TODO: Populate with enabled applications *@
+                </select>
+            </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+            <div class="govuk-form-group">
+                <label class="govuk-label govuk-!-font-weight-bold" for="user-search">
+                    Search users
+                </label>
+                <div class="search-flex-display">
+                    <input class="govuk-input search-text-input"
+                           id="user-search"
+                           name="search"
+                           type="text"
+                           value="@Model.SearchTerm"
+                           placeholder="e.g. name or email">
+
+                    <button type="submit" class="govuk-button search-button govuk-!-width-auto" data-module="govuk-button" id="search-button">
+                        <span class="govuk-visually-hidden">Search</span>
+                        <svg class="gem-c-search__icon" width="18" height="18" viewBox="0 0 27 27" fill="none"
+                             xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+                            <circle cx="12.0161" cy="11.0161" r="8.51613" stroke="currentColor" stroke-width="3"></circle>
+                            <line x1="17.8668" y1="17.3587" x2="26.4475" y2="25.9393" stroke="currentColor"
+                                  stroke-width="3"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.TotalCount == 0)
+{
+    <div class="govuk-inset-text">
+        <p>No users found.</p>
+        @if (!string.IsNullOrEmpty(Model.SelectedRole) || !string.IsNullOrEmpty(Model.SelectedApplication) || !string.IsNullOrEmpty(Model.SearchTerm))
+        {
+            <p>Try:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>checking your spelling</li>
+                <li>using different search terms</li>
+                <li><a href="?organisation=@organisation" class="govuk-link">clearing the filters</a></li>
+            </ul>
+        }
+        else
+        {
+            <p><a href="/organisation/@organisation/users/add" class="govuk-link">Add your first user</a> to get started.</p>
+        }
+    </div>
+}
+else
+{
+    <p class="govuk-body">Showing @Model.TotalCount @(Model.TotalCount == 1 ? "user" : "users")</p>
+
+    @foreach (var user in Model.Users)
+    {
+        <div class="govuk-summary-card govuk-!-margin-bottom-6">
+            <div class="govuk-summary-card__title-wrapper">
+                <h2 class="govuk-summary-card__title">
+                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link">@user.Name</a>
+                </h2>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <span class="govuk-body-s">@user.Email</span>
+                    </li>
+                    <li class="govuk-summary-card__action">
+                        @{
+                            var isPending = user.Status == UserStatus.Pending;
+                            var roleTagClass = user.OrganisationRole switch
+                            {
+                                OrganisationRole.Owner => "govuk-tag--blue",
+                                OrganisationRole.Admin => "govuk-tag--green",
+                                _ => ""
+                            };
+                        }
+                        <strong class="govuk-tag @roleTagClass">@user.OrganisationRole</strong>
+                        @if (isPending)
+                        {
+                            <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-1">@user.Status</strong>
+                        }
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                @if (user.ApplicationAccess.Count == 0)
+                {
+                    <p class="govuk-body govuk-!-margin-bottom-2">No applications assigned yet</p>
+                }
+                else
+                {
+                    <p class="govuk-body-s govuk-!-margin-bottom-2"><strong>Application access:</strong></p>
+                    <div>
+                        @foreach (var app in user.ApplicationAccess)
+                        {
+                            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
+                                @app.ApplicationName: @app.RoleName
+                            </span>
+                        }
+                    </div>
+                }
+
+                <p class="govuk-body govuk-!-margin-top-4">
+                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
+                    @if (isPending)
+                    {
+                        <a href="/organisation/@organisation/users/@user.Id/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                    }
+                    else
+                    {
+                        <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
+                    }
+                    <a href="/organisation/@organisation/users/@user.Id/change-role" class="govuk-link">Change org role</a>
+                </p>
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script nonce-csp>
+        document.getElementById('role-filter')?.addEventListener('change', function() {
+            this.form.submit();
+        });
+        document.getElementById('application-filter')?.addEventListener('change', function() {
+            this.form.submit();
+        });
+    </script>
+}

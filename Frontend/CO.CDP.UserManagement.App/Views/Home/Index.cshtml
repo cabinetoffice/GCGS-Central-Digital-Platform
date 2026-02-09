@@ -1,0 +1,125 @@
+@model CO.CDP.UserManagement.App.Models.HomeViewModel
+@{
+    ViewData["Title"] = "Manage your services";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">@Model.OrganisationName</span>
+        <h1 class="govuk-heading-xl">Manage your services</h1>
+        <p class="govuk-body-l">Configure which applications your organisation can access, and manage user permissions.</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.Stats.ApplicationsEnabled</span>
+            <span class="govuk-body">Applications enabled</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">@Model.Stats.TotalUsers</span>
+            <span class="govuk-body">Users</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">0</span>
+            <span class="govuk-body">Active assignments</span>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-quarter">
+        <div class="app-dashboard-stat">
+            <span class="govuk-heading-l">0</span>
+            <span class="govuk-body">Roles assigned</span>
+        </div>
+    </div>
+</div>
+
+<div class="govuk-grid-row govuk-!-margin-top-6">
+    <div class="govuk-grid-column-one-half">
+        <div class="tile">
+            <h3 class="govuk-heading-m">Manage applications</h3>
+            <p class="govuk-body">Enable or disable applications for your organisation. View available applications and their descriptions.</p>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-half">
+        <div class="tile">
+            <h3 class="govuk-heading-m">Manage users</h3>
+            <p class="govuk-body">Add users to your organisation and assign them access to applications with specific roles and permissions.</p>
+        </div>
+    </div>
+</div>
+<div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-column-one-half">
+        <div class="tile">
+            <h3 class="govuk-heading-m">Assign users to applications</h3>
+            <p class="govuk-body">Give users access to enabled applications by assigning roles that control what they can do.</p>
+        </div>
+    </div>
+    <div class="govuk-grid-column-one-half">
+        <div class="tile">
+            <h3 class="govuk-heading-m">Organisation settings</h3>
+            <p class="govuk-body">View and edit your organisation details, manage administrators, and configure settings.</p>
+        </div>
+    </div>
+</div>
+
+<h2 class="govuk-heading-l govuk-!-margin-top-8">Enabled applications</h2>
+
+@{
+    var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+}
+
+@if (Model.EnabledApplications.Count == 0)
+{
+    <div class="govuk-inset-text">
+        <p>No applications are currently enabled for your organisation.</p>
+        <p>
+            <a href="/organisation/@organisationSlug/applications" class="govuk-link">Browse and enable applications</a>
+        </p>
+    </div>
+}
+else
+{
+    @foreach (var app in Model.EnabledApplications)
+    {
+        <div class="govuk-summary-card govuk-!-margin-bottom-6">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">
+                    <a href="/organisation/@organisationSlug/applications/@app.Slug" class="govuk-link">@app.Name</a>
+                </h3>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <strong class="govuk-tag govuk-tag--green">Enabled</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                @if (!string.IsNullOrEmpty(app.Description))
+                {
+                    <p class="govuk-body">@app.Description</p>
+                }
+                <dl class="govuk-summary-list govuk-summary-list--no-border">
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Users assigned</dt>
+                        <dd class="govuk-summary-list__value">@app.UsersAssigned</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Roles available</dt>
+                        <dd class="govuk-summary-list__value">@app.RolesAvailable</dd>
+                    </div>
+                </dl>
+                <p class="govuk-body">
+                    <a href="/organisation/@organisationSlug/applications/@app.Slug/users" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
+                    <a href="/organisation/@organisationSlug/applications/@app.Slug" class="govuk-link">View details</a>
+                </p>
+            </div>
+        </div>
+    }
+    <p class="govuk-body govuk-!-margin-top-6">
+        <a href="/organisation/@organisationSlug/applications" class="govuk-link">View all available applications</a>
+    </p>
+}
