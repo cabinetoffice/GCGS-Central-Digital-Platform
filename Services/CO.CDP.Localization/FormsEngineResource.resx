@@ -1467,8 +1467,11 @@
   </data>
   <data name="CarbonNetZero_05_Description" xml:space="preserve">
     <value>
-    &lt;p class="govuk-hint"&gt;For example, 2027&lt;/p&gt;
-    &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;Year&lt;/p&gt;
+      &lt;p class="govuk-body"&gt;
+        To be compliant with current policy, your Net Zero Target should be on or before 2050.
+      &lt;/p&gt;
+      &lt;p class="govuk-hint"&gt;For example, 2027&lt;/p&gt;
+      &lt;p class="govuk-body govuk-!-margin-bottom-2"&gt;Year&lt;/p&gt;
     </value>
   </data>
   <data name="CarbonNetZero_06_Title" xml:space="preserve">
