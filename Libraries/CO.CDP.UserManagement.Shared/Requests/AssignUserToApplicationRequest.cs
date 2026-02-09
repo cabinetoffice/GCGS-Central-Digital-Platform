@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Requests;
+namespace CO.CDP.UserManagement.Shared.Requests;
 
 /// <summary>
 /// Request model for assigning a user to an application with roles.

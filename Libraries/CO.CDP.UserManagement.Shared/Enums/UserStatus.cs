@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Enums;
+namespace CO.CDP.UserManagement.Shared.Enums;
 
 /// <summary>
 /// Represents the status of a user within the organisation.

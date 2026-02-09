@@ -1,12 +1,12 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Responses;
+namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>
-/// Response model for a permission.
+/// Response model for a role.
 /// </summary>
-public record PermissionResponse
+public record RoleResponse
 {
     /// <summary>
-    /// Gets or sets the permission identifier.
+    /// Gets or sets the role identifier.
     /// </summary>
     public required int Id { get; init; }
 
@@ -16,19 +16,24 @@ public record PermissionResponse
     public required int ApplicationId { get; init; }
 
     /// <summary>
-    /// Gets or sets the permission name.
+    /// Gets or sets the role name.
     /// </summary>
     public required string Name { get; init; }
 
     /// <summary>
-    /// Gets or sets the permission description.
+    /// Gets or sets the role description.
     /// </summary>
     public string? Description { get; init; }
 
     /// <summary>
-    /// Gets or sets whether the permission is active.
+    /// Gets or sets whether the role is active.
     /// </summary>
     public required bool IsActive { get; init; }
+
+    /// <summary>
+    /// Gets or sets the collection of permissions assigned to this role.
+    /// </summary>
+    public IEnumerable<PermissionResponse>? Permissions { get; init; }
 
     /// <summary>
     /// Gets or sets the creation timestamp.

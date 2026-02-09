@@ -24,7 +24,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
         <ProjectReference Include="..\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj"/>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj"/>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj"/>

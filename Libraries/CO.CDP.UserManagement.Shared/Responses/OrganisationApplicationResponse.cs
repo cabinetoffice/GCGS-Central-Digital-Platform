@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Responses;
+namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>
 /// Response model for an organisation-application relationship.

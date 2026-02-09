@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Enums;
 
 namespace CO.CDP.UserManagement.App.Models;
 

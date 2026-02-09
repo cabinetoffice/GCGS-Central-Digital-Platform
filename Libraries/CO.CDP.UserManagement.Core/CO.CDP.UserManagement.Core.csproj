@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj"/>
+        <ProjectReference Include="..\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
     </ItemGroup>
 
 </Project>

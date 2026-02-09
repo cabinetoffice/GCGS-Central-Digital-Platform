@@ -1,5 +1,5 @@
 using CO.CDP.UserManagement.Core.Entities;
-using CO.CDP.ApplicationRegistry.Shared.Responses;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.Api.Models;
 

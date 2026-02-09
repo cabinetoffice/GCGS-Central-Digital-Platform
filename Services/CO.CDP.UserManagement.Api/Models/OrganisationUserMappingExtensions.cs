@@ -1,7 +1,7 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Models;
-using CO.CDP.ApplicationRegistry.Shared.Enums;
-using CO.CDP.ApplicationRegistry.Shared.Responses;
+using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.Api.Models;
 

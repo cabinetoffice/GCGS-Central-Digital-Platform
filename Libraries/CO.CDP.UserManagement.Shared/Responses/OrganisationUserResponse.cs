@@ -1,6 +1,6 @@
-using CO.CDP.ApplicationRegistry.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Enums;
 
-namespace CO.CDP.ApplicationRegistry.Shared.Responses;
+namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>
 /// Response model for an organisation user membership.

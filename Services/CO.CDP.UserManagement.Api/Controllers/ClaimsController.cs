@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Shared.Responses;
+using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;

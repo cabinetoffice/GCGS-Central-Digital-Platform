@@ -1,22 +1,22 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Requests;
+namespace CO.CDP.UserManagement.Shared.Requests;
 
 /// <summary>
-/// Request model for updating a permission.
+/// Request model for updating an application.
 /// </summary>
-public record UpdatePermissionRequest
+public record UpdateApplicationRequest
 {
     /// <summary>
-    /// Gets or sets the permission name.
+    /// Gets or sets the application name.
     /// </summary>
     public required string Name { get; init; }
 
     /// <summary>
-    /// Gets or sets the permission description.
+    /// Gets or sets the application description.
     /// </summary>
     public string? Description { get; init; }
 
     /// <summary>
-    /// Gets or sets whether the permission is active.
+    /// Gets or sets whether the application is active.
     /// </summary>
     public required bool IsActive { get; init; }
 }

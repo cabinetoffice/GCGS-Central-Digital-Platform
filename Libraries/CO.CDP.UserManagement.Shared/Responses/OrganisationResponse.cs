@@ -1,9 +1,9 @@
-namespace CO.CDP.ApplicationRegistry.Shared.Responses;
+namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>
-/// Summary response model for an organisation (reduced details).
+/// Response model for an organisation.
 /// </summary>
-public record OrganisationSummaryResponse
+public record OrganisationResponse
 {
     /// <summary>
     /// Gets or sets the organisation identifier.
@@ -29,4 +29,9 @@ public record OrganisationSummaryResponse
     /// Gets or sets whether the organisation is active.
     /// </summary>
     public required bool IsActive { get; init; }
+
+    /// <summary>
+    /// Gets or sets the creation timestamp.
+    /// </summary>
+    public required DateTimeOffset CreatedAt { get; init; }
 }

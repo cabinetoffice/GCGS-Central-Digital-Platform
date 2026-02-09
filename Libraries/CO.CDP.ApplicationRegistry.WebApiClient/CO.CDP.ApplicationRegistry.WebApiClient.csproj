@@ -19,7 +19,7 @@
         <ProjectReference Include="..\..\Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
-        <ProjectReference Include="../CO.CDP.ApplicationRegistry.Shared/CO.CDP.ApplicationRegistry.Shared.csproj" />
+        <ProjectReference Include="..\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
         <OpenApiReference Include="$(MSBuildProjectDirectory)/../../Services/CO.CDP.ApplicationRegistry.Api/OpenAPI/CO.CDP.ApplicationRegistry.Api.json" Namespace="CO.CDP.ApplicationRegistry.WebApiClient" ClassName="ApplicationRegistryClient">

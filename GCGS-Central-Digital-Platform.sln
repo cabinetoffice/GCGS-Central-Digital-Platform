@@ -178,7 +178,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.Logging.Tests", "Lib
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Core", "Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj", "{53D63863-D65D-447C-AF38-A2894AEBD60F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.Shared", "Libraries\CO.CDP.ApplicationRegistry.Shared\CO.CDP.ApplicationRegistry.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.Shared", "Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj", "{F896DF09-BD88-44AE-BE2D-D923E5C04BB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.WebApiClient", "Libraries\CO.CDP.ApplicationRegistry.WebApiClient\CO.CDP.ApplicationRegistry.WebApiClient.csproj", "{67D07A51-B1B0-4206-A338-F0CFEBF9E308}"
 	ProjectSection(ProjectDependencies) = postProject
