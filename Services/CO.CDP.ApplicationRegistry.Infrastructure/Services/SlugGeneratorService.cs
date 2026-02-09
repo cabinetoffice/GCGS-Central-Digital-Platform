@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Interfaces;
 
 namespace CO.CDP.ApplicationRegistry.Infrastructure.Services;
 

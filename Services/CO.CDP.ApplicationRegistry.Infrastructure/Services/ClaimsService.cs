@@ -1,5 +1,5 @@
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
 
 namespace CO.CDP.ApplicationRegistry.Infrastructure.Services;
 

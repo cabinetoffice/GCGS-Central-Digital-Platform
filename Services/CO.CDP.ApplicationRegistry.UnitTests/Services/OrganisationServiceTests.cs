@@ -1,7 +1,7 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
-using OrganisationEntity = CO.CDP.ApplicationRegistry.Core.Entities.Organisation;
-using CO.CDP.ApplicationRegistry.Core.Exceptions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Entities;
+using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CO.CDP.UserManagement.Core.Exceptions;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Infrastructure.Services;
 using FluentAssertions;
 using Moq;

@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Infrastructure.Data;
 
 namespace CO.CDP.ApplicationRegistry.Infrastructure.Repositories;

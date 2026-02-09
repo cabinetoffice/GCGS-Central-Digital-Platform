@@ -1,5 +1,5 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 

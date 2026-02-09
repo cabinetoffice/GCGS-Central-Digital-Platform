@@ -1,5 +1,5 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.ApplicationRegistry.Shared.Enums;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
 

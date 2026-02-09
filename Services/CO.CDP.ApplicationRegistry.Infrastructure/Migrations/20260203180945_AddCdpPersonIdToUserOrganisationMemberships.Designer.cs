@@ -25,7 +25,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.Application", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Application", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("applications", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationPermission", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationPermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -170,7 +170,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("application_permissions", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationRole", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -239,7 +239,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("application_roles", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.Organisation", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Organisation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -313,7 +313,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("organisations", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.OrganisationApplication", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -395,7 +395,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("organisation_applications", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.UserApplicationAssignment", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -477,7 +477,7 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("user_application_assignments", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.UserOrganisationMembership", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -594,9 +594,9 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.ToTable("user_assignment_roles", (string)null);
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationPermission", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationPermission", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.Application", "Application")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Application", "Application")
                         .WithMany("Permissions")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -605,9 +605,9 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.Navigation("Application");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationRole", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationRole", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.Application", "Application")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Application", "Application")
                         .WithMany("Roles")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -616,15 +616,15 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.Navigation("Application");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.OrganisationApplication", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.Application", "Application")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Application", "Application")
                         .WithMany("OrganisationApplications")
                         .HasForeignKey("ApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.Organisation", "Organisation")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
                         .WithMany("OrganisationApplications")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -635,15 +635,15 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.Navigation("Organisation");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.UserApplicationAssignment", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.OrganisationApplication", "OrganisationApplication")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", "OrganisationApplication")
                         .WithMany("UserAssignments")
                         .HasForeignKey("OrganisationApplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.UserOrganisationMembership", "UserOrganisationMembership")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", "UserOrganisationMembership")
                         .WithMany("ApplicationAssignments")
                         .HasForeignKey("UserOrganisationMembershipId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -654,9 +654,9 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.Navigation("UserOrganisationMembership");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.UserOrganisationMembership", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.Organisation", "Organisation")
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
                         .WithMany("UserMemberships")
                         .HasForeignKey("OrganisationId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -667,13 +667,13 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
 
             modelBuilder.Entity("application_role_permissions", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationPermission", null)
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.ApplicationPermission", null)
                         .WithMany()
                         .HasForeignKey("permission_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationRole", null)
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("role_id")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -682,20 +682,20 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
 
             modelBuilder.Entity("user_assignment_roles", b =>
                 {
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.ApplicationRole", null)
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("role_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CO.CDP.ApplicationRegistry.Core.Entities.UserApplicationAssignment", null)
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", null)
                         .WithMany()
                         .HasForeignKey("user_assignment_id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.Application", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Application", b =>
                 {
                     b.Navigation("OrganisationApplications");
 
@@ -704,19 +704,19 @@ namespace CO.CDP.ApplicationRegistry.Infrastructure.Migrations
                     b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.Organisation", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Organisation", b =>
                 {
                     b.Navigation("OrganisationApplications");
 
                     b.Navigation("UserMemberships");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.OrganisationApplication", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
                 {
                     b.Navigation("UserAssignments");
                 });
 
-            modelBuilder.Entity("CO.CDP.ApplicationRegistry.Core.Entities.UserOrganisationMembership", b =>
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", b =>
                 {
                     b.Navigation("ApplicationAssignments");
                 });

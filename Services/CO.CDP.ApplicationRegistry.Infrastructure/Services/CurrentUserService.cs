@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 

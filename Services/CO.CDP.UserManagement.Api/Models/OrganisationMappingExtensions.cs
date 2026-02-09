@@ -1,5 +1,5 @@
 using CO.CDP.ApplicationRegistry.Shared.Responses;
-using OrganisationEntity = CO.CDP.ApplicationRegistry.Core.Entities.Organisation;
+using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Api.Models;
 

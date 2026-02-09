@@ -1,7 +1,7 @@
 using CO.CDP.UserManagement.Api.Models;
-using CO.CDP.ApplicationRegistry.Core.Exceptions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.UserManagement.Core.Exceptions;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
 using CO.CDP.UserManagement.Api.Authorization;

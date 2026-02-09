@@ -1,6 +1,6 @@
-using CO.CDP.ApplicationRegistry.Core.Exceptions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
-using CO.CDP.ApplicationRegistry.Core.Models;
+using CO.CDP.UserManagement.Core.Exceptions;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.Logging;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.Extensions.Logging;

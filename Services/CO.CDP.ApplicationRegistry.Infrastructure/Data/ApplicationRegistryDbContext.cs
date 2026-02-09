@@ -1,4 +1,4 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.ApplicationRegistry.Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 

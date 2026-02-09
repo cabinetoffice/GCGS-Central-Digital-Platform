@@ -1,6 +1,6 @@
-using CO.CDP.ApplicationRegistry.Core.Entities;
-using CO.CDP.ApplicationRegistry.Core.Exceptions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Core.Exceptions;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Infrastructure.Services;
 using FluentAssertions;
 using Moq;

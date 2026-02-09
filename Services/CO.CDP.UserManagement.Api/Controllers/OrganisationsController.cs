@@ -1,8 +1,8 @@
 using CO.CDP.ApplicationRegistry.Shared.Requests;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
 using CO.CDP.UserManagement.Api.Models;
-using CO.CDP.ApplicationRegistry.Core.Exceptions;
-using CO.CDP.ApplicationRegistry.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Exceptions;
+using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
