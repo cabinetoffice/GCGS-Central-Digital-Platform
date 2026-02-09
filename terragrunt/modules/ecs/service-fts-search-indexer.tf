@@ -27,7 +27,7 @@ module "ecs_service_fts_search_indexer" {
   cpu                                = var.service_configs.fts_search_indexer.cpu
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
-  desired_count                      = var.environment == "development" ? 1 : 0
+  desired_count                      = var.service_configs.fts_search_indexer.desired_count
   ecs_alb_sg_id                      = "N/A"
   ecs_listener_arn                   = "N/A"
   ecs_service_base_sg_id             = var.ecs_sg_id
