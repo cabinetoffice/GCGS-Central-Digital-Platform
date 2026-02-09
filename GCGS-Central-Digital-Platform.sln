@@ -187,7 +187,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.ApplicationRegistry.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.App", "Frontend\CO.CDP.ApplicationRegistry.App\CO.CDP.ApplicationRegistry.App.csproj", "{177AD390-E2F3-431A-BCB7-1D40FAE4B323}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.Api", "Services\CO.CDP.ApplicationRegistry.Api\CO.CDP.ApplicationRegistry.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api", "Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.ApplicationRegistry.UnitTests", "Services\CO.CDP.ApplicationRegistry.UnitTests\CO.CDP.ApplicationRegistry.UnitTests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
 EndProject

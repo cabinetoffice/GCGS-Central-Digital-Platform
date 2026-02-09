@@ -7,7 +7,7 @@ using System.Reflection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CO.CDP.ApplicationRegistry.Api.Api;
+namespace CO.CDP.UserManagement.Api.Api;
 
 public static class ApiExtensions
 {

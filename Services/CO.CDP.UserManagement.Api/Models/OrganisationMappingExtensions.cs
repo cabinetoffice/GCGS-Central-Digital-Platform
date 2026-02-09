@@ -1,7 +1,7 @@
 using CO.CDP.ApplicationRegistry.Shared.Responses;
 using OrganisationEntity = CO.CDP.ApplicationRegistry.Core.Entities.Organisation;
 
-namespace CO.CDP.ApplicationRegistry.Api.Models;
+namespace CO.CDP.UserManagement.Api.Models;
 
 /// <summary>
 /// Extension methods for organisation mapping.

@@ -16,7 +16,7 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="../../Services/CO.CDP.ApplicationRegistry.Api/CO.CDP.ApplicationRegistry.Api.csproj">
+        <ProjectReference Include="..\..\Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
         </ProjectReference>
         <ProjectReference Include="../CO.CDP.ApplicationRegistry.Shared/CO.CDP.ApplicationRegistry.Shared.csproj" />

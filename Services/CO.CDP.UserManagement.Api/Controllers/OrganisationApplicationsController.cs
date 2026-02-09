@@ -1,12 +1,12 @@
 using CO.CDP.ApplicationRegistry.Shared.Requests;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
-using CO.CDP.ApplicationRegistry.Api.Models;
+using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.ApplicationRegistry.Core.Exceptions;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CO.CDP.ApplicationRegistry.Api.Controllers;
+namespace CO.CDP.UserManagement.Api.Controllers;
 
 /// <summary>
 /// Controller for managing organisation-application relationships.

@@ -1,14 +1,14 @@
-using CO.CDP.ApplicationRegistry.Api.Authorization;
-using CO.CDP.ApplicationRegistry.Api.Models;
+using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.ApplicationRegistry.Core.Exceptions;
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using CO.CDP.ApplicationRegistry.Core.Models;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.ApplicationRegistry.Shared.Responses;
+using CO.CDP.UserManagement.Api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CO.CDP.ApplicationRegistry.Api.Controllers;
+namespace CO.CDP.UserManagement.Api.Controllers;
 
 /// <summary>
 /// Controller for managing organisation users.

@@ -1,18 +1,18 @@
 using CO.CDP.ApplicationRegistry.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 
-namespace CO.CDP.ApplicationRegistry.Api.Authorization;
+namespace CO.CDP.UserManagement.Api.Authorization;
 
 /// <summary>
-    /// Authorization handler for verifying organisation membership.
+/// Authorization handler for verifying organisation admin/owner role.
 /// </summary>
-public class OrganisationMemberHandler : AuthorizationHandler<OrganisationMemberRequirement>
+public class OrganisationAdminHandler : AuthorizationHandler<OrganisationAdminRequirement>
 {
-    private readonly ILogger<OrganisationMemberHandler> _logger;
+    private readonly ILogger<OrganisationAdminHandler> _logger;
     private readonly IOrganisationRepository _organisationRepository;
 
-    public OrganisationMemberHandler(
-        ILogger<OrganisationMemberHandler> logger,
+    public OrganisationAdminHandler(
+        ILogger<OrganisationAdminHandler> logger,
         IOrganisationRepository organisationRepository)
     {
         _logger = logger;
@@ -21,7 +21,7 @@ public class OrganisationMemberHandler : AuthorizationHandler<OrganisationMember
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
-        OrganisationMemberRequirement requirement)
+        OrganisationAdminRequirement requirement)
     {
         // Get organisation ID from route data
         if (context.Resource is HttpContext httpContext)
@@ -35,8 +35,10 @@ public class OrganisationMemberHandler : AuthorizationHandler<OrganisationMember
                     return;
                 }
 
-                // TODO: Implement actual membership verification logic
-                _logger.LogDebug("Checking organisation membership for user in organisation {OrganisationId}", organisation.Id);
+                // In a real implementation, verify the user is an admin/owner of the organisation
+                // For now, we'll mark as succeeded
+                // TODO: Implement actual admin verification logic
+                _logger.LogDebug("Checking organisation admin role for user in organisation {OrganisationId}", organisation.Id);
                 context.Succeed(requirement);
             }
         }
@@ -46,8 +48,8 @@ public class OrganisationMemberHandler : AuthorizationHandler<OrganisationMember
 }
 
 /// <summary>
-/// Requirement for organisation membership authorization.
+/// Requirement for organisation admin authorization.
 /// </summary>
-public class OrganisationMemberRequirement : IAuthorizationRequirement
+public class OrganisationAdminRequirement : IAuthorizationRequirement
 {
 }

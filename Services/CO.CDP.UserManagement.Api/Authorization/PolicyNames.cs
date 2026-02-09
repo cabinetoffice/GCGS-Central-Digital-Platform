@@ -1,4 +1,4 @@
-namespace CO.CDP.ApplicationRegistry.Api.Authorization;
+namespace CO.CDP.UserManagement.Api.Authorization;
 
 /// <summary>
 /// Constants for authorization policy names.
