@@ -41,13 +41,14 @@ if (!string.IsNullOrWhiteSpace(personServiceUrl))
     builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
 }
-if (!string.IsNullOrWhiteSpace(organisationServiceUrl))
-{
-    const string organisationHttpClientName = "OrganisationClient";
-    builder.Services.AddHttpClient(organisationHttpClientName);
-    builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl,
-        sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
-}
+    if (!string.IsNullOrWhiteSpace(organisationServiceUrl))
+    {
+        const string organisationHttpClientName = "OrganisationClient";
+        builder.Services.AddHttpClient(organisationHttpClientName)
+            .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+        builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl,
+            sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
+    }
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

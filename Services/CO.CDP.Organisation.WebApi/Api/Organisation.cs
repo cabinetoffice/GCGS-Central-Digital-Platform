@@ -899,9 +899,10 @@ public static class EndpointExtensions
 
         app.MapGet("/{organisationId}/invites",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -925,9 +926,10 @@ public static class EndpointExtensions
 
         app.MapPost("/{organisationId}/invites",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), bool> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
@@ -955,14 +957,15 @@ public static class EndpointExtensions
 
         app.MapPatch("/{organisationId}/invites/{personInviteId}",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
-                     .AndThen(_ => Results.NoContent())
-         )
+                      .AndThen(_ => Results.NoContent())
+          )
          .Produces(StatusCodes.Status200OK)
          .Produces(StatusCodes.Status204NoContent)
          .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -987,9 +990,10 @@ public static class EndpointExtensions
 
         app.MapDelete("/{organisationId}/invites/{personInviteId}",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
