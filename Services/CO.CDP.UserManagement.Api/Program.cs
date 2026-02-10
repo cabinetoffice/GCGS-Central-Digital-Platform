@@ -1,9 +1,12 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
+using CO.CDP.UserManagement.Api.Events;
 using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
+using CO.CDP.AwsServices;
+using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -31,24 +34,37 @@ builder.Services.AddUserManagementCaching(redisConnectionString);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
+var organisationSyncEnabled = builder.Configuration.GetValue("Features:OrganisationSyncEnabled", false);
+
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAwsSqsService();
+
+var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+var awsRegion = builder.Configuration["AWS:Region"]
+                ?? Environment.GetEnvironmentVariable("AWS_REGION");
+if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
+                                         !string.IsNullOrWhiteSpace(awsRegion)))
+{
+    builder.Services
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration);
+}
+
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
 var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
-if (!string.IsNullOrWhiteSpace(personServiceUrl))
-{
-    const string personHttpClientName = "PersonClient";
-    builder.Services.AddHttpClient(personHttpClientName)
-        .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
-    builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl,
-        sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
-}
-    if (!string.IsNullOrWhiteSpace(organisationServiceUrl))
-    {
-        const string organisationHttpClientName = "OrganisationClient";
-        builder.Services.AddHttpClient(organisationHttpClientName)
-            .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
-        builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl,
-            sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
-    }
+const string personHttpClientName = "PersonClient";
+builder.Services.AddHttpClient(personHttpClientName)
+    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl ?? string.Empty,
+    sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
+
+const string organisationHttpClientName = "OrganisationClient";
+builder.Services.AddHttpClient(organisationHttpClientName)
+    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl ?? string.Empty,
+    sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -85,6 +101,21 @@ builder.Services.AddAuthorization(options =>
 // Register authorization handlers
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationMemberHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
+
+if (organisationSyncEnabled)
+{
+    builder.Services.AddSqsDispatcher(
+        EventDeserializer.Deserializer,
+        enableBackgroundServices: organisationSyncEnabled,
+        services =>
+        {
+            services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
+        },
+        (services, dispatcher) =>
+        {
+            dispatcher.Subscribe<PersonInviteClaimed>(services);
+        });
+}
 
 // Health checks
 builder.Services.AddHealthChecks()

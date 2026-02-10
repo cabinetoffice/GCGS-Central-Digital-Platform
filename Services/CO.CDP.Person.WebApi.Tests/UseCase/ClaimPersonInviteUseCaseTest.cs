@@ -1,7 +1,9 @@
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.MQ;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace CO.CDP.Person.WebApi.Tests.UseCase;
@@ -11,6 +13,8 @@ public class ClaimPersonInviteUseCaseTests
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
     private readonly Mock<IOrganisationRepository> _mockOrganizationRepository;
+    private readonly Mock<IPublisher> _mockPublisher;
+    private readonly IConfiguration _configuration;
 
     private readonly ClaimPersonInviteUseCase _useCase;
     private Guid _defaultPersonGuid;
@@ -25,10 +29,19 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
         _mockOrganizationRepository = new Mock<IOrganisationRepository>();
+        _mockPublisher = new Mock<IPublisher>();
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                { "Features:OrganisationSyncEnabled", "false" }
+            })
+            .Build();
         _useCase = new ClaimPersonInviteUseCase(
                         _mockPersonRepository.Object,
                         _mockPersonInviteRepository.Object,
-                        _mockOrganizationRepository.Object);
+                        _mockOrganizationRepository.Object,
+                        _mockPublisher.Object,
+                        _configuration);
         _defaultPersonGuid = new Guid();
         _defaultPersonInviteGuid = new Guid();
         _defaultOrganisationGuid = new Guid();

@@ -1,5 +1,5 @@
 using CO.CDP.UserManagement.Core.Entities;
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
@@ -27,7 +27,7 @@ public class OrganisationServiceTests
     public async Task GetByIdAsync_WhenOrganisationExists_ReturnsOrganisation()
     {
         // Arrange
-        var organisation = new OrganisationEntity { Id = 1, Name = "Test Org", Slug = "test-org" };
+        var organisation = new CoreEntities.Organisation { Id = 1, Name = "Test Org", Slug = "test-org" };
         _repositoryMock.Setup(r => r.GetByIdAsync(1, default)).ReturnsAsync(organisation);
 
         // Act
@@ -43,7 +43,7 @@ public class OrganisationServiceTests
     public async Task GetByIdAsync_WhenOrganisationDoesNotExist_ReturnsNull()
     {
         // Arrange
-        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((OrganisationEntity?)null);
+        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((CoreEntities.Organisation?)null);
 
         // Act
         var result = await _service.GetByIdAsync(999);
@@ -58,7 +58,7 @@ public class OrganisationServiceTests
         // Arrange
         var cdpGuid = Guid.NewGuid();
         var name = "New Organisation";
-        _repositoryMock.Setup(r => r.GetByCdpGuidAsync(cdpGuid, default)).ReturnsAsync((OrganisationEntity?)null);
+        _repositoryMock.Setup(r => r.GetByCdpGuidAsync(cdpGuid, default)).ReturnsAsync((CoreEntities.Organisation?)null);
         _repositoryMock.Setup(r => r.SlugExistsAsync(It.IsAny<string>(), null, default)).ReturnsAsync(false);
         _slugGeneratorMock.Setup(s => s.GenerateSlug(name)).Returns("new-organisation");
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(default)).ReturnsAsync(1);
@@ -72,7 +72,7 @@ public class OrganisationServiceTests
         result.Slug.Should().Be("new-organisation");
         result.CdpOrganisationGuid.Should().Be(cdpGuid);
         result.IsActive.Should().BeTrue();
-        _repositoryMock.Verify(r => r.Add(It.IsAny<OrganisationEntity>()), Times.Once);
+        _repositoryMock.Verify(r => r.Add(It.IsAny<CoreEntities.Organisation>()), Times.Once);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
     }
 
@@ -81,7 +81,7 @@ public class OrganisationServiceTests
     {
         // Arrange
         var cdpGuid = Guid.NewGuid();
-        var existingOrg = new OrganisationEntity { Id = 1, CdpOrganisationGuid = cdpGuid, Name = "Existing", Slug = "existing" };
+        var existingOrg = new CoreEntities.Organisation { Id = 1, CdpOrganisationGuid = cdpGuid, Name = "Existing", Slug = "existing" };
         _repositoryMock.Setup(r => r.GetByCdpGuidAsync(cdpGuid, default)).ReturnsAsync(existingOrg);
 
         // Act
@@ -89,7 +89,7 @@ public class OrganisationServiceTests
 
         // Assert
         await act.Should().ThrowAsync<DuplicateEntityException>()
-            .WithMessage($"*{nameof(OrganisationEntity.CdpOrganisationGuid)}*");
+            .WithMessage($"*{nameof(CoreEntities.Organisation.CdpOrganisationGuid)}*");
     }
 
     [Fact]
@@ -98,7 +98,7 @@ public class OrganisationServiceTests
         // Arrange
         var cdpGuid = Guid.NewGuid();
         var name = "Test Organisation";
-        _repositoryMock.Setup(r => r.GetByCdpGuidAsync(cdpGuid, default)).ReturnsAsync((OrganisationEntity?)null);
+        _repositoryMock.Setup(r => r.GetByCdpGuidAsync(cdpGuid, default)).ReturnsAsync((CoreEntities.Organisation?)null);
         _repositoryMock.SetupSequence(r => r.SlugExistsAsync(It.IsAny<string>(), null, default))
             .ReturnsAsync(true)
             .ReturnsAsync(false);
@@ -116,7 +116,7 @@ public class OrganisationServiceTests
     public async Task UpdateAsync_WithValidData_UpdatesOrganisation()
     {
         // Arrange
-        var organisation = new OrganisationEntity { Id = 1, Name = "Old Name", Slug = "old-name", IsActive = true };
+        var organisation = new CoreEntities.Organisation { Id = 1, Name = "Old Name", Slug = "old-name", IsActive = true };
         _repositoryMock.Setup(r => r.GetByIdAsync(1, default)).ReturnsAsync(organisation);
         _repositoryMock.Setup(r => r.SlugExistsAsync(It.IsAny<string>(), 1, default)).ReturnsAsync(false);
         _slugGeneratorMock.Setup(s => s.GenerateSlug("New Name")).Returns("new-name");
@@ -137,7 +137,7 @@ public class OrganisationServiceTests
     public async Task UpdateAsync_WhenOrganisationDoesNotExist_ThrowsEntityNotFoundException()
     {
         // Arrange
-        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((OrganisationEntity?)null);
+        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((CoreEntities.Organisation?)null);
 
         // Act
         var act = async () => await _service.UpdateAsync(999, "New Name", true);
@@ -151,7 +151,7 @@ public class OrganisationServiceTests
     public async Task DeleteAsync_WhenOrganisationExists_DeletesOrganisation()
     {
         // Arrange
-        var organisation = new OrganisationEntity { Id = 1, Name = "Test", Slug = "test" };
+        var organisation = new CoreEntities.Organisation { Id = 1, Name = "Test", Slug = "test" };
         _repositoryMock.Setup(r => r.GetByIdAsync(1, default)).ReturnsAsync(organisation);
         _unitOfWorkMock.Setup(u => u.SaveChangesAsync(default)).ReturnsAsync(1);
 
@@ -167,7 +167,7 @@ public class OrganisationServiceTests
     public async Task DeleteAsync_WhenOrganisationDoesNotExist_ThrowsEntityNotFoundException()
     {
         // Arrange
-        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((OrganisationEntity?)null);
+        _repositoryMock.Setup(r => r.GetByIdAsync(999, default)).ReturnsAsync((CoreEntities.Organisation?)null);
 
         // Act
         var act = async () => await _service.DeleteAsync(999);

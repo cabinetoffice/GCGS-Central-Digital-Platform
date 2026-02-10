@@ -1,11 +1,12 @@
 using CO.CDP.Organisation.WebApiClient;
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using InvalidOperationException = CO.CDP.UserManagement.Core.Exceptions.InvalidOperationException;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
@@ -19,22 +20,25 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     private readonly IOrganisationClient _organisationClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InviteOrchestrationService> _logger;
+    private readonly string? _organisationServiceUrl;
 
     public InviteOrchestrationService(
         IOrganisationRepository organisationRepository,
         IPendingOrganisationInviteRepository pendingInviteRepository,
         IOrganisationClient organisationClient,
         IUnitOfWork unitOfWork,
-        ILogger<InviteOrchestrationService> logger)
+        ILogger<InviteOrchestrationService> logger,
+        IConfiguration configuration)
     {
         _organisationRepository = organisationRepository;
         _pendingInviteRepository = pendingInviteRepository;
         _organisationClient = organisationClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
+        _organisationServiceUrl = configuration.GetValue<string>("OrganisationService");
     }
 
-    public async Task<PendingOrganisationInvite> InviteUserAsync(
+    public async Task<CoreEntities.PendingOrganisationInvite> InviteUserAsync(
         Guid cdpOrganisationId,
         InviteUserRequest request,
         string? inviterPrincipalId,
@@ -43,12 +47,13 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         if (request == null) throw new ArgumentNullException(nameof(request));
 
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
+        EnsureOrganisationServiceConfigured();
 
         var existingInvite = await _pendingInviteRepository.GetByEmailAndOrganisationAsync(
             request.Email, organisation.Id, cancellationToken);
         if (existingInvite != null)
         {
-            throw new DuplicateEntityException(nameof(PendingOrganisationInvite), nameof(PendingOrganisationInvite.Email), request.Email);
+            throw new DuplicateEntityException(nameof(CoreEntities.PendingOrganisationInvite), nameof(CoreEntities.PendingOrganisationInvite.Email), request.Email);
         }
 
         var inviteRequest = new InvitePersonToOrganisation(
@@ -65,7 +70,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
             throw new InvalidOperationException($"Unable to locate person invite for email '{request.Email}'.");
         }
 
-        var pendingInvite = new PendingOrganisationInvite
+        var pendingInvite = new CoreEntities.PendingOrganisationInvite
         {
             Email = request.Email,
             OrganisationId = organisation.Id,
@@ -92,6 +97,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         CancellationToken cancellationToken = default)
     {
         var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+        EnsureOrganisationServiceConfigured();
 
         await _organisationClient.RemovePersonInviteFromOrganisationAsync(
             cdpOrganisationId,
@@ -108,6 +114,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         CancellationToken cancellationToken = default)
     {
         var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+        EnsureOrganisationServiceConfigured();
 
         var currentInvite = await GetPersonInviteAsync(cdpOrganisationId, pendingInvite.Email, cancellationToken);
         if (currentInvite == null)
@@ -146,18 +153,26 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task<Core.Entities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId, CancellationToken cancellationToken)
+    private void EnsureOrganisationServiceConfigured()
+    {
+        if (string.IsNullOrWhiteSpace(_organisationServiceUrl))
+        {
+            throw new InvalidOperationException("OrganisationService must be configured to manage invites.");
+        }
+    }
+
+    private async Task<CoreEntities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId, CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
         if (organisation == null)
         {
-            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+            throw new EntityNotFoundException(nameof(CoreEntities.Organisation), cdpOrganisationId);
         }
 
         return organisation;
     }
 
-    private async Task<PendingOrganisationInvite> GetPendingInviteAsync(
+    private async Task<CoreEntities.PendingOrganisationInvite> GetPendingInviteAsync(
         Guid cdpOrganisationId,
         int pendingInviteId,
         CancellationToken cancellationToken)
@@ -166,7 +181,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         var pendingInvite = await _pendingInviteRepository.GetByIdAsync(pendingInviteId, cancellationToken);
         if (pendingInvite == null || pendingInvite.OrganisationId != organisation.Id)
         {
-            throw new EntityNotFoundException(nameof(PendingOrganisationInvite), pendingInviteId);
+            throw new EntityNotFoundException(nameof(CoreEntities.PendingOrganisationInvite), pendingInviteId);
         }
 
         return pendingInvite;

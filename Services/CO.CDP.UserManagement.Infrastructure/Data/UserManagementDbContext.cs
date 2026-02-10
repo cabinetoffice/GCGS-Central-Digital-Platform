@@ -1,7 +1,6 @@
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Data;
 
@@ -15,14 +14,14 @@ public class UserManagementDbContext : DbContext
     {
     }
 
-    public DbSet<OrganisationEntity> Organisations => Set<OrganisationEntity>();
-    public DbSet<Application> Applications => Set<Application>();
-    public DbSet<ApplicationPermission> ApplicationPermissions => Set<ApplicationPermission>();
-    public DbSet<ApplicationRole> ApplicationRoles => Set<ApplicationRole>();
-    public DbSet<UserOrganisationMembership> UserOrganisationMemberships => Set<UserOrganisationMembership>();
-    public DbSet<PendingOrganisationInvite> PendingOrganisationInvites => Set<PendingOrganisationInvite>();
-    public DbSet<OrganisationApplication> OrganisationApplications => Set<OrganisationApplication>();
-    public DbSet<UserApplicationAssignment> UserApplicationAssignments => Set<UserApplicationAssignment>();
+    public DbSet<CoreEntities.Organisation> Organisations => Set<CoreEntities.Organisation>();
+    public DbSet<CoreEntities.Application> Applications => Set<CoreEntities.Application>();
+    public DbSet<CoreEntities.ApplicationPermission> ApplicationPermissions => Set<CoreEntities.ApplicationPermission>();
+    public DbSet<CoreEntities.ApplicationRole> ApplicationRoles => Set<CoreEntities.ApplicationRole>();
+    public DbSet<CoreEntities.UserOrganisationMembership> UserOrganisationMemberships => Set<CoreEntities.UserOrganisationMembership>();
+    public DbSet<CoreEntities.PendingOrganisationInvite> PendingOrganisationInvites => Set<CoreEntities.PendingOrganisationInvite>();
+    public DbSet<CoreEntities.OrganisationApplication> OrganisationApplications => Set<CoreEntities.OrganisationApplication>();
+    public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments => Set<CoreEntities.UserApplicationAssignment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,13 +38,13 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
 
         // Global query filters for soft delete
-        modelBuilder.Entity<OrganisationEntity>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<Application>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<ApplicationPermission>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<ApplicationRole>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<UserOrganisationMembership>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<PendingOrganisationInvite>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.Organisation>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.Application>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.ApplicationPermission>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.ApplicationRole>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.UserOrganisationMembership>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.PendingOrganisationInvite>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
     }
 }

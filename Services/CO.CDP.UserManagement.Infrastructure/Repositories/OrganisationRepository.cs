@@ -1,26 +1,25 @@
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 
 /// <summary>
 /// Repository implementation for Organisation entities.
 /// </summary>
-public class OrganisationRepository : Repository<OrganisationEntity>, IOrganisationRepository
+public class OrganisationRepository : Repository<CoreEntities.Organisation>, IOrganisationRepository
 {
     public OrganisationRepository(UserManagementDbContext context) : base(context)
     {
     }
 
-    public async Task<OrganisationEntity?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    public async Task<CoreEntities.Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         return await DbSet.FirstOrDefaultAsync(o => o.Slug == slug, cancellationToken);
     }
 
-    public async Task<OrganisationEntity?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
+    public async Task<CoreEntities.Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
     {
         return await DbSet.FirstOrDefaultAsync(o => o.CdpOrganisationGuid == cdpOrganisationGuid, cancellationToken);
     }

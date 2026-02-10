@@ -376,6 +376,15 @@ WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
 
+FROM base AS final-outbox-processor-person
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=OrganisationInformationContext
+ENV Channel=person_information_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
 FROM base AS final-outbox-processor-entity-verification
 ARG VERSION
 ENV VERSION=${VERSION}

@@ -1,4 +1,4 @@
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -7,9 +7,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Data.Configurations;
 /// <summary>
 /// EF Core configuration for Organisation entity.
 /// </summary>
-public class OrganisationConfiguration : IEntityTypeConfiguration<OrganisationEntity>
+public class OrganisationConfiguration : IEntityTypeConfiguration<CoreEntities.Organisation>
 {
-    public void Configure(EntityTypeBuilder<OrganisationEntity> builder)
+    public void Configure(EntityTypeBuilder<CoreEntities.Organisation> builder)
     {
         builder.ToTable("organisations");
 

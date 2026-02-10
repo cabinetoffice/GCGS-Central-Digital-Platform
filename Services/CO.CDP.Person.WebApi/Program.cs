@@ -1,6 +1,5 @@
 using CO.CDP.Authentication;
 using CO.CDP.AwsServices;
-using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Authentication.Authorization;
@@ -13,7 +12,6 @@ using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,13 +43,29 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 builder.Services.AddOrganisationAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
-if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi"))
+var organisationSyncEnabled = builder.Configuration.GetValue("Features:OrganisationSyncEnabled", false);
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddLoggingConfiguration(builder.Configuration)
+    .AddAwsSqsService();
+
+var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+var awsRegion = builder.Configuration["AWS:Region"]
+                ?? Environment.GetEnvironmentVariable("AWS_REGION");
+if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
+                                         !string.IsNullOrWhiteSpace(awsRegion)))
 {
     builder.Services
-        .AddAwsConfiguration(builder.Configuration)
-        .AddLoggingConfiguration(builder.Configuration)
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration);
+}
+
+if (organisationSyncEnabled)
+{
+    builder.Services.AddOutboxSqsPublisher<OrganisationInformationContext>(
+        builder.Configuration,
+        enableBackgroundServices: organisationSyncEnabled,
+        notificationChannel: "person_information_outbox");
 }
 
 var app = builder.Build();

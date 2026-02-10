@@ -76,7 +76,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3,logs,ssm
       DEBUG: 0
-      SQS_QUEUES: entity-verification.fifo,organisation.fifo,av-scanner.fifo
+      SQS_QUEUES: entity-verification.fifo,organisation.fifo,av-scanner.fifo,user-management.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
       LOG_GROUP_NAME: localstack
       LOG_STREAM_NAME: serilog
@@ -343,6 +343,12 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: *organisation-authority
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__SqsPublisher__MessageGroupId: "UserManagement"
+      Feature__OrganisationSyncEnabled: false
 
   forms:
     container_name: co-cdp-forms
@@ -492,6 +498,37 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       Aws__SqsPublisher__MessageGroupId": "EntityVerification"
       CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
+      OutboxDatabase__Server: 'db'
+      OutboxDatabase__Database: 'cdp'
+      OutboxDatabase__Username: 'cdp_user'
+      OutboxDatabase__Password: 'cdp123'
+    depends_on:
+      localstack:
+        condition: "service_healthy"
+      db:
+        condition: "service_healthy"
+
+  outbox-processor-person:
+    container_name: co-cdp-outbox-processor-person
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-outbox-processor-person
+    image: 'cabinetoffice/cdp-outbox-processor-person:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__SqsPublisher__MessageGroupId: "UserManagement"
+      CloudWatch__LogGroup: "/ecs/outbox-processor-person"
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
