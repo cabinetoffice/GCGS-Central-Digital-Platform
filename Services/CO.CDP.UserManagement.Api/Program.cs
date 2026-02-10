@@ -35,6 +35,7 @@ builder.Services.AddUserManagementCaching(redisConnectionString);
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var organisationSyncEnabled = builder.Configuration.GetValue("Features:OrganisationSyncEnabled", false);
+var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -54,6 +55,10 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
 var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
+if (!swaggerEnabled && string.IsNullOrWhiteSpace(organisationServiceUrl))
+{
+    throw new InvalidOperationException("OrganisationService must be configured.");
+}
 const string personHttpClientName = "PersonClient";
 builder.Services.AddHttpClient(personHttpClientName)
     .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
@@ -124,7 +129,7 @@ builder.Services.AddHealthChecks()
 var app = builder.Build();
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (swaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();

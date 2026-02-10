@@ -1,0 +1,86 @@
+@using CO.CDP.UserManagement.Shared.Enums
+@model CO.CDP.UserManagement.App.Models.InviteUserViewModel
+@{
+    ViewData["Title"] = "Add a user";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug/users" class="govuk-back-link">Back to users</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <h1 class="govuk-heading-xl">Add a user</h1>
+
+        <p class="govuk-body">Invite someone to join @Model.OrganisationName.</p>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.FirstName)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <label class="govuk-label govuk-!-font-weight-bold" for="first-name">First name</label>
+                @if (ViewData.ModelState.ContainsKey(nameof(Model.FirstName)) && !ViewData.ModelState.IsValid)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.FirstName)]?.Errors.FirstOrDefault()?.ErrorMessage
+                    </p>
+                }
+                <input class="govuk-input" id="first-name" name="FirstName" type="text" value="@Model.FirstName">
+            </div>
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.LastName)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <label class="govuk-label govuk-!-font-weight-bold" for="last-name">Last name</label>
+                @if (ViewData.ModelState.ContainsKey(nameof(Model.LastName)) && !ViewData.ModelState.IsValid)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.LastName)]?.Errors.FirstOrDefault()?.ErrorMessage
+                    </p>
+                }
+                <input class="govuk-input" id="last-name" name="LastName" type="text" value="@Model.LastName">
+            </div>
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <label class="govuk-label govuk-!-font-weight-bold" for="email">Email address</label>
+                @if (ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.Email)]?.Errors.FirstOrDefault()?.ErrorMessage
+                    </p>
+                }
+                <input class="govuk-input" id="email" name="Email" type="email" value="@Model.Email">
+            </div>
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.OrganisationRole)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Organisation role</h2>
+                    </legend>
+                    @if (ViewData.ModelState.ContainsKey(nameof(Model.OrganisationRole)) && !ViewData.ModelState.IsValid)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.OrganisationRole)]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @foreach (var role in Enum.GetValues<OrganisationRole>())
+                        {
+                            var roleValue = role.ToString();
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="role-@roleValue" name="OrganisationRole" type="radio" value="@roleValue" checked="@(Model.OrganisationRole == role)">
+                                <label class="govuk-label govuk-radios__label" for="role-@roleValue">@role</label>
+                            </div>
+                        }
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">Send invite</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/users">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

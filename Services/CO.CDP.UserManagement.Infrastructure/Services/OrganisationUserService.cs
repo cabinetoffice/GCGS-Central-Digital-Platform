@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
@@ -13,17 +14,20 @@ public class OrganisationUserService : IOrganisationUserService
     private readonly IOrganisationRepository _organisationRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<OrganisationUserService> _logger;
 
     public OrganisationUserService(
         IOrganisationRepository organisationRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IUserApplicationAssignmentRepository assignmentRepository,
+        IUnitOfWork unitOfWork,
         ILogger<OrganisationUserService> logger)
     {
         _organisationRepository = organisationRepository;
         _membershipRepository = membershipRepository;
         _assignmentRepository = assignmentRepository;
+        _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
@@ -114,6 +118,34 @@ public class OrganisationUserService : IOrganisationUserService
         {
             membership.ApplicationAssignments.Add(assignment);
         }
+
+        return membership;
+    }
+
+    public async Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        OrganisationRole organisationRole,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
+        if (organisation == null)
+        {
+            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+        }
+
+        var membership = await _membershipRepository.GetByPersonIdAndOrganisationAsync(
+            cdpPersonId,
+            organisation.Id,
+            cancellationToken);
+        if (membership == null)
+        {
+            throw new EntityNotFoundException(nameof(UserOrganisationMembership), cdpPersonId);
+        }
+
+        membership.OrganisationRole = organisationRole;
+        _membershipRepository.Update(membership);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return membership;
     }

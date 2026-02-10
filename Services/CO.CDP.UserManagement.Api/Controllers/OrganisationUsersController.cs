@@ -4,6 +4,7 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -156,6 +157,33 @@ public class OrganisationUsersController : ControllerBase
                             };
 
             return Ok(membership.ToResponse(includeAssignments: true, personDetails: personDetails));
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Updates the organisation role for a user by CDP person ID.
+    /// </summary>
+    [HttpPut("{cdpPersonId:guid}/role")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdateRole(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        ChangeOrganisationRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _organisationUserService.UpdateOrganisationRoleAsync(
+                cdpOrganisationId,
+                cdpPersonId,
+                request.OrganisationRole,
+                cancellationToken);
+            return NoContent();
         }
         catch (EntityNotFoundException ex)
         {
