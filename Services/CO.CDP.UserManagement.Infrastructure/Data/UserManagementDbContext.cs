@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
+using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Infrastructure.Data;
 
@@ -14,7 +15,7 @@ public class UserManagementDbContext : DbContext
     {
     }
 
-    public DbSet<Organisation> Organisations => Set<Organisation>();
+    public DbSet<OrganisationEntity> Organisations => Set<OrganisationEntity>();
     public DbSet<Application> Applications => Set<Application>();
     public DbSet<ApplicationPermission> ApplicationPermissions => Set<ApplicationPermission>();
     public DbSet<ApplicationRole> ApplicationRoles => Set<ApplicationRole>();
@@ -38,12 +39,12 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
 
         // Global query filters for soft delete
-        modelBuilder.Entity<Organisation>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<OrganisationEntity>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<Application>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<ApplicationPermission>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<ApplicationRole>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<UserOrganisationMembership>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<PendingOrganisationInvite>().HasQueryFilter(e => !e.Organisation.IsDeleted);
+        modelBuilder.Entity<PendingOrganisationInvite>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
     }

@@ -45,6 +45,11 @@ public class PendingOrganisationInviteConfiguration : IEntityTypeConfiguration<P
             .HasColumnName("invited_by")
             .HasMaxLength(255);
 
+        // Soft delete properties
+        builder.Property(i => i.IsDeleted).HasColumnName("is_deleted");
+        builder.Property(i => i.DeletedAt).HasColumnName("deleted_at");
+        builder.Property(i => i.DeletedBy).HasColumnName("deleted_by").HasMaxLength(255);
+
         // Audit properties
         builder.Property(i => i.CreatedAt).HasColumnName("created_at").IsRequired();
         builder.Property(i => i.CreatedBy).HasColumnName("created_by").HasMaxLength(255).IsRequired();

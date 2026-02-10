@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
@@ -23,33 +24,33 @@ public class OrganisationService : IOrganisationService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Organisation?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
+    public async Task<OrganisationEntity?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     {
         return await _repository.GetByIdAsync(id, cancellationToken);
     }
 
-    public async Task<Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
+    public async Task<OrganisationEntity?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
     {
         return await _repository.GetBySlugAsync(slug, cancellationToken);
     }
 
-    public async Task<Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
+    public async Task<OrganisationEntity?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
     {
         return await _repository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
     }
 
-    public async Task<IEnumerable<Organisation>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<OrganisationEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         return await _repository.GetAllAsync(cancellationToken);
     }
 
-    public async Task<Organisation> CreateAsync(Guid cdpOrganisationGuid, string name, bool isActive, CancellationToken cancellationToken = default)
+    public async Task<OrganisationEntity> CreateAsync(Guid cdpOrganisationGuid, string name, bool isActive, CancellationToken cancellationToken = default)
     {
         // Check if organisation with this CDP GUID already exists
         var existing = await _repository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
         if (existing != null)
         {
-            throw new DuplicateEntityException(nameof(Organisation), nameof(Organisation.CdpOrganisationGuid), cdpOrganisationGuid);
+            throw new DuplicateEntityException(nameof(OrganisationEntity), nameof(OrganisationEntity.CdpOrganisationGuid), cdpOrganisationGuid);
         }
 
         // Generate slug
@@ -64,7 +65,7 @@ public class OrganisationService : IOrganisationService
             counter++;
         }
 
-        var organisation = new Organisation
+        var organisation = new OrganisationEntity
         {
             CdpOrganisationGuid = cdpOrganisationGuid,
             Name = name,
@@ -78,12 +79,12 @@ public class OrganisationService : IOrganisationService
         return organisation;
     }
 
-    public async Task<Organisation> UpdateAsync(int id, string name, bool isActive, CancellationToken cancellationToken = default)
+    public async Task<OrganisationEntity> UpdateAsync(int id, string name, bool isActive, CancellationToken cancellationToken = default)
     {
         var organisation = await _repository.GetByIdAsync(id, cancellationToken);
         if (organisation == null)
         {
-            throw new EntityNotFoundException(nameof(Organisation), id);
+            throw new EntityNotFoundException(nameof(OrganisationEntity), id);
         }
 
         // If name changed, regenerate slug
@@ -117,7 +118,7 @@ public class OrganisationService : IOrganisationService
         var organisation = await _repository.GetByIdAsync(id, cancellationToken);
         if (organisation == null)
         {
-            throw new EntityNotFoundException(nameof(Organisation), id);
+            throw new EntityNotFoundException(nameof(OrganisationEntity), id);
         }
 
         _repository.Remove(organisation);

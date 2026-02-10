@@ -5,7 +5,7 @@ namespace CO.CDP.UserManagement.Core.Entities;
 /// <summary>
 /// Represents a pending organisation invite.
 /// </summary>
-public class PendingOrganisationInvite : IAuditable
+public class PendingOrganisationInvite : ISoftDelete, IAuditable
 {
     /// <summary>
     /// Gets or sets the unique identifier for this invite.
@@ -36,6 +36,11 @@ public class PendingOrganisationInvite : IAuditable
     /// Gets or sets the identifier of the user who sent the invite.
     /// </summary>
     public string? InvitedBy { get; set; }
+
+    // ISoftDelete
+    public bool IsDeleted { get; set; }
+    public DateTimeOffset? DeletedAt { get; set; }
+    public string? DeletedBy { get; set; }
 
     // IAuditable
     public DateTimeOffset CreatedAt { get; set; }
