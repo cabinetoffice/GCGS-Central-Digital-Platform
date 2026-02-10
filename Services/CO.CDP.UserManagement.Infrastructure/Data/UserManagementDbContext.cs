@@ -19,6 +19,7 @@ public class UserManagementDbContext : DbContext
     public DbSet<ApplicationPermission> ApplicationPermissions => Set<ApplicationPermission>();
     public DbSet<ApplicationRole> ApplicationRoles => Set<ApplicationRole>();
     public DbSet<UserOrganisationMembership> UserOrganisationMemberships => Set<UserOrganisationMembership>();
+    public DbSet<PendingOrganisationInvite> PendingOrganisationInvites => Set<PendingOrganisationInvite>();
     public DbSet<OrganisationApplication> OrganisationApplications => Set<OrganisationApplication>();
     public DbSet<UserApplicationAssignment> UserApplicationAssignments => Set<UserApplicationAssignment>();
 
@@ -32,6 +33,7 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ApplicationPermissionConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserOrganisationMembershipConfiguration());
+        modelBuilder.ApplyConfiguration(new PendingOrganisationInviteConfiguration());
         modelBuilder.ApplyConfiguration(new OrganisationApplicationConfiguration());
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
 
@@ -41,6 +43,7 @@ public class UserManagementDbContext : DbContext
         modelBuilder.Entity<ApplicationPermission>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<ApplicationRole>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<UserOrganisationMembership>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<PendingOrganisationInvite>().HasQueryFilter(e => !e.Organisation.IsDeleted);
         modelBuilder.Entity<OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
     }

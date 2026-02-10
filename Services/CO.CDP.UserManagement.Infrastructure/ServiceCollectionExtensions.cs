@@ -52,6 +52,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IOrganisationApplicationRepository, OrganisationApplicationRepository>();
         services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
+        services.AddScoped<IPendingOrganisationInviteRepository, PendingOrganisationInviteRepository>();
         services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
 
         // Register UnitOfWork
