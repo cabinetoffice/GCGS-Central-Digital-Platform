@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
@@ -14,21 +13,20 @@ public static class PendingOrganisationInviteMappingExtensions
     /// Converts a pending invite entity to a response model.
     /// </summary>
     public static PendingOrganisationInviteResponse ToResponse(
-        this PendingOrganisationInvite invite,
-        PersonInviteModel? personInvite)
+        this PendingOrganisationInvite invite)
     {
         return new PendingOrganisationInviteResponse
         {
             PendingInviteId = invite.Id,
             OrganisationId = invite.OrganisationId,
             CdpPersonInviteGuid = invite.CdpPersonInviteGuid,
-            Email = personInvite?.Email ?? invite.Email,
-            FirstName = personInvite?.FirstName,
-            LastName = personInvite?.LastName,
+            Email = invite.Email,
+            FirstName = invite.FirstName,
+            LastName = invite.LastName,
             OrganisationRole = invite.OrganisationRole,
             Status = UserStatus.Pending,
             InvitedBy = invite.InvitedBy,
-            ExpiresOn = personInvite?.ExpiresOn,
+            ExpiresOn = null,
             CreatedAt = invite.CreatedAt
         };
     }

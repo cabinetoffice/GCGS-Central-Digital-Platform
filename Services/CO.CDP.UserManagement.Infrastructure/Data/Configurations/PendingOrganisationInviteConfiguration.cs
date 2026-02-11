@@ -21,6 +21,16 @@ public class PendingOrganisationInviteConfiguration : IEntityTypeConfiguration<P
             .HasMaxLength(255)
             .IsRequired();
 
+        builder.Property(i => i.FirstName)
+            .HasColumnName("first_name")
+            .HasMaxLength(255)
+            .IsRequired();
+
+        builder.Property(i => i.LastName)
+            .HasColumnName("last_name")
+            .HasMaxLength(255)
+            .IsRequired();
+
         builder.Property(i => i.OrganisationId)
             .HasColumnName("organisation_id")
             .IsRequired();

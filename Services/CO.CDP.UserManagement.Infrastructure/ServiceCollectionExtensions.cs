@@ -18,12 +18,10 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="connectionString">The database connection string.</param>
-    /// <param name="cdpConnectionString">Optional CDP database connection string for organisation lookups.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementInfrastructure(
         this IServiceCollection services,
-        string connectionString,
-        string? cdpConnectionString = null)
+        string connectionString)
     {
         // Register DbContext
         services.AddDbContext<UserManagementDbContext>(options =>

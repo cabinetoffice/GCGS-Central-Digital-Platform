@@ -3,6 +3,7 @@ using System;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CO.CDP.UserManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(UserManagementDbContext))]
-    partial class UserManagementDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211121000_AddNamesToPendingOrganisationInvites")]
+    partial class AddNamesToPendingOrganisationInvites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -424,22 +427,22 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("deleted_by");
 
-                b.Property<string>("Email")
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnType("character varying(255)")
-                    .HasColumnName("email");
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email");
 
-                b.Property<string>("FirstName")
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnType("character varying(255)")
-                    .HasColumnName("first_name");
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("first_name");
 
-                b.Property<string>("InvitedBy")
-                    .HasMaxLength(255)
-                    .HasColumnType("character varying(255)")
-                    .HasColumnName("invited_by");
+                    b.Property<string>("InvitedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("invited_by");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
@@ -449,20 +452,20 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("modified_at");
 
-                b.Property<string>("ModifiedBy")
-                    .HasMaxLength(255)
-                    .HasColumnType("character varying(255)")
-                    .HasColumnName("modified_by");
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
 
-                b.Property<string>("LastName")
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .HasColumnType("character varying(255)")
-                    .HasColumnName("last_name");
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("last_name");
 
-                b.Property<int>("OrganisationId")
-                    .HasColumnType("integer")
-                    .HasColumnName("organisation_id");
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
 
                     b.Property<string>("OrganisationRole")
                         .IsRequired()

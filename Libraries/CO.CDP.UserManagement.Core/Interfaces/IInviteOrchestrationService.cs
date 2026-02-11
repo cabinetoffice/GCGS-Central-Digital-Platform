@@ -42,4 +42,13 @@ public interface IInviteOrchestrationService
         int pendingInviteId,
         OrganisationRole organisationRole,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Accepts a pending invite and creates a user organisation membership.
+    /// </summary>
+    Task AcceptInviteAsync(
+        Guid cdpOrganisationId,
+        int pendingInviteId,
+        AcceptOrganisationInviteRequest request,
+        CancellationToken cancellationToken = default);
 }

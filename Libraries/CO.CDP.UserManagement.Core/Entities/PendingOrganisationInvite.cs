@@ -18,6 +18,16 @@ public class PendingOrganisationInvite : ISoftDelete, IAuditable
     public string Email { get; set; } = string.Empty;
 
     /// <summary>
+    /// Gets or sets the invited user's first name.
+    /// </summary>
+    public string FirstName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the invited user's last name.
+    /// </summary>
+    public string LastName { get; set; } = string.Empty;
+
+    /// <summary>
     /// Gets or sets the organisation identifier.
     /// </summary>
     public int OrganisationId { get; set; }

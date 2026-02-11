@@ -1,16 +1,17 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.UserManagement.Api.Events;
 using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.Person.WebApiClient;
+using CO.CDP.Configuration.Helpers;
+using CO.CDP.OrganisationInformation.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,24 +24,26 @@ builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
 var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
-var cdpConnectionString = builder.Configuration.GetConnectionString("CdpDatabase");
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+var organisationInformationConnectionString =
+    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
 builder.Services.AddUserManagementInfrastructure(
-    connectionString ?? throw new InvalidOperationException("Database connection string not configured"),
-    cdpConnectionString);
+    connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
 builder.Services.AddUserManagementCaching(redisConnectionString);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
-var organisationSyncEnabled = builder.Configuration.GetValue("Features:OrganisationSyncEnabled", false);
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
-builder.Services
-    .AddAwsConfiguration(builder.Configuration)
-    .AddLoggingConfiguration(builder.Configuration)
-    .AddAwsSqsService();
+builder.Services.AddLoggingConfiguration(builder.Configuration);
+
+var awsSection = builder.Configuration.GetSection("Aws");
+if (awsSection.Exists())
+{
+    builder.Services.AddAwsConfiguration(builder.Configuration);
+}
 
 var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var awsRegion = builder.Configuration["AWS:Region"]
@@ -54,22 +57,15 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
 }
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
-var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
-if (!swaggerEnabled && string.IsNullOrWhiteSpace(organisationServiceUrl))
-{
-    throw new InvalidOperationException("OrganisationService must be configured.");
-}
 const string personHttpClientName = "PersonClient";
 builder.Services.AddHttpClient(personHttpClientName)
     .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
 builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl ?? string.Empty,
     sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
 
-const string organisationHttpClientName = "OrganisationClient";
-builder.Services.AddHttpClient(organisationHttpClientName)
-    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
-builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl ?? string.Empty,
-    sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
+    options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -81,7 +77,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateAudience = false
         };
-    });
+    })
+    .AddApiKeyAuthentication();
+
+builder.Services.AddApiKeyAuthenticationServices();
 
 // Authorization
 builder.Services.AddAuthorization(options =>
@@ -93,6 +92,10 @@ builder.Services.AddAuthorization(options =>
     // Service Account - for service-to-service authentication
     options.AddPolicy(PolicyNames.ServiceAccount, policy =>
         policy.RequireClaim("client_id"));
+
+    // Service Key - for DB-backed service key authentication
+    options.AddPolicy(PolicyNames.ServiceKey, policy =>
+        policy.RequireClaim(Constants.ClaimType.Channel, Constants.Channel.ServiceKey));
 
     // Organisation Member - for users who are members of an organisation
     options.AddPolicy(PolicyNames.OrganisationMember, policy =>
@@ -106,21 +109,6 @@ builder.Services.AddAuthorization(options =>
 // Register authorization handlers
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationMemberHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
-
-if (organisationSyncEnabled)
-{
-    builder.Services.AddSqsDispatcher(
-        EventDeserializer.Deserializer,
-        enableBackgroundServices: organisationSyncEnabled,
-        services =>
-        {
-            services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
-        },
-        (services, dispatcher) =>
-        {
-            dispatcher.Subscribe<PersonInviteClaimed>(services);
-        });
-}
 
 // Health checks
 builder.Services.AddHealthChecks()

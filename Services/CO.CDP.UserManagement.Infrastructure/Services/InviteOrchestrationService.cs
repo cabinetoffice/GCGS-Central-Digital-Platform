@@ -1,41 +1,35 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using InvalidOperationException = CO.CDP.UserManagement.Core.Exceptions.InvalidOperationException;
 using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
-/// Service for orchestrating user invites with the CDP organisation service.
+/// Service for orchestrating user invites.
 /// </summary>
 public class InviteOrchestrationService : IInviteOrchestrationService
 {
     private readonly IOrganisationRepository _organisationRepository;
     private readonly IPendingOrganisationInviteRepository _pendingInviteRepository;
-    private readonly IOrganisationClient _organisationClient;
+    private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InviteOrchestrationService> _logger;
-    private readonly string? _organisationServiceUrl;
 
     public InviteOrchestrationService(
         IOrganisationRepository organisationRepository,
         IPendingOrganisationInviteRepository pendingInviteRepository,
-        IOrganisationClient organisationClient,
+        IUserOrganisationMembershipRepository membershipRepository,
         IUnitOfWork unitOfWork,
-        ILogger<InviteOrchestrationService> logger,
-        IConfiguration configuration)
+        ILogger<InviteOrchestrationService> logger)
     {
         _organisationRepository = organisationRepository;
         _pendingInviteRepository = pendingInviteRepository;
-        _organisationClient = organisationClient;
+        _membershipRepository = membershipRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
-        _organisationServiceUrl = configuration.GetValue<string>("OrganisationService");
     }
 
     public async Task<CoreEntities.PendingOrganisationInvite> InviteUserAsync(
@@ -47,35 +41,23 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         if (request == null) throw new ArgumentNullException(nameof(request));
 
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
-        EnsureOrganisationServiceConfigured();
 
         var existingInvite = await _pendingInviteRepository.GetByEmailAndOrganisationAsync(
             request.Email, organisation.Id, cancellationToken);
         if (existingInvite != null)
         {
-            throw new DuplicateEntityException(nameof(CoreEntities.PendingOrganisationInvite), nameof(CoreEntities.PendingOrganisationInvite.Email), request.Email);
-        }
-
-        var inviteRequest = new InvitePersonToOrganisation(
-            request.Email,
-            request.FirstName,
-            request.LastName,
-            Array.Empty<string>());
-
-        await _organisationClient.CreatePersonInviteAsync(cdpOrganisationId, inviteRequest, cancellationToken);
-
-        var personInvite = await GetPersonInviteAsync(cdpOrganisationId, request.Email, cancellationToken);
-        if (personInvite == null)
-        {
-            throw new InvalidOperationException($"Unable to locate person invite for email '{request.Email}'.");
+            throw new DuplicateEntityException(nameof(CoreEntities.PendingOrganisationInvite),
+                nameof(CoreEntities.PendingOrganisationInvite.Email), request.Email);
         }
 
         var pendingInvite = new CoreEntities.PendingOrganisationInvite
         {
             Email = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
             OrganisationId = organisation.Id,
             OrganisationRole = request.OrganisationRole,
-            CdpPersonInviteGuid = personInvite.Id,
+            CdpPersonInviteGuid = Guid.NewGuid(),
             InvitedBy = inviterPrincipalId
         };
 
@@ -97,12 +79,6 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         CancellationToken cancellationToken = default)
     {
         var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
-        EnsureOrganisationServiceConfigured();
-
-        await _organisationClient.RemovePersonInviteFromOrganisationAsync(
-            cdpOrganisationId,
-            pendingInvite.CdpPersonInviteGuid,
-            cancellationToken);
 
         _pendingInviteRepository.Remove(pendingInvite);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -114,29 +90,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         CancellationToken cancellationToken = default)
     {
         var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
-        EnsureOrganisationServiceConfigured();
-
-        var currentInvite = await GetPersonInviteAsync(cdpOrganisationId, pendingInvite.Email, cancellationToken);
-        if (currentInvite == null)
-        {
-            throw new InvalidOperationException($"Unable to locate person invite for email '{pendingInvite.Email}'.");
-        }
-
-        var inviteRequest = new InvitePersonToOrganisation(
-            pendingInvite.Email,
-            currentInvite.FirstName,
-            currentInvite.LastName,
-            Array.Empty<string>());
-
-        await _organisationClient.CreatePersonInviteAsync(cdpOrganisationId, inviteRequest, cancellationToken);
-
-        var personInvite = await GetPersonInviteAsync(cdpOrganisationId, pendingInvite.Email, cancellationToken);
-        if (personInvite == null)
-        {
-            throw new InvalidOperationException($"Unable to locate person invite for email '{pendingInvite.Email}'.");
-        }
-
-        pendingInvite.CdpPersonInviteGuid = personInvite.Id;
+        pendingInvite.CdpPersonInviteGuid = Guid.NewGuid();
         _pendingInviteRepository.Update(pendingInvite);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
@@ -153,15 +107,34 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    private void EnsureOrganisationServiceConfigured()
+    public async Task AcceptInviteAsync(
+        Guid cdpOrganisationId,
+        int pendingInviteId,
+        AcceptOrganisationInviteRequest request,
+        CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(_organisationServiceUrl))
+        if (request == null) throw new ArgumentNullException(nameof(request));
+
+        var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+
+        var membership = new CoreEntities.UserOrganisationMembership
         {
-            throw new InvalidOperationException("OrganisationService must be configured to manage invites.");
-        }
+            UserPrincipalId = request.UserPrincipalId,
+            CdpPersonId = request.CdpPersonId,
+            OrganisationId = pendingInvite.OrganisationId,
+            OrganisationRole = pendingInvite.OrganisationRole,
+            IsActive = true,
+            JoinedAt = DateTimeOffset.UtcNow,
+            InvitedBy = pendingInvite.InvitedBy
+        };
+
+        _membershipRepository.Add(membership);
+        _pendingInviteRepository.Remove(pendingInvite);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task<CoreEntities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId, CancellationToken cancellationToken)
+    private async Task<CoreEntities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
+        CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
         if (organisation == null)
@@ -185,16 +158,5 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         }
 
         return pendingInvite;
-    }
-
-    private async Task<PersonInviteModel?> GetPersonInviteAsync(
-        Guid cdpOrganisationId,
-        string email,
-        CancellationToken cancellationToken)
-    {
-        var invites = await _organisationClient.GetOrganisationPersonInvitesAsync(cdpOrganisationId, cancellationToken);
-        return invites
-            .FirstOrDefault(invite => invite.ExpiresOn == null &&
-                                      string.Equals(invite.Email, email, StringComparison.OrdinalIgnoreCase));
     }
 }

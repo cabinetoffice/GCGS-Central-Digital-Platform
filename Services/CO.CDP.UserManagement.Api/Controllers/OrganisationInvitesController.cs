@@ -1,4 +1,3 @@
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Exceptions;
@@ -22,7 +21,6 @@ public class OrganisationInvitesController : ControllerBase
     private readonly IOrganisationRepository _organisationRepository;
     private readonly IPendingOrganisationInviteRepository _pendingInviteRepository;
     private readonly IInviteOrchestrationService _inviteOrchestrationService;
-    private readonly IOrganisationClient _organisationClient;
     private readonly ICurrentUserService _currentUserService;
     private readonly ILogger<OrganisationInvitesController> _logger;
 
@@ -30,14 +28,12 @@ public class OrganisationInvitesController : ControllerBase
         IOrganisationRepository organisationRepository,
         IPendingOrganisationInviteRepository pendingInviteRepository,
         IInviteOrchestrationService inviteOrchestrationService,
-        IOrganisationClient organisationClient,
         ICurrentUserService currentUserService,
         ILogger<OrganisationInvitesController> logger)
     {
         _organisationRepository = organisationRepository;
         _pendingInviteRepository = pendingInviteRepository;
         _inviteOrchestrationService = inviteOrchestrationService;
-        _organisationClient = organisationClient;
         _currentUserService = currentUserService;
         _logger = logger;
     }
@@ -62,15 +58,8 @@ public class OrganisationInvitesController : ControllerBase
 
             var pendingInvites = (await _pendingInviteRepository.GetByOrganisationIdAsync(
                 organisation.Id, cancellationToken)).ToList();
-            var personInvites = await _organisationClient.GetOrganisationPersonInvitesAsync(cdpOrganisationId, cancellationToken);
-            var personInvitesById = personInvites.ToDictionary(invite => invite.Id, invite => invite);
-
             var responses = pendingInvites
-                .Select(invite =>
-                {
-                    personInvitesById.TryGetValue(invite.CdpPersonInviteGuid, out var personInvite);
-                    return invite.ToResponse(personInvite);
-                })
+                .Select(invite => invite.ToResponse())
                 .ToList();
 
             return Ok(responses);
@@ -102,13 +91,7 @@ public class OrganisationInvitesController : ControllerBase
                 inviter,
                 cancellationToken);
 
-            var response = pendingInvite.ToResponse(new PersonInviteModel(
-                request.Email,
-                null,
-                request.FirstName,
-                pendingInvite.CdpPersonInviteGuid,
-                request.LastName,
-                Array.Empty<string>()));
+            var response = pendingInvite.ToResponse();
 
             return CreatedAtAction(nameof(GetInvites), new { cdpOrganisationId }, response);
         }
