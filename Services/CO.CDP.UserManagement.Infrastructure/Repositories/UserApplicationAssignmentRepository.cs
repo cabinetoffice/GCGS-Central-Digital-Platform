@@ -25,6 +25,23 @@ public class UserApplicationAssignmentRepository : Repository<UserApplicationAss
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<IEnumerable<UserApplicationAssignment>> GetByMembershipIdsAsync(IEnumerable<int> userOrganisationMembershipIds, CancellationToken cancellationToken = default)
+    {
+        var membershipIds = userOrganisationMembershipIds.ToArray();
+        if (membershipIds.Length == 0)
+        {
+            return [];
+        }
+
+        return await DbSet
+            .Include(ua => ua.OrganisationApplication)
+                .ThenInclude(oa => oa.Application)
+            .Include(ua => ua.Roles)
+                .ThenInclude(r => r.Permissions)
+            .Where(ua => membershipIds.Contains(ua.UserOrganisationMembershipId) && ua.IsActive)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task<UserApplicationAssignment?> GetByMembershipAndApplicationAsync(int userOrganisationMembershipId, int organisationApplicationId, CancellationToken cancellationToken = default)
     {
         return await DbSet

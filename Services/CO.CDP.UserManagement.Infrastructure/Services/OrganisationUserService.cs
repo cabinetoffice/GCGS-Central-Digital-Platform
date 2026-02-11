@@ -47,11 +47,15 @@ public class OrganisationUserService : IOrganisationUserService
         var memberships = (await _membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken)).ToList();
         _logger.LogDebug("Retrieved {MembershipCount} memberships for organisation {OrganisationId}", memberships.Count, organisation.Id);
 
+        var membershipIds = memberships.Select(membership => membership.Id).ToArray();
+        var assignments = await _assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
+        var assignmentsByMembership = assignments.ToLookup(assignment => assignment.UserOrganisationMembershipId);
+
         foreach (var membership in memberships)
         {
-            var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
-            _logger.LogDebug("Membership {MembershipId} has {AssignmentCount} assignments", membership.Id, assignments.Count());
-            foreach (var assignment in assignments)
+            var membershipAssignments = assignmentsByMembership[membership.Id].ToArray();
+            _logger.LogDebug("Membership {MembershipId} has {AssignmentCount} assignments", membership.Id, membershipAssignments.Length);
+            foreach (var assignment in membershipAssignments)
             {
                 membership.ApplicationAssignments.Add(assignment);
             }
