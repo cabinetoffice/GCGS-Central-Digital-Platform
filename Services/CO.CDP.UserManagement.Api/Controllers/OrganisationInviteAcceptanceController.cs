@@ -41,7 +41,7 @@ public class OrganisationInviteAcceptanceController : ControllerBase
     public async Task<ActionResult> AcceptInvite(
         Guid cdpOrganisationId,
         int pendingInviteId,
-        AcceptOrganisationInviteRequest request,
+        [FromBody] AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken)
     {
         if (!_internalInviteFlowEnabled)

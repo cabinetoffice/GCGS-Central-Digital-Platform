@@ -5,9 +5,12 @@ using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.UserManagement.Api.Validation;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -17,6 +20,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateApplicationRequestValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSanitisedLogging();
 builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(builder.Configuration); });

@@ -79,7 +79,7 @@ public class OrganisationInvitesController : ControllerBase
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<ActionResult<PendingOrganisationInviteResponse>> InviteUser(
         Guid cdpOrganisationId,
-        InviteUserRequest request,
+        [FromBody] InviteUserRequest request,
         CancellationToken cancellationToken)
     {
         try
@@ -136,7 +136,7 @@ public class OrganisationInvitesController : ControllerBase
     public async Task<ActionResult> ChangeInviteRole(
         Guid cdpOrganisationId,
         int pendingInviteId,
-        ChangeOrganisationRoleRequest request,
+        [FromBody] ChangeOrganisationRoleRequest request,
         CancellationToken cancellationToken)
     {
         try
