@@ -187,9 +187,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.WebAp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.App", "Frontend\CO.CDP.UserManagement.App\CO.CDP.UserManagement.App.csproj", "{177AD390-E2F3-431A-BCB7-1D40FAE4B323}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CO.CDP.UserManagement.App.Tests", "Frontend\CO.CDP.UserManagement.App.Tests\CO.CDP.UserManagement.App.Tests.csproj", "{DE7EADB4-C53C-467A-867A-2A36704146C3}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api", "Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj", "{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Tests", "Services\CO.CDP.UserManagement.Tests\CO.CDP.UserManagement.Tests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api.Tests", "Services\CO.CDP.UserManagement.Api.Tests\CO.CDP.UserManagement.Api.Tests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1125,6 +1127,18 @@ Global
 		{177AD390-E2F3-431A-BCB7-1D40FAE4B323}.Release|x64.Build.0 = Release|Any CPU
 		{177AD390-E2F3-431A-BCB7-1D40FAE4B323}.Release|x86.ActiveCfg = Release|Any CPU
 		{177AD390-E2F3-431A-BCB7-1D40FAE4B323}.Release|x86.Build.0 = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|x64.Build.0 = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Debug|x86.Build.0 = Debug|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|x64.ActiveCfg = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|x64.Build.0 = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|x86.ActiveCfg = Release|Any CPU
+		{DE7EADB4-C53C-467A-867A-2A36704146C3}.Release|x86.Build.0 = Release|Any CPU
 		{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44D8E913-82FA-4C37-BFC4-D1DA9E8A0802}.Debug|x64.ActiveCfg = Debug|Any CPU
