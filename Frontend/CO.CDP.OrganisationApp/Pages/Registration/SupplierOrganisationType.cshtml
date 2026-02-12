@@ -1,0 +1,110 @@
+@page
+@attribute [RazorCompiledItemMetadata("RouteTemplate", RegistrationStepModel.SupplierOrganisationTypePage)]
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Constants
+@using CO.CDP.Localization
+@model CO.CDP.OrganisationApp.Pages.Registration.SupplierOrganisationTypeModel
+
+@{
+    ViewData["Title"] = StaticTextResource.Supplier_OperationQuestion_Title;
+    var invalidSelection = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
+    var operationTypeHasError = invalidSelection || ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedOperationTypes)).HasInnerHtml;
+
+    var backLink = RegistrationStepModel.OrganisationAddressPage;
+    if (Request.Query.ContainsKey("frm-summary"))
+    {
+        backLink = RegistrationStepModel.OrganisationSummaryPage;
+        Model.RedirectToSummary = true;
+    }
+
+    string IsSelected(OperationType operationTypeValue)
+    {
+        return Model.SelectedOperationTypes?.Contains(operationTypeValue) == true ? "checked='checked'" : string.Empty;
+    }
+}
+
+@section BeforeContent {
+    <a href="@backLink" class="govuk-back-link">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+        <form class="form" method="post">
+            @if (Request.Query.ContainsKey("frm-summary"))
+            {
+                <input type="hidden" name="RedirectToSummary" value="true" />
+            }
+            <div class="govuk-form-group @(invalidSelection ? "govuk-form-group--error": "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">
+                            @ViewData["Title"]
+                        </h1>
+                    </legend>
+                    <div id="waste-hint" class="govuk-hint">
+                        @StaticTextResource.Supplier_OperationQuestion_Hint
+                    </div>
+                    @if (operationTypeHasError)
+                    {
+                        <p id="organisation-type-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">@StaticTextResource.Global_Error:</span> @Html.ValidationMessageFor(m => m.SelectedOperationTypes)
+                        </p>
+                    }
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="chkSmallOrMediumSized"
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.SmallOrMediumSized" @IsSelected(OperationType.SmallOrMediumSized) />
+                            <label class="govuk-label govuk-checkboxes__label" for="chkSmallOrMediumSized">
+                                @OperationType.SmallOrMediumSized.Description()
+                                <div id="sme-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_SmallOrMediumSized_Hint
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="chkNonGovernmental"
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.NonGovernmental" @IsSelected(OperationType.NonGovernmental) />
+                            <label class="govuk-label govuk-checkboxes__label" for="chkNonGovernmental">
+                                @OperationType.NonGovernmental.Description()
+                                <div id="social-enterprise-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_NonGovernmental_Hint
+                                </div>
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="chkSupportedEmploymentProvider"
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.SupportedEmploymentProvider" @IsSelected(OperationType.SupportedEmploymentProvider) />
+                            <label class="govuk-label govuk-checkboxes__label" for="chkSupportedEmploymentProvider">
+                                @OperationType.SupportedEmploymentProvider.Description()
+                                <div id="supported-employer-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_SupportedEmploymentProvider_Hint
+                                </div>
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="chkPublicService"
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.PublicService" @IsSelected(OperationType.PublicService) />
+                            <label class="govuk-label govuk-checkboxes__label" for="chkPublicService">
+                                @OperationType.PublicService.Description()
+                                <div id="public-service-hint" class="govuk-hint">
+                                    @StaticTextResource.Supplier_OperationType_PublicService_Hint
+                                </div>
+                            </label>
+                        </div>
+                        <div class="govuk-checkboxes__divider">or</div>
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="chkNoneOfTheAbove"
+                                   name="SelectedOperationTypes" type="checkbox" value="@OperationType.None" @IsSelected(OperationType.None) data-behaviour="exclusive" />
+                            <label class="govuk-label govuk-checkboxes__label" for="chkNoneOfTheAbove">
+                                @OperationType.None.Description()
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <govuk-button class="govuk-!-margin-top-4">@StaticTextResource.Global_Continue</govuk-button>
+        </form>
+    </div>
+</div>

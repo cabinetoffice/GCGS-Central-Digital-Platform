@@ -1,4 +1,5 @@
 using CO.CDP.OrganisationApp.Constants;
+using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 
 namespace CO.CDP.OrganisationApp.Models;
 
@@ -35,4 +36,5 @@ public class RegistrationDetails
     public string? BuyerOrganisationOtherValue { get; set; }
     public bool? Devolved { get; set; }
     public List<DevolvedRegulation> Regulations { get; set; } = [];
+    public List<OrganisationWebApiClient.OperationType> SupplierOrganisationOperationTypes { get; set; } = [];
 }
