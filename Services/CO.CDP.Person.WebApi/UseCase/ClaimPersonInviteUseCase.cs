@@ -1,6 +1,4 @@
-using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
 
 namespace CO.CDP.Person.WebApi.UseCase;
@@ -8,9 +6,7 @@ namespace CO.CDP.Person.WebApi.UseCase;
 public class ClaimPersonInviteUseCase(
     IPersonRepository personRepository,
     IPersonInviteRepository personInviteRepository,
-    IOrganisationRepository organisationRepository,
-    IPublisher publisher,
-    IConfiguration configuration)
+    IOrganisationRepository organisationRepository)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
@@ -38,17 +34,6 @@ public class ClaimPersonInviteUseCase(
 
         personRepository.Save(person);
         personInviteRepository.Save(personInvite);
-
-        if (configuration.GetValue("Features:OrganisationSyncEnabled", false))
-        {
-            await publisher.Publish(new PersonInviteClaimed
-            {
-                PersonInviteGuid = personInvite.Guid,
-                PersonGuid = person.Guid,
-                UserUrn = person.UserUrn,
-                OrganisationGuid = organisation.Guid
-            });
-        }
 
         return true;
     }
