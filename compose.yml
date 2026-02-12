@@ -509,12 +509,12 @@ services:
       db:
         condition: "service_healthy"
 
-  outbox-processor-person:
-    container_name: co-cdp-outbox-processor-person
+  outbox-processor-person-user-management:
+    container_name: co-cdp-outbox-processor-person-user-management
     build:
       context: .
       dockerfile: Dockerfile
-      target: final-outbox-processor-person
+      target: final-outbox-processor-person-user-management
     image: 'cabinetoffice/cdp-outbox-processor-person:${IMAGE_VERSION:-latest}'
     healthcheck:
       test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
@@ -529,7 +529,7 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
       Aws__SqsPublisher__MessageGroupId: "UserManagement"
-      CloudWatch__LogGroup: "/ecs/outbox-processor-person"
+      CloudWatch__LogGroup: "/ecs/outbox-processor-person-user-management"
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
