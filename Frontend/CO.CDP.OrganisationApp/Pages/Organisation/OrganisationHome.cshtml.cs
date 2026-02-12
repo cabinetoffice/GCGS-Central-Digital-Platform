@@ -62,7 +62,8 @@ public class OrganisationHomeModel(
             AiToolEnabled: await featureManager.IsEnabledAsync(FeatureFlags.AiTool),
             PaymentsEnabled: await featureManager.IsEnabledAsync(FeatureFlags.Payments),
             FvraToolBuyerEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolBuyer),
-            FvraToolSupplierEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolSupplier)
+            FvraToolSupplierEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolSupplier),
+            FindAndApplyEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FindAndApply)
         );
 
         Tiles = BuildTiles(featureConfig);
@@ -174,6 +175,16 @@ public class OrganisationHomeModel(
                 Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "/buyer", Id, null, cookiesAcceptedValue, originParams)
             });
         }
+
+        if (featureConfig.FindAndApplyEnabled)
+        {
+            tiles.Add(new Tile
+            {
+                Title = "Find a grant",
+                Body = StaticTextResource.OrganisationHome_TileNine_Body,
+                Href = $"/organisation/{Id}/find-and-apply"
+            });
+        }
     }
 
     private Dictionary<string, string?> GetOriginParams()
@@ -197,5 +208,6 @@ public class OrganisationHomeModel(
         bool AiToolEnabled,
         bool PaymentsEnabled,
         bool FvraToolBuyerEnabled,
-        bool FvraToolSupplierEnabled);
+        bool FvraToolSupplierEnabled,
+        bool FindAndApplyEnabled);
 }
