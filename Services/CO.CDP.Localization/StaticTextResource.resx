@@ -4481,4 +4481,21 @@
   <data name="OrganisationHome_TileEight_Body">
     <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
   </data>
+
+  <data name="OrganisationHome_TileEight_Body">
+    <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
+  </data>
+  <data name="OrganisationHome_TileNine_Body">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Use this service to find government funding.
+      &lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        You can also use this service to manage grant adverts and applications.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="FindAndApply_Title" xml:space="preserve">
+    <value>Find and apply</value>
+  </data>
 </root>

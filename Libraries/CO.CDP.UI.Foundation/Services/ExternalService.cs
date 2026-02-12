@@ -8,5 +8,6 @@ public enum ExternalService
     CommercialTools,
     AiTool,
     Payments,
-    FvraTool
+    FvraTool,
+    FindAndApplyTool
 }

@@ -1,0 +1,89 @@
+@page "/organisation/{id}/find-and-apply"
+@using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Extensions
+@model OrganisationFindAndApplyModel
+
+@{
+    ViewData["Title"] = StaticTextResource.FindAndApply_Title;
+}
+
+@section BeforeContent {
+    <a class="govuk-back-link" href="@Model.BackLinkUrl">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Find a grant service</h1>
+
+        <p class="govuk-body-l">
+            Use this service to find government funding. You can also use this service to manage grant adverts and applications.
+        </p>
+
+        <h2 class="govuk-heading-m">Find a grant</h2>
+        <p class="govuk-body">You can search and apply for funding for:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>individuals</li>
+            <li>public sector</li>
+            <li>private sector</li>
+            <li>non profit organisations</li>
+            <li>local authorities</li>
+        </ul>
+        <a href="https://www.find-government-grants.service.gov.uk/" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            Search and apply for a grant
+        </a>
+
+        <h2 class="govuk-heading-m">Manage a grant</h2>
+        <p class="govuk-body">If you are a grant administrator, you can use this service to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>create a new grant advert</li>
+            <li>check the status of your adverts</li>
+            <li>build a grant application form</li>
+            <li>review and download applications</li>
+        </ul>
+        <a href="https://find-government-grants.service.gov.uk/apply/admin/dashboard" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            Manage your grant adverts
+        </a>
+
+        <h2 class="govuk-heading-m">Get help and advice</h2>
+        <p class="govuk-body">
+            If you need more information about this service, you can get guidance from the Grants Centre of Excellence:
+        </p>
+        <p class="govuk-body">
+            <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/about-the-gep/apply-for-a-grant/" class="govuk-link">Visit the Grants Centre of Excellence</a>
+        </p>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <h2 class="govuk-heading-m">Related content</h2>
+        <p class="govuk-body">You may also be interested in these other services:</p>
+
+        <ul class="govuk-list">
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/government-grants-information-system-refresh/" class="govuk-link govuk-link--no-visited-state">Government Grants Information System (GGIS)</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">Provides grant information in real time in one easy to use system.</p>
+            </li>
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/about-the-gep/grants-lifecycle-utility/" class="govuk-link govuk-link--no-visited-state">Grants Lifecycle Utility (GLU)</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">Case management solution to manage grant schemes through the grants lifecycle.</p>
+            </li>
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/spotlight/" class="govuk-link govuk-link--no-visited-state">Spotlight</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">Allows users to easily risk assess a grant applicant (Due diligence).</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script nonce-csp>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sortOrderSelect = document.getElementById('sort-order');
+            if (sortOrderSelect) {
+                sortOrderSelect.addEventListener('change', function () {
+                    document.getElementById('sort-submit').click();
+                });
+            }
+        });
+    </script>
+}

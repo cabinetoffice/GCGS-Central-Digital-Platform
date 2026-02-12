@@ -49,6 +49,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
             ExternalService.AiTool => _aiToolUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.Payments => _paymentsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.FvraTool => _fvraUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
+            ExternalService.FindAndApplyTool => _fvraUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             _ => throw new ArgumentOutOfRangeException(nameof(service), service, $@"Unsupported external service: {service}")
         };
     }
