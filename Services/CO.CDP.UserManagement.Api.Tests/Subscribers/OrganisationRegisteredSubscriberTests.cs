@@ -1,7 +1,7 @@
 using CO.CDP.OrganisationInformation;
 using CO.CDP.UserManagement.Infrastructure.Events;
-using CO.CDP.UserManagement.Infrastructure.Subscribers;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Infrastructure.Services;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -9,23 +9,33 @@ using Moq;
 
 namespace CO.CDP.UserManagement.Api.Tests.Subscribers;
 
-public class OrganisationRegisteredSubscriberTests
+public class OrganisationSyncServiceRegisteredTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<ISlugGeneratorService> _slugGeneratorMock;
+    private readonly Mock<IOrganisationPersonsSyncService> _personsSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-    private readonly OrganisationRegisteredSubscriber _subscriber;
+    private readonly OrganisationSyncService _service;
 
-    public OrganisationRegisteredSubscriberTests()
+    public OrganisationSyncServiceRegisteredTests()
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _slugGeneratorMock = new Mock<ISlugGeneratorService>();
+        _personsSyncServiceMock = new Mock<IOrganisationPersonsSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        var loggerMock = new Mock<ILogger<OrganisationRegisteredSubscriber>>();
+        var loggerMock = new Mock<ILogger<OrganisationSyncService>>();
 
-        _subscriber = new OrganisationRegisteredSubscriber(
+        _personsSyncServiceMock
+            .Setup(s => s.SyncOrganisationMembershipsAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<int>(),
+                It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        _service = new OrganisationSyncService(
             _organisationRepositoryMock.Object,
             _slugGeneratorMock.Object,
+            _personsSyncServiceMock.Object,
             _unitOfWorkMock.Object,
             loggerMock.Object);
     }
@@ -50,7 +60,7 @@ public class OrganisationRegisteredSubscriberTests
             .ReturnsAsync(false);
 
         // Act
-        await _subscriber.Handle(@event);
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
         // Assert
         _organisationRepositoryMock.Verify(r => r.Add(It.Is<CoreOrganisation>(o =>
@@ -84,7 +94,7 @@ public class OrganisationRegisteredSubscriberTests
             .ReturnsAsync(existingOrg);
 
         // Act
-        await _subscriber.Handle(@event);
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
         // Assert
         _organisationRepositoryMock.Verify(r => r.Add(It.IsAny<CoreOrganisation>()), Times.Never);
@@ -111,7 +121,7 @@ public class OrganisationRegisteredSubscriberTests
             .ReturnsAsync(false);
 
         // Act
-        await _subscriber.Handle(@event);
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
         // Assert
         _organisationRepositoryMock.Verify(r => r.Add(It.Is<CoreOrganisation>(o =>
@@ -150,7 +160,7 @@ public class OrganisationRegisteredSubscriberTests
             });
 
         // Act
-        await _subscriber.Handle(@event);
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
         // Assert
         _organisationRepositoryMock.Verify(r => r.Add(It.Is<CoreOrganisation>(o =>
@@ -167,7 +177,7 @@ public class OrganisationRegisteredSubscriberTests
         var @event = CreateOrganisationRegisteredEvent("not-a-valid-guid", "Test Org");
 
         // Act
-        var act = async () => await _subscriber.Handle(@event);
+        var act = async () => await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
         // Assert
         await act.Should().ThrowAsync<ArgumentException>()
