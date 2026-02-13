@@ -24,11 +24,7 @@ using CO.CDP.Configuration.Assembly;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container
-builder.Services.AddControllers(options =>
-{
-    options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute());
-});
-builder.Services.AddAntiforgery();
+builder.Services.AddControllers();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateApplicationRequestValidator>();
 builder.Services.AddEndpointsApiExplorer();
