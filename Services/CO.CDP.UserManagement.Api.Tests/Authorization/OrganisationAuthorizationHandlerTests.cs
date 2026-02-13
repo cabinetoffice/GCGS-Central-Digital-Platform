@@ -1,14 +1,14 @@
 using System.Security.Claims;
 using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
+using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
-namespace CO.CDP.UserManagement.UnitTests.Authorization;
+namespace CO.CDP.UserManagement.Api.Tests.Authorization;
 
 public class OrganisationAuthorizationHandlerTests
 {
@@ -22,7 +22,7 @@ public class OrganisationAuthorizationHandlerTests
 
         var repository = new Mock<IOrganisationRepository>();
         repository.Setup(repo => repo.GetByCdpGuidAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Organisation { Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org" });
+            .ReturnsAsync(new CoreOrganisation { Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org" });
 
         var handler = new OrganisationAdminHandler(new Mock<ILogger<OrganisationAdminHandler>>().Object, repository.Object);
         var context = BuildContext(requirement, httpContext);
@@ -42,7 +42,7 @@ public class OrganisationAuthorizationHandlerTests
 
         var repository = new Mock<IOrganisationRepository>();
         repository.Setup(repo => repo.GetByCdpGuidAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((CoreOrganisation?)null);
 
         var handler = new OrganisationAdminHandler(new Mock<ILogger<OrganisationAdminHandler>>().Object, repository.Object);
         var context = BuildContext(requirement, httpContext);
@@ -62,7 +62,7 @@ public class OrganisationAuthorizationHandlerTests
 
         var repository = new Mock<IOrganisationRepository>();
         repository.Setup(repo => repo.GetByCdpGuidAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Organisation { Id = 2, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org" });
+            .ReturnsAsync(new CoreOrganisation { Id = 2, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org" });
 
         var handler = new OrganisationMemberHandler(new Mock<ILogger<OrganisationMemberHandler>>().Object, repository.Object);
         var context = BuildContext(requirement, httpContext);

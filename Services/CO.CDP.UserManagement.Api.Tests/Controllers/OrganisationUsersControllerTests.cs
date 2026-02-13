@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 
-namespace CO.CDP.UserManagement.UnitTests.Controllers;
+namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class OrganisationUsersControllerTests
 {

@@ -119,12 +119,13 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var request = new ApiClient.InviteUserRequest(
+                new List<ApiClient.ApplicationAssignment>(),
                 input.Email ?? string.Empty,
                 input.FirstName ?? string.Empty,
                 input.LastName ?? string.Empty,
                 input.OrganisationRole ?? OrganisationRole.Member);
 
-            await apiClient.InvitesAsync(org.CdpOrganisationGuid, request, ct);
+            await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
             return true;
         }
         catch (ApiClient.ApiException)
@@ -233,7 +234,22 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            await apiClient.ResendAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+            var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+            var invite = invites.FirstOrDefault(item => item.PendingInviteId == pendingInviteId);
+            if (invite == null)
+            {
+                return false;
+            }
+
+            var request = new ApiClient.InviteUserRequest(
+                new List<ApiClient.ApplicationAssignment>(),
+                invite.Email,
+                invite.FirstName,
+                invite.LastName,
+                invite.OrganisationRole);
+
+            await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
+            await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
             return true;
         }
         catch (ApiClient.ApiException)

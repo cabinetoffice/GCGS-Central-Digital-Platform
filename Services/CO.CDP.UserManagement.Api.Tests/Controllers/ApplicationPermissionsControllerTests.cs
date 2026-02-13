@@ -8,7 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace CO.CDP.UserManagement.UnitTests.Controllers;
+namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class ApplicationPermissionsControllerTests
 {

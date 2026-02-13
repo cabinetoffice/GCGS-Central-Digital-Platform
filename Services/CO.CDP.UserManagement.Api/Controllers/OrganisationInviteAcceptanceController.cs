@@ -17,45 +17,31 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 public class OrganisationInviteAcceptanceController : ControllerBase
 {
     private readonly IInviteOrchestrationService _inviteOrchestrationService;
-    private readonly bool _internalInviteFlowEnabled;
-    private readonly ILogger<OrganisationInviteAcceptanceController> _logger;
 
     public OrganisationInviteAcceptanceController(
-        IInviteOrchestrationService inviteOrchestrationService,
-        IConfiguration configuration,
-        ILogger<OrganisationInviteAcceptanceController> logger)
+        IInviteOrchestrationService inviteOrchestrationService)
     {
         _inviteOrchestrationService = inviteOrchestrationService;
-        _internalInviteFlowEnabled = configuration.GetValue("Features:InternalInviteFlowEnabled", false);
-        _logger = logger;
     }
 
     /// <summary>
     /// Accepts a pending invite using service-to-service authentication.
     /// </summary>
-    [HttpPost("{pendingInviteId:int}/accept")]
+    [HttpPost("{inviteId:int}/accept")]
     [Authorize(AuthenticationSchemes = ApiKeyAuthenticationHandler.AuthenticationScheme, Policy = PolicyNames.ServiceKey)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status503ServiceUnavailable)]
     public async Task<ActionResult> AcceptInvite(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteId,
         [FromBody] AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken)
     {
-        if (!_internalInviteFlowEnabled)
-        {
-            _logger.LogWarning("Internal invite flow disabled for pending invite {PendingInviteId}", pendingInviteId);
-            return StatusCode(StatusCodes.Status503ServiceUnavailable,
-                new ErrorResponse { Message = "Internal invite flow is disabled." });
-        }
-
         try
         {
             await _inviteOrchestrationService.AcceptInviteAsync(
                 cdpOrganisationId,
-                pendingInviteId,
+                inviteId,
                 request,
                 cancellationToken);
             return NoContent();

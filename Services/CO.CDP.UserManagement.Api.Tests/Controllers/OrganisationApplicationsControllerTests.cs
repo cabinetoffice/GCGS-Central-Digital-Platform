@@ -8,8 +8,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
-namespace CO.CDP.UserManagement.UnitTests.Controllers;
+namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class OrganisationApplicationsControllerTests
 {
@@ -36,7 +37,7 @@ public class OrganisationApplicationsControllerTests
                 IsActive = true,
                 CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero),
                 CreatedBy = "system",
-                Organisation = new Organisation
+                Organisation = new CoreOrganisation
                     { Id = 10, Name = "Org", Slug = "org", CreatedAt = DateTimeOffset.UtcNow },
                 Application = new Application
                     { Id = 20, Name = "App", ClientId = "app", CreatedAt = DateTimeOffset.UtcNow }

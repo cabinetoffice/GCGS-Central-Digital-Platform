@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SystemInvalidOperationException = System.InvalidOperationException;
 
-namespace CO.CDP.UserManagement.UnitTests.Controllers;
+namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class ApplicationRolesControllerTests
 {

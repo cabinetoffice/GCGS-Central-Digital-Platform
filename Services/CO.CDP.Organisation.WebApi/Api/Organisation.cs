@@ -1017,6 +1017,43 @@ public static class EndpointExtensions
                 return operation;
             });
 
+        app.MapPost("/{organisationId}/services/invites",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.ServiceKey],
+                organisationIdLocation: OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
+        async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), CO.CDP.OrganisationInformation.Persistence.PersonInvite> useCase) =>
+                    await useCase.Execute((organisationId, invitePersonToOrganisation))
+                        .AndThen(invite => Results.Ok(new PersonInviteModel
+                        {
+                            Id = invite.Guid,
+                            FirstName = invite.FirstName,
+                            LastName = invite.LastName,
+                            Email = invite.Email,
+                            Scopes = invite.Scopes,
+                            ExpiresOn = invite.ExpiresOn
+                        }))
+            )
+            .Produces<PersonInviteModel>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreatePersonInviteForService";
+                operation.Description = "Create a new person invite (service-to-service). Returns the created invite with GUID.";
+                operation.Summary = "Create a new person invite for service integration.";
+                operation.Responses["200"].Description = "Person invite created successfully. Returns the invite details including GUID.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
         return app;
     }
 

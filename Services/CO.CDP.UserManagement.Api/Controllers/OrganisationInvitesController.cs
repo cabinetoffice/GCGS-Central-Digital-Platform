@@ -1,12 +1,15 @@
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using CoreEntities = CO.CDP.UserManagement.Core.Entities;
+using IUmOrganisationRepository = CO.CDP.UserManagement.Core.Interfaces.IOrganisationRepository;
 
 namespace CO.CDP.UserManagement.Api.Controllers;
 
@@ -18,24 +21,24 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [Authorize(Policy = PolicyNames.OrganisationAdmin)]
 public class OrganisationInvitesController : ControllerBase
 {
-    private readonly IOrganisationRepository _organisationRepository;
-    private readonly IPendingOrganisationInviteRepository _pendingInviteRepository;
+    private readonly IUmOrganisationRepository _organisationRepository;
+    private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
+    private readonly OrganisationInformationContext _organisationInformationContext;
     private readonly IInviteOrchestrationService _inviteOrchestrationService;
     private readonly ICurrentUserService _currentUserService;
-    private readonly ILogger<OrganisationInvitesController> _logger;
 
     public OrganisationInvitesController(
-        IOrganisationRepository organisationRepository,
-        IPendingOrganisationInviteRepository pendingInviteRepository,
+        IUmOrganisationRepository organisationRepository,
+        IInviteRoleMappingRepository inviteRoleMappingRepository,
+        OrganisationInformationContext organisationInformationContext,
         IInviteOrchestrationService inviteOrchestrationService,
-        ICurrentUserService currentUserService,
-        ILogger<OrganisationInvitesController> logger)
+        ICurrentUserService currentUserService)
     {
         _organisationRepository = organisationRepository;
-        _pendingInviteRepository = pendingInviteRepository;
+        _inviteRoleMappingRepository = inviteRoleMappingRepository;
+        _organisationInformationContext = organisationInformationContext;
         _inviteOrchestrationService = inviteOrchestrationService;
         _currentUserService = currentUserService;
-        _logger = logger;
     }
 
     /// <summary>
@@ -56,13 +59,40 @@ public class OrganisationInvitesController : ControllerBase
                 throw new EntityNotFoundException(nameof(CoreEntities.Organisation), cdpOrganisationId);
             }
 
-            var pendingInvites = (await _pendingInviteRepository.GetByOrganisationIdAsync(
+            // Get InviteRoleMappings from UserManagement DB
+            var mappings = (await _inviteRoleMappingRepository.GetByOrganisationIdAsync(
                 organisation.Id, cancellationToken)).ToList();
-            var responses = pendingInvites
-                .Select(invite => invite.ToResponse())
-                .ToList();
 
-            return Ok(responses);
+            if (!mappings.Any())
+            {
+                return Ok(Enumerable.Empty<PendingOrganisationInviteResponse>());
+            }
+
+            // Get CDP PersonInvites via OrganisationInformationContext
+            var cdpInviteGuids = mappings.Select(m => m.CdpPersonInviteGuid).ToList();
+            var cdpInvites = await _organisationInformationContext.PersonInvites
+                .Where(pi => cdpInviteGuids.Contains(pi.Guid))
+                .ToListAsync(cancellationToken);
+
+            // Join and map to response
+            var responses = from mapping in mappings
+                            join cdpInvite in cdpInvites on mapping.CdpPersonInviteGuid equals cdpInvite.Guid
+                            select new PendingOrganisationInviteResponse
+                            {
+                                PendingInviteId = mapping.Id,
+                                OrganisationId = mapping.OrganisationId,
+                                CdpPersonInviteGuid = cdpInvite.Guid,
+                                Email = cdpInvite.Email,
+                                FirstName = cdpInvite.FirstName,
+                                LastName = cdpInvite.LastName,
+                                OrganisationRole = mapping.OrganisationRole,
+                                Status = UserStatus.Pending,
+                                InvitedBy = mapping.CreatedBy,
+                                ExpiresOn = cdpInvite.ExpiresOn,
+                                CreatedAt = cdpInvite.CreatedOn
+                            };
+
+            return Ok(responses.ToList());
         }
         catch (EntityNotFoundException ex)
         {
@@ -85,13 +115,30 @@ public class OrganisationInvitesController : ControllerBase
         try
         {
             var inviter = _currentUserService.GetUserPrincipalId();
-            var pendingInvite = await _inviteOrchestrationService.InviteUserAsync(
+            var mapping = await _inviteOrchestrationService.InviteUserAsync(
                 cdpOrganisationId,
                 request,
                 inviter,
                 cancellationToken);
 
-            var response = pendingInvite.ToResponse();
+            // Get CDP invite details for response
+            var cdpInvite = await _organisationInformationContext.PersonInvites
+                .FirstOrDefaultAsync(pi => pi.Guid == mapping.CdpPersonInviteGuid, cancellationToken);
+
+            var response = new PendingOrganisationInviteResponse
+            {
+                PendingInviteId = mapping.Id,
+                OrganisationId = mapping.OrganisationId,
+                CdpPersonInviteGuid = mapping.CdpPersonInviteGuid,
+                Email = cdpInvite?.Email ?? request.Email,
+                FirstName = cdpInvite?.FirstName ?? request.FirstName,
+                LastName = cdpInvite?.LastName ?? request.LastName,
+                OrganisationRole = mapping.OrganisationRole,
+                Status = UserStatus.Pending,
+                InvitedBy = mapping.CreatedBy,
+                ExpiresOn = cdpInvite?.ExpiresOn,
+                CreatedAt = cdpInvite?.CreatedOn ?? mapping.CreatedAt
+            };
 
             return CreatedAtAction(nameof(GetInvites), new { cdpOrganisationId }, response);
         }
@@ -106,19 +153,24 @@ public class OrganisationInvitesController : ControllerBase
     }
 
     /// <summary>
-    /// Resends a pending invite.
+    /// Changes the organisation role for a pending invite.
     /// </summary>
-    [HttpPost("{pendingInviteId:int}/resend")]
+    [HttpPut("{inviteId:int}/role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> ResendInvite(
+    public async Task<ActionResult> ChangeInviteRole(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteId,
+        [FromBody] ChangeOrganisationRoleRequest request,
         CancellationToken cancellationToken)
     {
         try
         {
-            await _inviteOrchestrationService.ResendInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+            await _inviteOrchestrationService.ChangeInviteRoleAsync(
+                cdpOrganisationId,
+                inviteId,
+                request.OrganisationRole,
+                cancellationToken);
             return NoContent();
         }
         catch (EntityNotFoundException ex)
@@ -128,24 +180,19 @@ public class OrganisationInvitesController : ControllerBase
     }
 
     /// <summary>
-    /// Changes the organisation role for a pending invite.
+    /// Removes a pending invite.
     /// </summary>
-    [HttpPut("{pendingInviteId:int}/role")]
+    [HttpDelete("{inviteId:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult> ChangeInviteRole(
+    public async Task<ActionResult> RemoveInvite(
         Guid cdpOrganisationId,
-        int pendingInviteId,
-        [FromBody] ChangeOrganisationRoleRequest request,
+        int inviteId,
         CancellationToken cancellationToken)
     {
         try
         {
-            await _inviteOrchestrationService.ChangeInviteRoleAsync(
-                cdpOrganisationId,
-                pendingInviteId,
-                request.OrganisationRole,
-                cancellationToken);
+            await _inviteOrchestrationService.RemoveInviteAsync(cdpOrganisationId, inviteId, cancellationToken);
             return NoContent();
         }
         catch (EntityNotFoundException ex)

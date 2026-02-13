@@ -1,4 +1,3 @@
-using CO.CDP.UserManagement.Core.Entities;
 using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
@@ -6,7 +5,7 @@ using CO.CDP.UserManagement.Infrastructure.Services;
 using FluentAssertions;
 using Moq;
 
-namespace CO.CDP.UserManagement.UnitTests.Services;
+namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class OrganisationServiceTests
 {

@@ -1,38 +1,42 @@
+using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using Microsoft.Extensions.Logging;
-using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
-/// Service for orchestrating user invites.
+/// Service for orchestrating user invites via CDP bridge.
 /// </summary>
 public class InviteOrchestrationService : IInviteOrchestrationService
 {
     private readonly IOrganisationRepository _organisationRepository;
-    private readonly IPendingOrganisationInviteRepository _pendingInviteRepository;
+    private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
+    private readonly IOrganisationClient _organisationClient;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InviteOrchestrationService> _logger;
 
     public InviteOrchestrationService(
         IOrganisationRepository organisationRepository,
-        IPendingOrganisationInviteRepository pendingInviteRepository,
+        IInviteRoleMappingRepository inviteRoleMappingRepository,
         IUserOrganisationMembershipRepository membershipRepository,
+        IOrganisationClient organisationClient,
         IUnitOfWork unitOfWork,
         ILogger<InviteOrchestrationService> logger)
     {
         _organisationRepository = organisationRepository;
-        _pendingInviteRepository = pendingInviteRepository;
+        _inviteRoleMappingRepository = inviteRoleMappingRepository;
         _membershipRepository = membershipRepository;
+        _organisationClient = organisationClient;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
-    public async Task<CoreEntities.PendingOrganisationInvite> InviteUserAsync(
+    public async Task<InviteRoleMapping> InviteUserAsync(
         Guid cdpOrganisationId,
         InviteUserRequest request,
         string? inviterPrincipalId,
@@ -42,121 +46,192 @@ public class InviteOrchestrationService : IInviteOrchestrationService
 
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
 
-        var existingInvite = await _pendingInviteRepository.GetByEmailAndOrganisationAsync(
-            request.Email, organisation.Id, cancellationToken);
-        if (existingInvite != null)
-        {
-            throw new DuplicateEntityException(nameof(CoreEntities.PendingOrganisationInvite),
-                nameof(CoreEntities.PendingOrganisationInvite.Email), request.Email);
-        }
+        var cdpScopes = MapOrganisationRoleToCdpScopes(request.OrganisationRole);
 
-        var pendingInvite = new CoreEntities.PendingOrganisationInvite
+        var cdpInviteRequest = new CO.CDP.Organisation.WebApiClient.InvitePersonToOrganisation(
+            email: request.Email,
+            firstName: request.FirstName,
+            lastName: request.LastName,
+            scopes: cdpScopes
+        );
+
+        var personInvite = await CreatePersonInviteAsync(
+            organisation,
+            request,
+            cdpInviteRequest,
+            cancellationToken);
+
+        var inviteRoleMapping = new InviteRoleMapping
         {
-            Email = request.Email,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
+            CdpPersonInviteGuid = personInvite.Id,
             OrganisationId = organisation.Id,
             OrganisationRole = request.OrganisationRole,
-            CdpPersonInviteGuid = Guid.NewGuid(),
-            InvitedBy = inviterPrincipalId
+            CreatedBy = inviterPrincipalId ?? "system"
         };
 
-        _pendingInviteRepository.Add(pendingInvite);
+        if (request.ApplicationAssignments != null && request.ApplicationAssignments.Any())
+        {
+            foreach (var appAssignment in request.ApplicationAssignments)
+            {
+                foreach (var roleId in appAssignment.ApplicationRoleIds)
+                {
+                    inviteRoleMapping.ApplicationAssignments.Add(new InviteRoleApplicationAssignment
+                    {
+                        OrganisationApplicationId = appAssignment.OrganisationApplicationId,
+                        ApplicationRoleId = roleId,
+                        CreatedBy = inviterPrincipalId ?? "system"
+                    });
+                }
+            }
+        }
+
+        _inviteRoleMappingRepository.Add(inviteRoleMapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation(
-            "Created pending invite {InviteId} for organisation {OrganisationId} and email {Email}",
-            pendingInvite.Id,
-            organisation.Id,
-            request.Email);
+            "Created InviteRoleMapping {MappingId} for CDP invite {CdpInviteGuid}",
+            inviteRoleMapping.Id, inviteRoleMapping.CdpPersonInviteGuid);
 
-        return pendingInvite;
+        return inviteRoleMapping;
     }
 
     public async Task RemoveInviteAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         CancellationToken cancellationToken = default)
     {
-        var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
 
-        _pendingInviteRepository.Remove(pendingInvite);
+        _inviteRoleMappingRepository.Remove(mapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-    }
 
-    public async Task ResendInviteAsync(
-        Guid cdpOrganisationId,
-        int pendingInviteId,
-        CancellationToken cancellationToken = default)
-    {
-        var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
-        pendingInvite.CdpPersonInviteGuid = Guid.NewGuid();
-        _pendingInviteRepository.Update(pendingInvite);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        _logger.LogInformation(
+            "Removed InviteRoleMapping {MappingId} for organisation {OrganisationId}",
+            inviteRoleMappingId, mapping.OrganisationId);
     }
 
     public async Task ChangeInviteRoleAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         OrganisationRole organisationRole,
         CancellationToken cancellationToken = default)
     {
-        var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
-        pendingInvite.OrganisationRole = organisationRole;
-        _pendingInviteRepository.Update(pendingInvite);
+        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
+
+        mapping.OrganisationRole = organisationRole;
+        _inviteRoleMappingRepository.Update(mapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Changed role to {Role} for InviteRoleMapping {MappingId}",
+            organisationRole, inviteRoleMappingId);
     }
 
     public async Task AcceptInviteAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken = default)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
 
-        var pendingInvite = await GetPendingInviteAsync(cdpOrganisationId, pendingInviteId, cancellationToken);
+        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
 
-        var membership = new CoreEntities.UserOrganisationMembership
+        var existingMembership = await _membershipRepository.GetByUserAndOrganisationAsync(
+            request.UserPrincipalId,
+            mapping.OrganisationId,
+            cancellationToken);
+        if (existingMembership != null)
+        {
+            throw new DuplicateEntityException(
+                nameof(UserOrganisationMembership),
+                nameof(UserOrganisationMembership.UserPrincipalId),
+                request.UserPrincipalId);
+        }
+
+        var membership = new UserOrganisationMembership
         {
             UserPrincipalId = request.UserPrincipalId,
             CdpPersonId = request.CdpPersonId,
-            OrganisationId = pendingInvite.OrganisationId,
-            OrganisationRole = pendingInvite.OrganisationRole,
+            OrganisationId = mapping.OrganisationId,
+            OrganisationRole = mapping.OrganisationRole,
             IsActive = true,
             JoinedAt = DateTimeOffset.UtcNow,
-            InvitedBy = pendingInvite.InvitedBy
+            InvitedBy = mapping.CreatedBy
         };
 
         _membershipRepository.Add(membership);
-        _pendingInviteRepository.Remove(pendingInvite);
+        _inviteRoleMappingRepository.Remove(mapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation(
+            "Accepted invite {MappingId}, created membership {MembershipId}",
+            inviteRoleMappingId, membership.Id);
     }
 
-    private async Task<CoreEntities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
+    private static List<string> MapOrganisationRoleToCdpScopes(OrganisationRole organisationRole)
+    {
+        return organisationRole switch
+        {
+            OrganisationRole.Owner => new List<string> { "ADMIN" },
+            OrganisationRole.Admin => new List<string> { "ADMIN" },
+            _ => new List<string> { "VIEWER" }
+        };
+    }
+
+    private async Task<CO.CDP.UserManagement.Core.Entities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
         CancellationToken cancellationToken)
     {
         var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
         if (organisation == null)
         {
-            throw new EntityNotFoundException(nameof(CoreEntities.Organisation), cdpOrganisationId);
+            throw new EntityNotFoundException(nameof(CO.CDP.UserManagement.Core.Entities.Organisation), cdpOrganisationId);
         }
 
         return organisation;
     }
 
-    private async Task<CoreEntities.PendingOrganisationInvite> GetPendingInviteAsync(
+    private async Task<InviteRoleMapping> GetInviteRoleMappingAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         CancellationToken cancellationToken)
     {
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
-        var pendingInvite = await _pendingInviteRepository.GetByIdAsync(pendingInviteId, cancellationToken);
-        if (pendingInvite == null || pendingInvite.OrganisationId != organisation.Id)
+        var mapping = await _inviteRoleMappingRepository.GetByIdAsync(inviteRoleMappingId, cancellationToken);
+
+        if (mapping == null || mapping.OrganisationId != organisation.Id)
         {
-            throw new EntityNotFoundException(nameof(CoreEntities.PendingOrganisationInvite), pendingInviteId);
+            throw new EntityNotFoundException(nameof(InviteRoleMapping), inviteRoleMappingId);
         }
 
-        return pendingInvite;
+        return mapping;
+    }
+
+    private async Task<PersonInviteModel> CreatePersonInviteAsync(
+        Core.Entities.Organisation organisation,
+        InviteUserRequest request,
+        InvitePersonToOrganisation cdpInviteRequest,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var personInvite = await _organisationClient.CreatePersonInviteForServiceAsync(
+                organisation.CdpOrganisationGuid,
+                cdpInviteRequest,
+                cancellationToken);
+
+            _logger.LogInformation(
+                "Created CDP invite {CdpInviteGuid} for {Email} in organisation {OrganisationId}",
+                personInvite.Id, request.Email, organisation.Id);
+
+            return personInvite;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex,
+                "Failed to create CDP invite for {Email} in organisation {OrganisationId}, aborting",
+                request.Email, organisation.Id);
+            throw;
+        }
     }
 }

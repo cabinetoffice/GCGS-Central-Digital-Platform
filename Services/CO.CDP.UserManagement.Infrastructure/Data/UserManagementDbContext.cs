@@ -22,6 +22,8 @@ public class UserManagementDbContext : DbContext
     public DbSet<CoreEntities.PendingOrganisationInvite> PendingOrganisationInvites => Set<CoreEntities.PendingOrganisationInvite>();
     public DbSet<CoreEntities.OrganisationApplication> OrganisationApplications => Set<CoreEntities.OrganisationApplication>();
     public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments => Set<CoreEntities.UserApplicationAssignment>();
+    public DbSet<CoreEntities.InviteRoleMapping> InviteRoleMappings => Set<CoreEntities.InviteRoleMapping>();
+    public DbSet<CoreEntities.InviteRoleApplicationAssignment> InviteRoleApplicationAssignments => Set<CoreEntities.InviteRoleApplicationAssignment>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,6 +38,8 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new PendingOrganisationInviteConfiguration());
         modelBuilder.ApplyConfiguration(new OrganisationApplicationConfiguration());
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
+        modelBuilder.ApplyConfiguration(new InviteRoleMappingConfiguration());
+        modelBuilder.ApplyConfiguration(new InviteRoleApplicationAssignmentConfiguration());
 
         // Global query filters for soft delete
         modelBuilder.Entity<CoreEntities.Organisation>().HasQueryFilter(e => !e.IsDeleted);
@@ -46,5 +50,7 @@ public class UserManagementDbContext : DbContext
         modelBuilder.Entity<CoreEntities.PendingOrganisationInvite>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.InviteRoleMapping>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.InviteRoleApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
     }
 }

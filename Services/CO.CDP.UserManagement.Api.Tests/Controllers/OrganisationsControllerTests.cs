@@ -8,8 +8,9 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
-namespace CO.CDP.UserManagement.UnitTests.Controllers;
+namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class OrganisationsControllerTests
 {
@@ -26,7 +27,7 @@ public class OrganisationsControllerTests
     [Fact]
     public async Task GetAll_ReturnsOkWithOrganisations()
     {
-        var organisations = new List<Organisation>
+        var organisations = new List<CoreOrganisation>
         {
             new()
             {
@@ -54,7 +55,7 @@ public class OrganisationsControllerTests
     public async Task GetById_WhenNotFound_ReturnsNotFound()
     {
         _organisationService.Setup(service => service.GetByIdAsync(99, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((CoreOrganisation?)null);
 
         var result = await _controller.GetById(99, CancellationToken.None);
 
@@ -65,7 +66,7 @@ public class OrganisationsControllerTests
     [Fact]
     public async Task GetById_WhenFound_ReturnsOk()
     {
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 2,
             CdpOrganisationGuid = Guid.NewGuid(),
@@ -89,7 +90,7 @@ public class OrganisationsControllerTests
     public async Task GetBySlug_WhenNotFound_ReturnsNotFound()
     {
         _organisationService.Setup(service => service.GetBySlugAsync("missing", It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((CoreOrganisation?)null);
 
         var result = await _controller.GetBySlug("missing", CancellationToken.None);
 
@@ -100,7 +101,7 @@ public class OrganisationsControllerTests
     [Fact]
     public async Task GetBySlug_WhenFound_ReturnsOk()
     {
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 3,
             CdpOrganisationGuid = Guid.NewGuid(),
@@ -125,7 +126,7 @@ public class OrganisationsControllerTests
     {
         var guid = Guid.NewGuid();
         _organisationService.Setup(service => service.GetByCdpGuidAsync(guid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Organisation?)null);
+            .ReturnsAsync((CoreOrganisation?)null);
 
         var result = await _controller.GetByCdpGuid(guid, CancellationToken.None);
 
@@ -137,7 +138,7 @@ public class OrganisationsControllerTests
     public async Task GetByCdpGuid_WhenFound_ReturnsOk()
     {
         var guid = Guid.NewGuid();
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 4,
             CdpOrganisationGuid = guid,
@@ -166,7 +167,7 @@ public class OrganisationsControllerTests
             Name = "Org Five",
             IsActive = true
         };
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 5,
             CdpOrganisationGuid = request.CdpOrganisationGuid,
@@ -224,7 +225,7 @@ public class OrganisationsControllerTests
             Name = "Updated",
             IsActive = false
         };
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 6,
             CdpOrganisationGuid = Guid.NewGuid(),

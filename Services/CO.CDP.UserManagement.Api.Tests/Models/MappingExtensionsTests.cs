@@ -3,8 +3,9 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
+using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
-namespace CO.CDP.UserManagement.UnitTests.Models;
+namespace CO.CDP.UserManagement.Api.Tests.Models;
 
 public class MappingExtensionsTests
 {
@@ -52,7 +53,7 @@ public class MappingExtensionsTests
     public void OrganisationMappingExtensions_ToResponse_MapsFields()
     {
         var createdAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero);
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 3,
             CdpOrganisationGuid = Guid.NewGuid(),
@@ -72,7 +73,7 @@ public class MappingExtensionsTests
     [Fact]
     public void OrganisationMappingExtensions_ToSummaryResponse_MapsFields()
     {
-        var organisation = new Organisation
+        var organisation = new CoreOrganisation
         {
             Id = 4,
             CdpOrganisationGuid = Guid.NewGuid(),
@@ -167,7 +168,7 @@ public class MappingExtensionsTests
             IsActive = true,
             CreatedAt = new DateTimeOffset(2024, 5, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedBy = "system",
-            Organisation = new Organisation
+            Organisation = new CoreOrganisation
             {
                 Id = 11,
                 CdpOrganisationGuid = Guid.NewGuid(),
@@ -259,7 +260,7 @@ public class MappingExtensionsTests
             IsActive = true,
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedBy = "system",
-            Organisation = new Organisation
+            Organisation = new CoreOrganisation
             {
                 Id = 11,
                 CdpOrganisationGuid = Guid.NewGuid(),

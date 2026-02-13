@@ -23,14 +23,15 @@ public static class ServiceCollectionExtensions
         this IServiceCollection services,
         string connectionString)
     {
-        // Register DbContext
-        services.AddDbContext<UserManagementDbContext>(options =>
-            options.UseNpgsql(connectionString,
-                npgsqlOptions => npgsqlOptions
-                    .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
-                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        services.AddScoped<AuditableEntityInterceptor>();
 
-        // Register services
+        services.AddDbContext<UserManagementDbContext>((sp, options) =>
+            options.UseNpgsql(connectionString,
+                    npgsqlOptions => npgsqlOptions
+                        .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>()));
+
         services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
         services.AddScoped<IOrganisationService, OrganisationService>();
         services.AddScoped<IApplicationService, ApplicationService>();
@@ -44,7 +45,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPersonLookupService, PersonLookupService>();
 
-        // Register repositories
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
@@ -53,8 +53,8 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
         services.AddScoped<IPendingOrganisationInviteRepository, PendingOrganisationInviteRepository>();
         services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
+        services.AddScoped<IInviteRoleMappingRepository, InviteRoleMappingRepository>();
 
-        // Register UnitOfWork
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
@@ -72,7 +72,6 @@ public static class ServiceCollectionExtensions
     {
         if (!string.IsNullOrEmpty(redisConnectionString))
         {
-            // Add Redis distributed cache
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnectionString;
@@ -81,11 +80,9 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            // Add in-memory cache as fallback
             services.AddDistributedMemoryCache();
         }
 
-        // Register cache service
         services.AddScoped<IClaimsCacheService, CachedClaimsService>();
 
         return services;

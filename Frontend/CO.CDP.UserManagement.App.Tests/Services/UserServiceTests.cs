@@ -57,7 +57,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(users);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ICollection<ApiClient.PendingOrganisationInviteResponse>)new List<ApiClient.PendingOrganisationInviteResponse>());
+            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
 
         var result = await _service.GetUsersViewModelAsync("org", selectedRole: "Admin", ct: CancellationToken.None);
 
@@ -95,10 +95,10 @@ public class UserServiceTests
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.InvitesAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member));
 
-        var result = await _service.InviteUserAsync("org", new App.Models.InviteUserViewModel
+        var result = await _service.InviteUserAsync("org", new Models.InviteUserViewModel
         {
             Email = "test@example.com",
             FirstName = "Test",
@@ -115,10 +115,10 @@ public class UserServiceTests
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.InvitesAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await _service.InviteUserAsync("org", App.Models.InviteUserViewModel.Empty, CancellationToken.None);
+        var result = await _service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
 
         result.Should().BeFalse();
     }
@@ -130,7 +130,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ICollection<ApiClient.PendingOrganisationInviteResponse>)new List<ApiClient.PendingOrganisationInviteResponse>());
+            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
 
         var result = await _service.GetChangeUserRoleViewModelAsync("org", null, 2, CancellationToken.None);
 
@@ -145,7 +145,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ICollection<ApiClient.PendingOrganisationInviteResponse>)new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
 
         var result = await _service.GetChangeUserRoleViewModelAsync("org", null, 2, CancellationToken.None);
 
@@ -243,9 +243,14 @@ public class UserServiceTests
     public async Task ResendInviteAsync_WhenApiException_ReturnsFalse()
     {
         var org = BuildOrganisationResponse();
+        var invite = BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.ResendAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(invite);
+        _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.ResendInviteAsync("org", 1, CancellationToken.None);

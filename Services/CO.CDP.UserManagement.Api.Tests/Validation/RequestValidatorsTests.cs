@@ -3,7 +3,7 @@ using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using FluentAssertions;
 
-namespace CO.CDP.UserManagement.UnitTests.Validation;
+namespace CO.CDP.UserManagement.Api.Tests.Validation;
 
 public class RequestValidatorsTests
 {

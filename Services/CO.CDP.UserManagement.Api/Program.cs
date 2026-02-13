@@ -68,6 +68,15 @@ builder.Services.AddHttpClient(personHttpClientName)
 builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl ?? string.Empty,
     sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
 
+var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
+const string organisationHttpClientName = "OrganisationClient";
+builder.Services.AddHttpClient(organisationHttpClientName)
+    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+builder.Services.AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClient, CO.CDP.Organisation.WebApiClient.OrganisationClient>(sc =>
+    new CO.CDP.Organisation.WebApiClient.OrganisationClient(
+        organisationServiceUrl ?? string.Empty,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
+
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
 builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
     options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
@@ -137,3 +146,5 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+public abstract partial class Program;

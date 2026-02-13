@@ -10,45 +10,37 @@ namespace CO.CDP.UserManagement.Core.Interfaces;
 public interface IInviteOrchestrationService
 {
     /// <summary>
-    /// Invites a user to an organisation and creates a pending invite record.
+    /// Invites a user to an organisation via CDP bridge and creates an invite role mapping.
     /// </summary>
-    Task<PendingOrganisationInvite> InviteUserAsync(
+    Task<InviteRoleMapping> InviteUserAsync(
         Guid cdpOrganisationId,
         InviteUserRequest request,
         string? inviterPrincipalId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Removes a pending invite and revokes the CDP invite.
+    /// Removes an invite role mapping and revokes the CDP invite.
     /// </summary>
     Task RemoveInviteAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Resends a pending invite and refreshes the CDP invite GUID.
-    /// </summary>
-    Task ResendInviteAsync(
-        Guid cdpOrganisationId,
-        int pendingInviteId,
-        CancellationToken cancellationToken = default);
-
-    /// <summary>
-    /// Changes the organisation role for a pending invite.
+    /// Changes the organisation role for an invite role mapping.
     /// </summary>
     Task ChangeInviteRoleAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         OrganisationRole organisationRole,
         CancellationToken cancellationToken = default);
 
     /// <summary>
-    /// Accepts a pending invite and creates a user organisation membership.
+    /// Accepts an invite and creates a user organisation membership.
     /// </summary>
     Task AcceptInviteAsync(
         Guid cdpOrganisationId,
-        int pendingInviteId,
+        int inviteRoleMappingId,
         AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken = default);
 }

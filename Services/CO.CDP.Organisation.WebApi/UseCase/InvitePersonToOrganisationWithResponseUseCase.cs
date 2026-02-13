@@ -2,27 +2,31 @@ using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
+
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
-public class InvitePersonToOrganisationUseCase(
+/// <summary>
+/// Use case for inviting a person to an organisation that returns the created PersonInvite.
+/// Used by service-to-service calls that need the invite GUID.
+/// </summary>
+public class InvitePersonToOrganisationWithResponseUseCase(
     IOrganisationRepository organisationRepository,
     IPersonInviteRepository personInviteRepository,
-    IGovUKNotifyApiClient govUKNotifyApiClient,
+    IGovUKNotifyApiClient govUkNotifyApiClient,
     IConfiguration configuration,
     Func<Guid> guidFactory)
-    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), bool>
+    : IUseCase<(Guid organisationId, InvitePersonToOrganisation invitePersonData), PersonInvite>
 {
-    public InvitePersonToOrganisationUseCase(
+    public InvitePersonToOrganisationWithResponseUseCase(
         IOrganisationRepository organisationRepository,
         IPersonInviteRepository personInviteRepository,
-        IGovUKNotifyApiClient govUKNotifyApiClient,
+        IGovUKNotifyApiClient govUkNotifyApiClient,
         IConfiguration configuration
-    ) : this(organisationRepository, personInviteRepository, govUKNotifyApiClient, configuration, Guid.NewGuid)
+    ) : this(organisationRepository, personInviteRepository, govUkNotifyApiClient, configuration, Guid.NewGuid)
     {
-
     }
 
-    public async Task<bool> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
+    public async Task<PersonInvite> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
@@ -39,10 +43,10 @@ public class InvitePersonToOrganisationUseCase(
         await personInviteRepository.SaveNewInvite(newInvite, existingInvites);
 
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
-                            ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
+                            ?? throw new InvalidOperationException("Missing configuration key: OrganisationAppUrl");
 
         var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
-                            ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
+                            ?? throw new InvalidOperationException("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
 
         Uri baseUri = new Uri(baseAppUrl);
         Uri inviteLink = new Uri(baseUri, $"organisation-invite/{newInvite.Guid}");
@@ -58,9 +62,9 @@ public class InvitePersonToOrganisationUseCase(
                                         { "invite_link", inviteLink.ToString()} }
         };
 
-        await govUKNotifyApiClient.SendEmail(emailRequest);
+        await govUkNotifyApiClient.SendEmail(emailRequest);
 
-        return true;
+        return newInvite;
     }
 
     private async Task<IEnumerable<PersonInvite>> ExpireExistingPersonInvites(Guid organisationId, string email)
