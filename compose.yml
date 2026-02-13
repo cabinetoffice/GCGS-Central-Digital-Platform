@@ -26,6 +26,7 @@ services:
       - scheduled-worker
       - commercial-tools-app
       - commercial-tools-api
+      - outbox-processor-organisation-um
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -560,6 +561,37 @@ services:
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__SqsPublisher__MessageGroupId": "Organisation"
       CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
+      OutboxDatabase__Server: 'db'
+      OutboxDatabase__Database: 'cdp'
+      OutboxDatabase__Username: 'cdp_user'
+      OutboxDatabase__Password: 'cdp123'
+    depends_on:
+      localstack:
+        condition: "service_healthy"
+      db:
+        condition: "service_healthy"
+
+  outbox-processor-organisation-um:
+    container_name: co-cdp-outbox-processor-organisation-um
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-outbox-processor-organisation-um
+    image: 'cabinetoffice/cdp-outbox-processor-organisation-um:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Aws__Credentials__AccessKeyId: test
+      Aws__Credentials__SecretAccessKey: test
+      Aws__ServiceURL: "http://localstack:4566"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__SqsPublisher__MessageGroupId: "UserManagement"
+      CloudWatch__LogGroup: "/ecs/outbox-processor-organisation-um"
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'

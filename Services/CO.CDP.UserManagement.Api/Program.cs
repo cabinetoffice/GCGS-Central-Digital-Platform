@@ -1,10 +1,13 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Infrastructure;
+using CO.CDP.UserManagement.Infrastructure.Events;
+using CO.CDP.UserManagement.Infrastructure.Subscribers;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.MQ;
 using CO.CDP.UserManagement.Api.Validation;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
@@ -15,6 +18,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Npgsql;
+using System.Reflection;
+using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +64,37 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
     builder.Services
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration);
+}
+
+if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
+    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
+{
+    if (awsConfig?.SqsDispatcher is null)
+    {
+        throw new InvalidOperationException("AWS SQS Dispatcher configuration is required but not found. Ensure Aws:SqsDispatcher:QueueUrl is configured.");
+    }
+
+    if (string.IsNullOrWhiteSpace(awsConfig.SqsDispatcher.QueueUrl))
+    {
+        throw new InvalidOperationException("AWS SQS Dispatcher QueueUrl is required but not configured.");
+    }
+
+    builder.Services
+        .AddAwsSqsService()
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api"),
+            services =>
+            {
+                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
+            },
+            (services, dispatcher) =>
+            {
+                dispatcher.Subscribe<OrganisationRegistered>(services);
+                dispatcher.Subscribe<OrganisationUpdated>(services);
+            }
+        );
 }
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
