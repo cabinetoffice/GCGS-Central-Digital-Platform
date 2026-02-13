@@ -1,0 +1,63 @@
+@using CO.CDP.UserManagement.Shared.Enums
+@model CO.CDP.UserManagement.App.Models.ChangeUserRoleViewModel
+@{
+    ViewData["Title"] = "Change organisation role";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug/users" class="govuk-back-link">Back to users</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <h1 class="govuk-heading-xl">Change organisation role</h1>
+
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">User</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+        </dl>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("organisationRole") && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Select a role</h2>
+                    </legend>
+                    @if (ViewData.ModelState.ContainsKey("organisationRole") && !ViewData.ModelState.IsValid)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["organisationRole"]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        @foreach (var role in Enum.GetValues<OrganisationRole>())
+                        {
+                            var roleValue = role.ToString();
+                            var isChecked = Model.SelectedRole == role;
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="role-@roleValue" name="organisationRole" type="radio" value="@roleValue" checked="@isChecked">
+                                <label class="govuk-label govuk-radios__label" for="role-@roleValue">@role</label>
+                            </div>
+                        }
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">Save</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/users">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

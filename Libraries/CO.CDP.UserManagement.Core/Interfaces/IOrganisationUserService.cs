@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Shared.Enums;
 
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
@@ -39,5 +40,19 @@ public interface IOrganisationUserService
     Task<UserOrganisationMembership?> GetOrganisationUserByPersonIdAsync(
         Guid cdpOrganisationId,
         Guid cdpPersonId,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates the organisation role for a user membership.
+    /// </summary>
+    /// <param name="cdpOrganisationId">The CDP organisation identifier.</param>
+    /// <param name="cdpPersonId">The CDP person identifier.</param>
+    /// <param name="organisationRole">The new organisation role.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The updated membership.</returns>
+    Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        OrganisationRole organisationRole,
         CancellationToken cancellationToken = default);
 }

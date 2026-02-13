@@ -2,8 +2,8 @@ using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
-using CO.CDP.Person.WebApiClient;
 using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,16 +19,16 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;
-    private readonly IPersonClient _personClient;
+    private readonly IPersonLookupService _personLookupService;
     private readonly ILogger<OrganisationUsersController> _logger;
 
     public OrganisationUsersController(
         IOrganisationUserService organisationUserService,
-        IPersonClient personClient,
+        IPersonLookupService personLookupService,
         ILogger<OrganisationUsersController> logger)
     {
         _organisationUserService = organisationUserService;
-        _personClient = personClient;
+        _personLookupService = personLookupService;
         _logger = logger;
     }
 
@@ -48,42 +48,22 @@ public class OrganisationUsersController : ControllerBase
         try
         {
             _logger.LogInformation("Getting organisation users for CDP organisation {CdpOrganisationId}", cdpOrganisationId);
-            var memberships = (await _organisationUserService.GetOrganisationUsersAsync(cdpOrganisationId, cancellationToken)).ToList();
-            _logger.LogInformation("Retrieved {MembershipCount} memberships for CDP organisation {CdpOrganisationId}", memberships.Count, cdpOrganisationId);
+            var memberships = (await _organisationUserService.GetOrganisationUsersAsync(cdpOrganisationId, cancellationToken)).ToArray();
+            _logger.LogInformation("Retrieved {MembershipCount} memberships for CDP organisation {CdpOrganisationId}", memberships.Length, cdpOrganisationId);
             var personIds = memberships.Where(m => m.CdpPersonId.HasValue)
-                .Select(m => m.CdpPersonId!.Value.ToString())
+                .Select(m => m.CdpPersonId!.Value)
                 .Distinct()
-                .ToList();
-            _logger.LogInformation("Looking up {PersonIdCount} person IDs for CDP organisation {CdpOrganisationId}", personIds.Count, cdpOrganisationId);
-            var personsById = personIds.Count == 0
-                ? new Dictionary<string, CO.CDP.Person.WebApiClient.BulkLookupPersonResult>()
-                : await _personClient.BulkLookupPersonAsync(new BulkLookupPerson(personIds), cancellationToken);
-            _logger.LogInformation("Person lookup returned {PersonCount} records for CDP organisation {CdpOrganisationId}", personsById.Count, cdpOrganisationId);
-            _logger.LogDebug("Person lookup request IDs: {PersonIds}", personIds);
-            _logger.LogDebug("Person lookup response IDs: {PersonIds}", personsById.Keys);
-            var missingPersonIds = personIds.Except(personsById.Keys).ToList();
-            if (missingPersonIds.Count > 0)
-            {
-                _logger.LogWarning("Person lookup missing {MissingCount} IDs for CDP organisation {CdpOrganisationId}: {MissingPersonIds}", missingPersonIds.Count, cdpOrganisationId, missingPersonIds);
-            }
+                .ToArray();
+            var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
 
             var responses = memberships
-                .Select(membership =>
-                {
-                    PersonDetails? personDetails = null;
-                    if (membership.CdpPersonId.HasValue && personsById.TryGetValue(membership.CdpPersonId.Value.ToString(), out var person))
-                    {
-                        personDetails = new PersonDetails
-                        {
-                            FirstName = person.FirstName,
-                            LastName = person.LastName,
-                            Email = person.Email,
-                            CdpPersonId = person.Id,
-                                                    };
-                    }
-                    return membership.ToResponse(includeAssignments: false, personDetails: personDetails);
-                })
-                .ToList();
+                .Select(membership => membership.ToResponse(
+                    includeAssignments: false,
+                    personDetails: membership.CdpPersonId.HasValue &&
+                                   personsById.TryGetValue(membership.CdpPersonId.Value, out var person)
+                        ? person
+                        : null))
+                .ToArray();
 
             return Ok(responses);
         }
@@ -143,19 +123,35 @@ public class OrganisationUsersController : ControllerBase
                 return NotFound(new ErrorResponse { Message = $"User with CDP Person ID {cdpPersonId} not found in organisation {cdpOrganisationId}." });
             }
 
-            var personsById = await _personClient.BulkLookupPersonAsync(new BulkLookupPerson([membership.CdpPersonId!.Value.ToString()]), cancellationToken);
-            var person = membership.CdpPersonId.HasValue && personsById.TryGetValue(membership.CdpPersonId.Value.ToString(), out var personById)
-                ? personById
-                : null;
-            var personDetails = person == null ? null : new PersonDetails
-            {
-                FirstName = person.FirstName,
-                LastName = person.LastName,
-                Email = person.Email,
-                CdpPersonId = person.Id,
-                            };
-
+            var personDetails = await GetPersonDetailsAsync(membership.CdpPersonId, cancellationToken);
             return Ok(membership.ToResponse(includeAssignments: true, personDetails: personDetails));
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Updates the organisation role for a user by CDP person ID.
+    /// </summary>
+    [HttpPut("{cdpPersonId:guid}/role")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> UpdateRole(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        [FromBody] ChangeOrganisationRoleRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _organisationUserService.UpdateOrganisationRoleAsync(
+                cdpOrganisationId,
+                cdpPersonId,
+                request.OrganisationRole,
+                cancellationToken);
+            return NoContent();
         }
         catch (EntityNotFoundException ex)
         {
@@ -186,30 +182,29 @@ public class OrganisationUsersController : ControllerBase
                 return NotFound(new ErrorResponse { Message = $"User {userId} not found in organisation {cdpOrganisationId}." });
             }
 
-            PersonDetails? personDetails = null;
-            if (membership.CdpPersonId.HasValue)
-            {
-                var personsById = await _personClient.BulkLookupPersonAsync(new BulkLookupPerson([membership.CdpPersonId!.Value.ToString()]), cancellationToken);
-                var person = membership.CdpPersonId.HasValue && personsById.TryGetValue(membership.CdpPersonId.Value.ToString(), out var personById)
-                    ? personById
-                    : null;
-                if (person != null)
-                {
-                    personDetails = new PersonDetails
-                    {
-                        FirstName = person.FirstName,
-                        LastName = person.LastName,
-                        Email = person.Email,
-                        CdpPersonId = person.Id,
-                                            };
-                }
-            }
-
+            var personDetails = await GetPersonDetailsAsync(membership.CdpPersonId, cancellationToken);
             return Ok(membership.ToResponse(includeAssignments: true, personDetails: personDetails));
         }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
         }
+    }
+
+    private async Task<PersonDetails?> GetPersonDetailsAsync(
+        Guid? cdpPersonId,
+        CancellationToken cancellationToken)
+    {
+        if (!cdpPersonId.HasValue)
+        {
+            return null;
+        }
+
+        var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(
+            [cdpPersonId.Value],
+            cancellationToken);
+        return personsById.TryGetValue(cdpPersonId.Value, out var person)
+            ? person
+            : null;
     }
 }

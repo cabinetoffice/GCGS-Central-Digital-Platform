@@ -14,4 +14,14 @@ public interface IPersonLookupService
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Person details if found, otherwise null.</returns>
     Task<PersonDetails?> GetPersonDetailsAsync(string userPrincipalId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves person details by their CDP person identifiers.
+    /// </summary>
+    /// <param name="cdpPersonIds">The CDP person identifiers.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Person details keyed by CDP person identifier.</returns>
+    Task<IReadOnlyDictionary<Guid, PersonDetails>> GetPersonDetailsByIdsAsync(
+        IEnumerable<Guid> cdpPersonIds,
+        CancellationToken cancellationToken = default);
 }

@@ -1,12 +1,12 @@
 using CO.CDP.UserManagement.Core.Entities;
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
 using Moq;
 
-namespace CO.CDP.UserManagement.UnitTests.Services;
+namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class ClaimsServiceTests
 {
@@ -46,7 +46,7 @@ public class ClaimsServiceTests
         // Arrange
         var userId = "user123";
 
-        var org = new OrganisationEntity
+        var org = new CoreEntities.Organisation
         {
             Id = 1,
             Name = "Test Org",

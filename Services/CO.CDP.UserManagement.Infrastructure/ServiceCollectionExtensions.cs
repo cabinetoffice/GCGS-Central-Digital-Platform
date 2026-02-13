@@ -18,21 +18,20 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="connectionString">The database connection string.</param>
-    /// <param name="cdpConnectionString">Optional CDP database connection string for organisation lookups.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementInfrastructure(
         this IServiceCollection services,
-        string connectionString,
-        string? cdpConnectionString = null)
+        string connectionString)
     {
-        // Register DbContext
-        services.AddDbContext<UserManagementDbContext>(options =>
-            options.UseNpgsql(connectionString,
-                npgsqlOptions => npgsqlOptions
-                    .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
-                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+        services.AddScoped<AuditableEntityInterceptor>();
 
-        // Register services
+        services.AddDbContext<UserManagementDbContext>((sp, options) =>
+            options.UseNpgsql(connectionString,
+                    npgsqlOptions => npgsqlOptions
+                        .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>()));
+
         services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
         services.AddScoped<IOrganisationService, OrganisationService>();
         services.AddScoped<IApplicationService, ApplicationService>();
@@ -41,20 +40,23 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationApplicationService, OrganisationApplicationService>();
         services.AddScoped<IUserAssignmentService, UserAssignmentService>();
         services.AddScoped<IOrganisationUserService, OrganisationUserService>();
+        services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPersonLookupService, PersonLookupService>();
+        services.AddScoped<IOrganisationPersonsSyncService, OrganisationPersonsSyncService>();
+        services.AddScoped<IOrganisationSyncService, OrganisationSyncService>();
 
-        // Register repositories
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();
         services.AddScoped<IPermissionRepository, PermissionRepository>();
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IOrganisationApplicationRepository, OrganisationApplicationRepository>();
         services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
+        services.AddScoped<IPendingOrganisationInviteRepository, PendingOrganisationInviteRepository>();
         services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
+        services.AddScoped<IInviteRoleMappingRepository, InviteRoleMappingRepository>();
 
-        // Register UnitOfWork
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
@@ -72,7 +74,6 @@ public static class ServiceCollectionExtensions
     {
         if (!string.IsNullOrEmpty(redisConnectionString))
         {
-            // Add Redis distributed cache
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = redisConnectionString;
@@ -81,11 +82,9 @@ public static class ServiceCollectionExtensions
         }
         else
         {
-            // Add in-memory cache as fallback
             services.AddDistributedMemoryCache();
         }
 
-        // Register cache service
         services.AddScoped<IClaimsCacheService, CachedClaimsService>();
 
         return services;

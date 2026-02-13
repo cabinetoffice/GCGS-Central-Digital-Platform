@@ -18,6 +18,7 @@
         <PackageReference Include="DotSwashbuckle.AspNetCore" Version="3.0.10"/>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1"/>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
         <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
         <PackageReference Include="System.Text.Json" Version="8.0.5" />
@@ -25,6 +26,8 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
         <ProjectReference Include="..\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj"/>
@@ -32,6 +35,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj"/>
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

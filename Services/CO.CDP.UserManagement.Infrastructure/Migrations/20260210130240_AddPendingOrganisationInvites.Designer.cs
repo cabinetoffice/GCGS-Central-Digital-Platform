@@ -3,6 +3,7 @@ using System;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,14 +11,16 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CO.CDP.UserManagement.Infrastructure.Migrations
 {
-    [DbContext(typeof(ApplicationRegistryDbContext))]
-    partial class ApplicationRegistryDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(UserManagementDbContext))]
+    [Migration("20260210130240_AddPendingOrganisationInvites")]
+    partial class AddPendingOrganisationInvites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -392,6 +395,72 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.ToTable("organisation_applications", (string)null);
                 });
 
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("CdpPersonInviteGuid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cdp_person_invite_guid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("created_by");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("InvitedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("invited_by");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<string>("OrganisationRole")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("organisation_role");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CdpPersonInviteGuid")
+                        .HasDatabaseName("ix_pending_org_invites_cdp_person_invite_guid");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.HasIndex("Email", "OrganisationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_pending_org_invites_email_org");
+
+                    b.ToTable("pending_organisation_invites", (string)null);
+                });
+
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
                 {
                     b.Property<int>("Id")
@@ -628,6 +697,17 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
+
+                    b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
+                {
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Organisation");
                 });

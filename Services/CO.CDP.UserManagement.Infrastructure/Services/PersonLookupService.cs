@@ -87,4 +87,78 @@ public class PersonLookupService : IPersonLookupService
                 ex);
         }
     }
+
+    public async Task<IReadOnlyDictionary<Guid, PersonDetails>> GetPersonDetailsByIdsAsync(
+        IEnumerable<Guid> cdpPersonIds,
+        CancellationToken cancellationToken = default)
+    {
+        if (cdpPersonIds == null)
+        {
+            throw new ArgumentNullException(nameof(cdpPersonIds));
+        }
+
+        var personIdList = cdpPersonIds
+            .Where(id => id != Guid.Empty)
+            .Distinct()
+            .ToList();
+
+        if (personIdList.Count == 0)
+        {
+            return new Dictionary<Guid, PersonDetails>();
+        }
+
+        try
+        {
+            _logger.LogInformation("Looking up {PersonCount} person IDs", personIdList.Count);
+
+            var personIdStrings = personIdList.Select(id => id.ToString()).ToList();
+            var personsById = await _personClient.BulkLookupPersonAsync(
+                new BulkLookupPerson(personIdStrings),
+                cancellationToken);
+
+            var result = new Dictionary<Guid, PersonDetails>();
+            foreach (var (key, person) in personsById)
+            {
+                if (!Guid.TryParse(key, out var id))
+                {
+                    _logger.LogWarning("Skipping person lookup entry with non-GUID key {PersonKey}", key);
+                    continue;
+                }
+
+                result[id] = new PersonDetails
+                {
+                    FirstName = person.FirstName,
+                    LastName = person.LastName,
+                    Email = person.Email,
+                    CdpPersonId = person.Id
+                };
+            }
+
+            var missingPersonIds = personIdList.Where(id => !result.ContainsKey(id)).ToList();
+            if (missingPersonIds.Count > 0)
+            {
+                _logger.LogWarning("Person lookup missing {MissingCount} IDs: {MissingPersonIds}",
+                    missingPersonIds.Count, missingPersonIds);
+            }
+
+            return result;
+        }
+        catch (ApiException ex)
+        {
+            _logger.LogError(
+                ex,
+                "API error occurred while looking up persons. Status: {StatusCode}",
+                ex.StatusCode);
+            throw new PersonLookupException(
+                $"Failed to lookup person details by ID. Status: {ex.StatusCode}",
+                ex);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Unexpected error occurred while looking up persons");
+            throw new PersonLookupException("Failed to lookup person details by ID.", ex);
+        }
+    }
 }

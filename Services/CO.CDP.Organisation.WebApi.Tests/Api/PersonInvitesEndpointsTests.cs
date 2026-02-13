@@ -23,11 +23,13 @@ public class PersonInvitesEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(OK, Channel.ServiceKey, null, ApiKeyScopes.ReadOrganisationData)]
+    [InlineData(Forbidden, Channel.ServiceKey, null, ApiKeyScopes.WriteOrganisationData)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetOrganisationPersonInvites_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -35,7 +37,8 @@ public class PersonInvitesEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _getPersonInvitesUseCase.Object));
+            services => services.AddScoped(_ => _getPersonInvitesUseCase.Object),
+            assignedApiKeyScopes: apiKeyScope);
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/invites");
 
@@ -47,11 +50,13 @@ public class PersonInvitesEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(OK, Channel.ServiceKey, null, ApiKeyScopes.WriteOrganisationData)]
+    [InlineData(Forbidden, Channel.ServiceKey, null, ApiKeyScopes.ReadOrganisationData)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task CreatePersonInvite_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
         var invitePersonToOrganisation = new InvitePersonToOrganisation
@@ -67,7 +72,8 @@ public class PersonInvitesEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _invitePersonToOrganisationUseCase.Object));
+            services => services.AddScoped(_ => _invitePersonToOrganisationUseCase.Object),
+            assignedApiKeyScopes: apiKeyScope);
 
         var response = await factory.CreateClient().PostAsJsonAsync($"/organisations/{organisationId}/invites", invitePersonToOrganisation);
 
@@ -79,11 +85,13 @@ public class PersonInvitesEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(NoContent, Channel.ServiceKey, null, ApiKeyScopes.WriteOrganisationData)]
+    [InlineData(Forbidden, Channel.ServiceKey, null, ApiKeyScopes.ReadOrganisationData)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task UpdatePersonInvite_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
         var personInviteId = Guid.NewGuid();
@@ -94,7 +102,8 @@ public class PersonInvitesEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _updateInvitedPersonToOrganisationUseCase.Object));
+            services => services.AddScoped(_ => _updateInvitedPersonToOrganisationUseCase.Object),
+            assignedApiKeyScopes: apiKeyScope);
 
         var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/invites/{personInviteId}", updateInvitedPersonToOrganisation);
 
@@ -106,11 +115,13 @@ public class PersonInvitesEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
+    [InlineData(NoContent, Channel.ServiceKey, null, ApiKeyScopes.WriteOrganisationData)]
+    [InlineData(Forbidden, Channel.ServiceKey, null, ApiKeyScopes.ReadOrganisationData)]
     [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task RemovePersonInviteFromOrganisation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? scope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? scope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
         var personInviteId = Guid.NewGuid();
@@ -120,7 +131,8 @@ public class PersonInvitesEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
-            services => services.AddScoped(_ => _removePersonInviteFromOrganisationUseCase.Object));
+            services => services.AddScoped(_ => _removePersonInviteFromOrganisationUseCase.Object),
+            assignedApiKeyScopes: apiKeyScope);
 
         var response = await factory.CreateClient().DeleteAsync($"/organisations/{organisationId}/invites/{personInviteId}");
 

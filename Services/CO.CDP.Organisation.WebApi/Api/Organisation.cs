@@ -899,9 +899,10 @@ public static class EndpointExtensions
 
         app.MapGet("/{organisationId}/invites",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<PersonInviteModel>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(personInvites => personInvites != null ? Results.Ok(personInvites) : Results.NotFound()))
@@ -925,9 +926,10 @@ public static class EndpointExtensions
 
         app.MapPost("/{organisationId}/invites",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), bool> useCase) =>
 
                     await useCase.Execute((organisationId, invitePersonToOrganisation))
@@ -955,14 +957,15 @@ public static class EndpointExtensions
 
         app.MapPatch("/{organisationId}/invites/{personInviteId}",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, Guid personInviteId, UpdateInvitedPersonToOrganisation updateInvitedPersonToOrganisation, IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool> useCase) =>
 
                  await useCase.Execute((organisationId, personInviteId, updateInvitedPersonToOrganisation))
-                     .AndThen(_ => Results.NoContent())
-         )
+                      .AndThen(_ => Results.NoContent())
+          )
          .Produces(StatusCodes.Status200OK)
          .Produces(StatusCodes.Status204NoContent)
          .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -987,9 +990,10 @@ public static class EndpointExtensions
 
         app.MapDelete("/{organisationId}/invites/{personInviteId}",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
-                OrganisationIdLocation.Path)]
+                OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
         async (Guid organisationId, Guid personInviteId, IUseCase<(Guid, Guid), bool> useCase) =>
                     await useCase.Execute((organisationId, personInviteId))
                         .AndThen(_ => Results.NoContent()))
@@ -1008,6 +1012,43 @@ public static class EndpointExtensions
                 operation.Responses["400"].Description = "Bad request.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["404"].Description = "Person invite not found.";
+                operation.Responses["422"].Description = "Unprocessable entity.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+
+        app.MapPost("/{organisationId}/services/invites",
+            [OrganisationAuthorize(
+                [AuthenticationChannel.ServiceKey],
+                organisationIdLocation: OrganisationIdLocation.Path,
+                apiKeyScopes: [Constants.ApiKeyScopes.WriteOrganisationData])]
+        async (Guid organisationId, InvitePersonToOrganisation invitePersonToOrganisation, IUseCase<(Guid, InvitePersonToOrganisation), CO.CDP.OrganisationInformation.Persistence.PersonInvite> useCase) =>
+                    await useCase.Execute((organisationId, invitePersonToOrganisation))
+                        .AndThen(invite => Results.Ok(new PersonInviteModel
+                        {
+                            Id = invite.Guid,
+                            FirstName = invite.FirstName,
+                            LastName = invite.LastName,
+                            Email = invite.Email,
+                            Scopes = invite.Scopes,
+                            ExpiresOn = invite.ExpiresOn
+                        }))
+            )
+            .Produces<PersonInviteModel>(StatusCodes.Status200OK)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status422UnprocessableEntity)
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "CreatePersonInviteForService";
+                operation.Description = "Create a new person invite (service-to-service). Returns the created invite with GUID.";
+                operation.Summary = "Create a new person invite for service integration.";
+                operation.Responses["200"].Description = "Person invite created successfully. Returns the invite details including GUID.";
+                operation.Responses["400"].Description = "Bad request.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["404"].Description = "Organisation not found.";
                 operation.Responses["422"].Description = "Unprocessable entity.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

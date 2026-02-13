@@ -17,7 +17,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.8")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -236,6 +236,137 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.ToTable("application_roles", (string)null);
                 });
 
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleApplicationAssignment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ApplicationRoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("application_role_id");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<int>("InviteRoleMappingId")
+                        .HasColumnType("integer")
+                        .HasColumnName("invite_role_mapping_id");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<int>("OrganisationApplicationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_application_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.HasIndex("OrganisationApplicationId");
+
+                    b.HasIndex("InviteRoleMappingId", "OrganisationApplicationId", "ApplicationRoleId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_invite_role_app_assignments_mapping_app_role");
+
+                    b.ToTable("invite_role_application_assignments", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleMapping", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("CdpPersonInviteGuid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cdp_person_invite_guid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<string>("OrganisationRole")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("organisation_role");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CdpPersonInviteGuid")
+                        .IsUnique()
+                        .HasDatabaseName("ix_invite_role_mappings_cdp_person_invite_guid");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.ToTable("invite_role_mappings", (string)null);
+                });
+
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Organisation", b =>
                 {
                     b.Property<int>("Id")
@@ -390,6 +521,97 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasDatabaseName("ix_organisation_applications_org_app");
 
                     b.ToTable("organisation_applications", (string)null);
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("CdpPersonInviteGuid")
+                        .HasColumnType("uuid")
+                        .HasColumnName("cdp_person_invite_guid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("first_name");
+
+                    b.Property<string>("InvitedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("invited_by");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("last_name");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<int>("OrganisationId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_id");
+
+                    b.Property<string>("OrganisationRole")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("organisation_role");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CdpPersonInviteGuid")
+                        .HasDatabaseName("ix_pending_org_invites_cdp_person_invite_guid");
+
+                    b.HasIndex("OrganisationId");
+
+                    b.HasIndex("Email", "OrganisationId")
+                        .IsUnique()
+                        .HasDatabaseName("ix_pending_org_invites_email_org");
+
+                    b.ToTable("pending_organisation_invites", (string)null);
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
@@ -613,6 +835,44 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.Navigation("Application");
                 });
 
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleApplicationAssignment", b =>
+                {
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.ApplicationRole", "ApplicationRole")
+                        .WithMany()
+                        .HasForeignKey("ApplicationRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.InviteRoleMapping", "InviteRoleMapping")
+                        .WithMany("ApplicationAssignments")
+                        .HasForeignKey("InviteRoleMappingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", "OrganisationApplication")
+                        .WithMany()
+                        .HasForeignKey("OrganisationApplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationRole");
+
+                    b.Navigation("InviteRoleMapping");
+
+                    b.Navigation("OrganisationApplication");
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleMapping", b =>
+                {
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Organisation");
+                });
+
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
                 {
                     b.HasOne("CO.CDP.UserManagement.Core.Entities.Application", "Application")
@@ -628,6 +888,17 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
+
+                    b.Navigation("Organisation");
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
+                {
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
+                        .WithMany()
+                        .HasForeignKey("OrganisationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Organisation");
                 });
@@ -699,6 +970,11 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.Navigation("Permissions");
 
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleMapping", b =>
+                {
+                    b.Navigation("ApplicationAssignments");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Organisation", b =>

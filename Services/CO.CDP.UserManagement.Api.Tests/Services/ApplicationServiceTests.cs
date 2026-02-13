@@ -5,7 +5,7 @@ using CO.CDP.UserManagement.Infrastructure.Services;
 using FluentAssertions;
 using Moq;
 
-namespace CO.CDP.UserManagement.UnitTests.Services;
+namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class ApplicationServiceTests
 {
