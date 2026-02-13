@@ -1,7 +1,7 @@
 using CO.CDP.UserManagement.Infrastructure.Events;
 using FluentAssertions;
 using System.Text.Json;
-using static CO.CDP.UserManagement.Infrastructure.Events.EventDeserializer.EventDeserializerException;
+using CO.CDP.UserManagement.Core.Exceptions;
 
 namespace CO.CDP.UserManagement.Api.Tests.Events;
 

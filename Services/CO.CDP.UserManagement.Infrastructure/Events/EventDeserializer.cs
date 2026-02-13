@@ -1,6 +1,6 @@
 using System.Text.Json;
 using CO.CDP.AwsServices.Sqs;
-using static CO.CDP.UserManagement.Infrastructure.Events.EventDeserializer.EventDeserializerException;
+using CO.CDP.UserManagement.Core.Exceptions;
 
 namespace CO.CDP.UserManagement.Infrastructure.Events;
 
@@ -44,13 +44,5 @@ public static class EventDeserializer
         }
     }
 
-    public class EventDeserializerException(string message, Exception? cause = null)
-        : Exception(message, cause)
-    {
-        public class UnknownEventException(string message, Exception? cause = null)
-            : EventDeserializerException(message, cause);
 
-        public class DeserializationFailedException(string message, Exception? cause = null)
-            : EventDeserializerException(message, cause);
-    }
 }
