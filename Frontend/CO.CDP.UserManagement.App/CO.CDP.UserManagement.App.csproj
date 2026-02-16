@@ -37,4 +37,8 @@
         <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings*.json"/>
+    </ItemGroup>
+
 </Project>
