@@ -21,9 +21,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj"/>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj">
-            <ExcludeAssets>contentFiles</ExcludeAssets>
-        </ProjectReference>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
     </ItemGroup>
@@ -39,18 +37,5 @@
         <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json"/>
-        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.Development.json"/>
-        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json"/>
-        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.Development.json"/>
-    </ItemGroup>
-
-    <Target Name="RemoveApiAppSettings" BeforeTargets="PrepareForPublish">
-        <ItemGroup>
-            <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="'%(ContentWithTargetPath.Identity)' == 'appsettings.json' AND '%(ContentWithTargetPath.FullPath)' != '$(MSBuildProjectDirectory)\appsettings.json'" />
-            <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="'%(ContentWithTargetPath.Identity)' == 'appsettings.Development.json' AND '%(ContentWithTargetPath.FullPath)' != '$(MSBuildProjectDirectory)\appsettings.Development.json'" />
-        </ItemGroup>
-    </Target>
 
 </Project>
