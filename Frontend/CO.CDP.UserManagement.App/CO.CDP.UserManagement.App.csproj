@@ -40,8 +40,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings*.json"/>
-        <Content Update="..\..\Services\CO.CDP.UserManagement.Api\appsettings*.json" CopyToPublishDirectory="Never" />
+        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json"/>
+        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.Development.json"/>
+        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json"/>
+        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.Development.json"/>
     </ItemGroup>
+
+    <Target Name="RemoveApiAppSettings" BeforeTargets="PrepareForPublish">
+        <ItemGroup>
+            <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="'%(ContentWithTargetPath.Identity)' == 'appsettings.json' AND '%(ContentWithTargetPath.FullPath)' != '$(MSBuildProjectDirectory)\appsettings.json'" />
+            <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="'%(ContentWithTargetPath.Identity)' == 'appsettings.Development.json' AND '%(ContentWithTargetPath.FullPath)' != '$(MSBuildProjectDirectory)\appsettings.Development.json'" />
+        </ItemGroup>
+    </Target>
 
 </Project>
