@@ -192,6 +192,22 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.RegisterOfCommercialTools.WebApi
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-user-management-api
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.UserManagement.Api
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS build-user-management-app
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Frontend/CO.CDP.UserManagement.App
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS build-migrations-user-management
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.UserManagement.Infrastructure -s /src/Services/CO.CDP.UserManagement.Infrastructure --self-contained -o /app/migrations/efbundle
+
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -231,6 +247,14 @@ RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.App.csproj" -c $BUILD_CONFI
 FROM build-commercial-tools-api AS publish-commercial-tools-api
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-user-management-api AS publish-user-management-api
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.UserManagement.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-user-management-app AS publish-user-management-app
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.UserManagement.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
@@ -391,3 +415,26 @@ ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-scheduled-worker /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.ScheduledWorker.dll"]
+
+FROM base AS migrations-user-management
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=build-migrations-user-management /src/Services/CO.CDP.UserManagement.Infrastructure/UserManagementDatabaseMigrationConfig /app/UserManagementDatabaseMigrationConfig
+COPY --from=build-migrations-user-management /app/migrations/efbundle .
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle --connection \"Host=$UserManagementDatabase__Server;Database=$UserManagementDatabase__Database;Username=$UserManagementDatabase__Username;Password=$UserManagementDatabase__Password;\""]
+
+FROM base AS final-user-management-api
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-api /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.Api.dll"]
+
+FROM base AS final-user-management-app
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-app /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.App.dll"]

@@ -26,6 +26,8 @@ services:
       - scheduled-worker
       - commercial-tools-app
       - commercial-tools-api
+      - user-management-api
+      - user-management-app
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -40,6 +42,8 @@ services:
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
       CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://commercial-tools-app:8080'
       CDP_COMMERCIAL_TOOLS_API_HOST: 'http://commercial-tools-api:8080'
+      CDP_USER_MANAGEMENT_API_HOST: 'http://user-management-api:8080'
+      CDP_USER_MANAGEMENT_APP_HOST: 'http://user-management-app:8080'
   db:
     container_name: co-cdp-db
     image: postgres:16.3
@@ -546,6 +550,76 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
+
+  user-management-migrations:
+    container_name: co-cdp-user-management-migrations
+    restart: no
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrations-user-management
+    image: 'cabinetoffice/cdp-user-management-migrations:${IMAGE_VERSION:-latest}'
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      UserManagementDatabase__Server: 'db'
+      UserManagementDatabase__Database: 'cdp'
+      UserManagementDatabase__Username: 'cdp_user'
+      UserManagementDatabase__Password: 'cdp123'
+
+  user-management-api:
+    container_name: co-cdp-user-management-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-user-management-api
+    image: 'cabinetoffice/cdp-user-management-api:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      user-management-migrations:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__UserManagementDatabase: 'Host=db;Database=cdp;Username=cdp_user;Password=cdp123'
+      ConnectionStrings__Redis: 'redis:6379'
+      PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
+      OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
+      Authentication__Authority: *organisation-authority
+      ServiceKey__ApiKey: 'test-api-key'
+
+  user-management-app:
+    container_name: co-cdp-user-management-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: final-user-management-app
+    image: 'cabinetoffice/cdp-user-management-app:${IMAGE_VERSION:-latest}'
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      start_period: 10s
+      interval: 10s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_healthy
+      user-management-api:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      UserManagementApi__Url: 'http://gateway:${CDP_USER_MANAGEMENT_API_PORT:-8186}'
+      Authentication__Authority: *organisation-authority
 
 networks:
   default:
