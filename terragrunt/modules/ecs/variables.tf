@@ -20,12 +20,6 @@ variable "cfs_extra_host_headers" {
   default     = []
 }
 
-variable "commercial_tools_session_timeout" {
-  description = "Session timeout in minutes"
-  type        = string
-  default     = 30
-}
-
 variable "db_cfs_cluster_address" {
   description = "CFS DB address"
   type        = string
@@ -336,10 +330,6 @@ variable "user_pool_cfs_domain" {
 }
 
 variable "user_pool_client_id" {
-  type = string
-}
-
-variable "user_pool_commercial_tools_client_id" {
   type = string
 }
 
