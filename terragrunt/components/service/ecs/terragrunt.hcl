@@ -80,7 +80,6 @@ dependency service_auth {
   mock_outputs = {
     cfs_user_pool_arn                        = "mock"
     cfs_user_pool_client_id                  = "mock"
-    commercial_tools_app_user_pool_client_id = "mock"
     fts_healthcheck_user_pool_arn            = "mock"
     fts_healthcheck_user_pool_client_id      = "mock"
     fts_user_pool_arn                        = "mock"
@@ -203,7 +202,6 @@ inputs = {
 
   user_pool_arn                        = dependency.service_auth.outputs.organisation_app_user_pool_arn
   user_pool_client_id                  = dependency.service_auth.outputs.organisation_app_user_pool_client_id
-  user_pool_commercial_tools_client_id = dependency.service_auth.outputs.commercial_tools_app_user_pool_client_id
   user_pool_cfs_arn                    = dependency.service_auth.outputs.cfs_user_pool_arn
   user_pool_cfs_client_id              = dependency.service_auth.outputs.cfs_user_pool_client_id
   user_pool_cfs_domain                 = dependency.service_auth.outputs.user_pool_domain
