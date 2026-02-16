@@ -21,7 +21,9 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj"/>
-        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.WebApiClient\CO.CDP.UserManagement.WebApiClient.csproj">
+            <ExcludeAssets>contentFiles</ExcludeAssets>
+        </ProjectReference>
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.UI.Foundation\CO.CDP.UI.Foundation.csproj"/>
     </ItemGroup>
@@ -39,6 +41,7 @@
 
     <ItemGroup>
         <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings*.json"/>
+        <Content Update="..\..\Services\CO.CDP.UserManagement.Api\appsettings*.json" CopyToPublishDirectory="Never" />
     </ItemGroup>
 
 </Project>
