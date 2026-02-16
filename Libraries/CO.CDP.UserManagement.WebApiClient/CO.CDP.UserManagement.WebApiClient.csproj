@@ -18,9 +18,6 @@
     <ItemGroup>
         <ProjectReference Include="..\..\Services\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj">
             <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-            <ExcludeAssets>contentFiles</ExcludeAssets>
-            <IncludeAssets>none</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
         </ProjectReference>
         <ProjectReference Include="..\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
     </ItemGroup>
