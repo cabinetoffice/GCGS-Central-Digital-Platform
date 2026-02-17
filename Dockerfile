@@ -206,7 +206,7 @@ FROM build AS build-migrations-user-management
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.UserManagement.Infrastructure -s /src/Services/CO.CDP.UserManagement.Infrastructure --self-contained -o /app/migrations/efbundle
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.UserManagement.Infrastructure -s /src/Services/CO.CDP.UserManagement.Infrastructure --context UserManagementDbContext --self-contained -o /app/migrations/efbundle
 
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
