@@ -17,6 +17,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
+                .HasDefaultSchema("user_management")
                 .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
@@ -95,7 +96,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_applications_client_id");
 
-                    b.ToTable("applications", (string)null);
+                    b.ToTable("applications", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationPermission", b =>
@@ -164,7 +165,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_application_permissions_app_name");
 
-                    b.ToTable("application_permissions", (string)null);
+                    b.ToTable("application_permissions", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationRole", b =>
@@ -233,7 +234,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_application_roles_app_name");
 
-                    b.ToTable("application_roles", (string)null);
+                    b.ToTable("application_roles", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleApplicationAssignment", b =>
@@ -299,7 +300,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_invite_role_app_assignments_mapping_app_role");
 
-                    b.ToTable("invite_role_application_assignments", (string)null);
+                    b.ToTable("invite_role_application_assignments", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.InviteRoleMapping", b =>
@@ -364,7 +365,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("OrganisationId");
 
-                    b.ToTable("invite_role_mappings", (string)null);
+                    b.ToTable("invite_role_mappings", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Organisation", b =>
@@ -438,7 +439,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_organisations_slug");
 
-                    b.ToTable("organisations", (string)null);
+                    b.ToTable("organisations", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
@@ -520,98 +521,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_organisation_applications_org_app");
 
-                    b.ToTable("organisation_applications", (string)null);
-                });
-
-            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<Guid>("CdpPersonInviteGuid")
-                        .HasColumnType("uuid")
-                        .HasColumnName("cdp_person_invite_guid");
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("created_by");
-
-                    b.Property<DateTimeOffset?>("DeletedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("deleted_at");
-
-                    b.Property<string>("DeletedBy")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("deleted_by");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("first_name");
-
-                    b.Property<string>("InvitedBy")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("invited_by");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_deleted");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("last_name");
-
-                    b.Property<DateTimeOffset?>("ModifiedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("modified_at");
-
-                    b.Property<string>("ModifiedBy")
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)")
-                        .HasColumnName("modified_by");
-
-                    b.Property<int>("OrganisationId")
-                        .HasColumnType("integer")
-                        .HasColumnName("organisation_id");
-
-                    b.Property<string>("OrganisationRole")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("organisation_role");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CdpPersonInviteGuid")
-                        .HasDatabaseName("ix_pending_org_invites_cdp_person_invite_guid");
-
-                    b.HasIndex("OrganisationId");
-
-                    b.HasIndex("Email", "OrganisationId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_pending_org_invites_email_org");
-
-                    b.ToTable("pending_organisation_invites", (string)null);
+                    b.ToTable("organisation_applications", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
@@ -693,7 +603,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_user_app_assignments_membership_app");
 
-                    b.ToTable("user_application_assignments", (string)null);
+                    b.ToTable("user_application_assignments", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", b =>
@@ -780,7 +690,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsUnique()
                         .HasDatabaseName("ix_user_org_memberships_user_org");
 
-                    b.ToTable("user_organisation_memberships", (string)null);
+                    b.ToTable("user_organisation_memberships", "user_management");
                 });
 
             modelBuilder.Entity("application_role_permissions", b =>
@@ -795,7 +705,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("permission_id");
 
-                    b.ToTable("application_role_permissions", (string)null);
+                    b.ToTable("application_role_permissions", "user_management");
                 });
 
             modelBuilder.Entity("user_assignment_roles", b =>
@@ -810,7 +720,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
 
                     b.HasIndex("role_id");
 
-                    b.ToTable("user_assignment_roles", (string)null);
+                    b.ToTable("user_assignment_roles", "user_management");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.ApplicationPermission", b =>
@@ -888,17 +798,6 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Application");
-
-                    b.Navigation("Organisation");
-                });
-
-            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.PendingOrganisationInvite", b =>
-                {
-                    b.HasOne("CO.CDP.UserManagement.Core.Entities.Organisation", "Organisation")
-                        .WithMany()
-                        .HasForeignKey("OrganisationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Organisation");
                 });

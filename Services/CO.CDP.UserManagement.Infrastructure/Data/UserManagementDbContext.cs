@@ -19,7 +19,6 @@ public class UserManagementDbContext : DbContext
     public DbSet<CoreEntities.ApplicationPermission> ApplicationPermissions => Set<CoreEntities.ApplicationPermission>();
     public DbSet<CoreEntities.ApplicationRole> ApplicationRoles => Set<CoreEntities.ApplicationRole>();
     public DbSet<CoreEntities.UserOrganisationMembership> UserOrganisationMemberships => Set<CoreEntities.UserOrganisationMembership>();
-    public DbSet<CoreEntities.PendingOrganisationInvite> PendingOrganisationInvites => Set<CoreEntities.PendingOrganisationInvite>();
     public DbSet<CoreEntities.OrganisationApplication> OrganisationApplications => Set<CoreEntities.OrganisationApplication>();
     public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments => Set<CoreEntities.UserApplicationAssignment>();
     public DbSet<CoreEntities.InviteRoleMapping> InviteRoleMappings => Set<CoreEntities.InviteRoleMapping>();
@@ -29,13 +28,14 @@ public class UserManagementDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.HasDefaultSchema("user_management");
+
         // Apply all configurations
         modelBuilder.ApplyConfiguration(new OrganisationConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationPermissionConfiguration());
         modelBuilder.ApplyConfiguration(new ApplicationRoleConfiguration());
         modelBuilder.ApplyConfiguration(new UserOrganisationMembershipConfiguration());
-        modelBuilder.ApplyConfiguration(new PendingOrganisationInviteConfiguration());
         modelBuilder.ApplyConfiguration(new OrganisationApplicationConfiguration());
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
         modelBuilder.ApplyConfiguration(new InviteRoleMappingConfiguration());
@@ -47,7 +47,6 @@ public class UserManagementDbContext : DbContext
         modelBuilder.Entity<CoreEntities.ApplicationPermission>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.ApplicationRole>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.UserOrganisationMembership>().HasQueryFilter(e => !e.IsDeleted);
-        modelBuilder.Entity<CoreEntities.PendingOrganisationInvite>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.OrganisationApplication>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.InviteRoleMapping>().HasQueryFilter(e => !e.IsDeleted);
