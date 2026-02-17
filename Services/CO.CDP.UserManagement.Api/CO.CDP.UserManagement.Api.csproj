@@ -38,10 +38,4 @@
         <None Remove="IMPLEMENTATION_COMPLETE.md"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Content Update="appsettings*.json">
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-    </ItemGroup>
-
 </Project>
