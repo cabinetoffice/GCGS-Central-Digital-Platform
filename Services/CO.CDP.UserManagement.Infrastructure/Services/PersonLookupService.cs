@@ -128,14 +128,14 @@ public class PersonLookupService : IPersonLookupService
         {
             _logger.LogError(ex, "API error occurred while looking up person by email. Status: {StatusCode}", ex.StatusCode);
             throw new PersonLookupException(
-                $"Failed to lookup person details for email: {email}. Status: {ex.StatusCode}",
+                $"Failed to lookup person details by email. Status: {ex.StatusCode}",
                 ex);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Unexpected error occurred while looking up person by email");
             throw new PersonLookupException(
-                $"Failed to lookup person details for email: {email}",
+                "Failed to lookup person details by email",
                 ex);
         }
     }
