@@ -387,7 +387,8 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__ElastiCache__Hostname: "redis"
       Aws__SystemManager__DataProtectionPrefix: "/CDP/DataProtection"
-      CloudWatch__LogGroup: "/ecs/user-management-app"
+      Aws__CloudWatch__LogGroup: "/ecs/user-management-app"
+      Aws__CloudWatch__LogStream: "serilog"
       UserManagementApi__BaseUrl: '${UserManagementApi:-http://gateway:${CDP_USER_MANAGEMENT_API_PORT:-8066}}'
       SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
       Organisation__Authority: *organisation-authority
