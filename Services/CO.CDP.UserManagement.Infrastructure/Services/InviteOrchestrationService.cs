@@ -9,6 +9,26 @@ using Microsoft.Extensions.Logging;
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
+/// Container for invite orchestration repositories.
+/// </summary>
+public sealed class InviteOrchestrationServiceRepositories
+{
+    public InviteOrchestrationServiceRepositories(
+        IOrganisationRepository organisationRepository,
+        IInviteRoleMappingRepository inviteRoleMappingRepository,
+        IUserOrganisationMembershipRepository membershipRepository)
+    {
+        OrganisationRepository = organisationRepository;
+        InviteRoleMappingRepository = inviteRoleMappingRepository;
+        MembershipRepository = membershipRepository;
+    }
+
+    public IOrganisationRepository OrganisationRepository { get; }
+    public IInviteRoleMappingRepository InviteRoleMappingRepository { get; }
+    public IUserOrganisationMembershipRepository MembershipRepository { get; }
+}
+
+/// <summary>
 /// Service for orchestrating user invites via CDP bridge.
 /// </summary>
 public class InviteOrchestrationService : IInviteOrchestrationService
@@ -17,21 +37,25 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IOrganisationClient _organisationClient;
+    private readonly IPersonLookupService _personLookupService;
+    private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InviteOrchestrationService> _logger;
 
     public InviteOrchestrationService(
-        IOrganisationRepository organisationRepository,
-        IInviteRoleMappingRepository inviteRoleMappingRepository,
-        IUserOrganisationMembershipRepository membershipRepository,
+        InviteOrchestrationServiceRepositories repositories,
         IOrganisationClient organisationClient,
+        IPersonLookupService personLookupService,
+        ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<InviteOrchestrationService> logger)
     {
-        _organisationRepository = organisationRepository;
-        _inviteRoleMappingRepository = inviteRoleMappingRepository;
-        _membershipRepository = membershipRepository;
+        _organisationRepository = repositories.OrganisationRepository;
+        _inviteRoleMappingRepository = repositories.InviteRoleMappingRepository;
+        _membershipRepository = repositories.MembershipRepository;
         _organisationClient = organisationClient;
+        _personLookupService = personLookupService;
+        _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -45,10 +69,11 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         if (request == null) throw new ArgumentNullException(nameof(request));
 
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
+        await EnsureMemberDoesNotAlreadyExistAsync(organisation, request, cancellationToken);
 
         var cdpScopes = MapOrganisationRoleToCdpScopes(request.OrganisationRole);
 
-        var cdpInviteRequest = new CO.CDP.Organisation.WebApiClient.InvitePersonToOrganisation(
+        var cdpInviteRequest = new InvitePersonToOrganisation(
             email: request.Email,
             firstName: request.FirstName,
             lastName: request.LastName,
@@ -57,7 +82,6 @@ public class InviteOrchestrationService : IInviteOrchestrationService
 
         var personInvite = await CreatePersonInviteAsync(
             organisation,
-            request,
             cdpInviteRequest,
             cancellationToken);
 
@@ -93,6 +117,31 @@ public class InviteOrchestrationService : IInviteOrchestrationService
             inviteRoleMapping.Id, inviteRoleMapping.CdpPersonInviteGuid);
 
         return inviteRoleMapping;
+    }
+
+    private async Task EnsureMemberDoesNotAlreadyExistAsync(
+        Core.Entities.Organisation organisation,
+        InviteUserRequest request,
+        CancellationToken cancellationToken)
+    {
+        var email = request.Email;
+        var personDetails = string.IsNullOrWhiteSpace(email)
+            ? null
+            : await _personLookupService.GetPersonDetailsByEmailAsync(email, cancellationToken);
+
+        var memberExists = personDetails != null &&
+                           await _membershipRepository.ExistsByPersonIdAndOrganisationAsync(
+                               personDetails.CdpPersonId,
+                               organisation.Id,
+                               cancellationToken);
+
+        if (memberExists)
+        {
+            throw new DuplicateEntityException(
+                nameof(UserOrganisationMembership),
+                nameof(UserOrganisationMembership.CdpPersonId),
+                personDetails!.CdpPersonId);
+        }
     }
 
     public async Task RemoveInviteAsync(
@@ -164,6 +213,8 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         _inviteRoleMappingRepository.Remove(mapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await _membershipSyncService.SyncMembershipCreatedAsync(membership, cancellationToken);
+
         _logger.LogInformation(
             "Accepted invite {MappingId}, created membership {MembershipId}",
             inviteRoleMappingId, membership.Id);
@@ -209,7 +260,6 @@ public class InviteOrchestrationService : IInviteOrchestrationService
 
     private async Task<PersonInviteModel> CreatePersonInviteAsync(
         Core.Entities.Organisation organisation,
-        InviteUserRequest request,
         InvitePersonToOrganisation cdpInviteRequest,
         CancellationToken cancellationToken)
     {
@@ -221,17 +271,19 @@ public class InviteOrchestrationService : IInviteOrchestrationService
                 cancellationToken);
 
             _logger.LogInformation(
-                "Created CDP invite {CdpInviteGuid} for {Email} in organisation {OrganisationId}",
-                personInvite.Id, request.Email, organisation.Id);
+                "Created CDP invite {CdpInviteGuid} in organisation {OrganisationId}",
+                personInvite.Id, organisation.Id);
 
             return personInvite;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex,
-                "Failed to create CDP invite for {Email} in organisation {OrganisationId}, aborting",
-                request.Email, organisation.Id);
-            throw;
+                "Failed to create CDP invite in organisation {OrganisationId}, aborting",
+                organisation.Id);
+            throw new Core.Exceptions.InvalidOperationException(
+                $"Failed to create CDP invite for organisation {organisation.Id} (CDP {organisation.CdpOrganisationGuid}).",
+                ex);
         }
     }
 }

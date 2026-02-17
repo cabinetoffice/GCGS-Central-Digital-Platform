@@ -5,6 +5,8 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Tests;
 using CO.CDP.TestKit.Mvc;
 using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
@@ -40,6 +42,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         var umPostgreSql1 = umPostgreSql;
         var cdpPostgreSql1 = cdpPostgreSql;
         _mockOrganisationClient = new Mock<IOrganisationClient>();
+        var mockPersonLookupService = new Mock<IPersonLookupService>();
 
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
@@ -63,12 +66,19 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
                 services.RemoveAll<IOrganisationClient>();
                 services.AddScoped(_ => _mockOrganisationClient.Object);
 
+                services.RemoveAll<IPersonLookupService>();
+                services.AddScoped(_ => mockPersonLookupService.Object);
+
             });
         });
 
         _httpClient = factory.CreateClient();
         _umContext = umPostgreSql1.UserManagementContext();
         _cdpContext = cdpPostgreSql1.OrganisationInformationContext();
+
+        mockPersonLookupService
+            .Setup(c => c.GetPersonDetailsByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((PersonDetails?)null);
     }
 
     [Fact]

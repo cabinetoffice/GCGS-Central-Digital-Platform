@@ -150,6 +150,10 @@ public class OrganisationInvitesController : ControllerBase
         {
             return Conflict(new ErrorResponse { Message = ex.Message });
         }
+        catch (PersonLookupException ex)
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable, new ErrorResponse { Message = ex.Message });
+        }
     }
 
     /// <summary>

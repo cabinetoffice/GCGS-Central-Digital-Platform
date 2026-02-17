@@ -84,17 +84,19 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
             enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api"),
-            services =>
-            {
-                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
-                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
-            },
-            (services, dispatcher) =>
-            {
-                dispatcher.Subscribe<OrganisationRegistered>(services);
-                dispatcher.Subscribe<OrganisationUpdated>(services);
-            }
-        );
+                services =>
+                {
+                    services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                    services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
+                    services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
+                },
+                (services, dispatcher) =>
+                {
+                    dispatcher.Subscribe<OrganisationRegistered>(services);
+                    dispatcher.Subscribe<OrganisationUpdated>(services);
+                    dispatcher.Subscribe<PersonInviteClaimed>(services);
+                }
+            );
 }
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");

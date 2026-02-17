@@ -3,7 +3,6 @@ using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CO.CDP.UserManagement.Infrastructure;
@@ -40,12 +39,14 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationApplicationService, OrganisationApplicationService>();
         services.AddScoped<IUserAssignmentService, UserAssignmentService>();
         services.AddScoped<IOrganisationUserService, OrganisationUserService>();
+        services.AddScoped<InviteOrchestrationServiceRepositories>();
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IPersonLookupService, PersonLookupService>();
         services.AddScoped<IOrganisationPersonsSyncService, OrganisationPersonsSyncService>();
         services.AddScoped<IOrganisationSyncService, OrganisationSyncService>();
+        services.AddScoped<ICdpMembershipSyncService, CdpMembershipSyncService>();
 
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();
@@ -53,7 +54,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IOrganisationApplicationRepository, OrganisationApplicationRepository>();
         services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
-        services.AddScoped<IPendingOrganisationInviteRepository, PendingOrganisationInviteRepository>();
         services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
         services.AddScoped<IInviteRoleMappingRepository, InviteRoleMappingRepository>();
 

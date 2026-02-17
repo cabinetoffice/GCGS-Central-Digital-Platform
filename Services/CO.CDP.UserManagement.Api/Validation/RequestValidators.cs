@@ -1,4 +1,3 @@
-using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using FluentValidation;
 
@@ -188,6 +187,19 @@ public sealed class InviteUserRequestValidator : AbstractValidator<InviteUserReq
 
         RuleFor(x => x.OrganisationRole)
             .IsInEnum();
+
+        RuleForEach(x => x.ApplicationAssignments)
+            .ChildRules(assignment =>
+            {
+                assignment.RuleFor(a => a.OrganisationApplicationId)
+                    .GreaterThan(0);
+
+                assignment.RuleFor(a => a.ApplicationRoleIds)
+                    .NotEmpty();
+
+                assignment.RuleForEach(a => a.ApplicationRoleIds)
+                    .GreaterThan(0);
+            });
     }
 }
 

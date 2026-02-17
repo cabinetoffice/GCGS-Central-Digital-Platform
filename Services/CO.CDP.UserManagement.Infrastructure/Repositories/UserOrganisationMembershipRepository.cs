@@ -8,12 +8,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// <summary>
 /// Repository implementation for UserOrganisationMembership entities.
 /// </summary>
-public class UserOrganisationMembershipRepository : Repository<UserOrganisationMembership>, IUserOrganisationMembershipRepository
+public class UserOrganisationMembershipRepository(UserManagementDbContext context)
+    : Repository<UserOrganisationMembership>(context), IUserOrganisationMembershipRepository
 {
-    public UserOrganisationMembershipRepository(UserManagementDbContext context) : base(context)
-    {
-    }
-
     public async Task<IEnumerable<UserOrganisationMembership>> GetByUserPrincipalIdAsync(string userPrincipalId, CancellationToken cancellationToken = default)
     {
         return await DbSet
@@ -42,5 +39,11 @@ public class UserOrganisationMembershipRepository : Repository<UserOrganisationM
         return await DbSet
             .Include(m => m.Organisation)
             .FirstOrDefaultAsync(m => m.CdpPersonId == cdpPersonId && m.OrganisationId == organisationId, cancellationToken);
+    }
+
+    public async Task<bool> ExistsByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .AnyAsync(m => m.CdpPersonId == cdpPersonId && m.OrganisationId == organisationId && m.IsActive, cancellationToken);
     }
 }

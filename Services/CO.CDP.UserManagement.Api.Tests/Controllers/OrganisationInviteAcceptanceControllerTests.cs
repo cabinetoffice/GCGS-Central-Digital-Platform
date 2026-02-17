@@ -48,7 +48,7 @@ public class OrganisationInviteAcceptanceControllerTests
                 It.IsAny<int>(),
                 It.IsAny<AcceptOrganisationInviteRequest>(),
                 It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new EntityNotFoundException("PendingOrganisationInvite", 1));
+            .ThrowsAsync(new EntityNotFoundException("InviteRoleMapping", 1));
 
         var controller = new OrganisationInviteAcceptanceController(
             _inviteOrchestrationService.Object);

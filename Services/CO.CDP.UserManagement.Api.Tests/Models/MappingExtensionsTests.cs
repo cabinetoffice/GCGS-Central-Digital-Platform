@@ -308,27 +308,6 @@ public class MappingExtensionsTests
     }
 
     [Fact]
-    public void PendingOrganisationInviteMappingExtensions_ToResponse_MapsFields()
-    {
-        var invite = new PendingOrganisationInvite
-        {
-            Id = 16,
-            OrganisationId = 11,
-            Email = "test@example.com",
-            FirstName = "Test",
-            LastName = "User",
-            OrganisationRole = OrganisationRole.Admin,
-            CdpPersonInviteGuid = Guid.NewGuid(),
-            CreatedAt = new DateTimeOffset(2024, 7, 1, 0, 0, 0, TimeSpan.Zero)
-        };
-
-        var response = invite.ToResponse();
-
-        response.PendingInviteId.Should().Be(16);
-        response.Status.Should().Be(UserStatus.Pending);
-    }
-
-    [Fact]
     public void PersonDetailsMappingExtensions_ToResponse_MapsFields()
     {
         var person = new PersonDetails

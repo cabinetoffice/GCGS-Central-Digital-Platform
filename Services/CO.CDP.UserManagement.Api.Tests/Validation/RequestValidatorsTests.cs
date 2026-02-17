@@ -294,6 +294,53 @@ public class RequestValidatorsTests
     }
 
     [Fact]
+    public void InviteUserRequestValidator_WhenEmailTooLong_Fails()
+    {
+        var validator = new InviteUserRequestValidator();
+        const string domain = "@example.com";
+        var request = new InviteUserRequest
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Email = $"{LongString(EmailMaxLength - domain.Length + 1)}{domain}",
+            OrganisationRole = OrganisationRole.Admin
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        AssertHasError(result, nameof(InviteUserRequest.Email));
+    }
+
+    [Fact]
+    public void InviteUserRequestValidator_WhenInvalidAssignments_Fails()
+    {
+        var validator = new InviteUserRequestValidator();
+        var request = new InviteUserRequest
+        {
+            FirstName = "Test",
+            LastName = "User",
+            Email = "test@example.com",
+            OrganisationRole = OrganisationRole.Admin,
+            ApplicationAssignments = new List<ApplicationAssignment>
+            {
+                new()
+                {
+                    OrganisationApplicationId = 0,
+                    ApplicationRoleIds = new List<int> { 0 }
+                }
+            }
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        AssertHasError(result, "ApplicationAssignments[0].OrganisationApplicationId");
+        AssertHasError(result, "ApplicationAssignments[0].ApplicationRoleIds[0]");
+    }
+
+
+    [Fact]
     public void ChangeOrganisationRoleRequestValidator_WhenInvalidRole_Fails()
     {
         var validator = new ChangeOrganisationRoleRequestValidator();
@@ -320,6 +367,22 @@ public class RequestValidatorsTests
         result.IsValid.Should().BeFalse();
         AssertHasError(result, nameof(AcceptOrganisationInviteRequest.UserPrincipalId));
         AssertHasError(result, nameof(AcceptOrganisationInviteRequest.CdpPersonId));
+    }
+
+    [Fact]
+    public void AcceptOrganisationInviteRequestValidator_WhenUserPrincipalIdTooLong_Fails()
+    {
+        var validator = new AcceptOrganisationInviteRequestValidator();
+        var request = new AcceptOrganisationInviteRequest
+        {
+            UserPrincipalId = LongString(UserPrincipalIdMaxLength + 1),
+            CdpPersonId = Guid.NewGuid()
+        };
+
+        var result = validator.Validate(request);
+
+        result.IsValid.Should().BeFalse();
+        AssertHasError(result, nameof(AcceptOrganisationInviteRequest.UserPrincipalId));
     }
 
     private static void AssertHasError(FluentValidation.Results.ValidationResult result, string propertyName)

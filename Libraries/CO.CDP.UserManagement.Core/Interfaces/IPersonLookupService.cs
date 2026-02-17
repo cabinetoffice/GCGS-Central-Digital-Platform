@@ -24,4 +24,12 @@ public interface IPersonLookupService
     Task<IReadOnlyDictionary<Guid, PersonDetails>> GetPersonDetailsByIdsAsync(
         IEnumerable<Guid> cdpPersonIds,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves person details by their email address.
+    /// </summary>
+    /// <param name="email">The email address.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Person details if found, otherwise null.</returns>
+    Task<PersonDetails?> GetPersonDetailsByEmailAsync(string email, CancellationToken cancellationToken = default);
 }

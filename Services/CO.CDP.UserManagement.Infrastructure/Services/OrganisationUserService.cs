@@ -14,6 +14,7 @@ public class OrganisationUserService : IOrganisationUserService
     private readonly IOrganisationRepository _organisationRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
+    private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<OrganisationUserService> _logger;
 
@@ -21,12 +22,14 @@ public class OrganisationUserService : IOrganisationUserService
         IOrganisationRepository organisationRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IUserApplicationAssignmentRepository assignmentRepository,
+        ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<OrganisationUserService> logger)
     {
         _organisationRepository = organisationRepository;
         _membershipRepository = membershipRepository;
         _assignmentRepository = assignmentRepository;
+        _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -150,6 +153,8 @@ public class OrganisationUserService : IOrganisationUserService
         membership.OrganisationRole = organisationRole;
         _membershipRepository.Update(membership);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        await _membershipSyncService.SyncMembershipRoleChangedAsync(membership, cancellationToken);
 
         return membership;
     }
