@@ -34,9 +34,9 @@ build-docker: ## Build Docker images sequentially to reduce memory usage
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation person forms
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification user-management-api
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api user-management-app
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification outbox-processor-person-user-management outbox-processor-organisation-user-management
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations commercial-tools-migrations
 .PHONY: build-docker
 
