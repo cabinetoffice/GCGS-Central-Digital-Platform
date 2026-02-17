@@ -12,7 +12,7 @@ resource "aws_lb" "ecs_fts" {
   tags = merge(
     var.tags,
     {
-      Name = "${local.name_prefix_fts}-ecs"
+      Name = "${local.name_prefix}-ecs-fts"
     }
   )
 }

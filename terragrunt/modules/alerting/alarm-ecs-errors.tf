@@ -45,9 +45,7 @@ resource "aws_cloudwatch_metric_alarm" "ecs_5xx_errors_fts" {
   for_each = var.ecs_fts_services_target_group_arn_suffix_map
 
   alarm_actions       = [aws_sns_topic.alerts_topic_app_5xx.arn]
-  alarm_description   = "`${var.environment}` 
- `${each.key}` 
- 5xx error exceed `${local.ecs_threshold_5xx}` (FTS ALB)"
+  alarm_description   = "`${var.environment}` \n `${each.key}` \n 5xx error exceed `${local.ecs_threshold_5xx}` (FTS ALB)"
   alarm_name          = "${local.name_prefix}-${var.environment}-ecs-5xx-fts-${each.key}"
   comparison_operator = "GreaterThanThreshold"
   evaluation_periods  = 1

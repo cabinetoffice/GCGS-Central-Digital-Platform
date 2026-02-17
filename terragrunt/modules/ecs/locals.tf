@@ -34,7 +34,7 @@ locals {
 
   name_prefix     = var.product.resource_name
   name_prefix_php = "${local.name_prefix}-php"
-  name_prefix_fts = "cdp-fts"
+  name_prefix_fts = "${local.name_prefix}-fts"
 
   one_login = {
     credential_locations = {
