@@ -37,10 +37,4 @@
         <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map"/>
     </ItemGroup>
 
-    <Target Name="RemoveApiSettingsFromPublish" BeforeTargets="ComputeFilesToPublish">
-        <ItemGroup>
-            <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="$([System.String]::Copy('%(ResolvedFileToPublish.FullPath)').Contains('UserManagement.Api')) AND ($([System.String]::Copy('%(ResolvedFileToPublish.FullPath)').Contains('appsettings')))" />
-        </ItemGroup>
-    </Target>
-
 </Project>
