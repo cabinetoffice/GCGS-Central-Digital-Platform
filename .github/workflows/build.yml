@@ -201,10 +201,6 @@ jobs:
         with:
           name: e2e-traces
           path: '**/Traces/*.zip'
-      - name: Stop services
-        run: make down
-        env:
-          IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Save Docker Images
         id: save
         run: |
@@ -215,6 +211,10 @@ jobs:
           docker save -o cdp-images.tar $IMAGES
           echo "images=${IMAGES}" >> $GITHUB_OUTPUT
           echo "images_json=${IMAGES_JSON}" >> $GITHUB_OUTPUT
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Stop services
+        run: make down
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
