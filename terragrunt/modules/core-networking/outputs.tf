@@ -82,12 +82,12 @@ output "waf_acl_arn" {
   value = try(aws_wafv2_web_acl.this[0].arn, null)
 }
 
-output "waf_acl_php_arn" {
-  value = try(aws_wafv2_web_acl.php[0].arn, null)
-}
-
 output "waf_acl_fts_arn" {
   value = try(aws_wafv2_web_acl.fts[0].arn, null)
+}
+
+output "waf_acl_php_arn" {
+  value = try(aws_wafv2_web_acl.php[0].arn, null)
 }
 
 output "waf_acl_tools_arn" {

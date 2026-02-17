@@ -411,12 +411,12 @@ variable "waf_acl_arn" {
   type        = string
 }
 
-variable "waf_acl_php_arn" {
-  description = "Special services WAF ACL ARN to be associated with their ALB in isolation"
+variable "waf_acl_fts_arn" {
+  description = "FTS services WAF ACL ARN to be associated with their ALB in isolation"
   type        = string
 }
 
-variable "waf_acl_fts_arn" {
-  description = "FTS services WAF ACL ARN to be associated with their ALB in isolation"
+variable "waf_acl_php_arn" {
+  description = "Special services WAF ACL ARN to be associated with their ALB in isolation"
   type        = string
 }
