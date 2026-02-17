@@ -40,6 +40,8 @@ dependency service_ecs {
     ecs_alb_arn_suffix                   = "mock"
     ecs_cluster_name                     = "mock"
     services_target_group_arn_suffix_map = "mock"
+    fts_ecs_alb_arn_suffix               = "mock"
+    services_target_group_arn_suffix_map_fts = "mock"
   }
 }
 
@@ -61,6 +63,8 @@ inputs = {
   ecs_alb_arn_suffix                       = dependency.service_ecs.outputs.ecs_alb_arn_suffix
   ecs_cluster_name                         = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_services_target_group_arn_suffix_map = dependency.service_ecs.outputs.services_target_group_arn_suffix_map
+  ecs_fts_alb_arn_suffix                   = dependency.service_ecs.outputs.fts_ecs_alb_arn_suffix
+  ecs_fts_services_target_group_arn_suffix_map = dependency.service_ecs.outputs.services_target_group_arn_suffix_map_fts
 
   sqs_queue_names = dependency.service_queue.outputs.queue_names
 }

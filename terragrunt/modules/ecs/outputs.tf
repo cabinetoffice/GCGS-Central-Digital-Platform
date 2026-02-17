@@ -34,6 +34,38 @@ output "php_ecs_listener_arn" {
   value = local.php_ecs_listener_arn
 }
 
+
+output "fts_ecs_cluster_id" {
+  value = local.fts_cluster_id
+}
+
+output "fts_ecs_cluster_name" {
+  value = local.fts_cluster_name
+}
+
+output "fts_ecs_listener_arn" {
+  value = local.fts_ecs_listener_arn
+}
+
+output "fts_ecs_alb_dns_name" {
+  value = aws_lb.ecs_fts.dns_name
+}
+
+output "fts_ecs_alb_arn_suffix" {
+  value = aws_lb.ecs_fts.arn_suffix
+}
+
+output "service_configs_fts" {
+  value = local.service_configs_fts_cluster
+}
+
+output "services_target_group_arn_suffix_map_fts" {
+  value = {
+    (module.ecs_service_fts_app.service_name)        = module.ecs_service_fts_app.service_target_group_arn_suffix,
+    (module.ecs_service_fts_search_api.service_name) = module.ecs_service_fts_search_api.service_target_group_arn_suffix,
+  }
+}
+
 output "s3_fts_bucket" {
   value = module.s3_bucket_fts.bucket
 }

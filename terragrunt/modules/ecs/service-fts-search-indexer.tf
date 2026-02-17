@@ -22,7 +22,7 @@ module "ecs_service_fts_search_indexer" {
     }
   )
 
-  cluster_id                         = local.php_cluster_id
+  cluster_id                         = local.fts_cluster_id
   container_port                     = var.service_configs.fts_search_indexer.port
   cpu                                = var.service_configs.fts_search_indexer.cpu
   deployment_maximum_percent         = 100
@@ -35,7 +35,7 @@ module "ecs_service_fts_search_indexer" {
   family                             = "standalone"
   healthcheck_path                   = "/"
   host_port                          = var.service_configs.fts_search_indexer.port_host
-  listener_name                      = "dotnet-${var.service_configs.fts_search_indexer.name}"
+  listener_name                      = "fts-${var.service_configs.fts_search_indexer.name}"
   memory                             = var.service_configs.fts_search_indexer.memory
   name                               = var.service_configs.fts_search_indexer.name
   private_subnet_ids                 = var.private_subnet_ids

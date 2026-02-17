@@ -1,6 +1,7 @@
 locals {
   name_prefix     = var.product.resource_name
   name_prefix_php = "${local.name_prefix}-php"
+  name_prefix_fts = "cdp-fts"
 
   tags = merge(var.tags, { Name = var.product.resource_name })
 

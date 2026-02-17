@@ -7,6 +7,9 @@ locals {
   php_cluster_id        = aws_ecs_cluster.that.id
   php_cluster_name      = aws_ecs_cluster.that.name
   php_ecs_listener_arn  = aws_lb_listener.ecs_php.arn
+  fts_cluster_id        = aws_ecs_cluster.fts.id
+  fts_cluster_name      = aws_ecs_cluster.fts.name
+  fts_ecs_listener_arn  = aws_lb_listener.ecs_fts.arn
 
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
@@ -31,6 +34,7 @@ locals {
 
   name_prefix     = var.product.resource_name
   name_prefix_php = "${local.name_prefix}-php"
+  name_prefix_fts = "cdp-fts"
 
   one_login = {
     credential_locations = {
@@ -71,6 +75,11 @@ locals {
   service_configs_sirsi_php_cluster = {
     for name, config in var.service_configs :
     config.name => config if config.type != "db-migration" && config.cluster == "sirsi-php"
+  }
+
+  service_configs_fts_cluster = {
+    for name, config in var.service_configs :
+    config.name => config if config.type != "db-migration" && config.cluster == "fts"
   }
 
   tasks = [

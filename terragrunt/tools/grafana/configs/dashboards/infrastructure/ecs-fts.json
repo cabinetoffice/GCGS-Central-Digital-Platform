@@ -1627,8 +1627,8 @@
       },
       {
         "current": {
-          "text": "app/cdp-sirsi-php/45421bfbe34bc7a5",
-          "value": "app/cdp-sirsi-php/45421bfbe34bc7a5"
+          "text": "",
+          "value": ""
         },
         "datasource": {
           "type": "cloudwatch",
@@ -1649,7 +1649,7 @@
           "region": "default"
         },
         "refresh": 1,
-        "regex": "",
+        "regex": "app/cdp-fts/.*",
         "type": "query"
       }
     ]
