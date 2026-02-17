@@ -105,6 +105,7 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	cp ./Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json $(OPENAPI_DIR)/Person.json
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json $(OPENAPI_DIR)/Forms.json
 	cp ./Services/CO.CDP.EntityVerification/OpenAPI/CO.CDP.EntityVerification.json $(OPENAPI_DIR)/EntityVerification.json
+	cp ./Services/CO.CDP.UserManagement.Api/OpenAPI/CO.CDP.UserManagement.Api.json $(OPENAPI_DIR)/UserManagement.json
 
 generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048
