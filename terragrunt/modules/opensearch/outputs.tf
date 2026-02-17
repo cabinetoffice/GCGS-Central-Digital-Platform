@@ -1,19 +1,19 @@
 output "dashboard_endpoint" {
-  value       = length(aws_opensearch_domain.this) > 0 ? aws_opensearch_domain.this[0].dashboard_endpoint : null
+  value       = aws_opensearch_domain.this.dashboard_endpoint
   description = "Dashboards endpoint (VPC reachable)."
 }
 
 output "domain_arn" {
-  value       = length(aws_opensearch_domain.this) > 0 ? aws_opensearch_domain.this[0].arn : null
+  value       = aws_opensearch_domain.this.arn
   description = "OpenSearch domain ARN."
 }
 
 output "domain_name" {
-  value       = length(aws_opensearch_domain.this) > 0 ? aws_opensearch_domain.this[0].domain_name : null
+  value       = aws_opensearch_domain.this.domain_name
   description = "OpenSearch domain name."
 }
 
 output "endpoint" {
-  value       = length(aws_opensearch_domain.this) > 0 ? aws_opensearch_domain.this[0].endpoint : null
+  value       = aws_opensearch_domain.this.endpoint
   description = "Domain endpoint (VPC reachable)."
 }

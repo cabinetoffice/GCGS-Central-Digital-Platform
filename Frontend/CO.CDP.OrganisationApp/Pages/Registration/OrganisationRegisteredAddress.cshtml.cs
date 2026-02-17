@@ -100,7 +100,7 @@ public class OrganisationRegisteredAddressModel(ISession session, ICharityCommis
             return RedirectToPage("BuyerOrganisationType");
         }
 
-        return RedirectToPage("OrganisationDetailsSummary");
+        return RedirectToPage("SupplierOrganisationType");
     }
 
     private void SetupAddress(bool reset = false)

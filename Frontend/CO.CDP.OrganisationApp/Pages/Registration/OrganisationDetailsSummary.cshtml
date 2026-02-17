@@ -21,6 +21,18 @@
             backLink = RegistrationStepModel.BuyerDevolvedRegulationPage;
         }
     }
+    else if (details.OrganisationType == OrganisationType.Supplier)
+    {
+        backLink = RegistrationStepModel.SupplierOrganisationTypePage;
+    }
+
+    void RenderOperationTypes(List<CO.CDP.Organisation.WebApiClient.OperationType> operationTypes)
+    {
+        foreach (var item in operationTypes)
+        {
+            <p class="govuk-body">@item.ShortDescription()</p>
+        }
+    }
 }
 
 @section BeforeContent {
@@ -104,6 +116,23 @@
                             </a>
                         </dd>
                     </div>
+                    @if (details.OrganisationType == OrganisationType.Supplier)
+                    {
+                        <div class="govuk-summary-list__row">
+                            <dt class="govuk-summary-list__key">
+                                @StaticTextResource.Supplier_OrganisationType
+                            </dt>
+                            <dd class="govuk-summary-list__value">
+                                @if (details.SupplierOrganisationOperationTypes.Count > 0)
+                                {
+                                    RenderOperationTypes(details.SupplierOrganisationOperationTypes);
+                                }
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link govuk-link--no-visited-state" href="@RegistrationStepModel.SupplierOrganisationTypePage?frm-summary">@Html.Raw(@StaticTextResource.OrganisationRegistration_Details_Change_Organisation_Type)</a>
+                            </dd>
+                        </div>
+                    }
                     @if (details.OrganisationType == OrganisationType.Buyer)
                     {
 

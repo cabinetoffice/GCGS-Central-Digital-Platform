@@ -257,6 +257,89 @@ public class OrganisationDetailsSummaryModelTest
         result.Should().BeOfType<PageResult>();
     }
 
+    [Fact]
+    public async Task OnPost_SupplierWithOperationTypes_UpdatesSupplierInformationAndRedirects()
+    {
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        model.RegistrationDetails.OrganisationType = Constants.OrganisationType.Supplier;
+        model.RegistrationDetails.SupplierOrganisationOperationTypes = [OperationType.SmallOrMediumSized, OperationType.NonGovernmental];
+
+        var result = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(
+            _organisationId,
+            It.Is<UpdateSupplierInformation>(u =>
+                u.Type == SupplierInformationUpdateType.OperationType &&
+                u.SupplierInformation.OperationTypes != null &&
+                u.SupplierInformation.OperationTypes.Count == 2)),
+            Times.Once);
+
+        sessionMock.Verify(s => s.Remove(Session.RegistrationDetailsKey), Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
+    }
+
+    [Fact]
+    public async Task OnPost_SupplierWithEmptyOperationTypes_DoesNotUpdateSupplierInformation()
+    {
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        model.RegistrationDetails.OrganisationType = Constants.OrganisationType.Supplier;
+        model.RegistrationDetails.SupplierOrganisationOperationTypes = [];
+
+        var result = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(
+            It.IsAny<Guid>(),
+            It.Is<UpdateSupplierInformation>(u => u.Type == SupplierInformationUpdateType.OperationType)),
+            Times.Never);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
+    }
+
+    [Fact]
+    public async Task OnPost_SupplierWithNoneOperationType_UpdatesSupplierInformationWithNone()
+    {
+        sessionMock.Setup(s => s.Get<UserDetails>(Session.UserDetailsKey))
+            .Returns(new UserDetails { UserUrn = "test", PersonId = Guid.NewGuid() });
+
+        organisationClientMock.Setup(o => o.CreateOrganisationAsync(It.IsAny<NewOrganisation>()))
+            .ReturnsAsync(GivenOrganisationClientModel());
+
+        var model = GivenOrganisationDetailModel();
+
+        model.RegistrationDetails.OrganisationType = Constants.OrganisationType.Supplier;
+        model.RegistrationDetails.SupplierOrganisationOperationTypes = [OperationType.None];
+
+        var result = await model.OnPost();
+
+        organisationClientMock.Verify(o => o.UpdateSupplierInformationAsync(
+            _organisationId,
+            It.Is<UpdateSupplierInformation>(u =>
+                u.Type == SupplierInformationUpdateType.OperationType &&
+                u.SupplierInformation.OperationTypes != null &&
+                u.SupplierInformation.OperationTypes.Count == 1 &&
+                u.SupplierInformation.OperationTypes.Contains(OperationType.None))),
+            Times.Once);
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("../Organisation/OrganisationSelection");
+    }
 
     private RegistrationDetails DummyRegistrationDetails()
     {

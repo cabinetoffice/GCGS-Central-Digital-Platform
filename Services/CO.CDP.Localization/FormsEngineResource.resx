@@ -1160,12 +1160,10 @@
   <data name="ModernSlavery_01_Description" xml:space="preserve">
     <value>
     &lt;p class="govuk-body"&gt;
-      Modern slavery refers to offences of slavery, servitude, forced labour and human trafficking. To address these crimes, the UK government has issued Procurement Policy Note (PPN) 009, which mandates that suppliers bidding for specific contracts demonstrate their commitment to addressing modern slavery.
+      Modern slavery refers to offences of slavery, servitude, forced labour and human trafficking. To address these crimes, the UK government has issued policy which mandates that suppliers bidding for specific contracts demonstrate their commitment to addressing modern slavery.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 009 has been applied. For more information read
-      &lt;a href="https://www.gov.uk/government/publications/ppn-009-tackling-modern-slavery-in-government-supply-chains/ppn-009-guidance-on-tackling-modern-slavery-in-government-supply-chains-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      PPN 009: Tackling Modern Slavery in Government Supply Chains (opens in a new tab)&lt;/a&gt;.
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
     &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on modern slavery and trafficking in relation to your organisation. This may include:&lt;/div&gt;
@@ -1602,22 +1600,20 @@
   <data name="Payments_01_Description" xml:space="preserve">
     <value>
     &lt;p class="govuk-body"&gt;
-      The Government has committed to tackling late payments as part of its Plan for Small Businesses. This module focuses on identifying the reliability of a supplier's payment systems, to ensure compliance with government payment policies and promote fair cash flow for businesses. For more information read
-      &lt;a href="https://www.gov.uk/government/publications/ppn-015-how-to-take-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts/ppn-015-taking-account-of-a-suppliers-approach-to-payment-in-the-procurement-of-major-contracts-html" class="govuk-link" rel="noreferrer noopener" target="_blank"&gt;
-      PPN 015: Taking account of a supplier's approach to payment in the procurement of major contracts (opens in a new tab)&lt;/a&gt;.
+      The Government has committed to tackling late payments as part of its Plan for Small Businesses. This module focuses on identifying the reliability of a supplier's payment systems, to ensure compliance with government payment policies and promote fair cash flow for businesses.
     &lt;/p&gt;
     &lt;p class="govuk-body"&gt;
-      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where PPN 015 has been applied.
+      You are only required to complete this module if requested by the contracting authority you are bidding for. Failure to complete this module may result in your tenders being deemed insufficient where current policy has been applied.
     &lt;/p&gt;
     &lt;h2 class="govuk-heading-m"&gt;The information you&#39;ll need&lt;/h2&gt;
-    &lt;div class="govuk-body"&gt;You&#39;ll need to provide information on your payments and invoices. This may include:&lt;/div&gt;
     &lt;div class="govuk-body"&gt;
-      &lt;ul class="govuk-list govuk-list--bullet"&gt;
-        &lt;li&gt;compliance with your payment terms&lt;/li&gt;
-        &lt;li&gt;payment and invoice details for the last two six month reporting periods&lt;/li&gt;
-        &lt;li&gt;an action plan for reducing late payments (where relevant)&lt;/li&gt;
-      &lt;/ul&gt;
+      You&#39;ll need to provide information on your payments and invoices. This may include:
     &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;compliance with your payment terms&lt;/li&gt;
+      &lt;li&gt;payment and invoice details for the last two six month reporting periods&lt;/li&gt;
+      &lt;li&gt;an action plan for reducing late payments (where relevant)&lt;/li&gt;
+    &lt;/ul&gt;
     </value>
   </data>
   <data name="Payments_02_Title" xml:space="preserve">
