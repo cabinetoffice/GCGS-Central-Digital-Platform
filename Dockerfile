@@ -255,6 +255,7 @@ RUN dotnet publish "CO.CDP.UserManagement.Api.csproj" -c $BUILD_CONFIGURATION -o
 FROM build-user-management-app AS publish-user-management-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.UserManagement.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN echo "=== Files in /app/publish ===" && ls -la /app/publish/ | head -30 && echo "=== appsettings files ===" && ls -la /app/publish/appsettings*.json 2>&1 || echo "No appsettings found"
 
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
