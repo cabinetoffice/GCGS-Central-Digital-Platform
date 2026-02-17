@@ -10,6 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-dejavu-core \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    case "$arch" in \
+        x86_64) libarch="x86_64-linux-gnu" ;; \
+        aarch64|arm64) libarch="aarch64-linux-gnu" ;; \
+        *) echo "Unsupported architecture: $arch"; exit 1 ;; \
+    esac; \
+    libdir="/lib/${libarch}"; \
+    if [ ! -e "${libdir}/libbsd.so.0" ]; then libdir="/usr/lib/${libarch}"; fi; \
+    mkdir -p "/opt/extra-libs/usr/lib/${libarch}"; \
+    cp "${libdir}/libbsd.so.0" "${libdir}/libmd.so.0" "/opt/extra-libs/usr/lib/${libarch}/"
 
 # Distroless "chiseled" image from MS with absolutely minimal packages, no shell, no package manager
 # Packages we require can be copied from the packages image above
@@ -17,8 +28,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS b
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 COPY --from=packages /usr/bin/nc /usr/bin/nc
-COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
-COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
+COPY --from=packages /opt/extra-libs/usr/lib/ /usr/lib/
 COPY --from=packages /usr/bin/fc-cache /usr/bin/fc-cache
 COPY --from=packages /usr/share/fonts/truetype/dejavu /usr/share/fonts/truetype/dejavu
 USER $APP_UID
