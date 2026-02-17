@@ -205,6 +205,7 @@ locals {
     cfs                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
+    commercial_tools_migrations          = { cpu = 256, memory = 512 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
@@ -257,6 +258,7 @@ locals {
     cfs                                  = { port = 8060, port_host = 8060, cluster = "sirsi-php", type = "web-service",  name = "cfs"}
     cfs_migrations                       = { port = 8062, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "cfs-migrations"}
     cfs_scheduler                        = { port = 8064, port_host = null, cluster = "sirsi-php", type = "service",      name = "cfs-scheduler"}
+    commercial_tools_migrations          = { port = 9192, port_host = null, cluster = "sirsi",     type = "db-migration", name = "commercial-tools-migrations"}
     data_sharing                         = { port = 8088, port_host = 8088, cluster = "sirsi",     type = "web-service",  name = "data-sharing"}
     entity_verification                  = { port = 8094, port_host = 8094, cluster = "sirsi",     type = "web-service",  name = "entity-verification"}
     entity_verification_migrations       = { port = 9191, port_host = null, cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations"}
