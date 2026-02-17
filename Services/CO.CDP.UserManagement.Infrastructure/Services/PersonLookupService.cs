@@ -99,17 +99,17 @@ public class PersonLookupService : IPersonLookupService
 
         try
         {
-            _logger.LogInformation("Looking up person details for email: {Email}", email);
+            _logger.LogInformation("Looking up person details by email");
 
             var person = await _personClient.LookupPersonAsync(null, email, cancellationToken);
 
             if (person == null)
             {
-                _logger.LogWarning("Person not found for email: {Email}", email);
+                _logger.LogWarning("Person not found for provided email");
                 return null;
             }
 
-            _logger.LogInformation("Successfully retrieved person details for email: {Email}", email);
+            _logger.LogInformation("Successfully retrieved person details by email");
 
             return new PersonDetails
             {
@@ -121,29 +121,19 @@ public class PersonLookupService : IPersonLookupService
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            _logger.LogWarning(
-                ex,
-                "Person not found (404) for email: {Email}",
-                email);
+            _logger.LogWarning(ex, "Person not found (404) for provided email");
             return null;
         }
         catch (ApiException ex)
         {
-            _logger.LogError(
-                ex,
-                "API error occurred while looking up person for email: {Email}. Status: {StatusCode}",
-                email,
-                ex.StatusCode);
+            _logger.LogError(ex, "API error occurred while looking up person by email. Status: {StatusCode}", ex.StatusCode);
             throw new PersonLookupException(
                 $"Failed to lookup person details for email: {email}. Status: {ex.StatusCode}",
                 ex);
         }
         catch (Exception ex)
         {
-            _logger.LogError(
-                ex,
-                "Unexpected error occurred while looking up person for email: {Email}",
-                email);
+            _logger.LogError(ex, "Unexpected error occurred while looking up person by email");
             throw new PersonLookupException(
                 $"Failed to lookup person details for email: {email}",
                 ex);
