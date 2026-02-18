@@ -11,13 +11,11 @@ variable "ecs_cluster_name" {
 variable "ecs_fts_alb_arn_suffix" {
   description = "FTS ALB ARN suffix for target metrics"
   type        = string
-  default     = ""
 }
 
 variable "ecs_fts_services_target_group_arn_suffix_map" {
   description = "FTS target groups ARN suffix mapped to the service names to address service metrics"
   type        = map(string)
-  default     = {}
 }
 
 variable "ecs_services_target_group_arn_suffix_map" {

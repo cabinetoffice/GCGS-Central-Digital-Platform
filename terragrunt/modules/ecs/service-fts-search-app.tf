@@ -8,11 +8,11 @@ module "ecs_service_fts_app" {
       {
         container_port = var.service_configs.fts_app.port
         cpu            = var.service_configs.fts_app.cpu
-        host_port       = var.service_configs.fts_app.port
-        image           = local.ecr_urls[var.service_configs.fts_app.name]
-        lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
-        memory          = var.service_configs.fts_app.memory
-        name            = var.service_configs.fts_app.name
+        host_port      = var.service_configs.fts_app.port
+        image          = local.ecr_urls[var.service_configs.fts_app.name]
+        lg_name        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
+        memory         = var.service_configs.fts_app.memory
+        name           = var.service_configs.fts_app.name
       }
     )
   )

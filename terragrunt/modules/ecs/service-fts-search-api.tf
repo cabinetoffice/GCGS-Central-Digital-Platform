@@ -8,11 +8,11 @@ module "ecs_service_fts_search_api" {
       {
         container_port = var.service_configs.fts_search_api.port
         cpu            = var.service_configs.fts_search_api.cpu
-        host_port       = var.service_configs.fts_search_api.port
-        image           = local.ecr_urls[var.service_configs.fts_search_api.name]
-        lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
-        memory          = var.service_configs.fts_search_api.memory
-        name            = var.service_configs.fts_search_api.name
+        host_port      = var.service_configs.fts_search_api.port
+        image          = local.ecr_urls[var.service_configs.fts_search_api.name]
+        lg_name        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
+        memory         = var.service_configs.fts_search_api.memory
+        name           = var.service_configs.fts_search_api.name
       }
     )
   )
