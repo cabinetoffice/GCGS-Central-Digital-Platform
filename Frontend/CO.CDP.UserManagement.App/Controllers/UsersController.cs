@@ -7,11 +7,10 @@ using CO.CDP.UserManagement.Shared.Enums;
 namespace CO.CDP.UserManagement.App.Controllers;
 
 [Authorize]
-[Route("organisation/{organisationSlug}/users")]
-public class UsersController(IUserService userService) : Controller
+[Route("organisation/{organisationSlug}")]
+public class UsersController(IUserService userService, IInviteUserStateStore inviteUserStateStore) : Controller
 {
-    [HttpGet]
-    [Route("")]
+    [HttpGet("")]
     public async Task<IActionResult> Index(
         string? organisationSlug,
         string? role,
@@ -33,14 +32,15 @@ public class UsersController(IUserService userService) : Controller
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
-    [HttpGet("add")]
+    [HttpGet("add-user")]
     public async Task<IActionResult> Add(string organisationSlug, CancellationToken ct)
     {
+        await inviteUserStateStore.ClearAsync();
         var viewModel = await userService.GetInviteUserViewModelAsync(organisationSlug, ct: ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
-    [HttpPost("add")]
+    [HttpPost("add-user")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Add(string organisationSlug, InviteUserViewModel input, CancellationToken ct)
     {
@@ -50,8 +50,26 @@ public class UsersController(IUserService userService) : Controller
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
-        var success = await userService.InviteUserAsync(organisationSlug, input, ct);
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        var state = new InviteUserState(
+            organisationSlug,
+            input.Email ?? string.Empty,
+            input.FirstName ?? string.Empty,
+            input.LastName ?? string.Empty);
+        await inviteUserStateStore.SetAsync(state);
+
+        return RedirectToAction(nameof(OrganisationRoleStep), new { organisationSlug });
+    }
+
+    [HttpGet("add-user/organisation-role")]
+    public async Task<IActionResult> OrganisationRoleStep(string organisationSlug)
+    {
+        var state = await inviteUserStateStore.GetAsync();
+        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToAction(nameof(Add), new { organisationSlug });
+        }
+
+        return View("OrganisationRole");
     }
 
     [HttpGet("invites/{pendingInviteId:int}/resend-invite")]
@@ -61,14 +79,14 @@ public class UsersController(IUserService userService) : Controller
         return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("{cdpPersonId:guid}/change-role")]
+    [HttpGet("user/{cdpPersonId:guid}/change-role")]
     public async Task<IActionResult> ChangeRole(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
         var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
-    [HttpPost("{cdpPersonId:guid}/change-role")]
+    [HttpPost("user/{cdpPersonId:guid}/change-role")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeRole(
         string organisationSlug,
@@ -132,4 +150,5 @@ public class UsersController(IUserService userService) : Controller
             ct);
         return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
     }
+
 }

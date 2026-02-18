@@ -30,6 +30,7 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
+builder.Services.AddHttpContextAccessor();
 
 // AWS configuration
 builder.Services.AddAwsConfiguration(builder.Configuration);
@@ -131,6 +132,7 @@ builder.Services.AddAuthentication(options =>
 // Application services
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 
 var app = builder.Build();
 
@@ -158,10 +160,6 @@ app.UseGovUkFrontend();
 app.MapControllerRoute(
     name: "organisation_by_guid",
     pattern: "organisation/by-id/{cdpOrganisationId:guid}/{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "organisation",
-    pattern: "organisation/{organisationSlug}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

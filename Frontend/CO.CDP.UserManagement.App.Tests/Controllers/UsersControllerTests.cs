@@ -11,12 +11,17 @@ namespace CO.CDP.UserManagement.App.Tests.Controllers;
 public class UsersControllerTests
 {
     private readonly Mock<IUserService> _userService;
+    private readonly Mock<IInviteUserStateStore> _inviteUserStateStore;
     private readonly UsersController _controller;
 
     public UsersControllerTests()
     {
         _userService = new Mock<IUserService>();
-        _controller = new UsersController(_userService.Object);
+        _inviteUserStateStore = new Mock<IInviteUserStateStore>();
+        _inviteUserStateStore.Setup(store => store.ClearAsync()).Returns(Task.CompletedTask);
+        _inviteUserStateStore.Setup(store => store.SetAsync(It.IsAny<InviteUserState>())).Returns(Task.CompletedTask);
+        _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync((InviteUserState?)null);
+        _controller = new UsersController(_userService.Object, _inviteUserStateStore.Object);
     }
 
     [Fact]
@@ -101,28 +106,24 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task Add_Post_WhenInviteSucceeds_RedirectsToIndex()
+    public async Task Add_Post_WhenValid_RedirectsToOrganisationRole()
     {
-        var input = InviteUserViewModel.Empty with { OrganisationRole = OrganisationRole.Member };
-        _userService.Setup(service => service.InviteUserAsync("org", input, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
-
+        var input = InviteUserViewModel.Empty with { Email = "user@example.com", FirstName = "First", LastName = "Last" };
         var result = await _controller.Add("org", input, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ActionName.Should().Be(nameof(UsersController.OrganisationRoleStep));
     }
 
     [Fact]
-    public async Task Add_Post_WhenInviteFails_ReturnsNotFound()
+    public async Task OrganisationRole_WhenStateMissing_RedirectsToAdd()
     {
-        var input = InviteUserViewModel.Empty with { OrganisationRole = OrganisationRole.Member };
-        _userService.Setup(service => service.InviteUserAsync("org", input, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+        _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync((InviteUserState?)null);
 
-        var result = await _controller.Add("org", input, CancellationToken.None);
+        var result = await _controller.OrganisationRoleStep("org");
 
-        result.Should().BeOfType<NotFoundResult>();
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.Add));
     }
 
     [Fact]
