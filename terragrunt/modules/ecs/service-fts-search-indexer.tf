@@ -3,23 +3,16 @@ module "ecs_service_fts_search_indexer" {
 
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.fts_search_indexer.name}.json.tftpl",
-    {
-      aspcore_environment = local.aspcore_environment
-      cpu                 = var.service_configs.fts_search_indexer.cpu
-      db_address          = var.db_fts_cluster_address
-      db_name             = var.db_fts_cluster_name
-      db_password         = local.db_fts_password
-      db_port             = 3306
-      db_username         = local.db_fts_username
-      image               = local.ecr_urls[var.service_configs.fts_search_indexer.name]
-      lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_indexer.name].name
-      lg_prefix           = "app"
-      lg_region           = data.aws_region.current.region
-      memory              = var.service_configs.fts_search_indexer.memory
-      name                = var.service_configs.fts_search_indexer.name
-      opensearch_endpoint = "https://${var.opensearch_endpoint}"
-      service_version     = local.service_version_fts
-    }
+    merge(
+      local.fts_dotnet_search_indexer,
+      {
+        cpu    = var.service_configs.fts_search_indexer.cpu
+        image  = local.ecr_urls[var.service_configs.fts_search_indexer.name]
+        lg_name = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_indexer.name].name
+        memory = var.service_configs.fts_search_indexer.memory
+        name   = var.service_configs.fts_search_indexer.name
+      }
+    )
   )
 
   cluster_id                         = local.fts_cluster_id
