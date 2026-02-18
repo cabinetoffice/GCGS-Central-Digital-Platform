@@ -10,6 +10,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-dejavu-core \
     && fc-cache -fv \
     && rm -rf /var/lib/apt/lists/*
+RUN set -eux; \
+    arch="$(uname -m)"; \
+    case "$arch" in \
+        x86_64) libarch="x86_64-linux-gnu" ;; \
+        aarch64|arm64) libarch="aarch64-linux-gnu" ;; \
+        *) echo "Unsupported architecture: $arch"; exit 1 ;; \
+    esac; \
+    libdir="/lib/${libarch}"; \
+    if [ ! -e "${libdir}/libbsd.so.0" ]; then libdir="/usr/lib/${libarch}"; fi; \
+    mkdir -p "/opt/extra-libs/usr/lib/${libarch}"; \
+    cp "${libdir}/libbsd.so.0" "${libdir}/libmd.so.0" "/opt/extra-libs/usr/lib/${libarch}/"
 
 # Distroless "chiseled" image from MS with absolutely minimal packages, no shell, no package manager
 # Packages we require can be copied from the packages image above
@@ -17,8 +28,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:${ASPNET_VERSION}-noble-chiseled-extra AS b
 ARG NUGET_PACKAGES
 ENV NUGET_PACKAGES="${NUGET_PACKAGES}"
 COPY --from=packages /usr/bin/nc /usr/bin/nc
-COPY --from=packages /lib/x86_64-linux-gnu/libbsd.so.0 /lib/x86_64-linux-gnu/libbsd.so.0
-COPY --from=packages /lib/x86_64-linux-gnu/libmd.so.0 /lib/x86_64-linux-gnu/libmd.so.0
+COPY --from=packages /opt/extra-libs/usr/lib/ /usr/lib/
 COPY --from=packages /usr/bin/fc-cache /usr/bin/fc-cache
 COPY --from=packages /usr/share/fonts/truetype/dejavu /usr/share/fonts/truetype/dejavu
 USER $APP_UID
@@ -111,7 +121,8 @@ COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.
 COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
 COPY --link Services/CO.CDP.UserManagement.Infrastructure/CO.CDP.UserManagement.Infrastructure.csproj Services/CO.CDP.UserManagement.Infrastructure/
 COPY --link Services/CO.CDP.UserManagement.Api/CO.CDP.UserManagement.Api.csproj Services/CO.CDP.UserManagement.Api/
-COPY --link Services/CO.CDP.UserManagement.UnitTests/CO.CDP.UserManagement.UnitTests.csproj Services/CO.CDP.UserManagement.UnitTests/
+COPY --link Frontend/CO.CDP.UserManagement.App.Tests/CO.CDP.UserManagement.App.Tests.csproj Frontend/CO.CDP.UserManagement.App.Tests/
+COPY --link Services/CO.CDP.UserManagement.Api.Tests/CO.CDP.UserManagement.Api.Tests.csproj Services/CO.CDP.UserManagement.Api.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
@@ -192,6 +203,16 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.RegisterOfCommercialTools.WebApi
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-user-management-api
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Services/CO.CDP.UserManagement.Api
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build AS build-user-management-app
+ARG BUILD_CONFIGURATION
+WORKDIR /src/Frontend/CO.CDP.UserManagement.App
+RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
+
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -231,6 +252,14 @@ RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.App.csproj" -c $BUILD_CONFI
 FROM build-commercial-tools-api AS publish-commercial-tools-api
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-user-management-api AS publish-user-management-api
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.UserManagement.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+FROM build-user-management-app AS publish-user-management-app
+ARG BUILD_CONFIGURATION
+RUN dotnet publish "CO.CDP.UserManagement.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
@@ -360,6 +389,20 @@ WORKDIR /app
 COPY --from=publish-commercial-tools-api /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.WebApi.dll"]
 
+FROM base AS final-user-management-api
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-api /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.Api.dll"]
+
+FROM base AS final-user-management-app
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-app /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.App.dll"]
+
 FROM base AS final-antivirus-app
 ARG VERSION
 ENV VERSION=${VERSION}
@@ -376,11 +419,29 @@ WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
 
+FROM base AS final-outbox-processor-person-user-management
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=OrganisationInformationContext
+ENV Channel=person_information_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
 FROM base AS final-outbox-processor-entity-verification
 ARG VERSION
 ENV VERSION=${VERSION}
 ENV DbContext=EntityVerificationContext
 ENV Channel=entity_verification_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
+FROM base AS final-outbox-processor-organisation-user-management
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=OrganisationInformationContext
+ENV Channel=organisation_information_outbox
 WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]

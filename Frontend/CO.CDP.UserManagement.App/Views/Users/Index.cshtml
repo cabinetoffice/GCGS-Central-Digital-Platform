@@ -104,23 +104,34 @@ else
         <div class="govuk-summary-card govuk-!-margin-bottom-6">
             <div class="govuk-summary-card__title-wrapper">
                 <h2 class="govuk-summary-card__title">
-                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link">@user.Name</a>
+                    @{
+                        var isPending = user.Status == UserStatus.Pending;
+                    }
+                    @if (isPending)
+                    {
+                        @user.Name
+                    }
+                    else
+                    {
+                        <a href="/organisation/@organisation/users/@user.Id" class="govuk-link">@user.Name</a>
+                    }
                 </h2>
                 <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
                         <span class="govuk-body-s">@user.Email</span>
                     </li>
                     <li class="govuk-summary-card__action">
-                        @{
-                            var isPending = user.Status == UserStatus.Pending;
+                        @if (user.OrganisationRole.HasValue)
+                        {
                             var roleTagClass = user.OrganisationRole switch
                             {
                                 OrganisationRole.Owner => "govuk-tag--blue",
                                 OrganisationRole.Admin => "govuk-tag--green",
+                                OrganisationRole.Member => "govuk-tag--orange",
                                 _ => ""
                             };
+                            <strong class="govuk-tag @roleTagClass">@user.OrganisationRole</strong>
                         }
-                        <strong class="govuk-tag @roleTagClass">@user.OrganisationRole</strong>
                         @if (isPending)
                         {
                             <strong class="govuk-tag govuk-tag--yellow govuk-!-margin-left-1">@user.Status</strong>
@@ -147,16 +158,17 @@ else
                 }
 
                 <p class="govuk-body govuk-!-margin-top-4">
-                    <a href="/organisation/@organisation/users/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
-                    @if (isPending)
+                    @if (!isPending)
                     {
-                        <a href="/organisation/@organisation/users/@user.Id/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
-                    }
-                    else
-                    {
+                        <a href="/organisation/@organisation/users/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
                         <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
+                        <a href="/organisation/@organisation/users/@user.Id/change-role" class="govuk-link">Change org role</a>
                     }
-                    <a href="/organisation/@organisation/users/@user.Id/change-role" class="govuk-link">Change org role</a>
+                    else if (user.PendingInviteId.HasValue)
+                    {
+                        <a href="/organisation/@organisation/users/invites/@user.PendingInviteId/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisation/users/invites/@user.PendingInviteId/change-role" class="govuk-link">Change org role</a>
+                    }
                 </p>
             </div>
         </div>

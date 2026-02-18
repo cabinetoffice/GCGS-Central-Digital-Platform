@@ -23,9 +23,10 @@ public sealed record UsersViewModel(
 
 public sealed record UserSummaryViewModel(
     Guid? Id,
+    int? PendingInviteId,
     string Name,
     string Email,
-    OrganisationRole OrganisationRole,
+    OrganisationRole? OrganisationRole,
     UserStatus Status,
     IReadOnlyList<UserApplicationAccessViewModel> ApplicationAccess);
 
