@@ -67,30 +67,22 @@ public class HomeControllerTests
     }
 
     [Fact]
-    public async Task Index_WhenViewModelFound_ReturnsView()
+    public async Task Index_WhenSlugProvided_RedirectsToUsers()
     {
-        var viewModel = new HomeViewModel(
-            OrganisationName: "Org",
-            Stats: new DashboardStats(1, 2, 0, 3),
-            EnabledApplications: []);
-        _applicationService.Setup(service => service.GetHomeViewModelAsync("org", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(viewModel);
-
         var result = await _controller.Index("org", null, CancellationToken.None);
 
-        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.Model.Should().Be(viewModel);
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ControllerName.Should().Be("Users");
     }
 
     [Fact]
-    public async Task Index_WhenViewModelMissing_ReturnsNotFound()
+    public async Task Index_WhenSlugProvided_DoesNotCallHomeService()
     {
-        _applicationService.Setup(service => service.GetHomeViewModelAsync("org", It.IsAny<CancellationToken>()))
-            .ReturnsAsync((HomeViewModel?)null);
-
         var result = await _controller.Index("org", null, CancellationToken.None);
 
-        result.Should().BeOfType<NotFoundResult>();
+        _applicationService.Verify(service => service.GetHomeViewModelAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        result.Should().BeOfType<RedirectToActionResult>();
     }
 
     [Fact]

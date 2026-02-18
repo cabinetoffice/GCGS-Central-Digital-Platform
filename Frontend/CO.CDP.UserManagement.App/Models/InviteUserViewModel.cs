@@ -25,7 +25,6 @@ public sealed record InviteUserViewModel
     [EmailAddress]
     public string? Email { get; init; }
 
-    [Required]
     public OrganisationRole? OrganisationRole { get; init; }
 
     public static InviteUserViewModel Empty => new();

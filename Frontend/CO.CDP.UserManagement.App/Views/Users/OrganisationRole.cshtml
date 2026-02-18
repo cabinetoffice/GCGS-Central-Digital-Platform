@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Choose an organisation role";
+    var organisation = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@organisation/add-user" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Choose an organisation role</h1>
+        <p class="govuk-body">Role selection content will be added in a later step.</p>
+
+        <div class="govuk-button-group">
+            <a class="govuk-link" href="/organisation/@organisation">Cancel</a>
+        </div>
+    </div>
+</div>
