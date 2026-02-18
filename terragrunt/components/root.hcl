@@ -227,6 +227,9 @@ locals {
     person                               = {}
     scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
+    user_management_api                  = {}
+    user_management_app                  = {}
+    user_management_migrations           = { cpu = 256, memory = 512 }
   }
 
   desired_counts = {
@@ -282,6 +285,9 @@ locals {
     person                               = { port = 8084, port_host = 8084, cluster = "sirsi",     type = "web-service",  name = "person" }
     scheduled_worker                     = { port = 9094, port_host = 9094, cluster = "sirsi",     type = "service",      name = "scheduled-worker"}
     tenant                               = { port = 8080, port_host = 8080, cluster = "sirsi",     type = "web-service",  name = "tenant" }
+    user_management_api                  = { port = 8186, port_host = 8186, cluster = "sirsi",     type = "web-service",  name = "user-management-api"}
+    user_management_app                  = { port = 8096, port_host = 8096, cluster = "sirsi",     type = "web-service",  name = "user-management-app"}
+    user_management_migrations           = { port = 9186, port_host = null, cluster = "sirsi",     type = "db-migration", name = "user-management-migrations"}
   }
 
   service_configs = {

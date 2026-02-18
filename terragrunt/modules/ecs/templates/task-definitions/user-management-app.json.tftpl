@@ -1,0 +1,39 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
+        { "name" : "UserManagementApi", "value" : "https://user-management-api.${public_domain}"}
+    ],
+    "secrets": [
+        { "name" : "Authentication__Authority", "valueFrom" : "${authentication_authority}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
