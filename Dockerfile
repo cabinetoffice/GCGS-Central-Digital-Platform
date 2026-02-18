@@ -111,7 +111,6 @@ COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.
 COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
 COPY --link Services/CO.CDP.UserManagement.Infrastructure/CO.CDP.UserManagement.Infrastructure.csproj Services/CO.CDP.UserManagement.Infrastructure/
 COPY --link Services/CO.CDP.UserManagement.Api/CO.CDP.UserManagement.Api.csproj Services/CO.CDP.UserManagement.Api/
-COPY --link Services/CO.CDP.UserManagement.UnitTests/CO.CDP.UserManagement.UnitTests.csproj Services/CO.CDP.UserManagement.UnitTests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
