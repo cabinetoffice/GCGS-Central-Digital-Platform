@@ -150,12 +150,13 @@ public class OrganisationEndpointsTests
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Admin)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(OK, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(OK, Channel.ServiceKey, null, null, ApiKeyScopes.ReadOrganisationData)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
 
@@ -164,7 +165,7 @@ public class OrganisationEndpointsTests
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, organisationPersonScope,
-            services => services.AddScoped(_ => _getOrganisationUseCase.Object), personScope);
+            services => services.AddScoped(_ => _getOrganisationUseCase.Object), personScope, apiKeyScope);
 
         var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}");
 

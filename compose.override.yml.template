@@ -11,8 +11,6 @@ services:
       - '${CDP_ENTITY_VERIFICATION_PORT:-8094}:8094'
       - '${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}:8192'
       - '${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}:8184'
-      - '${CDP_USER_MANAGEMENT_API_PORT:-8186}:8186'
-      - '${CDP_USER_MANAGEMENT_APP_PORT:-8096}:8096'
     environment:
 #      CDP_ORGANISATION_APP_HOST: 'http://host.docker.internal:58090'
 #      CDP_AUTHORITY_HOST: 'http://host.docker.internal:5050'
@@ -24,8 +22,6 @@ services:
 #      CDP_ENTITY_VERIFICATION_HOST: 'http://host.docker.internal:58094'
 #      CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://host.docker.internal:58192'
 #      CDP_COMMERCIAL_TOOLS_API_HOST: 'http://host.docker.internal:58184'
-#      CDP_USER_MANAGEMENT_API_HOST: 'http://host.docker.internal:58186'
-#      CDP_USER_MANAGEMENT_APP_HOST: 'http://host.docker.internal:58096'
     deploy:
       replicas: 1
   db:
@@ -112,6 +108,16 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
+  outbox-processor-person-user-management:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
+  outbox-processor-organisation-user-management:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    deploy:
+      replicas: 1
   outbox-processor-entity-verification:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
@@ -129,16 +135,6 @@ services:
     deploy:
       replicas: 1
   commercial-tools-api:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  user-management-api:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
-  user-management-app:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:

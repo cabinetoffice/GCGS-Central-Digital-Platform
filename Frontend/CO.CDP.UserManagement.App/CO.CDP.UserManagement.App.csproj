@@ -37,12 +37,4 @@
         <Content Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <!-- Exclude API's appsettings from publish to prevent conflicts -->
-        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json" />
-        <Content Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.*.json" />
-        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.json" />
-        <None Remove="..\..\Services\CO.CDP.UserManagement.Api\appsettings.*.json" />
-    </ItemGroup>
-
 </Project>

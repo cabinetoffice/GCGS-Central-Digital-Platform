@@ -1,5 +1,5 @@
 using CO.CDP.UserManagement.Shared.Responses;
-using OrganisationEntity = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Api.Models;
 
@@ -8,7 +8,7 @@ namespace CO.CDP.UserManagement.Api.Models;
 /// </summary>
 public static class OrganisationMappingExtensions
 {
-    public static OrganisationResponse ToResponse(this OrganisationEntity organisation)
+    public static OrganisationResponse ToResponse(this CoreEntities.Organisation organisation)
     {
         return new OrganisationResponse
         {
@@ -21,7 +21,7 @@ public static class OrganisationMappingExtensions
         };
     }
 
-    public static OrganisationSummaryResponse ToSummaryResponse(this OrganisationEntity organisation)
+    public static OrganisationSummaryResponse ToSummaryResponse(this CoreEntities.Organisation organisation)
     {
         return new OrganisationSummaryResponse
         {

@@ -134,6 +134,21 @@ server {
 }
 
 server {
+    listen 8066;
+
+    location / {
+        proxy_pass ${CDP_USER_MANAGEMENT_API_HOST};
+        proxy_set_header X-Forwarded-Host   $host;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Port   $server_port;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header Host               $host:$server_port;
+    }
+}
+
+server {
     listen 8192;
 
     location / {
@@ -149,22 +164,7 @@ server {
 }
 
 server {
-    listen 8186;
-
-    location / {
-        proxy_pass ${CDP_USER_MANAGEMENT_API_HOST};
-        proxy_set_header X-Forwarded-Host   $host;
-        proxy_set_header X-Forwarded-Server $host;
-        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Port   $server_port;
-        proxy_set_header X-Forwarded-Proto  $scheme;
-        proxy_set_header X-Real-IP          $remote_addr;
-        proxy_set_header Host               $host:$server_port;
-    }
-}
-
-server {
-    listen 8096;
+    listen 8068;
 
     location / {
         proxy_pass ${CDP_USER_MANAGEMENT_APP_HOST};
