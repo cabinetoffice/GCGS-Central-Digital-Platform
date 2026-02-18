@@ -5,6 +5,8 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.UserManagement.Api.FeatureFlags;
+using CO.CDP.UserManagement.Shared.FeatureFlags;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +21,7 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/invites")]
 [Authorize(Policy = PolicyNames.OrganisationAdmin)]
+[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled)]
 public class OrganisationInvitesController : ControllerBase
 {
     private readonly IUmOrganisationRepository _organisationRepository;
