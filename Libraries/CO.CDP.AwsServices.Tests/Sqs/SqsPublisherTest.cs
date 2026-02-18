@@ -41,6 +41,41 @@ public class SqsPublisherTest : PublisherContractTest, IClassFixture<LocalStackF
         message.Should().Be(new TestMessage(13, "Hello!"));
     }
 
+    [Fact]
+    public async Task ItPublishesOutboxMessageToConfiguredQueueNotEmbeddedQueue()
+    {
+        var publisher = await CreatePublisher();
+        var alternateQueue = await _sqsClient.CreateQueueAsync(new CreateQueueRequest
+        {
+            QueueName = $"{Guid.NewGuid()}.fifo",
+            Attributes = new Dictionary<string, string>
+            {
+                { "FifoQueue", "true" },
+                { "ContentBasedDeduplication", "true" }
+            }
+        });
+
+        await publisher.Publish(new OutboxMessage
+        {
+            Type = "TestMessage",
+            Message = "{\"Id\":42,\"Name\":\"Configured queue\"}",
+            QueueUrl = alternateQueue.QueueUrl ?? "",
+            MessageGroupId = "embedded-group-id"
+        });
+
+        var message = await waitForOneMessage<TestMessage>();
+        message.Should().Be(new TestMessage(42, "Configured queue"));
+
+        var alternateQueueMessages = await _sqsClient.ReceiveMessageAsync(new ReceiveMessageRequest
+        {
+            QueueUrl = alternateQueue.QueueUrl,
+            MaxNumberOfMessages = 1,
+            MessageAttributeNames = ["Type"]
+        });
+
+        alternateQueueMessages.Messages.Should().BeEmpty();
+    }
+
     protected override async Task<T> waitForOneMessage<T>() where T : class
     {
         var queue = await _sqsClient.GetQueueUrlAsync(TestQueue);
