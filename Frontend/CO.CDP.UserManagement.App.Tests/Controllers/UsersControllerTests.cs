@@ -127,6 +127,43 @@ public class UsersControllerTests
     }
 
     [Fact]
+    public async Task OrganisationRole_WhenStateAvailable_ReturnsViewWithStateModel()
+    {
+        var state = new InviteUserState("org", "user@example.com", "First", "Last");
+        _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.OrganisationRoleStep("org");
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("OrganisationRole");
+        viewResult.Model.Should().Be(state);
+    }
+
+    [Fact]
+    public async Task ApplicationRoles_WhenStateMissing_RedirectsToAdd()
+    {
+        _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync((InviteUserState?)null);
+
+        var result = await _controller.ApplicationRolesStep("org");
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.Add));
+    }
+
+    [Fact]
+    public async Task ApplicationRoles_WhenStateAvailable_ReturnsViewWithStateModel()
+    {
+        var state = new InviteUserState("org", "user@example.com", "First", "Last");
+        _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.ApplicationRolesStep("org");
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("ApplicationRoles");
+        viewResult.Model.Should().Be(state);
+    }
+
+    [Fact]
     public async Task ResendInvite_WhenSuccess_RedirectsToIndex()
     {
         _userService.Setup(service => service.ResendInviteAsync("org", 1, It.IsAny<CancellationToken>()))

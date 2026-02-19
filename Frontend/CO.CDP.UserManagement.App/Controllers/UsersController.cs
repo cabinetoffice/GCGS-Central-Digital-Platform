@@ -69,7 +69,19 @@ public class UsersController(IUserService userService, IInviteUserStateStore inv
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        return View("OrganisationRole");
+        return View("OrganisationRole", state);
+    }
+
+    [HttpGet("add-user/application-roles")]
+    public async Task<IActionResult> ApplicationRolesStep(string organisationSlug)
+    {
+        var state = await inviteUserStateStore.GetAsync();
+        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToAction(nameof(Add), new { organisationSlug });
+        }
+
+        return View("ApplicationRoles", state);
     }
 
     [HttpGet("invites/{pendingInviteId:int}/resend-invite")]
