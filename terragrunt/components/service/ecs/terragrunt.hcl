@@ -189,6 +189,7 @@ inputs = {
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
   waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
   waf_acl_php_arn             = dependency.core_networking.outputs.waf_acl_php_arn
+  waf_acl_fts_arn             = dependency.core_networking.outputs.waf_acl_fts_arn
 
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
   db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
