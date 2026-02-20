@@ -53,8 +53,6 @@ COPY --link Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj L
 COPY --link Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
 COPY --link Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
 COPY --link Frontend/CO.CDP.UserManagement.App/CO.CDP.UserManagement.App.csproj Frontend/CO.CDP.UserManagement.App/
-COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App/CO.CDP.RegisterOfCommercialTools.App.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App/
-COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/CO.CDP.RegisterOfCommercialTools.App.Tests.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient.Tests/CO.CDP.Tenant.WebApiClient.Tests.csproj Libraries/CO.CDP.Tenant.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.Organisation.WebApiClient/CO.CDP.Organisation.WebApiClient.csproj Libraries/CO.CDP.Organisation.WebApiClient/
@@ -66,8 +64,6 @@ COPY --link Libraries/CO.CDP.Forms.WebApiClient.Tests/CO.CDP.Forms.WebApiClient.
 COPY --link Libraries/CO.CDP.DataSharing.WebApiClient/CO.CDP.DataSharing.WebApiClient.csproj Libraries/CO.CDP.DataSharing.WebApiClient/
 COPY --link Libraries/CO.CDP.DataSharing.WebApiClient.Tests/CO.CDP.DataSharing.WebApiClient.Tests.csproj Libraries/CO.CDP.DataSharing.WebApiClient.Tests/
 COPY --link Libraries/CO.CDP.EntityVerificationClient/CO.CDP.EntityVerificationClient.csproj Libraries/CO.CDP.EntityVerificationClient/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/CO.CDP.RegisterOfCommercialTools.WebApiClient.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient/
-COPY --link Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests.csproj Libraries/CO.CDP.RegisterOfCommercialTools.WebApiClient.Tests/
 COPY --link TestKit/CO.CDP.TestKit.Mvc/CO.CDP.TestKit.Mvc.csproj TestKit/CO.CDP.TestKit.Mvc/
 COPY --link TestKit/CO.CDP.TestKit.Mvc.Tests/CO.CDP.TestKit.Mvc.Tests.csproj TestKit/CO.CDP.TestKit.Mvc.Tests/
 COPY --link TestKit/CO.CDP.Testcontainers.PostgreSql/CO.CDP.Testcontainers.PostgreSql.csproj TestKit/CO.CDP.Testcontainers.PostgreSql/
@@ -102,10 +98,6 @@ COPY --link Libraries/CO.CDP.UI.Foundation/CO.CDP.UI.Foundation.csproj Libraries
 COPY --link Libraries/CO.CDP.UI.Foundation.Tests/CO.CDP.UI.Foundation.Tests.csproj Libraries/CO.CDP.UI.Foundation.Tests/
 COPY --link Libraries/CO.CDP.Logging/CO.CDP.Logging.csproj Libraries/CO.CDP.Logging/
 COPY --link Libraries/CO.CDP.Logging.Tests/CO.CDP.Logging.Tests.csproj Libraries/CO.CDP.Logging.Tests/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCommercialTools.WebApi.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
-COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/
 COPY --link Libraries/CO.CDP.UserManagement.Core/CO.CDP.UserManagement.Core.csproj Libraries/CO.CDP.UserManagement.Core/
 COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.csproj Libraries/CO.CDP.UserManagement.Shared/
 COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
@@ -182,16 +174,6 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.OrganisationApp
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-commercial-tools-app
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Frontend/CO.CDP.RegisterOfCommercialTools.App
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS build-commercial-tools-api
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Services/CO.CDP.RegisterOfCommercialTools.WebApi
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -224,14 +206,6 @@ FROM build-organisation-app AS publish-organisation-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.OrganisationApp.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM build-commercial-tools-app AS publish-commercial-tools-app
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM build-commercial-tools-api AS publish-commercial-tools-api
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.AntiVirusScanner.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -256,12 +230,6 @@ COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
 RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.EntityVerification.Persistence -s /src/Services/CO.CDP.EntityVerification.Persistence --self-contained -o /app/migrations/efbundle
 
-FROM build-commercial-tools-api AS build-migrations-commercial-tools
-WORKDIR /src
-COPY .config/dotnet-tools.json .config/
-RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence -s /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence --self-contained -o /app/migrations/efbundle
-
 FROM base AS migrations-organisation-information
 COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
@@ -280,15 +248,6 @@ WORKDIR /app
 COPY --from=build-migrations-entity-verification /src/Services/CO.CDP.EntityVerification.Persistence/EntityVerificationDatabaseMigrationConfig /app/EntityVerificationDatabaseMigrationConfig
 COPY --from=build-migrations-entity-verification /app/migrations/efbundle .
 ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$EntityVerificationDatabase__Host;Database=$EntityVerificationDatabase__Database;Username=$EntityVerificationDatabase__Username;Password=$EntityVerificationDatabase__Password;"]
-
-FROM base AS migrations-commercial-tools
-COPY --from=busybox:uclibc /bin/busybox /bin/busybox
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=build-migrations-commercial-tools /src/Services/CO.CDP.RegisterOfCommercialTools.Persistence/RegisterOfCommercialToolsDatabaseMigrationConfig /app/RegisterOfCommercialToolsDatabaseMigrationConfig
-COPY --from=build-migrations-commercial-tools /app/migrations/efbundle .
-ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle", "--connection", "Host=$OrganisationInformationDatabase__Host;Database=$OrganisationInformationDatabase__Database;Username=$OrganisationInformationDatabase__Username;Password=$OrganisationInformationDatabase__Password;"]
 
 FROM base AS final-authority
 ARG VERSION
@@ -345,20 +304,6 @@ ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-organisation-app /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OrganisationApp.dll"]
-
-FROM base AS final-commercial-tools-app
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-commercial-tools-app /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.App.dll"]
-
-FROM base AS final-commercial-tools-api
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-commercial-tools-api /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.WebApi.dll"]
 
 FROM base AS final-antivirus-app
 ARG VERSION

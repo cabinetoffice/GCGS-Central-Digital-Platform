@@ -79,33 +79,6 @@ public class UiFoundationBuilder
         return this;
     }
 
-    /// <summary>
-    /// Adds Commercial Tools URL service with default configuration
-    /// </summary>
-    /// <returns>The builder for method chaining</returns>
-    public UiFoundationBuilder AddCommercialToolsUrlService()
-    {
-        var options = _configuration.GetSection("CommercialToolsApp").Get<CommercialToolsUrlOptions>()
-                      ?? throw new InvalidOperationException("CommercialToolsApp configuration is missing.");
-        _services.AddSingleton(options);
-        _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
-        return this;
-    }
-
-    /// <summary>
-    /// Adds Commercial Tools URL service with custom configuration
-    /// </summary>
-    /// <param name="configure">Action to configure Commercial Tools URL options</param>
-    /// <returns>The builder for method chaining</returns>
-    public UiFoundationBuilder AddCommercialToolsUrlService(Action<CommercialToolsUrlOptions> configure)
-    {
-        var options = _configuration.GetSection("CommercialToolsApp").Get<CommercialToolsUrlOptions>()
-                      ?? throw new InvalidOperationException("CommercialToolsApp configuration is missing.");
-        configure(options);
-        _services.AddSingleton(options);
-        _services.AddScoped<ICommercialToolsUrlService, CommercialToolsUrlService>();
-        return this;
-    }
 
     /// <summary>
     /// Adds AI Tool URL service with default configuration

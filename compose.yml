@@ -24,8 +24,6 @@ services:
       - av-scanner
       - clamav-rest
       - scheduled-worker
-      - commercial-tools-app
-      - commercial-tools-api
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -38,8 +36,6 @@ services:
       CDP_FORMS_HOST: 'http://forms:8080'
       CDP_DATA_SHARING_HOST: 'http://data-sharing:8080'
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
-      CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://commercial-tools-app:8080'
-      CDP_COMMERCIAL_TOOLS_API_HOST: 'http://commercial-tools-api:8080'
   db:
     container_name: co-cdp-db
     image: postgres:16.3
@@ -124,25 +120,6 @@ services:
         EntityVerificationDatabase__Password: 'cdp123'
         Organisation__Authority: *organisation-authority
 
-  commercial-tools-migrations:
-    container_name: co-cdp-commercial-tools-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: migrations-commercial-tools
-    image: 'cabinetoffice/cdp-commercial-tools-migrations:${IMAGE_VERSION:-latest}'
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      OrganisationInformationDatabase__Host: 'db'
-      OrganisationInformationDatabase__Server: 'db'
-      OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'cdp_user'
-      OrganisationInformationDatabase__Password: 'cdp123'
-
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
@@ -175,7 +152,6 @@ services:
       TenantService: '${TenantService:-http://gateway:${CDP_TENANT_PORT:-8080}}'
       DataSharingService: '${DataSharingService:-http://gateway:${CDP_DATA_SHARING_PORT:-8088}}'
       EntityVerificationService: '${EntityVerificationService:-http://gateway:${CDP_ENTITY_VERIFICATION_PORT:-8094}}'
-      CommercialToolsApp__ServiceBaseUrl: '${CommercialToolsApp:-http://gateway:${CDP_COMMERCIAL_TOOLS_APP_PORT:-8192}}'
       CompaniesHouse__Url: ""
       CompaniesHouse__User: ""
       CompaniesHouse__Password: ""
@@ -261,65 +237,6 @@ services:
       OrganisationInformationDatabase__Password: 'cdp123'
       Organisation__Authority: *organisation-authority
       Feature__OutboxProcessorBackgroundService: false
-
-  commercial-tools-app:
-    container_name: co-cdp-commercial-tools-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-commercial-tools-app
-    image: 'cabinetoffice/cdp-commercial-tools-app:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__ElastiCache__Hostname: "redis"
-      CloudWatch__LogGroup: "/ecs/commercial-tools-app"
-      CommercialToolsApi__ServiceUrl: '${CommercialToolsApi:-http://gateway:${CDP_COMMERCIAL_TOOLS_API_PORT:-8184}}'
-      SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
-      OneLogin__Authority: "test"
-      OneLogin__ClientId: "test"
-      OneLogin__PrivateKey: "test"
-      OneLogin:AccountUrl: "test"
-
-  commercial-tools-api:
-    container_name: co-cdp-commercial-tools-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-commercial-tools-api
-    image: 'cabinetoffice/cdp-commercial-tools-api:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__ElastiCache__Hostname: "redis"
-      Aws__ElastiCache__Port: "6379"
-      CloudWatch__LogGroup: "/ecs/commercial-tools-api"
-      ODataApi__BaseUrl: ""
-      ODataApi__ApiKey: ""
 
   person:
     container_name: co-cdp-person

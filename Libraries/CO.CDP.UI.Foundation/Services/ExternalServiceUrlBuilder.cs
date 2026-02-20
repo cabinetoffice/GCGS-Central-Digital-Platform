@@ -5,7 +5,6 @@ namespace CO.CDP.UI.Foundation.Services;
 /// </summary>
 public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
 {
-    private readonly ICommercialToolsUrlService _commercialToolsUrlService;
     private readonly IAiToolUrlService _aiToolUrlService;
     private readonly IPaymentsUrlService _paymentsUrlService;
     private readonly IFvraUrlService _fvraUrlService;
@@ -13,17 +12,14 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     /// <summary>
     /// Initialises a new instance of the ExternalServiceUrlBuilder
     /// </summary>
-    /// <param name="commercialToolsUrlService">Commercial Tools URL service</param>
     /// <param name="aiToolUrlService">AI Tool URL service</param>
     /// <param name="paymentsUrlService">Payments URL service</param>
     /// <param name="fvraUrlService">FVRA Tool URL service</param>
     public ExternalServiceUrlBuilder(
-        ICommercialToolsUrlService commercialToolsUrlService,
         IAiToolUrlService aiToolUrlService,
         IPaymentsUrlService paymentsUrlService,
         IFvraUrlService fvraUrlService)
     {
-        _commercialToolsUrlService = commercialToolsUrlService;
         _aiToolUrlService = aiToolUrlService;
         _paymentsUrlService = paymentsUrlService;
         _fvraUrlService = fvraUrlService;
@@ -45,7 +41,6 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     {
         return service switch
         {
-            ExternalService.CommercialTools => _commercialToolsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.AiTool => _aiToolUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.Payments => _paymentsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.FvraTool => _fvraUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),

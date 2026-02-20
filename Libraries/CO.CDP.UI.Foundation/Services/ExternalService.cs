@@ -5,7 +5,6 @@ namespace CO.CDP.UI.Foundation.Services;
 /// </summary>
 public enum ExternalService
 {
-    CommercialTools,
     AiTool,
     Payments,
     FvraTool

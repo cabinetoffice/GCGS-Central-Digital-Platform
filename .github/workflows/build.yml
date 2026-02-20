@@ -69,12 +69,12 @@ jobs:
         if: needs.pipeline_check.outputs.skip_pipeline == 'true'
         run: echo "Infra-only PR (terragrunt/**); skipping tests."
       - uses: actions/checkout@v4
-        if: needs.pipeline_check.outputs.skip_pipeline != 'true'      
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}      
+          dotnet-version: ${{ matrix.dotnet-version }}
       - uses: actions/cache@v4
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         with:
@@ -146,8 +146,6 @@ jobs:
           TenantService: 'http://tenant:8080'
           DataSharingService: http://data-sharing:8080
           EntityVerificationService: http://entity-verification:8080
-          CommercialToolsApp: http://commercial-tools-app:8080
-          CommercialToolsApi: http://commercial-tools-api:8080
           SirsiService: http://organisation-app:8080
       - name: Verify services
         run: make verify-up
@@ -173,8 +171,6 @@ jobs:
           TenantService: 'http://tenant:8080'
           DataSharingService: http://data-sharing:8080
           EntityVerificationService: http://entity-verification:8080
-          CommercialToolsApp: http://commercial-tools-app:8080
-          CommercialToolsApi: http://commercial-tools-api:8080
           SirsiService: http://organisation-app:8080
       - name: Grab Docker logs
         if: failure()
