@@ -56,6 +56,103 @@ jobs:
 
           echo "skip_pipeline=$skip_pipeline" >> "$GITHUB_OUTPUT"
 
+  validate-pinned-images:
+    runs-on: ubuntu-latest
+    name: Validate pinned service images
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if root.hcl modified
+        id: check_modified
+        run: |
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          HEAD_SHA='${{ github.event.pull_request.head.sha }}'
+
+          if git diff --name-only "$BASE_SHA" "$HEAD_SHA" | grep -q "terragrunt/components/root.hcl"; then
+            echo "modified=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "modified=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Extract changed pinned versions
+        id: extract
+        if: steps.check_modified.outputs.modified == 'true'
+        run: |
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          HEAD_SHA='${{ github.event.pull_request.head.sha }}'
+
+          git diff "$BASE_SHA" "$HEAD_SHA" -- terragrunt/components/root.hcl > /tmp/root.hcl.diff
+
+          fts_versions=$(grep -E '^\+.*pinned_service_version_fts\s*=\s*"' /tmp/root.hcl.diff | sed -E 's/.*"([^"]+)".*/\1/' | sort -u | tr '\n' ',' | sed 's/,$//')
+          cfs_versions=$(grep -E '^\+.*pinned_service_version_cfs\s*=\s*"' /tmp/root.hcl.diff | sed -E 's/.*"([^"]+)".*/\1/' | sort -u | tr '\n' ',' | sed 's/,$//')
+          sirsi_versions=$(grep -E '^\+.*pinned_service_version\s*=\s*"' /tmp/root.hcl.diff | sed -E 's/.*"([^"]+)".*/\1/' | sort -u | tr '\n' ',' | sed 's/,$//')
+
+          echo "fts_versions=$fts_versions" >> "$GITHUB_OUTPUT"
+          echo "cfs_versions=$cfs_versions" >> "$GITHUB_OUTPUT"
+          echo "sirsi_versions=$sirsi_versions" >> "$GITHUB_OUTPUT"
+
+      - name: Setup AWS credentials
+        if: steps.check_modified.outputs.modified == 'true'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2
+
+      - name: Validate images in ECR
+        if: steps.check_modified.outputs.modified == 'true'
+        env:
+          FTS_VERSIONS: ${{ steps.extract.outputs.fts_versions }}
+          CFS_VERSIONS: ${{ steps.extract.outputs.cfs_versions }}
+          SIRSI_VERSIONS: ${{ steps.extract.outputs.sirsi_versions }}
+        run: |
+          echo "Validating pinned images:"
+          exit_code=0
+
+          check_image() {
+            local repo=$1
+            local version=$2
+
+            if [ -z "$version" ]; then
+              return
+            fi
+
+            if aws ecr describe-images \
+                --repository-name "$repo" \
+                --image-ids imageTag="$version" \
+                --region eu-west-2 \
+                --output json > /dev/null 2>&1; then
+              echo "  $repo:$version - Found"
+            else
+              echo "  $repo:$version - Not found"
+              exit_code=1
+            fi
+          }
+
+          IFS=',' read -ra versions <<< "$FTS_VERSIONS"
+          for version in "${versions[@]}"; do
+            check_image "cdp-fts" "$version"
+          done
+
+          IFS=',' read -ra versions <<< "$CFS_VERSIONS"
+          for version in "${versions[@]}"; do
+            check_image "cdp-cfs" "$version"
+          done
+
+          IFS=',' read -ra versions <<< "$SIRSI_VERSIONS"
+          for version in "${versions[@]}"; do
+            check_image "cdp-sirsi" "$version"
+          done
+
+          if [ $exit_code -ne 0 ]; then
+            echo "Validation failed: One or more images not found in ECR"
+            exit 1
+          fi
+
+          echo "All images validated successfully"
   test:
     needs: pipeline_check
     runs-on: ubuntu-latest
@@ -69,12 +166,12 @@ jobs:
         if: needs.pipeline_check.outputs.skip_pipeline == 'true'
         run: echo "Infra-only PR (terragrunt/**); skipping tests."
       - uses: actions/checkout@v4
-        if: needs.pipeline_check.outputs.skip_pipeline != 'true'      
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
       - name: Setup dotnet ${{ matrix.dotnet-version }}
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: ${{ matrix.dotnet-version }}      
+          dotnet-version: ${{ matrix.dotnet-version }}
       - uses: actions/cache@v4
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         with:
