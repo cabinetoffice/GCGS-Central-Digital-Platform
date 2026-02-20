@@ -2,6 +2,8 @@ using CO.CDP.Authentication;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Api.FeatureFlags;
+using CO.CDP.UserManagement.Shared.FeatureFlags;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
@@ -14,6 +16,7 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/invites")]
+[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled)]
 public class OrganisationInviteAcceptanceController : ControllerBase
 {
     private readonly IInviteOrchestrationService _inviteOrchestrationService;

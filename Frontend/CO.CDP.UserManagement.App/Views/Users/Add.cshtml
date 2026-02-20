@@ -1,11 +1,10 @@
-@using CO.CDP.UserManagement.Shared.Enums
 @model CO.CDP.UserManagement.App.Models.InviteUserViewModel
 @{
     ViewData["Title"] = "Add a user";
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug/users" class="govuk-back-link">Back to users</a>
+    <a href="/organisation/@Model.OrganisationSlug" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -13,15 +12,26 @@
 
         <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
 
-        <h1 class="govuk-heading-xl">Add a user</h1>
+        <h1 class="govuk-heading-xl">Add a user to your organisation</h1>
 
-        <p class="govuk-body">Invite someone to join @Model.OrganisationName.</p>
+        <p class="govuk-body">Enter the details of the person you want to add to @Model.OrganisationName. They will receive an invitation to join.</p>
 
         <form method="post">
             @Html.AntiForgeryToken()
 
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <label class="govuk-label govuk-label--m" for="email">Email address</label>
+                @if (ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.Email)]?.Errors.FirstOrDefault()?.ErrorMessage
+                    </p>
+                }
+                <input class="govuk-input" id="email" name="Email" type="email" value="@Model.Email">
+            </div>
+
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.FirstName)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                <label class="govuk-label govuk-!-font-weight-bold" for="first-name">First name</label>
+                <label class="govuk-label govuk-label--m" for="first-name">First name</label>
                 @if (ViewData.ModelState.ContainsKey(nameof(Model.FirstName)) && !ViewData.ModelState.IsValid)
                 {
                     <p class="govuk-error-message">
@@ -32,7 +42,7 @@
             </div>
 
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.LastName)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                <label class="govuk-label govuk-!-font-weight-bold" for="last-name">Last name</label>
+                <label class="govuk-label govuk-label--m" for="last-name">Last name</label>
                 @if (ViewData.ModelState.ContainsKey(nameof(Model.LastName)) && !ViewData.ModelState.IsValid)
                 {
                     <p class="govuk-error-message">
@@ -42,44 +52,21 @@
                 <input class="govuk-input" id="last-name" name="LastName" type="text" value="@Model.LastName">
             </div>
 
-            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                <label class="govuk-label govuk-!-font-weight-bold" for="email">Email address</label>
-                @if (ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid)
-                {
-                    <p class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.Email)]?.Errors.FirstOrDefault()?.ErrorMessage
-                    </p>
-                }
-                <input class="govuk-input" id="email" name="Email" type="email" value="@Model.Email">
-            </div>
-
-            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.OrganisationRole)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h2 class="govuk-fieldset__heading">Organisation role</h2>
-                    </legend>
-                    @if (ViewData.ModelState.ContainsKey(nameof(Model.OrganisationRole)) && !ViewData.ModelState.IsValid)
-                    {
-                        <p class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.OrganisationRole)]?.Errors.FirstOrDefault()?.ErrorMessage
-                        </p>
-                    }
-                    <div class="govuk-radios" data-module="govuk-radios">
-                        @foreach (var role in Enum.GetValues<OrganisationRole>())
-                        {
-                            var roleValue = role.ToString();
-                            <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="role-@roleValue" name="OrganisationRole" type="radio" value="@roleValue" checked="@(Model.OrganisationRole == role)">
-                                <label class="govuk-label govuk-radios__label" for="role-@roleValue">@role</label>
-                            </div>
-                        }
-                    </div>
-                </fieldset>
-            </div>
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">What happens after I add a user?</span>
+                </summary>
+                <div class="govuk-details__text">
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>They will receive an email invitation to join your organisation</li>
+                        <li>They must accept the invitation within 7 days</li>
+                    </ul>
+                </div>
+            </details>
 
             <div class="govuk-button-group">
-                <button class="govuk-button" data-module="govuk-button">Send invite</button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/users">Cancel</a>
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
             </div>
         </form>
     </div>

@@ -9,6 +9,7 @@ using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Api.Validation;
+using CO.CDP.UserManagement.Api.FeatureFlags;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -46,6 +47,7 @@ builder.Services.AddUserManagementCaching(redisConnectionString);
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
+var subscriberFeatureFlags = SubscriberFeatureFlags.FromConfiguration(builder.Configuration);
 
 builder.Services.AddLoggingConfiguration(builder.Configuration);
 
@@ -86,15 +88,37 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
             enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api"),
                 services =>
                 {
-                    services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
-                    services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
-                    services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
+                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
+                    {
+                        services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                    }
+
+                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
+                    {
+                        services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
+                    }
+
+                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
+                    {
+                        services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
+                    }
                 },
                 (services, dispatcher) =>
                 {
-                    dispatcher.Subscribe<OrganisationRegistered>(services);
-                    dispatcher.Subscribe<OrganisationUpdated>(services);
-                    dispatcher.Subscribe<PersonInviteClaimed>(services);
+                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
+                    {
+                        dispatcher.Subscribe<OrganisationRegistered>(services);
+                    }
+
+                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
+                    {
+                        dispatcher.Subscribe<OrganisationUpdated>(services);
+                    }
+
+                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
+                    {
+                        dispatcher.Subscribe<PersonInviteClaimed>(services);
+                    }
                 }
             );
 }

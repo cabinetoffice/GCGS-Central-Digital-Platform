@@ -1,0 +1,73 @@
+@using CO.CDP.UserManagement.Shared.Enums
+@model CO.CDP.UserManagement.App.Models.InviteUserState
+@{
+    ViewData["Title"] = "What is their role in your organisation?";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug/add-user" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="app-filter-container govuk-!-margin-bottom-6">
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">Adding user:</p>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-2">@Model.FirstName @Model.LastName</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">@Model.Email</p>
+        </div>
+
+        <h1 class="govuk-heading-xl">What is their role in your organisation?</h1>
+        <p class="govuk-body">This determines what the user can manage at the organisation level, separate to application-specific roles.</p>
+
+        <form method="get" action="/organisation/@Model.OrganisationSlug/add-user/application-roles">
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-visually-hidden">What is their role in your organisation?</legend>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="organisation-role-member" name="organisationRole" type="radio" value="@OrganisationRole.Member">
+                            <label class="govuk-label govuk-radios__label" for="organisation-role-member"><strong>Member</strong></label>
+                            <div class="govuk-hint govuk-radios__hint">
+                                Can access assigned applications only. Cannot manage organisation settings or other users.
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="organisation-role-admin" name="organisationRole" type="radio" value="@OrganisationRole.Admin">
+                            <label class="govuk-label govuk-radios__label" for="organisation-role-admin"><strong>Admin</strong></label>
+                            <div class="govuk-hint govuk-radios__hint">
+                                Can add and remove users, enable applications for users, and assign users to applications. Cannot transfer ownership.
+                            </div>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="organisation-role-owner" name="organisationRole" type="radio" value="@OrganisationRole.Owner">
+                            <label class="govuk-label govuk-radios__label" for="organisation-role-owner"><strong>Owner</strong></label>
+                            <div class="govuk-hint govuk-radios__hint">
+                                Full control of the organisation including transferring ownership and deleting the organisation. An organisation must have at least one owner.
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">More about organisation roles</span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body"><strong>Organisation roles vs Application roles</strong></p>
+                    <p class="govuk-body">Organisation roles control what a user can do at the organisation level, such as managing users and enabling applications. Application roles are separate and control what a user can do within each specific application they are assigned to.</p>
+                    <p class="govuk-body">A user needs both:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>An organisation role to be part of your organisation</li>
+                        <li>Application roles to access specific applications</li>
+                    </ul>
+                </div>
+            </details>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
