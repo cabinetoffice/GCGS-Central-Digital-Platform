@@ -20,24 +20,6 @@ on:
           - 'false'
           - 'true'
         default: 'false'
-      terraform_action:
-        description: 'Terraform action to perform (none = skip terraform)'
-        required: true
-        type: choice
-        options:
-          - 'none'
-          - 'plan'
-          - 'apply'
-        default: 'none'
-      environment:
-        description: 'Target environment for Terraform (if plan/apply selected)'
-        required: false
-        type: choice
-        options:
-          - 'development'
-          - 'staging'
-          - 'production'
-        default: 'development'
 
 jobs:
   pipeline_check:
@@ -337,44 +319,3 @@ jobs:
         run: |
           aws ssm put-parameter --name "cdp-sirsi-service-version" --value "${{ env.IMAGE_VERSION }}" --type String --overwrite
 
-  terraform:
-    if: |
-      github.event_name == 'workflow_dispatch' && 
-      github.event.inputs.terraform_action != 'none'
-    runs-on: ubuntu-latest
-    name: Terraform ${{ github.event.inputs.terraform_action }}
-    needs: [publish]
-    env:
-      TG_ENVIRONMENT: ${{ github.event.inputs.environment }}
-      IMAGE_VERSION: ${{ needs.package.outputs.version }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up AWS CLI
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/cdp-sirsi-${{ github.event.inputs.environment }}-terraform
-          role-duration-seconds: 3600
-
-      - name: Setup Terragrunt
-        uses: autero1/action-terragrunt@v3
-        with:
-          terragrunt-version: 0.55.0
-
-      - name: Terraform Plan
-        if: github.event.inputs.terraform_action == 'plan'
-        working-directory: terragrunt/environments/${{ github.event.inputs.environment }}
-        run: |
-          echo "Running Terraform Plan for ${{ github.event.inputs.environment }}"
-          terragrunt run-all plan --terragrunt-non-interactive
-
-      - name: Terraform Apply
-        if: github.event.inputs.terraform_action == 'apply'
-        working-directory: terragrunt/environments/${{ github.event.inputs.environment }}
-        run: |
-          echo "Running Terraform Apply for ${{ github.event.inputs.environment }}"
-          terragrunt run-all apply --terragrunt-non-interactive -auto-approve
