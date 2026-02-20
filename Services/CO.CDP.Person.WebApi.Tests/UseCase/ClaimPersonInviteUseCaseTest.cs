@@ -1,4 +1,6 @@
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.MQ;
+using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
@@ -11,6 +13,7 @@ public class ClaimPersonInviteUseCaseTests
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
     private readonly Mock<IOrganisationRepository> _mockOrganizationRepository;
+    private readonly Mock<IPublisher> _mockPublisher;
 
     private readonly ClaimPersonInviteUseCase _useCase;
     private Guid _defaultPersonGuid;
@@ -25,10 +28,12 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
         _mockOrganizationRepository = new Mock<IOrganisationRepository>();
+        _mockPublisher = new Mock<IPublisher>();
         _useCase = new ClaimPersonInviteUseCase(
                         _mockPersonRepository.Object,
                         _mockPersonInviteRepository.Object,
-                        _mockOrganizationRepository.Object);
+                        _mockOrganizationRepository.Object,
+                        _mockPublisher.Object);
         _defaultPersonGuid = new Guid();
         _defaultPersonInviteGuid = new Guid();
         _defaultOrganisationGuid = new Guid();
@@ -255,5 +260,10 @@ public class ClaimPersonInviteUseCaseTests
 
         _mockPersonRepository.Verify(repo => repo.Save(_defaultPerson), Times.Once);
         _mockPersonInviteRepository.Verify(repo => repo.Save(personInvite), Times.Once);
+        _mockPublisher.Verify(p => p.Publish(It.Is<PersonInviteClaimed>(e =>
+            e.PersonInviteGuid == personInvite.Guid &&
+            e.PersonGuid == _defaultPerson.Guid &&
+            e.UserUrn == _defaultPerson.UserUrn &&
+            e.OrganisationGuid == _defaultOrganisation.Guid)), Times.Once);
     }
 }

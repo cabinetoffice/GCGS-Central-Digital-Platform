@@ -68,13 +68,23 @@ public class SqsPublisher(
     {
     }
 
-    private string QueueUrlFor<TM>(TM _) where TM : notnull
+    private string QueueUrlFor<TM>(TM message) where TM : notnull
     {
+        if (message is OutboxMessage outboxMessage)
+        {
+            return outboxMessage.QueueUrl;
+        }
+
         return configuration.QueueUrl;
     }
 
-    private string? MessageGroupIdFor<TM>(TM _) where TM : notnull
+    private string? MessageGroupIdFor<TM>(TM message) where TM : notnull
     {
+        if (message is OutboxMessage outboxMessage)
+        {
+            return outboxMessage.MessageGroupId;
+        }
+
         return configuration.MessageGroupId;
     }
 }
