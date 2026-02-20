@@ -8,6 +8,16 @@ variable "ecs_cluster_name" {
   type        = string
 }
 
+variable "ecs_fts_alb_arn_suffix" {
+  description = "FTS ALB ARN suffix for target metrics"
+  type        = string
+}
+
+variable "ecs_fts_services_target_group_arn_suffix_map" {
+  description = "FTS target groups ARN suffix mapped to the service names to address service metrics"
+  type        = map(string)
+}
+
 variable "ecs_services_target_group_arn_suffix_map" {
   description = "Target groups ARN suffix mapped to the service names to address service metrics"
   type        = map(string)
@@ -26,7 +36,6 @@ variable "product" {
     public_hosted_zone = string
   })
 }
-
 
 variable "rds_cluster_ids" {
   description = "List of RDS cluster IDs"
@@ -49,7 +58,6 @@ variable "service_configs" {
     port_host     = number
   }))
 }
-
 
 variable "sqs_queue_names" {
   description = "List of SQS Queue names"
