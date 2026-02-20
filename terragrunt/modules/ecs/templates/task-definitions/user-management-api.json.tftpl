@@ -31,13 +31,17 @@
         { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
         { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
         { "name" : "PersonService", "value" : "https://person.${public_domain}"},
-        { "name" : "OrganisationService", "value" : "https://organisation.${public_domain}"}
+        { "name" : "OrganisationService", "value" : "https://organisation.${public_domain}"},
+        { "name" : "UserManagementDatabase__Database", "value" : "${db_name}"},
+        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"}
     ],
     "secrets": [
         { "name" : "Authentication__Authority", "valueFrom" : "${authentication_authority}"},
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
         { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"},
-        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${servicekey_apikey}"}
+        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${servicekey_apikey}"},
+        { "name" : "UserManagementDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "UserManagementDatabase__Username", "valueFrom" : "${db_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

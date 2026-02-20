@@ -33,7 +33,7 @@ builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(bu
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
