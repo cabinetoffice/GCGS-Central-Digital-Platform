@@ -154,7 +154,8 @@ inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
   cfs_extra_domains                 = local.global_vars.locals.cfs_extra_domains
-  cfs_extra_host_headers            = local.global_vars.locals.cfs_extra_domains
+  cfs_extra_host_headers                    = local.global_vars.locals.cfs_extra_domains
+  user_management_api_extra_host_headers    = ["user-management-api.${dependency.core_networking.outputs.public_domain}"]
   fts_extra_domains                 = local.global_vars.locals.fts_extra_domains
   fts_extra_host_headers            = local.global_vars.locals.fts_extra_domains
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls

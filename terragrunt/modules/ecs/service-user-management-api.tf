@@ -22,10 +22,15 @@ module "ecs_service_user_management_api" {
       public_domain                     = var.public_domain
       service_version                   = local.service_version_sirsi
       queue_organisation_url            = var.queue_organisation_url
+      redis_auth_token_arn              = var.redis_auth_token_arn
+      redis_port                        = var.redis_port
+      redis_primary_endpoint_address    = var.redis_primary_endpoint
       servicekey_apikey                 = data.aws_secretsmanager_secret.user_management_servicekey_apikey.arn
       vpc_cidr                          = var.vpc_cider
     }
   )
+
+  extra_host_headers     = var.user_management_api_extra_host_headers
 
   cluster_id             = local.main_cluster_id
   container_port         = var.service_configs.user_management_api.port

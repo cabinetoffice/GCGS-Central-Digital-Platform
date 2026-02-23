@@ -34,12 +34,18 @@ builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
 builder.Services.AddUserManagementInfrastructure(
     connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
+
+var elastiCacheHostname = builder.Configuration["Aws:ElastiCache:Hostname"];
+var elastiCachePort = builder.Configuration["Aws:ElastiCache:Port"];
+var elastiCacheToken = builder.Configuration["Aws:ElastiCache:Token"];
+var redisConnectionString = !string.IsNullOrEmpty(elastiCacheHostname)
+    ? $"{elastiCacheHostname}:{elastiCachePort},password={elastiCacheToken},ssl=True,abortConnect=False"
+    : null;
 
 builder.Services.AddUserManagementCaching(redisConnectionString);
 
