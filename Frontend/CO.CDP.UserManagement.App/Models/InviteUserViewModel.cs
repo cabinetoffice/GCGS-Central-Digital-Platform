@@ -15,17 +15,16 @@ public sealed record InviteUserViewModel
     [ValidateNever]
     public string OrganisationSlug { get; init; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Enter a first name")]
     public string? FirstName { get; init; }
 
-    [Required]
+    [Required(ErrorMessage = "Enter a last name")]
     public string? LastName { get; init; }
 
-    [Required]
-    [EmailAddress]
+    [Required(ErrorMessage = "Enter an email address")]
+    [EmailAddress(ErrorMessage = "Enter an email address in the correct format, like name@example.com")]
     public string? Email { get; init; }
 
-    [Required]
     public OrganisationRole? OrganisationRole { get; init; }
 
     public static InviteUserViewModel Empty => new();

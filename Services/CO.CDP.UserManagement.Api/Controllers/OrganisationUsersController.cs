@@ -5,6 +5,8 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
+using CO.CDP.UserManagement.Api.FeatureFlags;
+using CO.CDP.UserManagement.Shared.FeatureFlags;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,7 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/users")]
 [Authorize(Policy = PolicyNames.OrganisationMember)]
+[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled)]
 public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;

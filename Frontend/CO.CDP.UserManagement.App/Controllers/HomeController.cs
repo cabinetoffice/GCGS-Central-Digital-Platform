@@ -19,7 +19,7 @@ public class HomeController(
             try
             {
                 var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
-                return RedirectToAction(nameof(Index), new { organisationSlug = org.Slug });
+                return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug = org.Slug });
             }
             catch (ApiException ex) when (ex.StatusCode == 404)
             {
@@ -32,8 +32,7 @@ public class HomeController(
             return NotFound();
         }
 
-        var viewModel = await applicationService.GetHomeViewModelAsync(organisationSlug, ct);
-        return viewModel is null ? NotFound() : View(viewModel);
+        return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug });
     }
 
     public IActionResult Privacy()

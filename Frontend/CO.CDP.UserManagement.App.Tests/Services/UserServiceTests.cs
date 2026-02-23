@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.WebApiClient;
@@ -93,9 +94,11 @@ public class UserServiceTests
     public async Task InviteUserAsync_WhenSuccess_ReturnsTrue()
     {
         var org = BuildOrganisationResponse();
+        InviteUserRequest? capturedRequest = null;
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+            .Callback<Guid, InviteUserRequest, CancellationToken>((_, request, _) => capturedRequest = request)
             .ReturnsAsync(BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member));
 
         var result = await _service.InviteUserAsync("org", new Models.InviteUserViewModel
@@ -104,9 +107,14 @@ public class UserServiceTests
             FirstName = "Test",
             LastName = "User",
             OrganisationRole = OrganisationRole.Member
-        }, CancellationToken.None);
+        }, CancellationToken.None, [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 99 }]);
 
         result.Should().BeTrue();
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.ApplicationAssignments.Should().HaveCount(1);
+        var assignment = capturedRequest.ApplicationAssignments!.Single();
+        assignment.OrganisationApplicationId.Should().Be(10);
+        assignment.ApplicationRoleIds.Should().ContainSingle().Which.Should().Be(99);
     }
 
     [Fact]
@@ -256,6 +264,60 @@ public class UserServiceTests
         var result = await _service.ResendInviteAsync("org", 1, CancellationToken.None);
 
         result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task GetApplicationRolesStepViewModelAsync_WhenValid_ReturnsMappedApplications()
+    {
+        var org = BuildOrganisationResponse();
+        var state = new InviteUserState("org", "user@example.com", "First", "Last");
+        var organisationApps = new List<OrganisationApplicationResponse>
+        {
+            new()
+            {
+                Id = 10,
+                OrganisationId = org.Id,
+                ApplicationId = 20,
+                IsActive = true,
+                Application = new ApplicationResponse
+                {
+                    Id = 20,
+                    Name = "Payments",
+                    ClientId = "payments",
+                    IsActive = true,
+                    CreatedAt = DateTimeOffset.UtcNow
+                },
+                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedBy = "system"
+            }
+        };
+        var roles = new List<RoleResponse>
+        {
+            new()
+            {
+                Id = 1,
+                ApplicationId = 20,
+                Name = "Admin",
+                Description = "Full access",
+                IsActive = true,
+                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedBy = "system"
+            }
+        };
+
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organisationApps);
+        _apiClient.Setup(client => client.RolesAllAsync(20, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(roles);
+
+        var result = await _service.GetApplicationRolesStepViewModelAsync("org", state, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.Applications.Should().ContainSingle();
+        result.Applications[0].ApplicationName.Should().Be("Payments");
+        result.Applications[0].Roles.Should().ContainSingle(r => r.Name == "Admin");
     }
 
     private static OrganisationResponse BuildOrganisationResponse() =>
