@@ -18,7 +18,7 @@
 </div>
 
 <div class="govuk-button-group govuk-!-margin-bottom-6">
-    <a href="/organisation/@organisation/users/add" class="govuk-button" data-module="govuk-button">Add a user</a>
+    <a href="/organisation/@organisation/add-user" class="govuk-button" data-module="govuk-button">Add a user</a>
     <a href="/organisation/@organisation/assignments" class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage application access</a>
 </div>
 
@@ -91,7 +91,7 @@
         }
         else
         {
-            <p><a href="/organisation/@organisation/users/add" class="govuk-link">Add your first user</a> to get started.</p>
+            <p><a href="/organisation/@organisation/add-user" class="govuk-link">Add your first user</a> to get started.</p>
         }
     </div>
 }
@@ -113,7 +113,7 @@ else
                     }
                     else
                     {
-                        <a href="/organisation/@organisation/users/@user.Id" class="govuk-link">@user.Name</a>
+                        <a href="/organisation/@organisation/user/@user.Id" class="govuk-link">@user.Name</a>
                     }
                 </h2>
                 <ul class="govuk-summary-card__actions">
@@ -160,14 +160,14 @@ else
                 <p class="govuk-body govuk-!-margin-top-4">
                     @if (!isPending)
                     {
-                        <a href="/organisation/@organisation/users/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
+                        <a href="/organisation/@organisation/user/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
                         <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
-                        <a href="/organisation/@organisation/users/@user.Id/change-role" class="govuk-link">Change org role</a>
+                        <a href="/organisation/@organisation/user/@user.Id/change-role" class="govuk-link">Change org role</a>
                     }
                     else if (user.PendingInviteId.HasValue)
                     {
-                        <a href="/organisation/@organisation/users/invites/@user.PendingInviteId/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
-                        <a href="/organisation/@organisation/users/invites/@user.PendingInviteId/change-role" class="govuk-link">Change org role</a>
+                        <a href="/organisation/@organisation/invites/@user.PendingInviteId/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisation/invites/@user.PendingInviteId/change-role" class="govuk-link">Change org role</a>
                     }
                 </p>
             </div>

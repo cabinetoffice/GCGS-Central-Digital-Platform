@@ -15,6 +15,9 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
+var userManagementEnabled = builder.Configuration.GetValue(
+    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.UserManagementEnabled,
+    builder.Environment.IsDevelopment());
 
 // Routing configuration
 builder.Services.AddRouting(options =>
@@ -30,6 +33,7 @@ builder.Services.AddControllersWithViews(options =>
 
 builder.Services.AddRazorPages();
 builder.Services.AddGovUkFrontend();
+builder.Services.AddHttpContextAccessor();
 
 // AWS configuration
 builder.Services.AddAwsConfiguration(builder.Configuration);
@@ -131,8 +135,22 @@ builder.Services.AddAuthentication(options =>
 // Application services
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 
 var app = builder.Build();
+
+if (!userManagementEnabled)
+{
+    app.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync("User Management is disabled by configuration.");
+    });
+
+    await app.RunAsync();
+    return;
+}
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
@@ -158,10 +176,6 @@ app.UseGovUkFrontend();
 app.MapControllerRoute(
     name: "organisation_by_guid",
     pattern: "organisation/by-id/{cdpOrganisationId:guid}/{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
-    name: "organisation",
-    pattern: "organisation/{organisationSlug}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
