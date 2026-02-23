@@ -23,6 +23,9 @@ using System.Reflection;
 using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
+var userManagementEnabled = builder.Configuration.GetValue(
+    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.UserManagementEnabled,
+    builder.Environment.IsDevelopment());
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -191,6 +194,19 @@ builder.Services.AddHealthChecks()
     .AddNpgSql(connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
 var app = builder.Build();
+
+if (!userManagementEnabled)
+{
+    app.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"error\":\"Service Unavailable\",\"message\":\"User Management API is disabled by configuration.\"}");
+    });
+
+    app.Run();
+    return;
+}
 
 // Configure the HTTP request pipeline
 if (swaggerEnabled)

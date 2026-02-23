@@ -15,6 +15,9 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
+var userManagementEnabled = builder.Configuration.GetValue(
+    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.UserManagementEnabled,
+    builder.Environment.IsDevelopment());
 
 // Routing configuration
 builder.Services.AddRouting(options =>
@@ -135,6 +138,19 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 
 var app = builder.Build();
+
+if (!userManagementEnabled)
+{
+    app.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync("User Management is disabled by configuration.");
+    });
+
+    await app.RunAsync();
+    return;
+}
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())

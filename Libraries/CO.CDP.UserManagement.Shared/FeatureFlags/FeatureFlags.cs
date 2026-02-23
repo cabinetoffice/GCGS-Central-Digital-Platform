@@ -2,6 +2,8 @@ namespace CO.CDP.UserManagement.Shared.FeatureFlags;
 
 public static class FeatureFlags
 {
+    public const string UserManagementEnabled = "Features:UserManagementEnabled";
+
     public static class Subscribers
     {
         public const string OrganisationRegisteredEnabled = "Features:Subscribers:OrganisationRegisteredEnabled";
