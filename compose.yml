@@ -348,7 +348,7 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      ConnectionStrings__UserManagementDatabase: 'Host=db;Database=cdp;Username=cdp_user;Password=cdp123'
+      ConnectionStrings__UserManagementDatabase: 'Host=db;Database=cdp;Username=cdp_user;Password=cdp123;SearchPath=user_management'
       ConnectionStrings__Redis: 'redis:6379'
       OrganisationInformationDatabase__Host: 'db'
       OrganisationInformationDatabase__Server: 'db'
@@ -572,8 +572,8 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
-      Aws__SqsPublisher__MessageGroupId": "EntityVerification"
-      CloudWatch__LogGroup": "/ecs/outbox-processor-organisation"
+      Aws__SqsPublisher__MessageGroupId: "EntityVerification"
+      CloudWatch__LogGroup: "/ecs/outbox-processor-organisation"
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
@@ -634,8 +634,8 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
-      Aws__SqsPublisher__MessageGroupId": "Organisation"
-      CloudWatch__LogGroup": "/ecs/outbox-processor-entity-verification"
+      Aws__SqsPublisher__MessageGroupId: "Organisation"
+      CloudWatch__LogGroup: "/ecs/outbox-processor-entity-verification"
       OutboxDatabase__Server: 'db'
       OutboxDatabase__Database: 'cdp'
       OutboxDatabase__Username: 'cdp_user'
