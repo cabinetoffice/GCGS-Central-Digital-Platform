@@ -187,6 +187,39 @@ public class UsersControllerTests
     }
 
     [Fact]
+    public async Task Details_WhenViewModelNull_ReturnsNotFound()
+    {
+        _userService.Setup(service => service.GetUserDetailsViewModelAsync("org", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((UserDetailsViewModel?)null);
+
+        var result = await _controller.Details("org", Guid.NewGuid(), CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Details_WhenViewModelAvailable_ReturnsView()
+    {
+        var viewModel = new UserDetailsViewModel(
+            OrganisationName: "Org",
+            OrganisationSlug: "org",
+            CdpPersonId: Guid.NewGuid(),
+            FirstName: "Test",
+            LastName: "User",
+            FullName: "Test User",
+            Email: "test@example.com",
+            OrganisationRole: OrganisationRole.Admin,
+            MemberSince: "19 February 2026");
+        _userService.Setup(service => service.GetUserDetailsViewModelAsync("org", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.Details("org", Guid.NewGuid(), CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.Model.Should().Be(viewModel);
+    }
+
+    [Fact]
     public async Task ChangeRole_Get_WhenViewModelNull_ReturnsNotFound()
     {
         _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", It.IsAny<Guid?>(), null, It.IsAny<CancellationToken>()))

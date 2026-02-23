@@ -17,6 +17,11 @@ public interface IUserService
         InviteUserViewModel? input = null,
         CancellationToken ct = default);
 
+    Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
     Task<bool> InviteUserAsync(
         string organisationSlug,
         InviteUserViewModel input,

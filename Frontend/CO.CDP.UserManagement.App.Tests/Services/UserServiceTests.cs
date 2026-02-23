@@ -90,6 +90,83 @@ public class UserServiceTests
     }
 
     [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenValid_ReturnsViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var joinedAt = new DateTimeOffset(2026, 2, 19, 0, 0, 0, TimeSpan.Zero);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = joinedAt,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.FullName.Should().Be("Test User");
+        result.MemberSince.Should().Be("19 February 2026");
+    }
+
+    [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenJoinedAtMissing_ReturnsNotAvailableMemberSince()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = null,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.MemberSince.Should().Be("Not available");
+    }
+
+    [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenUserMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
     public async Task InviteUserAsync_WhenSuccess_ReturnsTrue()
     {
         var org = BuildOrganisationResponse();
