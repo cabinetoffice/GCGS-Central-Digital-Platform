@@ -20,6 +20,12 @@ public interface IUserService
     Task<bool> InviteUserAsync(
         string organisationSlug,
         InviteUserViewModel input,
+        CancellationToken ct = default,
+        IReadOnlyList<InviteApplicationAssignment>? applicationAssignments = null);
+
+    Task<ApplicationRolesStepViewModel?> GetApplicationRolesStepViewModelAsync(
+        string organisationSlug,
+        InviteUserState state,
         CancellationToken ct = default);
 
     Task<ChangeUserRoleViewModel?> GetChangeUserRoleViewModelAsync(

@@ -1,6 +1,7 @@
 @model CO.CDP.UserManagement.App.Models.InviteUserViewModel
 @{
     ViewData["Title"] = "Add a user";
+    var returnToCheckAnswers = ViewData["ReturnToCheckAnswers"] as bool? ?? false;
 }
 
 @section BeforeContent {
@@ -18,6 +19,10 @@
 
         <form method="post">
             @Html.AntiForgeryToken()
+            @if (returnToCheckAnswers)
+            {
+                <input type="hidden" name="returnToCheckAnswers" value="true" />
+            }
 
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.Email)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
                 <label class="govuk-label govuk-label--m" for="email">Email address</label>

@@ -6,6 +6,7 @@ namespace CO.CDP.UserManagement.App.Services;
 public sealed class InviteUserSessionStore(IHttpContextAccessor httpContextAccessor) : IInviteUserStateStore
 {
     private const string InviteUserStateKey = "InviteUserState";
+    private const string InviteUserSuccessStateKey = "InviteUserSuccessState";
 
     public Task<InviteUserState?> GetAsync()
     {
@@ -20,6 +21,29 @@ public sealed class InviteUserSessionStore(IHttpContextAccessor httpContextAcces
     {
         var session = GetSession();
         session.SetString(InviteUserStateKey, JsonSerializer.Serialize(state));
+        return Task.CompletedTask;
+    }
+
+    public Task<InviteSuccessState?> GetSuccessAsync()
+    {
+        var session = GetSession();
+        var stateJson = session.GetString(InviteUserSuccessStateKey);
+        return Task.FromResult(string.IsNullOrEmpty(stateJson)
+            ? null
+            : JsonSerializer.Deserialize<InviteSuccessState>(stateJson));
+    }
+
+    public Task SetSuccessAsync(InviteSuccessState state)
+    {
+        var session = GetSession();
+        session.SetString(InviteUserSuccessStateKey, JsonSerializer.Serialize(state));
+        return Task.CompletedTask;
+    }
+
+    public Task ClearSuccessAsync()
+    {
+        var session = GetSession();
+        session.Remove(InviteUserSuccessStateKey);
         return Task.CompletedTask;
     }
 
