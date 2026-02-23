@@ -33,7 +33,8 @@
         { "name" : "PersonService", "value" : "https://person.${public_domain}"},
         { "name" : "OrganisationService", "value" : "https://organisation.${public_domain}"},
         { "name" : "UserManagementDatabase__Database", "value" : "${db_name}"},
-        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"}
+        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Aws__SqsDispatcher__QueueUrl", "value" : "${queue_organisation_url}"}
     ],
     "secrets": [
         { "name" : "Authentication__Authority", "valueFrom" : "${authentication_authority}"},

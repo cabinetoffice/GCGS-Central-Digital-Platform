@@ -21,6 +21,7 @@ module "ecs_service_user_management_api" {
       name                              = var.service_configs.user_management_api.name
       public_domain                     = var.public_domain
       service_version                   = local.service_version_sirsi
+      queue_organisation_url            = var.queue_organisation_url
       servicekey_apikey                 = data.aws_secretsmanager_secret.user_management_servicekey_apikey.arn
       vpc_cidr                          = var.vpc_cider
     }
