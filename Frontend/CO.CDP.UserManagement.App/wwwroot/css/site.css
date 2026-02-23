@@ -80,6 +80,11 @@
     margin-bottom: 20px;
 }
 
+.app-application-role-card {
+    border: 1px solid #b1b4b6;
+    padding: 20px;
+}
+
 .govuk-blue-banner {
     background: #1d70b8;
     padding: 30px 0;
@@ -102,4 +107,3 @@
     padding-left: 15px;
     padding-right: 15px;
 }
-

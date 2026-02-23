@@ -1,5 +1,6 @@
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Services;
@@ -113,13 +114,19 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
     public async Task<bool> InviteUserAsync(
         string organisationSlug,
         InviteUserViewModel input,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        IReadOnlyList<InviteApplicationAssignment>? applicationAssignments = null)
     {
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var assignments = applicationAssignments?
+                .Select(a => new ApiClient.ApplicationAssignment(
+                    new List<int> { a.ApplicationRoleId },
+                    a.OrganisationApplicationId))
+                .ToList() ?? new List<ApiClient.ApplicationAssignment>();
             var request = new ApiClient.InviteUserRequest(
-                new List<ApiClient.ApplicationAssignment>(),
+                assignments,
                 input.Email ?? string.Empty,
                 input.FirstName ?? string.Empty,
                 input.LastName ?? string.Empty,
@@ -131,6 +138,61 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         catch (ApiClient.ApiException)
         {
             return false;
+        }
+    }
+
+    public async Task<ApplicationRolesStepViewModel?> GetApplicationRolesStepViewModelAsync(
+        string organisationSlug,
+        InviteUserState state,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct))
+                .Where(app => app.IsActive && app.Application != null)
+                .ToList();
+            var applicationSelections = new List<ApplicationAccessSelectionViewModel>();
+
+            foreach (var enabledApp in enabledApps)
+            {
+                ICollection<RoleResponse> roles;
+                try
+                {
+                    roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                }
+                catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+                {
+                    roles = [];
+                }
+
+                applicationSelections.Add(new ApplicationAccessSelectionViewModel
+                {
+                    OrganisationApplicationId = enabledApp.Id,
+                    ApplicationName = enabledApp.Application?.Name ?? string.Empty,
+                    ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
+                    Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                    {
+                        Id = role.Id,
+                        Name = role.Name,
+                        Description = role.Description
+                    }).ToList()
+                });
+            }
+
+            return new ApplicationRolesStepViewModel
+            {
+                OrganisationSlug = organisationSlug,
+                FirstName = state.FirstName,
+                LastName = state.LastName,
+                Email = state.Email,
+                OrganisationRole = state.OrganisationRole,
+                Applications = applicationSelections
+            };
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
         }
     }
 

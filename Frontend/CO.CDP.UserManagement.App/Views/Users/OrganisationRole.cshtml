@@ -2,6 +2,10 @@
 @model CO.CDP.UserManagement.App.Models.InviteUserState
 @{
     ViewData["Title"] = "What is their role in your organisation?";
+    var returnToCheckAnswers = ViewData["ReturnToCheckAnswers"] as bool? ?? false;
+    var continueUrl = returnToCheckAnswers
+        ? $"/organisation/{Model.OrganisationSlug}/add-user/check-answers"
+        : $"/organisation/{Model.OrganisationSlug}/add-user/application-roles";
 }
 
 @section BeforeContent {
@@ -19,27 +23,27 @@
         <h1 class="govuk-heading-xl">What is their role in your organisation?</h1>
         <p class="govuk-body">This determines what the user can manage at the organisation level, separate to application-specific roles.</p>
 
-        <form method="get" action="/organisation/@Model.OrganisationSlug/add-user/application-roles">
+        <form method="get" action="@continueUrl">
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">What is their role in your organisation?</legend>
                     <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="organisation-role-member" name="organisationRole" type="radio" value="@OrganisationRole.Member">
+                            <input class="govuk-radios__input" id="organisation-role-member" name="organisationRole" type="radio" value="@OrganisationRole.Member" checked="@(Model.OrganisationRole == OrganisationRole.Member)">
                             <label class="govuk-label govuk-radios__label" for="organisation-role-member"><strong>Member</strong></label>
                             <div class="govuk-hint govuk-radios__hint">
                                 Can access assigned applications only. Cannot manage organisation settings or other users.
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="organisation-role-admin" name="organisationRole" type="radio" value="@OrganisationRole.Admin">
+                            <input class="govuk-radios__input" id="organisation-role-admin" name="organisationRole" type="radio" value="@OrganisationRole.Admin" checked="@(Model.OrganisationRole == OrganisationRole.Admin)">
                             <label class="govuk-label govuk-radios__label" for="organisation-role-admin"><strong>Admin</strong></label>
                             <div class="govuk-hint govuk-radios__hint">
                                 Can add and remove users, enable applications for users, and assign users to applications. Cannot transfer ownership.
                             </div>
                         </div>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="organisation-role-owner" name="organisationRole" type="radio" value="@OrganisationRole.Owner">
+                            <input class="govuk-radios__input" id="organisation-role-owner" name="organisationRole" type="radio" value="@OrganisationRole.Owner" checked="@(Model.OrganisationRole == OrganisationRole.Owner)">
                             <label class="govuk-label govuk-radios__label" for="organisation-role-owner"><strong>Owner</strong></label>
                             <div class="govuk-hint govuk-radios__hint">
                                 Full control of the organisation including transferring ownership and deleting the organisation. An organisation must have at least one owner.
