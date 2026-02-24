@@ -6,11 +6,12 @@ module "ecs_service_fts_search_indexer" {
     merge(
       local.fts_dotnet_search_indexer,
       {
-        cpu     = var.service_configs.fts_search_indexer.cpu
-        image   = local.ecr_urls[var.service_configs.fts_search_indexer.name]
-        lg_name = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_indexer.name].name
-        memory  = var.service_configs.fts_search_indexer.memory
-        name    = var.service_configs.fts_search_indexer.name
+        cpu       = var.service_configs.fts_search_indexer.cpu
+        image     = local.ecr_urls[var.service_configs.fts_search_indexer.name]
+        lg_name   = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_indexer.name].name
+        lg_prefix = "app"
+        memory    = var.service_configs.fts_search_indexer.memory
+        name      = var.service_configs.fts_search_indexer.name
       }
     )
   )

@@ -11,6 +11,7 @@ module "ecs_service_fts_search_api" {
         host_port      = var.service_configs.fts_search_api.port
         image          = local.ecr_urls[var.service_configs.fts_search_api.name]
         lg_name        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
+        lg_prefix      = "app"
         memory         = var.service_configs.fts_search_api.memory
         name           = var.service_configs.fts_search_api.name
       }
@@ -20,7 +21,7 @@ module "ecs_service_fts_search_api" {
   cluster_id             = local.fts_cluster_id
   container_port         = var.service_configs.fts_search_api.port
   cpu                    = var.service_configs.fts_search_api.cpu
-  desired_count          = var.service_configs.fts_search_api.desired_count
+  desired_count          = var.environment != "development" ? var.service_configs.fts_search_api.desired_count : 2
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.fts_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id

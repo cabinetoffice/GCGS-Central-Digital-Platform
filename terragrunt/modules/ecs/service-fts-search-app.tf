@@ -6,13 +6,18 @@ module "ecs_service_fts_app" {
     merge(
       local.fts_dotnet_fts_app,
       {
-        container_port = var.service_configs.fts_app.port
-        cpu            = var.service_configs.fts_app.cpu
-        host_port      = var.service_configs.fts_app.port
-        image          = local.ecr_urls[var.service_configs.fts_app.name]
-        lg_name        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
-        memory         = var.service_configs.fts_app.memory
-        name           = var.service_configs.fts_app.name
+        container_port                 = var.service_configs.fts_app.port
+        cpu                            = var.service_configs.fts_app.cpu
+        host_port                      = var.service_configs.fts_app.port
+        image                          = local.ecr_urls[var.service_configs.fts_app.name]
+        lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
+        lg_prefix                      = "app"
+        memory                         = var.service_configs.fts_app.memory
+        name                           = var.service_configs.fts_app.name
+        redis_auth_token_arn           = var.redis_auth_token_arn
+        redis_port                     = var.redis_port
+        redis_primary_endpoint_address = var.redis_primary_endpoint
+        ssm_data_protection_prefix     = local.ssm_data_protection_prefix
       }
     )
   )
@@ -20,7 +25,7 @@ module "ecs_service_fts_app" {
   cluster_id             = local.fts_cluster_id
   container_port         = var.service_configs.fts_app.port
   cpu                    = var.service_configs.fts_app.cpu
-  desired_count          = var.service_configs.fts_app.desired_count
+  desired_count          = var.environment != "development" ? var.service_configs.fts_app.desired_count : 2
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.fts_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
