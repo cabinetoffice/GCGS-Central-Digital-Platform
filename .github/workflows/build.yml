@@ -10,16 +10,6 @@ on:
     branches: [main]
     tags: ['*']
   pull_request:
-  workflow_dispatch:
-    inputs:
-      deploy_to_ecr:
-        description: 'Push Docker images to ECR'
-        required: true
-        type: choice
-        options:
-          - 'false'
-          - 'true'
-        default: 'false'
 
 jobs:
   pipeline_check:
@@ -276,11 +266,7 @@ jobs:
           category: ${{ steps.category.outputs.category }}
 
   publish:
-    if: |
-      (github.ref == 'refs/heads/main' || 
-       startsWith(github.ref, 'refs/tags/') || 
-       github.event.inputs.deploy_to_ecr == 'true') && 
-      github.repository_owner == 'cabinetoffice'
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
     runs-on: ubuntu-latest
     name: Publish containers
     needs: [test, package]
