@@ -27,10 +27,14 @@
         { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
         { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
         { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
-        { "name" : "UserManagementApi", "value" : "https://user-management-api.${public_domain}"}
+        { "name" : "UserManagementApi__BaseUrl", "value" : "https://user-management-api.${public_domain}"}
     ],
     "secrets": [
-        { "name" : "Authentication__Authority", "valueFrom" : "${authentication_authority}"}
+        { "name" : "Authentication__Authority", "valueFrom" : "${authentication_authority}"},
+        { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
+        { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
+        { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"},
+        { "name" : "OneLogin__AccountUrl", "valueFrom" : "${onelogin_account_url}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

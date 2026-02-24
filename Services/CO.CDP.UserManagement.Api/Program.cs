@@ -41,8 +41,7 @@ var connectionString = ConnectionStringHelper.GetConnectionString(builder.Config
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
-builder.Services.AddUserManagementInfrastructure(
-    connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
+builder.Services.AddUserManagementInfrastructure(connectionString);
 
 var elastiCacheHostname = builder.Configuration["Aws:ElastiCache:Hostname"];
 var elastiCachePort = builder.Configuration["Aws:ElastiCache:Port"];
@@ -197,7 +196,7 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
+    .AddNpgSql(connectionString);
 
 var app = builder.Build();
 
