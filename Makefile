@@ -52,7 +52,7 @@ verify-up: render-compose-override ## Verify if all Docker containers have run. 
 	interval=5; \
 	while [ $$timeout -gt 0 ]; do \
 		if docker compose ps -a --format json \
-			| jq --exit-status 'select(.Name != "co-cdp-organisation-information-migrations" and .Name != "co-cdp-entity-verification-migrations" and .Name != "co-cdp-commercial-tools-migrations") | select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
+			| jq --exit-status 'select(.Name != "co-cdp-organisation-information-migrations" and .Name != "co-cdp-entity-verification-migrations" and .Name != "co-cdp-commercial-tools-migrations" and .Name != "co-cdp-migrations-user-management") | select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
 			echo "Waiting for services to be healthy..."; \
 			sleep $$interval; \
 			timeout=$$(($$timeout - $$interval)); \
@@ -80,7 +80,7 @@ ps: ## Show Docker container status
 
 db: render-compose-override ## Start DB and DB migration services
 	@docker compose up -d db
-	@docker compose up organisation-information-migrations entity-verification-migrations commercial-tools-migrations --abort-on-container-failure
+	@docker compose up organisation-information-migrations entity-verification-migrations commercial-tools-migrations migrations-user-management --abort-on-container-failure
 .PHONY: db
 
 db-dump:
