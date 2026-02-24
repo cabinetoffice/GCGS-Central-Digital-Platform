@@ -25,7 +25,7 @@ module "ecs_service_fts_app" {
   cluster_id             = local.fts_cluster_id
   container_port         = var.service_configs.fts_app.port
   cpu                    = var.service_configs.fts_app.cpu
-  desired_count          = var.environment != "development" ? var.service_configs.fts_app.desired_count : 2
+  desired_count          = var.service_configs.fts_app.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.fts_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
