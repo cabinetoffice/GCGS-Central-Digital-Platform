@@ -22,10 +22,6 @@ output "cloud_beaver_user_pool_client_id" {
   value = aws_cognito_user_pool_client.cloud_beaver.id
 }
 
-output "commercial_tools_app_user_pool_client_id" {
-  value = aws_cognito_user_pool_client.commercial_tools_app.id
-}
-
 output "fts_healthcheck_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }

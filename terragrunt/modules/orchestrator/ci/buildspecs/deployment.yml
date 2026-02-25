@@ -35,7 +35,4 @@ phases:
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
           echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
-          STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-commercial-tools-migrations";
-          aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
         fi
