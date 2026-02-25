@@ -80,7 +80,7 @@ ps: ## Show Docker container status
 
 db: render-compose-override ## Start DB and DB migration services
 	@docker compose up -d db
-	@docker compose up organisation-information-migrations entity-verification-migrations commercial-tools-migrations migrations-user-management --abort-on-container-failure
+	@docker compose up organisation-information-migrations entity-verification-migrations commercial-tools-migrations --abort-on-container-failure
 .PHONY: db
 
 db-dump:
