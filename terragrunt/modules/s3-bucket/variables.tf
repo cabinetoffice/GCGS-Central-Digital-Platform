@@ -63,6 +63,12 @@ variable "read_roles" {
   type        = list(string)
 }
 
+variable "sse_algorithm" {
+  description = "Server-side encryption algorithm (aws:kms or AES256)."
+  type        = string
+  default     = "aws:kms"
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)

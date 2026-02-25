@@ -1,5 +1,6 @@
 module "s3_kms_key" {
   source = "../kms"
+  count  = var.enable_encryption && var.sse_algorithm == "aws:kms" ? 1 : 0
 
   bucket_enable_presigned  = var.enable_presigned_urls
   bucket_name              = var.bucket_name

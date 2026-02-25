@@ -90,25 +90,28 @@ data "aws_iam_policy_document" "public" {
     }
   }
 
-  statement {
-    sid    = "EcsAccess"
-    effect = "Allow"
-    actions = [
-      "s3:PutObjectAcl",
-      "s3:PutObject",
-      "s3:ListBucket",
-      "s3:GetObjectVersion",
-      "s3:GetObject",
-      "s3:GetBucketVersioning",
-      "s3:DeleteObject"
-    ]
-    resources = [
-      "${aws_s3_bucket.this.arn}",
-      "${aws_s3_bucket.this.arn}/*"
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = var.write_roles
+  dynamic "statement" {
+    for_each = length(var.write_roles) > 0 ? [var.write_roles] : []
+    content {
+      sid    = "EcsAccess"
+      effect = "Allow"
+      actions = [
+        "s3:PutObjectAcl",
+        "s3:PutObject",
+        "s3:ListBucket",
+        "s3:GetObjectVersion",
+        "s3:GetObject",
+        "s3:GetBucketVersioning",
+        "s3:DeleteObject"
+      ]
+      resources = [
+        "${aws_s3_bucket.this.arn}",
+        "${aws_s3_bucket.this.arn}/*"
+      ]
+      principals {
+        type        = "AWS"
+        identifiers = statement.value
+      }
     }
   }
 }

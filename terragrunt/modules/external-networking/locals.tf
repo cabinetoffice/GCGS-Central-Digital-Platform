@@ -17,4 +17,17 @@ locals {
       validator_records = ["_1616d9f5d97e70042aafc1b4ecb98fab.xlfgrmvvlj.acm-validations.aws."]
     }
   }
+
+  docs_records = {
+    oechestrator = null
+    development  = null
+    staging      = null
+    integration  = null
+    production = {
+      name              = "docs"
+      records           = ["d3ilb273zh778b.cloudfront.net"]
+      validator_name    = "_6503e13207edacb70a31e80c16cfe3da.docs.supplier-information.find-tender.service.gov.uk."
+      validator_records = ["_f6b5f10281167eb861a98afc996f9afd.jkddzztszm.acm-validations.aws."]
+    }
+  }
 }
