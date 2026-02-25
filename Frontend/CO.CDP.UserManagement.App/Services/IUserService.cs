@@ -31,18 +31,18 @@ public interface IUserService
     Task<ChangeUserRoleViewModel?> GetChangeUserRoleViewModelAsync(
         string organisationSlug,
         Guid? cdpPersonId,
-        int? pendingInviteId,
+        Guid? inviteGuid,
         CancellationToken ct = default);
 
     Task<bool> UpdateUserRoleAsync(
         string organisationSlug,
         Guid? cdpPersonId,
-        int? pendingInviteId,
+        Guid? inviteGuid,
         OrganisationRole organisationRole,
         CancellationToken ct = default);
 
     Task<bool> ResendInviteAsync(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         CancellationToken ct = default);
 }

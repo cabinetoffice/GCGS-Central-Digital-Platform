@@ -12,19 +12,24 @@ public class UsersControllerTests
 {
     private readonly Mock<IUserService> _userService;
     private readonly Mock<IInviteUserStateStore> _inviteUserStateStore;
+    private readonly Mock<IChangeRoleStateStore> _changeRoleStateStore;
     private readonly UsersController _controller;
 
     public UsersControllerTests()
     {
         _userService = new Mock<IUserService>();
         _inviteUserStateStore = new Mock<IInviteUserStateStore>();
+        _changeRoleStateStore = new Mock<IChangeRoleStateStore>();
         _inviteUserStateStore.Setup(store => store.ClearAsync()).Returns(Task.CompletedTask);
         _inviteUserStateStore.Setup(store => store.ClearSuccessAsync()).Returns(Task.CompletedTask);
         _inviteUserStateStore.Setup(store => store.SetAsync(It.IsAny<InviteUserState>())).Returns(Task.CompletedTask);
         _inviteUserStateStore.Setup(store => store.SetSuccessAsync(It.IsAny<InviteSuccessState>())).Returns(Task.CompletedTask);
         _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync((InviteUserState?)null);
         _inviteUserStateStore.Setup(store => store.GetSuccessAsync()).ReturnsAsync((InviteSuccessState?)null);
-        _controller = new UsersController(_userService.Object, _inviteUserStateStore.Object);
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync((ChangeRoleState?)null);
+        _changeRoleStateStore.Setup(store => store.SetAsync(It.IsAny<ChangeRoleState>())).Returns(Task.CompletedTask);
+        _changeRoleStateStore.Setup(store => store.ClearAsync()).Returns(Task.CompletedTask);
+        _controller = new UsersController(_userService.Object, _inviteUserStateStore.Object, _changeRoleStateStore.Object);
     }
 
     [Fact]
@@ -452,10 +457,11 @@ public class UsersControllerTests
     [Fact]
     public async Task ResendInvite_WhenSuccess_RedirectsToIndex()
     {
-        _userService.Setup(service => service.ResendInviteAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userService.Setup(service => service.ResendInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
-        var result = await _controller.ResendInvite("org", 1, CancellationToken.None);
+        var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(UsersController.Index));
@@ -464,10 +470,11 @@ public class UsersControllerTests
     [Fact]
     public async Task ResendInvite_WhenFails_ReturnsNotFound()
     {
-        _userService.Setup(service => service.ResendInviteAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userService.Setup(service => service.ResendInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        var result = await _controller.ResendInvite("org", 1, CancellationToken.None);
+        var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -484,16 +491,33 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task ChangeRole_Get_WhenViewModelAvailable_ReturnsView()
+    public async Task ChangeRole_Get_WhenSessionStateExists_ReturnsViewWithPersistedRole()
     {
-        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationName = "Org" };
+        var userId = Guid.NewGuid();
+        var viewModel = ChangeUserRoleViewModel.Empty with
+        {
+            OrganisationSlug = "org",
+            CdpPersonId = userId,
+            SelectedRole = OrganisationRole.Member
+        };
+        var persistedState = new ChangeRoleState(
+            "org",
+            userId,
+            null,
+            "Jane Doe",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Admin);
         _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", It.IsAny<Guid?>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(persistedState);
 
-        var result = await _controller.ChangeRole("org", Guid.NewGuid(), CancellationToken.None);
+        var result = await _controller.ChangeRole("org", userId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.Model.Should().Be(viewModel);
+        viewResult.ViewName.Should().Be("ChangeRole");
+        viewResult.Model.Should().BeOfType<ChangeUserRoleViewModel>()
+            .Which.SelectedRole.Should().Be(OrganisationRole.Admin);
     }
 
     [Fact]
@@ -503,42 +527,124 @@ public class UsersControllerTests
         _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", It.IsAny<Guid?>(), null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeRole("org", Guid.NewGuid(), null, CancellationToken.None);
+        var result = await _controller.ChangeRoleSubmit("org", Guid.NewGuid(), null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("ChangeRole");
         viewResult.Model.Should().Be(viewModel);
     }
 
     [Fact]
-    public async Task ChangeRole_Post_WhenSuccess_Redirects()
+    public async Task ChangeRole_Post_WhenRoleProvided_RedirectsToCheck()
     {
-        _userService.Setup(service => service.UpdateUserRoleAsync("org", It.IsAny<Guid?>(), null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        var userId = Guid.NewGuid();
+        var viewModel = ChangeUserRoleViewModel.Empty with
+        {
+            OrganisationSlug = "org",
+            CdpPersonId = userId,
+            SelectedRole = OrganisationRole.Member
+        };
+        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeRole("org", Guid.NewGuid(), OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeRoleSubmit("org", userId, OrganisationRole.Admin, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeRoleCheck));
+        redirect.RouteValues!["cdpPersonId"].Should().Be(userId);
+        redirect.RouteValues.ContainsKey("organisationRole").Should().BeFalse();
+        _userService.Verify(service => service.UpdateUserRoleAsync(
+                It.IsAny<string>(),
+                It.IsAny<Guid?>(),
+                It.IsAny<Guid?>(),
+                It.IsAny<OrganisationRole>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
-    public async Task ChangeRole_Post_WhenFails_ReturnsNotFound()
+    public async Task ChangeRoleCheck_Get_WhenSessionMissing_RedirectsToChangeRole()
     {
-        _userService.Setup(service => service.UpdateUserRoleAsync("org", It.IsAny<Guid?>(), null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+        var userId = Guid.NewGuid();
+
+        var result = await _controller.ChangeRoleCheck("org", userId, CancellationToken.None);
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeRole));
+    }
+
+    [Fact]
+    public async Task ChangeRoleCheck_Post_WhenSuccess_RedirectsToSuccess()
+    {
+        var userId = Guid.NewGuid();
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(new ChangeRoleState(
+            "org",
+            userId,
+            null,
+            "Jane Doe",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Admin));
+        _userService.Setup(service => service.UpdateUserRoleAsync("org", userId, null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var result = await _controller.ChangeRoleCheckSubmit("org", userId, CancellationToken.None);
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeRoleSuccess));
+        redirect.RouteValues!["cdpPersonId"].Should().Be(userId);
+    }
+
+    [Fact]
+    public async Task ChangeRoleCheck_Post_WhenFails_ReturnsNotFound()
+    {
+        var userId = Guid.NewGuid();
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(new ChangeRoleState(
+            "org",
+            userId,
+            null,
+            "Jane Doe",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Admin));
+        _userService.Setup(service => service.UpdateUserRoleAsync("org", userId, null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
-        var result = await _controller.ChangeRole("org", Guid.NewGuid(), OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeRoleCheckSubmit("org", userId, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
 
     [Fact]
+    public async Task ChangeRoleSuccess_Get_WhenValid_ReturnsView()
+    {
+        var userId = Guid.NewGuid();
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(new ChangeRoleState(
+            "org",
+            userId,
+            null,
+            "Jane Doe",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Owner));
+
+        var result = await _controller.ChangeRoleSuccess("org", userId, CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("ChangeRoleSuccess");
+        viewResult.Model.Should().BeOfType<ChangeUserRoleSuccessViewModel>()
+            .Which.NewRole.Should().Be(OrganisationRole.Owner);
+        _changeRoleStateStore.Verify(store => store.ClearAsync(), Times.Once);
+    }
+
+    [Fact]
     public async Task ChangeInviteRole_Get_WhenViewModelNull_ReturnsNotFound()
     {
-        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((ChangeUserRoleViewModel?)null);
 
-        var result = await _controller.ChangeInviteRole("org", 1, CancellationToken.None);
+        var result = await _controller.ChangeInviteRole("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -546,25 +652,28 @@ public class UsersControllerTests
     [Fact]
     public async Task ChangeInviteRole_Get_WhenViewModelAvailable_ReturnsView()
     {
-        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationName = "Org" };
-        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationName = "Org", InviteGuid = inviteGuid };
+        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeInviteRole("org", 1, CancellationToken.None);
+        var result = await _controller.ChangeInviteRole("org", inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
-        viewResult.Model.Should().Be(viewModel);
+        viewResult.Model.Should().BeOfType<ChangeUserRoleViewModel>()
+            .Which.SelectedRole.Should().Be(OrganisationRole.Member);
     }
 
     [Fact]
     public async Task ChangeInviteRole_Post_WhenRoleMissing_ReturnsView()
     {
-        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationName = "Org" };
-        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationName = "Org", InviteGuid = inviteGuid };
+        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeInviteRole("org", 1, null, CancellationToken.None);
+        var result = await _controller.ChangeInviteRoleSubmit("org", inviteGuid, null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
@@ -572,25 +681,61 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task ChangeInviteRole_Post_WhenSuccess_Redirects()
+    public async Task ChangeInviteRole_Post_WhenRoleProvided_RedirectsToCheck()
     {
-        _userService.Setup(service => service.UpdateUserRoleAsync("org", null, 1, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        var inviteGuid = Guid.NewGuid();
+        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationSlug = "org", InviteGuid = inviteGuid };
+        _userService.Setup(service => service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeInviteRole("org", 1, OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeInviteRoleSubmit("org", inviteGuid, OrganisationRole.Admin, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeInviteRoleCheck));
+        redirect.RouteValues!["inviteGuid"].Should().Be(inviteGuid);
     }
 
     [Fact]
-    public async Task ChangeInviteRole_Post_WhenFails_ReturnsNotFound()
+    public async Task ChangeInviteRoleCheck_Post_WhenSuccess_RedirectsToSuccess()
     {
-        _userService.Setup(service => service.UpdateUserRoleAsync("org", null, 1, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+        var inviteGuid = Guid.NewGuid();
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(new ChangeRoleState(
+            "org",
+            null,
+            inviteGuid,
+            "Jane Invite",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Admin));
+        _userService.Setup(service => service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
 
-        var result = await _controller.ChangeInviteRole("org", 1, OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeInviteRoleCheckSubmit("org", inviteGuid, CancellationToken.None);
 
-        result.Should().BeOfType<NotFoundResult>();
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeInviteRoleSuccess));
+        redirect.RouteValues!["inviteGuid"].Should().Be(inviteGuid);
+    }
+
+    [Fact]
+    public async Task ChangeInviteRoleSuccess_Get_WhenValid_ReturnsView()
+    {
+        var inviteGuid = Guid.NewGuid();
+        _changeRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync(new ChangeRoleState(
+            "org",
+            null,
+            inviteGuid,
+            "Jane Invite",
+            "jane@example.com",
+            OrganisationRole.Member,
+            OrganisationRole.Member));
+
+        var result = await _controller.ChangeInviteRoleSuccess("org", inviteGuid, CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("ChangeRoleSuccess");
+        viewResult.Model.Should().BeOfType<ChangeUserRoleSuccessViewModel>()
+            .Which.NewRole.Should().Be(OrganisationRole.Member);
+        _changeRoleStateStore.Verify(store => store.ClearAsync(), Times.Once);
     }
 }

@@ -136,6 +136,7 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
+builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 
 var app = builder.Build();
 
