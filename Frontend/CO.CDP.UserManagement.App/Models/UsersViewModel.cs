@@ -23,7 +23,7 @@ public sealed record UsersViewModel(
 
 public sealed record UserSummaryViewModel(
     Guid? Id,
-    int? PendingInviteId,
+    Guid? InviteGuid,
     string Name,
     string Email,
     OrganisationRole? OrganisationRole,

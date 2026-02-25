@@ -11,7 +11,7 @@ public sealed record ChangeUserRoleViewModel(
     OrganisationRole? SelectedRole,
     bool IsPending,
     Guid? CdpPersonId,
-    int? PendingInviteId)
+    Guid? InviteGuid)
 {
     public static ChangeUserRoleViewModel Empty => new(
         OrganisationName: string.Empty,
@@ -22,5 +22,11 @@ public sealed record ChangeUserRoleViewModel(
         SelectedRole: null,
         IsPending: false,
         CdpPersonId: null,
-        PendingInviteId: null);
+        InviteGuid: null);
 }
+
+public sealed record ChangeUserRoleSuccessViewModel(
+    string OrganisationSlug,
+    string UserDisplayName,
+    OrganisationRole NewRole,
+    string RoleDescription);
