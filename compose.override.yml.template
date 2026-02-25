@@ -140,8 +140,12 @@ services:
     deploy:
       replicas: 1
   user-management-api:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
-      replicas: 0
+      replicas: 1
   user-management-app:
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
     deploy:
-      replicas: 0
+      replicas: 1
