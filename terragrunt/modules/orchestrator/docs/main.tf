@@ -2,6 +2,7 @@ module "docs_bucket" {
   source = "../../s3-bucket"
 
   bucket_name           = local.bucket_name
+  create_kms_key        = false
   enable_access_logging = var.enable_access_logging
   enable_encryption     = var.enable_encryption
   is_public             = var.is_public

@@ -11,9 +11,9 @@ output "id" {
 }
 
 output "key_arn" {
-  value = var.enable_encryption && var.sse_algorithm == "aws:kms" ? module.s3_kms_key[0].key_arn : null
+  value = var.create_kms_key ? module.s3_kms_key[0].key_arn : null
 }
 
 output "key_id" {
-  value = var.enable_encryption && var.sse_algorithm == "aws:kms" ? module.s3_kms_key[0].key_id : null
+  value = var.create_kms_key ? module.s3_kms_key[0].key_id : null
 }
