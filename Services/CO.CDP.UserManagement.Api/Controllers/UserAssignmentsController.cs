@@ -1,6 +1,8 @@
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Api.Models;
+using CO.CDP.UserManagement.Api.FeatureFlags;
+using CO.CDP.UserManagement.Shared.FeatureFlags;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +17,7 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{orgId:int}/users/{userId}/assignments")]
 [Authorize]
+[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled)]
 public class UserAssignmentsController : ControllerBase
 {
     private readonly IUserAssignmentService _userAssignmentService;

@@ -151,15 +151,16 @@ public class InvitePersonToOrganisationUseCaseTest
     }
 
     [Fact]
-public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistingInviteAndCreatesAnother()
-{
-    var organisationId = Guid.NewGuid();
-    var existingInviteGuid = Guid.NewGuid();
-    InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
-
-    var organisation = new Persistence.Organisation
+    public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistingInviteAndCreatesAnother()
     {
-        Guid = organisationId,
+        var organisationId = Guid.NewGuid();
+        var existingInviteGuid = Guid.NewGuid();
+        InvitePersonToOrganisation invitePersonData = CreateDummyInviteToPerson();
+        List<PersonInvite>? expiredInvites = null;
+
+        var organisation = new Persistence.Organisation
+        {
+            Guid = organisationId,
         Name = "Test Organisation",
         Type = OrganisationInformation.OrganisationType.Organisation,
         Tenant = It.IsAny<Tenant>()
@@ -192,13 +193,16 @@ public async Task Execute_ValidInviteWithSameEmailForOrganisation_ExpiresExistin
     _personsInviteRepository.Setup(repo => repo.FindPersonInviteByEmail(organisationId, invitePersonData.Email))
         .ReturnsAsync(new[] { existingInvite });
 
-    _personsInviteRepository.Setup(repo => repo.Save(It.IsAny<PersonInvite>()));
+    _personsInviteRepository.Setup(repo => repo.SaveNewInvite(
+            It.IsAny<PersonInvite>(),
+            It.IsAny<IEnumerable<PersonInvite>>()))
+        .Callback<PersonInvite, IEnumerable<PersonInvite>>((_, invites) => expiredInvites = invites.ToList());
 
     var result = await _useCase.Execute(command);
 
     result.Should().BeTrue();
-
-    existingInvite.ExpiresOn.Should().NotBeNull();
+    expiredInvites.Should().NotBeNull();
+    expiredInvites!.Single(invite => invite.Guid == existingInviteGuid).ExpiresOn.Should().NotBeNull();
 
     _personsInviteRepository.Verify(repo => repo.SaveNewInvite(
             It.Is<PersonInvite>(pi => pi.Email == invitePersonData.Email && pi.Guid != existingInviteGuid),

@@ -20,20 +20,22 @@ public class ApiKeyScopeAuthorizationHandler : AuthorizationHandler<ApiKeyScopeA
             return Task.CompletedTask;
         }
 
-        context.Succeed(requirement);
-
-        if (requirement.RequiredScopes.Any())
+        if (!requirement.RequiredScopes.Any())
         {
-            var userApiKeyScopesClaim = context.User.FindFirst(c => c.Type == ClaimType.ApiKeyScope)?.Value;
-            if (!string.IsNullOrEmpty(userApiKeyScopesClaim))
+            context.Succeed(requirement);
+            return Task.CompletedTask;
+        }
+
+        var userApiKeyScopesClaim = context.User.FindFirst(c => c.Type == ClaimType.ApiKeyScope)?.Value;
+        if (!string.IsNullOrEmpty(userApiKeyScopesClaim))
+        {
+            var userScopes = userApiKeyScopesClaim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            if (requirement.RequiredScopes.Any(rs => userScopes.Contains(rs)))
             {
-                var userScopes = userApiKeyScopesClaim.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (requirement.RequiredScopes.Any(rs => userScopes.Contains(rs)))
+                context.Succeed(requirement);
+                if (channelClaimValue == Channel.ServiceKey && context.User.Identity is System.Security.Claims.ClaimsIdentity claimsIdentity)
                 {
-                    if (channelClaimValue == Channel.ServiceKey && context.User.Identity is System.Security.Claims.ClaimsIdentity claimsIdentity)
-                    {
-                        claimsIdentity.AddClaim(new System.Security.Claims.Claim("privileged_api_access", "true"));
-                    }
+                    claimsIdentity.AddClaim(new System.Security.Claims.Claim("privileged_api_access", "true"));
                 }
             }
         }

@@ -16,6 +16,14 @@ public interface IUserApplicationAssignmentRepository : IRepository<UserApplicat
     Task<IEnumerable<UserApplicationAssignment>> GetByMembershipIdAsync(int userOrganisationMembershipId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets assignments for multiple organisation memberships.
+    /// </summary>
+    /// <param name="userOrganisationMembershipIds">The user organisation membership identifiers.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Collection of user application assignments.</returns>
+    Task<IEnumerable<UserApplicationAssignment>> GetByMembershipIdsAsync(IEnumerable<int> userOrganisationMembershipIds, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets a specific user's assignment to an application in an organisation including roles.
     /// </summary>
     /// <param name="userOrganisationMembershipId">The user organisation membership identifier.</param>

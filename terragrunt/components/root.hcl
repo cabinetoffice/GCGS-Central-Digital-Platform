@@ -83,7 +83,7 @@ locals {
       ]
       pinned_service_version_cfs    = "1.0.7"
       pinned_service_version_fts    = "1.1.9"
-      pinned_service_version        = "1.0.82"
+      pinned_service_version        = "1.0.83"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
       private_subnets = [
@@ -210,11 +210,11 @@ locals {
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
     fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_app                              = { desired_count = 1 }
+    fts_app                              = { desired_count = 2 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
-    fts_search_api                       = { desired_count = 1 }
+    fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
@@ -262,12 +262,12 @@ locals {
     entity_verification_migrations       = { port = 9191, port_host = null, cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations"}
     forms                                = { port = 8086, port_host = 8086, cluster = "sirsi",     type = "web-service",  name = "forms"}
     fts                                  = { port = 8070, port_host = 8070, cluster = "sirsi-php", type = "web-service",  name = "fts"}
-    fts_app                              = { port = 8078, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-app"}
+    fts_app                              = { port = 8078, port_host = null, cluster = "fts",       type = "service",      name = "fts-app"}
     fts_healthcheck                      = { port = 8071, port_host = 8071, cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck"}
     fts_migrations                       = { port = 8072, port_host = null, cluster = "sirsi-php", type = "db-migration", name = "fts-migrations"}
     fts_scheduler                        = { port = 8074, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-scheduler"}
-    fts_search_api                       = { port = 8075, port_host = 8075, cluster = "sirsi-php", type = "service",      name = "fts-search-api"}
-    fts_search_indexer                   = { port = 8076, port_host = null, cluster = "sirsi-php", type = "service",      name = "fts-search-indexer"}
+    fts_search_api                       = { port = 8075, port_host = 8075, cluster = "fts",       type = "service",      name = "fts-search-api"}
+    fts_search_indexer                   = { port = 8076, port_host = null, cluster = "fts",       type = "service",      name = "fts-search-indexer"}
     organisation                         = { port = 8082, port_host = 8082, cluster = "sirsi",     type = "web-service",  name = "organisation"}
     organisation_app                     = { port = 8090, port_host = 80  , cluster = "sirsi",     type = "web-service",  name = "organisation-app"}
     organisation_information_migrations  = { port = 9090, port_host = null, cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations"}

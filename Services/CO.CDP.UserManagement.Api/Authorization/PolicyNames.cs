@@ -16,6 +16,11 @@ public static class PolicyNames
     public const string ServiceAccount = "ServiceAccount";
 
     /// <summary>
+    /// Service key policy - for DB-backed service key authentication.
+    /// </summary>
+    public const string ServiceKey = "ServiceKey";
+
+    /// <summary>
     /// Organisation member policy - for users who are members of an organisation.
     /// </summary>
     public const string OrganisationMember = "OrganisationMember";

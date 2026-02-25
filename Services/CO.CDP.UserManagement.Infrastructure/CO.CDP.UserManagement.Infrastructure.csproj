@@ -19,6 +19,7 @@
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="8.0.1" />
         <PackageReference Include="System.Formats.Asn1" Version="8.0.1" />
         <PackageReference Include="System.Text.Json" Version="8.0.5" />
+        <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     </ItemGroup>
 
     <ItemGroup>
@@ -26,6 +27,10 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Logging\CO.CDP.Logging.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Person.WebApiClient\CO.CDP.Person.WebApiClient.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.Organisation.WebApiClient\CO.CDP.Organisation.WebApiClient.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+        <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -40,4 +40,13 @@ public interface IUserOrganisationMembershipRepository : IRepository<UserOrganis
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The membership if found; otherwise, null.</returns>
     Task<UserOrganisationMembership?> GetByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Checks whether an active membership exists for a CDP person in an organisation.
+    /// </summary>
+    /// <param name="cdpPersonId">The CDP person identifier.</param>
+    /// <param name="organisationId">The organisation identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>True if an active membership exists; otherwise false.</returns>
+    Task<bool> ExistsByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default);
 }

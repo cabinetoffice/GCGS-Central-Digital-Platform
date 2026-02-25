@@ -85,6 +85,45 @@ locals {
     validation_weight                   = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
   }
 
+
+  fts_dotnet_common = {
+    aspcore_environment = local.aspcore_environment
+    lg_prefix           = "app"
+    lg_region           = data.aws_region.current.region
+    service_version     = local.service_version_fts
+  }
+
+  fts_dotnet_fts_app = merge(
+    local.fts_dotnet_common,
+    {
+      fts_service_url      = local.fts_service_url
+      onelogin_authority   = local.one_login.credential_locations.authority
+      onelogin_client_id   = local.one_login.credential_locations.client_id
+      onelogin_private_key = local.one_login.credential_locations.private_key
+      public_domain        = var.public_domain
+      vpc_cidr             = var.vpc_cider
+    }
+  )
+
+  fts_dotnet_search_api = merge(
+    local.fts_dotnet_common,
+    {
+      opensearch_endpoint = "https://${var.opensearch_endpoint}"
+    }
+  )
+
+  fts_dotnet_search_indexer = merge(
+    local.fts_dotnet_common,
+    {
+      db_address          = var.db_fts_cluster_address
+      db_name             = var.db_fts_cluster_name
+      db_password         = local.db_fts_password
+      db_port             = 3306
+      db_username         = local.db_fts_username
+      opensearch_endpoint = "https://${var.opensearch_endpoint}"
+    }
+  )
+
   fts_service_paremeters = {
     container_port  = var.service_configs.fts.port
     cpu             = var.service_configs.fts.cpu

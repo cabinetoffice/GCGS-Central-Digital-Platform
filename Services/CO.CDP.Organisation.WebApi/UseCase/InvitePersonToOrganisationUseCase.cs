@@ -65,17 +65,20 @@ public class InvitePersonToOrganisationUseCase(
 
     private async Task<IEnumerable<PersonInvite>> ExpireExistingPersonInvites(Guid organisationId, string email)
     {
-        var existingPersonInvites = await personInviteRepository.FindPersonInviteByEmail(organisationId, email);
+        var now = DateTimeOffset.UtcNow;
+        return (await personInviteRepository.FindPersonInviteByEmail(organisationId, email))
+            .Select(personInvite => ExpireInvite(personInvite, now))
+            .ToList();
+    }
 
-        foreach (var personInvite in existingPersonInvites)
+    private static PersonInvite ExpireInvite(PersonInvite personInvite, DateTimeOffset now)
+    {
+        if (personInvite.ExpiresOn == null)
         {
-            if (personInvite.ExpiresOn == null)
-            {
-                personInvite.ExpiresOn = DateTimeOffset.UtcNow;
-            }
+            personInvite.ExpiresOn = now;
         }
 
-        return existingPersonInvites;
+        return personInvite;
     }
 
     private PersonInvite CreatePersonInvite(

@@ -208,7 +208,7 @@ jobs:
       - name: Save Docker Images
         id: save
         run: |
-          IMAGES=$(docker images | awk '$1 ~ /cabinetoffice\/cdp-/ && $2 ~ /^'$IMAGE_VERSION'$/ { print $1":"$2}' | tr '\n' ' ')
+          IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | awk -F: -v version="$IMAGE_VERSION" '$1 ~ /cabinetoffice\/cdp-/ && $2 == version { print $1":"$2 }' | tr '\n' ' ')
           IMAGES_JSON=$(echo $IMAGES | tr " " "\n" | jq -R . | jq -c -s .)
           echo "Images to be saved: $IMAGES"
           echo "Images to be saved (json): $IMAGES_JSON"

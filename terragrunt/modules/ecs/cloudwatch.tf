@@ -26,7 +26,14 @@ resource "aws_cloudwatch_log_group" "ecs" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs_php" {
-  name = "/${local.name_prefix}/ecs-pup"
+  name = "/${local.name_prefix}/ecs-php"
+
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
+
+resource "aws_cloudwatch_log_group" "ecs_fts" {
+  name = "/${local.name_prefix_fts}/ecs-fts"
 
   retention_in_days = var.environment == "production" ? 0 : 90
   tags              = var.tags

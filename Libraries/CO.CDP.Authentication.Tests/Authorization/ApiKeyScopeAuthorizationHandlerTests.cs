@@ -87,7 +87,7 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().BeFalse();
     }
 
     [Theory]
@@ -135,7 +135,8 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        var shouldSucceed = channel == Channel.OneLogin || !requiredScopes.Any();
+        context.HasSucceeded.Should().Be(shouldSucceed);
         user.HasClaim("privileged_api_access", "true").Should().Be(shouldHaveClaim,
             $"user with channel '{channel}' and scopes '{userScopesClaim}' and requirement '{string.Join(",", requiredScopes)}'");
     }
@@ -189,7 +190,7 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().Be(shouldHaveEnhancedClaim);
         user.HasClaim("privileged_api_access", "true").Should().Be(shouldHaveEnhancedClaim);
     }
 
@@ -205,7 +206,7 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().Be(shouldHaveEnhancedClaim);
         user.HasClaim("privileged_api_access", "true").Should().Be(shouldHaveEnhancedClaim);
     }
 
@@ -236,7 +237,7 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().Be(shouldHaveEnhancedClaim);
         user.HasClaim("privileged_api_access", "true").Should().Be(shouldHaveEnhancedClaim);
     }
 
@@ -263,8 +264,8 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        // The handler should only handle the first requirement it encounters
-        context.HasSucceeded.Should().BeTrue();
+        // Multiple requirements must all be satisfied.
+        context.HasSucceeded.Should().BeFalse();
         user.HasClaim("privileged_api_access", "true").Should().BeTrue();
     }
 
@@ -292,7 +293,7 @@ public class ApiKeyScopeAuthorizationHandlerTests
 
         await _handler.HandleAsync(context);
 
-        context.HasSucceeded.Should().BeTrue();
+        context.HasSucceeded.Should().BeFalse();
         user.HasClaim("privileged_api_access", "true").Should().BeFalse();
     }
 

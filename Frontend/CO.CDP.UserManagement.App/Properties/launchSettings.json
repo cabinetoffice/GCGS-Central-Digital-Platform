@@ -6,8 +6,8 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "hotReloadEnabled": false,
-      "launchUrl": "http://localhost:5274",
-      "applicationUrl": "http://localhost:55274",
+      "launchUrl": "http://localhost:8068",
+      "applicationUrl": "http://localhost:58068",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -17,7 +17,7 @@
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "hotReloadEnabled": false,
-      "applicationUrl": "http://localhost:5274",
+      "applicationUrl": "http://localhost:8068",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

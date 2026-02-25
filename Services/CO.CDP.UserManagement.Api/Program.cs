@@ -1,18 +1,36 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Infrastructure;
+using CO.CDP.UserManagement.Infrastructure.Events;
+using CO.CDP.UserManagement.Infrastructure.Subscribers;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
-using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.AwsServices;
+using CO.CDP.MQ;
+using CO.CDP.UserManagement.Api.Validation;
+using CO.CDP.UserManagement.Api.FeatureFlags;
 using CO.CDP.Person.WebApiClient;
+using CO.CDP.Configuration.Helpers;
+using CO.CDP.OrganisationInformation.Persistence;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Npgsql;
+using System.Reflection;
+using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
+var userManagementEnabled = builder.Configuration.GetValue(
+    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.UserManagementEnabled,
+    builder.Environment.IsDevelopment());
 
 // Add services to the container
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<CreateApplicationRequestValidator>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSanitisedLogging();
 builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(builder.Configuration); });
@@ -20,34 +38,113 @@ builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
 var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
-var cdpConnectionString = builder.Configuration.GetConnectionString("CdpDatabase");
 var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+var organisationInformationConnectionString =
+    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
 builder.Services.AddUserManagementInfrastructure(
-    connectionString ?? throw new InvalidOperationException("Database connection string not configured"),
-    cdpConnectionString);
+    connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
 builder.Services.AddUserManagementCaching(redisConnectionString);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
+var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
+var subscriberFeatureFlags = SubscriberFeatureFlags.FromConfiguration(builder.Configuration);
+
+builder.Services.AddLoggingConfiguration(builder.Configuration);
+
+var awsSection = builder.Configuration.GetSection("Aws");
+if (awsSection.Exists())
+{
+    builder.Services.AddAwsConfiguration(builder.Configuration);
+}
+
+var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+var awsRegion = builder.Configuration["AWS:Region"]
+                ?? Environment.GetEnvironmentVariable("AWS_REGION");
+if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
+                                         !string.IsNullOrWhiteSpace(awsRegion)))
+{
+    builder.Services
+        .AddAmazonCloudWatchLogsService()
+        .AddCloudWatchSerilog(builder.Configuration);
+}
+
+if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
+    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
+{
+    if (awsConfig?.SqsDispatcher is null)
+    {
+        throw new InvalidOperationException("AWS SQS Dispatcher configuration is required but not found. Ensure Aws:SqsDispatcher:QueueUrl is configured.");
+    }
+
+    if (string.IsNullOrWhiteSpace(awsConfig.SqsDispatcher.QueueUrl))
+    {
+        throw new InvalidOperationException("AWS SQS Dispatcher QueueUrl is required but not configured.");
+    }
+
+    builder.Services
+        .AddAwsSqsService()
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api"),
+                services =>
+                {
+                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
+                    {
+                        services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
+                    }
+
+                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
+                    {
+                        services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
+                    }
+
+                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
+                    {
+                        services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
+                    }
+                },
+                (services, dispatcher) =>
+                {
+                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
+                    {
+                        dispatcher.Subscribe<OrganisationRegistered>(services);
+                    }
+
+                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
+                    {
+                        dispatcher.Subscribe<OrganisationUpdated>(services);
+                    }
+
+                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
+                    {
+                        dispatcher.Subscribe<PersonInviteClaimed>(services);
+                    }
+                }
+            );
+}
+
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
+const string personHttpClientName = "PersonClient";
+builder.Services.AddHttpClient(personHttpClientName)
+    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl ?? string.Empty,
+    sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
+
 var organisationServiceUrl = builder.Configuration.GetValue<string>("OrganisationService");
-if (!string.IsNullOrWhiteSpace(personServiceUrl))
-{
-    const string personHttpClientName = "PersonClient";
-    builder.Services.AddHttpClient(personHttpClientName)
-        .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
-    builder.Services.AddTransient<IPersonClient, PersonClient>(sc => new PersonClient(personServiceUrl,
-        sc.GetRequiredService<IHttpClientFactory>().CreateClient(personHttpClientName)));
-}
-if (!string.IsNullOrWhiteSpace(organisationServiceUrl))
-{
-    const string organisationHttpClientName = "OrganisationClient";
-    builder.Services.AddHttpClient(organisationHttpClientName);
-    builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(sc => new OrganisationClient(organisationServiceUrl,
+const string organisationHttpClientName = "OrganisationClient";
+builder.Services.AddHttpClient(organisationHttpClientName)
+    .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
+builder.Services.AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClient, CO.CDP.Organisation.WebApiClient.OrganisationClient>(sc =>
+    new CO.CDP.Organisation.WebApiClient.OrganisationClient(
+        organisationServiceUrl ?? string.Empty,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
-}
+
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
+    options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -59,7 +156,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateAudience = false
         };
-    });
+    })
+    .AddApiKeyAuthentication();
+
+builder.Services.AddApiKeyAuthenticationServices();
 
 // Authorization
 builder.Services.AddAuthorization(options =>
@@ -71,6 +171,10 @@ builder.Services.AddAuthorization(options =>
     // Service Account - for service-to-service authentication
     options.AddPolicy(PolicyNames.ServiceAccount, policy =>
         policy.RequireClaim("client_id"));
+
+    // Service Key - for DB-backed service key authentication
+    options.AddPolicy(PolicyNames.ServiceKey, policy =>
+        policy.RequireClaim(Constants.ClaimType.Channel, Constants.Channel.ServiceKey));
 
     // Organisation Member - for users who are members of an organisation
     options.AddPolicy(PolicyNames.OrganisationMember, policy =>
@@ -91,8 +195,21 @@ builder.Services.AddHealthChecks()
 
 var app = builder.Build();
 
+if (!userManagementEnabled)
+{
+    app.Run(async context =>
+    {
+        context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+        context.Response.ContentType = "application/json";
+        await context.Response.WriteAsync("{\"error\":\"Service Unavailable\",\"message\":\"User Management API is disabled by configuration.\"}");
+    });
+
+    app.Run();
+    return;
+}
+
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+if (swaggerEnabled)
 {
     app.UseSwagger();
     app.UseSwaggerUI();
@@ -107,3 +224,5 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+public abstract partial class Program;
