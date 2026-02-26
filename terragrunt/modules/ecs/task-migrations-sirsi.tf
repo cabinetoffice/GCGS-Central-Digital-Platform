@@ -6,28 +6,26 @@ module "ecs_migration_tasks" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${each.value.name}.json.tftpl",
     {
-      cpu                 = var.service_configs.entity_verification_migrations.cpu
       aspcore_environment = local.aspcore_environment
+      cpu                 = var.service_configs.entity_verification_migrations.cpu
+      db_address          = each.value.name == "entity-verification-migrations" ? var.db_ev_cluster_address : var.db_sirsi_cluster_address
+      db_name             = each.value.name == "entity-verification-migrations" ? var.db_ev_cluster_name : var.db_sirsi_cluster_name
+      db_password         = each.value.name == "entity-verification-migrations" ? local.db_ev_password : local.db_sirsi_password
+      db_username         = each.value.name == "entity-verification-migrations" ? local.db_ev_username : local.db_sirsi_username
       image               = local.ecr_urls[each.value.name]
       lg_name             = aws_cloudwatch_log_group.tasks[each.value.name].name
       lg_prefix           = "db"
       lg_region           = data.aws_region.current.region
       memory              = each.value.memory
       name                = each.value.name
-      db_address          = each.value.name == "entity-verification-migrations" ? var.db_ev_cluster_address : var.db_sirsi_cluster_address
-      db_name             = each.value.name == "entity-verification-migrations" ? var.db_ev_cluster_name : var.db_sirsi_cluster_name
-      db_password         = each.value.name == "entity-verification-migrations" ? local.db_ev_password : local.db_sirsi_password
-      db_username         = each.value.name == "entity-verification-migrations" ? local.db_ev_username : local.db_sirsi_username
       public_domain       = var.public_domain
       service_version     = local.service_version_sirsi
     }
   )
 
+  alb_enabled            = false
   cluster_id             = local.main_cluster_id
-  container_port         = each.value.port
   cpu                    = each.value.cpu
-  ecs_alb_sg_id          = "N/A"
-  ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
   is_standalone_task     = true

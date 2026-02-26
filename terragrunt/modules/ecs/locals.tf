@@ -64,22 +64,44 @@ locals {
 
   service_configs = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration"
   }
 
   service_configs_sirsi_cluster = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "sirsi"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration" && config.cluster == "sirsi"
   }
 
   service_configs_sirsi_php_cluster = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "sirsi-php"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration" && config.cluster == "sirsi-php"
   }
 
   service_configs_fts_cluster = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "fts"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration" && config.cluster == "fts"
+  }
+
+
+  dotnet_service_port = 8080
+  php_service_port    = 8070
+
+  service_port_by_cluster = {
+    sirsi     = local.dotnet_service_port
+    fts       = local.dotnet_service_port
+    sirsi-php = local.php_service_port
   }
 
   tasks = [

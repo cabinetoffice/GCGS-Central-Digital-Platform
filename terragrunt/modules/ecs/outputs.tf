@@ -59,15 +59,36 @@ output "s3_fts_bucket" {
 }
 
 output "service_configs" {
-  value = local.service_configs
-}
-
-output "service_configs_fts" {
-  value = local.service_configs_fts_cluster
+  value = {
+    for name, config in local.service_configs :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
 }
 
 output "service_configs_php" {
-  value = local.service_configs_sirsi_php_cluster
+  value = {
+    for name, config in local.service_configs_sirsi_php_cluster :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
+}
+
+output "service_configs_fts" {
+  value = {
+    for name, config in local.service_configs_fts_cluster :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
 }
 
 output "service_version_cfs" {

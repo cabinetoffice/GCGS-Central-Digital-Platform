@@ -7,7 +7,6 @@ module "ecs_service_cfs" {
   )
 
   cluster_id             = local.php_cluster_id
-  container_port         = var.service_configs.cfs.port
   cpu                    = var.service_configs.cfs.cpu
   desired_count          = var.service_configs.cfs.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
@@ -16,8 +15,8 @@ module "ecs_service_cfs" {
   extra_host_headers     = var.cfs_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
-  host_port              = var.service_configs.cfs.port
   listener_name          = "php-${var.service_configs.cfs.name}"
+  listener_priority      = try(var.service_configs.cfs.listener_priority, null)
   memory                 = var.service_configs.cfs.memory
   name                   = var.service_configs.cfs.name
   private_subnet_ids     = var.private_subnet_ids
@@ -25,6 +24,7 @@ module "ecs_service_cfs" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_port_by_cluster[var.service_configs.cfs.cluster]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

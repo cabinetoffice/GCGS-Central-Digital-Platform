@@ -15,12 +15,10 @@ variable "certificate_arn" {
 
 variable "cloud_beaver_config" {
   description = "Cloud Beaver services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -150,12 +148,10 @@ variable "environment" {
 
 variable "healthcheck_config" {
   description = "Health-check services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -166,12 +162,10 @@ variable "is_production" {
 
 variable "opensearch_admin_config" {
   description = "OpenSearch Admin services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -182,12 +176,10 @@ variable "opensearch_endpoint" {
 
 variable "opensearch_gateway_config" {
   description = "OpenSearch Gateway services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -277,12 +269,10 @@ variable "s3_fts_bucket" {
 
 variable "s3_uploader_config" {
   description = "S3 Uploader services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -301,14 +291,19 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "manage_tools_alb_ecs_sg_rules" {
+  description = "Whether to manage Tools ALB <-> ECS security group rules"
+  type        = bool
+  default     = true
+}
+
 variable "tools_configs" {
   description = "Map of tools and their attributes"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = number
   }))
 }
 
