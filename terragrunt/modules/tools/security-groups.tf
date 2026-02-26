@@ -8,6 +8,30 @@ resource "aws_security_group_rule" "public_access_to_tools_alb" {
   type              = "ingress"
 }
 
+resource "aws_security_group_rule" "ecs_service_from_tools_alb" {
+  for_each = var.manage_tools_alb_ecs_sg_rules ? toset([for port in local.tools_alb_ports : tostring(port)]) : []
+
+  description              = "From Tools ALB to ECS services on port ${each.value}"
+  from_port                = tonumber(each.value)
+  protocol                 = "TCP"
+  security_group_id        = var.ecs_sg_id
+  source_security_group_id = var.alb_tools_sg_id
+  to_port                  = tonumber(each.value)
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "tools_alb_to_ecs_service" {
+  for_each = var.manage_tools_alb_ecs_sg_rules ? toset([for port in local.tools_alb_ports : tostring(port)]) : []
+
+  description              = "From ECS services to Tools ALB on port ${each.value}"
+  from_port                = tonumber(each.value)
+  protocol                 = "TCP"
+  security_group_id        = var.alb_tools_sg_id
+  source_security_group_id = var.ecs_sg_id
+  to_port                  = tonumber(each.value)
+  type                     = "egress"
+}
+
 resource "aws_security_group_rule" "tools_alb_to_public" {
   description       = "Public access from ${local.name_prefix} Tools ALB, needed for Cognito authentication"
   from_port         = 443

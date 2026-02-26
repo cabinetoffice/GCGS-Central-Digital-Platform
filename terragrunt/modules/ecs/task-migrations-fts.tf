@@ -13,11 +13,9 @@ module "ecs_migration_tasks_fts" {
     )
   )
 
+  alb_enabled            = false
   cluster_id             = local.php_cluster_id
-  container_port         = each.value.port
   cpu                    = each.value.cpu
-  ecs_alb_sg_id          = "N/A"
-  ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
   is_standalone_task     = true

@@ -5,13 +5,11 @@ module "ecs_service_commercial_tools_api" {
     "${path.module}/templates/task-definitions/${var.service_configs.commercial_tools_api.name}.json.tftpl",
     {
       aspcore_environment            = local.aspcore_environment
-      container_port                 = var.service_configs.commercial_tools_api.port
       cpu                            = var.service_configs.commercial_tools_api.cpu
       db_address                     = var.db_sirsi_cluster_address
       db_name                        = var.db_sirsi_cluster_name
       db_password                    = local.db_sirsi_password
       db_username                    = local.db_sirsi_username
-      host_port                      = var.service_configs.commercial_tools_api.port
       image                          = local.ecr_urls[var.service_configs.commercial_tools_api.name]
       lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_api.name].name
       lg_prefix                      = "app"
@@ -25,17 +23,18 @@ module "ecs_service_commercial_tools_api" {
       redis_primary_endpoint_address = var.redis_primary_endpoint
       service_version                = var.environment == "development" ? local.service_version_sirsi : "1.0.80-98036a04a"
       vpc_cidr                       = var.vpc_cider
+      service_port                   = local.service_port_by_cluster[var.service_configs.commercial_tools_api.cluster]
     }
   )
+
   cluster_id             = local.main_cluster_id
-  container_port         = var.service_configs.commercial_tools_api.port
   cpu                    = var.service_configs.commercial_tools_api.cpu
   desired_count          = contains(["development", "staging"], var.environment) ? var.service_configs.commercial_tools_app.desired_count : 0
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.commercial_tools_api.port_host
+  listener_priority      = var.service_configs.commercial_tools_api.listener_priority
   memory                 = var.service_configs.commercial_tools_api.memory
   name                   = var.service_configs.commercial_tools_api.name
   private_subnet_ids     = var.private_subnet_ids
@@ -43,6 +42,7 @@ module "ecs_service_commercial_tools_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_port_by_cluster[var.service_configs.commercial_tools_api.cluster]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

@@ -6,20 +6,17 @@ module "ecs_service_fts_search_api" {
     merge(
       local.fts_dotnet_search_api,
       {
-        container_port = var.service_configs.fts_search_api.port
-        cpu            = var.service_configs.fts_search_api.cpu
-        host_port      = var.service_configs.fts_search_api.port
-        image          = local.ecr_urls[var.service_configs.fts_search_api.name]
-        lg_name        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
-        lg_prefix      = "app"
-        memory         = var.service_configs.fts_search_api.memory
-        name           = var.service_configs.fts_search_api.name
+        cpu          = var.service_configs.fts_search_api.cpu
+        image        = local.ecr_urls[var.service_configs.fts_search_api.name]
+        lg_name      = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
+        memory       = var.service_configs.fts_search_api.memory
+        name         = var.service_configs.fts_search_api.name
+        service_port = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
       }
     )
   )
 
   cluster_id             = local.fts_cluster_id
-  container_port         = var.service_configs.fts_search_api.port
   cpu                    = var.service_configs.fts_search_api.cpu
   desired_count          = var.service_configs.fts_search_api.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
@@ -27,8 +24,8 @@ module "ecs_service_fts_search_api" {
   ecs_service_base_sg_id = var.ecs_sg_id
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
-  host_port              = var.service_configs.fts_search_api.port
-  listener_name          = "fts-${var.service_configs.fts_search_api.name}"
+  listener_name          = "dotnet-${var.service_configs.fts_search_api.name}"
+  listener_priority      = var.service_configs.fts_search_api.listener_priority
   memory                 = var.service_configs.fts_search_api.memory
   name                   = var.service_configs.fts_search_api.name
   private_subnet_ids     = var.private_subnet_ids
@@ -36,6 +33,7 @@ module "ecs_service_fts_search_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

@@ -12,21 +12,15 @@ module "ecs_service_cfs_scheduler" {
   )
 
   cluster_id             = local.php_cluster_id
-  container_port         = var.service_configs.cfs_scheduler.port
   cpu                    = var.service_configs.cfs_scheduler.cpu
   desired_count          = var.service_configs.cfs_scheduler.desired_count
-  ecs_alb_sg_id          = "N/A"
-  ecs_listener_arn       = "N/A"
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "standalone"
-  healthcheck_path       = "/"
-  host_port              = var.service_configs.cfs_scheduler.port_host
-  listener_name          = "php-${var.service_configs.cfs_scheduler.name}"
+  alb_enabled            = false
   memory                 = var.service_configs.cfs_scheduler.memory
   name                   = var.service_configs.cfs_scheduler.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags

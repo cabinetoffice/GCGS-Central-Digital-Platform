@@ -291,16 +291,16 @@ variable "role_terraform_arn" {
 }
 
 variable "service_configs" {
-  description = "Map of services to their ports"
+  description = "Map of service configuration metadata"
   type = map(object({
-    cluster       = string
-    cpu           = number
-    desired_count = number
-    memory        = number
-    name          = string
-    port          = number
-    port_host     = number
-    type          = string
+    cluster           = string
+    cpu               = number
+    desired_count     = number
+    listener_priority = optional(number)
+    memory            = number
+    name              = string
+    port              = optional(number)
+    type              = string
   }))
 }
 
@@ -317,6 +317,12 @@ variable "ses_configuration_set_name" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "manage_alb_ecs_sg_rules" {
+  description = "Whether to manage ALB <-> ECS security group rules for shared service ports"
+  type        = bool
+  default     = true
 }
 
 variable "user_pool_arn" {

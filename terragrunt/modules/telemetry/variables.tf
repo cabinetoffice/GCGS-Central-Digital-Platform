@@ -36,11 +36,10 @@ variable "environment" {
 variable "grafana_config" {
   description = "Grafana services configuration"
   type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -94,13 +93,12 @@ variable "role_telemetry_arn" {
 }
 
 variable "service_configs" {
-  description = "Map of services to their ports"
+  description = "Map of services to their config"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = optional(number)
   }))
 }
 
