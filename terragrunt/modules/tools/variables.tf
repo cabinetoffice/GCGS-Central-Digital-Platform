@@ -160,6 +160,12 @@ variable "is_production" {
   type        = bool
 }
 
+variable "manage_tools_alb_ecs_sg_rules" {
+  description = "Whether to manage Tools ALB <-> ECS security group rules"
+  type        = bool
+  default     = true
+}
+
 variable "opensearch_admin_config" {
   description = "OpenSearch Admin services configuration"
   type = object({ cpu = number
@@ -289,12 +295,6 @@ variable "sqs_organisation_url" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
-}
-
-variable "manage_tools_alb_ecs_sg_rules" {
-  description = "Whether to manage Tools ALB <-> ECS security group rules"
-  type        = bool
-  default     = true
 }
 
 variable "tools_configs" {
