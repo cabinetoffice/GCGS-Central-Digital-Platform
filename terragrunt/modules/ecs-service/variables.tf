@@ -1,3 +1,9 @@
+variable "alb_enabled" {
+  description = "Whether to create ALB target group and listener rule"
+  type        = bool
+  default     = true
+}
+
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
@@ -12,12 +18,6 @@ variable "cluster_id" {
 variable "container_definitions" {
   description = "A list of valid container definitions provided as a single valid JSON document"
   type        = string
-}
-
-variable "service_port" {
-  description = "Container/listener port for this service"
-  type        = number
-  default     = null
 }
 
 variable "cpu" {
@@ -45,6 +45,12 @@ variable "desired_count" {
 
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
+  type        = string
+  default     = null
+}
+
+variable "ecs_alb_sg_id" {
+  description = "Security group ID for the ECS ALB"
   type        = string
   default     = null
 }
@@ -103,12 +109,6 @@ variable "healthcheck_timeout" {
   default     = 6
 }
 
-variable "alb_enabled" {
-  description = "Whether to create ALB target group and listener rule"
-  type        = bool
-  default     = true
-}
-
 variable "is_frontend_app" {
   description = "Whether it is an API or the Frontend service, to link the domain alias to"
   type        = bool
@@ -148,6 +148,15 @@ variable "private_subnet_ids" {
   type        = list(string)
 }
 
+variable "product" {
+  description = "Product's common attributes"
+  type = object({
+    name               = string
+    resource_name      = string
+    public_hosted_zone = string
+  })
+}
+
 variable "public_domain" {
   description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string
@@ -162,6 +171,12 @@ variable "role_ecs_task_arn" {
 variable "role_ecs_task_exec_arn" {
   description = "Task execution IAM role ARN"
   type        = string
+}
+
+variable "service_port" {
+  description = "Container/listener port for this service"
+  type        = number
+  default     = null
 }
 
 variable "tags" {

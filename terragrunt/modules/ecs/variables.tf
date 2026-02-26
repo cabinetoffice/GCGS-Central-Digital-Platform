@@ -128,6 +128,12 @@ variable "is_production" {
   type        = bool
 }
 
+variable "manage_alb_ecs_sg_rules" {
+  description = "Whether to manage ALB <-> ECS security group rules for shared service ports"
+  type        = bool
+  default     = true
+}
+
 variable "onelogin_logout_notification_urls" {
   description = "A list of URLs that the organisation app will call to notify other services of a logout event"
   type        = list(string)
@@ -317,12 +323,6 @@ variable "ses_configuration_set_name" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
-}
-
-variable "manage_alb_ecs_sg_rules" {
-  description = "Whether to manage ALB <-> ECS security group rules for shared service ports"
-  type        = bool
-  default     = true
 }
 
 variable "user_pool_arn" {
