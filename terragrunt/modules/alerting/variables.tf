@@ -55,7 +55,6 @@ variable "service_configs" {
     memory        = number
     name          = string
     port          = number
-    port_host     = number
   }))
 }
 
