@@ -71,7 +71,7 @@ output "service_configs" {
 
 output "service_configs_php" {
   value = {
-    for name, config in local.service_configs_sirsi_php_cluster :
+    for name, config in local.service_configs_php :
     name => {
       cpu           = config.cpu
       desired_count = config.desired_count
@@ -82,7 +82,7 @@ output "service_configs_php" {
 
 output "service_configs_fts" {
   value = {
-    for name, config in local.service_configs_fts_cluster :
+    for name, config in local.service_configs_fts :
     name => {
       cpu           = config.cpu
       desired_count = config.desired_count

@@ -82,7 +82,7 @@ locals {
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
       pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.1.9"
+      pinned_service_version_fts    = "1.2.0"
       pinned_service_version        = "1.0.83"
       postgres_instance_type        = "db.t4g.micro"
       postgres_aurora_instance_type = "db.r5.large"
@@ -213,11 +213,11 @@ locals {
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
     fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_app                              = { desired_count = 1 }
+    fts_app                              = { desired_count = 2 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
-    fts_search_api                       = { desired_count = 1 }
+    fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
@@ -254,7 +254,7 @@ locals {
     )
   }
 
-  service_configs_common_base = {
+  service_configs_common = {
     authority                            = { cluster = "sirsi",     type = "web-service",  listener_priority = 118,  name = "authority" }
     av_scanner_app                       = { cluster = "sirsi",     type = "web-service",  listener_priority = 112,  name = "av-scanner-app" }
     cfs                                  = { cluster = "sirsi-php", type = "web-service",  listener_priority = 310,  name = "cfs" }
@@ -283,8 +283,6 @@ locals {
     scheduled_worker                     = { cluster = "sirsi",     type = "service",      listener_priority = 122,  name = "scheduled-worker" }
     tenant                               = { cluster = "sirsi",     type = "web-service",  listener_priority = 123,  name = "tenant" }
   }
-
-  service_configs_common = local.service_configs_common_base
 
   service_configs = {
     for key, value in local.service_configs_scaling :

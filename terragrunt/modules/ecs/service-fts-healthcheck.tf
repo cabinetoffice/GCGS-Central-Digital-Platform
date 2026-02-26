@@ -18,10 +18,10 @@ module "ecs_service_fts_healthcheck" {
       memory                     = var.service_configs.fts_healthcheck.memory
       name                       = var.service_configs.fts_healthcheck.name
       public_domain              = var.public_domain
+      service_port               = local.service_port_by_cluster[var.service_configs.fts_healthcheck.cluster]
       service_version            = "latest"
       ses_configuration_set_name = var.ses_configuration_set_name
       vpc_cidr                   = var.vpc_cider
-      service_port               = local.service_port_by_cluster[var.service_configs.fts_healthcheck.cluster]
     }
   )
 
@@ -34,7 +34,7 @@ module "ecs_service_fts_healthcheck" {
   family                 = "app"
   healthcheck_path       = "/healthz.php"
   listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
-  listener_priority      = try(var.service_configs.fts_healthcheck.listener_priority, null)
+  listener_priority      = var.service_configs.fts_healthcheck.listener_priority
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

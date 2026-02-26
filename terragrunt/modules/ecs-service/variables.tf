@@ -43,12 +43,6 @@ variable "desired_count" {
   type        = number
 }
 
-variable "ecs_alb_sg_id" {
-  description = "Application load-balancer security group ID"
-  type        = string
-  default     = null
-}
-
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string
@@ -152,15 +146,6 @@ variable "name" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
-}
-
-variable "product" {
-  description = "product's common attributes"
-  type = object({
-    name               = string
-    resource_name      = string
-    public_hosted_zone = string
-  })
 }
 
 variable "public_domain" {

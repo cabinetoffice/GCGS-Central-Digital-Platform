@@ -31,7 +31,7 @@ module "ecs_service_outbox_processor_organisation" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   listener_name          = "outbox-processor-org"
-  listener_priority      = try(var.service_configs.outbox_processor_organisation.listener_priority, null)
+  listener_priority      = var.service_configs.outbox_processor_organisation.listener_priority
   memory                 = var.service_configs.outbox_processor_organisation.memory
   name                   = var.service_configs.outbox_processor_organisation.name
   private_subnet_ids     = var.private_subnet_ids

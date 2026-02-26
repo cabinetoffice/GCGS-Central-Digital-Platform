@@ -73,7 +73,7 @@ module "ecs_service_organisation_app" {
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
   is_frontend_app               = true
-  listener_priority             = try(var.service_configs.organisation_app.listener_priority, null) # this needs to stay and can't be same as host, 80
+  listener_priority             = var.service_configs.organisation_app.listener_priority # this needs to stay and can't be same as host, 80
   memory                        = var.service_configs.organisation_app.memory
   name                          = var.service_configs.organisation_app.name
   private_subnet_ids            = var.private_subnet_ids

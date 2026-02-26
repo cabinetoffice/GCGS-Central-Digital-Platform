@@ -29,7 +29,7 @@ module "ecs_service_fts_app" {
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
   listener_name          = "dotnet-${var.service_configs.fts_app.name}"
-  listener_priority      = try(var.service_configs.fts_app.listener_priority, null)
+  listener_priority      = var.service_configs.fts_app.listener_priority
   memory                 = var.service_configs.fts_app.memory
   name                   = var.service_configs.fts_app.name
   private_subnet_ids     = var.private_subnet_ids

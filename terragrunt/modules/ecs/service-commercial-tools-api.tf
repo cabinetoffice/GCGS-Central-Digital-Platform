@@ -34,7 +34,7 @@ module "ecs_service_commercial_tools_api" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  listener_priority      = try(var.service_configs.commercial_tools_api.listener_priority, null)
+  listener_priority      = var.service_configs.commercial_tools_api.listener_priority
   memory                 = var.service_configs.commercial_tools_api.memory
   name                   = var.service_configs.commercial_tools_api.name
   private_subnet_ids     = var.private_subnet_ids

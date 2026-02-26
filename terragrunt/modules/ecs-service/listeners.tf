@@ -15,14 +15,14 @@ resource "aws_lb_target_group" "this" {
 
   health_check {
     enabled             = true
-    interval            = var.healthcheck_interval
-    timeout             = var.healthcheck_timeout
     healthy_threshold   = var.healthcheck_healthy_threshold
-    unhealthy_threshold = var.unhealthy_threshold
+    interval            = var.healthcheck_interval
+    matcher             = var.healthcheck_matcher
     path                = var.healthcheck_path
     port                = "traffic-port"
     protocol            = "HTTP"
-    matcher             = var.healthcheck_matcher
+    timeout             = var.healthcheck_timeout
+    unhealthy_threshold = var.unhealthy_threshold
   }
 
   lifecycle {
@@ -30,7 +30,7 @@ resource "aws_lb_target_group" "this" {
   }
 
   tags = merge(
-    { Service = var.name, ServiceName = var.name },
+    { Service = var.name },
     var.tags
   )
 }

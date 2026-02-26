@@ -16,7 +16,7 @@ module "ecs_service_cfs" {
   family                 = "app"
   healthcheck_path       = "/health"
   listener_name          = "php-${var.service_configs.cfs.name}"
-  listener_priority      = try(var.service_configs.cfs.listener_priority, null)
+  listener_priority      = var.service_configs.cfs.listener_priority
   memory                 = var.service_configs.cfs.memory
   name                   = var.service_configs.cfs.name
   private_subnet_ids     = var.private_subnet_ids

@@ -25,7 +25,7 @@ module "ecs_service_fts_search_api" {
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
   listener_name          = "dotnet-${var.service_configs.fts_search_api.name}"
-  listener_priority      = try(var.service_configs.fts_search_api.listener_priority, null)
+  listener_priority      = var.service_configs.fts_search_api.listener_priority
   memory                 = var.service_configs.fts_search_api.memory
   name                   = var.service_configs.fts_search_api.name
   private_subnet_ids     = var.private_subnet_ids
