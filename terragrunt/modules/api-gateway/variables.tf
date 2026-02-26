@@ -54,7 +54,7 @@ variable "service_configs" {
     cpu    = number
     memory = number
     name   = string
-    port   = number
+    port   = optional(number)
   }))
 }
 
