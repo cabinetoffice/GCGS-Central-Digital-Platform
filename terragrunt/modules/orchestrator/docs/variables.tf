@@ -4,6 +4,12 @@ variable "allowed_github_branches" {
   default     = []
 }
 
+variable "allow_github_pull_requests" {
+  description = "Whether to allow GitHub pull request workflows to assume the OIDC role."
+  type        = bool
+  default     = false
+}
+
 variable "bucket_name" {
   description = "Optional override for the documentation bucket name."
   type        = string
