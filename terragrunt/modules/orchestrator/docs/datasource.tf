@@ -39,10 +39,16 @@ data "aws_iam_policy_document" "github_oidc_assume" {
     condition {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
-      values = length(var.allowed_github_branches) > 0 ? [
-        for branch in var.allowed_github_branches :
-        "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/${branch}"
-      ] : ["repo:${var.github_org}/${var.github_repo}:*"]
+      values = length(var.allowed_github_branches) > 0 ? concat(
+        [
+          for branch in var.allowed_github_branches :
+          "repo:${var.github_org}/${var.github_repo}:ref:refs/heads/${branch}"
+        ],
+        var.allow_github_pull_requests ? [
+          "repo:${var.github_org}/${var.github_repo}:pull_request",
+          "repo:${var.github_org}/${var.github_repo}:ref:refs/pull/*/merge"
+        ] : []
+      ) : ["repo:${var.github_org}/${var.github_repo}:*"]
     }
   }
 }
