@@ -9,7 +9,7 @@ resource "aws_security_group_rule" "public_access_to_alb" {
 }
 
 resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
-  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070"]) : []
+  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070", "8060"]) : []
 
   description              = "From ALB to ECS services on port ${each.value}"
   from_port                = tonumber(each.value)
@@ -21,7 +21,7 @@ resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
 }
 
 resource "aws_security_group_rule" "ecs_alb_to_ecs_service" {
-  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070"]) : []
+  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070", "8060"]) : []
 
   description              = "From ECS services to ALB on port ${each.value}"
   from_port                = tonumber(each.value)

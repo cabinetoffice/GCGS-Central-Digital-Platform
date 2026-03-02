@@ -60,7 +60,7 @@ module "ecs_service_organisation_app" {
       shared_sessions_enabled             = local.shared_sessions_enabled
       ssm_data_protection_prefix          = local.ssm_data_protection_prefix
       vpc_cidr                            = var.vpc_cider
-      service_port                        = local.service_port_by_cluster[var.service_configs.organisation_app.cluster]
+      service_port                        = local.service_ports_by_service[var.service_configs.organisation_app.name]
     }
   )
 
@@ -81,7 +81,7 @@ module "ecs_service_organisation_app" {
   public_domain                 = var.public_domain
   role_ecs_task_arn             = var.role_ecs_task_arn
   role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
-  service_port                  = local.service_port_by_cluster[var.service_configs.organisation_app.cluster]
+  service_port                  = local.service_ports_by_service[var.service_configs.organisation_app.name]
   tags                          = var.tags
   user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
   user_pool_client_id           = local.cognito_enabled ? var.user_pool_client_id : null

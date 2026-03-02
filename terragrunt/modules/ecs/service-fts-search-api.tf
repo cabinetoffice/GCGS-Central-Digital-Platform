@@ -11,7 +11,7 @@ module "ecs_service_fts_search_api" {
         lg_name      = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
         memory       = var.service_configs.fts_search_api.memory
         name         = var.service_configs.fts_search_api.name
-        service_port = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
+        service_port = local.service_ports_by_service[var.service_configs.fts_search_api.name]
       }
     )
   )
@@ -33,7 +33,7 @@ module "ecs_service_fts_search_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts_search_api.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

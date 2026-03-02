@@ -125,7 +125,7 @@ locals {
   )
 
   fts_service_paremeters = {
-    service_port    = local.service_port_by_cluster[var.service_configs.fts.cluster]
+    service_port    = local.service_ports_by_service[var.service_configs.fts.name]
     cpu             = var.service_configs.fts.cpu
     image           = local.ecr_urls[var.service_configs.fts.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts.name].name
@@ -139,7 +139,7 @@ locals {
   }
 
   fts_scheduler_service_paremeters = {
-    service_port    = local.service_port_by_cluster[var.service_configs.fts_scheduler.cluster]
+    service_port    = local.service_ports_by_service[var.service_configs.fts_scheduler.name]
     cpu             = var.service_configs.fts_scheduler.cpu
     image           = local.ecr_urls[var.service_configs.fts_scheduler.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
@@ -153,7 +153,7 @@ locals {
   }
 
   fts_migrations_service_paremeters = {
-    service_port    = local.service_port_by_cluster[var.service_configs.fts_migrations.cluster]
+    service_port    = local.service_ports_by_service[var.service_configs.fts_migrations.name]
     cpu             = var.service_configs.fts_migrations.cpu
     image           = local.ecr_urls[var.service_configs.fts_migrations.name]
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_migrations.name].name

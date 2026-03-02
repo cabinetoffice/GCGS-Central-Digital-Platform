@@ -21,7 +21,7 @@ module "ecs_service_scheduled_worker" {
       queue_entity_verification_url = var.queue_entity_verification_url
       service_version               = local.service_version_sirsi
       vpc_cidr                      = var.vpc_cider
-      service_port                  = local.service_port_by_cluster[var.service_configs.scheduled_worker.cluster]
+      service_port                  = local.service_ports_by_service[var.service_configs.scheduled_worker.name]
     }
   )
 
@@ -40,7 +40,7 @@ module "ecs_service_scheduled_worker" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.scheduled_worker.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.scheduled_worker.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

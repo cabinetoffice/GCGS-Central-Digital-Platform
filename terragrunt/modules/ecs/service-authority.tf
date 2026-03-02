@@ -21,7 +21,7 @@ module "ecs_service_authority" {
       onelogin_client_id    = local.one_login.credential_locations.client_id
       onelogin_private_key  = local.one_login.credential_locations.private_key
       public_domain         = var.public_domain
-      service_port          = local.service_port_by_cluster[var.service_configs.authority.cluster]
+      service_port          = local.service_ports_by_service[var.service_configs.authority.name]
       service_version       = local.service_version_sirsi
       vpc_cidr              = var.vpc_cider
     }
@@ -42,7 +42,7 @@ module "ecs_service_authority" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.authority.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.authority.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

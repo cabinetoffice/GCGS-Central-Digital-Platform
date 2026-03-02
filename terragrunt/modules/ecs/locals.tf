@@ -86,10 +86,20 @@ locals {
     } if config.type != "db-migration" && config.cluster == "fts"
   }
 
-  service_port_by_cluster = {
-    sirsi     = 8080
-    fts       = 8080
-    sirsi-php = 8070
+  service_ports = {
+    "cluster:sirsi"     = 8080
+    "cluster:fts"       = 8080
+    "cluster:sirsi-php" = 8070
+    "service:cfs"       = 8060
+  }
+
+  service_ports_by_service = {
+    for name, config in var.service_configs :
+    config.name => lookup(
+      local.service_ports,
+      "service:${config.name}",
+      local.service_ports["cluster:${config.cluster}"]
+    )
   }
 
   tasks = [

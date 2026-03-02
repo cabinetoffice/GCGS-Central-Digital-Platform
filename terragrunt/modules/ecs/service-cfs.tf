@@ -24,7 +24,7 @@ module "ecs_service_cfs" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.cfs.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.cfs.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }
