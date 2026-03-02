@@ -20,7 +20,7 @@ locals {
 }
 
 inputs = {
-  allowed_github_branches          = ["main", "previews/*", "sandbox"]
+  allowed_github_branches          = ["main", "previews/*", "staging"]
   bucket_name                      = "cdp-sirsi-documentations"
   cloudfront_acm_certificate_arn   = "arn:aws:acm:us-east-1:891377225335:certificate/fff79771-ec19-4efd-bb14-9a010e626a6d"
   cloudfront_custom_domain_enabled = true
