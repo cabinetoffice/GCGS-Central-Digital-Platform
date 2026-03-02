@@ -24,7 +24,7 @@ module "ecs_service_fts" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts.name]
   tags                   = var.tags
   user_pool_arn          = contains(["staging"], var.environment) ? var.user_pool_fts_arn : null
   user_pool_client_id    = contains(["staging"], var.environment) ? var.user_pool_fts_client_id : null
