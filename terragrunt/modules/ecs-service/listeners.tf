@@ -1,5 +1,5 @@
 resource "aws_lb_target_group" "this" {
-  count = var.alb_enabled ? 1 : 0
+  count = var.alb_enabled || var.internal_alb_enabled ? 1 : 0
 
   deregistration_delay = 30
   name_prefix          = substr(replace(local.listener_name, "cdp-", ""), 0, 6)
@@ -35,7 +35,12 @@ resource "aws_lb_target_group" "this" {
   )
 }
 
-resource "aws_lb_listener_rule" "this" {
+moved {
+  from = aws_lb_listener_rule.this
+  to   = aws_lb_listener_rule.external
+}
+
+resource "aws_lb_listener_rule" "external" {
   count = var.alb_enabled ? 1 : 0
 
   listener_arn = var.ecs_listener_arn
@@ -76,6 +81,32 @@ resource "aws_lb_listener_rule" "this" {
   }
 
   tags = merge(var.tags, { Name : var.name })
+}
+
+resource "aws_lb_listener_rule" "internal" {
+  count = var.internal_alb_enabled && var.internal_listener_arn != null && var.internal_domain != null ? 1 : 0
+
+  listener_arn = var.internal_listener_arn
+  priority     = local.service_listener_rule_priority
+
+  action {
+    type  = "forward"
+    order = 1
+
+    forward {
+      target_group {
+        arn = aws_lb_target_group.this[0].arn
+      }
+    }
+  }
+
+  condition {
+    host_header {
+      values = local.internal_host_headers
+    }
+  }
+
+  tags = merge(var.tags, { Name : "${var.name}-internal" })
 }
 
 resource "aws_lb_listener_rule" "this_allowed_unauthenticated_paths" {

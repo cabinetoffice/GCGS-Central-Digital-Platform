@@ -1,6 +1,7 @@
 locals {
 
-  base_host_headers = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
+  base_host_headers     = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
+  internal_host_headers = var.internal_domain == null ? [] : ["${var.name}.${var.internal_domain}"]
 
   host_headers = compact(
     concat(
