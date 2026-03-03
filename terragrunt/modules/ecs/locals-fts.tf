@@ -50,40 +50,42 @@ locals {
   }
 
   fts_parameters = {
-    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
-    dev_email                           = "${local.fts_secrets_arn}:DEV_EMAIL::"
-    app_host_address                    = "%"
-    buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                       = local.fts_site_domains[var.environment]
-    database_schema                     = "cdp_sirsi_fts_cluster"
-    db_host                             = var.db_fts_cluster_address
-    db_name                             = var.db_fts_cluster_name
-    database_server_address             = var.db_fts_cluster_address
-    database_server_port                = 3306
-    database_ssl                        = false
-    environment                         = upper(var.environment)
-    fts_allowed_target_email_domains    = join(",", local.fts_allowed_target_email_domains[var.environment])
-    fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-    fts_one_login_logout_redirect_uri   = "https://${local.fts_site_domains[var.environment]}/auth/logout"
-    fts_one_login_redirect_uri          = "https://${local.fts_site_domains[var.environment]}/auth/callback"
-    licenced_to                         = "No-one"
-    local_version                       = 1100
-    session_name_default                = "SRSI_FT_AUTH"
-    site_domain                         = local.fts_site_domains[var.environment]
-    site_tag                            = "TEST"
-    srsi_authority_token_endpoint       = "https://authority.${var.public_domain}/token"
-    srsi_dashboard_endpoint             = "https://${var.public_domain}"
-    srsi_organisation_lookup_endpoint   = "https://organisation.${var.public_domain}"
-    srsi_tenant_lookup_endpoint         = "https://tenant.${var.public_domain}/tenant/lookup"
-    ssl_service                         = true
-    submission_log_globally_enabled     = contains(["integration"], var.environment) ? true : false
-    uk17_enabled                        = contains(["development"], var.environment) ? true : false
-    uk9_enabled                         = true
-    uk11_240_enabled                    = true
-    use_srsi                            = true
-    use_srsi_for_api                    = true
-    valid_until                         = 1924990799
-    validation_weight                   = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
+    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" :
+      "noreply@${var.public_domain}"
+    dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
+    app_host_address                      = "%"
+    buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
+    cookie_domain                         = local.fts_site_domains[var.environment]
+    database_schema                       = "cdp_sirsi_fts_cluster"
+    db_host                               = var.db_fts_cluster_address
+    db_name                               = var.db_fts_cluster_name
+    database_server_address               = var.db_fts_cluster_address
+    database_server_port                  = 3306
+    database_ssl                          = false
+    environment                           = upper(var.environment)
+    fts_allowed_target_email_domains      = join(",", local.fts_allowed_target_email_domains[var.environment])
+    fts_client_assertion_type             = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+    fts_one_login_logout_redirect_uri     = "https://${local.fts_site_domains[var.environment]}/auth/logout"
+    fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
+    licenced_to                           = "No-one"
+    local_version                         = 1100
+    session_name_default                  = "SRSI_FT_AUTH"
+    site_domain                           = local.fts_site_domains[var.environment]
+    site_tag                              = "TEST"
+    srsi_authority_token_endpoint         = "https://authority.${var.public_domain}/token"
+    srsi_dashboard_endpoint               = "https://${var.public_domain}"
+    srsi_organisation_lookup_endpoint     = "https://organisation.${var.public_domain}"
+    srsi_tenant_lookup_endpoint           = "https://tenant.${var.public_domain}/tenant/lookup"
+    ssl_service                           = true
+    submission_log_globally_enabled       = contains(["integration"], var.environment) ? true : false
+    uk17_enabled                          = contains(["development"], var.environment) ? true : false
+    uk17_enable_current_reporting_periods = contains(["development", "staging"], var.environment) ? true : false
+    uk9_enabled                           = true
+    uk11_240_enabled                      = true
+    use_srsi                              = true
+    use_srsi_for_api                      = true
+    valid_until                           = 1924990799
+    validation_weight                     = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
   }
 
 
