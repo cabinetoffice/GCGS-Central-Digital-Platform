@@ -43,14 +43,14 @@ variable "desired_count" {
   type        = number
 }
 
-variable "ecs_listener_arn" {
-  description = "ECS Application Loadbalancer Listener ARN"
+variable "ecs_alb_sg_id" {
+  description = "Security group ID for the ECS ALB"
   type        = string
   default     = null
 }
 
-variable "ecs_alb_sg_id" {
-  description = "Security group ID for the ECS ALB"
+variable "ecs_listener_arn" {
+  description = "ECS Application Loadbalancer Listener ARN"
   type        = string
   default     = null
 }
@@ -107,6 +107,24 @@ variable "healthcheck_path" {
 variable "healthcheck_timeout" {
   description = "Health-check timeout"
   default     = 6
+}
+
+variable "internal_alb_enabled" {
+  description = "Whether to create internal ALB listener rule"
+  type        = bool
+  default     = false
+}
+
+variable "internal_domain" {
+  description = "Internal domain used for internal service host headers"
+  type        = string
+  default     = null
+}
+
+variable "internal_listener_arn" {
+  description = "Internal ECS Application Loadbalancer Listener ARN"
+  type        = string
+  default     = null
 }
 
 variable "is_frontend_app" {

@@ -9,7 +9,7 @@ resource "aws_security_group_rule" "public_access_to_alb" {
 }
 
 resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
-  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070", "8060"]) : []
+  for_each = var.manage_alb_ecs_sg_rules ? toset([for port in values(local.service_ports) : tostring(port)]) : []
 
   description              = "From ALB to ECS services on port ${each.value}"
   from_port                = tonumber(each.value)
@@ -20,8 +20,20 @@ resource "aws_security_group_rule" "ecs_service_from_ecs_alb" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "ecs_service_from_ecs_alb_internal" {
+  for_each = var.manage_alb_ecs_sg_rules ? toset([for port in values(local.service_ports) : tostring(port)]) : []
+
+  description              = "From internal ALB to ECS services on port ${each.value}"
+  from_port                = tonumber(each.value)
+  protocol                 = "TCP"
+  security_group_id        = var.ecs_sg_id
+  source_security_group_id = var.alb_internal_sg_id
+  to_port                  = tonumber(each.value)
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "ecs_alb_to_ecs_service" {
-  for_each = var.manage_alb_ecs_sg_rules ? toset(["8080", "8070", "8060"]) : []
+  for_each = var.manage_alb_ecs_sg_rules ? toset([for port in values(local.service_ports) : tostring(port)]) : []
 
   description              = "From ECS services to ALB on port ${each.value}"
   from_port                = tonumber(each.value)
@@ -30,6 +42,28 @@ resource "aws_security_group_rule" "ecs_alb_to_ecs_service" {
   source_security_group_id = var.ecs_sg_id
   to_port                  = tonumber(each.value)
   type                     = "egress"
+}
+
+resource "aws_security_group_rule" "ecs_alb_internal_to_ecs_service" {
+  for_each = var.manage_alb_ecs_sg_rules ? toset([for port in values(local.service_ports) : tostring(port)]) : []
+
+  description              = "From internal ALB to ECS services on port ${each.value}"
+  from_port                = tonumber(each.value)
+  protocol                 = "TCP"
+  security_group_id        = var.alb_internal_sg_id
+  source_security_group_id = var.ecs_sg_id
+  to_port                  = tonumber(each.value)
+  type                     = "egress"
+}
+
+resource "aws_security_group_rule" "ecs_internal_alb_from_ecs_service_https" {
+  description              = "ECS services access to internal ALB on HTTPS"
+  from_port                = 443
+  protocol                 = "TCP"
+  security_group_id        = var.alb_internal_sg_id
+  source_security_group_id = var.ecs_sg_id
+  to_port                  = 443
+  type                     = "ingress"
 }
 
 resource "aws_security_group_rule" "alb_to_public" {

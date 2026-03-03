@@ -1,40 +1,36 @@
 locals {
 
-  main_cluster_id       = aws_ecs_cluster.this.id
-  main_cluster_name     = aws_ecs_cluster.this.name
-  main_ecs_listener_arn = aws_lb_listener.ecs.arn
-  php_services          = ["cfs", "cfs-scheduler", "fts", "fts-healthcheck", "fts-scheduler"]
-  php_cluster_id        = aws_ecs_cluster.that.id
-  php_cluster_name      = aws_ecs_cluster.that.name
-  php_ecs_listener_arn  = aws_lb_listener.ecs_php.arn
-  fts_cluster_id        = aws_ecs_cluster.fts.id
-  fts_cluster_name      = aws_ecs_cluster.fts.name
-  fts_ecs_listener_arn  = aws_lb_listener.ecs_fts.arn
-
+  aspcore_environment          = "Aws${title(var.environment)}"
+  cognito_enabled              = contains(["development", "staging"], var.environment)
+  fts_cluster_id               = aws_ecs_cluster.fts.id
+  fts_cluster_name             = aws_ecs_cluster.fts.name
+  fts_ecs_listener_arn         = aws_lb_listener.ecs_fts.arn
+  internal_domain              = "internal.${var.public_domain}"
+  internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
+  main_cluster_id              = aws_ecs_cluster.this.id
+  main_cluster_name            = aws_ecs_cluster.this.name
+  main_ecs_listener_arn        = aws_lb_listener.ecs.arn
+  name_prefix                  = var.product.resource_name
+  name_prefix_fts              = "${local.name_prefix}-fts"
+  name_prefix_php              = "${local.name_prefix}-php"
+  php_cluster_id               = aws_ecs_cluster.that.id
+  php_cluster_name             = aws_ecs_cluster.that.name
+  php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
-  aspcore_environment = "Aws${title(var.environment)}"
-
-  cognito_enabled = contains(["development", "staging"], var.environment)
-
-  db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
-  db_fts_secret_arn   = var.db_fts_cluster_credentials_arn
-  db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
-
   db_ev_password    = "${local.db_ev_secret_arn}:password::"
+  db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
   db_ev_username    = "${local.db_ev_secret_arn}:username::"
   db_fts_password   = "${local.db_fts_secret_arn}:password::"
+  db_fts_secret_arn   = var.db_fts_cluster_credentials_arn
   db_fts_username   = "${local.db_fts_secret_arn}:username::"
   db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
+  db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
   db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
 
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
   }
-
-  name_prefix     = var.product.resource_name
-  name_prefix_php = "${local.name_prefix}-php"
-  name_prefix_fts = "${local.name_prefix}-fts"
 
   one_login = {
     credential_locations = {

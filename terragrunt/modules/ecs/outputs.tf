@@ -18,6 +18,14 @@ output "ecs_cluster_name" {
   value = local.main_cluster_name
 }
 
+output "ecs_internal_alb_dns_name" {
+  value = aws_lb.ecs_internal.dns_name
+}
+
+output "ecs_internal_listener_arn" {
+  value = local.internal_ecs_listener_arn
+}
+
 output "ecs_listener_arn" {
   value = local.main_ecs_listener_arn
 }
@@ -40,6 +48,10 @@ output "fts_ecs_cluster_name" {
 
 output "fts_ecs_listener_arn" {
   value = local.fts_ecs_listener_arn
+}
+
+output "internal_domain" {
+  value = local.internal_domain
 }
 
 output "php_ecs_cluster_id" {

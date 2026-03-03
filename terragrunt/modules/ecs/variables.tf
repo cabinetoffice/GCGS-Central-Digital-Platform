@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "alb_internal_sg_id" {
+  description = "Internal application load-balancer security group ID"
+  type        = string
+}
+
 variable "alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -121,6 +126,11 @@ variable "fts_extra_host_headers" {
   description = "Optional list of additional host headers to be added for FTS service"
   type        = list(string)
   default     = []
+}
+
+variable "internal_hosted_zone_id" {
+  description = "ID of the internal hosted zone"
+  type        = string
 }
 
 variable "is_production" {
