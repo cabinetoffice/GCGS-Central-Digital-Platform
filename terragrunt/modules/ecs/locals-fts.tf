@@ -50,8 +50,7 @@ locals {
   }
 
   fts_parameters = {
-    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" :
-      "noreply@${var.public_domain}"
+    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                      = "%"
     buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
