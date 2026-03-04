@@ -285,6 +285,9 @@ locals {
     person                               = { cluster = "sirsi",     type = "web-service",  listener_priority = 121,  name = "person" }
     scheduled_worker                     = { cluster = "sirsi",     type = "service",      listener_priority = 122,  name = "scheduled-worker" }
     tenant                               = { cluster = "sirsi",     type = "web-service",  listener_priority = 123,  name = "tenant" }
+    user_management_api                  = { cluster = "sirsi",     type = "web-service",  listener_priority = 124,  name = "user-management-api" }
+    user_management_app                  = { cluster = "sirsi",     type = "web-service",  listener_priority = 125,  name = "user-management-app" }
+    user_management_migrations           = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }
   }
 
   service_configs = {
