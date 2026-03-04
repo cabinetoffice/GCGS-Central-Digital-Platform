@@ -211,7 +211,7 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.UserManagement.App
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-migrations-user-management
+FROM build AS build-user-management-migrations
 WORKDIR /src
 COPY .config/dotnet-tools.json .config/
 RUN dotnet tool restore
@@ -443,13 +443,13 @@ WORKDIR /app
 COPY --from=publish-scheduled-worker /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.ScheduledWorker.dll"]
 
-FROM base AS migrations-user-management
+FROM base AS user-management-migrations
 COPY --from=busybox:uclibc /bin/busybox /bin/busybox
 ARG VERSION
 ENV VERSION=${VERSION}
 WORKDIR /app
-COPY --from=build-migrations-user-management /src/Services/CO.CDP.UserManagement.Infrastructure/UserManagementDatabaseMigrationConfig /app/UserManagementDatabaseMigrationConfig
-COPY --from=build-migrations-user-management /app/migrations/efbundle .
+COPY --from=build-user-management-migrations /src/Services/CO.CDP.UserManagement.Infrastructure/UserManagementDatabaseMigrationConfig /app/UserManagementDatabaseMigrationConfig
+COPY --from=build-user-management-migrations /app/migrations/efbundle .
 ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle --connection \"Host=$UserManagementDatabase__Server;Database=$UserManagementDatabase__Database;Username=$UserManagementDatabase__Username;Password=$UserManagementDatabase__Password;\""]
 
 FROM base AS final-user-management-api

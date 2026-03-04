@@ -148,14 +148,14 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
 
-  migrations-user-management:
-    container_name: co-cdp-migrations-user-management
+  user-management-migrations:
+    container_name: co-cdp-user-management-migrations
     restart: no
     build:
       context: .
       dockerfile: Dockerfile
-      target: migrations-user-management
-    image: 'cabinetoffice/cdp-migrations-user-management:${IMAGE_VERSION:-latest}'
+      target: user-management-migrations
+    image: 'cabinetoffice/cdp-user-management-migrations:${IMAGE_VERSION:-latest}'
     depends_on:
       db:
         condition: service_healthy
