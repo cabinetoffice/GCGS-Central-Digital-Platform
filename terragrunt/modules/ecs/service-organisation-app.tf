@@ -26,6 +26,10 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
+      internal_service_urls               = local.internal_service_urls
+      public_service_urls                 = local.public_service_urls
+      use_internal_service_urls           = local.use_internal_service_urls
+      use_internal_issuer                 = local.use_internal_issuer
       ai_tool_enabled                     = contains(["development", "integration"], var.environment) ? true : false
       aspcore_environment                 = local.aspcore_environment
       charity_commission_subscription_key = "${data.aws_secretsmanager_secret.charity_commission.arn}:SubscriptionKey::"
@@ -38,6 +42,7 @@ module "ecs_service_organisation_app" {
       fts_service_allowed_origins         = join(",", local.fts_service_allowed_origins[var.environment])
       fts_service_url                     = local.fts_service_url
       image                               = local.ecr_urls[var.service_configs.organisation_app.name]
+      internal_service_urls               = local.internal_service_urls
       lg_name                             = aws_cloudwatch_log_group.tasks[var.service_configs.organisation_app.name].name
       lg_prefix                           = "app"
       lg_region                           = data.aws_region.current.region
@@ -56,11 +61,11 @@ module "ecs_service_organisation_app" {
       redis_primary_endpoint_address      = var.redis_primary_endpoint
       s3_permanent_bucket                 = module.s3_bucket_permanent.bucket
       s3_staging_bucket                   = module.s3_bucket_staging.bucket
+      service_port                        = local.service_ports_by_service[var.service_configs.organisation_app.name]
       service_version                     = local.service_version_sirsi
       shared_sessions_enabled             = local.shared_sessions_enabled
       ssm_data_protection_prefix          = local.ssm_data_protection_prefix
       vpc_cidr                            = var.vpc_cider
-      service_port                        = local.service_ports_by_service[var.service_configs.organisation_app.name]
     }
   )
 
@@ -72,8 +77,11 @@ module "ecs_service_organisation_app" {
   ecs_listener_arn              = local.main_ecs_listener_arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
+  internal_alb_enabled          = true
+  internal_domain               = local.internal_domain
+  internal_listener_arn         = local.internal_ecs_listener_arn
   is_frontend_app               = true
-  listener_priority             = var.service_configs.organisation_app.listener_priority # this needs to stay and can't be same as host, 80
+  listener_priority             = var.service_configs.organisation_app.listener_priority
   memory                        = var.service_configs.organisation_app.memory
   name                          = var.service_configs.organisation_app.name
   private_subnet_ids            = var.private_subnet_ids

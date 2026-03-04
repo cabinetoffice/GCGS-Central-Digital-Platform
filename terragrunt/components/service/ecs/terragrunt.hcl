@@ -165,6 +165,8 @@ inputs = {
   pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
   service_configs                   = local.global_vars.locals.service_configs
   tags                              = local.tags
+  use_internal_service_urls         = local.global_vars.locals.environment == "development" ? true : false
+  use_internal_issuer               = local.global_vars.locals.environment == "development" ? true : false
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name

@@ -6,16 +6,21 @@ module "ecs_service_fts_app" {
     merge(
       local.fts_dotnet_fts_app,
       {
+        internal_service_urls          = local.internal_service_urls
+        public_service_urls            = local.public_service_urls
+        use_internal_service_urls      = local.use_internal_service_urls
+        use_internal_issuer            = local.use_internal_issuer
         cpu                            = var.service_configs.fts_app.cpu
         image                          = local.ecr_urls[var.service_configs.fts_app.name]
+        internal_service_urls          = local.internal_service_urls
         lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
         memory                         = var.service_configs.fts_app.memory
         name                           = var.service_configs.fts_app.name
         redis_auth_token_arn           = var.redis_auth_token_arn
         redis_port                     = var.redis_port
         redis_primary_endpoint_address = var.redis_primary_endpoint
-        ssm_data_protection_prefix     = local.ssm_data_protection_prefix
         service_port                   = local.service_ports_by_service[var.service_configs.fts_app.name]
+        ssm_data_protection_prefix     = local.ssm_data_protection_prefix
       }
     )
   )
@@ -28,6 +33,9 @@ module "ecs_service_fts_app" {
   ecs_service_base_sg_id = var.ecs_sg_id
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
+  internal_alb_enabled   = true
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "dotnet-${var.service_configs.fts_app.name}"
   listener_priority      = var.service_configs.fts_app.listener_priority
   memory                 = var.service_configs.fts_app.memory

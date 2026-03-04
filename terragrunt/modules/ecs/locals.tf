@@ -8,6 +8,8 @@ locals {
   internal_prefix              = length("internal.${var.public_domain}") > 64 ? "in" : "internal"
   internal_domain              = "${local.internal_prefix}.${var.public_domain}"
   internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
+  use_internal_service_urls    = var.use_internal_service_urls
+  use_internal_issuer          = var.use_internal_issuer
   main_cluster_id              = aws_ecs_cluster.this.id
   main_cluster_name            = aws_ecs_cluster.this.name
   main_ecs_listener_arn        = aws_lb_listener.ecs.arn
@@ -19,15 +21,15 @@ locals {
   php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
-  db_ev_password    = "${local.db_ev_secret_arn}:password::"
+  db_ev_password      = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
-  db_ev_username    = "${local.db_ev_secret_arn}:username::"
-  db_fts_password   = "${local.db_fts_secret_arn}:password::"
+  db_ev_username      = "${local.db_ev_secret_arn}:username::"
+  db_fts_password     = "${local.db_fts_secret_arn}:password::"
   db_fts_secret_arn   = var.db_fts_cluster_credentials_arn
-  db_fts_username   = "${local.db_fts_secret_arn}:username::"
-  db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
+  db_fts_username     = "${local.db_fts_secret_arn}:username::"
+  db_sirsi_password   = "${local.db_sirsi_secret_arn}:password::"
   db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
-  db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
+  db_sirsi_username   = "${local.db_sirsi_secret_arn}:username::"
 
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
@@ -65,6 +67,16 @@ locals {
       for key, value in config :
       key => value if value != null
     } if config.type != "db-migration"
+  }
+
+  internal_service_urls = {
+    for name, config in local.service_configs :
+    config.name => "https://${config.name}.${local.internal_domain}"
+  }
+
+  public_service_urls = {
+    for name, config in local.service_configs :
+    config.name => "https://${config.name}.${var.public_domain}"
   }
 
   service_configs_php = {

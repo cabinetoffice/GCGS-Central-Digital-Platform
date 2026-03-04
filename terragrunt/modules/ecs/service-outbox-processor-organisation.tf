@@ -30,6 +30,9 @@ module "ecs_service_outbox_processor_organisation" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
+  internal_alb_enabled   = true
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "outbox-processor-org"
   listener_priority      = var.service_configs.outbox_processor_organisation.listener_priority
   memory                 = var.service_configs.outbox_processor_organisation.memory

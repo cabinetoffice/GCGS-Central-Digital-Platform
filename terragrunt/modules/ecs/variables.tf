@@ -335,6 +335,18 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "use_internal_issuer" {
+  description = "Whether to use internal authority URL as token issuer"
+  type        = bool
+  default     = false
+}
+
+variable "use_internal_service_urls" {
+  description = "Whether to use internal service URLs for service-to-service calls"
+  type        = bool
+  default     = false
+}
+
 variable "user_pool_arn" {
   type = string
 }
