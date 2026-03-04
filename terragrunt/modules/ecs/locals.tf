@@ -5,7 +5,8 @@ locals {
   fts_cluster_id               = aws_ecs_cluster.fts.id
   fts_cluster_name             = aws_ecs_cluster.fts.name
   fts_ecs_listener_arn         = aws_lb_listener.ecs_fts.arn
-  internal_domain              = "internal.${var.public_domain}"
+  internal_prefix              = length("internal.${var.public_domain}") > 64 ? "in" : "internal"
+  internal_domain              = "${local.internal_prefix}.${var.public_domain}"
   internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
   main_cluster_id              = aws_ecs_cluster.this.id
   main_cluster_name            = aws_ecs_cluster.this.name
