@@ -5,7 +5,6 @@ module "ecs_service_user_management_api" {
     "${path.module}/templates/task-definitions/${var.service_configs.user_management_api.name}.json.tftpl",
     {
       aspcore_environment               = local.aspcore_environment
-      authentication_authority          = data.aws_secretsmanager_secret.user_management_authentication_authority.arn
       container_port                    = var.service_configs.user_management_api.port
       cpu                               = var.service_configs.user_management_api.cpu
       db_address                        = var.db_sirsi_cluster_address
@@ -30,7 +29,7 @@ module "ecs_service_user_management_api" {
     }
   )
 
-  extra_host_headers     = var.user_management_api_extra_host_headers
+  extra_host_headers     = ["user-management-api.${var.public_domain}"]
 
   cluster_id             = local.main_cluster_id
   container_port         = var.service_configs.user_management_api.port

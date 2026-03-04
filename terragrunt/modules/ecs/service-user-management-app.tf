@@ -5,7 +5,6 @@ module "ecs_service_user_management_app" {
     "${path.module}/templates/task-definitions/${var.service_configs.user_management_app.name}.json.tftpl",
     {
       aspcore_environment      = local.aspcore_environment
-      authentication_authority = data.aws_secretsmanager_secret.user_management_authentication_authority.arn
       container_port           = var.service_configs.user_management_app.port
       cpu                      = var.service_configs.user_management_app.cpu
       host_port                = var.service_configs.user_management_app.port
@@ -20,7 +19,11 @@ module "ecs_service_user_management_app" {
       onelogin_client_id       = local.one_login.credential_locations.client_id
       onelogin_private_key     = local.one_login.credential_locations.private_key
       public_domain            = var.public_domain
+      redis_auth_token_arn     = var.redis_auth_token_arn
+      redis_port               = var.redis_port
+      redis_primary_endpoint_address = var.redis_primary_endpoint
       service_version          = local.service_version_sirsi
+      ssm_data_protection_prefix = local.ssm_data_protection_prefix
       vpc_cidr                 = var.vpc_cider
     }
   )
