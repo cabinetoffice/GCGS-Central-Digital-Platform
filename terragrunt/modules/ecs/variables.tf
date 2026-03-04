@@ -20,12 +20,6 @@ variable "cfs_extra_host_headers" {
   default     = []
 }
 
-variable "user_management_api_extra_host_headers" {
-  description = "Optional list of additional host headers to be added for user-management-api service"
-  type        = list(string)
-  default     = []
-}
-
 variable "commercial_tools_session_timeout" {
   description = "Session timeout in minutes"
   type        = string
