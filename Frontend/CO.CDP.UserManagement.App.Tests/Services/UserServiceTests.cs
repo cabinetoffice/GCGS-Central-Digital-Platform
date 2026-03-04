@@ -135,12 +135,13 @@ public class UserServiceTests
     public async Task GetChangeUserRoleViewModelAsync_WhenPendingInviteMissing_ReturnsNull()
     {
         var org = BuildOrganisationResponse();
+        var inviteGuid = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
 
-        var result = await _service.GetChangeUserRoleViewModelAsync("org", null, 2, CancellationToken.None);
+        var result = await _service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -149,13 +150,14 @@ public class UserServiceTests
     public async Task GetChangeUserRoleViewModelAsync_WhenPendingInviteFound_ReturnsViewModel()
     {
         var org = BuildOrganisationResponse();
-        var invite = BuildPendingInviteResponse(org.Id, 2, OrganisationRole.Admin);
+        var inviteGuid = Guid.NewGuid();
+        var invite = BuildPendingInviteResponse(org.Id, 2, OrganisationRole.Admin, inviteGuid);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
 
-        var result = await _service.GetChangeUserRoleViewModelAsync("org", null, 2, CancellationToken.None);
+        var result = await _service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.IsPending.Should().BeTrue();
@@ -195,12 +197,16 @@ public class UserServiceTests
     public async Task UpdateUserRoleAsync_WhenPendingInvite_ReturnsTrue()
     {
         var org = BuildOrganisationResponse();
+        var inviteGuid = Guid.NewGuid();
+        var invite = BuildPendingInviteResponse(org.Id, 2, OrganisationRole.Admin, inviteGuid);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
         _apiClient.Setup(client => client.RoleAsync(org.CdpOrganisationGuid, 2, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var result = await _service.UpdateUserRoleAsync("org", null, 2, OrganisationRole.Admin, CancellationToken.None);
+        var result = await _service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -251,7 +257,8 @@ public class UserServiceTests
     public async Task ResendInviteAsync_WhenApiException_ReturnsFalse()
     {
         var org = BuildOrganisationResponse();
-        var invite = BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member);
+        var inviteGuid = Guid.NewGuid();
+        var invite = BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member, inviteGuid);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
@@ -261,7 +268,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await _service.ResendInviteAsync("org", 1, CancellationToken.None);
+        var result = await _service.ResendInviteAsync("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeFalse();
     }
@@ -334,10 +341,11 @@ public class UserServiceTests
     private static ApiClient.PendingOrganisationInviteResponse BuildPendingInviteResponse(
         int organisationId,
         int pendingInviteId,
-        OrganisationRole organisationRole)
+        OrganisationRole organisationRole,
+        Guid? cdpPersonInviteGuid = null)
     {
         return new ApiClient.PendingOrganisationInviteResponse(
-            cdpPersonInviteGuid: Guid.NewGuid(),
+            cdpPersonInviteGuid: cdpPersonInviteGuid ?? Guid.NewGuid(),
             createdAt: DateTimeOffset.UtcNow,
             email: "test@example.com",
             expiresOn: null,

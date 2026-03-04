@@ -1,6 +1,7 @@
 locals {
 
-  base_host_headers = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
+  base_host_headers     = var.is_frontend_app ? local.tg_host_header_with_alias : local.tg_host_header
+  internal_host_headers = var.internal_domain == null ? [] : ["${var.name}.${var.internal_domain}"]
 
   host_headers = compact(
     concat(
@@ -10,7 +11,7 @@ locals {
   )
 
   listener_name                  = "cdp-${coalesce(var.listener_name, var.name)}"
-  tg_host_header                 = ["${var.name}.${var.public_domain}"]
-  tg_host_header_with_alias      = ["${var.name}.${var.public_domain}", var.public_domain]
-  service_listener_rule_priority = var.family == "app" ? var.host_port - 8000 : var.host_port
+  tg_host_header                 = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}"]
+  tg_host_header_with_alias      = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}", var.public_domain]
+  service_listener_rule_priority = var.listener_priority
 }

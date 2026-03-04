@@ -23,7 +23,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
                     Id: user.CdpPersonId,
-                    PendingInviteId: null,
+                    InviteGuid: null,
                     Name: !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
                         ? $"{user.FirstName} {user.LastName}"
                         : string.Empty,
@@ -49,7 +49,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         : string.Empty;
                     return new UserSummaryViewModel(
                         Id: null,
-                        PendingInviteId: invite.PendingInviteId,
+                        InviteGuid: invite.CdpPersonInviteGuid,
                         Name: displayName,
                         Email: invite.Email,
                         OrganisationRole: null,
@@ -199,17 +199,17 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
     public async Task<ChangeUserRoleViewModel?> GetChangeUserRoleViewModelAsync(
         string organisationSlug,
         Guid? cdpPersonId,
-        int? pendingInviteId,
+        Guid? inviteGuid,
         CancellationToken ct = default)
     {
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
 
-            if (pendingInviteId.HasValue)
+            if (inviteGuid.HasValue)
             {
                 var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
-                var invite = invites.FirstOrDefault(i => i.PendingInviteId == pendingInviteId.Value);
+                var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid.Value);
                 if (invite == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(invite.FirstName) && !string.IsNullOrWhiteSpace(invite.LastName)
@@ -224,7 +224,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     SelectedRole: invite.OrganisationRole,
                     IsPending: true,
                     CdpPersonId: null,
-                    PendingInviteId: invite.PendingInviteId);
+                    InviteGuid: invite.CdpPersonInviteGuid);
             }
 
             if (cdpPersonId.HasValue)
@@ -245,7 +245,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     SelectedRole: user.OrganisationRole,
                     IsPending: false,
                     CdpPersonId: user.CdpPersonId,
-                    PendingInviteId: null);
+                    InviteGuid: null);
             }
 
             return null;
@@ -259,7 +259,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
     public async Task<bool> UpdateUserRoleAsync(
         string organisationSlug,
         Guid? cdpPersonId,
-        int? pendingInviteId,
+        Guid? inviteGuid,
         OrganisationRole organisationRole,
         CancellationToken ct = default)
     {
@@ -268,9 +268,16 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var request = new ApiClient.ChangeOrganisationRoleRequest(organisationRole);
 
-            if (pendingInviteId.HasValue)
+            if (inviteGuid.HasValue)
             {
-                await apiClient.RoleAsync(org.CdpOrganisationGuid, pendingInviteId.Value, request, ct);
+                var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+                var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid.Value);
+                if (invite is null)
+                {
+                    return false;
+                }
+
+                await apiClient.RoleAsync(org.CdpOrganisationGuid, invite.PendingInviteId, request, ct);
                 return true;
             }
 
@@ -290,14 +297,14 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
 
     public async Task<bool> ResendInviteAsync(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         CancellationToken ct = default)
     {
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
-            var invite = invites.FirstOrDefault(item => item.PendingInviteId == pendingInviteId);
+            var invite = invites.FirstOrDefault(item => item.CdpPersonInviteGuid == inviteGuid);
             if (invite == null)
             {
                 return false;
@@ -311,7 +318,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 invite.OrganisationRole);
 
             await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
-            await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+            await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
             return true;
         }
         catch (ApiClient.ApiException)

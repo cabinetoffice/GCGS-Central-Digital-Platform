@@ -15,6 +15,10 @@ resource "aws_lb" "ecs" {
       Name = "${local.name_prefix}-ecs"
     }
   )
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_wafv2_web_acl_association" "ecs" {

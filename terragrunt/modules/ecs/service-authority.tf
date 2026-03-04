@@ -6,13 +6,11 @@ module "ecs_service_authority" {
     {
       aspcore_environment   = local.aspcore_environment
       authority_private_key = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
-      container_port        = var.service_configs.authority.port
       cpu                   = var.service_configs.authority.cpu
       db_address            = var.db_sirsi_cluster_address
       db_name               = var.db_sirsi_cluster_name
       db_password           = local.db_sirsi_password
       db_username           = local.db_sirsi_username
-      host_port             = var.service_configs.authority.port
       image                 = local.ecr_urls[var.service_configs.authority.name]
       lg_name               = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
       lg_prefix             = "app"
@@ -23,20 +21,20 @@ module "ecs_service_authority" {
       onelogin_client_id    = local.one_login.credential_locations.client_id
       onelogin_private_key  = local.one_login.credential_locations.private_key
       public_domain         = var.public_domain
+      service_port          = local.service_ports_by_service[var.service_configs.authority.name]
       service_version       = local.service_version_sirsi
       vpc_cidr              = var.vpc_cider
     }
   )
 
   cluster_id             = local.main_cluster_id
-  container_port         = var.service_configs.authority.port
   cpu                    = var.service_configs.authority.cpu
   desired_count          = var.service_configs.authority.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.authority.port_host
+  listener_priority      = var.service_configs.authority.listener_priority
   memory                 = var.service_configs.authority.memory
   name                   = var.service_configs.authority.name
   private_subnet_ids     = var.private_subnet_ids
@@ -44,6 +42,7 @@ module "ecs_service_authority" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_ports_by_service[var.service_configs.authority.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

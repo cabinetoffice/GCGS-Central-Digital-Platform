@@ -9,6 +9,17 @@ variable "cors_rules" {
   default     = []
 }
 
+variable "create_kms_key" {
+  description = "Whether to create a KMS key for this bucket."
+  type        = bool
+  default     = true
+
+  validation {
+    condition     = var.sse_algorithm != "aws:kms" || var.create_kms_key == true
+    error_message = "create_kms_key must be true when sse_algorithm is aws:kms."
+  }
+}
+
 variable "enable_access_logging" {
   type        = bool
   default     = false
@@ -61,6 +72,12 @@ variable "read_roles" {
   default     = []
   description = "A list of ARNs to allow actions for reading files"
   type        = list(string)
+}
+
+variable "sse_algorithm" {
+  description = "Server-side encryption algorithm (aws:kms or AES256)."
+  type        = string
+  default     = "aws:kms"
 }
 
 variable "tags" {

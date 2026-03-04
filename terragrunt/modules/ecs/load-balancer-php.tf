@@ -15,6 +15,10 @@ resource "aws_lb" "ecs_php" {
       Name = "${local.name_prefix}-ecs-php"
     }
   )
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_wafv2_web_acl_association" "ecs_php" {

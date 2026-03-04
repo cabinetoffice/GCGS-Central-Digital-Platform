@@ -39,6 +39,7 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
+    internal_hosted_zone_id     = "mock"
     private_subnet_ids          = "mock"
     private_subnets_cidr_blocks = "mock"
     public_domain               = "mock"
@@ -56,6 +57,7 @@ dependency core_networking {
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
+    alb_internal_sg_id        = "mock"
     alb_sg_id                 = "mock"
     db_mysql_sg_id            = "mock"
     db_postgres_sg_id         = "mock"
@@ -177,6 +179,7 @@ inputs = {
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 
+  internal_hosted_zone_id     = dependency.core_networking.outputs.internal_hosted_zone_id
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_domain               = dependency.core_networking.outputs.public_domain
@@ -185,12 +188,13 @@ inputs = {
   public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
-  vpc_id                      = dependency.core_networking.outputs.vpc_id
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
+  vpc_id                      = dependency.core_networking.outputs.vpc_id
   waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
-  waf_acl_php_arn             = dependency.core_networking.outputs.waf_acl_php_arn
   waf_acl_fts_arn             = dependency.core_networking.outputs.waf_acl_fts_arn
+  waf_acl_php_arn             = dependency.core_networking.outputs.waf_acl_php_arn
 
+  alb_internal_sg_id        = dependency.core_security_groups.outputs.alb_internal_sg_id
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
   db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id         = dependency.core_security_groups.outputs.db_postgres_sg_id
