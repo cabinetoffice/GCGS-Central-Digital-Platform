@@ -246,6 +246,16 @@ variable "queue_organisation_url" {
   type        = string
 }
 
+variable "queue_user_management_arn" {
+  description = "ARN of the User Management's SQS queue"
+  type        = string
+}
+
+variable "queue_user_management_url" {
+  description = "URL of the User Management's outbound SQS queue"
+  type        = string
+}
+
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
