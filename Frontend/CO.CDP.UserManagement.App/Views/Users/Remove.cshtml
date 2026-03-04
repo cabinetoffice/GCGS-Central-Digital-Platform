@@ -1,0 +1,113 @@
+@using CO.CDP.UserManagement.Shared.Enums
+@model CO.CDP.UserManagement.App.Models.RemoveUserViewModel
+@{
+    ViewData["Title"] = "Remove user from organisation";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationSlug" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <div class="app-destructive-alert">
+            <h2>You are about to remove a user</h2>
+            <p class="govuk-body">This action will immediately remove the user from this organisation. They will no longer be able to access services linked to this organisation or perform actions based on their role.</p>
+        </div>
+
+        <h1 class="govuk-heading-l">Remove user from organisation</h1>
+        <h2 class="govuk-heading-m">User details</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.OrganisationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation role</dt>
+                <dd class="govuk-summary-list__value">
+                    <span class="govuk-tag @GetRoleTagClass(Model.CurrentRole)">@Model.CurrentRole</span>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    @if (Model.CdpPersonId.HasValue)
+                    {
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/user/@Model.CdpPersonId/change-role">
+                            Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
+                        </a>
+                    }
+                    else if (Model.PendingInviteId.HasValue)
+                    {
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/invites/@Model.PendingInviteId/change-role">
+                            Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
+                        </a>
+                    }
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Member since</dt>
+                <dd class="govuk-summary-list__value">@Model.MemberSinceFormatted</dd>
+            </div>
+        </dl>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                This action cannot be undone. You will need to add this user again if you want to restore their access.
+            </strong>
+        </div>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.RemoveConfirmed)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Are you sure you want to remove this user?</h2>
+                    </legend>
+                    @if (ViewData.ModelState.ContainsKey(nameof(Model.RemoveConfirmed)) && !ViewData.ModelState.IsValid)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.RemoveConfirmed)]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="remove-confirmed-true" name="removeConfirmed" type="radio" value="true" checked="@(Model.RemoveConfirmed == true)">
+                            <label class="govuk-label govuk-radios__label" for="remove-confirmed-true">Yes, remove this user</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="remove-confirmed-false" name="removeConfirmed" type="radio" value="false" checked="@(Model.RemoveConfirmed == false)">
+                            <label class="govuk-label govuk-radios__label" for="remove-confirmed-false">No, keep this user</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning" data-module="govuk-button">Confirm</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@functions {
+    private string GetRoleTagClass(OrganisationRole role) => role switch
+    {
+        OrganisationRole.Owner => "govuk-tag--blue",
+        OrganisationRole.Admin => "govuk-tag--green",
+        OrganisationRole.Member => "govuk-tag--orange",
+        _ => "govuk-tag--grey"
+    };
+}

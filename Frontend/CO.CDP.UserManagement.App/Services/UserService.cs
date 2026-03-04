@@ -319,4 +319,99 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             return false;
         }
     }
+
+    public async Task<RemoveUserViewModel?> GetRemoveUserViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+
+            if (pendingInviteId.HasValue)
+            {
+                var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+                var invite = invites.FirstOrDefault(i => i.PendingInviteId == pendingInviteId.Value);
+                if (invite == null)
+                {
+                    return null;
+                }
+
+                var displayName = !string.IsNullOrWhiteSpace(invite.FirstName) && !string.IsNullOrWhiteSpace(invite.LastName)
+                    ? $"{invite.FirstName} {invite.LastName}"
+                    : string.Empty;
+
+                return new RemoveUserViewModel(
+                    OrganisationName: org.Name,
+                    OrganisationSlug: org.Slug,
+                    UserDisplayName: displayName,
+                    Email: invite.Email,
+                    CurrentRole: invite.OrganisationRole,
+                    MemberSinceFormatted: invite.CreatedAt.ToString("d MMMM yyyy"),
+                    CdpPersonId: null,
+                    PendingInviteId: pendingInviteId.Value);
+            }
+
+            if (cdpPersonId.HasValue)
+            {
+                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                if (user == null)
+                {
+                    return null;
+                }
+
+                var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                    ? $"{user.FirstName} {user.LastName}"
+                    : string.Empty;
+
+                return new RemoveUserViewModel(
+                    OrganisationName: org.Name,
+                    OrganisationSlug: org.Slug,
+                    UserDisplayName: displayName,
+                    Email: user.Email ?? string.Empty,
+                    CurrentRole: user.OrganisationRole,
+                    MemberSinceFormatted: user.CreatedAt.ToString("d MMMM yyyy"),
+                    CdpPersonId: cdpPersonId.Value,
+                    PendingInviteId: null);
+            }
+
+            return null;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> RemoveUserAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+
+            if (pendingInviteId.HasValue)
+            {
+                await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, pendingInviteId.Value, ct);
+                return true;
+            }
+
+            if (cdpPersonId.HasValue)
+            {
+                // TODO: delete user when endpoint is available. In the meantime, we can only delete pending invites, not existing users.
+                return true;
+            }
+
+            return false;
+        }
+        catch (ApiClient.ApiException)
+        {
+            return false;
+        }
+    }
 }

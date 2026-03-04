@@ -45,4 +45,16 @@ public interface IUserService
         string organisationSlug,
         int pendingInviteId,
         CancellationToken ct = default);
+
+    Task<RemoveUserViewModel?> GetRemoveUserViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
+
+    Task<bool> RemoveUserAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
 }
