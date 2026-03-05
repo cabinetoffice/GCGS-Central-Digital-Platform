@@ -200,6 +200,25 @@ public class UsersControllerTests
     [Fact]
     public async Task Details_WhenViewModelAvailable_ReturnsView()
     {
+        var applicationAccess = new[]
+        {
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 1,
+                ApplicationName: "Edit",
+                ApplicationDescription: "Edit application",
+                Permissions: new[] { "Read", "Write" },
+                AssignedDate: DateTimeOffset.UtcNow,
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Admin"),
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 2,
+                ApplicationName: "View",
+                ApplicationDescription: "View application",
+                Permissions: new[] { "Read" },
+                AssignedDate: DateTimeOffset.UtcNow.AddDays(-1),
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Editor")
+        };
         var viewModel = new UserDetailsViewModel(
             OrganisationName: "Org",
             OrganisationSlug: "org",
@@ -209,7 +228,8 @@ public class UsersControllerTests
             FullName: "Test User",
             Email: "test@example.com",
             OrganisationRole: OrganisationRole.Admin,
-            MemberSince: "19 February 2026");
+            MemberSince: "19 February 2026",
+            ApplicationAccess: applicationAccess);
         _userService.Setup(service => service.GetUserDetailsViewModelAsync("org", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
