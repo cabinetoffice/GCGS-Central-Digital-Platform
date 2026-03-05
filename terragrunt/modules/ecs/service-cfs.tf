@@ -15,7 +15,7 @@ module "ecs_service_cfs" {
   extra_host_headers     = var.cfs_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
-  internal_alb_enabled   = true
+  internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.cfs.name}"

@@ -40,7 +40,7 @@ module "ecs_service_organisation" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  internal_alb_enabled   = true
+  internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_priority      = var.service_configs.organisation.listener_priority

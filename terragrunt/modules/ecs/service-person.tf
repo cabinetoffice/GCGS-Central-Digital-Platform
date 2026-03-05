@@ -33,7 +33,7 @@ module "ecs_service_person" {
   desired_count          = var.service_configs.person.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
-  internal_alb_enabled   = true
+  internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id

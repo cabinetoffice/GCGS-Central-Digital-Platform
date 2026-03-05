@@ -336,15 +336,15 @@ variable "tags" {
 }
 
 variable "use_internal_issuer" {
-  description = "Whether to use internal authority URL as token issuer"
+  description = "Whether to use internal authority URL as token issuer (null defaults to environment-based behavior)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "use_internal_service_urls" {
-  description = "Whether to use internal service URLs for service-to-service calls"
+  description = "Whether to use internal service URLs for service-to-service calls (null defaults to environment-based behavior)"
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "user_pool_arn" {

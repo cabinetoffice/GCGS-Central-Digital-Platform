@@ -33,7 +33,7 @@ module "ecs_service_fts_healthcheck" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
-  internal_alb_enabled   = true
+  internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
