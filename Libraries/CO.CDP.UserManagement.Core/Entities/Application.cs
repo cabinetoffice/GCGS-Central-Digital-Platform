@@ -11,6 +11,11 @@ public class Application : ISoftDelete, IAuditable
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the unique GUID for this application.
+    /// </summary>
+    public Guid Guid { get; set; }
+
+    /// <summary>
     /// Gets or sets the name of the application.
     /// </summary>
     public string Name { get; set; } = string.Empty;
