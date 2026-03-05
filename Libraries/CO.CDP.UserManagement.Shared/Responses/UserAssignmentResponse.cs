@@ -43,7 +43,7 @@ public record UserAssignmentResponse
     /// <summary>
     /// Gets or sets the application details.
     /// </summary>
-    public ApplicationSummaryResponse? Application { get; init; }
+    public ApplicationResponse? Application { get; init; }
 
     /// <summary>
     /// Gets or sets the collection of roles assigned to the user.

@@ -128,6 +128,18 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
                 : "Not available";
 
+            var applicationAccess = user.ApplicationAssignments?
+                .Where(assignment => assignment.Application != null)
+                .Select(assignment => new UserApplicationAccessDetailViewModel(
+                    ApplicationId: assignment.Application!.Id,
+                    ApplicationName: assignment.Application!.Name,
+                    ApplicationDescription: assignment.Application!.Description,
+                    Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
+                    AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
+                    AssignedByEmail: assignment.AssignedBy ?? string.Empty,
+                    ApplicationRole: assignment.Roles?.FirstOrDefault()?.Name ?? string.Empty))
+                .ToList() ?? [];
+
             return new UserDetailsViewModel(
                 OrganisationName: org.Name,
                 OrganisationSlug: org.Slug,
@@ -137,7 +149,8 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 FullName: fullName,
                 Email: user.Email ?? string.Empty,
                 OrganisationRole: user.OrganisationRole,
-                MemberSince: memberSince);
+                MemberSince: memberSince,
+                ApplicationAccess: applicationAccess);
         }
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {

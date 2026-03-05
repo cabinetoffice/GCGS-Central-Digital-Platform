@@ -11,8 +11,11 @@ public sealed record UserDetailsViewModel(
     string FullName,
     string Email,
     OrganisationRole OrganisationRole,
-    string MemberSince)
+    string MemberSince,
+    IReadOnlyList<UserApplicationAccessDetailViewModel> ApplicationAccess)
 {
+    public Guid Id => CdpPersonId;
+
     public string OrganisationRoleTagClass => OrganisationRole switch
     {
         OrganisationRole.Owner => "govuk-tag--blue",
