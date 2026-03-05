@@ -114,15 +114,12 @@
     border-left: 4px solid #d4351c;
     padding: 20px;
     margin-bottom: 40px;
-    background-color: #f8f8f8;
 }
 
 .app-destructive-alert h2 {
     color: #d4351c;
-    font-weight: 700;
     margin-top: 0;
     margin-bottom: 15px;
-    font-size: 19px;
     line-height: 1.25;
 }
 

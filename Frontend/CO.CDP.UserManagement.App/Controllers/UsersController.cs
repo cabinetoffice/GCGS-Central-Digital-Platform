@@ -470,6 +470,7 @@ public class UsersController(IUserService userService, IInviteUserStateStore inv
     }
 
     [HttpPost("user/{cdpPersonId:guid}/remove")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveUser(
         string organisationSlug,
         Guid cdpPersonId,
@@ -501,6 +502,7 @@ public class UsersController(IUserService userService, IInviteUserStateStore inv
     }
 
     [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveInvite(
         string organisationSlug,
         int pendingInviteId,
