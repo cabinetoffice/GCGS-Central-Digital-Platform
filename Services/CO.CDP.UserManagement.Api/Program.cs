@@ -42,13 +42,11 @@ var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
 builder.Services.AddUserManagementInfrastructure(connectionString);
-
-var elastiCacheHostname = builder.Configuration["Aws:ElastiCache:Hostname"];
-var elastiCachePort = builder.Configuration["Aws:ElastiCache:Port"];
-var elastiCacheToken = builder.Configuration["Aws:ElastiCache:Token"];
-var redisConnectionString = !string.IsNullOrEmpty(elastiCacheHostname)
-    ? $"{elastiCacheHostname}:{elastiCachePort},password={elastiCacheToken},ssl=True,abortConnect=False"
-    : null;
+var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+var redisConnectionString = awsConfig?.ElastiCache is not null
+    ? $"{awsConfig.ElastiCache.Hostname}:{awsConfig.ElastiCache.Port}" +
+      $"{(!string.IsNullOrWhiteSpace(awsConfig.ElastiCache.Token) ? $",password={awsConfig.ElastiCache.Token}" : string.Empty)}"
+    : throw new InvalidOperationException("AWS ElastiCache configuration is required but not found. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are configured.");
 
 builder.Services.AddUserManagementCaching(redisConnectionString);
 
@@ -65,7 +63,6 @@ if (awsSection.Exists())
     builder.Services.AddAwsConfiguration(builder.Configuration);
 }
 
-var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var awsRegion = builder.Configuration["AWS:Region"]
                 ?? Environment.GetEnvironmentVariable("AWS_REGION");
 if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
@@ -196,7 +193,8 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString);
+    .AddNpgSql(connectionString)
+    .AddRedis(redisConnectionString);
 
 var app = builder.Build();
 

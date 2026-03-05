@@ -382,6 +382,8 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__ElastiCache__Hostname: "redis"
+      Aws__ElastiCache__Port: "6379"
       CloudWatch__LogGroup: "/ecs/user-management-api"
 
   user-management-app:
