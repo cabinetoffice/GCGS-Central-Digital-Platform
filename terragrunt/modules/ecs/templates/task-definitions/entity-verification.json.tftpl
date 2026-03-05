@@ -30,7 +30,7 @@
         { "name" : "EntityVerificationDatabase__Host", "value" : "${db_address}"},
         { "name" : "EntityVerificationDatabase__Server", "value" : "${db_address}"},
         { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
-        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"}
+        { "name" : "Organisation__Authority", "value" : "${use_internal_service_urls ? internal_service_urls["authority"] : public_service_urls["authority"]}"}
     ],
     "secrets": [
         { "name" : "EntityVerificationDatabase__Password", "valueFrom" : "${db_password}"},
