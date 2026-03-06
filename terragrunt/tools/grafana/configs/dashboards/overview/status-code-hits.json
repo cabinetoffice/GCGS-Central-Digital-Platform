@@ -1252,6 +1252,26 @@
           },
           {
             "selected": false,
+            "text": "outbox-processor-organisation-user-management",
+            "value": "outbox-processor-organisation-user-management"
+          },
+          {
+            "selected": false,
+            "text": "outbox-processor-person-user-management",
+            "value": "outbox-processor-person-user-management"
+          },
+          {
+            "selected": false,
+            "text": "user-management-api",
+            "value": "user-management-api"
+          },
+          {
+            "selected": false,
+            "text": "user-management-app",
+            "value": "user-management-app"
+          },
+          {
+            "selected": false,
             "text": "outbox-processor-entity-verification",
             "value": "outbox-processor-entity-verification"
           },
@@ -1281,7 +1301,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, outbox-processor-organisation-user-management, outbox-processor-person-user-management, person, scheduled-worker, tenant, user-management-api, user-management-app",
         "type": "custom"
       },
       {
