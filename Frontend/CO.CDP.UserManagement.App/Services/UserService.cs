@@ -111,6 +111,54 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         }
     }
 
+    public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            var firstName = user.FirstName ?? string.Empty;
+            var lastName = user.LastName ?? string.Empty;
+            var fullName = !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName)
+                ? $"{firstName} {lastName}"
+                : string.Empty;
+            var memberSince = user.JoinedAt.HasValue
+                ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
+                : "Not available";
+
+            var applicationAccess = user.ApplicationAssignments?
+                .Where(assignment => assignment.Application != null)
+                .Select(assignment => new UserApplicationAccessDetailViewModel(
+                    ApplicationId: assignment.Application!.Id,
+                    ApplicationName: assignment.Application!.Name,
+                    ApplicationDescription: assignment.Application!.Description,
+                    Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
+                    AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
+                    AssignedByEmail: assignment.AssignedBy ?? string.Empty,
+                    ApplicationRole: assignment.Roles?.FirstOrDefault()?.Name ?? string.Empty))
+                .ToList() ?? [];
+
+            return new UserDetailsViewModel(
+                OrganisationName: org.Name,
+                OrganisationSlug: org.Slug,
+                CdpPersonId: user.CdpPersonId ?? cdpPersonId,
+                FirstName: firstName,
+                LastName: lastName,
+                FullName: fullName,
+                Email: user.Email ?? string.Empty,
+                OrganisationRole: user.OrganisationRole,
+                MemberSince: memberSince,
+                ApplicationAccess: applicationAccess);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
     public async Task<bool> InviteUserAsync(
         string organisationSlug,
         InviteUserViewModel input,
