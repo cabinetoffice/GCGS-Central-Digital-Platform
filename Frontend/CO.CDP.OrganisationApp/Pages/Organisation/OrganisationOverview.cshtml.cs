@@ -14,7 +14,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager) : PageModel
+public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager, IConfiguration configuration) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -37,6 +37,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public bool SearchRegistryPponEnabled { get; private set; }
     public string BackLinkUrl { get; private set; } = "";
+    public string? UserManagementUrl { get; private set; }
 
     public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
@@ -47,6 +48,12 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
             SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
+
+            if (await featureManager.IsEnabledAsync(FeatureFlags.UserManagement))
+            {
+                var baseUrl = configuration["UserManagementApp:ServiceBaseUrl"] ?? "";
+                UserManagementUrl = $"{baseUrl.TrimEnd('/')}/organisation/{Id}/users";
+            }
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {
