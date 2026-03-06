@@ -1,6 +1,7 @@
 module "ecs_service_av_scanner_app" {
   source = "../ecs-service"
 
+  # @TODO (ABN) Consider internal DNS for clamav-rest (tools ALB) before switching ClamAvScanUrl to internal.
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.av_scanner_app.name}.json.tftpl",
     {
@@ -32,6 +33,9 @@ module "ecs_service_av_scanner_app" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_priority      = var.service_configs.av_scanner_app.listener_priority
   memory                 = var.service_configs.av_scanner_app.memory
   name                   = var.service_configs.av_scanner_app.name

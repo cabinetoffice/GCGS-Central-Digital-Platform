@@ -4,11 +4,16 @@ module "ecs_service_commercial_tools_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.commercial_tools_app.name}.json.tftpl",
     {
+      internal_service_urls             = local.internal_service_urls
+      public_service_urls               = local.public_service_urls
+      use_internal_service_urls         = local.use_internal_service_urls
+      use_internal_issuer               = local.use_internal_issuer
       aspcore_environment               = local.aspcore_environment
       cpu                               = var.service_configs.commercial_tools_app.cpu
       diagnostic_page_enabled           = !var.is_production || var.environment == "integration"
       diagnostic_page_path_arn          = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
       image                             = local.ecr_urls[var.service_configs.commercial_tools_app.name]
+      internal_service_urls             = local.internal_service_urls
       lg_name                           = aws_cloudwatch_log_group.tasks[var.service_configs.commercial_tools_app.name].name
       lg_prefix                         = "app"
       lg_region                         = data.aws_region.current.region
@@ -24,12 +29,12 @@ module "ecs_service_commercial_tools_app" {
       redis_auth_token_arn              = var.redis_auth_token_arn
       redis_port                        = var.redis_port
       redis_primary_endpoint_address    = var.redis_primary_endpoint
+      service_port                      = local.service_ports_by_service[var.service_configs.commercial_tools_app.name]
       service_version                   = var.environment == "development" ? local.service_version_sirsi : "1.0.80-98036a04a"
       sessiontimeoutinminutes           = var.commercial_tools_session_timeout
       shared_sessions_enabled           = local.shared_sessions_enabled
       ssm_data_protection_prefix        = local.ssm_data_protection_prefix
       vpc_cidr                          = var.vpc_cider
-      service_port                      = local.service_ports_by_service[var.service_configs.commercial_tools_app.name]
     }
   )
 
@@ -41,6 +46,9 @@ module "ecs_service_commercial_tools_app" {
   ecs_listener_arn              = local.main_ecs_listener_arn
   ecs_service_base_sg_id        = var.ecs_sg_id
   family                        = "app"
+  internal_alb_enabled          = local.use_internal_service_urls
+  internal_domain               = local.internal_domain
+  internal_listener_arn         = local.internal_ecs_listener_arn
   is_frontend_app               = false
   listener_priority             = var.service_configs.commercial_tools_app.listener_priority
   memory                        = var.service_configs.commercial_tools_app.memory
