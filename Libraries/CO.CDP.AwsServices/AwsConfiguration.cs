@@ -18,7 +18,6 @@ public record ElastiCache
 {
     public required string Hostname { get; init; }
     public required string Port { get; init; }
-    public string? Token { get; init; }
 }
 
 public record CloudWatch

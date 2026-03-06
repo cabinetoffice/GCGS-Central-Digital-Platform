@@ -148,24 +148,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
 
-  user-management-migrations:
-    container_name: co-cdp-user-management-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: user-management-migrations
-    image: 'cabinetoffice/cdp-user-management-migrations:${IMAGE_VERSION:-latest}'
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      UserManagementDatabase__Server: 'db'
-      UserManagementDatabase__Database: 'cdp'
-      UserManagementDatabase__Username: 'cdp_user'
-      UserManagementDatabase__Password: 'cdp123'
-
   organisation-app:
     container_name: co-cdp-organisation-app
     build:
@@ -366,10 +348,8 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
-      UserManagementDatabase__Server: 'db'
-      UserManagementDatabase__Database: 'cdp'
-      UserManagementDatabase__Username: 'cdp_user'
-      UserManagementDatabase__Password: 'cdp123'
+      ConnectionStrings__UserManagementDatabase: 'Host=db;Database=cdp;Username=cdp_user;Password=cdp123;SearchPath=user_management'
+      ConnectionStrings__Redis: 'redis:6379'
       OrganisationInformationDatabase__Host: 'db'
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
@@ -382,8 +362,6 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
-      Aws__ElastiCache__Hostname: "redis"
-      Aws__ElastiCache__Port: "6379"
       CloudWatch__LogGroup: "/ecs/user-management-api"
 
   user-management-app:

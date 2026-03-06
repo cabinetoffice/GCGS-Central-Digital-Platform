@@ -37,16 +37,13 @@ builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(bu
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
+var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
-builder.Services.AddUserManagementInfrastructure(connectionString);
-var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
-var redisConnectionString = awsConfig?.ElastiCache is not null
-    ? $"{awsConfig.ElastiCache.Hostname}:{awsConfig.ElastiCache.Port}" +
-      $"{(!string.IsNullOrWhiteSpace(awsConfig.ElastiCache.Token) ? $",password={awsConfig.ElastiCache.Token}" : string.Empty)}"
-    : throw new InvalidOperationException("AWS ElastiCache configuration is required but not found. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are configured.");
+builder.Services.AddUserManagementInfrastructure(
+    connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
 builder.Services.AddUserManagementCaching(redisConnectionString);
 
@@ -63,6 +60,7 @@ if (awsSection.Exists())
     builder.Services.AddAwsConfiguration(builder.Configuration);
 }
 
+var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var awsRegion = builder.Configuration["AWS:Region"]
                 ?? Environment.GetEnvironmentVariable("AWS_REGION");
 if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
@@ -193,8 +191,7 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString)
-    .AddRedis(redisConnectionString);
+    .AddNpgSql(connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
 var app = builder.Build();
 
