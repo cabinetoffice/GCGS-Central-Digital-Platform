@@ -4,35 +4,33 @@ module "ecs_service_user_management_api" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.user_management_api.name}.json.tftpl",
     {
-      internal_service_urls             = local.internal_service_urls
-      public_service_urls               = local.public_service_urls
-      use_internal_service_urls         = local.use_internal_service_urls
-      aspcore_environment               = local.aspcore_environment
-      container_port                    = var.service_configs.user_management_api.port
-      cpu                               = var.service_configs.user_management_api.cpu
-      db_address                        = var.db_sirsi_cluster_address
-      db_name                           = var.db_sirsi_cluster_name
-      db_password                       = local.db_sirsi_password
-      db_username                       = local.db_sirsi_username
-      host_port                         = var.service_configs.user_management_api.port
-      image                             = local.ecr_urls[var.service_configs.user_management_api.name]
-      lg_name                           = aws_cloudwatch_log_group.tasks[var.service_configs.user_management_api.name].name
-      lg_prefix                         = "app"
-      lg_region                         = data.aws_region.current.region
-      memory                            = var.service_configs.user_management_api.memory
-      name                              = var.service_configs.user_management_api.name
-      public_domain                     = var.public_domain
-      service_version                   = local.service_version_sirsi
-      queue_organisation_url            = var.queue_organisation_url
-      redis_auth_token_arn              = var.redis_auth_token_arn
-      redis_port                        = var.redis_port
-      redis_primary_endpoint_address    = var.redis_primary_endpoint
-      servicekey_apikey                 = data.aws_secretsmanager_secret.user_management_servicekey_apikey.arn
-      vpc_cidr                          = var.vpc_cider
+      aspcore_environment            = local.aspcore_environment
+      container_port                 = var.service_configs.user_management_api.port
+      cpu                            = var.service_configs.user_management_api.cpu
+      db_address                     = var.db_sirsi_cluster_address
+      db_name                        = var.db_sirsi_cluster_name
+      db_password                    = local.db_sirsi_password
+      db_username                    = local.db_sirsi_username
+      host_port                      = var.service_configs.user_management_api.port
+      image                          = local.ecr_urls[var.service_configs.user_management_api.name]
+      internal_service_urls          = local.internal_service_urls
+      lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.user_management_api.name].name
+      lg_prefix                      = "app"
+      lg_region                      = data.aws_region.current.region
+      memory                         = var.service_configs.user_management_api.memory
+      name                           = var.service_configs.user_management_api.name
+      public_domain                  = var.public_domain
+      public_service_urls            = local.public_service_urls
+      queue_organisation_url         = var.queue_organisation_url
+      redis_auth_token_arn           = var.redis_auth_token_arn
+      redis_port                     = var.redis_port
+      redis_primary_endpoint_address = var.redis_primary_endpoint
+      service_version                = local.service_version_sirsi
+      servicekey_apikey              = data.aws_secretsmanager_secret.user_management_servicekey_apikey.arn
+      use_internal_service_urls      = local.use_internal_service_urls
+      vpc_cidr                       = var.vpc_cider
     }
   )
-
-  extra_host_headers     = ["user-management-api.${var.public_domain}"]
 
   cluster_id             = local.main_cluster_id
   container_port         = var.service_configs.user_management_api.port
@@ -40,12 +38,13 @@ module "ecs_service_user_management_api" {
   desired_count          = var.service_configs.user_management_api.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
+  ecs_service_base_sg_id = var.ecs_sg_id
+  extra_host_headers     = ["user-management-api.${var.public_domain}"]
+  family                 = "app"
+  host_port              = var.service_configs.user_management_api.port_host
   internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
-  ecs_service_base_sg_id = var.ecs_sg_id
-  family                 = "app"
-  host_port              = var.service_configs.user_management_api.port_host
   memory                 = var.service_configs.user_management_api.memory
   name                   = var.service_configs.user_management_api.name
   private_subnet_ids     = var.private_subnet_ids
