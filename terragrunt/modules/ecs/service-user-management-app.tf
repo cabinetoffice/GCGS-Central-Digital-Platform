@@ -4,6 +4,9 @@ module "ecs_service_user_management_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.user_management_app.name}.json.tftpl",
     {
+      internal_service_urls      = local.internal_service_urls
+      public_service_urls        = local.public_service_urls
+      use_internal_service_urls  = local.use_internal_service_urls
       aspcore_environment      = local.aspcore_environment
       container_port           = var.service_configs.user_management_app.port
       cpu                      = var.service_configs.user_management_app.cpu

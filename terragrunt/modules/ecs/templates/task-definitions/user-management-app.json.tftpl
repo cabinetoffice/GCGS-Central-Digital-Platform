@@ -29,8 +29,8 @@
         { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
         { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
         { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
-        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"},
-        { "name" : "UserManagementApi__BaseUrl", "value" : "https://user-management-api.${public_domain}"}
+        { "name" : "Organisation__Authority", "value" : "${use_internal_service_urls ? internal_service_urls["authority"] : public_service_urls["authority"]}"},
+        { "name" : "UserManagementApi__BaseUrl", "value" : "${use_internal_service_urls ? internal_service_urls["user-management-api"] : public_service_urls["user-management-api"]}"}
     ],
     "secrets": [
         { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},

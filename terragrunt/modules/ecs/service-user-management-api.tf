@@ -4,6 +4,9 @@ module "ecs_service_user_management_api" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.user_management_api.name}.json.tftpl",
     {
+      internal_service_urls             = local.internal_service_urls
+      public_service_urls               = local.public_service_urls
+      use_internal_service_urls         = local.use_internal_service_urls
       aspcore_environment               = local.aspcore_environment
       container_port                    = var.service_configs.user_management_api.port
       cpu                               = var.service_configs.user_management_api.cpu
@@ -37,6 +40,9 @@ module "ecs_service_user_management_api" {
   desired_count          = var.service_configs.user_management_api.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   host_port              = var.service_configs.user_management_api.port_host
@@ -47,6 +53,7 @@ module "ecs_service_user_management_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = var.service_configs.user_management_api.port
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }
