@@ -379,14 +379,29 @@
       "targets": [
         {
           "dimensions": {},
-          "expression": "fields httpRequest.clientIp as ClientIP | stats count() as Requests by ClientIP | sort Requests desc | limit 20",
+          "expression": "fields httpRequest.clientIp as ClientIP | stats count() as Requests by ClientIP | sort Requests desc | limit 20\n| filter @log like /$waf_log_group/",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "matchExact": true,
@@ -405,7 +420,23 @@
         }
       ],
       "title": "Top Client IPs (all actions)",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "@message": true,
+              "Time": true
+            },
+            "indexByName": {
+              "ClientIP": 0,
+              "Requests": 1
+            }
+          }
+        }
+      ]
     },
     {
       "datasource": {
@@ -436,14 +467,29 @@
       "targets": [
         {
           "dimensions": {},
-          "expression": "fields httpRequest.country as Country | stats count() as Requests by Country | sort Requests desc | limit 20",
+          "expression": "fields httpRequest.country as Country | stats count() as Requests by Country | sort Requests desc | limit 20\n| filter @log like /$waf_log_group/",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "matchExact": true,
@@ -462,7 +508,23 @@
         }
       ],
       "title": "Top Countries (all actions)",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "@message": true,
+              "Time": true
+            },
+            "indexByName": {
+              "Country": 0,
+              "Requests": 1
+            }
+          }
+        }
+      ]
     },
     {
       "datasource": {
@@ -493,14 +555,29 @@
       "targets": [
         {
           "dimensions": {},
-          "expression": "fields httpRequest.uri as URI | stats count() as Requests by URI | sort Requests desc | limit 20",
+          "expression": "fields httpRequest.uri as URI | stats count() as Requests by URI | sort Requests desc | limit 20\n| filter @log like /$waf_log_group/",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "matchExact": true,
@@ -519,7 +596,23 @@
         }
       ],
       "title": "Top URIs (all actions)",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "@message": true,
+              "Time": true
+            },
+            "indexByName": {
+              "URI": 0,
+              "Requests": 1
+            }
+          }
+        }
+      ]
     },
     {
       "datasource": {
@@ -550,14 +643,29 @@
       "targets": [
         {
           "dimensions": {},
-          "expression": "fields action, labels.0.name as Rule | filter action = \"BLOCK\" | stats count() as Blocked by Rule | sort Blocked desc | limit 20",
+          "expression": "fields action, labels.0.name as Rule | filter action = \"BLOCK\" | stats count() as Blocked by Rule | sort Blocked desc | limit 20\n| filter @log like /$waf_log_group/",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "matchExact": true,
@@ -576,7 +684,23 @@
         }
       ],
       "title": "Top Blocked Rules",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "@message": true,
+              "Time": true
+            },
+            "indexByName": {
+              "Rule": 0,
+              "Blocked": 1
+            }
+          }
+        }
+      ]
     },
     {
       "datasource": {
@@ -607,14 +731,29 @@
       "targets": [
         {
           "dimensions": {},
-          "expression": "fields @timestamp, action as Action, labels.0.name as Rule, httpRequest.clientIp as ClientIP, httpRequest.country as Country, httpRequest.httpMethod as Method, httpRequest.uri as URI | filter action = \"BLOCK\" | sort @timestamp desc | limit 50",
+          "expression": "fields @timestamp, action as Action, labels.0.name as Rule, httpRequest.clientIp as ClientIP, httpRequest.country as Country, httpRequest.httpMethod as Method, httpRequest.uri as URI | filter action = \"BLOCK\" | sort @timestamp desc | limit 50\n| filter @log like /$waf_log_group/",
           "id": "",
           "label": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "matchExact": true,
@@ -633,14 +772,35 @@
         }
       ],
       "title": "Recent Blocked Requests",
-      "type": "table"
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Value": true,
+              "@message": true,
+              "Time": true
+            },
+            "indexByName": {
+              "@timestamp": 0,
+              "Action": 1,
+              "Rule": 2,
+              "ClientIP": 3,
+              "Country": 4,
+              "Method": 5,
+              "URI": 6
+            }
+          }
+        }
+      ]
     }
   ],
   "schemaVersion": 40,
   "style": "dark",
   "tags": [
-    "traffic",
     "external",
+    "traffic",
     "waf"
   ],
   "templating": {
@@ -674,13 +834,17 @@
       },
       {
         "current": {
-          "text": "aws-waf-logs-cdp-sirsi",
-          "value": "aws-waf-logs-cdp-sirsi"
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "description": "CloudWatch log group for WAF logs",
-        "includeAll": false,
+        "includeAll": true,
         "label": "WAF Log Group",
-        "multi": false,
+        "multi": true,
         "name": "waf_log_group",
         "options": [
           {
@@ -705,18 +869,21 @@
           }
         ],
         "query": "aws-waf-logs-cdp-sirsi, aws-waf-logs-cdp-sirsi-php, aws-waf-logs-cdp-sirsi-fts, aws-waf-logs-cdp-sirsi-tools",
-        "type": "custom"
+        "type": "custom",
+        "allValue": ".*",
+        "valuesFormat": "regex"
       }
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "External Traffic (WAF)",
+  "title": "WAF - External Traffic",
   "uid": "external-traffic-waf",
-  "version": 1,
-  "weekStart": ""
+  "version": 2,
+  "weekStart": "",
+  "refresh": "30s"
 }

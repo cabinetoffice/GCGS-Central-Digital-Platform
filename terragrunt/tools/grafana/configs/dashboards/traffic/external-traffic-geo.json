@@ -52,7 +52,26 @@
             ]
           }
         },
-        "overrides": []
+        "overrides": [
+          {
+            "name": "country-link",
+            "matcher": {
+              "id": "byName",
+              "options": "country"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open WAF Triage",
+                    "url": "/d/waf-triage/external-traffic-waf-triage?orgId=${__org}&var-action_filter=${action_filter}&var-web_acl=${web_acl}&var-waf_log_group=${waf_log_group}&var-country_filter=${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 25,
@@ -121,13 +140,28 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| stats count() as requests by country\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter action like /$action_filter/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| stats count() as requests by country\n| sort requests desc",
           "id": "",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "metricQueryType": 0,
@@ -150,12 +184,28 @@
   "style": "dark",
   "tags": [
     "external",
+    "geo",
     "traffic",
-    "waf",
-    "geo"
+    "waf"
   ],
   "templating": {
     "list": [
+      {
+        "name": "action_filter",
+        "label": "WAF Action",
+        "type": "custom",
+        "includeAll": true,
+        "allValue": ".*",
+        "query": "ALLOW,BLOCK,COUNT",
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        }
+      },
       {
         "name": "web_acl",
         "label": "Web ACL",
@@ -198,8 +248,12 @@
       },
       {
         "current": {
-          "text": "aws-waf-logs-cdp-sirsi",
-          "value": "aws-waf-logs-cdp-sirsi"
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
         },
         "label": "WAF Log Group",
         "name": "waf_log_group",
@@ -227,7 +281,11 @@
         ],
         "type": "custom",
         "query": "aws-waf-logs-cdp-sirsi,aws-waf-logs-cdp-sirsi-php,aws-waf-logs-cdp-sirsi-fts,aws-waf-logs-cdp-sirsi-tools",
-        "refresh": 1
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "valuesFormat": "regex"
       }
     ]
   },
@@ -246,7 +304,7 @@
     ]
   },
   "timezone": "",
-  "title": "External Traffic - Geo Map (v2)",
+  "title": "WAF - Geo Map",
   "uid": "geo-v2",
   "version": 7
 }

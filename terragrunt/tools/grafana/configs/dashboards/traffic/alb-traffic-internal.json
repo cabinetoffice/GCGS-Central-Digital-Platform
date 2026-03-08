@@ -832,9 +832,9 @@
   "schemaVersion": 40,
   "style": "dark",
   "tags": [
-    "traffic",
+    "alb",
     "internal",
-    "external"
+    "traffic"
   ],
   "templating": {
     "list": [
@@ -872,5 +872,6 @@
   "title": "ALB Traffic - Internal",
   "uid": "alb-traffic-internal",
   "version": 2,
-  "weekStart": ""
+  "weekStart": "",
+  "refresh": "30s"
 }

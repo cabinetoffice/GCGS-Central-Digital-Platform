@@ -84,12 +84,12 @@
         "overrides": []
       },
       "gridPos": {
-        "x": 0,
+        "x": 12,
         "y": 0,
         "w": 12,
         "h": 8
       },
-      "id": 1,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [
@@ -116,16 +116,13 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
           "expression": "",
           "id": "",
-          "label": "external",
+          "label": "",
           "logGroups": [],
-          "matchExact": true,
+          "matchExact": false,
           "metricEditorMode": 0,
-          "metricName": "RequestCount",
+          "metricName": "HTTPCode_ELB_4XX_Count",
           "metricQueryType": 0,
           "namespace": "AWS/ApplicationELB",
           "period": "",
@@ -141,37 +138,25 @@
               "type": "property"
             },
             "select": {
-              "name": "AVG",
+              "name": "SUM",
               "parameters": [
                 {
-                  "name": "RequestCount",
+                  "name": "HTTPCode_ELB_4XX_Count",
                   "type": "functionParameter"
                 }
               ],
               "type": "function"
             },
             "where": {
-              "expressions": [
-                {
-                  "operator": {
-                    "name": "=",
-                    "value": "$external_loadbalancer"
-                  },
-                  "property": {
-                    "name": "LoadBalancer",
-                    "type": "string"
-                  },
-                  "type": "operator"
-                }
-              ],
-              "type": "and"
+              "type": "and",
+              "expressions": []
             }
           },
-          "sqlExpression": "SELECT AVG(RequestCount) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$external_loadbalancer\"",
+          "sqlExpression": "SELECT SUM(HTTPCode_ELB_4XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))",
           "statistic": "Sum"
         }
       ],
-      "title": "Request Count (External)",
+      "title": "ELB 4XX (External)",
       "type": "timeseries"
     },
     {
@@ -238,11 +223,11 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 0,
+        "y": 8,
         "w": 12,
         "h": 8
       },
-      "id": 2,
+      "id": 6,
       "options": {
         "legend": {
           "calcs": [
@@ -269,16 +254,13 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
           "expression": "",
           "id": "",
-          "label": "external",
+          "label": "",
           "logGroups": [],
-          "matchExact": true,
+          "matchExact": false,
           "metricEditorMode": 0,
-          "metricName": "HTTPCode_ELB_5XX_Count",
+          "metricName": "HTTPCode_Target_4XX_Count",
           "metricQueryType": 0,
           "namespace": "AWS/ApplicationELB",
           "period": "",
@@ -294,7 +276,512 @@
               "type": "property"
             },
             "select": {
-              "name": "AVG",
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "HTTPCode_Target_4XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
+          },
+          "sqlExpression": "SELECT SUM(HTTPCode_Target_4XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Target 4XX (External)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 6,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 12,
+        "h": 8
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "NewConnectionCount",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "NewConnectionCount",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
+          },
+          "sqlExpression": "SELECT SUM(NewConnectionCount) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "New Connections (External)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 6,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 12,
+        "h": 8
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "mean",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Mean",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "ActiveConnectionCount",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "period": "",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "ActiveConnectionCount",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
+          },
+          "sqlExpression": "SELECT SUM(ActiveConnectionCount) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "Active Connections (External)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "matchExact": false,
+          "metricName": "HTTPCode_ELB_2XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_2XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
+          },
+          "sqlExpression": "SELECT SUM(HTTPCode_ELB_2XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
+        }
+      ],
+      "title": "ELB 2XX (External)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "matchExact": false,
+          "metricName": "HTTPCode_ELB_3XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "queryMode": "Metrics",
+          "refId": "B",
+          "region": "default",
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "HTTPCode_ELB_3XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
+          },
+          "sqlExpression": "SELECT SUM(HTTPCode_ELB_3XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
+        }
+      ],
+      "title": "ELB 3XX (External)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "matchExact": false,
+          "metricName": "HTTPCode_ELB_5XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
+          "queryMode": "Metrics",
+          "refId": "C",
+          "region": "default",
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
               "parameters": [
                 {
                   "name": "HTTPCode_ELB_5XX_Count",
@@ -304,24 +791,11 @@
               "type": "function"
             },
             "where": {
-              "expressions": [
-                {
-                  "operator": {
-                    "name": "=",
-                    "value": "$external_loadbalancer"
-                  },
-                  "property": {
-                    "name": "LoadBalancer",
-                    "type": "string"
-                  },
-                  "type": "operator"
-                }
-              ],
-              "type": "and"
+              "type": "and",
+              "expressions": []
             }
           },
-          "sqlExpression": "SELECT AVG(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$external_loadbalancer\"",
-          "statistic": "Sum"
+          "sqlExpression": "SELECT SUM(HTTPCode_ELB_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
         }
       ],
       "title": "ELB 5XX (External)",
@@ -336,108 +810,44 @@
         "defaults": {
           "color": {
             "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 6,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 4,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "none"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "x": 12,
-        "y": 8,
+        "h": 6,
         "w": 12,
-        "h": 8
+        "x": 12,
+        "y": 23
       },
-      "id": 3,
+      "id": 12,
       "options": {
         "legend": {
-          "calcs": [
-            "min",
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Mean",
-          "sortDesc": true
+          "showLegend": true
         },
         "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
+          "mode": "single"
         }
       },
-      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
-          "expression": "",
-          "id": "",
-          "label": "external",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "HTTPCode_Target_5XX_Count",
+          "matchExact": false,
+          "metricName": "HTTPCode_Target_2XX_Count",
           "metricQueryType": 0,
           "namespace": "AWS/ApplicationELB",
-          "period": "",
           "queryMode": "Metrics",
-          "refId": "A",
+          "refId": "D",
           "region": "default",
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
           "sql": {
             "from": {
               "property": {
@@ -447,37 +857,24 @@
               "type": "property"
             },
             "select": {
-              "name": "AVG",
+              "name": "SUM",
               "parameters": [
                 {
-                  "name": "HTTPCode_Target_5XX_Count",
+                  "name": "HTTPCode_Target_2XX_Count",
                   "type": "functionParameter"
                 }
               ],
               "type": "function"
             },
             "where": {
-              "expressions": [
-                {
-                  "operator": {
-                    "name": "=",
-                    "value": "$external_loadbalancer"
-                  },
-                  "property": {
-                    "name": "LoadBalancer",
-                    "type": "string"
-                  },
-                  "type": "operator"
-                }
-              ],
-              "type": "and"
+              "type": "and",
+              "expressions": []
             }
           },
-          "sqlExpression": "SELECT AVG(HTTPCode_Target_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$external_loadbalancer\"",
-          "statistic": "Sum"
+          "sqlExpression": "SELECT SUM(HTTPCode_Target_2XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
         }
       ],
-      "title": "Target 5XX (External)",
+      "title": "Target 2XX (External)",
       "type": "timeseries"
     },
     {
@@ -489,108 +886,44 @@
         "defaults": {
           "color": {
             "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 6,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "smooth",
-            "lineWidth": 1,
-            "pointSize": 4,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "s"
+          }
         },
         "overrides": []
       },
       "gridPos": {
-        "x": 0,
-        "y": 8,
+        "h": 6,
         "w": 12,
-        "h": 8
+        "x": 0,
+        "y": 29
       },
-      "id": 4,
+      "id": 13,
       "options": {
         "legend": {
-          "calcs": [
-            "min",
-            "mean",
-            "max"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true,
-          "sortBy": "Mean",
-          "sortDesc": true
+          "showLegend": true
         },
         "tooltip": {
-          "hideZeros": false,
-          "mode": "multi",
-          "sort": "none"
+          "mode": "single"
         }
       },
-      "pluginVersion": "11.5.2",
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
-          "expression": "",
-          "id": "",
-          "label": "external",
-          "logGroups": [],
-          "matchExact": true,
-          "metricEditorMode": 0,
-          "metricName": "TargetResponseTime",
+          "matchExact": false,
+          "metricName": "HTTPCode_Target_3XX_Count",
           "metricQueryType": 0,
           "namespace": "AWS/ApplicationELB",
-          "period": "",
           "queryMode": "Metrics",
-          "refId": "A",
+          "refId": "E",
           "region": "default",
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
           "sql": {
             "from": {
               "property": {
@@ -600,37 +933,24 @@
               "type": "property"
             },
             "select": {
-              "name": "AVG",
+              "name": "SUM",
               "parameters": [
                 {
-                  "name": "TargetResponseTime",
+                  "name": "HTTPCode_Target_3XX_Count",
                   "type": "functionParameter"
                 }
               ],
               "type": "function"
             },
             "where": {
-              "expressions": [
-                {
-                  "operator": {
-                    "name": "=",
-                    "value": "$external_loadbalancer"
-                  },
-                  "property": {
-                    "name": "LoadBalancer",
-                    "type": "string"
-                  },
-                  "type": "operator"
-                }
-              ],
-              "type": "and"
+              "type": "and",
+              "expressions": []
             }
           },
-          "sqlExpression": "SELECT AVG(TargetResponseTime) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = \"$external_loadbalancer\"",
-          "statistic": "p95"
+          "sqlExpression": "SELECT SUM(HTTPCode_Target_3XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
         }
       ],
-      "title": "Target Response Time p95 (External)",
+      "title": "Target 3XX (External)",
       "type": "timeseries"
     },
     {
@@ -639,202 +959,84 @@
         "uid": "CLOUDWATCH"
       },
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          }
+        },
         "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 16
-      },
-      "id": 5,
-      "title": "ELB 4XX/5XX (External)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_ELB_4XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
-          "queryMode": "Metrics",
-          "refId": "A",
-          "label": "external 4xx",
-          "region": "default"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_ELB_5XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "dimensions": {
-            "LoadBalancer": "$external_loadbalancer"
-          },
-          "queryMode": "Metrics",
-          "refId": "B",
-          "label": "external 5xx",
-          "region": "default"
-        }
-      ],
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      }
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
-      },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 16
-      },
-      "id": 6,
-      "title": "Target HTTP Codes (External)",
-      "type": "timeseries",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_Target_2XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "queryMode": "Metrics",
-          "refId": "A",
-          "label": "external 2xx",
-          "region": "default",
-          "sqlExpression": "SELECT SUM(HTTPCode_Target_2XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_Target_3XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "queryMode": "Metrics",
-          "refId": "B",
-          "label": "external 3xx",
-          "region": "default",
-          "sqlExpression": "SELECT SUM(HTTPCode_Target_3XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_Target_4XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "queryMode": "Metrics",
-          "refId": "C",
-          "label": "external 4xx",
-          "region": "default",
-          "sqlExpression": "SELECT SUM(HTTPCode_Target_4XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
-          },
-          "namespace": "AWS/ApplicationELB",
-          "metricName": "HTTPCode_Target_5XX_Count",
-          "statistic": "Sum",
-          "period": "60",
-          "queryMode": "Metrics",
-          "refId": "D",
-          "label": "external 5xx",
-          "region": "default",
-          "sqlExpression": "SELECT SUM(HTTPCode_Target_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'"
-        }
-      ],
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      }
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
       },
       "gridPos": {
         "h": 6,
         "w": 12,
-        "x": 0,
-        "y": 24
+        "x": 12,
+        "y": 29
       },
-      "id": 7,
-      "title": "ELB Error Rate % (External)",
-      "type": "timeseries",
+      "id": 14,
+      "options": {
+        "legend": {
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
+          "matchExact": false,
+          "metricName": "HTTPCode_Target_5XX_Count",
+          "metricQueryType": 0,
+          "namespace": "AWS/ApplicationELB",
           "queryMode": "Metrics",
-          "refId": "A",
+          "refId": "F",
           "region": "default",
-          "statistic": "Average",
-          "sqlExpression": "SELECT (SUM(HTTPCode_ELB_4XX_Count)/SUM(RequestCount))*100 FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'",
-          "label": "4xx %"
-        },
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
+          "statistic": "Sum",
+          "expression": "",
+          "id": "",
+          "logGroups": [],
+          "metricEditorMode": 0,
+          "period": "",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "AWS/ApplicationELB",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "name": "SUM",
+              "parameters": [
+                {
+                  "name": "HTTPCode_Target_5XX_Count",
+                  "type": "functionParameter"
+                }
+              ],
+              "type": "function"
+            },
+            "where": {
+              "type": "and",
+              "expressions": []
+            }
           },
-          "queryMode": "Metrics",
-          "refId": "B",
-          "region": "default",
-          "statistic": "Average",
-          "sqlExpression": "SELECT (SUM(HTTPCode_ELB_5XX_Count)/SUM(RequestCount))*100 FROM \"AWS/ApplicationELB\" WHERE LoadBalancer = '$external_loadbalancer'",
-          "label": "5xx %"
+          "sqlExpression": "SELECT SUM(HTTPCode_Target_5XX_Count) FROM \"AWS/ApplicationELB\" WHERE (\"$external_loadbalancer\" = \"__all__\" AND LoadBalancer LIKE \"app/cdp-sirsi%\") OR (\"$external_loadbalancer\" != \"__all__\" AND LoadBalancer IN (${external_loadbalancer:csv}))"
         }
       ],
-      "options": {
-        "legend": {
-          "displayMode": "list",
-          "placement": "bottom"
-        }
-      }
+      "title": "Target 5XX (External)",
+      "type": "timeseries"
     }
   ],
   "schemaVersion": 40,
   "style": "dark",
   "tags": [
-    "traffic",
-    "internal",
-    "external"
+    "alb",
+    "external",
+    "errors",
+    "traffic"
   ],
   "templating": {
     "list": [
@@ -844,9 +1046,9 @@
           "uid": "CLOUDWATCH"
         },
         "definition": "",
-        "includeAll": false,
+        "includeAll": true,
         "label": "External ALB",
-        "multi": false,
+        "multi": true,
         "name": "external_loadbalancer",
         "options": [],
         "query": {
@@ -858,8 +1060,18 @@
           "region": "default"
         },
         "refresh": 1,
-        "regex": "/^app\\/cdp-sirsi\\/.*/",
-        "type": "query"
+        "regex": "/^(app\\/cdp-sirsi(?:-php|-fts|-tools)?\\/.*)$/",
+        "type": "query",
+        "allValue": "__all__",
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "valuesFormat": "csv"
       }
     ]
   },
@@ -869,8 +1081,9 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ALB Traffic - External - SIRSI",
-  "uid": "alb-traffic-external-sirsi",
-  "version": 2,
-  "weekStart": ""
+  "title": "ALB Errors & Connections - External",
+  "uid": "alb-errors-external-all",
+  "version": 1,
+  "weekStart": "",
+  "refresh": "30s"
 }

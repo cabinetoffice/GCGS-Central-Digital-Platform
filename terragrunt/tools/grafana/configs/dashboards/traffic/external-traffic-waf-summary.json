@@ -39,15 +39,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by country\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by country, action\n| sort requests desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -66,7 +81,8 @@
             },
             "indexByName": {
               "country": 0,
-              "requests": 1
+              "action": 1,
+              "requests": 2
             }
           }
         }
@@ -93,15 +109,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ip\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ip, action\n| sort requests desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -120,7 +151,8 @@
             },
             "indexByName": {
               "ip": 0,
-              "requests": 1
+              "action": 1,
+              "requests": 2
             }
           }
         }
@@ -147,15 +179,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by uri\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by uri, action\n| sort requests desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -174,7 +221,8 @@
             },
             "indexByName": {
               "uri": 0,
-              "requests": 1
+              "action": 1,
+              "requests": 2
             }
           }
         }
@@ -201,15 +249,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"httpMethod\":\"(?<method>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by method\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"httpMethod\":\"(?<method>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by method, action\n| sort requests desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -228,7 +291,8 @@
             },
             "indexByName": {
               "method": 0,
-              "requests": 1
+              "action": 1,
+              "requests": 2
             }
           }
         }
@@ -255,15 +319,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"name\":\"User-Agent\",\"value\":\"(?<ua>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ua\n| sort requests desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"name\":\"User-Agent\",\"value\":\"(?<ua>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ua, action\n| sort requests desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -282,7 +361,8 @@
             },
             "indexByName": {
               "ua": 0,
-              "requests": 1
+              "action": 1,
+              "requests": 2
             }
           }
         }
@@ -309,15 +389,30 @@
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:$waf_log_group:*",
-              "name": "$waf_log_group"
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
           "queryMode": "Logs",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -349,9 +444,9 @@
   "style": "dark",
   "tags": [
     "external",
+    "summary",
     "traffic",
-    "waf",
-    "investigation"
+    "waf"
   ],
   "templating": {
     "list": [
@@ -455,9 +550,17 @@
           }
         ],
         "current": {
-          "text": "aws-waf-logs-cdp-sirsi",
-          "value": "aws-waf-logs-cdp-sirsi"
-        }
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "valuesFormat": "regex"
       }
     ]
   },
@@ -476,7 +579,7 @@
     ]
   },
   "timezone": "",
-  "title": "External Traffic - WAF Summary",
+  "title": "WAF - Summary",
   "uid": "external-traffic-waf-summary",
-  "version": 1
+  "version": 2
 }
