@@ -113,7 +113,7 @@
                 "value": [
                   {
                     "title": "Filter by IP",
-                    "url": "${__url.path}?orgId=${__org}&from=${__from}&to=${__to}&timezone=${__timezone}&var-action_filter=${action_filter}&var-web_acl=${web_acl}&var-waf_log_group=${waf_log_group}&var-ip_filter=${__value.raw}",
+                    "url": "${__url.path}?var-ip_filter=${__value.raw}",
                     "targetBlank": false
                   }
                 ]
@@ -228,12 +228,13 @@
         ],
         "current": {
           "text": [
-            "$__all"
+            "All"
           ],
           "value": [
             "$__all"
           ]
-        }
+        },
+        "skipUrlSync": true
       },
       {
         "name": "web_acl",
@@ -272,7 +273,8 @@
           "value": [
             "$__all"
           ]
-        }
+        },
+        "skipUrlSync": true
       },
       {
         "name": "waf_log_group",
@@ -312,7 +314,8 @@
         "multi": true,
         "includeAll": true,
         "allValue": ".*",
-        "valuesFormat": "regex"
+        "valuesFormat": "regex",
+        "skipUrlSync": true
       },
       {
         "name": "ip_filter",
