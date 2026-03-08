@@ -64,7 +64,7 @@
           "refId": "A",
           "region": "default",
           "queryLanguage": "CWLI",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by ip, country, action, terminatingRuleId\n| limit 200\n| sort requests desc"
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by ip, country, action, terminatingRuleId\n| limit 200\n| sort requests desc"
         }
       ],
       "transformations": [
