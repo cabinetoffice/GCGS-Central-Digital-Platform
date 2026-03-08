@@ -637,9 +637,10 @@
   "schemaVersion": 40,
   "style": "dark",
   "tags": [
-    "traffic",
+    "alb",
     "internal",
-    "external"
+    "errors",
+    "traffic"
   ],
   "templating": {
     "list": [
@@ -677,5 +678,6 @@
   "title": "ALB Errors & Connections - Internal",
   "uid": "alb-errors-connections-internal",
   "version": 1,
-  "weekStart": ""
+  "weekStart": "",
+  "refresh": "30s"
 }

@@ -68,10 +68,11 @@ dependency service_ecs {
 }
 
 inputs = {
-  account_ids     = local.global_vars.locals.account_ids
-  grafana_config  = local.global_vars.locals.tools_configs.grafana
-  service_configs = local.global_vars.locals.service_configs
-  tags            = local.tags
+  account_ids                  = local.global_vars.locals.account_ids
+  grafana_config               = local.global_vars.locals.tools_configs.grafana
+  pinned_service_version_sirsi = local.global_vars.locals.pinned_service_version
+  service_configs              = local.global_vars.locals.service_configs
+  tags                         = local.tags
 
   role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
