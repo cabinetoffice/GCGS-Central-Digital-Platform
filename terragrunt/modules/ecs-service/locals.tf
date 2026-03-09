@@ -10,8 +10,10 @@ locals {
     )
   )
 
+  internal_tg_name_prefix        = "${substr(local.tg_name_prefix, 0, 5)}i"
   listener_name                  = "cdp-${coalesce(var.listener_name, var.name)}"
+  service_listener_rule_priority = var.listener_priority
   tg_host_header                 = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}"]
   tg_host_header_with_alias      = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}", var.public_domain]
-  service_listener_rule_priority = var.listener_priority
+  tg_name_prefix                 = substr(replace(local.listener_name, "cdp-", ""), 0, 6)
 }

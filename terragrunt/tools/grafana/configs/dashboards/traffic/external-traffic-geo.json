@@ -1,0 +1,310 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "description": "External traffic by country from WAF logs",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 100
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "name": "country-link",
+            "matcher": {
+              "id": "byName",
+              "options": "country"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "title": "Open WAF Triage",
+                    "url": "/d/waf-triage/external-traffic-waf-triage?orgId=${__org}&var-action_filter=${action_filter}&var-web_acl=${web_acl}&var-waf_log_group=${waf_log_group}&var-country_filter=${__value.raw}"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 25,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "noRepeat": false,
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": false,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "blur": 7,
+              "radius": 34,
+              "weight": {
+                "field": "requests",
+                "fixed": 1,
+                "max": 1,
+                "min": 0
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "layer-tooltip": true,
+            "location": {
+              "lookup": "country",
+              "mode": "lookup"
+            },
+            "name": "Requests",
+            "opacity": 0.6,
+            "type": "heatmap"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "coords",
+          "lat": 54.621837,
+          "lon": -17.883852,
+          "noRepeat": false,
+          "shared": false,
+          "zoom": 3.16
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter action like /$action_filter/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| stats count() as requests by country\n| sort requests desc",
+          "id": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
+            }
+          ],
+          "metricQueryType": 0,
+          "namespace": "",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "queryLanguage": "CWLI",
+          "metricName": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "External Traffic by Country",
+      "type": "geomap"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "style": "dark",
+  "tags": [
+    "external",
+    "geo",
+    "traffic",
+    "waf"
+  ],
+  "templating": {
+    "list": [
+      {
+        "name": "action_filter",
+        "label": "WAF Action",
+        "type": "custom",
+        "includeAll": true,
+        "allValue": ".*",
+        "query": "ALLOW,BLOCK,COUNT",
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        }
+      },
+      {
+        "name": "web_acl",
+        "label": "Web ACL",
+        "type": "custom",
+        "includeAll": true,
+        "multi": true,
+        "options": [
+          {
+            "selected": false,
+            "text": "cdp-sirsi-acl",
+            "value": "cdp-sirsi-acl"
+          },
+          {
+            "selected": false,
+            "text": "cdp-sirsi-php-acl",
+            "value": "cdp-sirsi-php-acl"
+          },
+          {
+            "selected": false,
+            "text": "cdp-sirsi-fts-acl",
+            "value": "cdp-sirsi-fts-acl"
+          },
+          {
+            "selected": false,
+            "text": "cdp-sirsi-tools-acl",
+            "value": "cdp-sirsi-tools-acl"
+          }
+        ],
+        "current": {
+          "text": [
+            "$__all"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "query": "cdp-sirsi-acl,cdp-sirsi-php-acl,cdp-sirsi-fts-acl,cdp-sirsi-tools-acl",
+        "allValue": ".*",
+        "refresh": 1
+      },
+      {
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "label": "WAF Log Group",
+        "name": "waf_log_group",
+        "options": [
+          {
+            "selected": false,
+            "text": "aws-waf-logs-cdp-sirsi",
+            "value": "aws-waf-logs-cdp-sirsi"
+          },
+          {
+            "selected": false,
+            "text": "aws-waf-logs-cdp-sirsi-php",
+            "value": "aws-waf-logs-cdp-sirsi-php"
+          },
+          {
+            "selected": false,
+            "text": "aws-waf-logs-cdp-sirsi-fts",
+            "value": "aws-waf-logs-cdp-sirsi-fts"
+          },
+          {
+            "selected": false,
+            "text": "aws-waf-logs-cdp-sirsi-tools",
+            "value": "aws-waf-logs-cdp-sirsi-tools"
+          }
+        ],
+        "type": "custom",
+        "query": "aws-waf-logs-cdp-sirsi,aws-waf-logs-cdp-sirsi-php,aws-waf-logs-cdp-sirsi-fts,aws-waf-logs-cdp-sirsi-tools",
+        "refresh": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "valuesFormat": "regex"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h"
+    ]
+  },
+  "timezone": "",
+  "title": "WAF - Geo Map",
+  "uid": "geo-v2",
+  "version": 7
+}

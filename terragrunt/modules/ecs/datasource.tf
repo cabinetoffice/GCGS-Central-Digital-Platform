@@ -4,10 +4,6 @@ data "aws_region" "current" {}
 
 # Configure the provider to assume the role in the orchestrator account and fetch the latest service version
 provider "aws" {
-  alias  = "orchestrator"
-  region = "eu-west-2"
-}
-provider "aws" {
   alias  = "orchestrator_assume_role"
   region = "eu-west-2"
   assume_role {

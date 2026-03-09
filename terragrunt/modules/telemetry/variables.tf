@@ -48,6 +48,12 @@ variable "is_production" {
   type        = bool
 }
 
+variable "pinned_service_version_sirsi" {
+  description = "Pinned version of the Sirsi service (optional)"
+  type        = string
+  default     = null
+}
+
 variable "private_subnet_ids" {
   description = "List of private subnet IDs"
   type        = list(string)
