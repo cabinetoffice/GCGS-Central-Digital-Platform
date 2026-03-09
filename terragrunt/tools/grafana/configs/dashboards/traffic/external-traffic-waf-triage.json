@@ -16,101 +16,59 @@
     ]
   },
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
+  "links": [],
   "panels": [
     {
       "datasource": {
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
-      "gridPos": {
-        "h": 10,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 1,
-      "title": "Top Threat Actors (by IP)",
-      "type": "table",
-      "targets": [
-        {
-          "datasource": {
-            "type": "cloudwatch",
-            "uid": "CLOUDWATCH"
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
           },
-          "logGroups": [
+          "mappings": [
             {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
-              "name": "aws-waf-logs-cdp-sirsi"
+              "options": [
+                {
+                  "text": "-",
+                  "value": "Default_Action"
+                }
+              ],
+              "type": "value"
             },
             {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
-              "name": "aws-waf-logs-cdp-sirsi-php"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
-              "name": "aws-waf-logs-cdp-sirsi-fts"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
-              "name": "aws-waf-logs-cdp-sirsi-tools"
+              "options": {
+                "pattern": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
+                "result": "$1"
+              },
+              "type": "regex"
             }
           ],
-          "queryMode": "Logs",
-          "refId": "A",
-          "region": "default",
-          "queryLanguage": "CWLI",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by ip, country, action, terminatingRuleId\n| limit 200\n| sort requests desc"
-        }
-      ],
-      "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "Value": true,
-              "@message": true,
-              "Time": true
-            },
-            "indexByName": {
-              "ip": 0,
-              "country": 1,
-              "action": 2,
-              "terminatingRuleId": 3,
-              "requests": 4,
-              "first_seen": 5,
-              "last_seen": 6
-            }
-          }
-        },
-        {
-          "id": "sortBy",
-          "options": {
-            "sort": [
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
               {
-                "field": "requests",
-                "desc": true
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
               }
             ]
           }
         },
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
-            "renamePattern": "$1",
-            "fields": [
-              "terminatingRuleId"
-            ]
-          }
-        }
-      ],
-      "fieldConfig": {
-        "defaults": {},
         "overrides": [
           {
             "matcher": {
@@ -122,37 +80,143 @@
                 "id": "links",
                 "value": [
                   {
+                    "targetBlank": false,
                     "title": "Filter by IP",
-                    "url": "${__url.path}?var-ip_filter=${__value.raw}",
-                    "targetBlank": false
+                    "url": "${__url.path}?var-ip_filter=${__value.raw}"
                   }
                 ]
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "action"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "country"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "method"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "terminatingRuleId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 260
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "requests"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "hits"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uri"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 280
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ua"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 260
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "rule"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 597
+              }
+            ]
           }
         ]
-      }
-    },
-    {
-      "datasource": {
-        "type": "cloudwatch",
-        "uid": "CLOUDWATCH"
       },
       "gridPos": {
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 0
       },
-      "id": 2,
-      "title": "Top URIs for Selected IP",
-      "type": "table",
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.0",
       "targets": [
         {
           "datasource": {
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by ip, country, action, terminatingRuleId\n| limit 200\n| sort requests desc",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -175,61 +239,312 @@
               "name": "aws-waf-logs-cdp-sirsi-tools"
             }
           ],
+          "queryLanguage": "CWLI",
           "queryMode": "Logs",
           "refId": "A",
-          "region": "default",
-          "queryLanguage": "CWLI",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"rule\":\"(?<rule>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| stats count() as requests by uri, action, rule\n| sort requests desc\n| limit 100"
+          "region": "default"
         }
       ],
+      "title": "Top Threat Actors (by IP)",
       "transformations": [
         {
           "id": "organize",
           "options": {
             "excludeByName": {
-              "Value": true,
               "@message": true,
-              "Time": true
+              "Time": true,
+              "Value": true
             },
             "indexByName": {
-              "uri": 0,
               "action": 1,
+              "country": 2,
+              "first_seen": 5,
+              "ip": 4,
+              "last_seen": 6,
+              "requests": 0,
+              "rule": 3,
+              "terminatingRuleId": 3
+            }
+          }
+        },
+        {
+          "id": "sortBy",
+          "options": {
+            "sort": [
+              {
+                "desc": true,
+                "field": "requests"
+              }
+            ]
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "fields": [
+              "terminatingRuleId"
+            ],
+            "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
+            "renamePattern": "$1"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "^terminatingRuleId$",
+            "renamePattern": "rule"
+          }
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": [
+                {
+                  "text": "-",
+                  "value": "Default_Action"
+                }
+              ],
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "action"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "country"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "method"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 80
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "terminatingRuleId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 260
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "requests"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "hits"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 110
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ip"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ua"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 260
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "first_seen"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "last_seen"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"rule\":\"(?<rule>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| stats count() as requests by uri, action, rule\n| sort requests desc\n| limit 100",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
+            }
+          ],
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default"
+        }
+      ],
+      "title": "Top URIs for Selected IP",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "@message": true,
+              "Time": true,
+              "Value": true
+            },
+            "indexByName": {
+              "action": 1,
+              "requests": 0,
               "rule": 2,
-              "requests": 3
+              "uri": 3
             }
           }
         },
         {
           "id": "renameByRegex",
           "options": {
-            "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
-            "renamePattern": "$1",
             "fields": [
               "rule"
-            ]
+            ],
+            "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
+            "renamePattern": "$1"
           }
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [
-            {
-              "type": "value",
-              "options": [
-                {
-                  "value": "Default_Action",
-                  "text": "-"
-                }
-              ]
-            }
-          ]
-        }
-      }
+      "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "30s",
-  "schemaVersion": 39,
-  "style": "dark",
+  "schemaVersion": 42,
   "tags": [
     "external",
     "traffic",
@@ -239,139 +554,93 @@
   "templating": {
     "list": [
       {
-        "name": "action_filter",
+        "allValue": ".*",
+        "current": {
+          "text": "BLOCK",
+          "value": "BLOCK"
+        },
+        "includeAll": true,
         "label": "WAF Action",
-        "type": "custom",
-        "includeAll": true,
-        "allValue": ".*",
+        "name": "action_filter",
+        "options": [],
         "query": "ALLOW,BLOCK,COUNT",
-        "options": [
-          {
-            "selected": false,
-            "text": "ALLOW",
-            "value": "ALLOW"
-          },
-          {
-            "selected": false,
-            "text": "BLOCK",
-            "value": "BLOCK"
-          },
-          {
-            "selected": false,
-            "text": "COUNT",
-            "value": "COUNT"
-          }
-        ],
+        "skipUrlSync": true,
+        "type": "custom",
+        "valuesFormat": "csv"
+      },
+      {
+        "allValue": ".*",
         "current": {
           "text": [
-            "All"
+            "$__all"
           ],
           "value": [
             "$__all"
           ]
         },
-        "skipUrlSync": true
-      },
-      {
-        "name": "web_acl",
+        "includeAll": true,
         "label": "Web ACL",
-        "type": "custom",
-        "includeAll": true,
         "multi": true,
-        "allValue": ".*",
+        "name": "web_acl",
+        "options": [],
         "query": "cdp-sirsi-acl,cdp-sirsi-php-acl,cdp-sirsi-fts-acl,cdp-sirsi-tools-acl",
-        "options": [
-          {
-            "selected": false,
-            "text": "cdp-sirsi-acl",
-            "value": "cdp-sirsi-acl"
-          },
-          {
-            "selected": false,
-            "text": "cdp-sirsi-php-acl",
-            "value": "cdp-sirsi-php-acl"
-          },
-          {
-            "selected": false,
-            "text": "cdp-sirsi-fts-acl",
-            "value": "cdp-sirsi-fts-acl"
-          },
-          {
-            "selected": false,
-            "text": "cdp-sirsi-tools-acl",
-            "value": "cdp-sirsi-tools-acl"
-          }
-        ],
-        "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
-        },
-        "skipUrlSync": true
-      },
-      {
-        "name": "waf_log_group",
-        "label": "WAF Log Group",
+        "skipUrlSync": true,
         "type": "custom",
-        "query": "aws-waf-logs-cdp-sirsi,aws-waf-logs-cdp-sirsi-php,aws-waf-logs-cdp-sirsi-fts,aws-waf-logs-cdp-sirsi-tools",
-        "options": [
-          {
-            "selected": false,
-            "text": "aws-waf-logs-cdp-sirsi",
-            "value": "aws-waf-logs-cdp-sirsi"
-          },
-          {
-            "selected": false,
-            "text": "aws-waf-logs-cdp-sirsi-php",
-            "value": "aws-waf-logs-cdp-sirsi-php"
-          },
-          {
-            "selected": false,
-            "text": "aws-waf-logs-cdp-sirsi-fts",
-            "value": "aws-waf-logs-cdp-sirsi-fts"
-          },
-          {
-            "selected": false,
-            "text": "aws-waf-logs-cdp-sirsi-tools",
-            "value": "aws-waf-logs-cdp-sirsi-tools"
-          }
-        ],
+        "valuesFormat": "csv"
+      },
+      {
+        "allValue": ".*",
         "current": {
           "text": [
-            "All"
+            "$__all"
           ],
           "value": [
             "$__all"
           ]
         },
-        "multi": true,
         "includeAll": true,
-        "allValue": ".*",
-        "valuesFormat": "regex",
-        "skipUrlSync": true
+        "label": "WAF Log Group",
+        "multi": true,
+        "name": "waf_log_group",
+        "options": [],
+        "query": "aws-waf-logs-cdp-sirsi,aws-waf-logs-cdp-sirsi-php,aws-waf-logs-cdp-sirsi-fts,aws-waf-logs-cdp-sirsi-tools",
+        "skipUrlSync": true,
+        "type": "custom",
+        "valuesFormat": "regex"
       },
       {
-        "name": "ip_filter",
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
         "label": "IP Filter (regex)",
-        "type": "textbox",
+        "name": "ip_filter",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
         "query": ".*",
-        "current": {
-          "text": ".*",
-          "value": ".*"
-        }
+        "type": "textbox"
       },
       {
-        "name": "country_filter",
-        "label": "Country Filter (regex)",
-        "type": "textbox",
-        "query": ".*",
         "current": {
           "text": ".*",
           "value": ".*"
-        }
+        },
+        "label": "Country Filter (regex)",
+        "name": "country_filter",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "query": ".*",
+        "type": "textbox"
       }
     ]
   },
@@ -389,9 +658,9 @@
       "1h"
     ]
   },
-  "timezone": "",
+  "timezone": "browser",
   "title": "WAF - Triage",
   "uid": "waf-triage",
-  "version": 2,
-  "links": []
+  "version": 1,
+  "weekStart": ""
 }
