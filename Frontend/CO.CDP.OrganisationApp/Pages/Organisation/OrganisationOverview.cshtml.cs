@@ -51,7 +51,9 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
             if (await featureManager.IsEnabledAsync(FeatureFlags.UserManagement))
             {
-                var baseUrl = configuration["UserManagementApp:ServiceBaseUrl"] ?? "";
+                var baseUrl = configuration["UserManagementApp:ServiceBaseUrl"]
+                    ?? throw new InvalidOperationException("UserManagementApp:ServiceBaseUrl configuration is missing");
+
                 UserManagementUrl = $"{baseUrl.TrimEnd('/')}/organisation/{Id}/users";
             }
 
