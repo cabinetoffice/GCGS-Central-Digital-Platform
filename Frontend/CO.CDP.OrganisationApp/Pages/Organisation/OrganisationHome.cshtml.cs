@@ -122,6 +122,16 @@ public class OrganisationHomeModel(
                 Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "/supplier", Id, null, cookiesAcceptedValue, originParams)
             });
         }
+
+        if (featureConfig.FindAndApplyEnabled)
+        {
+            tiles.Add(new Tile
+            {
+                Title = "Find a grant",
+                Body = StaticTextResource.OrganisationHome_TileNine_Body,
+                Href = $"/organisation/{Id}/find-and-apply"
+            });
+        }
     }
 
     private void AddBuyerTiles(List<Tile> tiles, FeatureConfiguration featureConfig)
