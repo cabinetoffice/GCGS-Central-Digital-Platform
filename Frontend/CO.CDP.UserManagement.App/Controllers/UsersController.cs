@@ -490,8 +490,7 @@ public class UsersController(IUserService userService, IInviteUserStateStore inv
 
         var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
 
-        //TODO: If success redirect to Success page once this is built.
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
     }
 
     [HttpGet("invites/{pendingInviteId:int}/remove")]
@@ -522,8 +521,13 @@ public class UsersController(IUserService userService, IInviteUserStateStore inv
 
         var success = await userService.RemoveUserAsync(organisationSlug, null, pendingInviteId, ct);
 
-        //TODO: If success redirect to Success page once this is built.
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+    }
+
+    [HttpGet("remove/success")]
+    public IActionResult RemoveSuccess(string organisationSlug)
+    {
+        return View("RemoveSuccess");
     }
 
 }
