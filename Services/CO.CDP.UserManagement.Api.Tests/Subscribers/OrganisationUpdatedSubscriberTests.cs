@@ -12,6 +12,7 @@ namespace CO.CDP.UserManagement.Api.Tests.Subscribers;
 public class OrganisationSyncServiceUpdatedTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<ISlugGeneratorService> _slugGeneratorMock;
     private readonly Mock<IOrganisationPersonsSyncService> _personsSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -20,6 +21,7 @@ public class OrganisationSyncServiceUpdatedTests
     public OrganisationSyncServiceUpdatedTests()
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
+        _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _slugGeneratorMock = new Mock<ISlugGeneratorService>();
         _personsSyncServiceMock = new Mock<IOrganisationPersonsSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -34,6 +36,7 @@ public class OrganisationSyncServiceUpdatedTests
 
         _service = new OrganisationSyncService(
             _organisationRepositoryMock.Object,
+            _membershipRepositoryMock.Object,
             _slugGeneratorMock.Object,
             _personsSyncServiceMock.Object,
             _unitOfWorkMock.Object,

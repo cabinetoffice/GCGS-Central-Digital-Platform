@@ -41,8 +41,11 @@ public class OrganisationPersonsSyncService(
 
         if (!organisationPersons.Any())
         {
-            logger.LogInformation("No persons found for organisation {CdpGuid}", organisationCdpGuid);
-            return;
+            logger.LogError(
+                "No persons found in OrganisationInformation for organisation {CdpGuid} — cannot create owner membership",
+                organisationCdpGuid);
+            throw new InvalidOperationException(
+                $"No persons found for organisation {organisationCdpGuid}. Cannot create owner membership.");
         }
 
         logger.LogInformation("Found {Count} persons for organisation {CdpGuid}",
