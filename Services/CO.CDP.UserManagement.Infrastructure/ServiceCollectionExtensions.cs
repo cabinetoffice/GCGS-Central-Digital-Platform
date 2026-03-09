@@ -66,22 +66,24 @@ public static class ServiceCollectionExtensions
     /// Adds caching services for user management.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="redisConnectionString">Redis connection string.</param>
+    /// <param name="redisConnectionString">Optional Redis connection string. If null, uses in-memory cache.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementCaching(
         this IServiceCollection services,
-        string redisConnectionString)
+        string? redisConnectionString = null)
     {
-        if (string.IsNullOrWhiteSpace(redisConnectionString))
+        if (!string.IsNullOrEmpty(redisConnectionString))
         {
-            throw new InvalidOperationException("Redis cache connection is not configured.");
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = redisConnectionString;
+                options.InstanceName = "UserManagement_";
+            });
         }
-
-        services.AddStackExchangeRedisCache(options =>
+        else
         {
-            options.Configuration = redisConnectionString;
-            options.InstanceName = "UserManagement_";
-        });
+            services.AddDistributedMemoryCache();
+        }
 
         services.AddScoped<IClaimsCacheService, CachedClaimsService>();
 

@@ -30,14 +30,3 @@ module "organisation_queue" {
   tags                       = var.tags
   visibility_timeout_seconds = 5 * 60
 }
-
-module "user_management_queue" {
-  source = "../sqs"
-
-  message_retention_seconds  = 1209600 # 14 days
-  name                       = local.name_user_management_queue
-  role_consumer_arn          = [var.role_ecs_task_arn]
-  role_publisher_arn         = [var.role_ecs_task_arn]
-  tags                       = var.tags
-  visibility_timeout_seconds = 5 * 60
-}
