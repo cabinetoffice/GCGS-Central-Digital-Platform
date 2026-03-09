@@ -16,7 +16,7 @@ module "ecs_service_outbox_processor_organisation" {
       lg_region                     = data.aws_region.current.region
       memory                        = var.service_configs.outbox_processor_organisation.memory
       name                          = var.service_configs.outbox_processor_organisation.name
-      queue_organisation_url        = var.queue_organisation_url
+      queue_entity_verification_url = var.queue_entity_verification_url
       service_version               = local.service_version_sirsi
       vpc_cidr                      = var.vpc_cider
       service_port                  = local.service_ports_by_service[var.service_configs.outbox_processor_organisation.name]

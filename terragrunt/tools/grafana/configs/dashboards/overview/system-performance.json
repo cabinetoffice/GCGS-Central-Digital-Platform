@@ -194,16 +194,6 @@
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation-user-management:*",
-              "name": "/ecs/outbox-processor-organisation-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-person-user-management:*",
-              "name": "/ecs/outbox-processor-person-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/person:*",
               "name": "/ecs/person"
             },
@@ -497,16 +487,6 @@
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation-user-management:*",
-              "name": "/ecs/outbox-processor-organisation-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-person-user-management:*",
-              "name": "/ecs/outbox-processor-person-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-entity-verification:*",
               "name": "/ecs/outbox-processor-entity-verification"
             },
@@ -746,16 +726,6 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation:*",
               "name": "/ecs/outbox-processor-organisation"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation-user-management:*",
-              "name": "/ecs/outbox-processor-organisation-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-person-user-management:*",
-              "name": "/ecs/outbox-processor-person-user-management"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -1957,8 +1927,6 @@
                 "organisation-app",
                 "outbox-processor-entity-verification",
                 "outbox-processor-organisation",
-                "outbox-processor-organisation-user-management",
-                "outbox-processor-person-user-management",
                 "tenant",
                 "person"
               ]
@@ -2124,8 +2092,6 @@
                 "organisation-app",
                 "outbox-processor-entity-verification",
                 "outbox-processor-organisation",
-                "outbox-processor-organisation-user-management",
-                "outbox-processor-person-user-management",
                 "tenant",
                 "person"
               ]
@@ -2379,16 +2345,6 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation:*",
               "name": "/ecs/outbox-processor-organisation"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-organisation-user-management:*",
-              "name": "/ecs/outbox-processor-organisation-user-management"
-            },
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/outbox-processor-person-user-management:*",
-              "name": "/ecs/outbox-processor-person-user-management"
             },
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
