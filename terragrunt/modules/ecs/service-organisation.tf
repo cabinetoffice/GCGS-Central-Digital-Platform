@@ -26,6 +26,7 @@ module "ecs_service_organisation" {
       public_domain                   = var.public_domain
       queue_entity_verification_url   = var.queue_entity_verification_url
       queue_organisation_url          = var.queue_organisation_url
+      queue_user_management_url       = var.queue_user_management_url
       send_notify_emails              = local.send_notify_emails
       service_port                    = local.service_ports_by_service[var.service_configs.organisation.name]
       service_version                 = local.service_version_sirsi

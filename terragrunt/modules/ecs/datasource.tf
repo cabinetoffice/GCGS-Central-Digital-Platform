@@ -119,7 +119,8 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
     resources = [
       var.queue_av_scanner_arn,
       var.queue_entity_verification_arn,
-      var.queue_organisation_arn
+      var.queue_organisation_arn,
+      var.queue_user_management_arn
     ]
   }
 }
