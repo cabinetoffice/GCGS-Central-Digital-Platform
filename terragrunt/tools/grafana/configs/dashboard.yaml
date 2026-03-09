@@ -7,7 +7,7 @@ providers:
     disableDeletion: false
     updateIntervalSeconds: 10
     options:
-      path: /etc/grafana/provisioning/dashboards/application
+      path: /var/lib/grafana/dashboards/application
 
   - name: 'infrastructure'
     orgId: 1
@@ -16,7 +16,7 @@ providers:
     disableDeletion: false
     updateIntervalSeconds: 10
     options:
-      path: /etc/grafana/provisioning/dashboards/infrastructure
+      path: /var/lib/grafana/dashboards/infrastructure
 
   - name: 'overview'
     orgId: 1
@@ -25,7 +25,7 @@ providers:
     disableDeletion: false
     updateIntervalSeconds: 10
     options:
-      path: /etc/grafana/provisioning/dashboards/overview
+      path: /var/lib/grafana/dashboards/overview
 
   - name: 'traffic'
     orgId: 1
@@ -34,4 +34,4 @@ providers:
     disableDeletion: false
     updateIntervalSeconds: 10
     options:
-      path: /etc/grafana/provisioning/dashboards/traffic
+      path: /var/lib/grafana/dashboards/traffic
