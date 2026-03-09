@@ -73,6 +73,10 @@ data "aws_secretsmanager_secret" "one_login_forward_logout_notification_api_key"
   name = "${local.name_prefix}-one-login-forward-logout-notification-api-key"
 }
 
+data "aws_secretsmanager_secret" "user_management_servicekey_apikey" {
+  name = "${local.name_prefix}-user-management-servicekey-apikey"
+}
+
 data "aws_iam_policy_document" "ecs_task_access_secrets" {
   statement {
     sid    = "AllowAccessToProductSecrets"
@@ -252,4 +256,3 @@ data "aws_iam_policy_document" "ecr_pull_from_orchestrator" {
     resources = ["*"]
   }
 }
-
