@@ -81,7 +81,7 @@ public class ClaimsServiceTests
             IsActive = true
         };
 
-        var role = new ApplicationRole
+        var role = new CoreEntities.ApplicationRole
         {
             Id = 1,
             ApplicationId = 1,
@@ -108,7 +108,7 @@ public class ClaimsServiceTests
             OrganisationApplicationId = 1,
             OrganisationApplication = orgApp,
             IsActive = true,
-            Roles = new List<ApplicationRole> { role }
+            Roles = new List<CoreEntities.ApplicationRole> { role }
         };
 
         _membershipRepositoryMock.Setup(r => r.GetByUserPrincipalIdAsync(userId, default))

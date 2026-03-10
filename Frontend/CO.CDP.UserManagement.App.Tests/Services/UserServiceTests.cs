@@ -304,11 +304,11 @@ public class UserServiceTests
         result.Should().NotBeNull();
         result!.ApplicationAccess.Should().HaveCount(2);
         result.ApplicationAccess[0].ApplicationName.Should().Be("Edit");
-        result.ApplicationAccess[0].ApplicationRole.Should().Be("Admin");
+        result.ApplicationAccess[0].ApplicationRole.Should().Be(ApplicationRole.Admin);
         result.ApplicationAccess[0].Permissions.Should().ContainInOrder(["Read", "Write"]);
         result.ApplicationAccess[0].AssignedByEmail.Should().Be("admin@example.com");
         result.ApplicationAccess[1].ApplicationName.Should().Be("View");
-        result.ApplicationAccess[1].ApplicationRole.Should().Be("Editor");
+        result.ApplicationAccess[1].ApplicationRole.Should().Be(ApplicationRole.Editor);
         result.ApplicationAccess[1].Permissions.Should().ContainInOrder(["Read"]);
     }
 

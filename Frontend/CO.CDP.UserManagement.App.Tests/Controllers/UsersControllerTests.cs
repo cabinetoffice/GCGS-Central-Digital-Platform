@@ -209,7 +209,7 @@ public class UsersControllerTests
                 Permissions: new[] { "Read", "Write" },
                 AssignedDate: DateTimeOffset.UtcNow,
                 AssignedByEmail: "admin@example.com",
-                ApplicationRole: "Admin"),
+                ApplicationRole: ApplicationRole.Admin),
             new UserApplicationAccessDetailViewModel(
                 ApplicationId: 2,
                 ApplicationName: "View",
@@ -217,7 +217,7 @@ public class UsersControllerTests
                 Permissions: new[] { "Read" },
                 AssignedDate: DateTimeOffset.UtcNow.AddDays(-1),
                 AssignedByEmail: "admin@example.com",
-                ApplicationRole: "Editor")
+                ApplicationRole: ApplicationRole.Editor)
         };
         var viewModel = new UserDetailsViewModel(
             OrganisationName: "Org",
