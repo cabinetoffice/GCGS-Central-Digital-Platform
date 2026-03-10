@@ -213,6 +213,12 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Frontend/CO.CDP.UserManagement.App
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
+FROM build AS build-user-management-migrations
+WORKDIR /src
+COPY .config/dotnet-tools.json .config/
+RUN dotnet tool restore
+RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.UserManagement.Infrastructure -s /src/Services/CO.CDP.UserManagement.Infrastructure --context UserManagementDbContext --self-contained -o /app/migrations/efbundle
+
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.Organisation.Authority.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
@@ -389,20 +395,6 @@ WORKDIR /app
 COPY --from=publish-commercial-tools-api /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.RegisterOfCommercialTools.WebApi.dll"]
 
-FROM base AS final-user-management-api
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-user-management-api /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.Api.dll"]
-
-FROM base AS final-user-management-app
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-user-management-app /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.App.dll"]
-
 FROM base AS final-antivirus-app
 ARG VERSION
 ENV VERSION=${VERSION}
@@ -419,29 +411,11 @@ WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
 
-FROM base AS final-outbox-processor-person-user-management
-ARG VERSION
-ENV VERSION=${VERSION}
-ENV DbContext=OrganisationInformationContext
-ENV Channel=person_information_outbox
-WORKDIR /app
-COPY --from=publish-outbox-processor /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
-
 FROM base AS final-outbox-processor-entity-verification
 ARG VERSION
 ENV VERSION=${VERSION}
 ENV DbContext=EntityVerificationContext
 ENV Channel=entity_verification_outbox
-WORKDIR /app
-COPY --from=publish-outbox-processor /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
-
-FROM base AS final-outbox-processor-organisation-user-management
-ARG VERSION
-ENV VERSION=${VERSION}
-ENV DbContext=OrganisationInformationContext
-ENV Channel=organisation_information_outbox
 WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
@@ -452,3 +426,26 @@ ENV VERSION=${VERSION}
 WORKDIR /app
 COPY --from=publish-scheduled-worker /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.ScheduledWorker.dll"]
+
+FROM base AS user-management-migrations
+COPY --from=busybox:uclibc /bin/busybox /bin/busybox
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=build-user-management-migrations /src/Services/CO.CDP.UserManagement.Infrastructure/UserManagementDatabaseMigrationConfig /app/UserManagementDatabaseMigrationConfig
+COPY --from=build-user-management-migrations /app/migrations/efbundle .
+ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle --connection \"Host=$UserManagementDatabase__Server;Database=$UserManagementDatabase__Database;Username=$UserManagementDatabase__Username;Password=$UserManagementDatabase__Password;\""]
+
+FROM base AS final-user-management-api
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-api /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.Api.dll"]
+
+FROM base AS final-user-management-app
+ARG VERSION
+ENV VERSION=${VERSION}
+WORKDIR /app
+COPY --from=publish-user-management-app /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.App.dll"]
