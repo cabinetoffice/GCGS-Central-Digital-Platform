@@ -21,60 +21,43 @@ public class ClaimsService : IClaimsService
 
     public async Task<UserClaims> GetUserClaimsAsync(string userPrincipalId, CancellationToken cancellationToken = default)
     {
-        // Get all memberships
         var memberships = await _membershipRepository.GetByUserPrincipalIdAsync(userPrincipalId, cancellationToken);
-
-        // Get all assignments with full details
         var assignments = await _assignmentRepository.GetAssignmentsForClaimsAsync(userPrincipalId, cancellationToken);
-
-        // Group assignments by organisation
         var assignmentsByOrg = assignments
             .GroupBy(a => a.UserOrganisationMembership.OrganisationId)
             .ToDictionary(g => g.Key, g => g.ToList());
 
-        var organisationMembershipClaims = new List<OrganisationMembershipClaim>();
-
-        foreach (var membership in memberships)
-        {
-            var applicationAssignmentClaims = new List<ApplicationAssignmentClaim>();
-
-            if (assignmentsByOrg.TryGetValue(membership.OrganisationId, out var orgAssignments))
+        var organisationMembershipClaims = memberships
+            .Select(membership =>
             {
-                foreach (var assignment in orgAssignments)
-                {
-                    var roles = assignment.Roles.Select(r => r.Name).ToList();
-                    var permissions = assignment.Roles
-                        .SelectMany(r => r.Permissions)
-                        .Select(p => p.Name)
-                        .Distinct()
-                        .ToList();
+                assignmentsByOrg.TryGetValue(membership.OrganisationId, out var orgAssignments);
+                orgAssignments ??= [];
 
-                    applicationAssignmentClaims.Add(new ApplicationAssignmentClaim
+                return new OrganisationMembershipClaim
+                {
+                    OrganisationId = membership.Organisation.CdpOrganisationGuid,
+                    OrganisationName = membership.Organisation.Name,
+                    OrganisationRole = membership.OrganisationRole.ToString(),
+                    Applications = orgAssignments.Select(assignment => new ApplicationAssignmentClaim
                     {
-                        ApplicationId = assignment.OrganisationApplication.Application.Id,
+                        ApplicationId = assignment.OrganisationApplication.Application.Guid,
                         ApplicationName = assignment.OrganisationApplication.Application.Name,
                         ClientId = assignment.OrganisationApplication.Application.ClientId,
-                        Roles = roles,
-                        Permissions = permissions
-                    });
-                }
-            }
-
-            organisationMembershipClaims.Add(new OrganisationMembershipClaim
-            {
-                OrganisationId = membership.Organisation.Id,
-                OrganisationName = membership.Organisation.Name,
-                OrganisationSlug = membership.Organisation.Slug,
-                OrganisationRole = membership.OrganisationRole.ToString(),
-                CdpPersonId = membership.CdpPersonId,
-                ApplicationAssignments = applicationAssignmentClaims
-            });
-        }
+                        Roles = assignment.Roles.Select(r => r.Name).ToList(),
+                        Permissions = assignment.Roles
+                            .SelectMany(r => r.Permissions)
+                            .Select(p => p.Name)
+                            .Distinct()
+                            .ToList()
+                    }).ToList()
+                };
+            })
+            .ToList();
 
         return new UserClaims
         {
             UserPrincipalId = userPrincipalId,
-            OrganisationMemberships = organisationMembershipClaims
+            Organisations = organisationMembershipClaims
         };
     }
 }

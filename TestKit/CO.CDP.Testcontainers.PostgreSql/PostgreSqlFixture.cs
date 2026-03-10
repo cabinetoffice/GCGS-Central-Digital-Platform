@@ -9,12 +9,12 @@ public class PostgreSqlFixture : IAsyncLifetime
 
     public string ConnectionString => _postgreSql.GetConnectionString();
 
-    public Task InitializeAsync()
+    public virtual Task InitializeAsync()
     {
         return _postgreSql.StartAsync();
     }
 
-    public Task DisposeAsync()
+    public virtual Task DisposeAsync()
     {
         return _postgreSql.DisposeAsync().AsTask();
     }

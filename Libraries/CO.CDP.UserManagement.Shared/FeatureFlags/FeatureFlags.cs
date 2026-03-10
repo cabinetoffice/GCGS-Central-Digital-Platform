@@ -3,6 +3,7 @@ namespace CO.CDP.UserManagement.Shared.FeatureFlags;
 public static class FeatureFlags
 {
     public const string UserManagementEnabled = "Features:UserManagementEnabled";
+    public const string ClaimsApiEnabled = "Features:ClaimsApiEnabled";
 
     public static class Subscribers
     {

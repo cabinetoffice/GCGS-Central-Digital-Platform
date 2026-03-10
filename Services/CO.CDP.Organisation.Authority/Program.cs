@@ -4,8 +4,10 @@ using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Organisation.Authority;
+using CO.CDP.Organisation.Authority.Http;
 using CO.CDP.Organisation.Authority.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
+using ApiClient = CO.CDP.UserManagement.WebApiClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -27,7 +29,25 @@ builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<ITenantRepository, DatabaseTenantRepository>();
 builder.Services.AddScoped<IAuthorityRepository, DatabaseAuthorityRepository>();
 builder.Services.AddSingleton<IConfigurationService, ConfigurationService>();
+builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection("Features"));
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddTransient<ServiceAccountTokenHandler>();
+
+var userManagementServiceUrl = builder.Configuration.GetValue<string>("UserManagementService")
+                               ?? throw new InvalidOperationException("Missing configuration key: UserManagementService.");
+const string userManagementHttpClientName = "UserManagementHttpClient";
+
+builder.Services.AddHttpClient(userManagementHttpClientName, client =>
+{
+    client.BaseAddress = new Uri(userManagementServiceUrl);
+})
+    .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+
+builder.Services.AddTransient<ApiClient.UserManagementClient>(sp =>
+{
+    var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(userManagementHttpClientName);
+    return new ApiClient.UserManagementClient(userManagementServiceUrl, httpClient);
+});
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
 {
