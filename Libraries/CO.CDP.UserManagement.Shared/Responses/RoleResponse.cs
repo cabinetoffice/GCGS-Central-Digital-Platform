@@ -1,3 +1,5 @@
+using CO.CDP.UserManagement.Shared.Enums;
+
 namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>
@@ -54,4 +56,9 @@ public record RoleResponse
     /// Gets or sets the last modified by user identifier.
     /// </summary>
     public string? ModifiedBy { get; init; }
+
+    /// <summary>
+    /// Gets or sets the mapped application role when the role name matches a known enum value.
+    /// </summary>
+    public ApplicationRole? ApplicationRole { get; init; }
 }

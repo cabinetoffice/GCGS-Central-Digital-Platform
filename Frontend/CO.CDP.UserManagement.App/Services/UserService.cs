@@ -127,7 +127,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 : "Not available";
 
             var applicationAccess = user.ApplicationAssignments?
-                .Where(assignment => assignment.Application != null)
+                .Where(assignment => assignment.Application != null && assignment.Roles?.FirstOrDefault()?.ApplicationRole is not null)
                 .Select(assignment => new UserApplicationAccessDetailViewModel(
                     ApplicationId: assignment.Application!.Id,
                     ApplicationName: assignment.Application!.Name,
@@ -135,7 +135,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
                     AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
                     AssignedByEmail: assignment.AssignedBy ?? string.Empty,
-                    ApplicationRole: ParseApplicationRole(assignment.Roles?.FirstOrDefault()?.Name ?? string.Empty)))
+                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.ApplicationRole!.Value))
                 .ToList() ?? [];
 
             return new UserDetailsViewModel(
@@ -300,12 +300,4 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             return false;
         }
     }
-
-    private static ApplicationRole ParseApplicationRole(string roleName) =>
-        roleName switch
-        {
-            "Admin" => ApplicationRole.Admin,
-            "Editor" => ApplicationRole.Editor,
-            _ => throw new ArgumentException($"Unknown application role: {roleName}")
-        };
 }

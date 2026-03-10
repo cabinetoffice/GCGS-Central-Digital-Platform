@@ -1,5 +1,6 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Shared.Responses;
+using SharedApplicationRole = CO.CDP.UserManagement.Shared.Enums.ApplicationRole;
 
 namespace CO.CDP.UserManagement.Api.Models;
 
@@ -29,7 +30,8 @@ public static class RoleMappingExtensions
             CreatedAt = role.CreatedAt,
             CreatedBy = role.CreatedBy,
             ModifiedAt = role.ModifiedAt,
-            ModifiedBy = role.ModifiedBy
+            ModifiedBy = role.ModifiedBy,
+            ApplicationRole = TryMapApplicationRole(role.Name)
         };
     }
 
@@ -42,5 +44,15 @@ public static class RoleMappingExtensions
     public static IEnumerable<RoleResponse> ToResponses(this IEnumerable<ApplicationRole> roles, bool includePermissions = true)
     {
         return roles.Select(r => r.ToResponse(includePermissions));
+    }
+
+    private static SharedApplicationRole? TryMapApplicationRole(string? roleName)
+    {
+        return roleName?.Trim() switch
+        {
+            "Admin" => SharedApplicationRole.Admin,
+            "Editor" => SharedApplicationRole.Editor,
+            _ => null
+        };
     }
 }
