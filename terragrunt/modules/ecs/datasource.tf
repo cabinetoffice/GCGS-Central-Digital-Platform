@@ -200,26 +200,17 @@ data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" 
 data "aws_iam_policy_document" "step_function_manage_services" {
   statement {
     actions = ["ecs:UpdateService"]
-
-    resources = concat(
-      [
-        for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/${service}"
-      ],
-      [
-        for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/${service}"
-      ]
-    )
-
+    resources = [
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/*"
+    ]
     sid = "ManageECSService"
   }
 
   statement {
     actions = ["ecs:RunTask"]
     resources = [
-      for task in local.tasks :
-      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*"
     ]
     sid = "MangeECSTask"
   }

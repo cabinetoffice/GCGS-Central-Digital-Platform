@@ -256,6 +256,7 @@ variable "queue_user_management_url" {
   type        = string
 }
 
+
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
