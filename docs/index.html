@@ -622,6 +622,8 @@ pre.rouge .gs {
 <li><a href="#_5_database_naming_conventions">5. Database naming conventions</a></li>
 <li><a href="#_6_acceptance_tests">6. Acceptance tests</a></li>
 <li><a href="#_7_shared_user_sessions">7. Shared user sessions</a></li>
+<li><a href="#_8_git_merge_strategy">8. Git merge strategy</a></li>
+<li><a href="#_9_outbox_processor_topology_and_fan_out_strategy">9. Outbox processor topology and fan-out strategy</a></li>
 </ul>
 </li>
 </ul>
@@ -3030,13 +3032,394 @@ is live we can monitor the number of concurrent users and re-evaluate the soluti
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_8_git_merge_strategy">8. Git merge strategy</h4>
+<div class="paragraph">
+<p>Date: 2024-12-17</p>
+</div>
+<div class="sect4">
+<h5 id="_status_8">Status</h5>
+<div class="paragraph">
+<p>Accepted</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_9">Context</h5>
+<div class="paragraph">
+<p>At the moment, we don&#8217;t have defined strategy for merging pull requests. Each developer
+follows their own preference. As a result timeline of our <code>main</code> branch is not linear,
+containing many branches mixing commits with each other and <code>main</code>.</p>
+</div>
+<div class="paragraph">
+<p>We should adopt a consistent git merge strategy.</p>
+</div>
+<div class="sect5">
+<h6 id="_option_1_merge_strategy">Option 1: Merge strategy</h6>
+<div class="paragraph">
+<p>Enabled by default on Github.</p>
+</div>
+<div class="paragraph">
+<p>Features of Merge strategy:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Integrating feature branches into the main development branch.</p>
+</li>
+<li>
+<p>Resolving conflicts between branches.</p>
+</li>
+<li>
+<p>Preserving the commit history of both branches.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Merging preserves the complete history of changes, making it easy to trace back through the commit history.</p>
+</li>
+<li>
+<p>The merge commit provides a clear indication that branches have been combined, offering context for future reference.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CI cannot verify if build and tests would pass post merge.</p>
+</li>
+<li>
+<p>Merge commits adding noise to the branch history.</p>
+</li>
+<li>
+<p>Risky feature branch revert, may require an extra commit that resolves conflicts.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_2_rebase_strategy">Option 2: Rebase strategy</h6>
+<div class="paragraph">
+<p>Features of Rebase strategy:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Maintaining a cleaner and more linear commit history.</p>
+</li>
+<li>
+<p>Facilitating easier code review and debugging.</p>
+</li>
+<li>
+<p>Avoiding unnecessary merge commits (less noise).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Rebasing creates a linear history, which can make the commit history easier to read and understand.</p>
+</li>
+<li>
+<p>A linear history simplifies the use of tools like git bisect for debugging.</p>
+</li>
+<li>
+<p>Rebase before merge allows CI to verify build and tests pass like on <code>main</code>.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Comparatively harder than marge strategy.</p>
+</li>
+<li>
+<p>Doesn&#8217;t safeguard history of branches.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_recommendation">Recommendation</h5>
+<div class="paragraph">
+<p>Rebase strategy</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>With our current set up, our CI will be able to verify the build and tests on rebased
+branches as if they were already merged, before merge.</p>
+</li>
+<li>
+<p>Linear, cleaner history of commits.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_decision_7">Decision</h5>
+<div class="paragraph">
+<p>Rebase strategy</p>
+</div>
+<div class="paragraph">
+<p>We will try it on new pull requests going forward, for the next month, then revise it.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consequences_7">Consequences</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>We will change the default branch merge strategy in github to <em>rebase</em>. Developers are still urged to rebase their feature branches locally before merge.</p>
+</li>
+<li>
+<p>Additional training may be required for developers on how to work with branches and resolve conflicts with <em>rebase</em>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_9_outbox_processor_topology_and_fan_out_strategy">9. Outbox processor topology and fan-out strategy</h4>
+<div class="paragraph">
+<p>Date: 2026-03-09</p>
+</div>
+<div class="sect4">
+<h5 id="_status_9">Status</h5>
+<div class="paragraph">
+<p>Accepted</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_10">Context</h5>
+<div class="paragraph">
+<p>We reviewed how events should flow from Organisation and Person domains to both Entity Verification and User Management.
+The previous approach added dedicated outbox processors per destination queue, which increased infrastructure footprint and
+introduced operational problems. It also exposed fragility around shared PostgreSQL NOTIFY channels.</p>
+</div>
+<div class="paragraph">
+<p>We need to keep cross-system consistency while maintaining loose coupling and avoiding unnecessary processor sprawl.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_options_considered">Options considered</h5>
+<div class="sect5">
+<h6 id="_option_1_dedicated_outbox_processor_per_destination_queue">Option 1: Dedicated outbox processor per destination queue</h6>
+<div class="paragraph">
+<p>Run one outbox processor service for each destination queue.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Minimal change to current publisher code.</p>
+</li>
+<li>
+<p>Clear one-processor-to-one-queue mapping.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>More ECS services, task definitions, Docker targets, and Terraform resources to maintain.</p>
+</li>
+<li>
+<p>Resource naming and deployment complexity increase as destinations grow.</p>
+</li>
+<li>
+<p>Multiple processors competing on the same outbox/listener channel can be fragile.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_2_write_time_fan_out_in_publisher_multi_queue_outbox_rows">Option 2: Write-time fan-out in publisher (multi-queue outbox rows)</h6>
+<div class="paragraph">
+<p>Use a multi-queue publisher that writes one outbox row per destination queue, while keeping processor runtime logic unchanged.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Consolidates to two processors (organisation + entity-verification) while supporting multiple destinations.</p>
+</li>
+<li>
+<p>Reuses existing outbox + SQS patterns already implemented in the platform.</p>
+</li>
+<li>
+<p>Keeps routing data with each message row (<code>QueueUrl</code>, <code>MessageGroupId</code>), simplifying processor behaviour.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Publisher becomes responsible for destination fan-out configuration.</p>
+</li>
+<li>
+<p>Produces duplicate outbox rows per event (one per destination).</p>
+</li>
+<li>
+<p>Broad fan-out means consumers must continue to ignore irrelevant event types.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_3_sns_topic_fan_out">Option 3: SNS topic fan-out</h6>
+<div class="paragraph">
+<p>Publish outbox events to an SNS topic and let queues subscribe.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Strong decoupling between producers and consumers.</p>
+</li>
+<li>
+<p>Easier to add future consumers without changing producers.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Introduces a messaging pattern not currently used in application code.</p>
+</li>
+<li>
+<p>Requires additional infrastructure and operational model changes.</p>
+</li>
+<li>
+<p>Needs careful FIFO and ordering design to match current queue behaviour.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_option_4_eventbridge_routing">Option 4: EventBridge routing</h6>
+<div class="paragraph">
+<p>Use EventBridge for routing and filtering events to downstream targets.</p>
+</div>
+<div class="paragraph">
+<p>Advantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Flexible rules-based routing and filtering.</p>
+</li>
+<li>
+<p>Good long-term model for many consumers and event contracts.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Disadvantages:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Highest implementation and operational complexity of the options considered.</p>
+</li>
+<li>
+<p>Larger migration from current outbox/SQS setup for immediate needs.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_decision_8">Decision</h5>
+<div class="paragraph">
+<p>Adopt <strong>Option 2 (write-time fan-out)</strong>.</p>
+</div>
+<div class="paragraph">
+<p>We will:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Keep two outbox processors:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>outbox-processor-organisation</code> for <code>organisation_information_outbox</code></p>
+</li>
+<li>
+<p><code>outbox-processor-entity-verification</code> for <code>entity_verification_outbox</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Fan out at publish time by writing one outbox row per destination queue.</p>
+</li>
+<li>
+<p>Route Organisation and Person events to both Entity Verification and User Management queues.</p>
+</li>
+<li>
+<p>Keep consumer-side subscription filtering for irrelevant event types.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consequences_8">Consequences</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Lower infrastructure footprint and fewer moving parts than processor-per-destination.</p>
+</li>
+<li>
+<p>Avoids recurrence of long-name resource issues from additional processor services.</p>
+</li>
+<li>
+<p>Requires reliable configuration of outbox destination arrays in each publishing service.</p>
+</li>
+<li>
+<p>If destination count or routing needs grow significantly, we should revisit SNS or EventBridge in a later ADR.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-03-09 16:42:54 UTC
+Last updated 2026-03-10 09:54:54 UTC
 </div>
 </div>
 </body>
