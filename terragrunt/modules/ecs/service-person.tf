@@ -21,10 +21,12 @@ module "ecs_service_person" {
       lg_region                 = data.aws_region.current.region
       memory                    = var.service_configs.person.memory
       name                      = var.service_configs.person.name
-      public_domain             = var.public_domain
-      service_port              = local.service_ports_by_service[var.service_configs.person.name]
-      service_version           = local.service_version_sirsi
-      vpc_cidr                  = var.vpc_cider
+      queue_entity_verification_url = var.queue_entity_verification_url
+      queue_user_management_url     = var.queue_user_management_url
+      public_domain                 = var.public_domain
+      service_port                  = local.service_ports_by_service[var.service_configs.person.name]
+      service_version               = local.service_version_sirsi
+      vpc_cidr                      = var.vpc_cider
     }
   )
 
