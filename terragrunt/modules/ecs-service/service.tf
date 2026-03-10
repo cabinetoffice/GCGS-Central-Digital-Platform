@@ -38,13 +38,12 @@ resource "aws_ecs_service" "this" {
   launch_type                        = "FARGATE"
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
+  force_new_deployment               = var.force_new_deployment
   wait_for_steady_state              = true
   health_check_grace_period_seconds  = var.alb_enabled || var.internal_alb_enabled ? var.health_check_grace_period_seconds : null
 
   depends_on = [
-    aws_lb_listener_rule.external,
-    aws_lb_listener_rule.internal,
-    aws_lb_listener_rule.this_allowed_unauthenticated_paths
+    time_sleep.listener_rule_propagation
   ]
 
   network_configuration {
@@ -72,4 +71,14 @@ resource "aws_ecs_service" "this" {
   }
 
   tags = var.tags
+}
+
+resource "time_sleep" "listener_rule_propagation" {
+  depends_on = [
+    aws_lb_listener_rule.external,
+    aws_lb_listener_rule.internal,
+    aws_lb_listener_rule.this_allowed_unauthenticated_paths
+  ]
+
+  create_duration = var.listener_rule_propagation_delay
 }

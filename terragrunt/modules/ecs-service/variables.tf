@@ -25,6 +25,18 @@ variable "cpu" {
   type        = number
 }
 
+variable "force_new_deployment" {
+  description = "Force a new ECS deployment on every apply"
+  type        = bool
+  default     = false
+}
+
+variable "listener_rule_propagation_delay" {
+  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
+  type        = string
+  default     = "10s"
+}
+
 variable "deployment_maximum_percent" {
   description = "Upper limit (as a percentage of the service's desiredCount) of the number of running tasks that can be running in a service during a deployment"
   default     = 200
