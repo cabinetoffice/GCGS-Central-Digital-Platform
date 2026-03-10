@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation;
 using CO.CDP.UserManagement.Infrastructure.Events;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
@@ -12,6 +13,7 @@ namespace CO.CDP.UserManagement.Api.Tests.Subscribers;
 public class OrganisationSyncServiceRegisteredTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<ISlugGeneratorService> _slugGeneratorMock;
     private readonly Mock<IOrganisationPersonsSyncService> _personsSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -20,6 +22,7 @@ public class OrganisationSyncServiceRegisteredTests
     public OrganisationSyncServiceRegisteredTests()
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
+        _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _slugGeneratorMock = new Mock<ISlugGeneratorService>();
         _personsSyncServiceMock = new Mock<IOrganisationPersonsSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -32,8 +35,13 @@ public class OrganisationSyncServiceRegisteredTests
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
+        _membershipRepositoryMock
+            .Setup(r => r.GetByOrganisationIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         _service = new OrganisationSyncService(
             _organisationRepositoryMock.Object,
+            _membershipRepositoryMock.Object,
             _slugGeneratorMock.Object,
             _personsSyncServiceMock.Object,
             _unitOfWorkMock.Object,
@@ -75,7 +83,32 @@ public class OrganisationSyncServiceRegisteredTests
     }
 
     [Fact]
-    public async Task Handle_WhenOrgAlreadyExists_LogsInfoAndSkips()
+    public async Task Handle_WhenOrgNotExists_CallsMembershipSync()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationRegisteredEvent(cdpGuid.ToString(), "Test Organisation");
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync((CoreOrganisation?)null);
+
+        _slugGeneratorMock
+            .Setup(s => s.GenerateSlug("Test Organisation"))
+            .Returns("test-organisation");
+
+        // Act
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
+
+        // Assert
+        _personsSyncServiceMock.Verify(s => s.SyncOrganisationMembershipsAsync(
+            cdpGuid,
+            It.IsAny<int>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenOrgAlreadyExistsWithMembers_SkipsMembershipSync()
     {
         // Arrange
         var cdpGuid = Guid.NewGuid();
@@ -93,12 +126,81 @@ public class OrganisationSyncServiceRegisteredTests
             .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
             .ReturnsAsync(existingOrg);
 
+        _membershipRepositoryMock
+            .Setup(r => r.GetByOrganisationIdAsync(123, default))
+            .ReturnsAsync([new UserOrganisationMembership { Id = 1, OrganisationId = 123 }]);
+
         // Act
         await _service.SyncRegisteredAsync(@event.Id, @event.Name);
 
-        // Assert
+        // Assert — org not re-created, membership sync not called
         _organisationRepositoryMock.Verify(r => r.Add(It.IsAny<CoreOrganisation>()), Times.Never);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Never);
+        _personsSyncServiceMock.Verify(s => s.SyncOrganisationMembershipsAsync(
+            It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task Handle_WhenOrgAlreadyExistsWithNoMembers_RetriesMembershipSync()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationRegisteredEvent(cdpGuid.ToString(), "Existing Organisation");
+
+        var existingOrg = new CoreOrganisation
+        {
+            Id = 123,
+            CdpOrganisationGuid = cdpGuid,
+            Name = "Existing Organisation",
+            Slug = "existing-organisation"
+        };
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync(existingOrg);
+
+        _membershipRepositoryMock
+            .Setup(r => r.GetByOrganisationIdAsync(123, default))
+            .ReturnsAsync([]);
+
+        // Act
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
+
+        // Assert — org not re-created, but membership sync IS retried
+        _organisationRepositoryMock.Verify(r => r.Add(It.IsAny<CoreOrganisation>()), Times.Never);
+        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Never);
+        _personsSyncServiceMock.Verify(s => s.SyncOrganisationMembershipsAsync(
+            cdpGuid, 123, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenMembershipSyncThrows_PropagatesException()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationRegisteredEvent(cdpGuid.ToString(), "Test Organisation");
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync((CoreOrganisation?)null);
+
+        _slugGeneratorMock
+            .Setup(s => s.GenerateSlug("Test Organisation"))
+            .Returns("test-organisation");
+
+        _personsSyncServiceMock
+            .Setup(s => s.SyncOrganisationMembershipsAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<int>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("No persons found"));
+
+        // Act
+        var act = async () => await _service.SyncRegisteredAsync(@event.Id, @event.Name);
+
+        // Assert — exception propagates so SQS message is not deleted and redelivery occurs
+        await act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("No persons found");
     }
 
     [Fact]

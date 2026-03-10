@@ -42,6 +42,57 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  rule {
+    name     = "${local.name_prefix_php}-block-notice-bots"
+    priority = 3
+
+    action {
+      block {}
+    }
+
+    statement {
+      and_statement {
+        statement {
+          regex_match_statement {
+            regex_string = local.waf_php_notice_block_path_regex
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+
+        statement {
+          regex_match_statement {
+            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent).*"
+
+            field_to_match {
+              single_header {
+                name = "user-agent"
+              }
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-block-notice-bots"
+      sampled_requests_enabled   = true
+    }
+  }
+
   dynamic "rule" {
     for_each = local.waf_rule_sets_priority_blockers
     content {
