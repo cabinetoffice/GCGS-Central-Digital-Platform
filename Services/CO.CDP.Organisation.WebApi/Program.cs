@@ -128,7 +128,7 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration)
         .AddAwsSqsService()
-        .AddOutboxSqsPublisher<OrganisationInformationContext>(
+        .AddMultiQueueOutboxSqsPublisher<OrganisationInformationContext>(
             builder.Configuration,
             enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
             notificationChannel: "organisation_information_outbox")

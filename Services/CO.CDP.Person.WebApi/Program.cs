@@ -62,10 +62,10 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
 
 if (organisationSyncEnabled)
 {
-    builder.Services.AddOutboxSqsPublisher<OrganisationInformationContext>(
+    builder.Services.AddMultiQueueOutboxSqsPublisher<OrganisationInformationContext>(
         builder.Configuration,
         enableBackgroundServices: organisationSyncEnabled,
-        notificationChannel: "person_information_outbox");
+        notificationChannel: "organisation_information_outbox");
 }
 
 var app = builder.Build();

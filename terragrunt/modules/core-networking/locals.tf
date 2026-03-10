@@ -25,6 +25,13 @@ locals {
     AWSManagedRulesAnonymousIpList : 8
   }
 
+  waf_php_notice_block_path_regex = join(
+    "|",
+    [
+      "^/notice/.+\\.pdf$",
+    ]
+  )
+
   waf_raw_ip_set_json_tools = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips_tools.secret_string), [])
   waf_allowed_ip_list_tools_secret = length(local.waf_raw_ip_set_json_tools) > 0 ? [
     for item in local.waf_raw_ip_set_json_tools : item.value if can(item.value)
