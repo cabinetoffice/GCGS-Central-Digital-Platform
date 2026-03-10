@@ -108,21 +108,20 @@
     padding-right: 15px;
 }
 
-/* Destructive Action Alert */
-.app-destructive-alert {
-    border: 4px solid #d4351c;
-    border-left: 4px solid #d4351c;
-    padding: 20px;
+/* Destructive notification banner */
+.app-destructive-notification-banner {
+    border-color: #d4351c;
     margin-bottom: 40px;
 }
 
-.app-destructive-alert h2 {
-    color: #d4351c;
-    margin-top: 0;
-    margin-bottom: 15px;
-    line-height: 1.25;
+.app-destructive-notification-banner .govuk-notification-banner__header {
+    background-color: #d4351c;
 }
 
-.app-destructive-alert p {
+.app-destructive-notification-banner .govuk-notification-banner__heading {
+    color: #d4351c;
+}
+
+.app-destructive-notification-banner .govuk-body {
     margin-bottom: 0;
 }

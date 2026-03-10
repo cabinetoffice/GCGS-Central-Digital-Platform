@@ -13,9 +13,14 @@
 
         <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
 
-        <div class="app-destructive-alert">
-            <h2>You are about to remove a user</h2>
-            <p class="govuk-body">This action will immediately remove the user from this organisation. They will no longer be able to access services linked to this organisation or perform actions based on their role.</p>
+        <div class="govuk-notification-banner app-destructive-notification-banner" role="region" aria-labelledby="remove-user-notification-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="remove-user-notification-title">Important</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">You are about to remove a user</h3>
+                <p class="govuk-body">This action will immediately remove the user from this organisation. They will no longer be able to access services linked to this organisation or perform actions based on their role.</p>
+            </div>
         </div>
 
         <h1 class="govuk-heading-l">Remove user from organisation</h1>
