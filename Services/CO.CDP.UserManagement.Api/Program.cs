@@ -38,14 +38,14 @@ builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
 var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
 builder.Services.AddUserManagementInfrastructure(
     connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
 
-builder.Services.AddUserManagementCaching(redisConnectionString);
+builder.Services.AddUserManagementCaching(awsConfiguration);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 

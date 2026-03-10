@@ -350,7 +350,8 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__UserManagementDatabase: 'Host=db;Database=cdp;Username=cdp_user;Password=cdp123;SearchPath=user_management'
-      ConnectionStrings__Redis: 'redis:6379'
+      Aws__ElastiCache__Hostname: "redis"
+      Aws__ElastiCache__Port: "6379"
       OrganisationInformationDatabase__Host: 'db'
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'

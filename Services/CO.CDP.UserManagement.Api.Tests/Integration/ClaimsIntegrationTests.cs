@@ -38,7 +38,9 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
             {
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    { Shared.FeatureFlags.FeatureFlags.ClaimsApiEnabled, featureEnabled.ToString() }
+                    { Shared.FeatureFlags.FeatureFlags.ClaimsApiEnabled, featureEnabled.ToString() },
+                    { "Aws:ElastiCache:Hostname", _fixture.RedisHost },
+                    { "Aws:ElastiCache:Port", _fixture.RedisPort }
                 });
             });
 
