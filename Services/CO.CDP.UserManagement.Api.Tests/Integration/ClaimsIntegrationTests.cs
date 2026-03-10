@@ -6,6 +6,7 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -38,14 +39,18 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
             {
                 config.AddInMemoryCollection(new Dictionary<string, string?>
                 {
-                    { Shared.FeatureFlags.FeatureFlags.ClaimsApiEnabled, featureEnabled.ToString() },
-                    { "Aws:ElastiCache:Hostname", _fixture.RedisHost },
-                    { "Aws:ElastiCache:Port", _fixture.RedisPort }
+                    { Shared.FeatureFlags.FeatureFlags.ClaimsApiEnabled, featureEnabled.ToString() }
                 });
             });
 
             builder.ConfigureServices((_, services) =>
             {
+                services.PostConfigure<RedisCacheOptions>(options =>
+                {
+                    options.Configuration = $"{_fixture.RedisHost}:{_fixture.RedisPort}";
+                    options.InstanceName = "UserManagement_";
+                });
+
                 services.RemoveAll<UserManagementDbContext>();
                 services.RemoveAll<DbContextOptions<UserManagementDbContext>>();
                 services.AddDbContext<UserManagementDbContext>((sp, options) =>
