@@ -1,13 +1,11 @@
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record UserDetailsViewModel(
-    string OrganisationName,
-    string OrganisationSlug,
+    OrganisationResponse? Organisation,
     Guid CdpPersonId,
-    string FirstName,
-    string LastName,
     string FullName,
     string Email,
     OrganisationRole OrganisationRole,

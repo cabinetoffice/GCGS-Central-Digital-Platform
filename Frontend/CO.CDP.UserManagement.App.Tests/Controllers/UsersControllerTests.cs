@@ -2,6 +2,7 @@ using CO.CDP.UserManagement.App.Controllers;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -219,12 +220,18 @@ public class UsersControllerTests
                 AssignedByEmail: "admin@example.com",
                 ApplicationRole: ApplicationRole.Editor)
         };
+        var organisation = new OrganisationResponse
+        {
+            Id = 1,
+            CdpOrganisationGuid = Guid.NewGuid(),
+            Name = "Org",
+            Slug = "org",
+            IsActive = true,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
         var viewModel = new UserDetailsViewModel(
-            OrganisationName: "Org",
-            OrganisationSlug: "org",
+            Organisation: organisation,
             CdpPersonId: Guid.NewGuid(),
-            FirstName: "Test",
-            LastName: "User",
             FullName: "Test User",
             Email: "test@example.com",
             OrganisationRole: OrganisationRole.Admin,

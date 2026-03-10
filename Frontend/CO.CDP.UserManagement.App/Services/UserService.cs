@@ -119,10 +119,8 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
-            var firstName = user.FirstName ?? string.Empty;
-            var lastName = user.LastName ?? string.Empty;
-            var fullName = !string.IsNullOrWhiteSpace(firstName) && !string.IsNullOrWhiteSpace(lastName)
-                ? $"{firstName} {lastName}"
+            var fullName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
                 : string.Empty;
             var memberSince = user.JoinedAt.HasValue
                 ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
@@ -141,11 +139,8 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 .ToList() ?? [];
 
             return new UserDetailsViewModel(
-                OrganisationName: org.Name,
-                OrganisationSlug: org.Slug,
+                Organisation: org,
                 CdpPersonId: user.CdpPersonId ?? cdpPersonId,
-                FirstName: firstName,
-                LastName: lastName,
                 FullName: fullName,
                 Email: user.Email ?? string.Empty,
                 OrganisationRole: user.OrganisationRole,

@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Organisation?.Slug" class="govuk-back-link">Back</a>
 }
 
 <h1 class="govuk-heading-xl">User details</h1>
@@ -29,7 +29,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Organisation</dt>
-                <dd class="govuk-summary-list__value">@Model.OrganisationName</dd>
+                <dd class="govuk-summary-list__value">@Model.Organisation?.Slug</dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Organisation role</dt>
@@ -46,9 +46,9 @@
     <div class="govuk-grid-column-one-third">
         <h2 class="govuk-heading-m">Actions</h2>
         <ul class="govuk-list">
-            <li><a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/assign-application" class="govuk-link">Assign to application</a></li>
-            <li><a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/change-role" class="govuk-link">Change organisation role</a></li>
-            <li><a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/assign-application" class="govuk-link">Assign to application</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/change-role" class="govuk-link">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
         </ul>
     </div>
 </div>
@@ -56,16 +56,16 @@
 <h2 class="govuk-heading-l">Application access</h2>
 
 <div class="govuk-button-group govuk-!-margin-bottom-4">
-    <a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/assign-application" class="govuk-button govuk-button--secondary" data-module="govuk-button">Assign to another application</a>
+    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/assign-application" class="govuk-button govuk-button--secondary" data-module="govuk-button">Assign to another application</a>
 </div>
 
 @if (Model.ApplicationAccess.Count == 0)
 {
-    <p class="govuk-body">@Model.FirstName has not been assigned to any applications yet.</p>
+    <p class="govuk-body">@Model.FullName has not been assigned to any applications yet.</p>
 }
 else
 {
-    <p class="govuk-body-m govuk-!-margin-bottom-4">@Model.FirstName has access to @Model.ApplicationAccess.Count @(Model.ApplicationAccess.Count == 1 ? "application" : "applications")</p>
+    <p class="govuk-body-m govuk-!-margin-bottom-4">@Model.FullName has access to @Model.ApplicationAccess.Count @(Model.ApplicationAccess.Count == 1 ? "application" : "applications")</p>
 
     @foreach (var app in Model.ApplicationAccess)
     {
@@ -92,8 +92,8 @@ else
                 <p class="govuk-body-s govuk-!-margin-bottom-3">Assigned: @app.AssignedDate.ToString("d MMMM yyyy") by @app.AssignedByEmail</p>
 
                 <p class="govuk-body">
-                    <a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/application/@app.ApplicationId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
-                    <a href="/organisation/@Model.OrganisationSlug/user/@Model.Id/application/@app.ApplicationId/revoke" class="govuk-link">Revoke access</a>
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationId/revoke" class="govuk-link">Revoke access</a>
                 </p>
             </div>
         </div>
