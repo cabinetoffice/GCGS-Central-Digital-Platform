@@ -73,7 +73,7 @@ public class OrganisationHomeModel(
 
     private List<Tile> BuildTiles(FeatureConfiguration featureConfig)
     {
-        var tiles = AddCommonTiles();
+        var tiles = AddCommonTiles(featureConfig);
 
         if (OrganisationDetails!.IsTenderer())
         {
@@ -88,9 +88,9 @@ public class OrganisationHomeModel(
         return tiles;
     }
 
-    private List<Tile> AddCommonTiles()
+    private List<Tile> AddCommonTiles(FeatureConfiguration featureConfig)
     {
-        return new List<Tile>
+        var tiles = new List<Tile>
         {
             new()
             {
@@ -99,6 +99,18 @@ public class OrganisationHomeModel(
                 Href = $"/organisation/{Id}?origin=organisation-home"
             }
         };
+
+        if (featureConfig.FindAndApplyEnabled)
+        {
+            tiles.Add(new Tile
+            {
+                Title = "Find a grant",
+                Body = StaticTextResource.OrganisationHome_TileNine_Body,
+                Href = $"/organisation/{Id}/find-and-apply"
+            });
+        }
+
+        return tiles;
     }
 
     private void AddSupplierTiles(List<Tile> tiles, FeatureConfiguration featureConfig)
@@ -120,16 +132,6 @@ public class OrganisationHomeModel(
                 Title = StaticTextResource.OrganisationHome_TileEight_Title,
                 Body = StaticTextResource.OrganisationHome_TileEight_Body,
                 Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "/supplier", Id, null, cookiesAcceptedValue, originParams)
-            });
-        }
-
-        if (featureConfig.FindAndApplyEnabled)
-        {
-            tiles.Add(new Tile
-            {
-                Title = "Find a grant",
-                Body = StaticTextResource.OrganisationHome_TileNine_Body,
-                Href = $"/organisation/{Id}/find-and-apply"
             });
         }
     }
@@ -175,26 +177,6 @@ public class OrganisationHomeModel(
             Body = StaticTextResource.OrganisationHome_TileFive_Body,
             Href = ftsUrlService.BuildUrl("/login", Id, "/dashboard")
         });
-
-        if (featureConfig.FvraToolBuyerEnabled)
-        {
-            tiles.Add(new Tile
-            {
-                Title = StaticTextResource.OrganisationHome_TileSix_Title,
-                Body = StaticTextResource.OrganisationHome_TileSix_Body,
-                Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "/buyer", Id, null, cookiesAcceptedValue, originParams)
-            });
-        }
-
-        if (featureConfig.FindAndApplyEnabled)
-        {
-            tiles.Add(new Tile
-            {
-                Title = "Find a grant",
-                Body = StaticTextResource.OrganisationHome_TileNine_Body,
-                Href = $"/organisation/{Id}/find-and-apply"
-            });
-        }
     }
 
     private Dictionary<string, string?> GetOriginParams()
