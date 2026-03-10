@@ -109,6 +109,12 @@ variable "healthcheck_timeout" {
   default     = 6
 }
 
+variable "health_check_grace_period_seconds" {
+  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
+  type        = number
+  default     = 60
+}
+
 variable "internal_alb_enabled" {
   description = "Whether to create internal ALB listener rule"
   type        = bool
@@ -200,6 +206,12 @@ variable "service_port" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "tg_suffix" {
+  description = "Optional short suffix for target group names to allow create_before_destroy without name collision"
+  type        = string
+  default     = "v1"
 }
 
 variable "unhealthy_threshold" {

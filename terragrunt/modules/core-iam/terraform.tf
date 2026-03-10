@@ -78,6 +78,13 @@ resource "aws_iam_policy" "terraform_product_data" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_product_ecs" {
+  name        = "${local.name_prefix}-terraform-product-ecs"
+  description = "Product's ECS specific policy"
+  policy      = data.aws_iam_policy_document.terraform_product_ecs.json
+  tags        = var.tags
+}
+
 import {
   to = aws_iam_policy.terraform_assume_orchestrator_role
   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-terraform-assume-orchestrator-role"
@@ -114,13 +121,30 @@ resource "aws_iam_role_policy_attachment" "terraform_global_ses" {
   role       = aws_iam_role.terraform.name
 }
 
-resource "aws_iam_role_policy_attachment" "terraform_production" {
+moved {
+  from = aws_iam_role_policy_attachment.terraform_production
+  to   = aws_iam_role_policy_attachment.terraform_product
+}
+resource "aws_iam_role_policy_attachment" "terraform_product" {
   policy_arn = aws_iam_policy.terraform_product.arn
   role       = aws_iam_role.terraform.name
 }
 
-resource "aws_iam_role_policy_attachment" "terraform_production_data" {
+moved {
+  from = aws_iam_role_policy_attachment.terraform_production_data
+  to   = aws_iam_role_policy_attachment.terraform_product_data
+}
+resource "aws_iam_role_policy_attachment" "terraform_product_data" {
   policy_arn = aws_iam_policy.terraform_product_data.arn
+  role       = aws_iam_role.terraform.name
+}
+
+moved {
+  from = aws_iam_role_policy_attachment.terraform_production_ecs
+  to   = aws_iam_role_policy_attachment.terraform_product_ecs
+}
+resource "aws_iam_role_policy_attachment" "terraform_product_ecs" {
+  policy_arn = aws_iam_policy.terraform_product_ecs.arn
   role       = aws_iam_role.terraform.name
 }
 

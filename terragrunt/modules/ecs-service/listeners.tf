@@ -2,7 +2,7 @@ resource "aws_lb_target_group" "external" {
   count = var.alb_enabled ? 1 : 0
 
   deregistration_delay = 30
-  name_prefix          = local.tg_name_prefix
+  name                 = local.tg_name
   port                 = var.service_port
   protocol             = "HTTP"
   target_type          = "ip"
@@ -46,7 +46,7 @@ resource "aws_lb_target_group" "internal" {
   count = var.internal_alb_enabled ? 1 : 0
 
   deregistration_delay = 30
-  name_prefix          = local.internal_tg_name_prefix
+  name                 = local.internal_tg_name
   port                 = var.service_port
   protocol             = "HTTP"
   target_type          = "ip"
