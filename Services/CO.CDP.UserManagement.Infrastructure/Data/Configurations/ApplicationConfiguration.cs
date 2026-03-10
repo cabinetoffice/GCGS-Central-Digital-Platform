@@ -16,6 +16,15 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
         builder.HasKey(a => a.Id);
         builder.Property(a => a.Id).HasColumnName("id");
 
+        builder.Property(a => a.Guid)
+            .HasColumnName("guid")
+            .HasDefaultValueSql("gen_random_uuid()")
+            .IsRequired();
+
+        builder.HasIndex(a => a.Guid)
+            .IsUnique()
+            .HasDatabaseName("ix_applications_guid");
+
         builder.Property(a => a.Name)
             .HasColumnName("name")
             .HasMaxLength(255)

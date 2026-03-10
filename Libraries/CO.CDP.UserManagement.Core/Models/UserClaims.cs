@@ -11,9 +11,9 @@ public record UserClaims
     public required string UserPrincipalId { get; init; }
 
     /// <summary>
-    /// Gets the collection of organisation memberships for the user.
+    /// Gets the collection of organisations for the user.
     /// </summary>
-    public ICollection<OrganisationMembershipClaim> OrganisationMemberships { get; init; } = new List<OrganisationMembershipClaim>();
+    public ICollection<OrganisationMembershipClaim> Organisations { get; init; } = new List<OrganisationMembershipClaim>();
 }
 
 /// <summary>
@@ -24,7 +24,7 @@ public record OrganisationMembershipClaim
     /// <summary>
     /// Gets the organisation identifier.
     /// </summary>
-    public required int OrganisationId { get; init; }
+    public required Guid OrganisationId { get; init; }
 
     /// <summary>
     /// Gets the organisation name.
@@ -32,24 +32,14 @@ public record OrganisationMembershipClaim
     public required string OrganisationName { get; init; }
 
     /// <summary>
-    /// Gets the organisation slug.
-    /// </summary>
-    public required string OrganisationSlug { get; init; }
-
-    /// <summary>
     /// Gets the organisation role.
     /// </summary>
     public required string OrganisationRole { get; init; }
 
     /// <summary>
-    /// Gets the CDP person identifier.
+    /// Gets the collection of applications for this organisation.
     /// </summary>
-    public Guid? CdpPersonId { get; init; }
-
-    /// <summary>
-    /// Gets the collection of application assignments for this organisation.
-    /// </summary>
-    public ICollection<ApplicationAssignmentClaim> ApplicationAssignments { get; init; } = new List<ApplicationAssignmentClaim>();
+    public ICollection<ApplicationAssignmentClaim> Applications { get; init; } = new List<ApplicationAssignmentClaim>();
 }
 
 /// <summary>
@@ -60,7 +50,7 @@ public record ApplicationAssignmentClaim
     /// <summary>
     /// Gets the application identifier.
     /// </summary>
-    public required int ApplicationId { get; init; }
+    public required Guid ApplicationId { get; init; }
 
     /// <summary>
     /// Gets the application name.
