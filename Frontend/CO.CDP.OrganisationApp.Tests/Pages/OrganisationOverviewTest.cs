@@ -7,6 +7,7 @@ using Microsoft.FeatureManagement;
 using Moq;
 using DevolvedRegulation = CO.CDP.Organisation.WebApiClient.DevolvedRegulation;
 using OrganisationType = CO.CDP.Organisation.WebApiClient.OrganisationType;
+using Microsoft.Extensions.Configuration;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages;
 
@@ -16,6 +17,7 @@ public class OrganisationOverviewTest
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
     private readonly Mock<IFeatureManager> _featureManagerMock = new();
     private readonly OrganisationOverviewModel _model;
+    private readonly Mock<IConfiguration> _configurationMock = new();
 
     public OrganisationOverviewTest()
     {
@@ -23,7 +25,8 @@ public class OrganisationOverviewTest
         _model = new OrganisationOverviewModel(
             _organisationClientMock.Object,
             _pponClient.Object,
-            _featureManagerMock.Object);
+            _featureManagerMock.Object,
+            _configurationMock.Object);
     }
 
     [Fact]
