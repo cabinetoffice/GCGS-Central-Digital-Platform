@@ -364,7 +364,6 @@ services:
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
       CloudWatch__LogGroup: "/ecs/user-management-api"
-      Features__ClaimsApiEnabled: "true"
 
   user-management-app:
     container_name: co-cdp-user-management-app
