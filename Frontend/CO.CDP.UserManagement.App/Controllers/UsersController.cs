@@ -612,6 +612,62 @@ public class UsersController(
             RoleDescription: state.SelectedRole.GetDescription()));
     }
 
+    [HttpGet("user/{cdpPersonId:guid}/change-application-roles")]
+    public async Task<IActionResult> ChangeApplicationRoles(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        return View("ChangeApplicationRoles", viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/change-application-roles")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeApplicationRolesSubmit(
+        string organisationSlug,
+        Guid cdpPersonId,
+        ApplicationRoleChangePostModel input,
+        CancellationToken ct)
+    {
+
+        //ToDo: implement redirect to confirmation page
+        return RedirectToAction(nameof(Index), new { organisationSlug });
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/change-application-roles")]
+    public async Task<IActionResult> ChangeInviteApplicationRoles(
+        string organisationSlug,
+        Guid inviteGuid,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, null, inviteGuid, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        return View("ChangeApplicationRoles", viewModel);
+    }
+
+    [HttpPost("invites/{inviteGuid:guid}/change-application-roles")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeInviteApplicationRolesSubmit(
+        string organisationSlug,
+        Guid inviteGuid,
+        ApplicationRoleChangePostModel input,
+        CancellationToken ct)
+    {
+
+        //ToDo: implement redirect to confirmation page
+        return RedirectToAction(nameof(Index), new { organisationSlug });
+    }
+
     private async Task<ChangeRoleState> GetOrCreateChangeRoleStateAsync(
         string organisationSlug,
         Guid? cdpPersonId,

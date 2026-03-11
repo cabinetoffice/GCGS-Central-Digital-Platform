@@ -45,4 +45,17 @@ public interface IUserService
         string organisationSlug,
         Guid inviteGuid,
         CancellationToken ct = default);
+
+    Task<ChangeUserApplicationRolesViewModel?> GetChangeUserApplicationRolesViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        Guid? inviteGuid,
+        CancellationToken ct = default);
+
+    Task<bool> UpdateUserApplicationRolesAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        Guid? inviteGuid,
+        IReadOnlyList<ApplicationRoleAssignmentPostModel> applicationRoleAssignments,
+        CancellationToken ct = default);
 }
