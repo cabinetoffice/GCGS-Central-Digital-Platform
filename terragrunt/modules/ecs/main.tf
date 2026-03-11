@@ -1,4 +1,8 @@
-resource "aws_ecs_cluster" "this" {
+moved {
+  from = aws_ecs_cluster.this
+  to   = aws_ecs_cluster.sirsi
+}
+resource "aws_ecs_cluster" "sirsi" {
   name = local.name_prefix
 
   configuration {
@@ -14,7 +18,7 @@ resource "aws_ecs_cluster" "this" {
   }
 
   dynamic "setting" {
-    for_each = var.is_production ? [0] : []
+    for_each = var.environment != "development" ? [0] : []
     content {
       name  = "containerInsights"
       value = "enabled"
@@ -24,7 +28,11 @@ resource "aws_ecs_cluster" "this" {
   tags = var.tags
 }
 
-resource "aws_ecs_cluster" "that" {
+moved {
+  from = aws_ecs_cluster.that
+  to   = aws_ecs_cluster.php
+}
+resource "aws_ecs_cluster" "php" {
   name = local.name_prefix_php
 
   configuration {
@@ -40,7 +48,7 @@ resource "aws_ecs_cluster" "that" {
   }
 
   dynamic "setting" {
-    for_each = var.is_production ? [0] : []
+    for_each = var.environment != "development" ? [0] : []
     content {
       name  = "containerInsights"
       value = "enabled"
@@ -66,7 +74,7 @@ resource "aws_ecs_cluster" "fts" {
   }
 
   dynamic "setting" {
-    for_each = var.is_production ? [0] : []
+    for_each = var.environment != "development" ? [0] : []
     content {
       name  = "containerInsights"
       value = "enabled"
