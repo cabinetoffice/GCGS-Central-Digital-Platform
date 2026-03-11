@@ -21,6 +21,26 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
             var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
 
+            var inviteAppIds = invitesResponse
+                .SelectMany(i => i.ApplicationAssignments ?? [])
+                .Where(a => a.ApplicationId.HasValue)
+                .Select(a => a.ApplicationId!.Value)
+                .Distinct()
+                .ToList();
+
+            var rolesByAppId = new Dictionary<int, ICollection<RoleResponse>>();
+            foreach (var appId in inviteAppIds)
+            {
+                try
+                {
+                    rolesByAppId[appId] = await apiClient.RolesAllAsync(appId, ct);
+                }
+                catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+                {
+                    rolesByAppId[appId] = [];
+                }
+            }
+
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
                     Id: user.CdpPersonId,
@@ -55,7 +75,19 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         Email: invite.Email,
                         OrganisationRole: null,
                         Status: invite.Status,
-                        ApplicationAccess: []);
+                        ApplicationAccess: (invite.ApplicationAssignments ?? [])
+                            .Select(assignment =>
+                            {
+                                var roleName = assignment.ApplicationId.HasValue &&
+                                               rolesByAppId.TryGetValue(assignment.ApplicationId.Value, out var roles)
+                                    ? roles.FirstOrDefault(r => r.Id == assignment.ApplicationRoleId)?.Name ?? string.Empty
+                                    : string.Empty;
+                                return new UserApplicationAccessViewModel(
+                                    ApplicationName: assignment.ApplicationName,
+                                    ApplicationSlug: string.Empty,
+                                    RoleName: roleName);
+                            })
+                            .ToList());
                 })
                 .ToList();
 

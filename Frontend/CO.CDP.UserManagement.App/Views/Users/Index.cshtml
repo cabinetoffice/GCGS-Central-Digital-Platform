@@ -141,14 +141,12 @@ else
                 else
                 {
                     <p class="govuk-body-s govuk-!-margin-bottom-2"><strong>Application access:</strong></p>
-                    <div>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s govuk-!-margin-bottom-2">
                         @foreach (var app in user.ApplicationAccess)
                         {
-                            <span class="govuk-tag govuk-tag--purple govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                                @app.ApplicationName: @app.RoleName
-                            </span>
+                            <li>@app.ApplicationName@(string.IsNullOrEmpty(app.RoleName) ? "" : $": {app.RoleName}")</li>
                         }
-                    </div>
+                    </ul>
                 }
 
                 <p class="govuk-body govuk-!-margin-top-4">

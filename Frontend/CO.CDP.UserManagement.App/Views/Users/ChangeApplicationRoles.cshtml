@@ -23,15 +23,13 @@
                 }
                 else
                 {
-                    <div>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s govuk-!-margin-bottom-0">
                         @foreach (var app in Model.Applications.Where(a => a.HasExistingAccess))
                         {
                             var roleName = app.Roles.Where(r => r.Id == app.SelectedRoleId).Select(r => r.Name).FirstOrDefault();
-                            <span class="govuk-tag govuk-tag--purple govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                                @(string.IsNullOrEmpty(roleName) ? app.ApplicationName : $"{app.ApplicationName} ({roleName})")
-                            </span>
+                            <li>@app.ApplicationName@(string.IsNullOrEmpty(roleName) ? "" : $": {roleName}")</li>
                         }
-                    </div>
+                    </ul>
                 }
             </div>
         </div>
