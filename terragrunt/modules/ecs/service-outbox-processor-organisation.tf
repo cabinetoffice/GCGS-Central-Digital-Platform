@@ -25,7 +25,7 @@ module "ecs_service_outbox_processor_organisation" {
 
   cluster_id             = local.main_cluster_id
   cpu                    = var.service_configs.outbox_processor_organisation.cpu
-  desired_count          = var.service_configs.outbox_processor_entity_verification.desired_count
+  desired_count          = var.service_configs.outbox_processor_organisation.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id

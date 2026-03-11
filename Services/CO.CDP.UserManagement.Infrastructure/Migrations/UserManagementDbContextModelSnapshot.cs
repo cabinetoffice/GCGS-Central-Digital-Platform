@@ -67,6 +67,12 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("character varying(1000)")
                         .HasColumnName("description");
 
+                    b.Property<Guid>("Guid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("guid")
+                        .HasDefaultValueSql("gen_random_uuid()");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
@@ -95,6 +101,10 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.HasIndex("ClientId")
                         .IsUnique()
                         .HasDatabaseName("ix_applications_client_id");
+
+                    b.HasIndex("Guid")
+                        .IsUnique()
+                        .HasDatabaseName("ix_applications_guid");
 
                     b.ToTable("applications", "user_management");
                 });

@@ -127,6 +127,14 @@ jobs:
           VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Build Grafana image
+        run: |
+          docker build \
+            -t cabinetoffice/cdp-grafana:${IMAGE_VERSION} \
+            -f terragrunt/tools/grafana/Dockerfile \
+            terragrunt/tools/grafana
+        env:
+          IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Build
         run: make build-docker VERSION=${IMAGE_VERSION}
         env:
@@ -148,6 +156,8 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           CommercialToolsApp: http://commercial-tools-app:8080
           CommercialToolsApi: http://commercial-tools-api:8080
+          UserManagementApi: http://user-management-api:8080
+          UserManagementApp: http://user-management-app:8080
           SirsiService: http://organisation-app:8080
       - name: Verify services
         run: make verify-up
@@ -175,6 +185,8 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           CommercialToolsApp: http://commercial-tools-app:8080
           CommercialToolsApi: http://commercial-tools-api:8080
+          UserManagementApi: http://user-management-api:8080
+          UserManagementApp: http://user-management-app:8080
           SirsiService: http://organisation-app:8080
       - name: Grab Docker logs
         if: failure()

@@ -1260,13 +1260,23 @@
           },
           {
             "selected": false,
-            "text": "outbox-processor-entity-verification",
-            "value": "outbox-processor-entity-verification"
+            "text": "user-management-api",
+            "value": "user-management-api"
+          },
+          {
+            "selected": false,
+            "text": "user-management-app",
+            "value": "user-management-app"
           },
           {
             "selected": false,
             "text": "outbox-processor-entity-verification",
             "value": "outbox-processor-entity-verification"
+          },
+          {
+            "selected": false,
+            "text": "outbox-processor-organisation",
+            "value": "outbox-processor-organisation"
           },
           {
             "selected": false,
@@ -1284,7 +1294,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, clamav-rest, commercial-tools-api, commercial-tools-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app, clamav-rest, commercial-tools-api, commercial-tools-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {

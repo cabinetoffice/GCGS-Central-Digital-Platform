@@ -1,3 +1,4 @@
+using CO.CDP.AwsServices;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
@@ -63,27 +64,26 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds caching services for user management.
+    /// Adds caching services for user management using ElastiCache.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="redisConnectionString">Optional Redis connection string. If null, uses in-memory cache.</param>
+    /// <param name="awsConfiguration">AWS configuration containing ElastiCache settings.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementCaching(
         this IServiceCollection services,
-        string? redisConnectionString = null)
+        AwsConfiguration? awsConfiguration = null)
     {
-        if (!string.IsNullOrEmpty(redisConnectionString))
+        if (awsConfiguration?.ElastiCache is null)
         {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "UserManagement_";
-            });
+            throw new InvalidOperationException(
+                "ElastiCache is not configured. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are set.");
         }
-        else
+
+        services.AddStackExchangeRedisCache(options =>
         {
-            services.AddDistributedMemoryCache();
-        }
+            options.Configuration = $"{awsConfiguration.ElastiCache.Hostname}:{awsConfiguration.ElastiCache.Port}";
+            options.InstanceName = "UserManagement_";
+        });
 
         services.AddScoped<IClaimsCacheService, CachedClaimsService>();
 

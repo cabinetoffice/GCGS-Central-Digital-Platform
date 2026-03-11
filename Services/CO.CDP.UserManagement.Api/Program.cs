@@ -37,15 +37,17 @@ builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(bu
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = builder.Configuration.GetConnectionString("UserManagementDatabase");
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
+var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
+var redisConnectionString = awsConfiguration?.ElastiCache is not null
+    ? $"{awsConfiguration.ElastiCache.Hostname}:{awsConfiguration.ElastiCache.Port}"
+    : throw new InvalidOperationException("AWS ElastiCache configuration is required but not found. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are configured.");
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
-builder.Services.AddUserManagementInfrastructure(
-    connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
+builder.Services.AddUserManagementInfrastructure(connectionString);
 
-builder.Services.AddUserManagementCaching(redisConnectionString);
+builder.Services.AddUserManagementCaching(awsConfiguration);
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
@@ -60,10 +62,9 @@ if (awsSection.Exists())
     builder.Services.AddAwsConfiguration(builder.Configuration);
 }
 
-var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var awsRegion = builder.Configuration["AWS:Region"]
                 ?? Environment.GetEnvironmentVariable("AWS_REGION");
-if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
+if (awsConfiguration?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfiguration.ServiceURL) ||
                                          !string.IsNullOrWhiteSpace(awsRegion)))
 {
     builder.Services
@@ -74,12 +75,12 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
 if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
     (Assembly.GetEntryAssembly().IsRunAs("testhost")))
 {
-    if (awsConfig?.SqsDispatcher is null)
+    if (awsConfiguration?.SqsDispatcher is null)
     {
         throw new InvalidOperationException("AWS SQS Dispatcher configuration is required but not found. Ensure Aws:SqsDispatcher:QueueUrl is configured.");
     }
 
-    if (string.IsNullOrWhiteSpace(awsConfig.SqsDispatcher.QueueUrl))
+    if (string.IsNullOrWhiteSpace(awsConfiguration.SqsDispatcher.QueueUrl))
     {
         throw new InvalidOperationException("AWS SQS Dispatcher QueueUrl is required but not configured.");
     }
@@ -191,7 +192,8 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString ?? throw new InvalidOperationException("Database connection string not configured"));
+    .AddNpgSql(connectionString)
+    .AddRedis(redisConnectionString);
 
 var app = builder.Build();
 

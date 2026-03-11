@@ -8,8 +8,8 @@ locals {
   internal_prefix              = length("internal.${var.public_domain}") > 64 ? "in" : "internal"
   internal_domain              = "${local.internal_prefix}.${var.public_domain}"
   internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
-  use_internal_service_urls    = var.use_internal_service_urls != null ? var.use_internal_service_urls : contains(["development"], var.environment)
-  use_internal_issuer          = var.use_internal_issuer != null ? var.use_internal_issuer : contains(["development"], var.environment)
+  use_internal_service_urls    = var.use_internal_service_urls != null ? var.use_internal_service_urls : contains(["development", "staging", "integration"], var.environment)
+  use_internal_issuer          = var.use_internal_issuer != null ? var.use_internal_issuer : contains(["development", "staging", "integration"], var.environment)
   main_cluster_id              = aws_ecs_cluster.this.id
   main_cluster_name            = aws_ecs_cluster.this.name
   main_ecs_listener_arn        = aws_lb_listener.ecs.arn

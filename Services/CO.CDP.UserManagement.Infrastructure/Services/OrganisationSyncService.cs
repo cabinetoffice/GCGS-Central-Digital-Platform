@@ -8,6 +8,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 public class OrganisationSyncService(
     IOrganisationRepository organisationRepository,
+    IUserOrganisationMembershipRepository membershipRepository,
     ISlugGeneratorService slugGeneratorService,
     IOrganisationPersonsSyncService personsSyncService,
     IUnitOfWork unitOfWork,
@@ -23,8 +24,19 @@ public class OrganisationSyncService(
         var existing = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken);
         if (existing != null)
         {
-            logger.LogInformation("Organisation {CdpGuid} already exists in UserManagement (Id: {Id}), skipping",
+            var existingMembers = await membershipRepository.GetByOrganisationIdAsync(existing.Id, cancellationToken);
+            if (existingMembers.Any())
+            {
+                logger.LogInformation(
+                    "Organisation {CdpGuid} already exists in UserManagement (Id: {Id}) with memberships, skipping",
+                    cdpGuid, existing.Id);
+                return;
+            }
+
+            logger.LogWarning(
+                "Organisation {CdpGuid} exists in UserManagement (Id: {Id}) but has no memberships — retrying membership sync",
                 cdpGuid, existing.Id);
+            await SyncMemberships(cdpGuid, existing.Id, cancellationToken);
             return;
         }
 
@@ -208,17 +220,10 @@ public class OrganisationSyncService(
 
     private async Task SyncMemberships(Guid cdpGuid, int organisationId, CancellationToken cancellationToken)
     {
-        try
-        {
-            await personsSyncService.SyncOrganisationMembershipsAsync(
-                cdpGuid,
-                organisationId,
-                cancellationToken);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to sync memberships for organisation {OrgId}", organisationId);
-        }
+        await personsSyncService.SyncOrganisationMembershipsAsync(
+            cdpGuid,
+            organisationId,
+            cancellationToken);
     }
 
     private static async Task TryWithSlugCandidates(
