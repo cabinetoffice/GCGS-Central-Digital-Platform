@@ -25,7 +25,7 @@ module "ecs_service_user_management_api" {
       redis_primary_endpoint_address = var.redis_primary_endpoint
       service_port                   = local.service_ports_by_service[var.service_configs.user_management_api.name]
       service_version                = local.service_version_sirsi
-      servicekey_apikey              = var.environment == "development" ? data.aws_secretsmanager_secret.user_management_servicekey_apikey[0].arn : null
+      servicekey_apikey              = data.aws_secretsmanager_secret.user_management_servicekey_apikey.arn
       use_internal_service_urls      = local.use_internal_service_urls
       vpc_cidr                       = var.vpc_cider
     }
