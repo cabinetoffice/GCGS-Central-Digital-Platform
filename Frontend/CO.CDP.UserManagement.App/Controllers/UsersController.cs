@@ -395,7 +395,7 @@ public class UsersController(
         return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]
     public async Task<IActionResult> ChangeRole(
         string organisationSlug,
         Guid cdpPersonId,
@@ -411,7 +411,7 @@ public class UsersController(
         return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/change-role")]
+    [HttpPost("user/{cdpPersonId:guid}/organisation-role/change")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeRoleSubmit(
         string organisationSlug,
@@ -441,7 +441,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeRoleCheck), new { organisationSlug, cdpPersonId });
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role/check")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/check")]
     public async Task<IActionResult> ChangeRoleCheck(
         string organisationSlug,
         Guid cdpPersonId,
@@ -456,7 +456,7 @@ public class UsersController(
         return View("ChangeRoleCheck", ToChangeRoleViewModel(state));
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/change-role/check")]
+    [HttpPost("user/{cdpPersonId:guid}/organisation-role/change/check")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeRoleCheckSubmit(
         string organisationSlug,
@@ -483,7 +483,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role/success")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/success")]
     public async Task<IActionResult> ChangeRoleSuccess(
         string organisationSlug,
         Guid cdpPersonId,
@@ -504,7 +504,7 @@ public class UsersController(
             RoleDescription: state.SelectedRole.GetDescription()));
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change")]
     public async Task<IActionResult> ChangeInviteRole(
         string organisationSlug,
         Guid inviteGuid,
@@ -520,7 +520,7 @@ public class UsersController(
         return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
     }
 
-    [HttpPost("invites/{inviteGuid:guid}/change-role")]
+    [HttpPost("invites/{inviteGuid:guid}/organisation-role/change")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeInviteRoleSubmit(
         string organisationSlug,
@@ -550,7 +550,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeInviteRoleCheck), new { organisationSlug, inviteGuid });
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role/check")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/check")]
     public async Task<IActionResult> ChangeInviteRoleCheck(
         string organisationSlug,
         Guid inviteGuid,
@@ -565,7 +565,7 @@ public class UsersController(
         return View("ChangeRoleCheck", ToChangeRoleViewModel(state));
     }
 
-    [HttpPost("invites/{inviteGuid:guid}/change-role/check")]
+    [HttpPost("invites/{inviteGuid:guid}/organisation-role/change/check")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeInviteRoleCheckSubmit(
         string organisationSlug,
@@ -592,7 +592,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role/success")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/success")]
     public async Task<IActionResult> ChangeInviteRoleSuccess(
         string organisationSlug,
         Guid inviteGuid,
