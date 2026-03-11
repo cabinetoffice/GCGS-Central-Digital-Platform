@@ -628,10 +628,14 @@ public class UsersController(
         var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, cdpPersonId, null);
         if (state is not null)
         {
-            var stateSelections = state.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
-            foreach (var app in viewModel.Applications.Where(a => stateSelections.ContainsKey(a.OrganisationApplicationId)))
+            var stateByOrgAppId = state.Applications.ToDictionary(a => a.OrganisationApplicationId);
+            foreach (var app in viewModel.Applications)
             {
-                app.SelectedRoleId = stateSelections[app.OrganisationApplicationId];
+                if (stateByOrgAppId.TryGetValue(app.OrganisationApplicationId, out var stateApp))
+                {
+                    app.GiveAccess = stateApp.GiveAccess;
+                    app.SelectedRoleId = stateApp.SelectedRoleId;
+                }
             }
         }
 
@@ -709,19 +713,27 @@ public class UsersController(
 
         await changeApplicationRoleStateStore.ClearAsync();
 
+        var changedApplications = state.Applications
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
+            .Select(a => new ChangedApplicationRoleViewModel
+            {
+                ApplicationName = a.ApplicationName,
+                CurrentRoleName = a.CurrentRoleName,
+                NewRoleName = a.SelectedRoleName,
+                IsNewAssignment = !a.HasExistingAccess
+            })
+            .ToList();
+
+        if (changedApplications.Count == 0)
+        {
+            return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
+        }
+
         return View("ChangeApplicationRolesSuccess", new ChangeApplicationRolesSuccessViewModel
         {
             OrganisationSlug = organisationSlug,
             UserDisplayName = state.UserDisplayName,
-            ChangedApplications = state.Applications
-                .Where(a => a.CurrentRoleId != a.SelectedRoleId)
-                .Select(a => new ChangedApplicationRoleViewModel
-                {
-                    ApplicationName = a.ApplicationName,
-                    CurrentRoleName = a.CurrentRoleName,
-                    NewRoleName = a.SelectedRoleName
-                })
-                .ToList()
+            ChangedApplications = changedApplications
         });
     }
 
@@ -740,10 +752,14 @@ public class UsersController(
         var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, null, inviteGuid);
         if (state is not null)
         {
-            var stateSelections = state.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
-            foreach (var app in viewModel.Applications.Where(a => stateSelections.ContainsKey(a.OrganisationApplicationId)))
+            var stateByOrgAppId = state.Applications.ToDictionary(a => a.OrganisationApplicationId);
+            foreach (var app in viewModel.Applications)
             {
-                app.SelectedRoleId = stateSelections[app.OrganisationApplicationId];
+                if (stateByOrgAppId.TryGetValue(app.OrganisationApplicationId, out var stateApp))
+                {
+                    app.GiveAccess = stateApp.GiveAccess;
+                    app.SelectedRoleId = stateApp.SelectedRoleId;
+                }
             }
         }
 
@@ -821,19 +837,27 @@ public class UsersController(
 
         await changeApplicationRoleStateStore.ClearAsync();
 
+        var changedApplications = state.Applications
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
+            .Select(a => new ChangedApplicationRoleViewModel
+            {
+                ApplicationName = a.ApplicationName,
+                CurrentRoleName = a.CurrentRoleName,
+                NewRoleName = a.SelectedRoleName,
+                IsNewAssignment = !a.HasExistingAccess
+            })
+            .ToList();
+
+        if (changedApplications.Count == 0)
+        {
+            return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
+        }
+
         return View("ChangeApplicationRolesSuccess", new ChangeApplicationRolesSuccessViewModel
         {
             OrganisationSlug = organisationSlug,
             UserDisplayName = state.UserDisplayName,
-            ChangedApplications = state.Applications
-                .Where(a => a.CurrentRoleId != a.SelectedRoleId)
-                .Select(a => new ChangedApplicationRoleViewModel
-                {
-                    ApplicationName = a.ApplicationName,
-                    CurrentRoleName = a.CurrentRoleName,
-                    NewRoleName = a.SelectedRoleName
-                })
-                .ToList()
+            ChangedApplications = changedApplications
         });
     }
 
@@ -912,38 +936,65 @@ public class UsersController(
         var originalRoles = viewModel.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
 
         // Apply posted selections to view model so errors re-display correct state
-        var postedMap = input.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
+        var postedMap = input.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a);
         foreach (var app in viewModel.Applications)
         {
-            if (postedMap.TryGetValue(app.OrganisationApplicationId, out var newRoleId))
+            if (postedMap.TryGetValue(app.OrganisationApplicationId, out var posted))
             {
-                app.SelectedRoleId = newRoleId;
+                app.GiveAccess = app.HasExistingAccess || posted.GiveAccess;
+                app.SelectedRoleId = posted.SelectedRoleId;
             }
         }
 
-        var anyChanged = viewModel.Applications.Any(app =>
+        // Validate: for any newly-granted app, a role must be selected
+        bool hasRoleError = false;
+        foreach (var item in viewModel.Applications.Select((app, i) => (app, i)))
+        {
+            if (item.app.GiveAccess && !item.app.SelectedRoleId.HasValue)
+            {
+                ModelState.AddModelError($"Applications[{item.i}].SelectedRoleId", "Select a role for this application");
+                hasRoleError = true;
+            }
+        }
+
+        // Validate: something must have actually changed (new access grant or different role)
+        var anyNewAccess = viewModel.Applications.Any(app =>
+            !app.HasExistingAccess && app.GiveAccess);
+
+        var anyRoleChanged = viewModel.Applications.Any(app =>
+            app.HasExistingAccess &&
             originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) &&
             orig != app.SelectedRoleId);
 
-        if (!anyChanged)
+        if (!hasRoleError && !anyNewAccess && !anyRoleChanged)
         {
-            ModelState.AddModelError("Applications", "Select a different role for at least one application to continue");
+            ModelState.AddModelError("Applications", "Select a different role or grant access to at least one application to continue");
             return View("ChangeApplicationRoles", viewModel);
         }
 
-        var assignmentStates = viewModel.Applications.Select(app =>
+        if (hasRoleError)
         {
-            var origRoleId = originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) ? orig : null;
-            var origRoleName = app.Roles.FirstOrDefault(r => r.Id == origRoleId)?.Name ?? string.Empty;
-            var newRoleName = app.Roles.FirstOrDefault(r => r.Id == app.SelectedRoleId)?.Name ?? string.Empty;
-            return new ApplicationRoleAssignmentState(
-                app.OrganisationApplicationId,
-                app.ApplicationName,
-                origRoleId,
-                origRoleName,
-                app.SelectedRoleId,
-                newRoleName);
-        }).ToList();
+            return View("ChangeApplicationRoles", viewModel);
+        }
+
+        var assignmentStates = viewModel.Applications
+            .Where(app => app.HasExistingAccess || app.GiveAccess)
+            .Select(app =>
+            {
+                var origRoleId = originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) ? orig : null;
+                var origRoleName = app.Roles.FirstOrDefault(r => r.Id == origRoleId)?.Name ?? string.Empty;
+                var newRoleName = app.Roles.FirstOrDefault(r => r.Id == app.SelectedRoleId)?.Name ?? string.Empty;
+                return new ApplicationRoleAssignmentState(
+                    app.OrganisationApplicationId,
+                    app.ApplicationId,
+                    app.ApplicationName,
+                    app.HasExistingAccess,
+                    app.GiveAccess,
+                    origRoleId,
+                    origRoleName,
+                    app.SelectedRoleId,
+                    newRoleName);
+            }).ToList();
 
         var state = new ChangeApplicationRoleState(
             organisationSlug,
@@ -972,22 +1023,25 @@ public class UsersController(
             CdpPersonId = state.CdpPersonId,
             InviteGuid = state.InviteGuid,
             ChangedApplications = state.Applications
-                .Where(a => a.CurrentRoleId != a.SelectedRoleId)
+                .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
                 .Select(a => new ChangedApplicationRoleViewModel
                 {
                     ApplicationName = a.ApplicationName,
                     CurrentRoleName = a.CurrentRoleName,
-                    NewRoleName = a.SelectedRoleName
+                    NewRoleName = a.SelectedRoleName,
+                    IsNewAssignment = !a.HasExistingAccess
                 })
                 .ToList()
         };
 
     private static IReadOnlyList<ApplicationRoleAssignmentPostModel> BuildAssignmentPostModels(ChangeApplicationRoleState state) =>
         state.Applications
-            .Where(a => a.SelectedRoleId.HasValue)
+            .Where(a => a.GiveAccess && a.SelectedRoleId.HasValue)
             .Select(a => new ApplicationRoleAssignmentPostModel
             {
                 OrganisationApplicationId = a.OrganisationApplicationId,
+                ApplicationId = a.ApplicationId,
+                GiveAccess = a.GiveAccess,
                 SelectedRoleId = a.SelectedRoleId
             })
             .ToList();

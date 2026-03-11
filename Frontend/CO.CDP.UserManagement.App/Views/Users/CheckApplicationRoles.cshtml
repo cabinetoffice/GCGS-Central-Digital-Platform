@@ -24,23 +24,42 @@
         {
             <h2 class="govuk-heading-s govuk-!-margin-bottom-2">@app.ApplicationName</h2>
             <dl class="govuk-summary-list govuk-!-margin-bottom-6">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">Current role</dt>
-                    <dd class="govuk-summary-list__value">@app.CurrentRoleName</dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">New role</dt>
-                    <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></dd>
-                    <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="@changeUrl">
-                            Change<span class="govuk-visually-hidden"> new role for @app.ApplicationName</span>
-                        </a>
-                    </dd>
-                </div>
+                @if (app.IsNewAssignment)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Access</dt>
+                        <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--green">New access</strong></dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="@changeUrl">
+                                Change<span class="govuk-visually-hidden"> access for @app.ApplicationName</span>
+                            </a>
+                        </dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Role</dt>
+                        <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></dd>
+                    </div>
+                }
+                else
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Current role</dt>
+                        <dd class="govuk-summary-list__value">@app.CurrentRoleName</dd>
+                    </div>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">New role</dt>
+                        <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link" href="@changeUrl">
+                                Change<span class="govuk-visually-hidden"> new role for @app.ApplicationName</span>
+                            </a>
+                        </dd>
+                    </div>
+                }
             </dl>
         }
 
-        <p class="govuk-body">Check the role changes above before saving. All other application roles will stay the same.</p>
+        <p class="govuk-body">Check the changes above before saving. Existing application access that is not shown here will stay the same.</p>
 
         <form method="post">
             @Html.AntiForgeryToken()

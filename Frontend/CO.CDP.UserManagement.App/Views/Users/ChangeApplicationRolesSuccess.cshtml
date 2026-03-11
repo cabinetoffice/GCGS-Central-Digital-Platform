@@ -1,15 +1,15 @@
 @model CO.CDP.UserManagement.App.Models.ChangeApplicationRolesSuccessViewModel
 @{
-    ViewData["Title"] = "Role changes saved";
+    ViewData["Title"] = "Application access changes saved";
 }
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
         <div class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">Role changes saved</h1>
+            <h1 class="govuk-panel__title">Changes saved</h1>
             <div class="govuk-panel__body">
-                Role changes for @Model.UserDisplayName have been saved.
+                Changes for @Model.UserDisplayName have been saved.
             </div>
         </div>
 
@@ -18,7 +18,14 @@
         @foreach (var app in Model.ChangedApplications)
         {
             <p class="govuk-body"><strong>@app.ApplicationName</strong></p>
-            <p class="govuk-body">Role has been updated to <strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></p>
+            @if (app.IsNewAssignment)
+            {
+                <p class="govuk-body">Access has been granted with role <strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></p>
+            }
+            else
+            {
+                <p class="govuk-body">Role has been updated to <strong class="govuk-tag govuk-tag--purple">@app.NewRoleName</strong></p>
+            }
         }
 
         <p class="govuk-body govuk-!-margin-top-4">

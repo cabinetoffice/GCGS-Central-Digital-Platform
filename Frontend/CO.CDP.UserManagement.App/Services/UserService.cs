@@ -342,6 +342,10 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             bool isPending = false;
             var applicationRoleChanges = new List<ApplicationRoleChangeViewModel>();
 
+            var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct))
+                .Where(app => app.IsActive && app.Application != null)
+                .ToList();
+
             if (inviteGuid.HasValue)
             {
                 var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
@@ -354,24 +358,33 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 userEmail = invite.Email;
                 isPending = true;
 
-                foreach (var assignment in invite.ApplicationAssignments ?? [])
+                var assignedByOrgAppId = (invite.ApplicationAssignments ?? [])
+                    .ToDictionary(a => a.OrganisationApplicationId);
+
+                foreach (var enabledApp in enabledApps)
                 {
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(assignment.ApplicationId ?? 0, ct);
+                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
+                    var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
+
                     applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
                     {
-                        OrganisationApplicationId = assignment.OrganisationApplicationId,
-                        ApplicationName = assignment.ApplicationName,
-                        ApplicationDescription = string.Empty,
-                        SelectedRoleId = assignment.ApplicationRoleId,
+                        OrganisationApplicationId = enabledApp.Id,
+                        ApplicationId = enabledApp.ApplicationId,
+                        ApplicationClientId = enabledApp.Application?.ClientId ?? string.Empty,
+                        ApplicationName = enabledApp.Application?.Name ?? string.Empty,
+                        ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
+                        HasExistingAccess = hasAccess,
+                        GiveAccess = hasAccess,
+                        SelectedRoleId = hasAccess ? assignment!.ApplicationRoleId : null,
                         Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
@@ -392,27 +405,34 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 userEmail = user.Email ?? string.Empty;
                 isPending = false;
 
-                foreach (var assignment in user.ApplicationAssignments ?? [])
-                {
-                    if (assignment.Application == null) continue;
+                var assignedByOrgAppId = (user.ApplicationAssignments ?? [])
+                    .Where(a => a.Application != null)
+                    .ToDictionary(a => a.OrganisationApplicationId);
 
+                foreach (var enabledApp in enabledApps)
+                {
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(assignment.ApplicationId ?? 0, ct);
+                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
-                    var currentRoleId = assignment.Roles?.FirstOrDefault()?.Id;
+                    var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
+                    var currentRoleId = hasAccess ? assignment!.Roles?.FirstOrDefault()?.Id : null;
 
                     applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
                     {
-                        OrganisationApplicationId = assignment.OrganisationApplicationId,
-                        ApplicationName = assignment.Application.Name ?? string.Empty,
-                        ApplicationDescription = string.Empty,
+                        OrganisationApplicationId = enabledApp.Id,
+                        ApplicationId = enabledApp.ApplicationId,
+                        ApplicationClientId = enabledApp.Application?.ClientId ?? string.Empty,
+                        ApplicationName = enabledApp.Application?.Name ?? string.Empty,
+                        ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
+                        HasExistingAccess = hasAccess,
+                        GiveAccess = hasAccess,
                         SelectedRoleId = currentRoleId,
                         Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
@@ -462,26 +482,36 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
                 if (user == null) return false;
 
-                // Update each application assignment with the selected role
+                var userPrincipalId = user.Email ?? string.Empty;
+
                 foreach (var assignment in applicationRoleAssignments)
                 {
-                    if (assignment.SelectedRoleId.HasValue)
+                    if (!assignment.SelectedRoleId.HasValue) continue;
+
+                    var existingAssignment = user.ApplicationAssignments
+                        ?.FirstOrDefault(a => a.OrganisationApplicationId == assignment.OrganisationApplicationId);
+
+                    if (existingAssignment != null)
                     {
-                        var request = new UpdateAssignmentRolesRequest
+                        var updateRequest = new UpdateAssignmentRolesRequest
                         {
                             RoleIds = [assignment.SelectedRoleId.Value]
                         };
-
-                        // Get the user's user principal ID for the API call
-                        var userPrincipalId = user.Email ?? string.Empty;
                         await apiClient.AssignmentsPUTAsync(
                             org.Id,
                             userPrincipalId,
-                            user.ApplicationAssignments
-                                ?.FirstOrDefault(a => a.OrganisationApplicationId == assignment.OrganisationApplicationId)
-                                ?.Id ?? 0,
-                            request,
+                            existingAssignment.Id,
+                            updateRequest,
                             ct);
+                    }
+                    else
+                    {
+                        var createRequest = new AssignUserToApplicationRequest
+                        {
+                            ApplicationId = assignment.ApplicationId,
+                            RoleIds = [assignment.SelectedRoleId.Value]
+                        };
+                        await apiClient.AssignmentsPOSTAsync(org.Id, userPrincipalId, createRequest, ct);
                     }
                 }
 

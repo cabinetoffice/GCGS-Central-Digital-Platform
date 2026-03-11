@@ -10,7 +10,10 @@ public sealed record ChangeApplicationRoleState(
 
 public sealed record ApplicationRoleAssignmentState(
     int OrganisationApplicationId,
+    int ApplicationId,
     string ApplicationName,
+    bool HasExistingAccess,
+    bool GiveAccess,
     int? CurrentRoleId,
     string CurrentRoleName,
     int? SelectedRoleId,

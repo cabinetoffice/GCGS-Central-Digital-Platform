@@ -786,11 +786,11 @@ public class UsersControllerTests
             CdpPersonId = userId,
             Applications =
             [
-                new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, SelectedRoleId = 10, Roles = [new ApplicationRoleOptionViewModel { Id = 10 }, new ApplicationRoleOptionViewModel { Id = 20 }] }
+                new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = true, GiveAccess = true, SelectedRoleId = 10, Roles = [new ApplicationRoleOptionViewModel { Id = 10 }, new ApplicationRoleOptionViewModel { Id = 20 }] }
             ]
         };
         var state = new ChangeApplicationRoleState("org", userId, null, "Jane", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 10, "Reader", 20, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 10, "Reader", 20, "Admin")]);
 
         _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
@@ -812,7 +812,7 @@ public class UsersControllerTests
         {
             OrganisationSlug = "org",
             CdpPersonId = userId,
-            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, SelectedRoleId = 5, Roles = roles }]
+            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = true, GiveAccess = true, SelectedRoleId = 5, Roles = roles }]
         };
         _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
@@ -820,7 +820,7 @@ public class UsersControllerTests
         // Post same role ID that is currently set
         var input = new ApplicationRoleChangePostModel
         {
-            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, SelectedRoleId = 5 }]
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = true, SelectedRoleId = 5 }]
         };
 
         var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
@@ -844,14 +844,14 @@ public class UsersControllerTests
         {
             OrganisationSlug = "org",
             CdpPersonId = userId,
-            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, SelectedRoleId = 5, Roles = roles }]
+            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = true, GiveAccess = true, SelectedRoleId = 5, Roles = roles }]
         };
         _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var input = new ApplicationRoleChangePostModel
         {
-            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, SelectedRoleId = 6 }]
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = true, SelectedRoleId = 6 }]
         };
 
         var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
@@ -878,7 +878,7 @@ public class UsersControllerTests
     {
         var userId = Guid.NewGuid();
         var state = new ChangeApplicationRoleState("org", userId, null, "Jane Doe", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 5, "Reader", 6, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
 
         var result = await _controller.ChangeApplicationRolesCheck("org", userId, CancellationToken.None);
@@ -905,7 +905,7 @@ public class UsersControllerTests
     {
         var userId = Guid.NewGuid();
         var state = new ChangeApplicationRoleState("org", userId, null, "Jane", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 5, "Reader", 6, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", userId, null, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
@@ -920,7 +920,7 @@ public class UsersControllerTests
     {
         var userId = Guid.NewGuid();
         var state = new ChangeApplicationRoleState("org", userId, null, "Jane", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 5, "Reader", 6, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", userId, null, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -937,7 +937,7 @@ public class UsersControllerTests
     {
         var userId = Guid.NewGuid();
         var state = new ChangeApplicationRoleState("org", userId, null, "Jane Doe", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 5, "Reader", 6, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
 
         var result = await _controller.ChangeApplicationRolesSuccess("org", userId, CancellationToken.None);
@@ -977,14 +977,14 @@ public class UsersControllerTests
             OrganisationSlug = "org",
             InviteGuid = inviteGuid,
             IsPending = true,
-            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, SelectedRoleId = 5, Roles = roles }]
+            Applications = [new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = true, GiveAccess = true, SelectedRoleId = 5, Roles = roles }]
         };
         _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var input = new ApplicationRoleChangePostModel
         {
-            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, SelectedRoleId = 6 }]
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = true, SelectedRoleId = 6 }]
         };
 
         var result = await _controller.ChangeInviteApplicationRolesSubmit("org", inviteGuid, input, CancellationToken.None);
@@ -999,7 +999,7 @@ public class UsersControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         var state = new ChangeApplicationRoleState("org", null, inviteGuid, "Jane Invite", "jane@example.com",
-            [new ApplicationRoleAssignmentState(1, "App1", 5, "Reader", 6, "Admin")]);
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", null, inviteGuid, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
@@ -1009,5 +1009,171 @@ public class UsersControllerTests
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(UsersController.ChangeInviteApplicationRolesSuccess));
         redirect.RouteValues!["inviteGuid"].Should().Be(inviteGuid);
+    }
+
+    // ─── New enrolment (granting access to a new app) ────────────────────────
+
+    [Fact]
+    public async Task ChangeApplicationRoles_Post_WhenNewAccessGranted_SavesStateAndRedirectsToCheck()
+    {
+        var userId = Guid.NewGuid();
+        var roles = new List<ApplicationRoleOptionViewModel>
+        {
+            new() { Id = 5, Name = "Reader" },
+            new() { Id = 6, Name = "Admin" }
+        };
+        // App1 has no existing access
+        var viewModel = new ChangeUserApplicationRolesViewModel
+        {
+            OrganisationSlug = "org",
+            CdpPersonId = userId,
+            Applications =
+            [
+                new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, ApplicationId = 10, HasExistingAccess = false, GiveAccess = false, Roles = roles }
+            ]
+        };
+        _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        // User checks the box and picks a role
+        var input = new ApplicationRoleChangePostModel
+        {
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, ApplicationId = 10, GiveAccess = true, SelectedRoleId = 5 }]
+        };
+
+        var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeApplicationRolesCheck));
+        _changeApplicationRoleStateStore.Verify(s => s.SetAsync(It.Is<ChangeApplicationRoleState>(
+            st => st.Applications.Any(a => !a.HasExistingAccess && a.GiveAccess && a.SelectedRoleId == 5))), Times.Once);
+    }
+
+    [Fact]
+    public async Task ChangeApplicationRoles_Post_WhenNewAccessGrantedWithoutRole_ReturnsViewWithRoleError()
+    {
+        var userId = Guid.NewGuid();
+        var roles = new List<ApplicationRoleOptionViewModel> { new() { Id = 5, Name = "Reader" } };
+        var viewModel = new ChangeUserApplicationRolesViewModel
+        {
+            OrganisationSlug = "org",
+            CdpPersonId = userId,
+            Applications =
+            [
+                new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = false, GiveAccess = false, Roles = roles }
+            ]
+        };
+        _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        // User checks the box but does not select a role
+        var input = new ApplicationRoleChangePostModel
+        {
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = true, SelectedRoleId = null }]
+        };
+
+        var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
+
+        var view = result.Should().BeOfType<ViewResult>().Subject;
+        view.ViewName.Should().Be("ChangeApplicationRoles");
+        _controller.ModelState.ContainsKey("Applications[0].SelectedRoleId").Should().BeTrue();
+        _changeApplicationRoleStateStore.Verify(s => s.SetAsync(It.IsAny<ChangeApplicationRoleState>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task ChangeApplicationRolesCheck_Get_NewAssignment_ShowsInCheckView()
+    {
+        var userId = Guid.NewGuid();
+        // State with a new assignment (no existing access)
+        var state = new ChangeApplicationRoleState("org", userId, null, "Jane Doe", "jane@example.com",
+            [new ApplicationRoleAssignmentState(1, 10, "App1", false, true, null, string.Empty, 5, "Reader")]);
+        _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.ChangeApplicationRolesCheck("org", userId, CancellationToken.None);
+
+        var view = result.Should().BeOfType<ViewResult>().Subject;
+        view.ViewName.Should().Be("CheckApplicationRoles");
+        var vm = view.Model.Should().BeOfType<ChangeApplicationRolesCheckViewModel>().Subject;
+        vm.ChangedApplications.Should().ContainSingle(a =>
+            a.ApplicationName == "App1" && a.NewRoleName == "Reader" && a.IsNewAssignment);
+    }
+
+    [Fact]
+    public async Task ChangeApplicationRoles_Post_WhenNoBoxCheckedAndNoRoleChange_ReturnsViewWithError()
+    {
+        var userId = Guid.NewGuid();
+        var roles = new List<ApplicationRoleOptionViewModel> { new() { Id = 5, Name = "Reader" } };
+        // One app with no existing access, user does not check box
+        var viewModel = new ChangeUserApplicationRolesViewModel
+        {
+            OrganisationSlug = "org",
+            CdpPersonId = userId,
+            Applications =
+            [
+                new ApplicationRoleChangeViewModel { OrganisationApplicationId = 1, HasExistingAccess = false, GiveAccess = false, Roles = roles }
+            ]
+        };
+        _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", userId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var input = new ApplicationRoleChangePostModel
+        {
+            Applications = [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = false }]
+        };
+
+        var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
+
+        var view = result.Should().BeOfType<ViewResult>().Subject;
+        view.ViewName.Should().Be("ChangeApplicationRoles");
+        _controller.ModelState.ContainsKey("Applications").Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ChangeInviteApplicationRoles_Get_WhenInviteHasExistingAccess_ViewModelHasExistingAccessTrue()
+    {
+        var inviteGuid = Guid.NewGuid();
+        var viewModel = new ChangeUserApplicationRolesViewModel
+        {
+            OrganisationSlug = "org",
+            InviteGuid = inviteGuid,
+            IsPending = true,
+            Applications =
+            [
+                new ApplicationRoleChangeViewModel
+                {
+                    OrganisationApplicationId = 1,
+                    ApplicationClientId = "app-client-id",
+                    HasExistingAccess = true,
+                    GiveAccess = true,
+                    SelectedRoleId = 5,
+                    Roles = [new ApplicationRoleOptionViewModel { Id = 5, Name = "Reader" }]
+                }
+            ]
+        };
+        _userService.Setup(s => s.GetChangeUserApplicationRolesViewModelAsync("org", null, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.ChangeInviteApplicationRoles("org", inviteGuid, CancellationToken.None);
+
+        var view = result.Should().BeOfType<ViewResult>().Subject;
+        var vm = view.Model.Should().BeOfType<ChangeUserApplicationRolesViewModel>().Subject;
+        vm.Applications.Should().ContainSingle(a =>
+            a.HasExistingAccess && a.GiveAccess && a.SelectedRoleId == 5 && a.ApplicationClientId == "app-client-id");
+    }
+
+    [Fact]
+    public async Task ChangeApplicationRolesSuccess_Get_WhenChangedApplicationsEmpty_RedirectsBackToChange()
+    {
+        var userId = Guid.NewGuid();
+        // State where HasExistingAccess=true but role has NOT changed (CurrentRoleId == SelectedRoleId)
+        // and no new access granted → ChangedApplications will be empty → redirect
+        var state = new ChangeApplicationRoleState("org", userId, null, "Jane Doe", "jane@example.com",
+            [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 5, "Reader")]);
+        _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.ChangeApplicationRolesSuccess("org", userId, CancellationToken.None);
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.ChangeApplicationRoles));
     }
 }

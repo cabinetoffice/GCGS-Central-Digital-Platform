@@ -17,14 +17,14 @@
             <p class="govuk-body govuk-!-margin-bottom-3">@Model.Email</p>
             <div>
                 <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-0">Current access:</p>
-                @if (Model.Applications.Count == 0)
+                @if (Model.Applications.Count == 0 || !Model.Applications.Any(a => a.HasExistingAccess))
                 {
                     <p class="govuk-body govuk-!-margin-bottom-0">No current application access.</p>
                 }
                 else
                 {
                     <div>
-                        @foreach (var app in Model.Applications)
+                        @foreach (var app in Model.Applications.Where(a => a.HasExistingAccess))
                         {
                             var roleName = app.Roles.Where(r => r.Id == app.SelectedRoleId).Select(r => r.Name).FirstOrDefault();
                             <span class="govuk-tag govuk-tag--purple govuk-!-margin-right-1 govuk-!-margin-bottom-1">
@@ -36,8 +36,8 @@
             </div>
         </div>
 
-        <h1 class="govuk-heading-xl">Select the application roles the user should have access to</h1>
-        <p class="govuk-body">Select which role this user should have for each application they are assigned to.</p>
+        <h1 class="govuk-heading-xl">Select the applications and roles the user should have access to</h1>
+        <p class="govuk-body">Select which applications this user should have access to, and choose an appropriate role for each.</p>
 
         @{
             var hasApplicationsError = ViewData.ModelState.ContainsKey("Applications") &&
@@ -56,7 +56,7 @@
 
                 @if (Model.Applications.Count == 0)
                 {
-                    <p class="govuk-body">This user is not assigned to any applications.</p>
+                    <p class="govuk-body">There are no applications available for this organisation.</p>
                 }
                 else
                 {
@@ -73,6 +73,34 @@
                             <p class="govuk-body">@application.ApplicationDescription</p>
 
                             <input type="hidden" name="Applications[@index].OrganisationApplicationId" value="@application.OrganisationApplicationId" />
+                            <input type="hidden" name="Applications[@index].ApplicationId" value="@application.ApplicationId" />
+
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                @if (application.HasExistingAccess)
+                                {
+                                    <input type="hidden" name="Applications[@index].GiveAccess" value="true" />
+                                    var removeUrl = Model.IsPending
+                                        ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/application/{application.ApplicationClientId}/remove"
+                                        : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application/{application.ApplicationClientId}/remove";
+                                    <p class="govuk-body govuk-!-margin-bottom-1">
+                                        This user already has access to @application.ApplicationName.
+                                    </p>
+                                    <p class="govuk-body govuk-!-margin-bottom-0">
+                                        <a href="@removeUrl" class="govuk-link">To remove access, click here.</a>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="applications-@index-access" name="Applications[@index].GiveAccess" type="checkbox" value="true" @(application.GiveAccess ? "checked=\"checked\"" : "")>
+                                        <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">
+                                            Give access to @application.ApplicationName
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+
+                            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
                             <div class="govuk-form-group @(hasRoleError ? "govuk-form-group--error" : "")">
                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Select a role</h3>
