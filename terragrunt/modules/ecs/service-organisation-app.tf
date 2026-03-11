@@ -26,10 +26,6 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
-      internal_service_urls               = local.internal_service_urls
-      public_service_urls                 = local.public_service_urls
-      use_internal_service_urls           = local.use_internal_service_urls
-      use_internal_issuer                 = local.use_internal_issuer
       ai_tool_enabled                     = contains(["development", "integration"], var.environment) ? true : false
       aspcore_environment                 = local.aspcore_environment
       charity_commission_subscription_key = "${data.aws_secretsmanager_secret.charity_commission.arn}:SubscriptionKey::"
@@ -39,7 +35,7 @@ module "ecs_service_organisation_app" {
       cpu                                 = var.service_configs.organisation_app.cpu
       diagnostic_page_enabled             = !var.is_production || var.environment == "integration"
       diagnostic_page_path_arn            = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
-      fts_service_allowed_origins         = join(",", local.fts_service_allowed_origins[var.environment])
+      fts_service_allowed_origins = join(",", local.fts_service_allowed_origins[var.environment])
       fts_service_url                     = local.fts_service_url
       image                               = local.ecr_urls[var.service_configs.organisation_app.name]
       internal_service_urls               = local.internal_service_urls
@@ -55,6 +51,7 @@ module "ecs_service_organisation_app" {
       onelogin_logout_notification_urls   = local.onelogin_logout_notification_urls
       onelogin_private_key                = local.one_login.credential_locations.private_key
       public_domain                       = var.public_domain
+      public_service_urls                 = local.public_service_urls
       queue_av_scanner_url                = var.queue_av_scanner_url
       redis_auth_token_arn                = var.redis_auth_token_arn
       redis_port                          = var.redis_port
@@ -65,6 +62,8 @@ module "ecs_service_organisation_app" {
       service_version                     = local.service_version_sirsi
       shared_sessions_enabled             = local.shared_sessions_enabled
       ssm_data_protection_prefix          = local.ssm_data_protection_prefix
+      use_internal_issuer                 = local.use_internal_issuer
+      use_internal_service_urls           = local.use_internal_service_urls
       vpc_cidr                            = var.vpc_cider
     }
   )

@@ -4,10 +4,6 @@ module "ecs_service_entity_verification" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.entity_verification.name}.json.tftpl",
     {
-      internal_service_urls         = local.internal_service_urls
-      public_service_urls           = local.public_service_urls
-      use_internal_service_urls     = local.use_internal_service_urls
-      use_internal_issuer           = local.use_internal_issuer
       aspcore_environment           = local.aspcore_environment
       cpu                           = var.service_configs.entity_verification.cpu
       db_address                    = var.db_ev_cluster_address
@@ -22,10 +18,13 @@ module "ecs_service_entity_verification" {
       memory                        = var.service_configs.entity_verification.memory
       name                          = var.service_configs.entity_verification.name
       public_domain                 = var.public_domain
+      public_service_urls           = local.public_service_urls
       queue_entity_verification_url = var.queue_entity_verification_url
       queue_organisation_url        = var.queue_organisation_url
       service_port                  = local.service_ports_by_service[var.service_configs.entity_verification.name]
       service_version               = local.service_version_sirsi
+      use_internal_issuer           = local.use_internal_issuer
+      use_internal_service_urls     = local.use_internal_service_urls
       uuid_ppon_service_enable      = false
       vpc_cidr                      = var.vpc_cider
     }

@@ -4,10 +4,6 @@ module "ecs_service_data_sharing" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.data_sharing.name}.json.tftpl",
     {
-      internal_service_urls     = local.internal_service_urls
-      public_service_urls       = local.public_service_urls
-      use_internal_service_urls = local.use_internal_service_urls
-      use_internal_issuer       = local.use_internal_issuer
       aspcore_environment       = local.aspcore_environment
       cpu                       = var.service_configs.data_sharing.cpu
       db_address                = var.db_sirsi_cluster_address
@@ -22,10 +18,13 @@ module "ecs_service_data_sharing" {
       memory                    = var.service_configs.data_sharing.memory
       name                      = var.service_configs.data_sharing.name
       public_domain             = var.public_domain
+      public_service_urls       = local.public_service_urls
       s3_permanent_bucket       = module.s3_bucket_permanent.bucket
       s3_staging_bucket         = module.s3_bucket_staging.bucket
       service_port              = local.service_ports_by_service[var.service_configs.data_sharing.name]
       service_version           = local.service_version_sirsi
+      use_internal_issuer       = local.use_internal_issuer
+      use_internal_service_urls = local.use_internal_service_urls
       vpc_cidr                  = var.vpc_cider
     }
   )

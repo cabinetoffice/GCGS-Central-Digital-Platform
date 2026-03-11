@@ -15,7 +15,11 @@ locals {
   tg_base_name_raw    = replace(local.listener_name, "cdp-", "")
   tg_base_name_abbrev = replace(
     replace(
-      replace(local.tg_base_name_raw, "commercial-tools-", "cml-tls-"),
+      replace(
+        replace(local.tg_base_name_raw, "commercial-tools-", "cml-tls-"),
+        "user-management-",
+        "usr-mgt-"
+      ),
       "outbox-processor-",
       "obx-prc-"
     ),

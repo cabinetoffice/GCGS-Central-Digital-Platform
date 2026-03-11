@@ -39,7 +39,7 @@ resource "aws_ecs_service" "this" {
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
   force_new_deployment               = var.force_new_deployment
-  wait_for_steady_state              = true
+  wait_for_steady_state              = false
   health_check_grace_period_seconds  = var.alb_enabled || var.internal_alb_enabled ? var.health_check_grace_period_seconds : null
 
   depends_on = [
