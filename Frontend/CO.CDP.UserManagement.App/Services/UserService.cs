@@ -127,7 +127,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 : "Not available";
 
             var applicationAccess = user.ApplicationAssignments?
-                .Where(assignment => assignment.Application != null && assignment.Roles?.FirstOrDefault()?.ApplicationRole is not null)
+                .Where(assignment => assignment.Application != null)
                 .Select(assignment => new UserApplicationAccessDetailViewModel(
                     ApplicationId: assignment.Application!.Id,
                     ApplicationName: assignment.Application!.Name,
@@ -135,7 +135,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
                     AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
                     AssignedByEmail: assignment.AssignedBy ?? string.Empty,
-                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.ApplicationRole!.Value))
+                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.Name))
                 .ToList() ?? [];
 
             return new UserDetailsViewModel(

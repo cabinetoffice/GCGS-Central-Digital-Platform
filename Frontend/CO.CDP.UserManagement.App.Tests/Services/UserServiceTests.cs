@@ -5,7 +5,6 @@ using CO.CDP.UserManagement.WebApiClient;
 using FluentAssertions;
 using Moq;
 using ApiClient = CO.CDP.UserManagement.WebApiClient;
-using SharedApplicationRole = CO.CDP.UserManagement.Shared.Enums.ApplicationRole;
 
 namespace CO.CDP.UserManagement.App.Tests.Services;
 
@@ -203,7 +202,6 @@ public class UserServiceTests
                         Id = 1001,
                         ApplicationId = 101,
                         Name = "Admin",
-                        ApplicationRole = SharedApplicationRole.Admin,
                         Description = "Administrator role",
                         IsActive = true,
                         CreatedAt = DateTimeOffset.UtcNow,
@@ -260,7 +258,6 @@ public class UserServiceTests
                         Id = 1002,
                         ApplicationId = 102,
                         Name = "Editor",
-                        ApplicationRole = SharedApplicationRole.Editor,
                         Description = "Editor role",
                         IsActive = true,
                         CreatedAt = DateTimeOffset.UtcNow,
@@ -307,11 +304,11 @@ public class UserServiceTests
         result.Should().NotBeNull();
         result!.ApplicationAccess.Should().HaveCount(2);
         result.ApplicationAccess[0].ApplicationName.Should().Be("Edit");
-        result.ApplicationAccess[0].ApplicationRole.Should().Be(SharedApplicationRole.Admin);
+        result.ApplicationAccess[0].ApplicationRole.Should().Be("Admin");
         result.ApplicationAccess[0].Permissions.Should().ContainInOrder(["Read", "Write"]);
         result.ApplicationAccess[0].AssignedByEmail.Should().Be("admin@example.com");
         result.ApplicationAccess[1].ApplicationName.Should().Be("View");
-        result.ApplicationAccess[1].ApplicationRole.Should().Be(SharedApplicationRole.Editor);
+        result.ApplicationAccess[1].ApplicationRole.Should().Be("Editor");
         result.ApplicationAccess[1].Permissions.Should().ContainInOrder(["Read"]);
     }
 

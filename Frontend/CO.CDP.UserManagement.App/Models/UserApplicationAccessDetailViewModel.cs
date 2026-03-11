@@ -9,12 +9,6 @@ public sealed record UserApplicationAccessDetailViewModel(
     IReadOnlyList<string> Permissions,
     DateTimeOffset AssignedDate,
     string AssignedByEmail,
-    ApplicationRole ApplicationRole)
+    string ApplicationRole)
 {
-    public string RoleTagClass => ApplicationRole switch
-    {
-        ApplicationRole.Admin => "govuk-tag--green",
-        ApplicationRole.Editor => "govuk-tag--blue",
-        _ => string.Empty
-    };
 }
