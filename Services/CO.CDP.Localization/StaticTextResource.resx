@@ -4481,4 +4481,108 @@
   <data name="OrganisationHome_TileEight_Body">
     <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
   </data>
+
+  <data name="OrganisationHome_TileEight_Body">
+    <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
+  </data>
+  <data name="OrganisationHome_TileNine_Body">
+    <value>
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        Use this service to find government funding.
+      &lt;/p&gt;
+      &lt;p class=&quot;govuk-body&quot;&gt;
+        You can also use this service to manage grant adverts and applications.
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="FindAGrant_Title" xml:space="preserve">
+    <value>Find a grant</value>
+  </data>
+  <data name="FindAndApply_Title" xml:space="preserve">
+    <value>Find and apply</value>
+  </data>
+  <data name="FindAndApply_MainHeading" xml:space="preserve">
+    <value>Find a grant service</value>
+  </data>
+  <data name="FindAndApply_Intro" xml:space="preserve">
+    <value>Use this service to find government funding. You can also use this service to manage grant adverts and applications.</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_Heading" xml:space="preserve">
+    <value>Find a grant</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_Description" xml:space="preserve">
+    <value>You can search and apply for funding for:</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_List_Individuals" xml:space="preserve">
+    <value>individuals</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_List_PublicSector" xml:space="preserve">
+    <value>public sector</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_List_PrivateSector" xml:space="preserve">
+    <value>private sector</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_List_NonProfit" xml:space="preserve">
+    <value>non profit organisations</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_List_LocalAuthorities" xml:space="preserve">
+    <value>local authorities</value>
+  </data>
+  <data name="FindAndApply_FindAGrant_Button" xml:space="preserve">
+    <value>Search and apply for a grant</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_Heading" xml:space="preserve">
+    <value>Manage a grant</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_Description" xml:space="preserve">
+    <value>If you are a grant administrator, you can use this service to:</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_List_CreateAdvert" xml:space="preserve">
+    <value>create a new grant advert</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_List_CheckStatus" xml:space="preserve">
+    <value>check the status of your adverts</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_List_BuildForm" xml:space="preserve">
+    <value>build a grant application form</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_List_ReviewApplications" xml:space="preserve">
+    <value>review and download applications</value>
+  </data>
+  <data name="FindAndApply_ManageAGrant_Button" xml:space="preserve">
+    <value>Manage your grant adverts</value>
+  </data>
+  <data name="FindAndApply_GetHelp_Heading" xml:space="preserve">
+    <value>Get help and advice</value>
+  </data>
+  <data name="FindAndApply_GetHelp_Description" xml:space="preserve">
+    <value>If you need more information about this service, you can get guidance from the Grants Centre of Excellence:</value>
+  </data>
+  <data name="FindAndApply_GetHelp_LinkText" xml:space="preserve">
+    <value>Visit the Grants Centre of Excellence</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_Heading" xml:space="preserve">
+    <value>Related content</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_Description" xml:space="preserve">
+    <value>You may also be interested in these other services:</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_GGIS_Title" xml:space="preserve">
+    <value>Government Grants Information System (GGIS)</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_GGIS_Description" xml:space="preserve">
+    <value>Provides grant information in real time in one easy to use system.</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_GLU_Title" xml:space="preserve">
+    <value>Grants Lifecycle Utility (GLU)</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_GLU_Description" xml:space="preserve">
+    <value>Case management solution to manage grant schemes through the grants lifecycle.</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_Spotlight_Title" xml:space="preserve">
+    <value>Spotlight</value>
+  </data>
+  <data name="FindAndApply_RelatedContent_Spotlight_Description" xml:space="preserve">
+    <value>Allows users to easily risk assess a grant applicant (Due diligence).</value>
+  </data>
 </root>

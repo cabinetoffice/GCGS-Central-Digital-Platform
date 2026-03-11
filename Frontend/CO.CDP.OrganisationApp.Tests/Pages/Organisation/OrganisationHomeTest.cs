@@ -455,6 +455,7 @@ public class OrganisationHomeTest
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.Payments)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FindAndApply)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
         _externalServiceUrlBuilderMock.Setup(c => c.BuildUrl(
             It.IsAny<ExternalService>(), It.IsAny<string>(), It.IsAny<Guid?>(),
@@ -475,6 +476,7 @@ public class OrganisationHomeTest
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFour_Title);
         _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.OrganisationHome_TileFive_Title);
         _model.Tiles.Should().Contain(tile => tile.Body == StaticTextResource.OrganisationHome_TileSix_Body);
+        _model.Tiles.Should().Contain(tile => tile.Title == StaticTextResource.FindAGrant_Title);
     }
 
     [Fact]
