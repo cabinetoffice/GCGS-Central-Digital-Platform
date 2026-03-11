@@ -4,10 +4,6 @@ module "ecs_service_tenant" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.tenant.name}.json.tftpl",
     {
-      internal_service_urls     = local.internal_service_urls
-      public_service_urls       = local.public_service_urls
-      use_internal_service_urls = local.use_internal_service_urls
-      use_internal_issuer       = local.use_internal_issuer
       aspcore_environment       = local.aspcore_environment
       cpu                       = var.service_configs.tenant.cpu
       db_address                = var.db_sirsi_cluster_address
@@ -22,8 +18,11 @@ module "ecs_service_tenant" {
       memory                    = var.service_configs.tenant.memory
       name                      = var.service_configs.tenant.name
       public_domain             = var.public_domain
+      public_service_urls       = local.public_service_urls
       service_port              = local.service_ports_by_service[var.service_configs.tenant.name]
       service_version           = local.service_version_sirsi
+      use_internal_issuer       = local.use_internal_issuer
+      use_internal_service_urls = local.use_internal_service_urls
       vpc_cidr                  = var.vpc_cider
     }
   )

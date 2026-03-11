@@ -4,28 +4,27 @@ module "ecs_service_person" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.person.name}.json.tftpl",
     {
-      internal_service_urls     = local.internal_service_urls
-      public_service_urls       = local.public_service_urls
-      use_internal_service_urls = local.use_internal_service_urls
-      use_internal_issuer       = local.use_internal_issuer
-      aspcore_environment       = local.aspcore_environment
-      cpu                       = var.service_configs.person.cpu
-      db_address                = var.db_sirsi_cluster_address
-      db_name                   = var.db_sirsi_cluster_name
-      db_password               = local.db_sirsi_password
-      db_username               = local.db_sirsi_username
-      image                     = local.ecr_urls[var.service_configs.person.name]
-      internal_service_urls     = local.internal_service_urls
-      lg_name                   = aws_cloudwatch_log_group.tasks[var.service_configs.person.name].name
-      lg_prefix                 = "app"
-      lg_region                 = data.aws_region.current.region
-      memory                    = var.service_configs.person.memory
-      name                      = var.service_configs.person.name
+      aspcore_environment           = local.aspcore_environment
+      cpu                           = var.service_configs.person.cpu
+      db_address                    = var.db_sirsi_cluster_address
+      db_name                       = var.db_sirsi_cluster_name
+      db_password                   = local.db_sirsi_password
+      db_username                   = local.db_sirsi_username
+      image                         = local.ecr_urls[var.service_configs.person.name]
+      internal_service_urls         = local.internal_service_urls
+      lg_name                       = aws_cloudwatch_log_group.tasks[var.service_configs.person.name].name
+      lg_prefix                     = "app"
+      lg_region                     = data.aws_region.current.region
+      memory                        = var.service_configs.person.memory
+      name                          = var.service_configs.person.name
+      public_domain                 = var.public_domain
+      public_service_urls           = local.public_service_urls
       queue_entity_verification_url = var.queue_entity_verification_url
       queue_user_management_url     = var.queue_user_management_url
-      public_domain                 = var.public_domain
       service_port                  = local.service_ports_by_service[var.service_configs.person.name]
       service_version               = local.service_version_sirsi
+      use_internal_issuer           = local.use_internal_issuer
+      use_internal_service_urls     = local.use_internal_service_urls
       vpc_cidr                      = var.vpc_cider
     }
   )
