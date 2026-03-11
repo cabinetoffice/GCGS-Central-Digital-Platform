@@ -104,7 +104,7 @@ public class OrganisationHomeModel(
         {
             tiles.Add(new Tile
             {
-                Title = "Find a grant",
+                Title = StaticTextResource.FindAGrant_Title,
                 Body = StaticTextResource.OrganisationHome_TileNine_Body,
                 Href = $"/organisation/{Id}/find-and-apply"
             });
@@ -177,6 +177,16 @@ public class OrganisationHomeModel(
             Body = StaticTextResource.OrganisationHome_TileFive_Body,
             Href = ftsUrlService.BuildUrl("/login", Id, "/dashboard")
         });
+
+        if (featureConfig.FvraToolBuyerEnabled)
+        {
+            tiles.Add(new Tile
+            {
+                Title = StaticTextResource.OrganisationHome_TileSix_Title,
+                Body = StaticTextResource.OrganisationHome_TileSix_Body,
+                Href = externalServiceUrlBuilder.BuildUrl(ExternalService.FvraTool, "/buyer", Id, null, cookiesAcceptedValue, originParams)
+            });
+        }
     }
 
     private Dictionary<string, string?> GetOriginParams()
