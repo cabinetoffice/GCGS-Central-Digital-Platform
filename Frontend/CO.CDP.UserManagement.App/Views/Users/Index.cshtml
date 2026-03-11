@@ -144,7 +144,7 @@ else
                     <div>
                         @foreach (var app in user.ApplicationAccess)
                         {
-                            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
+                            <span class="govuk-tag govuk-tag--purple govuk-!-margin-right-1 govuk-!-margin-bottom-1">
                                 @app.ApplicationName: @app.RoleName
                             </span>
                         }
@@ -155,12 +155,13 @@ else
                     @if (!isPending)
                     {
                         <a href="/organisation/@organisation/user/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
-                        <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
+                        <a href="/organisation/@organisation/user/@user.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
                         <a href="/organisation/@organisation/user/@user.Id/change-role" class="govuk-link">Change org role</a>
                     }
                     else if (user.InviteGuid.HasValue)
                     {
                         <a href="/organisation/@organisation/invites/@user.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisation/invites/@user.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
                         <a href="/organisation/@organisation/invites/@user.InviteGuid/change-role" class="govuk-link">Change org role</a>
                     }
                 </p>

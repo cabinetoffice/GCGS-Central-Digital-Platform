@@ -30,3 +30,28 @@ public sealed class ApplicationRoleAssignmentPostModel
     public int OrganisationApplicationId { get; init; }
     public int? SelectedRoleId { get; init; }
 }
+
+public sealed class ChangeApplicationRolesCheckViewModel
+{
+    public string OrganisationSlug { get; init; } = string.Empty;
+    public string UserDisplayName { get; init; } = string.Empty;
+    public string Email { get; init; } = string.Empty;
+    public bool IsPending { get; init; }
+    public Guid? CdpPersonId { get; init; }
+    public Guid? InviteGuid { get; init; }
+    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = [];
+}
+
+public sealed class ChangedApplicationRoleViewModel
+{
+    public string ApplicationName { get; init; } = string.Empty;
+    public string CurrentRoleName { get; init; } = string.Empty;
+    public string NewRoleName { get; init; } = string.Empty;
+}
+
+public sealed class ChangeApplicationRolesSuccessViewModel
+{
+    public string OrganisationSlug { get; init; } = string.Empty;
+    public string UserDisplayName { get; init; } = string.Empty;
+    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = [];
+}

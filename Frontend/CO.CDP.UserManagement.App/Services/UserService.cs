@@ -340,7 +340,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             string userDisplayName = string.Empty;
             string userEmail = string.Empty;
             bool isPending = false;
-            IEnumerable<UserAssignmentResponse>? userApplicationAssignments = null;
+            var applicationRoleChanges = new List<ApplicationRoleChangeViewModel>();
 
             if (inviteGuid.HasValue)
             {
@@ -353,12 +353,37 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     : string.Empty;
                 userEmail = invite.Email;
                 isPending = true;
-                userApplicationAssignments = [];
+
+                foreach (var assignment in invite.ApplicationAssignments ?? [])
+                {
+                    ICollection<RoleResponse> roles;
+                    try
+                    {
+                        roles = await apiClient.RolesAllAsync(assignment.ApplicationId ?? 0, ct);
+                    }
+                    catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+                    {
+                        roles = [];
+                    }
+
+                    applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
+                    {
+                        OrganisationApplicationId = assignment.OrganisationApplicationId,
+                        ApplicationName = assignment.ApplicationName,
+                        ApplicationDescription = string.Empty,
+                        SelectedRoleId = assignment.ApplicationRoleId,
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                        {
+                            Id = role.Id,
+                            Name = role.Name,
+                            Description = role.Description
+                        }).ToList()
+                    });
+                }
             }
             else if (cdpPersonId.HasValue)
             {
-                var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
-                var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 userDisplayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -366,43 +391,41 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     : string.Empty;
                 userEmail = user.Email ?? string.Empty;
                 isPending = false;
-                userApplicationAssignments = user.ApplicationAssignments ?? [];
+
+                foreach (var assignment in user.ApplicationAssignments ?? [])
+                {
+                    if (assignment.Application == null) continue;
+
+                    ICollection<RoleResponse> roles;
+                    try
+                    {
+                        roles = await apiClient.RolesAllAsync(assignment.ApplicationId ?? 0, ct);
+                    }
+                    catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+                    {
+                        roles = [];
+                    }
+
+                    var currentRoleId = assignment.Roles?.FirstOrDefault()?.Id;
+
+                    applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
+                    {
+                        OrganisationApplicationId = assignment.OrganisationApplicationId,
+                        ApplicationName = assignment.Application.Name ?? string.Empty,
+                        ApplicationDescription = string.Empty,
+                        SelectedRoleId = currentRoleId,
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                        {
+                            Id = role.Id,
+                            Name = role.Name,
+                            Description = role.Description
+                        }).ToList()
+                    });
+                }
             }
             else
             {
                 return null;
-            }
-
-            var applicationRoleChanges = new List<ApplicationRoleChangeViewModel>();
-            foreach (var assignment in userApplicationAssignments)
-            {
-                if (assignment.Application == null) continue;
-
-                ICollection<RoleResponse> roles;
-                try
-                {
-                    roles = await apiClient.RolesAllAsync(assignment.ApplicationId ?? 0, ct);
-                }
-                catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
-                {
-                    roles = [];
-                }
-
-                var currentRoleId = assignment.Roles?.FirstOrDefault()?.Id;
-
-                applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
-                {
-                    OrganisationApplicationId = assignment.OrganisationApplicationId,
-                    ApplicationName = assignment.Application.Name ?? string.Empty,
-                    ApplicationDescription = string.Empty,
-                    SelectedRoleId = currentRoleId,
-                    Roles = roles.Select(role => new ApplicationRoleOptionViewModel
-                    {
-                        Id = role.Id,
-                        Name = role.Name,
-                        Description = role.Description
-                    }).ToList()
-                });
             }
 
             return new ChangeUserApplicationRolesViewModel
@@ -465,7 +488,31 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 return true;
             }
 
-            // For invited users, we don't currently support updating application roles via the API
+            if (inviteGuid.HasValue)
+            {
+                var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+                var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid);
+                if (invite == null) return false;
+
+                var assignments = applicationRoleAssignments
+                    .Where(a => a.SelectedRoleId.HasValue)
+                    .Select(a => new ApiClient.ApplicationAssignment(
+                        new List<int> { a.SelectedRoleId!.Value },
+                        a.OrganisationApplicationId))
+                    .ToList();
+
+                var newInviteRequest = new ApiClient.InviteUserRequest(
+                    assignments,
+                    invite.Email,
+                    invite.FirstName ?? string.Empty,
+                    invite.LastName ?? string.Empty,
+                    invite.OrganisationRole);
+
+                await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, newInviteRequest, ct);
+                await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
+                return true;
+            }
+
             return false;
         }
         catch (ApiClient.ApiException)

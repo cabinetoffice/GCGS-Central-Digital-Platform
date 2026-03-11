@@ -27,7 +27,7 @@
                         @foreach (var app in Model.Applications)
                         {
                             var roleName = app.Roles.Where(r => r.Id == app.SelectedRoleId).Select(r => r.Name).FirstOrDefault();
-                            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
+                            <span class="govuk-tag govuk-tag--purple govuk-!-margin-right-1 govuk-!-margin-bottom-1">
                                 @(string.IsNullOrEmpty(roleName) ? app.ApplicationName : $"{app.ApplicationName} ({roleName})")
                             </span>
                         }
@@ -46,7 +46,7 @@
 
         <form method="post">
             @Html.AntiForgeryToken()
-            <div class="govuk-form-group @(hasApplicationsError ? "govuk-form-group--error" : "")">
+            <div id="Applications" class="govuk-form-group @(hasApplicationsError ? "govuk-form-group--error" : "")">
                 @if (hasApplicationsError)
                 {
                     <p class="govuk-error-message">
@@ -123,7 +123,7 @@
             @if (Model.Applications.Count > 0)
             {
                 <div class="govuk-button-group">
-                    <button class="govuk-button" data-module="govuk-button">Save changes</button>
+                    <button class="govuk-button" data-module="govuk-button">Continue</button>
                     <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
                 </div>
             }
