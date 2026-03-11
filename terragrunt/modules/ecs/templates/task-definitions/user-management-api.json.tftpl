@@ -42,9 +42,9 @@
         { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
         { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"},
-        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${servicekey_apikey}"},
         { "name" : "UserManagementDatabase__Password", "valueFrom" : "${db_password}"},
-        { "name" : "UserManagementDatabase__Username", "valueFrom" : "${db_username}"}
+        { "name" : "UserManagementDatabase__Username", "valueFrom" : "${db_username}"}%{ if servicekey_apikey != null && servicekey_apikey != "" },
+        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${servicekey_apikey}"}%{ endif }
     ],
     "volumesFrom": [],
     "mountPoints": [],
