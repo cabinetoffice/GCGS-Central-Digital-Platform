@@ -15,6 +15,5 @@ public static class FeatureFlags
     public static class UserFlows
     {
         public const string InviteFlowEnabled = "Features:UserFlows:InviteFlowEnabled";
-        public const string MembershipFlowEnabled = "Features:UserFlows:MembershipFlowEnabled";
     }
 }

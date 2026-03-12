@@ -51,15 +51,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     Email: user.Email ?? string.Empty,
                     OrganisationRole: user.OrganisationRole,
                     Status: user.Status,
-                    ApplicationAccess: user.ApplicationAssignments?
-                        .Where(assignment => assignment.Application != null)
-                        .Select(assignment => new UserApplicationAccessViewModel(
-                            ApplicationName: assignment.Application!.Name,
-                            ApplicationSlug: assignment.Application!.ClientId,
-                            RoleName: assignment.Roles == null
-                                ? string.Empty
-                                : string.Join(", ", assignment.Roles.Select(role => role.Name))))
-                        .ToList() ?? []))
+                    ApplicationAccess: BuildApplicationAccess(user.ApplicationAssignments)))
                 .ToList();
 
             var pendingInvites = invitesResponse
@@ -514,7 +506,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
                 if (user == null) return false;
 
-                var userPrincipalId = user.Email ?? string.Empty;
+                var userPrincipalId = cdpPersonId.Value.ToString();
 
                 foreach (var assignment in applicationRoleAssignments)
                 {
@@ -581,5 +573,28 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         {
             return false;
         }
+    }
+
+    private static IReadOnlyList<UserApplicationAccessViewModel> BuildApplicationAccess(
+        IEnumerable<UserAssignmentResponse>? assignments)
+    {
+        return (assignments ?? [])
+            .Where(assignment => assignment.Application != null)
+            .GroupBy(assignment => assignment.OrganisationApplicationId)
+            .Select(group =>
+            {
+                var first = group.First();
+                var roleNames = group
+                    .SelectMany(assignment => assignment.Roles ?? [])
+                    .Select(role => role.Name)
+                    .Where(name => !string.IsNullOrWhiteSpace(name))
+                    .Distinct(StringComparer.OrdinalIgnoreCase);
+
+                return new UserApplicationAccessViewModel(
+                    ApplicationName: first.Application!.Name,
+                    ApplicationSlug: first.Application.ClientId,
+                    RoleName: string.Join(", ", roleNames));
+            })
+            .ToList();
     }
 }

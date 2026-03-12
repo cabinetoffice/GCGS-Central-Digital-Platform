@@ -49,8 +49,8 @@ public class UserApplicationAssignmentRepository : Repository<UserApplicationAss
                 .ThenInclude(oa => oa.Application)
             .Include(ua => ua.Roles)
                 .ThenInclude(r => r.Permissions)
-            .FirstOrDefaultAsync(ua => ua.UserOrganisationMembershipId == userOrganisationMembershipId &&
-                                       ua.OrganisationApplicationId == organisationApplicationId, cancellationToken);
+            .SingleOrDefaultAsync(ua => ua.UserOrganisationMembershipId == userOrganisationMembershipId &&
+                                        ua.OrganisationApplicationId == organisationApplicationId, cancellationToken);
     }
 
     public async Task<IEnumerable<UserApplicationAssignment>> GetAssignmentsForClaimsAsync(string userPrincipalId, CancellationToken cancellationToken = default)

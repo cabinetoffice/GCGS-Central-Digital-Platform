@@ -52,16 +52,11 @@ public class OrganisationUserService : IOrganisationUserService
 
         var membershipIds = memberships.Select(membership => membership.Id).ToArray();
         var assignments = await _assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
-        var assignmentsByMembership = assignments.ToLookup(assignment => assignment.UserOrganisationMembershipId);
+        var assignmentsByMembership = assignments.ToLookup(a => a.UserOrganisationMembershipId);
 
         foreach (var membership in memberships)
         {
-            var membershipAssignments = assignmentsByMembership[membership.Id].ToArray();
-            _logger.LogDebug("Membership {MembershipId} has {AssignmentCount} assignments", membership.Id, membershipAssignments.Length);
-            foreach (var assignment in membershipAssignments)
-            {
-                membership.ApplicationAssignments.Add(assignment);
-            }
+            SetAssignments(membership, assignmentsByMembership[membership.Id]);
         }
 
         return memberships;
@@ -90,10 +85,7 @@ public class OrganisationUserService : IOrganisationUserService
         }
 
         var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
-        foreach (var assignment in assignments)
-        {
-            membership.ApplicationAssignments.Add(assignment);
-        }
+        SetAssignments(membership, assignments);
 
         return membership;
     }
@@ -121,12 +113,21 @@ public class OrganisationUserService : IOrganisationUserService
         }
 
         var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
+        SetAssignments(membership, assignments);
+
+        return membership;
+    }
+
+    private static void SetAssignments(
+        UserOrganisationMembership membership,
+        IEnumerable<UserApplicationAssignment> assignments)
+    {
+        membership.ApplicationAssignments.Clear();
+
         foreach (var assignment in assignments)
         {
             membership.ApplicationAssignments.Add(assignment);
         }
-
-        return membership;
     }
 
     public async Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(

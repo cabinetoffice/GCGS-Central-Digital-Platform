@@ -80,10 +80,6 @@ public class FeatureFlagBehaviourTests
             .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
         GetControllerFlag<OrganisationInviteAcceptanceController>()
             .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
-        GetControllerFlag<OrganisationUsersController>()
-            .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled);
-        GetControllerFlag<UserAssignmentsController>()
-            .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled);
     }
 
     private static string GetControllerFlag<TController>()
