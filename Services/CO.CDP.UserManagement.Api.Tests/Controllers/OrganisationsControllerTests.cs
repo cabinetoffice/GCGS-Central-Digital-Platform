@@ -1,9 +1,9 @@
 using CO.CDP.UserManagement.Api.Controllers;
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.Organisation.WebApiClient;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,13 +15,15 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 public class OrganisationsControllerTests
 {
     private readonly Mock<IOrganisationService> _organisationService;
+    private readonly Mock<IOrganisationClient> _organisationClient;
     private readonly OrganisationsController _controller;
 
     public OrganisationsControllerTests()
     {
         _organisationService = new Mock<IOrganisationService>();
+        _organisationClient = new Mock<IOrganisationClient>();
         var logger = new Mock<ILogger<OrganisationsController>>();
-        _controller = new OrganisationsController(_organisationService.Object, logger.Object);
+        _controller = new OrganisationsController(_organisationService.Object, logger.Object, _organisationClient.Object);
     }
 
     [Fact]

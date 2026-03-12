@@ -40,6 +40,12 @@ public class Application : ISoftDelete, IAuditable
     /// </summary>
     public bool IsActive { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether users can be assigned multiple roles simultaneously within this application.
+    /// When false (the default), only a single role can be assigned per user per application.
+    /// </summary>
+    public bool AllowsMultipleRoleAssignments { get; set; }
+
     // ISoftDelete
     public bool IsDeleted { get; set; }
     public DateTimeOffset? DeletedAt { get; set; }

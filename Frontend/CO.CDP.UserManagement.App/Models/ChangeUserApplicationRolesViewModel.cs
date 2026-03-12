@@ -18,9 +18,11 @@ public sealed class ApplicationRoleChangeViewModel
     public string ApplicationClientId { get; init; } = string.Empty;
     public string ApplicationName { get; init; } = string.Empty;
     public string ApplicationDescription { get; init; } = string.Empty;
+    public bool AllowsMultipleRoleAssignments { get; init; }
     public bool HasExistingAccess { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }
+    public List<int> SelectedRoleIds { get; set; } = [];
     public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = [];
 }
 
@@ -35,6 +37,7 @@ public sealed class ApplicationRoleAssignmentPostModel
     public int ApplicationId { get; init; }
     public bool GiveAccess { get; init; }
     public int? SelectedRoleId { get; init; }
+    public List<int> SelectedRoleIds { get; init; } = [];
 }
 
 public sealed class ChangeApplicationRolesCheckViewModel

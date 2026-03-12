@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using ApiClient = CO.CDP.UserManagement.WebApiClient;
+using ClientPartyRole = CO.CDP.UserManagement.WebApiClient.PartyRole;
 
 namespace CO.CDP.UserManagement.App.Services;
 
@@ -147,7 +148,9 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var assignments = applicationAssignments?
                 .Select(a => new ApiClient.ApplicationAssignment(
-                    new List<int> { a.ApplicationRoleId },
+                    a.ApplicationRoleIds is { Count: > 0 }
+                        ? a.ApplicationRoleIds.ToList()
+                        : new List<int> { a.ApplicationRoleId },
                     a.OrganisationApplicationId))
                 .ToList() ?? new List<ApiClient.ApplicationAssignment>();
             var request = new ApiClient.InviteUserRequest(
@@ -174,6 +177,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct))
                 .Where(app => app.IsActive && app.Application != null)
                 .ToList();
@@ -191,12 +195,16 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     roles = [];
                 }
 
+                var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
+                var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
+
                 applicationSelections.Add(new ApplicationAccessSelectionViewModel
                 {
                     OrganisationApplicationId = enabledApp.Id,
                     ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                     ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
-                    Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                    AllowsMultipleRoleAssignments = allowsMultiple,
+                    Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
                     {
                         Id = role.Id,
                         Name = role.Name,
@@ -361,6 +369,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             string userDisplayName = string.Empty;
             string userEmail = string.Empty;
             bool isPending = false;
@@ -383,7 +392,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 isPending = true;
 
                 var assignedByOrgAppId = (invite.ApplicationAssignments ?? [])
-                    .ToDictionary(a => a.OrganisationApplicationId);
+                    .ToLookup(a => a.OrganisationApplicationId);
 
                 foreach (var enabledApp in enabledApps)
                 {
@@ -397,7 +406,15 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         roles = [];
                     }
 
-                    var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
+                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
+                    var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
+                    var assignedGroup = assignedByOrgAppId[enabledApp.Id].ToList();
+                    var hasAccess = assignedGroup.Count > 0;
+                    var assignedRoleIds = assignedGroup
+                        .Select(a => a.ApplicationRoleId)
+                        .Where(id => id != 0)
+                        .Distinct()
+                        .ToList();
 
                     applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
                     {
@@ -406,10 +423,12 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         ApplicationClientId = enabledApp.Application?.ClientId ?? string.Empty,
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
+                        AllowsMultipleRoleAssignments = allowsMultiple,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
-                        SelectedRoleId = hasAccess ? assignment!.ApplicationRoleId : null,
-                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                        SelectedRoleId = assignedRoleIds.Count > 0 ? assignedRoleIds[0] : null,
+                        SelectedRoleIds = assignedRoleIds,
+                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,
@@ -445,8 +464,13 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         roles = [];
                     }
 
+                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
+                    var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
                     var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
-                    var currentRoleId = hasAccess ? assignment!.Roles?.FirstOrDefault()?.Id : null;
+                    var currentRoleIds = hasAccess
+                        ? (assignment!.Roles ?? []).Select(r => r.Id).ToList()
+                        : new List<int>();
+                    var currentRoleId = currentRoleIds.Count > 0 ? (int?)currentRoleIds[0] : null;
 
                     applicationRoleChanges.Add(new ApplicationRoleChangeViewModel
                     {
@@ -455,10 +479,12 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         ApplicationClientId = enabledApp.Application?.ClientId ?? string.Empty,
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
+                        AllowsMultipleRoleAssignments = allowsMultiple,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
                         SelectedRoleId = currentRoleId,
-                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
+                        SelectedRoleIds = currentRoleIds,
+                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,
@@ -510,17 +536,15 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
 
                 foreach (var assignment in applicationRoleAssignments)
                 {
-                    if (!assignment.SelectedRoleId.HasValue) continue;
+                    var roleIds = GetEffectiveRoleIds(assignment);
+                    if (roleIds.Count == 0) continue;
 
                     var existingAssignment = user.ApplicationAssignments
                         ?.FirstOrDefault(a => a.OrganisationApplicationId == assignment.OrganisationApplicationId);
 
                     if (existingAssignment != null)
                     {
-                        var updateRequest = new UpdateAssignmentRolesRequest
-                        {
-                            RoleIds = [assignment.SelectedRoleId.Value]
-                        };
+                        var updateRequest = new UpdateAssignmentRolesRequest { RoleIds = roleIds };
                         await apiClient.AssignmentsPUTAsync(
                             org.Id,
                             userPrincipalId,
@@ -533,7 +557,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                         var createRequest = new AssignUserToApplicationRequest
                         {
                             ApplicationId = assignment.ApplicationId,
-                            RoleIds = [assignment.SelectedRoleId.Value]
+                            RoleIds = roleIds
                         };
                         await apiClient.AssignmentsPOSTAsync(org.Id, userPrincipalId, createRequest, ct);
                     }
@@ -549,10 +573,9 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 if (invite == null) return false;
 
                 var assignments = applicationRoleAssignments
-                    .Where(a => a.SelectedRoleId.HasValue)
-                    .Select(a => new ApiClient.ApplicationAssignment(
-                        new List<int> { a.SelectedRoleId!.Value },
-                        a.OrganisationApplicationId))
+                    .Select(a => (roleIds: GetEffectiveRoleIds(a), orgAppId: a.OrganisationApplicationId))
+                    .Where(x => x.roleIds.Count > 0)
+                    .Select(x => new ApiClient.ApplicationAssignment(x.roleIds, x.orgAppId))
                     .ToList();
 
                 var newInviteRequest = new ApiClient.InviteUserRequest(
@@ -596,5 +619,36 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     RoleName: string.Join(", ", roleNames));
             })
             .ToList();
+    }
+
+    private async Task<ICollection<ClientPartyRole>> GetOrgPartyRolesAsync(Guid cdpOrganisationGuid, CancellationToken ct)
+    {
+        try
+        {
+            return await apiClient.PartyRolesAsync(cdpOrganisationGuid, ct);
+        }
+        catch (ApiClient.ApiException)
+        {
+            return [];
+        }
+    }
+
+    private static IEnumerable<RoleResponse> FilterRolesByPartyRole(
+        IEnumerable<RoleResponse> roles,
+        ICollection<ClientPartyRole> orgPartyRoles)
+    {
+        return roles.Where(r =>
+            r.RequiredPartyRoles == null ||
+            !r.RequiredPartyRoles.Any() ||
+            r.RequiredPartyRoles.Any(rpr => orgPartyRoles.Any(opr => (int)opr == (int)rpr)));
+    }
+
+    private static List<int> GetEffectiveRoleIds(ApplicationRoleAssignmentPostModel assignment)
+    {
+        if (assignment.SelectedRoleIds.Count > 0)
+            return assignment.SelectedRoleIds;
+        if (assignment.SelectedRoleId.HasValue)
+            return [assignment.SelectedRoleId.Value];
+        return [];
     }
 }

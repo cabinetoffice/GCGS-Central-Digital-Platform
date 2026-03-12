@@ -175,7 +175,15 @@ public class UsersController(
             {
                 var postedSelection = postedSelections[application.OrganisationApplicationId];
                 application.GiveAccess = postedSelection.GiveAccess;
-                application.SelectedRoleId = postedSelection.SelectedRoleId;
+                if (application.AllowsMultipleRoleAssignments)
+                {
+                    application.SelectedRoleIds = postedSelection.SelectedRoleIds;
+                    application.SelectedRoleId = postedSelection.SelectedRoleIds.Count > 0 ? postedSelection.SelectedRoleIds[0] : null;
+                }
+                else
+                {
+                    application.SelectedRoleId = postedSelection.SelectedRoleId;
+                }
             });
 
         var selectedApplications = viewModel.Applications.Where(a => a.GiveAccess).ToList();
@@ -186,9 +194,7 @@ public class UsersController(
 
         viewModel.Applications
             .Select((application, index) => new { application, index })
-            .Where(item => item.application.GiveAccess &&
-                           (!item.application.SelectedRoleId.HasValue ||
-                            item.application.Roles.All(role => role.Id != item.application.SelectedRoleId.Value)))
+            .Where(item => item.application.GiveAccess && !HasRoleSelected(item.application))
             .ToList()
             .ForEach(item =>
                 ModelState.AddModelError(
@@ -201,11 +207,14 @@ public class UsersController(
         }
 
         var assignments = selectedApplications
-            .Where(a => a.SelectedRoleId is not null)
+            .Where(HasRoleSelected)
             .Select(a => new InviteApplicationAssignment
             {
                 OrganisationApplicationId = a.OrganisationApplicationId,
-                ApplicationRoleId = a.SelectedRoleId.GetValueOrDefault()
+                ApplicationRoleId = a.AllowsMultipleRoleAssignments
+                    ? (a.SelectedRoleIds.Count > 0 ? a.SelectedRoleIds[0] : 0)
+                    : a.SelectedRoleId.GetValueOrDefault(),
+                ApplicationRoleIds = a.AllowsMultipleRoleAssignments ? a.SelectedRoleIds : null
             })
             .ToList();
 
@@ -714,7 +723,7 @@ public class UsersController(
         await changeApplicationRoleStateStore.ClearAsync();
 
         var changedApplications = state.Applications
-            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
             .Select(a => new ChangedApplicationRoleViewModel
             {
                 ApplicationName = a.ApplicationName,
@@ -838,7 +847,7 @@ public class UsersController(
         await changeApplicationRoleStateStore.ClearAsync();
 
         var changedApplications = state.Applications
-            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
             .Select(a => new ChangedApplicationRoleViewModel
             {
                 ApplicationName = a.ApplicationName,
@@ -934,6 +943,7 @@ public class UsersController(
     {
         // Capture current (API) role IDs before applying the posted values
         var originalRoles = viewModel.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
+        var originalRoleIds = viewModel.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleIds.ToList());
 
         // Apply posted selections to view model so errors re-display correct state
         var postedMap = input.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a);
@@ -942,7 +952,15 @@ public class UsersController(
             if (postedMap.TryGetValue(app.OrganisationApplicationId, out var posted))
             {
                 app.GiveAccess = app.HasExistingAccess || posted.GiveAccess;
-                app.SelectedRoleId = posted.SelectedRoleId;
+                if (app.AllowsMultipleRoleAssignments)
+                {
+                    app.SelectedRoleIds = posted.SelectedRoleIds;
+                    app.SelectedRoleId = posted.SelectedRoleIds.Count > 0 ? posted.SelectedRoleIds[0] : null;
+                }
+                else
+                {
+                    app.SelectedRoleId = posted.SelectedRoleId;
+                }
             }
         }
 
@@ -950,7 +968,7 @@ public class UsersController(
         bool hasRoleError = false;
         foreach (var item in viewModel.Applications.Select((app, i) => (app, i)))
         {
-            if (item.app.GiveAccess && !item.app.SelectedRoleId.HasValue)
+            if (item.app.GiveAccess && !HasRoleSelected(item.app))
             {
                 ModelState.AddModelError($"Applications[{item.i}].SelectedRoleId", "Select a role for this application");
                 hasRoleError = true;
@@ -962,9 +980,7 @@ public class UsersController(
             !app.HasExistingAccess && app.GiveAccess);
 
         var anyRoleChanged = viewModel.Applications.Any(app =>
-            app.HasExistingAccess &&
-            originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) &&
-            orig != app.SelectedRoleId);
+            app.HasExistingAccess && RolesChanged(app, originalRoles, originalRoleIds));
 
         if (!hasRoleError && !anyNewAccess && !anyRoleChanged)
         {
@@ -982,18 +998,24 @@ public class UsersController(
             .Select(app =>
             {
                 var origRoleId = originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) ? orig : null;
-                var origRoleName = app.Roles.FirstOrDefault(r => r.Id == origRoleId)?.Name ?? string.Empty;
-                var newRoleName = app.Roles.FirstOrDefault(r => r.Id == app.SelectedRoleId)?.Name ?? string.Empty;
+                var origRoleIds = originalRoleIds.TryGetValue(app.OrganisationApplicationId, out var origIds) ? origIds : new List<int>();
+                var newRoleIds = app.AllowsMultipleRoleAssignments ? app.SelectedRoleIds : (app.SelectedRoleId.HasValue ? new List<int> { app.SelectedRoleId.Value } : new List<int>());
+                var origRoleNames = origRoleIds.Count > 0
+                    ? string.Join(", ", origRoleIds.Select(id => app.Roles.FirstOrDefault(r => r.Id == id)?.Name ?? string.Empty).Where(n => n != string.Empty))
+                    : (origRoleId.HasValue ? app.Roles.FirstOrDefault(r => r.Id == origRoleId)?.Name ?? string.Empty : string.Empty);
+                var newRoleName = string.Join(", ", newRoleIds.Select(id => app.Roles.FirstOrDefault(r => r.Id == id)?.Name ?? string.Empty).Where(n => n != string.Empty));
                 return new ApplicationRoleAssignmentState(
                     app.OrganisationApplicationId,
                     app.ApplicationId,
                     app.ApplicationName,
                     app.HasExistingAccess,
                     app.GiveAccess,
-                    origRoleId,
-                    origRoleName,
-                    app.SelectedRoleId,
-                    newRoleName);
+                    origRoleIds.Count > 0 ? origRoleIds[0] : origRoleId,
+                    origRoleNames,
+                    newRoleIds.Count > 0 ? newRoleIds[0] : null,
+                    newRoleName,
+                    SelectedRoleIds: newRoleIds,
+                    CurrentRoleIds: origRoleIds.Count > 0 ? origRoleIds : null);
             }).ToList();
 
         var state = new ChangeApplicationRoleState(
@@ -1023,7 +1045,7 @@ public class UsersController(
             CdpPersonId = state.CdpPersonId,
             InviteGuid = state.InviteGuid,
             ChangedApplications = state.Applications
-                .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && a.CurrentRoleId != a.SelectedRoleId)
+                .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
                 .Select(a => new ChangedApplicationRoleViewModel
                 {
                     ApplicationName = a.ApplicationName,
@@ -1036,13 +1058,14 @@ public class UsersController(
 
     private static IReadOnlyList<ApplicationRoleAssignmentPostModel> BuildAssignmentPostModels(ChangeApplicationRoleState state) =>
         state.Applications
-            .Where(a => a.GiveAccess && a.SelectedRoleId.HasValue)
+            .Where(a => a.GiveAccess && (a.SelectedRoleIds is { Count: > 0 } || a.SelectedRoleId.HasValue))
             .Select(a => new ApplicationRoleAssignmentPostModel
             {
                 OrganisationApplicationId = a.OrganisationApplicationId,
                 ApplicationId = a.ApplicationId,
                 GiveAccess = a.GiveAccess,
-                SelectedRoleId = a.SelectedRoleId
+                SelectedRoleId = a.SelectedRoleId,
+                SelectedRoleIds = a.SelectedRoleIds?.ToList() ?? []
             })
             .ToList();
 
@@ -1066,5 +1089,36 @@ public class UsersController(
         }
 
         return state;
+    }
+
+    private static bool HasRoleSelected(ApplicationAccessSelectionViewModel app) =>
+        app.AllowsMultipleRoleAssignments
+            ? app.SelectedRoleIds.Count > 0
+            : app.SelectedRoleId.HasValue && app.Roles.Any(r => r.Id == app.SelectedRoleId.Value);
+
+    private static bool HasRoleSelected(ApplicationRoleChangeViewModel app) =>
+        app.AllowsMultipleRoleAssignments
+            ? app.SelectedRoleIds.Count > 0
+            : app.SelectedRoleId.HasValue;
+
+    private static bool HasRoleChanged(ApplicationRoleAssignmentState a)
+    {
+        var selected = (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
+        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : [])).OrderBy(x => x);
+        return !selected.SequenceEqual(current);
+    }
+
+    private static bool RolesChanged(
+        ApplicationRoleChangeViewModel app,
+        Dictionary<int, int?> originalSingleRoles,
+        Dictionary<int, List<int>> originalMultiRoles)
+    {
+        if (app.AllowsMultipleRoleAssignments)
+        {
+            var orig = originalMultiRoles.TryGetValue(app.OrganisationApplicationId, out var ids) ? ids : new List<int>();
+            return !orig.OrderBy(x => x).SequenceEqual(app.SelectedRoleIds.OrderBy(x => x));
+        }
+
+        return originalSingleRoles.TryGetValue(app.OrganisationApplicationId, out var origId) && origId != app.SelectedRoleId;
     }
 }

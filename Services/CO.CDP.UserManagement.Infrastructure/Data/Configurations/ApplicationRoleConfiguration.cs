@@ -1,3 +1,4 @@
+using CO.CDP.UserManagement.Core.Constants;
 using CO.CDP.UserManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -36,6 +37,13 @@ public class ApplicationRoleConfiguration : IEntityTypeConfiguration<Application
         builder.Property(r => r.IsActive)
             .HasColumnName("is_active")
             .IsRequired();
+
+        builder.Property(r => r.RequiredPartyRoles)
+            .HasColumnName("required_party_roles")
+            .HasColumnType("integer[]")
+            .HasConversion(
+                v => v.Select(x => (int)x).ToList(),
+                v => v.Select(x => (PartyRole)x).ToList());
 
         // Soft delete properties
         builder.Property(r => r.IsDeleted).HasColumnName("is_deleted");

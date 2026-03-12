@@ -17,8 +17,10 @@ public sealed class ApplicationAccessSelectionViewModel
     public int OrganisationApplicationId { get; init; }
     public string ApplicationName { get; init; } = string.Empty;
     public string ApplicationDescription { get; init; } = string.Empty;
+    public bool AllowsMultipleRoleAssignments { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }
+    public List<int> SelectedRoleIds { get; set; } = [];
     public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = [];
 }
 
@@ -39,12 +41,14 @@ public sealed class ApplicationSelectionPostModel
     public int OrganisationApplicationId { get; init; }
     public bool GiveAccess { get; init; }
     public int? SelectedRoleId { get; init; }
+    public List<int> SelectedRoleIds { get; init; } = [];
 }
 
 public sealed class InviteApplicationAssignment
 {
     public int OrganisationApplicationId { get; init; }
     public int ApplicationRoleId { get; init; }
+    public IReadOnlyList<int>? ApplicationRoleIds { get; init; }
 }
 
 public sealed class InviteCheckAnswersViewModel

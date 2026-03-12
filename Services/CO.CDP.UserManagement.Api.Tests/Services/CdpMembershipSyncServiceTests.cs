@@ -12,6 +12,7 @@ using Moq;
 using CdpOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using CdpPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 using IOrganisationRepository = CO.CDP.UserManagement.Core.Interfaces.IOrganisationRepository;
+using OrgPartyRole = CO.CDP.OrganisationInformation.PartyRole;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Api.Tests.Services;
@@ -170,7 +171,7 @@ public class CdpMembershipSyncServiceTests
             Name = "Org",
             Tenant = tenant,
             Type = OrganisationType.Organisation,
-            Roles = new List<PartyRole>()
+            Roles = new List<OrgPartyRole>()
         };
         var person = new CdpPerson
         {

@@ -26,7 +26,9 @@
                     <ul class="govuk-list govuk-list--bullet govuk-body-s govuk-!-margin-bottom-0">
                         @foreach (var app in Model.Applications.Where(a => a.HasExistingAccess))
                         {
-                            var roleName = app.Roles.Where(r => r.Id == app.SelectedRoleId).Select(r => r.Name).FirstOrDefault();
+                            var roleName = app.AllowsMultipleRoleAssignments
+                                ? string.Join(", ", app.SelectedRoleIds.Select(id => app.Roles.FirstOrDefault(r => r.Id == id)?.Name).Where(n => n != null))
+                                : app.Roles.Where(r => r.Id == app.SelectedRoleId).Select(r => r.Name).FirstOrDefault();
                             <li>@app.ApplicationName@(string.IsNullOrEmpty(roleName) ? "" : $": {roleName}")</li>
                         }
                     </ul>
@@ -125,16 +127,32 @@
                                         </div>
                                     </details>
 
-                                    <div class="govuk-radios" data-module="govuk-radios">
-                                        @foreach (var role in application.Roles)
-                                        {
-                                            var isRoleSelected = application.SelectedRoleId == role.Id;
-                                            <div class="govuk-radios__item">
-                                                <input class="govuk-radios__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleId" type="radio" value="@role.Id" checked="@isRoleSelected">
-                                                <label class="govuk-label govuk-radios__label" for="applications-@index-role-@role.Id">@role.Name</label>
-                                            </div>
-                                        }
-                                    </div>
+                                    @if (application.AllowsMultipleRoleAssignments)
+                                    {
+                                        <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                            @foreach (var role in application.Roles)
+                                            {
+                                                var isRoleChecked = application.SelectedRoleIds.Contains(role.Id);
+                                                <div class="govuk-checkboxes__item">
+                                                    <input class="govuk-checkboxes__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleIds" type="checkbox" value="@role.Id" @(isRoleChecked ? "checked=\"checked\"" : "")>
+                                                    <label class="govuk-label govuk-checkboxes__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="govuk-radios" data-module="govuk-radios">
+                                            @foreach (var role in application.Roles)
+                                            {
+                                                var isRoleSelected = application.SelectedRoleId == role.Id;
+                                                <div class="govuk-radios__item">
+                                                    <input class="govuk-radios__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleId" type="radio" value="@role.Id" checked="@isRoleSelected">
+                                                    <label class="govuk-label govuk-radios__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
                                 }
                                 else
                                 {
