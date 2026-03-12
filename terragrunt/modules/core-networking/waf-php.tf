@@ -69,7 +69,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         statement {
           regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent).*"
+            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor).*"
 
             field_to_match {
               single_header {
@@ -89,6 +89,43 @@ resource "aws_wafv2_web_acl" "php" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name_prefix_php}-block-notice-bots"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "${local.name_prefix_php}-bot-control-notice"
+    priority = 5
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesBotControlRuleSet"
+        vendor_name = "AWS"
+
+        scope_down_statement {
+          regex_match_statement {
+            regex_string = local.waf_php_notice_block_path_regex
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-bot-control-notice"
       sampled_requests_enabled   = true
     }
   }
