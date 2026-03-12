@@ -635,7 +635,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task RemoveUser_Post_WhenConfirmedAndSucceeds_RedirectsToIndex()
+    public async Task RemoveUser_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveSuccess()
     {
         var cdpPersonId = Guid.NewGuid();
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
@@ -645,7 +645,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ActionName.Should().Be(nameof(UsersController.RemoveSuccess));
     }
 
     [Fact]
@@ -699,7 +699,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToIndex()
+    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveSuccess()
     {
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
         _userService.Setup(service => service.RemoveUserAsync("org", null, 1, It.IsAny<CancellationToken>()))
@@ -708,7 +708,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveInvite("org", 1, input, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.ActionName.Should().Be(nameof(UsersController.RemoveSuccess));
     }
 
     [Fact]

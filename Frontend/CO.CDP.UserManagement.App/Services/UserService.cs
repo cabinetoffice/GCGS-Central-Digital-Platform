@@ -334,10 +334,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             {
                 var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
                 var invite = invites.FirstOrDefault(i => i.PendingInviteId == pendingInviteId.Value);
-                if (invite == null)
-                {
-                    return null;
-                }
+                if (invite == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(invite.FirstName) && !string.IsNullOrWhiteSpace(invite.LastName)
                     ? $"{invite.FirstName} {invite.LastName}"
@@ -357,10 +354,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             if (cdpPersonId.HasValue)
             {
                 var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
-                if (user == null)
-                {
-                    return null;
-                }
+                if (user == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
                     ? $"{user.FirstName} {user.LastName}"
