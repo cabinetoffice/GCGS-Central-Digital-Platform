@@ -495,7 +495,7 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"rule\":\"(?<rule>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter uri like /$uri_filter/\n| stats count() as requests by uri, action, rule\n| sort requests desc\n| limit 100",
+          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"rule\":\"(?<rule>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter uri like /$uri_filter/\n| stats count() as requests, fromMillis(latest(@timestamp)) as last by uri, action, rule\n| sort requests desc\n# | display requests, action, uri, fromMillis(last_seen_ms) as last_seen\n| limit 100",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -531,22 +531,6 @@
       ],
       "title": "Top URIs",
       "transformations": [
-        {
-          "id": "organize",
-          "options": {
-            "excludeByName": {
-              "@message": true,
-              "Time": true,
-              "Value": true
-            },
-            "indexByName": {
-              "action": 1,
-              "requests": 0,
-              "rule": 2,
-              "uri": 3
-            }
-          }
-        },
         {
           "id": "renameByRegex",
           "options": {
