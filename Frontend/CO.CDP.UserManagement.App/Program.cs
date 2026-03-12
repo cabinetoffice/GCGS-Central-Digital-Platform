@@ -29,6 +29,7 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 builder.Services.AddRazorPages();
+builder.Services.AddHealthChecks();
 builder.Services.AddGovUkFrontend();
 builder.Services.AddHttpContextAccessor();
 
@@ -158,6 +159,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseGovUkFrontend();
+app.MapHealthChecks("/health").AllowAnonymous();
 
 app.MapControllerRoute(
     name: "organisation_by_guid",
