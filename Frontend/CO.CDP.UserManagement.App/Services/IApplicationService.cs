@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.Functional;
 
 namespace CO.CDP.UserManagement.App.Services;
 
@@ -18,7 +19,7 @@ public interface IApplicationService
         string applicationSlug,
         CancellationToken ct = default);
 
-    Task<bool> EnableApplicationAsync(
+    Task<Result<ServiceFailure, ServiceOutcome>> EnableApplicationAsync(
         string organisationSlug,
         string applicationSlug,
         CancellationToken ct = default);
@@ -38,7 +39,7 @@ public interface IApplicationService
         string applicationSlug,
         CancellationToken ct = default);
 
-    Task<bool> DisableApplicationAsync(
+    Task<Result<ServiceFailure, ServiceOutcome>> DisableApplicationAsync(
         string organisationSlug,
         string applicationSlug,
         CancellationToken ct = default);

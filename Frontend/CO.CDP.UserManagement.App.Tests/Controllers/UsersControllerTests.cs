@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.App.Controllers;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Enums;
@@ -422,7 +423,7 @@ public class UsersControllerTests
                 It.IsAny<InviteUserViewModel>(),
                 It.IsAny<CancellationToken>(),
                 It.IsAny<IReadOnlyList<InviteApplicationAssignment>>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.CheckAnswersStepSubmit("org", CancellationToken.None);
 
@@ -468,7 +469,7 @@ public class UsersControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         _userService.Setup(service => service.ResendInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
@@ -481,7 +482,7 @@ public class UsersControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         _userService.Setup(service => service.ResendInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
@@ -595,7 +596,7 @@ public class UsersControllerTests
             OrganisationRole.Member,
             OrganisationRole.Admin));
         _userService.Setup(service => service.UpdateUserRoleAsync("org", userId, null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ChangeRoleCheckSubmit("org", userId, CancellationToken.None);
 
@@ -617,7 +618,7 @@ public class UsersControllerTests
             OrganisationRole.Member,
             OrganisationRole.Admin));
         _userService.Setup(service => service.UpdateUserRoleAsync("org", userId, null, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.ChangeRoleCheckSubmit("org", userId, CancellationToken.None);
 
@@ -717,7 +718,7 @@ public class UsersControllerTests
             OrganisationRole.Member,
             OrganisationRole.Admin));
         _userService.Setup(service => service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ChangeInviteRoleCheckSubmit("org", inviteGuid, CancellationToken.None);
 
@@ -908,7 +909,7 @@ public class UsersControllerTests
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", userId, null, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.ChangeApplicationRolesCheckSubmit("org", userId, CancellationToken.None);
 
@@ -923,7 +924,7 @@ public class UsersControllerTests
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", userId, null, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ChangeApplicationRolesCheckSubmit("org", userId, CancellationToken.None);
 
@@ -1002,7 +1003,7 @@ public class UsersControllerTests
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _changeApplicationRoleStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _userService.Setup(s => s.UpdateUserApplicationRolesAsync("org", null, inviteGuid, It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ChangeInviteApplicationRolesCheckSubmit("org", inviteGuid, CancellationToken.None);
 

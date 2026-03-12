@@ -3,9 +3,9 @@ using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.WebApiClient;
+using CO.CDP.Functional;
 using FluentAssertions;
 using Moq;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Tests.Services;
 
@@ -109,7 +109,7 @@ public class UserServiceTests
             OrganisationRole = OrganisationRole.Member
         }, CancellationToken.None, [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 99 }]);
 
-        result.Should().BeTrue();
+        result.IsRight().Should().BeTrue();
         capturedRequest.Should().NotBeNull();
         capturedRequest!.ApplicationAssignments.Should().HaveCount(1);
         var assignment = capturedRequest.ApplicationAssignments!.Single();
@@ -128,7 +128,22 @@ public class UserServiceTests
 
         var result = await _service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsLeft().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task InviteUserAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new UserService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     [Fact]
@@ -208,7 +223,7 @@ public class UserServiceTests
 
         var result = await _service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeTrue();
+        result.IsRight().Should().BeTrue();
     }
 
     [Fact]
@@ -223,11 +238,11 @@ public class UserServiceTests
 
         var result = await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeTrue();
+        result.IsRight().Should().BeTrue();
     }
 
     [Fact]
-    public async Task UpdateUserRoleAsync_WhenNoTarget_ReturnsFalse()
+    public async Task UpdateUserRoleAsync_WhenNoTarget_ReturnsNotFoundOutcome()
     {
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
@@ -235,7 +250,9 @@ public class UserServiceTests
 
         var result = await _service.UpdateUserRoleAsync("org", null, null, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
     }
 
     [Fact]
@@ -250,7 +267,23 @@ public class UserServiceTests
 
         var result = await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsLeft().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task UpdateUserRoleAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new UserService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     [Fact]
@@ -270,7 +303,28 @@ public class UserServiceTests
 
         var result = await _service.ResendInviteAsync("org", inviteGuid, CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsLeft().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new UserService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var inviteGuid = Guid.NewGuid();
+        var invite = BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member, inviteGuid);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(invite);
+        _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.ResendInviteAsync("org", inviteGuid, CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     [Fact]
@@ -325,6 +379,44 @@ public class UserServiceTests
         result!.Applications.Should().ContainSingle();
         result.Applications[0].ApplicationName.Should().Be("Payments");
         result.Applications[0].Roles.Should().ContainSingle(r => r.Name == "Admin");
+    }
+
+    [Fact]
+    public async Task GetApplicationRolesStepViewModelAsync_WhenPartyRolesApiServerError_Throws()
+    {
+        var service = new UserService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var state = new InviteUserState("org", "user@example.com", "First", "Last");
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.PartyRolesAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OrganisationApplicationResponse>());
+
+        await Assert.ThrowsAsync<ApiException>(() =>
+            service.GetApplicationRolesStepViewModelAsync("org", state, CancellationToken.None));
+    }
+
+    [Fact]
+    public async Task UpdateUserApplicationRolesAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new UserService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.UpdateUserApplicationRolesAsync(
+            "org",
+            personId,
+            null,
+            new List<ApplicationRoleAssignmentPostModel>(),
+            CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     private static OrganisationResponse BuildOrganisationResponse() =>

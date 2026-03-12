@@ -1,14 +1,12 @@
-@model ErrorViewModel
+@using CO.CDP.UI.Foundation.Pages
+@using CO.CDP.UI.Foundation.Services
+@using Microsoft.AspNetCore.Http
+@inject ISirsiUrlService SirsiUrlService
+@inject IHttpContextAccessor HttpContextAccessor
+
 @{
     ViewData["Title"] = "Error";
+    var errorPage = new ErrorPage(HttpContextAccessor.HttpContext?.TraceIdentifier, SirsiUrlService);
 }
 
-<h1 class="govuk-heading-xl">Sorry, there is a problem with the service</h1>
-<p class="govuk-body">Try again later.</p>
-
-@if (Model.ShowRequestId)
-{
-    <p class="govuk-body">
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
+@Html.Raw(errorPage.Render())

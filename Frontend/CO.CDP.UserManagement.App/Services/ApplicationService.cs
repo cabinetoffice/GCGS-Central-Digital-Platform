@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Mapping;
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 
@@ -67,7 +68,7 @@ public sealed class ApplicationService(
         }
     }
 
-    public async Task<bool> EnableApplicationAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> EnableApplicationAsync(
         string organisationSlug,
         string applicationSlug,
         CancellationToken ct = default)
@@ -78,15 +79,15 @@ public sealed class ApplicationService(
             var allApps = (await apiClient.ApplicationsAllAsync(ct)).ToList();
             var app = allApps.FirstOrDefault(a => a.ClientId == applicationSlug);
 
-            if (app == null) return false;
+            if (app == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             var request = new EnableApplicationRequest { ApplicationId = app.Id };
             await apiClient.ApplicationsPOSTAsync(org.Id, request, ct);
-            return true;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
-        catch (ApiException)
+        catch (ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 
@@ -161,7 +162,7 @@ public sealed class ApplicationService(
         }
     }
 
-    public async Task<bool> DisableApplicationAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> DisableApplicationAsync(
         string organisationSlug,
         string applicationSlug,
         CancellationToken ct = default)
@@ -172,14 +173,14 @@ public sealed class ApplicationService(
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct)).ToList();
             var orgApp = enabledApps.FirstOrDefault(oa => oa.Application?.ClientId == applicationSlug);
 
-            if (orgApp == null) return false;
+            if (orgApp == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             await apiClient.ApplicationsDELETEAsync(org.Id, orgApp.ApplicationId, ct);
-            return true;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
-        catch (ApiException)
+        catch (ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 

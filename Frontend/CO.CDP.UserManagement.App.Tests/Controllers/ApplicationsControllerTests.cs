@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.WebApiClient;
+using CO.CDP.Functional;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -146,7 +147,7 @@ public class ApplicationsControllerTests
     public async Task EnablePost_WhenServiceFails_ReturnsNotFound()
     {
         _applicationService.Setup(service => service.EnableApplicationAsync("org", "app", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.Enable("org", "app", true, CancellationToken.None);
 
@@ -157,7 +158,7 @@ public class ApplicationsControllerTests
     public async Task EnablePost_WhenSuccess_Redirects()
     {
         _applicationService.Setup(service => service.EnableApplicationAsync("org", "app", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.Enable("org", "app", true, CancellationToken.None);
 
@@ -254,7 +255,7 @@ public class ApplicationsControllerTests
     public async Task DisablePost_WhenServiceFails_ReturnsNotFound()
     {
         _applicationService.Setup(service => service.DisableApplicationAsync("org", "app", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.Disable("org", "app", true, CancellationToken.None);
 
@@ -265,7 +266,7 @@ public class ApplicationsControllerTests
     public async Task DisablePost_WhenSuccess_RedirectsToDetails()
     {
         _applicationService.Setup(service => service.DisableApplicationAsync("org", "app", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.Disable("org", "app", true, CancellationToken.None);
 
