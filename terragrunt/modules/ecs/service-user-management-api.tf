@@ -19,7 +19,7 @@ module "ecs_service_user_management_api" {
       name                           = var.service_configs.user_management_api.name
       public_domain                  = var.public_domain
       public_service_urls            = local.public_service_urls
-      queue_organisation_url         = var.queue_organisation_url
+      queue_user_management_url      = var.queue_user_management_url
       redis_auth_token_arn           = var.redis_auth_token_arn
       redis_port                     = var.redis_port
       redis_primary_endpoint_address = var.redis_primary_endpoint

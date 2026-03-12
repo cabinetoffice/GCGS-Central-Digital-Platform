@@ -34,7 +34,7 @@
         { "name" : "OrganisationService", "value" : "${use_internal_service_urls ? internal_service_urls["organisation"] : public_service_urls["organisation"]}"},
         { "name" : "UserManagementDatabase__Database", "value" : "${db_name}"},
         { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"},
-        { "name" : "Aws__SqsDispatcher__QueueUrl", "value" : "${queue_organisation_url}"}
+        { "name" : "Aws__SqsDispatcher__QueueUrl", "value" : "${queue_user_management_url}"}
     ],
     "secrets": [
         { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
