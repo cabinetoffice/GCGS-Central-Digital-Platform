@@ -35,46 +35,43 @@ public class UserAssignmentService : IUserAssignmentService
     }
 
     public async Task<IEnumerable<UserApplicationAssignment>> GetUserAssignmentsAsync(
-        string userPrincipalId,
+        string userId,
         int organisationId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting assignments for user: {UserPrincipalId} in organisation ID: {OrganisationId}",
-            userPrincipalId, organisationId);
+        _logger.LogDebug("Getting assignments for user: {UserId} in organisation ID: {OrganisationId}",
+            userId, organisationId);
 
-        // Get user's membership in the organisation
-        var membership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            userPrincipalId, organisationId, cancellationToken);
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
 
         if (membership == null)
         {
             throw new EntityNotFoundException(
                 nameof(UserOrganisationMembership),
-                $"User {userPrincipalId} in Organisation {organisationId}");
+                $"User {userId} in Organisation {organisationId}");
         }
 
         return await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
     }
 
     public async Task<UserApplicationAssignment> AssignUserAsync(
-        string userPrincipalId,
+        string userId,
         int organisationId,
         int applicationId,
         IEnumerable<int> roleIds,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Assigning user {UserPrincipalId} to application ID: {ApplicationId} in organisation ID: {OrganisationId}",
-            userPrincipalId, applicationId, organisationId);
+        _logger.LogInformation("Assigning user {UserId} to application ID: {ApplicationId} in organisation ID: {OrganisationId}",
+            userId, applicationId, organisationId);
 
         // Get user's membership in the organisation
-        var membership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            userPrincipalId, organisationId, cancellationToken);
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
 
         if (membership == null)
         {
             throw new EntityNotFoundException(
                 nameof(UserOrganisationMembership),
-                $"User {userPrincipalId} in Organisation {organisationId}");
+                $"User {userId} in Organisation {organisationId}");
         }
 
         // Get organisation-application relationship
@@ -102,8 +99,8 @@ public class UserAssignmentService : IUserAssignmentService
         {
             throw new DuplicateEntityException(
                 nameof(UserApplicationAssignment),
-                $"User {userPrincipalId}, Application {applicationId}",
-                $"{userPrincipalId}-{applicationId}");
+                $"User {userId}, Application {applicationId}",
+                $"{userId}-{applicationId}");
         }
 
         var roleIdsList = roleIds.ToList();
@@ -174,17 +171,16 @@ public class UserAssignmentService : IUserAssignmentService
     }
 
     public async Task<UserApplicationAssignment> UpdateAssignmentAsync(
+        string userId,
+        int organisationId,
         int assignmentId,
         IEnumerable<int> roleIds,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Updating assignment ID: {AssignmentId}", assignmentId);
+        _logger.LogInformation("Updating assignment ID: {AssignmentId} for user {UserId} in organisation ID: {OrganisationId}",
+            assignmentId, userId, organisationId);
 
-        var assignment = await _assignmentRepository.GetByIdAsync(assignmentId, cancellationToken);
-        if (assignment == null)
-        {
-            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
-        }
+        var assignment = await GetAssignmentForUserAsync(userId, organisationId, assignmentId, cancellationToken);
 
         if (!assignment.IsActive)
         {
@@ -235,15 +231,12 @@ public class UserAssignmentService : IUserAssignmentService
         return assignment;
     }
 
-    public async Task RevokeAssignmentAsync(int assignmentId, CancellationToken cancellationToken = default)
+    public async Task RevokeAssignmentAsync(string userId, int organisationId, int assignmentId, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Revoking assignment ID: {AssignmentId}", assignmentId);
+        _logger.LogInformation("Revoking assignment ID: {AssignmentId} for user {UserId} in organisation ID: {OrganisationId}",
+            assignmentId, userId, organisationId);
 
-        var assignment = await _assignmentRepository.GetByIdAsync(assignmentId, cancellationToken);
-        if (assignment == null)
-        {
-            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
-        }
+        var assignment = await GetAssignmentForUserAsync(userId, organisationId, assignmentId, cancellationToken);
 
         assignment.IsActive = false;
         assignment.RevokedAt = DateTimeOffset.UtcNow;
@@ -252,5 +245,44 @@ public class UserAssignmentService : IUserAssignmentService
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         _logger.LogInformation("Assignment ID: {AssignmentId} revoked successfully", assignmentId);
+    }
+
+    private async Task<UserOrganisationMembership?> ResolveMembershipAsync(
+        string userId,
+        int organisationId,
+        CancellationToken cancellationToken)
+    {
+        if (Guid.TryParse(userId, out var cdpPersonId))
+        {
+            return await _membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, cancellationToken);
+        }
+
+        return await _membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, cancellationToken);
+    }
+
+
+    private async Task<UserApplicationAssignment> GetAssignmentForUserAsync(
+        string userId,
+        int organisationId,
+        int assignmentId,
+        CancellationToken cancellationToken)
+    {
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
+        if (membership == null)
+        {
+            throw new EntityNotFoundException(
+                nameof(UserOrganisationMembership),
+                $"User {userId} in Organisation {organisationId}");
+        }
+
+        var assignment = (await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken))
+            .SingleOrDefault(a => a.Id == assignmentId);
+
+        if (assignment == null)
+        {
+            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
+        }
+
+        return assignment;
     }
 }

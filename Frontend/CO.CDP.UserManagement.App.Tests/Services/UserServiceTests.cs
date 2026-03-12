@@ -58,7 +58,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(users);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse>());
 
         var result = await _service.GetUsersViewModelAsync("org", selectedRole: "Admin", ct: CancellationToken.None);
 
@@ -139,7 +139,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse>());
 
         var result = await _service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, CancellationToken.None);
 
@@ -155,7 +155,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
 
         var result = await _service.GetChangeUserRoleViewModelAsync("org", null, inviteGuid, CancellationToken.None);
 
@@ -202,7 +202,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
         _apiClient.Setup(client => client.RoleAsync(org.CdpOrganisationGuid, 2, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
@@ -262,7 +262,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
         _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(invite);
         _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
@@ -338,23 +338,25 @@ public class UserServiceTests
             CreatedAt = DateTimeOffset.UtcNow
         };
 
-    private static ApiClient.PendingOrganisationInviteResponse BuildPendingInviteResponse(
+    private static PendingOrganisationInviteResponse BuildPendingInviteResponse(
         int organisationId,
         int pendingInviteId,
         OrganisationRole organisationRole,
         Guid? cdpPersonInviteGuid = null)
     {
-        return new ApiClient.PendingOrganisationInviteResponse(
-            cdpPersonInviteGuid: cdpPersonInviteGuid ?? Guid.NewGuid(),
-            createdAt: DateTimeOffset.UtcNow,
-            email: "test@example.com",
-            expiresOn: null,
-            firstName: "Test",
-            invitedBy: "inviter",
-            lastName: "User",
-            organisationId: organisationId,
-            organisationRole: organisationRole,
-            pendingInviteId: pendingInviteId,
-            status: UserStatus.Pending);
+        return new PendingOrganisationInviteResponse
+        {
+            CdpPersonInviteGuid = cdpPersonInviteGuid ?? Guid.NewGuid(),
+            CreatedAt = DateTimeOffset.UtcNow,
+            Email = "test@example.com",
+            ExpiresOn = null,
+            FirstName = "Test",
+            InvitedBy = "inviter",
+            LastName = "User",
+            OrganisationId = organisationId,
+            OrganisationRole = organisationRole,
+            PendingInviteId = pendingInviteId,
+            Status = UserStatus.Pending
+        };
     }
 }

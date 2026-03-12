@@ -30,16 +30,20 @@ public interface IUserAssignmentService
     /// <summary>
     /// Updates a user's role assignments for an application.
     /// </summary>
+    /// <param name="userPrincipalId">The user principal identifier.</param>
+    /// <param name="organisationId">The organisation identifier.</param>
     /// <param name="assignmentId">The assignment identifier.</param>
     /// <param name="roleIds">The new collection of role identifiers.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The updated assignment.</returns>
-    Task<UserApplicationAssignment> UpdateAssignmentAsync(int assignmentId, IEnumerable<int> roleIds, CancellationToken cancellationToken = default);
+    Task<UserApplicationAssignment> UpdateAssignmentAsync(string userPrincipalId, int organisationId, int assignmentId, IEnumerable<int> roleIds, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Revokes a user's assignment to an application.
     /// </summary>
+    /// <param name="userPrincipalId">The user principal identifier.</param>
+    /// <param name="organisationId">The organisation identifier.</param>
     /// <param name="assignmentId">The assignment identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    Task RevokeAssignmentAsync(int assignmentId, CancellationToken cancellationToken = default);
+    Task RevokeAssignmentAsync(string userPrincipalId, int organisationId, int assignmentId, CancellationToken cancellationToken = default);
 }

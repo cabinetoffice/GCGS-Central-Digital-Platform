@@ -182,6 +182,8 @@ public class UserAssignmentsControllerTests
             CreatedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero)
         };
         _userAssignmentService.Setup(service => service.UpdateAssignmentAsync(
+                "user-1",
+                10,
                 6,
                 request.RoleIds,
                 It.IsAny<CancellationToken>()))
@@ -203,6 +205,8 @@ public class UserAssignmentsControllerTests
             RoleIds = new List<int> { 2 }
         };
         _userAssignmentService.Setup(service => service.UpdateAssignmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<int>(),
                 It.IsAny<int>(),
                 It.IsAny<IEnumerable<int>>(),
                 It.IsAny<CancellationToken>()))
@@ -224,6 +228,8 @@ public class UserAssignmentsControllerTests
             RoleIds = new List<int> { 2 }
         };
         _userAssignmentService.Setup(service => service.UpdateAssignmentAsync(
+                It.IsAny<string>(),
+                It.IsAny<int>(),
                 It.IsAny<int>(),
                 It.IsAny<IEnumerable<int>>(),
                 It.IsAny<CancellationToken>()))
@@ -241,13 +247,13 @@ public class UserAssignmentsControllerTests
         var result = await _controller.RevokeAssignment(10, "user-1", 7, CancellationToken.None);
 
         result.Should().BeOfType<NoContentResult>();
-        _userAssignmentService.Verify(service => service.RevokeAssignmentAsync(7, It.IsAny<CancellationToken>()), Times.Once);
+        _userAssignmentService.Verify(service => service.RevokeAssignmentAsync("user-1", 10, 7, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
     public async Task RevokeAssignment_WhenNotFound_ReturnsNotFound()
     {
-        _userAssignmentService.Setup(service => service.RevokeAssignmentAsync(7, It.IsAny<CancellationToken>()))
+        _userAssignmentService.Setup(service => service.RevokeAssignmentAsync(It.IsAny<string>(), It.IsAny<int>(), 7, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new EntityNotFoundException("UserAssignment", 7));
 
         var result = await _controller.RevokeAssignment(10, "user-1", 7, CancellationToken.None);

@@ -137,6 +137,7 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
+builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();
 
 var app = builder.Build();
 

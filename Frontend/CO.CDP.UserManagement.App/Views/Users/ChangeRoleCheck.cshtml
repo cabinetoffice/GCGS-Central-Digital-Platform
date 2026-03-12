@@ -1,11 +1,10 @@
-@using CO.CDP.UserManagement.Shared.Enums
 @model CO.CDP.UserManagement.App.Models.ChangeUserRoleViewModel
 @{
     ViewData["Title"] = "Check organisation role changes";
     var selectedRole = Model.SelectedRole ?? Model.CurrentRole;
     var changeUrl = Model.IsPending
-        ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/change-role"
-        : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/change-role";
+        ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/organisation-role/change"
+        : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/organisation-role/change";
 }
 
 @section BeforeContent {

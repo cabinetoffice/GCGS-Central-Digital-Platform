@@ -92,7 +92,14 @@ public class OrganisationInvitesController : ControllerBase
                                 Status = UserStatus.Pending,
                                 InvitedBy = mapping.CreatedBy,
                                 ExpiresOn = cdpInvite.ExpiresOn,
-                                CreatedAt = cdpInvite.CreatedOn
+                                CreatedAt = cdpInvite.CreatedOn,
+                                ApplicationAssignments = mapping.ApplicationAssignments.Select(a => new InviteApplicationAssignmentResponse
+                                {
+                                    OrganisationApplicationId = a.OrganisationApplicationId,
+                                    ApplicationId = a.OrganisationApplication?.ApplicationId,
+                                    ApplicationName = a.OrganisationApplication?.Application?.Name ?? string.Empty,
+                                    ApplicationRoleId = a.ApplicationRoleId
+                                })
                             };
 
             return Ok(responses.ToList());
