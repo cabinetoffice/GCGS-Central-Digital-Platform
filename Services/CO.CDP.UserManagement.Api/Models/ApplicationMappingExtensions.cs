@@ -18,6 +18,7 @@ public static class ApplicationMappingExtensions
             Description = application.Description,
             Category = application.Category,
             IsActive = application.IsActive,
+            AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
             CreatedAt = application.CreatedAt
         };
     }

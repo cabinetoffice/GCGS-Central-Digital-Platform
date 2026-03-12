@@ -1,3 +1,5 @@
+using CO.CDP.UserManagement.Core.Constants;
+
 namespace CO.CDP.UserManagement.Core.Entities;
 
 /// <summary>
@@ -29,6 +31,12 @@ public class ApplicationRole : ISoftDelete, IAuditable
     /// Gets or sets a value indicating whether this role is active.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Gets or sets the party roles required to be assigned this role.
+    /// An empty list means the role is available to all organisations regardless of party role.
+    /// </summary>
+    public List<PartyRole> RequiredPartyRoles { get; set; } = [];
 
     // ISoftDelete
     public bool IsDeleted { get; set; }

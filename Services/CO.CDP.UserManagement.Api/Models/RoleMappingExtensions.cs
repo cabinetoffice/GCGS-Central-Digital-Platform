@@ -1,5 +1,6 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Shared.Responses;
+using SharedPartyRole = CO.CDP.UserManagement.Shared.Enums.PartyRole;
 
 namespace CO.CDP.UserManagement.Api.Models;
 
@@ -25,6 +26,9 @@ public static class RoleMappingExtensions
             IsActive = role.IsActive,
             Permissions = includePermissions && role.Permissions != null
                 ? role.Permissions.Select(p => p.ToResponse())
+                : null,
+            RequiredPartyRoles = role.RequiredPartyRoles.Count > 0
+                ? role.RequiredPartyRoles.Select(r => (SharedPartyRole)(int)r)
                 : null,
             CreatedAt = role.CreatedAt,
             CreatedBy = role.CreatedBy,

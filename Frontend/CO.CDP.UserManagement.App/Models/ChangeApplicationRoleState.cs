@@ -17,4 +17,6 @@ public sealed record ApplicationRoleAssignmentState(
     int? CurrentRoleId,
     string CurrentRoleName,
     int? SelectedRoleId,
-    string SelectedRoleName);
+    string SelectedRoleName,
+    IReadOnlyList<int>? SelectedRoleIds = null,
+    IReadOnlyList<int>? CurrentRoleIds = null);
