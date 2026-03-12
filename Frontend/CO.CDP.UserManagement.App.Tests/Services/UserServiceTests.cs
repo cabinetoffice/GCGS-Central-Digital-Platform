@@ -91,6 +91,229 @@ public class UserServiceTests
     }
 
     [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenValid_ReturnsViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var joinedAt = new DateTimeOffset(2026, 2, 19, 0, 0, 0, TimeSpan.Zero);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = joinedAt,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.FullName.Should().Be("Test User");
+        result.MemberSince.Should().Be("19 February 2026");
+    }
+
+    [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenJoinedAtMissing_ReturnsNotAvailableMemberSince()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = null,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.MemberSince.Should().Be("Not available");
+    }
+
+    [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenUserMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetUserDetailsViewModelAsync_WhenApplicationAssignmentsPresent_ReturnsViewModelWithApplicationAccess()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var joinedAt = new DateTimeOffset(2026, 2, 19, 0, 0, 0, TimeSpan.Zero);
+        var assignedDate = new DateTimeOffset(2026, 1, 15, 10, 30, 0, TimeSpan.Zero);
+
+        var applicationAssignments = new List<UserAssignmentResponse>
+        {
+            new()
+            {
+                Id = 1,
+                UserOrganisationMembershipId = 1,
+                OrganisationApplicationId = 10,
+                ApplicationId = 101,
+                IsActive = true,
+                AssignedAt = assignedDate,
+                AssignedBy = "admin@example.com",
+                CreatedAt = DateTimeOffset.UtcNow,
+                Application = new ApplicationResponse
+                {
+                    Id = 101,
+                    Name = "Edit",
+                    Description = "Edit application",
+                    ClientId = "edit-app",
+                    IsActive = true,
+                    CreatedAt = DateTimeOffset.UtcNow
+                },
+                Roles = new List<RoleResponse>
+                {
+                    new()
+                    {
+                        Id = 1001,
+                        ApplicationId = 101,
+                        Name = "Admin",
+                        Description = "Administrator role",
+                        IsActive = true,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        CreatedBy = "system",
+                        Permissions = new List<PermissionResponse>
+                        {
+                            new()
+                            {
+                                Id = 2001,
+                                ApplicationId = 101,
+                                Name = "Read",
+                                Description = "Read permission",
+                                IsActive = true,
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedBy = "system"
+                            },
+                            new()
+                            {
+                                Id = 2002,
+                                ApplicationId = 101,
+                                Name = "Write",
+                                Description = "Write permission",
+                                IsActive = true,
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedBy = "system"
+                            }
+                        }
+                    }
+                }
+            },
+            new()
+            {
+                Id = 2,
+                UserOrganisationMembershipId = 1,
+                OrganisationApplicationId = 11,
+                ApplicationId = 102,
+                IsActive = true,
+                AssignedAt = assignedDate.AddDays(-5),
+                AssignedBy = "admin@example.com",
+                CreatedAt = DateTimeOffset.UtcNow,
+                Application = new ApplicationResponse
+                {
+                    Id = 102,
+                    Name = "View",
+                    Description = "View application",
+                    ClientId = "view-app",
+                    IsActive = true,
+                    CreatedAt = DateTimeOffset.UtcNow
+                },
+                Roles = new List<RoleResponse>
+                {
+                    new()
+                    {
+                        Id = 1002,
+                        ApplicationId = 102,
+                        Name = "Editor",
+                        Description = "Editor role",
+                        IsActive = true,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        CreatedBy = "system",
+                        Permissions = new List<PermissionResponse>
+                        {
+                            new()
+                            {
+                                Id = 2003,
+                                ApplicationId = 102,
+                                Name = "Read",
+                                Description = "Read permission",
+                                IsActive = true,
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedBy = "system"
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = joinedAt,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = applicationAssignments
+            });
+
+        var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.ApplicationAccess.Should().HaveCount(2);
+        result.ApplicationAccess[0].ApplicationName.Should().Be("Edit");
+        result.ApplicationAccess[0].ApplicationRole.Should().Be("Admin");
+        result.ApplicationAccess[0].Permissions.Should().ContainInOrder(["Read", "Write"]);
+        result.ApplicationAccess[0].AssignedByEmail.Should().Be("admin@example.com");
+        result.ApplicationAccess[1].ApplicationName.Should().Be("View");
+        result.ApplicationAccess[1].ApplicationRole.Should().Be("Editor");
+        result.ApplicationAccess[1].Permissions.Should().ContainInOrder(["Read"]);
+    }
+
+    [Fact]
     public async Task InviteUserAsync_WhenSuccess_ReturnsTrue()
     {
         var org = BuildOrganisationResponse();

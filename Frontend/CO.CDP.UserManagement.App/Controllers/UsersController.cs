@@ -394,6 +394,13 @@ public class UsersController(
         return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
     }
 
+    [HttpGet("user/{cdpPersonId:guid}")]
+    public async Task<IActionResult> Details(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetUserDetailsViewModelAsync(organisationSlug, cdpPersonId, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
+    }
+
     [HttpGet("user/{cdpPersonId:guid}/change-role")]
     public async Task<IActionResult> ChangeRole(
         string organisationSlug,

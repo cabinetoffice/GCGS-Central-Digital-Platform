@@ -1,3 +1,5 @@
+using CO.CDP.UserManagement.Shared.Enums;
+
 namespace CO.CDP.UserManagement.Shared.Responses;
 
 /// <summary>

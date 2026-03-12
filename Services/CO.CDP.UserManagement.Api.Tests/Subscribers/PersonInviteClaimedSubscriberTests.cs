@@ -6,6 +6,7 @@ using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreApplicationRole = CO.CDP.UserManagement.Core.Entities.ApplicationRole;
 
 namespace CO.CDP.UserManagement.Api.Tests.Subscribers;
 
@@ -52,7 +53,7 @@ public class PersonInviteClaimedSubscriberTests
             Name = "Org",
             Slug = "org"
         };
-        var applicationRole = new ApplicationRole
+        var applicationRole = new CoreApplicationRole
         {
             Id = 5,
             ApplicationId = 1,
