@@ -1185,4 +1185,21 @@
   <data name="DataProtection_02_Custom_No" xml:space="preserve">
     <value>Nac oes, nid oes gen i'r adnoddau</value>
   </data>
+  <data name="HealthAndSafetyQuestion_03_Description" xml:space="preserve">
+    <value>
+      &lt;p class="govuk-hint"&gt;
+        Rhaid i'r ddogfen gynnwys 500 o eiriau neu lai
+      &lt;/p&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafetyQuestion_02_CustomInsetText" xml:space="preserve">
+    <value>
+      &lt;div class="govuk-hint"&gt;
+        Mae'r ymateb wedi'i gyfyngu i 500 o eiriau neu lai
+      &lt;/div&gt;
+    </value>
+  </data>
+  <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
+    <value>Iechyd a Diogelwch</value>
+  </data>
 </root>
