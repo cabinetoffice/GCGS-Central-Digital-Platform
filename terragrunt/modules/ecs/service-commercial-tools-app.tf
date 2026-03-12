@@ -4,10 +4,6 @@ module "ecs_service_commercial_tools_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.commercial_tools_app.name}.json.tftpl",
     {
-      internal_service_urls             = local.internal_service_urls
-      public_service_urls               = local.public_service_urls
-      use_internal_service_urls         = local.use_internal_service_urls
-      use_internal_issuer               = local.use_internal_issuer
       aspcore_environment               = local.aspcore_environment
       cpu                               = var.service_configs.commercial_tools_app.cpu
       diagnostic_page_enabled           = !var.is_production || var.environment == "integration"
@@ -26,6 +22,7 @@ module "ecs_service_commercial_tools_app" {
       onelogin_logout_notification_urls = local.onelogin_logout_notification_urls
       onelogin_private_key              = local.one_login.credential_locations.private_key
       public_domain                     = var.public_domain
+      public_service_urls               = local.public_service_urls
       redis_auth_token_arn              = var.redis_auth_token_arn
       redis_port                        = var.redis_port
       redis_primary_endpoint_address    = var.redis_primary_endpoint
@@ -34,6 +31,8 @@ module "ecs_service_commercial_tools_app" {
       sessiontimeoutinminutes           = var.commercial_tools_session_timeout
       shared_sessions_enabled           = local.shared_sessions_enabled
       ssm_data_protection_prefix        = local.ssm_data_protection_prefix
+      use_internal_issuer               = local.use_internal_issuer
+      use_internal_service_urls         = local.use_internal_service_urls
       vpc_cidr                          = var.vpc_cider
     }
   )

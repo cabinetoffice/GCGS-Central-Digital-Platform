@@ -8,16 +8,16 @@ locals {
   internal_prefix              = length("internal.${var.public_domain}") > 64 ? "in" : "internal"
   internal_domain              = "${local.internal_prefix}.${var.public_domain}"
   internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
-  use_internal_service_urls    = var.use_internal_service_urls != null ? var.use_internal_service_urls : contains(["development", "staging", "integration"], var.environment)
-  use_internal_issuer          = var.use_internal_issuer != null ? var.use_internal_issuer : contains(["development", "staging", "integration"], var.environment)
-  main_cluster_id              = aws_ecs_cluster.this.id
-  main_cluster_name            = aws_ecs_cluster.this.name
+  use_internal_service_urls    = false # var.use_internal_service_urls != null ? var.use_internal_service_urls : contains(["development", "staging", "integration"], var.environment)
+  use_internal_issuer          = false # var.use_internal_issuer != null ? var.use_internal_issuer : contains(["development", "staging", "integration"], var.environment)
+  main_cluster_id              = aws_ecs_cluster.sirsi.id
+  main_cluster_name            = aws_ecs_cluster.sirsi.name
   main_ecs_listener_arn        = aws_lb_listener.ecs.arn
   name_prefix                  = var.product.resource_name
   name_prefix_fts              = "${local.name_prefix}-fts"
   name_prefix_php              = "${local.name_prefix}-php"
-  php_cluster_id               = aws_ecs_cluster.that.id
-  php_cluster_name             = aws_ecs_cluster.that.name
+  php_cluster_id               = aws_ecs_cluster.php.id
+  php_cluster_name             = aws_ecs_cluster.php.name
   php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 

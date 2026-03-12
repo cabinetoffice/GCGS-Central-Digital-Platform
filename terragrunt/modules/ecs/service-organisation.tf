@@ -4,10 +4,6 @@ module "ecs_service_organisation" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation.name}.json.tftpl",
     {
-      internal_service_urls           = local.internal_service_urls
-      public_service_urls             = local.public_service_urls
-      use_internal_service_urls       = local.use_internal_service_urls
-      use_internal_issuer             = local.use_internal_issuer
       aspcore_environment             = local.aspcore_environment
       cpu                             = var.service_configs.organisation.cpu
       db_address                      = var.db_sirsi_cluster_address
@@ -24,12 +20,15 @@ module "ecs_service_organisation" {
       memory                          = var.service_configs.organisation.memory
       name                            = var.service_configs.organisation.name
       public_domain                   = var.public_domain
+      public_service_urls             = local.public_service_urls
       queue_entity_verification_url   = var.queue_entity_verification_url
       queue_organisation_url          = var.queue_organisation_url
       queue_user_management_url       = var.queue_user_management_url
       send_notify_emails              = local.send_notify_emails
       service_port                    = local.service_ports_by_service[var.service_configs.organisation.name]
       service_version                 = local.service_version_sirsi
+      use_internal_issuer             = local.use_internal_issuer
+      use_internal_service_urls       = local.use_internal_service_urls
       vpc_cidr                        = var.vpc_cider
     }
   )
