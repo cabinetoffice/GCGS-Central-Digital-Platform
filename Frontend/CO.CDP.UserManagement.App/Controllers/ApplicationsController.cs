@@ -78,12 +78,11 @@ public class ApplicationsController(
         }
 
         var success = await applicationService.EnableApplicationAsync(organisationSlug, application, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(EnableSuccess), new { organisationSlug, application });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(EnableSuccess), new { organisationSlug, application })!);
     }
 
     [HttpGet]
@@ -142,11 +141,11 @@ public class ApplicationsController(
         }
 
         var success = await applicationService.DisableApplicationAsync(organisationSlug, application, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(Details), new { organisationSlug, application });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(Details), new { organisationSlug, application })!);
     }
+
 }

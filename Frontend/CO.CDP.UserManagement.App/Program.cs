@@ -141,10 +141,27 @@ var app = builder.Build();
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
+    app.UseExceptionHandler("/error");
     app.UseHsts();
     app.UseHttpsRedirection();
 }
+
+app.UseStatusCodePages(context =>
+{
+    var response = context.HttpContext.Response;
+    var requestPath = context.HttpContext.Request.Path;
+
+    if (response.StatusCode == 404 && !requestPath.StartsWithSegments("/page-not-found"))
+    {
+        response.Redirect("/page-not-found");
+    }
+    else if (response.StatusCode >= 500 && !requestPath.StartsWithSegments("/error"))
+    {
+        response.Redirect("/error");
+    }
+
+    return Task.CompletedTask;
+});
 
 app.UseStaticFiles();
 
@@ -167,5 +184,11 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 app.MapRazorPages();
+
+app.MapFallback(ctx =>
+{
+    ctx.Response.Redirect("/page-not-found");
+    return Task.CompletedTask;
+});
 
 await app.RunAsync();

@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
@@ -7,7 +8,8 @@ using ClientPartyRole = CO.CDP.UserManagement.WebApiClient.PartyRole;
 
 namespace CO.CDP.UserManagement.App.Services;
 
-public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUserService
+public sealed class UserService(
+    ApiClient.UserManagementClient apiClient) : IUserService
 {
     public async Task<UsersViewModel?> GetUsersViewModelAsync(
         string organisationSlug,
@@ -137,7 +139,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         }
     }
 
-    public async Task<bool> InviteUserAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> InviteUserAsync(
         string organisationSlug,
         InviteUserViewModel input,
         CancellationToken ct = default,
@@ -161,11 +163,11 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 input.OrganisationRole ?? OrganisationRole.Member);
 
             await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
-            return true;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 
@@ -289,7 +291,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         }
     }
 
-    public async Task<bool> UpdateUserRoleAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserRoleAsync(
         string organisationSlug,
         Guid? cdpPersonId,
         Guid? inviteGuid,
@@ -307,28 +309,28 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                 var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid.Value);
                 if (invite is null)
                 {
-                    return false;
+                    return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
                 }
 
                 await apiClient.RoleAsync(org.CdpOrganisationGuid, invite.PendingInviteId, request, ct);
-                return true;
+                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
             }
 
             if (cdpPersonId.HasValue)
             {
                 await apiClient.Role2Async(org.CdpOrganisationGuid, cdpPersonId.Value, request, ct);
-                return true;
+                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
             }
 
-            return false;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 
-    public async Task<bool> ResendInviteAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> ResendInviteAsync(
         string organisationSlug,
         Guid inviteGuid,
         CancellationToken ct = default)
@@ -340,7 +342,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             var invite = invites.FirstOrDefault(item => item.CdpPersonInviteGuid == inviteGuid);
             if (invite == null)
             {
-                return false;
+                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
             }
 
             var request = new ApiClient.InviteUserRequest(
@@ -352,11 +354,11 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
 
             await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
             await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
-            return true;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 
@@ -515,7 +517,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         }
     }
 
-    public async Task<bool> UpdateUserApplicationRolesAsync(
+    public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserApplicationRolesAsync(
         string organisationSlug,
         Guid? cdpPersonId,
         Guid? inviteGuid,
@@ -530,7 +532,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             {
                 var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
                 var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
-                if (user == null) return false;
+                if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
                 var userPrincipalId = cdpPersonId.Value.ToString();
 
@@ -563,14 +565,14 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
                     }
                 }
 
-                return true;
+                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
             }
 
             if (inviteGuid.HasValue)
             {
                 var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
                 var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid);
-                if (invite == null) return false;
+                if (invite == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
                 var assignments = applicationRoleAssignments
                     .Select(a => (roleIds: GetEffectiveRoleIds(a), orgAppId: a.OrganisationApplicationId))
@@ -587,14 +589,14 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
 
                 await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, newInviteRequest, ct);
                 await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
-                return true;
+                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
             }
 
-            return false;
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex)
         {
-            return false;
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 
@@ -627,7 +629,7 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         {
             return await apiClient.PartyRolesAsync(cdpOrganisationGuid, ct);
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return [];
         }

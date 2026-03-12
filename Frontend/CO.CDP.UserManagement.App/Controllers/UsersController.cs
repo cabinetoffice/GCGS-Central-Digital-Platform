@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
@@ -351,7 +352,12 @@ public class UsersController(
             inviteInput,
             ct,
             assignments);
-        if (!success)
+        if (success.IsLeft())
+        {
+            return Redirect("/error");
+        }
+
+        if (success.Match(_ => false, outcome => outcome == ServiceOutcome.NotFound))
         {
             return NotFound();
         }
@@ -401,7 +407,11 @@ public class UsersController(
     public async Task<IActionResult> ResendInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
         var success = await userService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(Index), new { organisationSlug })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -484,12 +494,11 @@ public class UsersController(
             null,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/success")]
@@ -593,12 +602,11 @@ public class UsersController(
             inviteGuid,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid })!);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/success")]
@@ -700,12 +708,11 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, cdpPersonId, null, assignments, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeApplicationRolesSuccess), new { organisationSlug, cdpPersonId });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeApplicationRolesSuccess), new { organisationSlug, cdpPersonId })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application-roles/change/success")]
@@ -824,12 +831,11 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, null, inviteGuid, assignments, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeInviteApplicationRolesSuccess), new { organisationSlug, inviteGuid });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteApplicationRolesSuccess), new { organisationSlug, inviteGuid })!);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/application-roles/change/success")]
@@ -1121,4 +1127,5 @@ public class UsersController(
 
         return originalSingleRoles.TryGetValue(app.OrganisationApplicationId, out var origId) && origId != app.SelectedRoleId;
     }
+
 }
