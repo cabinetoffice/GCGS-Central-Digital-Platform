@@ -193,6 +193,7 @@ builder.Services.AddHealthChecks()
     .AddRedis(redisConnectionString);
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline
 if (swaggerEnabled)
@@ -200,8 +201,6 @@ if (swaggerEnabled)
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

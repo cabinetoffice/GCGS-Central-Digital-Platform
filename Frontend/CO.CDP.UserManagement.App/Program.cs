@@ -138,13 +138,13 @@ builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/error");
     app.UseHsts();
-    app.UseHttpsRedirection();
 }
 
 app.UseStatusCodePages(context =>
