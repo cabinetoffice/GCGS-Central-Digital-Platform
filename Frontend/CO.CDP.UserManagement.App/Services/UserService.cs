@@ -206,6 +206,7 @@ public sealed class UserService(
                     ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                     ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                     AllowsMultipleRoleAssignments = allowsMultiple,
+                    IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
                     Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
                     {
                         Id = role.Id,
@@ -426,6 +427,7 @@ public sealed class UserService(
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                         AllowsMultipleRoleAssignments = allowsMultiple,
+                        IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
                         SelectedRoleId = assignedRoleIds.Count > 0 ? assignedRoleIds[0] : null,
@@ -482,6 +484,7 @@ public sealed class UserService(
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                         AllowsMultipleRoleAssignments = allowsMultiple,
+                        IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
                         SelectedRoleId = currentRoleId,

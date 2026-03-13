@@ -7,6 +7,7 @@ public sealed record DisableApplicationViewModel(
     string ApplicationSlug,
     string ApplicationName,
     string? ApplicationDescription,
+    bool IsEnabledByDefault,
     int UsersAssigned,
     int ActiveAssignments)
 {
@@ -17,6 +18,7 @@ public sealed record DisableApplicationViewModel(
         ApplicationSlug: string.Empty,
         ApplicationName: string.Empty,
         ApplicationDescription: null,
+        IsEnabledByDefault: false,
         UsersAssigned: 0,
         ActiveAssignments: 0);
 }

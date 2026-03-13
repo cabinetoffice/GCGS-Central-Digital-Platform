@@ -121,7 +121,17 @@ public class ApplicationsController(
         }
 
         var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
-        return viewModel is null ? NotFound() : View(viewModel);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (viewModel.IsEnabledByDefault)
+        {
+            return RedirectToAction(nameof(Details), new { organisationSlug, application });
+        }
+
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -138,6 +148,17 @@ public class ApplicationsController(
         {
             var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
             return View(viewModel);
+        }
+
+        var disableViewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
+        if (disableViewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (disableViewModel.IsEnabledByDefault)
+        {
+            return RedirectToAction(nameof(Details), new { organisationSlug, application });
         }
 
         var success = await applicationService.DisableApplicationAsync(organisationSlug, application, ct);

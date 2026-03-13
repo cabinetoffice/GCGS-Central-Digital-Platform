@@ -238,6 +238,12 @@ public class UserAssignmentService : IUserAssignmentService
 
         var assignment = await GetAssignmentForUserAsync(userId, organisationId, assignmentId, cancellationToken);
 
+        if (assignment.OrganisationApplication.Application.IsEnabledByDefault)
+        {
+            throw new SystemInvalidOperationException(
+                $"Application {assignment.OrganisationApplication.ApplicationId} is enabled by default and user access cannot be revoked");
+        }
+
         assignment.IsActive = false;
         assignment.RevokedAt = DateTimeOffset.UtcNow;
 

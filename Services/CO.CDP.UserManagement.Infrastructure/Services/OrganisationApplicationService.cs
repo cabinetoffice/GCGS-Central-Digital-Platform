@@ -2,6 +2,7 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.Extensions.Logging;
+using SystemInvalidOperationException = System.InvalidOperationException;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
@@ -137,6 +138,12 @@ public class OrganisationApplicationService : IOrganisationApplicationService
             throw new EntityNotFoundException(
                 nameof(OrganisationApplication),
                 $"Organisation {organisationId} and Application {applicationId}");
+        }
+
+        if (organisationApplication.Application.IsEnabledByDefault)
+        {
+            throw new SystemInvalidOperationException(
+                $"Application {applicationId} is enabled by default and cannot be disabled for organisation {organisationId}");
         }
 
         organisationApplication.IsActive = false;

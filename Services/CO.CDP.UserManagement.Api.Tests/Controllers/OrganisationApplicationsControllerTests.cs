@@ -8,6 +8,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SystemInvalidOperationException = System.InvalidOperationException;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Api.Tests.Controllers;
@@ -185,5 +186,19 @@ public class OrganisationApplicationsControllerTests
         var result = await _controller.DisableApplication(10, 5, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public async Task DisableApplication_WhenInvalidOperation_ReturnsBadRequest()
+    {
+        _organisationApplicationService
+            .Setup(service => service.DisableApplicationAsync(10, 5, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new SystemInvalidOperationException("Cannot disable default-enabled application"));
+
+        var result = await _controller.DisableApplication(10, 5, CancellationToken.None);
+
+        var badRequest = result.Should().BeOfType<BadRequestObjectResult>().Subject;
+        var error = badRequest.Value.Should().BeOfType<ErrorResponse>().Subject;
+        error.Code.Should().Be("INVALID_OPERATION");
     }
 }

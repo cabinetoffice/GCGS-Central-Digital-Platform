@@ -21,6 +21,7 @@ public class MappingExtensionsTests
             Description = "desc",
             Category = "cat",
             IsActive = true,
+            IsEnabledByDefault = true,
             CreatedAt = createdAt
         };
 
@@ -29,6 +30,7 @@ public class MappingExtensionsTests
         response.Id.Should().Be(1);
         response.ClientId.Should().Be("client");
         response.Category.Should().Be("cat");
+        response.IsEnabledByDefault.Should().BeTrue();
         response.CreatedAt.Should().Be(createdAt);
     }
 
@@ -40,13 +42,15 @@ public class MappingExtensionsTests
             Id = 2,
             Name = "App",
             ClientId = "client",
-            IsActive = false
+            IsActive = false,
+            IsEnabledByDefault = true
         };
 
         var response = application.ToSummaryResponse();
 
         response.Id.Should().Be(2);
         response.IsActive.Should().BeFalse();
+        response.IsEnabledByDefault.Should().BeTrue();
     }
 
     [Fact]
