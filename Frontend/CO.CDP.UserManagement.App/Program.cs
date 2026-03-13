@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.App.Services;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.UI.Foundation;
 using CO.CDP.UI.Foundation.Middleware;
 using GovUk.Frontend.AspNetCore;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Routing configuration
 builder.Services.AddRouting(options =>

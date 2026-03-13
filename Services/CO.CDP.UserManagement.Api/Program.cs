@@ -7,6 +7,7 @@ using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Api.Validation;
 using CO.CDP.UserManagement.Api.FeatureFlags;
@@ -23,6 +24,7 @@ using System.Reflection;
 using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Add services to the container
 builder.Services.AddControllers();
