@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.App.Services;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.UI.Foundation;
 using CO.CDP.UI.Foundation.Middleware;
 using GovUk.Frontend.AspNetCore;
@@ -15,6 +16,7 @@ using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.ConfigureForwardedHeaders();
 
 // Routing configuration
 builder.Services.AddRouting(options =>
@@ -138,13 +140,13 @@ builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();
 
 var app = builder.Build();
+app.UseForwardedHeaders();
 
 // Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/error");
     app.UseHsts();
-    app.UseHttpsRedirection();
 }
 
 app.UseStatusCodePages(context =>
