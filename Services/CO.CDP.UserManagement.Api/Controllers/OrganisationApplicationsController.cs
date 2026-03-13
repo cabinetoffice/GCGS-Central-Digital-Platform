@@ -5,6 +5,7 @@ using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SystemInvalidOperationException = System.InvalidOperationException;
 
 namespace CO.CDP.UserManagement.Api.Controllers;
 
@@ -130,6 +131,10 @@ public class OrganisationApplicationsController : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (SystemInvalidOperationException ex)
+        {
+            return BadRequest(new ErrorResponse { Message = ex.Message, Code = "INVALID_OPERATION" });
         }
     }
 }

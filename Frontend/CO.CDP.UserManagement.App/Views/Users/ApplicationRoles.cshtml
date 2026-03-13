@@ -56,6 +56,12 @@
                                 <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">Give access to @application.ApplicationName</label>
                             </div>
                         </div>
+                        @if (application.IsEnabledByDefault)
+                        {
+                            <p class="govuk-body-s govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+                                This application is enabled by default for everyone.
+                            </p>
+                        }
 
                         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 

@@ -46,6 +46,12 @@ public class Application : ISoftDelete, IAuditable
     /// </summary>
     public bool AllowsMultipleRoleAssignments { get; set; }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether this application is enabled by default for organisations.
+    /// When true, organisations cannot disable it and user access cannot be revoked in User Management.
+    /// </summary>
+    public bool IsEnabledByDefault { get; set; }
+
     // ISoftDelete
     public bool IsDeleted { get; set; }
     public DateTimeOffset? DeletedAt { get; set; }

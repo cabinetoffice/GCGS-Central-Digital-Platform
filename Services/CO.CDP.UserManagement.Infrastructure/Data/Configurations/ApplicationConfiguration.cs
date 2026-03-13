@@ -56,6 +56,11 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
             .HasDefaultValue(false)
             .IsRequired();
 
+        builder.Property(a => a.IsEnabledByDefault)
+            .HasColumnName("is_enabled_by_default")
+            .HasDefaultValue(false)
+            .IsRequired();
+
         // Soft delete properties
         builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
         builder.Property(a => a.DeletedAt).HasColumnName("deleted_at");
