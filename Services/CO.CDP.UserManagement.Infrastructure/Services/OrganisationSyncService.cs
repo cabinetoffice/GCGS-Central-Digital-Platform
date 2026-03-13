@@ -9,6 +9,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 public class OrganisationSyncService(
     IOrganisationRepository organisationRepository,
     IUserOrganisationMembershipRepository membershipRepository,
+    IApplicationRepository applicationRepository,
     ISlugGeneratorService slugGeneratorService,
     IOrganisationPersonsSyncService personsSyncService,
     IUnitOfWork unitOfWork,
@@ -99,10 +100,11 @@ public class OrganisationSyncService(
         OrganisationSyncOrigin origin,
         CancellationToken cancellationToken)
     {
+        var activeApplicationIds = await GetActiveApplicationIds(cancellationToken);
         var baseSlug = ValidateSlug(slugGeneratorService.GenerateSlug(name));
         await TryWithSlugCandidates(
             baseSlug,
-            slug => TryCreateOrganisation(cdpGuid, name, slug, origin, cancellationToken),
+            slug => TryCreateOrganisation(cdpGuid, name, slug, activeApplicationIds, origin, cancellationToken),
             $"Failed to create organisation {cdpGuid} after {MaxSlugAttempts} attempts. Base slug: '{baseSlug}'",
             cancellationToken);
     }
@@ -111,10 +113,12 @@ public class OrganisationSyncService(
         Guid cdpGuid,
         string name,
         string slug,
+        IReadOnlyList<int> activeApplicationIds,
         OrganisationSyncOrigin origin,
         CancellationToken cancellationToken)
     {
         var organisation = BuildOrganisation(cdpGuid, name, slug);
+        AddDefaultApplicationEnablements(organisation, activeApplicationIds);
 
         organisationRepository.Add(organisation);
 
@@ -217,6 +221,29 @@ public class OrganisationSyncService(
             IsActive = true,
             CreatedBy = SystemSyncUser
         };
+
+    private static void AddDefaultApplicationEnablements(CoreOrganisation organisation, IReadOnlyList<int> activeApplicationIds)
+    {
+        foreach (var applicationId in activeApplicationIds)
+        {
+            organisation.OrganisationApplications.Add(new Core.Entities.OrganisationApplication
+            {
+                ApplicationId = applicationId,
+                IsActive = true,
+                EnabledAt = DateTimeOffset.UtcNow,
+                EnabledBy = SystemSyncUser
+            });
+        }
+    }
+
+    private async Task<IReadOnlyList<int>> GetActiveApplicationIds(CancellationToken cancellationToken)
+    {
+        var applications = await applicationRepository.FindAsync(a => a.IsActive, cancellationToken);
+        return applications
+            .Where(application => application.IsActive)
+            .Select(application => application.Id)
+            .ToList();
+    }
 
     private async Task SyncMemberships(Guid cdpGuid, int organisationId, CancellationToken cancellationToken)
     {

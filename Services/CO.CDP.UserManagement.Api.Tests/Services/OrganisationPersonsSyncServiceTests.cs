@@ -16,12 +16,14 @@ namespace CO.CDP.UserManagement.Api.Tests.Services;
 public class OrganisationPersonsSyncServiceTests
 {
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
+    private readonly Mock<IUserAssignmentService> _userAssignmentServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<ILogger<OrganisationPersonsSyncService>> _loggerMock;
 
     public OrganisationPersonsSyncServiceTests()
     {
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
+        _userAssignmentServiceMock = new Mock<IUserAssignmentService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _loggerMock = new Mock<ILogger<OrganisationPersonsSyncService>>();
 
@@ -32,6 +34,10 @@ public class OrganisationPersonsSyncServiceTests
         _membershipRepositoryMock
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
+
+        _userAssignmentServiceMock
+            .Setup(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
     }
 
     [Fact]
@@ -105,6 +111,9 @@ public class OrganisationPersonsSyncServiceTests
         capturedMembership!.OrganisationRole.Should().Be(OrganisationRole.Owner);
         capturedMembership.OrganisationId.Should().Be(orgId);
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _userAssignmentServiceMock.Verify(
+            s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()),
+            Times.Once);
     }
 
     [Fact]
@@ -202,7 +211,7 @@ public class OrganisationPersonsSyncServiceTests
     }
 
     private OrganisationPersonsSyncService BuildService(OrganisationInformationContext context) =>
-        new(context, _membershipRepositoryMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+        new(context, _membershipRepositoryMock.Object, _userAssignmentServiceMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
 
     private static OrganisationInformationContext CreateContext()
     {

@@ -39,6 +39,13 @@ public interface IUserAssignmentService
     Task<UserApplicationAssignment> UpdateAssignmentAsync(string userPrincipalId, int organisationId, int assignmentId, IEnumerable<int> roleIds, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Assigns all default-enabled organisation applications to a newly created membership.
+    /// </summary>
+    /// <param name="membership">The newly created membership.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    Task AssignDefaultApplicationsAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Revokes a user's assignment to an application.
     /// </summary>
     /// <param name="userPrincipalId">The user principal identifier.</param>
