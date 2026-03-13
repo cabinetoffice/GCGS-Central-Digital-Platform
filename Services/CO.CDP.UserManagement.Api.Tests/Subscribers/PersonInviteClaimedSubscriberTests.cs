@@ -14,6 +14,7 @@ public class PersonInviteClaimedSubscriberTests
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepository;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository;
     private readonly Mock<IUserApplicationAssignmentRepository> _assignmentRepository;
+    private readonly Mock<IUserAssignmentService> _userAssignmentService;
     private readonly Mock<ICdpMembershipSyncService> _membershipSyncService;
     private readonly Mock<IUnitOfWork> _unitOfWork;
     private readonly PersonInviteClaimedSubscriber _subscriber;
@@ -23,9 +24,14 @@ public class PersonInviteClaimedSubscriberTests
         _inviteRoleMappingRepository = new Mock<IInviteRoleMappingRepository>();
         _membershipRepository = new Mock<IUserOrganisationMembershipRepository>();
         _assignmentRepository = new Mock<IUserApplicationAssignmentRepository>();
+        _userAssignmentService = new Mock<IUserAssignmentService>();
         _membershipSyncService = new Mock<ICdpMembershipSyncService>();
         _unitOfWork = new Mock<IUnitOfWork>();
         var logger = new Mock<ILogger<PersonInviteClaimedSubscriber>>();
+
+        _userAssignmentService
+            .Setup(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
 
         _membershipSyncService
             .Setup(s => s.SyncMembershipCreatedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
@@ -35,6 +41,7 @@ public class PersonInviteClaimedSubscriberTests
             _inviteRoleMappingRepository.Object,
             _membershipRepository.Object,
             _assignmentRepository.Object,
+            _userAssignmentService.Object,
             _membershipSyncService.Object,
             _unitOfWork.Object,
             logger.Object);
@@ -114,6 +121,7 @@ public class PersonInviteClaimedSubscriberTests
 
         _inviteRoleMappingRepository.Verify(r => r.Remove(mapping), Times.Once);
         _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _userAssignmentService.Verify(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()), Times.Once);
         _membershipSyncService.Verify(s => s.SyncMembershipCreatedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 

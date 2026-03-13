@@ -11,6 +11,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 public class OrganisationPersonsSyncService(
     OrganisationInformationContext orgContext,
     IUserOrganisationMembershipRepository membershipRepository,
+    IUserAssignmentService userAssignmentService,
     IUnitOfWork unitOfWork,
     ILogger<OrganisationPersonsSyncService> logger) : IOrganisationPersonsSyncService
 {
@@ -74,6 +75,12 @@ public class OrganisationPersonsSyncService(
             }
 
             await unitOfWork.SaveChangesAsync(cancellationToken);
+
+            foreach (var membership in membershipsToCreate)
+            {
+                await userAssignmentService.AssignDefaultApplicationsAsync(membership, cancellationToken);
+            }
+
             logger.LogInformation(
                 "Successfully synced {CreatedCount} memberships for organisation {OrgId} ({SkippedCount} skipped)",
                 membershipsToCreate.Count, organisationId, skipped);
