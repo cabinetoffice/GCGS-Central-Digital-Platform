@@ -19,7 +19,7 @@ locals {
   php_cluster_id               = aws_ecs_cluster.php.id
   php_cluster_name             = aws_ecs_cluster.php.name
   php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
-  unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
+  unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/signout-oidc", "/assets/*", "/css/*", "/manifest.json"]
 
   db_ev_password      = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn    = var.db_ev_cluster_credentials_arn

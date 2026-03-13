@@ -53,7 +53,7 @@ module "ecs_service_user_management_app" {
   service_port                  = local.service_ports_by_service[var.service_configs.user_management_app.name]
   tags                          = var.tags
   user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
-  user_pool_client_id           = local.cognito_enabled ? var.user_pool_client_id : null
+  user_pool_client_id           = local.cognito_enabled ? var.user_pool_user_management_client_id : null
   user_pool_domain              = local.cognito_enabled ? var.user_pool_domain : null
   vpc_id                        = var.vpc_id
 }
