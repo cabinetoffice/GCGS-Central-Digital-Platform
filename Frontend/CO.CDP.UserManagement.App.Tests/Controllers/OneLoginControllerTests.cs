@@ -2,6 +2,7 @@ using CO.CDP.Authentication.Services;
 using CO.CDP.UserManagement.App.Authentication;
 using CO.CDP.UserManagement.App.Controllers;
 using FluentAssertions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -66,6 +67,34 @@ public class OneLoginControllerTests
             .Select(attribute => attribute.Template)
             .Should()
             .Contain("/signout-oidc");
+    }
+
+    [Fact]
+    public void BackChannelSignOut_AllowsAnonymousAndIgnoresAntiforgery_OnActionOnly()
+    {
+        var controllerType = typeof(OneLoginController);
+        var method = controllerType.GetMethod(nameof(OneLoginController.BackChannelSignOut));
+
+        controllerType.GetCustomAttributes(typeof(AllowAnonymousAttribute), false).Should().BeEmpty();
+        controllerType.GetCustomAttributes(typeof(IgnoreAntiforgeryTokenAttribute), false).Should().BeEmpty();
+
+        method.Should().NotBeNull();
+        method!.GetCustomAttributes(typeof(AllowAnonymousAttribute), false).Should().ContainSingle();
+        method.GetCustomAttributes(typeof(IgnoreAntiforgeryTokenAttribute), false).Should().ContainSingle();
+    }
+
+    [Fact]
+    public void BackChannelSignOut_ConsumesFormUrlEncodedPayload()
+    {
+        var method = typeof(OneLoginController).GetMethod(nameof(OneLoginController.BackChannelSignOut));
+
+        method.Should().NotBeNull();
+        method!
+            .GetCustomAttributes(typeof(ConsumesAttribute), false)
+            .Cast<ConsumesAttribute>()
+            .SelectMany(attribute => attribute.ContentTypes)
+            .Should()
+            .Contain("application/x-www-form-urlencoded");
     }
 
     private OneLoginController CreateController()

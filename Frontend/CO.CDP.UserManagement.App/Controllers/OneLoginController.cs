@@ -5,15 +5,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
-[AllowAnonymous]
-[IgnoreAntiforgeryToken]
 [ApiController]
 public class OneLoginController(
     IOneLoginAuthority oneLoginAuthority,
     ILogoutManager logoutManager,
     ILogger<OneLoginController> logger) : ControllerBase
 {
+    [AllowAnonymous]
+    [IgnoreAntiforgeryToken]
     [HttpPost("/signout-oidc")]
+    [Consumes("application/x-www-form-urlencoded")]
     public async Task<IActionResult> BackChannelSignOut([FromForm(Name = "logout_token")] string? logoutToken)
     {
         if (string.IsNullOrWhiteSpace(logoutToken))
