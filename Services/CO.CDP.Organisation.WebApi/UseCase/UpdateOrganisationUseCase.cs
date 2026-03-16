@@ -6,18 +6,21 @@ using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.UserManagement.Core.Interfaces;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class UpdateOrganisationUseCase(
-    IOrganisationRepository organisationRepository,
+    OiOrganisationRepository organisationRepository,
     IPublisher publisher,
     IMapper mapper,
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    ILogger<UpdateOrganisationUseCase> logger
+    ILogger<UpdateOrganisationUseCase> logger,
+    IUmOrganisationSyncRepository umOrganisationSyncRepository
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
@@ -26,6 +29,7 @@ public class UpdateOrganisationUseCase(
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
+        var isNameUpdate = command.updateOrganisation.Type == OrganisationUpdateType.OrganisationName;
 
         switch (command.updateOrganisation.Type)
         {
@@ -224,6 +228,11 @@ public class UpdateOrganisationUseCase(
 
         await organisationRepository.SaveAsync(organisation,
             async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
+
+        if (isNameUpdate)
+        {
+            await umOrganisationSyncRepository.EnsureNameSyncedAsync(organisation.Guid, organisation.Name);
+        }
 
         return await Task.FromResult(true);
     }

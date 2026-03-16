@@ -1,6 +1,5 @@
 using System.Net;
 using System.Net.Http.Json;
-using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Tests;
 using CO.CDP.TestKit.Mvc;
@@ -32,7 +31,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
     private readonly HttpClient _httpClient;
     private readonly UserManagementDbContext _umContext;
     private readonly OrganisationInformationContext _cdpContext;
-    private readonly Mock<IOrganisationClient> _mockOrganisationClient;
+    private readonly Mock<IOrganisationApiAdapter> _mockOrganisationApiAdapter;
 
     public InviteBridgeIntegrationTests(
         ITestOutputHelper testOutputHelper,
@@ -41,7 +40,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
     {
         var umPostgreSql1 = umPostgreSql;
         var cdpPostgreSql1 = cdpPostgreSql;
-        _mockOrganisationClient = new Mock<IOrganisationClient>();
+        _mockOrganisationApiAdapter = new Mock<IOrganisationApiAdapter>();
         var mockPersonLookupService = new Mock<IPersonLookupService>();
 
         TestWebApplicationFactory<Program> factory = new(builder =>
@@ -63,8 +62,8 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
                 services.RemoveAll<OrganisationInformationContext>();
                 services.AddScoped(_ => cdpPostgreSql1.OrganisationInformationContext());
 
-                services.RemoveAll<IOrganisationClient>();
-                services.AddScoped(_ => _mockOrganisationClient.Object);
+                services.RemoveAll<IOrganisationApiAdapter>();
+                services.AddScoped(_ => _mockOrganisationApiAdapter.Object);
 
                 services.RemoveAll<IPersonLookupService>();
                 services.AddScoped(_ => mockPersonLookupService.Object);
@@ -98,19 +97,15 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
             ApplicationAssignments = new List<ApplicationAssignment>()
         };
 
-        _mockOrganisationClient
-            .Setup(c => c.CreatePersonInviteForServiceAsync(
+        _mockOrganisationApiAdapter
+            .Setup(c => c.CreatePersonInviteAsync(
                 cdpOrg.Guid,
-                It.IsAny<InvitePersonToOrganisation>(),
+                request.Email,
+                request.FirstName,
+                request.LastName,
+                It.IsAny<IReadOnlyList<string>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new PersonInviteModel(
-                email: request.Email,
-                expiresOn: DateTimeOffset.UtcNow.AddDays(7),
-                firstName: request.FirstName,
-                id: cdpPersonInviteGuid,
-                lastName: request.LastName,
-                scopes: new List<string> { "ADMIN" }
-            ));
+            .ReturnsAsync(cdpPersonInviteGuid);
 
         var response = await _httpClient.PostAsJsonAsync(
             $"/api/organisations/{cdpOrg.Guid}/invites",
@@ -126,13 +121,13 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         mapping.OrganisationRole.Should().Be(OrganisationRole.Admin);
         mapping.IsDeleted.Should().BeFalse();
 
-        _mockOrganisationClient.Verify(
-            c => c.CreatePersonInviteForServiceAsync(
+        _mockOrganisationApiAdapter.Verify(
+            c => c.CreatePersonInviteAsync(
                 cdpOrg.Guid,
-                It.Is<InvitePersonToOrganisation>(req =>
-                    req.Email == request.Email &&
-                    req.FirstName == request.FirstName &&
-                    req.LastName == request.LastName),
+                request.Email,
+                request.FirstName,
+                request.LastName,
+                It.IsAny<IReadOnlyList<string>>(),
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -163,7 +158,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         {
             CdpPersonInviteGuid = cdpPersonInviteGuid,
             OrganisationId = umOrg.Id,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = GetOrganisationRoleId(OrganisationRole.Member),
             CreatedBy = "test-user",
             CreatedAt = DateTimeOffset.UtcNow,
             ModifiedAt = DateTimeOffset.UtcNow
@@ -198,7 +193,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         {
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = umOrg.Id,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = GetOrganisationRoleId(OrganisationRole.Member),
             CreatedBy = "test-user",
             CreatedAt = DateTimeOffset.UtcNow,
             ModifiedAt = DateTimeOffset.UtcNow
@@ -231,7 +226,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         {
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = umOrg.Id,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = GetOrganisationRoleId(OrganisationRole.Member),
             CreatedBy = "test-user",
             CreatedAt = DateTimeOffset.UtcNow,
             ModifiedAt = DateTimeOffset.UtcNow
@@ -268,6 +263,11 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         _cdpContext.Organisations.RemoveRange(_cdpContext.Organisations);
         _cdpContext.SaveChanges();
     }
+
+    private int GetOrganisationRoleId(OrganisationRole organisationRole) =>
+        _umContext.OrganisationRoles
+            .Single(d => d.Id == (int)organisationRole)
+            .Id;
 
     private CdpOrganisation CreateCdpOrganisation(string name)
     {

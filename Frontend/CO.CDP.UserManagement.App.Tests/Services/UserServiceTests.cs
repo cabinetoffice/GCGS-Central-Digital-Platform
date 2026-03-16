@@ -370,7 +370,7 @@ public class UserServiceTests
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisationApps);
-        _apiClient.Setup(client => client.RolesAllAsync(20, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.RolesAll2Async(org.Id, 20, state.OrganisationRole, It.IsAny<CancellationToken>()))
             .ReturnsAsync(roles);
 
         var result = await _service.GetApplicationRolesStepViewModelAsync("org", state, CancellationToken.None);
@@ -382,17 +382,36 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task GetApplicationRolesStepViewModelAsync_WhenPartyRolesApiServerError_Throws()
+    public async Task GetApplicationRolesStepViewModelAsync_WhenScopedRolesApiServerError_Throws()
     {
         var service = new UserService(_apiClient.Object);
         var org = BuildOrganisationResponse();
         var state = new InviteUserState("org", "user@example.com", "First", "Last");
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.PartyRolesAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.RolesAll2Async(org.Id, It.IsAny<int>(), state.OrganisationRole, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
         _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<OrganisationApplicationResponse>());
+            .ReturnsAsync(new List<OrganisationApplicationResponse>
+            {
+                new()
+                {
+                    Id = 1,
+                    OrganisationId = org.Id,
+                    ApplicationId = 20,
+                    IsActive = true,
+                    Application = new ApplicationResponse
+                    {
+                        Id = 20,
+                        Name = "Payments",
+                        ClientId = "payments",
+                        IsActive = true,
+                        CreatedAt = DateTimeOffset.UtcNow
+                    },
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    CreatedBy = "system"
+                }
+            });
 
         await Assert.ThrowsAsync<ApiException>(() =>
             service.GetApplicationRolesStepViewModelAsync("org", state, CancellationToken.None));

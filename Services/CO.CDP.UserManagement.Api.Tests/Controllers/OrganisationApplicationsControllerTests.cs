@@ -2,6 +2,7 @@ using CO.CDP.UserManagement.Api.Controllers;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
@@ -16,13 +17,21 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 public class OrganisationApplicationsControllerTests
 {
     private readonly Mock<IOrganisationApplicationService> _organisationApplicationService;
+    private readonly Mock<IRoleService> _roleService;
+    private readonly Mock<IRoleMappingService> _roleMappingService;
     private readonly OrganisationApplicationsController _controller;
 
     public OrganisationApplicationsControllerTests()
     {
         _organisationApplicationService = new Mock<IOrganisationApplicationService>();
+        _roleService = new Mock<IRoleService>();
+        _roleMappingService = new Mock<IRoleMappingService>();
         var logger = new Mock<ILogger<OrganisationApplicationsController>>();
-        _controller = new OrganisationApplicationsController(_organisationApplicationService.Object, logger.Object);
+        _controller = new OrganisationApplicationsController(
+            _organisationApplicationService.Object,
+            _roleService.Object,
+            _roleMappingService.Object,
+            logger.Object);
     }
 
     [Fact]
@@ -200,5 +209,52 @@ public class OrganisationApplicationsControllerTests
         var badRequest = result.Should().BeOfType<BadRequestObjectResult>().Subject;
         var error = badRequest.Value.Should().BeOfType<ErrorResponse>().Subject;
         error.Code.Should().Be("INVALID_OPERATION");
+    }
+
+    [Fact]
+    public async Task GetApplicationRoles_WhenAssignableRolesExist_ReturnsOk()
+    {
+        var roles = new List<ApplicationRole>
+        {
+            new()
+            {
+                Id = 7,
+                ApplicationId = 20,
+                Name = "Viewer",
+                Description = "Can view",
+                IsActive = true,
+                CreatedAt = DateTimeOffset.UtcNow,
+                CreatedBy = "system"
+            }
+        };
+
+        _roleService
+            .Setup(service => service.GetByApplicationIdAsync(20, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(roles);
+        _roleMappingService
+            .Setup(service => service.GetAssignableRolesAsync(10, OrganisationRole.Member, It.Is<IEnumerable<int>>(ids => ids.SequenceEqual(new[] { 7 })), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(roles);
+
+        var result = await _controller.GetApplicationRoles(10, 20, OrganisationRole.Member, CancellationToken.None);
+
+        var actionResult = result.Should().BeOfType<ActionResult<IEnumerable<RoleResponse>>>().Subject;
+        var okResult = actionResult.Result.Should().BeOfType<OkObjectResult>().Subject;
+        var response = okResult.Value.Should().BeAssignableTo<IEnumerable<RoleResponse>>().Subject.ToList();
+        response.Should().ContainSingle();
+        response[0].Id.Should().Be(7);
+        response[0].Description.Should().Be("Can view");
+    }
+
+    [Fact]
+    public async Task GetApplicationRoles_WhenApplicationMissing_ReturnsNotFound()
+    {
+        _roleService
+            .Setup(service => service.GetByApplicationIdAsync(20, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EntityNotFoundException("Application", 20));
+
+        var result = await _controller.GetApplicationRoles(10, 20, OrganisationRole.Member, CancellationToken.None);
+
+        var actionResult = result.Should().BeOfType<ActionResult<IEnumerable<RoleResponse>>>().Subject;
+        actionResult.Result.Should().BeOfType<NotFoundObjectResult>();
     }
 }

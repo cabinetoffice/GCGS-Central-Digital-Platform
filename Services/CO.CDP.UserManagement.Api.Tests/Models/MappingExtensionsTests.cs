@@ -224,7 +224,7 @@ public class MappingExtensionsTests
             OrganisationId = 11,
             UserPrincipalId = "user-1",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero)
@@ -251,14 +251,14 @@ public class MappingExtensionsTests
             Id = 14,
             OrganisationId = 11,
             UserPrincipalId = "user-1",
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero)
         };
         var orgApp = new OrganisationApplication
         {
-            Id = 20,
+            Id = 1,
             OrganisationId = 11,
             ApplicationId = 12,
             IsActive = true,

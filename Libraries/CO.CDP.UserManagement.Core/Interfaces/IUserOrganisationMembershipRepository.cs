@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Shared.Enums;
 
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
@@ -49,4 +50,14 @@ public interface IUserOrganisationMembershipRepository : IRepository<UserOrganis
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>True if an active membership exists; otherwise false.</returns>
     Task<bool> ExistsByPersonIdAndOrganisationAsync(Guid cdpPersonId, int organisationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets a membership by ID including its Organisation and OrganisationRoleEntity.
+    /// </summary>
+    Task<UserOrganisationMembership?> GetWithOrganisationAndRoleAsync(int id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the organisation role definition for the given role enum value.
+    /// </summary>
+    Task<OrganisationRoleEntity?> GetOrganisationRoleAsync(OrganisationRole role, CancellationToken cancellationToken = default);
 }

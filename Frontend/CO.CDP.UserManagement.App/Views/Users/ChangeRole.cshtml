@@ -1,4 +1,4 @@
-@model CO.CDP.UserManagement.App.Models.ChangeUserRoleViewModel
+@model CO.CDP.UserManagement.App.Models.ChangeUserRolePageViewModel
 @{
     ViewData["Title"] = "What is their role in your organisation?";
     var currentRoleTagClass = OrganisationRoleContent.GetTagClass(Model.CurrentRole);
@@ -38,13 +38,13 @@
                         </p>
                     }
                     <div class="govuk-radios" data-module="govuk-radios">
-                        @foreach (var roleOption in OrganisationRoleContent.Options)
+                        @foreach (var roleOption in Model.RoleOptions)
                         {
                             var roleValue = roleOption.Role.ToString();
                             var isChecked = Model.SelectedRole == roleOption.Role;
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="role-@roleValue" name="organisationRole" type="radio" value="@roleValue" checked="@isChecked">
-                                <label class="govuk-label govuk-radios__label" for="role-@roleValue"><strong>@roleOption.Role</strong></label>
+                                <label class="govuk-label govuk-radios__label" for="role-@roleValue"><strong>@roleOption.DisplayName</strong></label>
                                 <div class="govuk-hint govuk-radios__hint">
                                     @roleOption.Description
                                 </div>

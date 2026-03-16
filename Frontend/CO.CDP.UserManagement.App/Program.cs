@@ -135,6 +135,7 @@ builder.Services.AddAuthentication(options =>
 // Application services
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();

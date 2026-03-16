@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.UserManagement.Core.Interfaces;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -26,6 +27,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Mock<IClaimService> _claimService = new();
+    private readonly Mock<IUmOrganisationSyncRepository> _umOrganisationSyncRepository = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
 
@@ -39,6 +41,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mockConfiguration,
         _logger.Object,
         _claimService.Object,
+        _umOrganisationSyncRepository.Object,
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
@@ -86,6 +89,7 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                             configurationMock,
                             _logger.Object,
                             _claimService.Object,
+                            _umOrganisationSyncRepository.Object,
                             () => _generatedGuid
                         );
 

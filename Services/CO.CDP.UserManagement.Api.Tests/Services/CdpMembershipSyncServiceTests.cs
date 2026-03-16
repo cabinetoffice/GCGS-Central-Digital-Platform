@@ -1,202 +1,129 @@
-using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.UserManagement.Core.Entities;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using CO.CDP.UserManagement.Shared.Enums;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using CdpOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
-using CdpPerson = CO.CDP.OrganisationInformation.Persistence.Person;
-using IOrganisationRepository = CO.CDP.UserManagement.Core.Interfaces.IOrganisationRepository;
-using OrgPartyRole = CO.CDP.OrganisationInformation.PartyRole;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class CdpMembershipSyncServiceTests
 {
-    [Fact]
-    public async Task SyncMembershipCreatedAsync_WhenEnabled_CreatesOrganisationPerson()
-    {
-        var context = CreateContext();
-        var (org, person) = SeedOrganisationAndPerson(context);
-        var organisationRepository = BuildOrganisationRepository(org.Guid);
-        var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository;
+    private readonly Mock<IRoleMappingService> _roleMappingService;
+    private readonly Mock<IOrganisationPersonSyncRepository> _syncRepository;
+    private readonly CdpMembershipSyncService _service;
 
-        var membership = new UserOrganisationMembership
+    private static readonly Guid OrgGuid = Guid.NewGuid();
+    private static readonly Guid PersonGuid = Guid.NewGuid();
+
+    private static readonly UmOrganisation Org = new()
+    {
+        Id = 10,
+        CdpOrganisationGuid = OrgGuid,
+        Name = "Org",
+        Slug = "org"
+    };
+
+    public CdpMembershipSyncServiceTests()
+    {
+        _membershipRepository = new Mock<IUserOrganisationMembershipRepository>();
+        _roleMappingService = new Mock<IRoleMappingService>();
+        _syncRepository = new Mock<IOrganisationPersonSyncRepository>();
+        _service = new CdpMembershipSyncService(
+            _membershipRepository.Object,
+            _roleMappingService.Object,
+            _syncRepository.Object,
+            Mock.Of<ILogger<CdpMembershipSyncService>>());
+    }
+
+    [Fact]
+    public async Task SyncMembershipCreatedAsync_WhenEnabled_UpsertsOrganisationPerson()
+    {
+        var membership = ActiveMembership(OrganisationRole.Admin);
+        SetupMembershipRepoReturns(membership);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, default)).ReturnsAsync(true);
+        _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(membership.Id, default))
+            .ReturnsAsync(["ADMIN", "RESPONDER"]);
+
+        await _service.SyncMembershipCreatedAsync(membership);
+
+        _syncRepository.Verify(r => r.UpsertAsync(
+            OrgGuid, PersonGuid,
+            It.Is<IReadOnlyList<string>>(s => s.Contains("ADMIN") && s.Contains("RESPONDER")),
+            default), Times.Once);
+    }
+
+    [Fact]
+    public async Task SyncMembershipRoleChangedAsync_WhenEnabled_UpsertsOrganisationPerson()
+    {
+        var membership = ActiveMembership(OrganisationRole.Admin);
+        SetupMembershipRepoReturns(membership);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, default)).ReturnsAsync(true);
+        _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(membership.Id, default))
+            .ReturnsAsync(["ADMIN", "RESPONDER"]);
+
+        await _service.SyncMembershipRoleChangedAsync(membership);
+
+        _syncRepository.Verify(r => r.UpsertAsync(
+            OrgGuid, PersonGuid,
+            It.IsAny<IReadOnlyList<string>>(),
+            default), Times.Once);
+    }
+
+    [Fact]
+    public async Task SyncMembershipRemovedAsync_RemovesOrganisationPerson()
+    {
+        var membership = ActiveMembership(OrganisationRole.Member);
+
+        await _service.SyncMembershipRemovedAsync(membership);
+
+        _syncRepository.Verify(r => r.RemoveAsync(OrgGuid, PersonGuid, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task SyncMembershipCreatedAsync_WithoutCdpPersonId_DoesNotSync()
+    {
+        var membership = ActiveMembership(OrganisationRole.Admin, hasCdpPersonId: false);
+        SetupMembershipRepoReturns(membership);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, default)).ReturnsAsync(true);
+
+        await _service.SyncMembershipCreatedAsync(membership);
+
+        _syncRepository.Verify(r => r.UpsertAsync(
+            It.IsAny<Guid>(), It.IsAny<Guid>(),
+            It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task SyncMembershipAccessChangedAsync_WhenRoleNotSyncEnabled_DoesNotSync()
+    {
+        var membership = ActiveMembership(OrganisationRole.Agent);
+        SetupMembershipRepoReturns(membership);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, default)).ReturnsAsync(false);
+
+        await _service.SyncMembershipAccessChangedAsync(membership.Id);
+
+        _syncRepository.Verify(r => r.UpsertAsync(
+            It.IsAny<Guid>(), It.IsAny<Guid>(),
+            It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    private static UserOrganisationMembership ActiveMembership(OrganisationRole role, bool hasCdpPersonId = true) =>
+        new()
         {
             Id = 1,
-            OrganisationId = 10,
-            Organisation = new UmOrganisation { Id = 10, CdpOrganisationGuid = org.Guid, Name = "Org", Slug = "org" },
-            OrganisationRole = OrganisationRole.Admin,
-            CdpPersonId = person.Guid
+            OrganisationId = Org.Id,
+            Organisation = Org,
+            OrganisationRoleId = (int)role,
+            IsActive = true,
+            CdpPersonId = hasCdpPersonId ? PersonGuid : null,
+            UserPrincipalId = "user-urn"
         };
 
-        await service.SyncMembershipCreatedAsync(membership);
-
-        var organisationPerson = await context.Set<OrganisationPerson>()
-            .FirstOrDefaultAsync(op => op.OrganisationId == org.Id && op.PersonId == person.Id);
-
-        organisationPerson.Should().NotBeNull();
-        organisationPerson!.Scopes.Should().ContainSingle(OrganisationPersonScopes.Admin);
-    }
-
-    [Fact]
-    public async Task SyncMembershipRoleChangedAsync_WhenEnabled_UpdatesScopes()
-    {
-        var context = CreateContext();
-        var (org, person) = SeedOrganisationAndPerson(context);
-        var organisationRepository = BuildOrganisationRepository(org.Guid);
-        var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
-
-        var organisationPerson = new OrganisationPerson
-        {
-            OrganisationId = org.Id,
-            Organisation = org,
-            PersonId = person.Id,
-            Person = person,
-            Scopes = new List<string> { OrganisationPersonScopes.Viewer }
-        };
-        context.Add(organisationPerson);
-        await context.SaveChangesAsync();
-
-        var membership = new UserOrganisationMembership
-        {
-            Id = 2,
-            OrganisationId = 10,
-            Organisation = new UmOrganisation { Id = 10, CdpOrganisationGuid = org.Guid, Name = "Org", Slug = "org" },
-            OrganisationRole = OrganisationRole.Admin,
-            CdpPersonId = person.Guid
-        };
-
-        await service.SyncMembershipRoleChangedAsync(membership);
-
-        var updated = await context.Set<OrganisationPerson>()
-            .FirstOrDefaultAsync(op => op.OrganisationId == org.Id && op.PersonId == person.Id);
-
-        updated!.Scopes.Should().ContainSingle(OrganisationPersonScopes.Admin);
-    }
-
-    [Fact]
-    public async Task SyncMembershipRemovedAsync_WhenEnabled_RemovesOrganisationPerson()
-    {
-        var context = CreateContext();
-        var (org, person) = SeedOrganisationAndPerson(context);
-        var organisationRepository = BuildOrganisationRepository(org.Guid);
-        var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
-
-        var organisationPerson = new OrganisationPerson
-        {
-            OrganisationId = org.Id,
-            Organisation = org,
-            PersonId = person.Id,
-            Person = person,
-            Scopes = new List<string> { OrganisationPersonScopes.Viewer }
-        };
-        context.Add(organisationPerson);
-        await context.SaveChangesAsync();
-
-        var membership = new UserOrganisationMembership
-        {
-            Id = 3,
-            OrganisationId = 10,
-            Organisation = new UmOrganisation { Id = 10, CdpOrganisationGuid = org.Guid, Name = "Org", Slug = "org" },
-            OrganisationRole = OrganisationRole.Member,
-            CdpPersonId = person.Guid
-        };
-
-        await service.SyncMembershipRemovedAsync(membership);
-
-        var remaining = await context.Set<OrganisationPerson>()
-            .FirstOrDefaultAsync(op => op.OrganisationId == org.Id && op.PersonId == person.Id);
-
-        remaining.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task SyncMembershipCreatedAsync_WithoutCdpPersonId_DoesNothing()
-    {
-        var context = CreateContext();
-        var (org, _) = SeedOrganisationAndPerson(context);
-        var organisationRepository = BuildOrganisationRepository(org.Guid);
-        var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
-
-        var membership = new UserOrganisationMembership
-        {
-            Id = 4,
-            OrganisationId = 10,
-            Organisation = new UmOrganisation { Id = 10, CdpOrganisationGuid = org.Guid, Name = "Org", Slug = "org" },
-            OrganisationRole = OrganisationRole.Admin
-        };
-
-        await service.SyncMembershipCreatedAsync(membership);
-
-        var organisationPersons = await context.Set<OrganisationPerson>()
-            .Where(op => op.OrganisationId == org.Id)
-            .ToListAsync();
-
-        organisationPersons.Should().BeEmpty();
-    }
-
-    private static OrganisationInformationContext CreateContext()
-    {
-        var options = new DbContextOptionsBuilder<OrganisationInformationContext>()
-            .UseInMemoryDatabase($"org-info-{Guid.NewGuid()}")
-            .Options;
-        return new OrganisationInformationContext(options);
-    }
-
-    private static (CdpOrganisation Organisation, CdpPerson Person) SeedOrganisationAndPerson(OrganisationInformationContext context)
-    {
-        var tenant = new Tenant
-        {
-            Guid = Guid.NewGuid(),
-            Name = "Tenant"
-        };
-        var organisation = new CdpOrganisation
-        {
-            Guid = Guid.NewGuid(),
-            Name = "Org",
-            Tenant = tenant,
-            Type = OrganisationType.Organisation,
-            Roles = new List<OrgPartyRole>()
-        };
-        var person = new CdpPerson
-        {
-            Guid = Guid.NewGuid(),
-            FirstName = "Test",
-            LastName = "User",
-            Email = "test@example.com",
-            UserUrn = "user-urn"
-        };
-
-        context.Tenants.Add(tenant);
-        context.Organisations.Add(organisation);
-        context.Persons.Add(person);
-        context.SaveChanges();
-
-        return (organisation, person);
-    }
-
-    private static Mock<IOrganisationRepository> BuildOrganisationRepository(Guid cdpOrganisationGuid)
-    {
-        var organisationRepository = new Mock<IOrganisationRepository>();
-        organisationRepository
-            .Setup(r => r.GetByIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UmOrganisation
-            {
-                Id = 10,
-                CdpOrganisationGuid = cdpOrganisationGuid,
-                Name = "Org",
-                Slug = "org"
-            });
-        return organisationRepository;
-    }
+    private void SetupMembershipRepoReturns(UserOrganisationMembership membership) =>
+        _membershipRepository
+            .Setup(r => r.GetWithOrganisationAndRoleAsync(membership.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(membership);
 }

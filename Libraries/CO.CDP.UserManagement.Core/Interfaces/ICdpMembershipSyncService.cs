@@ -12,4 +12,6 @@ public interface ICdpMembershipSyncService
     Task SyncMembershipRoleChangedAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default);
 
     Task SyncMembershipRemovedAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default);
+
+    Task SyncMembershipAccessChangedAsync(int membershipId, CancellationToken cancellationToken = default);
 }

@@ -68,8 +68,7 @@ public class OrganisationInvitesControllerTests
             {
                 Id = 5,
                 OrganisationId = organisation.Id,
-                OrganisationRole = OrganisationRole.Admin,
-                CdpPersonInviteGuid = cdpInviteGuid,
+                OrganisationRoleId = (int)OrganisationRole.Admin,
                 CreatedBy = "inviter",
                 CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)
             }
@@ -116,7 +115,7 @@ public class OrganisationInvitesControllerTests
         {
             Id = 9,
             OrganisationId = 12,
-            OrganisationRole = request.OrganisationRole,
+            OrganisationRoleId = (int)request.OrganisationRole,
             CdpPersonInviteGuid = Guid.NewGuid(),
             CreatedBy = "inviter",
             CreatedAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero)

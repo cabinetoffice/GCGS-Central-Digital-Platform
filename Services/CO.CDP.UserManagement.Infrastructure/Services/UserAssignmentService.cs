@@ -14,7 +14,8 @@ public class UserAssignmentService : IUserAssignmentService
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IOrganisationApplicationRepository _organisationApplicationRepository;
-    private readonly IRoleRepository _roleRepository;
+    private readonly IRoleMappingService _roleMappingService;
+    private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserAssignmentService> _logger;
     private const string SystemAssignedBy = "system:default-app-assignment";
@@ -23,14 +24,16 @@ public class UserAssignmentService : IUserAssignmentService
         IUserApplicationAssignmentRepository assignmentRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IOrganisationApplicationRepository organisationApplicationRepository,
-        IRoleRepository roleRepository,
+        IRoleMappingService roleMappingService,
+        ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<UserAssignmentService> logger)
     {
         _assignmentRepository = assignmentRepository;
         _membershipRepository = membershipRepository;
         _organisationApplicationRepository = organisationApplicationRepository;
-        _roleRepository = roleRepository;
+        _roleMappingService = roleMappingService;
+        _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -104,30 +107,24 @@ public class UserAssignmentService : IUserAssignmentService
                 $"{userId}-{applicationId}");
         }
 
-        var roleIdsList = roleIds.ToList();
+        var roles = await _roleMappingService.GetAssignableRolesAsync(
+            organisationId,
+            membership.OrganisationRole,
+            roleIds,
+            cancellationToken);
 
-        // Verify all roles exist and belong to the application
-        var roles = new List<ApplicationRole>();
-        foreach (var roleId in roleIdsList)
+        foreach (var role in roles)
         {
-            var role = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
-            if (role == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationRole), roleId);
-            }
-
             if (role.ApplicationId != applicationId)
             {
                 throw new SystemInvalidOperationException(
-                    $"Role {roleId} does not belong to application {applicationId}");
+                    $"Role {role.Id} does not belong to application {applicationId}");
             }
 
             if (!role.IsActive)
             {
-                throw new SystemInvalidOperationException($"Role {roleId} is not active");
+                throw new SystemInvalidOperationException($"Role {role.Id} is not active");
             }
-
-            roles.Add(role);
         }
 
         // If assignment exists but inactive, reactivate it
@@ -145,6 +142,7 @@ public class UserAssignmentService : IUserAssignmentService
 
             _assignmentRepository.Update(existingAssignment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
             _logger.LogInformation("User assignment reactivated with ID: {AssignmentId}", existingAssignment.Id);
             return existingAssignment;
@@ -166,6 +164,7 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Add(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
         _logger.LogInformation("User assigned to application with assignment ID: {AssignmentId}", assignment.Id);
         return assignment;
@@ -188,34 +187,29 @@ public class UserAssignmentService : IUserAssignmentService
             throw new SystemInvalidOperationException($"Assignment {assignmentId} is not active");
         }
 
-        var roleIdsList = roleIds.ToList();
-
         // Get the application ID from the organisation application
         var organisationApplication = assignment.OrganisationApplication;
         var applicationId = organisationApplication.ApplicationId;
 
-        // Verify all roles exist and belong to the application
-        var roles = new List<ApplicationRole>();
-        foreach (var roleId in roleIdsList)
-        {
-            var role = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
-            if (role == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationRole), roleId);
-            }
+        var membership = assignment.UserOrganisationMembership;
+        var roles = await _roleMappingService.GetAssignableRolesAsync(
+            organisationId,
+            membership.OrganisationRole,
+            roleIds,
+            cancellationToken);
 
+        foreach (var role in roles)
+        {
             if (role.ApplicationId != applicationId)
             {
                 throw new SystemInvalidOperationException(
-                    $"Role {roleId} does not belong to application {applicationId}");
+                    $"Role {role.Id} does not belong to application {applicationId}");
             }
 
             if (!role.IsActive)
             {
-                throw new SystemInvalidOperationException($"Role {roleId} is not active");
+                throw new SystemInvalidOperationException($"Role {role.Id} is not active");
             }
-
-            roles.Add(role);
         }
 
         // Update roles
@@ -227,6 +221,7 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Update(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
         _logger.LogInformation("Assignment ID: {AssignmentId} updated successfully", assignmentId);
         return assignment;
@@ -250,6 +245,7 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Update(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(assignment.UserOrganisationMembershipId, cancellationToken);
 
         _logger.LogInformation("Assignment ID: {AssignmentId} revoked successfully", assignmentId);
     }
@@ -260,6 +256,15 @@ public class UserAssignmentService : IUserAssignmentService
     {
         _logger.LogInformation("Assigning default applications for membership ID: {MembershipId} in organisation ID: {OrganisationId}",
             membership.Id, membership.OrganisationId);
+
+        if (!await _roleMappingService.ShouldAutoAssignDefaultApplicationsAsync(membership, cancellationToken))
+        {
+            _logger.LogInformation(
+                "Skipping default application assignment for membership {MembershipId} because organisation role {OrganisationRole} is not eligible",
+                membership.Id,
+                membership.OrganisationRole);
+            return;
+        }
 
         var defaultOrganisationApplications = (await _organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
             membership.OrganisationId,

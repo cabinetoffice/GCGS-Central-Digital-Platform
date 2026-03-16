@@ -28,9 +28,14 @@ public class UserOrganisationMembership : ISoftDelete, IAuditable
     public int OrganisationId { get; set; }
 
     /// <summary>
-    /// Gets or sets the role of the user within the organisation.
+    /// Gets or sets the organisation role identifier.
     /// </summary>
-    public OrganisationRole OrganisationRole { get; set; }
+    public int OrganisationRoleId { get; set; }
+
+    /// <summary>
+    /// Gets the role of the user within the organisation, derived from <see cref="OrganisationRoleId"/>.
+    /// </summary>
+    public OrganisationRole OrganisationRole => (OrganisationRole)OrganisationRoleId;
 
     /// <summary>
     /// Gets or sets a value indicating whether this membership is active.
@@ -60,5 +65,6 @@ public class UserOrganisationMembership : ISoftDelete, IAuditable
 
     // Navigation properties
     public Organisation Organisation { get; set; } = null!;
+    public OrganisationRoleEntity OrganisationRoleEntity { get; set; } = null!;
     public ICollection<UserApplicationAssignment> ApplicationAssignments { get; set; } = new List<UserApplicationAssignment>();
 }
