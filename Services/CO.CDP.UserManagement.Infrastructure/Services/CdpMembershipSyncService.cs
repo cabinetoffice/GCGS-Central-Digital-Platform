@@ -3,7 +3,6 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using CdpOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using CdpPerson = CO.CDP.OrganisationInformation.Persistence.Person;
@@ -17,11 +16,8 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 public class CdpMembershipSyncService(
     OrganisationInformationContext organisationInformationContext,
     IOrganisationRepository organisationRepository,
-    IConfiguration configuration,
     ILogger<CdpMembershipSyncService> logger) : ICdpMembershipSyncService
 {
-    private const string FeatureFlagName = "Features:CdpMembershipSyncEnabled";
-
     public Task SyncMembershipCreatedAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default) =>
         SyncMembershipAsync(membership, MembershipSyncAction.Upsert, cancellationToken);
 
@@ -44,15 +40,9 @@ public class CdpMembershipSyncService(
 
     private SyncStatus EvaluateSyncStatus(UserOrganisationMembership membership)
     {
-        var featureEnabled = configuration.GetValue(FeatureFlagName, false);
         var hasCdpPersonId = membership.CdpPersonId.HasValue && membership.CdpPersonId != Guid.Empty;
 
-        return (featureEnabled, hasCdpPersonId) switch
-        {
-            (false, _) => SyncStatus.FeatureDisabled,
-            (true, false) => SyncStatus.MissingPersonId,
-            _ => SyncStatus.Ready
-        };
+        return hasCdpPersonId ? SyncStatus.Ready : SyncStatus.MissingPersonId;
     }
 
     private async Task<SyncTargetResult> ResolveSyncTargetAsync(
@@ -115,9 +105,6 @@ public class CdpMembershipSyncService(
     {
         switch (targetResult.Status)
         {
-            case SyncStatus.FeatureDisabled:
-                logger.LogDebug("CDP membership sync is disabled for membership {MembershipId}", membership.Id);
-                break;
             case SyncStatus.MissingPersonId:
                 logger.LogWarning("Skipping CDP membership sync for membership {MembershipId} because CdpPersonId is missing",
                     membership.Id);
@@ -221,7 +208,6 @@ public class CdpMembershipSyncService(
     private enum SyncStatus
     {
         Ready,
-        FeatureDisabled,
         MissingPersonId,
         OrganisationMissing,
         CdpOrganisationMissing,

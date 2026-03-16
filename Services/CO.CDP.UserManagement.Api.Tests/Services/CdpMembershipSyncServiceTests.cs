@@ -6,7 +6,6 @@ using CO.CDP.UserManagement.Infrastructure.Services;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using CdpOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
@@ -24,10 +23,9 @@ public class CdpMembershipSyncServiceTests
     {
         var context = CreateContext();
         var (org, person) = SeedOrganisationAndPerson(context);
-        var configuration = BuildConfiguration(enabled: true);
         var organisationRepository = BuildOrganisationRepository(org.Guid);
         var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, configuration, logger.Object);
+        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
 
         var membership = new UserOrganisationMembership
         {
@@ -52,10 +50,9 @@ public class CdpMembershipSyncServiceTests
     {
         var context = CreateContext();
         var (org, person) = SeedOrganisationAndPerson(context);
-        var configuration = BuildConfiguration(enabled: true);
         var organisationRepository = BuildOrganisationRepository(org.Guid);
         var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, configuration, logger.Object);
+        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
 
         var organisationPerson = new OrganisationPerson
         {
@@ -90,10 +87,9 @@ public class CdpMembershipSyncServiceTests
     {
         var context = CreateContext();
         var (org, person) = SeedOrganisationAndPerson(context);
-        var configuration = BuildConfiguration(enabled: true);
         var organisationRepository = BuildOrganisationRepository(org.Guid);
         var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, configuration, logger.Object);
+        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
 
         var organisationPerson = new OrganisationPerson
         {
@@ -124,30 +120,29 @@ public class CdpMembershipSyncServiceTests
     }
 
     [Fact]
-    public async Task SyncMembershipCreatedAsync_WhenDisabled_DoesNothing()
+    public async Task SyncMembershipCreatedAsync_WithoutCdpPersonId_DoesNothing()
     {
         var context = CreateContext();
-        var (org, person) = SeedOrganisationAndPerson(context);
-        var configuration = BuildConfiguration(enabled: false);
+        var (org, _) = SeedOrganisationAndPerson(context);
         var organisationRepository = BuildOrganisationRepository(org.Guid);
         var logger = new Mock<ILogger<CdpMembershipSyncService>>();
-        var service = new CdpMembershipSyncService(context, organisationRepository.Object, configuration, logger.Object);
+        var service = new CdpMembershipSyncService(context, organisationRepository.Object, logger.Object);
 
         var membership = new UserOrganisationMembership
         {
             Id = 4,
             OrganisationId = 10,
             Organisation = new UmOrganisation { Id = 10, CdpOrganisationGuid = org.Guid, Name = "Org", Slug = "org" },
-            OrganisationRole = OrganisationRole.Admin,
-            CdpPersonId = person.Guid
+            OrganisationRole = OrganisationRole.Admin
         };
 
         await service.SyncMembershipCreatedAsync(membership);
 
-        var organisationPerson = await context.Set<OrganisationPerson>()
-            .FirstOrDefaultAsync(op => op.OrganisationId == org.Id && op.PersonId == person.Id);
+        var organisationPersons = await context.Set<OrganisationPerson>()
+            .Where(op => op.OrganisationId == org.Id)
+            .ToListAsync();
 
-        organisationPerson.Should().BeNull();
+        organisationPersons.Should().BeEmpty();
     }
 
     private static OrganisationInformationContext CreateContext()
@@ -188,18 +183,6 @@ public class CdpMembershipSyncServiceTests
         context.SaveChanges();
 
         return (organisation, person);
-    }
-
-    private static IConfiguration BuildConfiguration(bool enabled)
-    {
-        var values = new Dictionary<string, string?>
-        {
-            ["Features:CdpMembershipSyncEnabled"] = enabled.ToString()
-        };
-
-        return new ConfigurationBuilder()
-            .AddInMemoryCollection(values)
-            .Build();
     }
 
     private static Mock<IOrganisationRepository> BuildOrganisationRepository(Guid cdpOrganisationGuid)
