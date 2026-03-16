@@ -76,8 +76,8 @@ locals {
       cfs_extra_domains           = ["www-preview.contractsfinder.service.gov.uk"]
       fts_apply_master_password   = false
       fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
-      fts_restore_from_snapshot   = true
-      fts_snapshot_identifier     = "arn:aws:rds:eu-west-2:471112843276:cluster-snapshot:fm-571-fts-prod-share-2026-03-16"
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       name                        = "staging"
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"

@@ -8,6 +8,7 @@ resource "aws_rds_cluster" "this" {
   db_instance_parameter_group_name = aws_db_parameter_group.this.name
   db_subnet_group_name             = length(var.public_subnet_ids) > 0 ? aws_db_subnet_group.public[0].name : aws_db_subnet_group.this.name
   deletion_protection              = var.deletion_protection
+  skip_final_snapshot              = var.deletion_protection ? false : true
   engine                           = var.engine
   engine_version                   = var.engine_version
   snapshot_identifier            = var.snapshot_identifier
