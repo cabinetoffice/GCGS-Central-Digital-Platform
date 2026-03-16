@@ -148,15 +148,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = builder.Configuration["Authentication:Authority"];
-        options.RequireHttpsMetadata = builder.Environment.IsProduction();
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidateAudience = false
-        };
-    })
+    .AddJwtBearerAuthentication(builder.Configuration, builder.Environment)
     .AddApiKeyAuthentication();
 
 builder.Services.AddApiKeyAuthenticationServices();
