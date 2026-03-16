@@ -1,6 +1,4 @@
-using CO.CDP.UserManagement.Api.Controllers;
 using CO.CDP.UserManagement.Api.FeatureFlags;
-using CO.CDP.UserManagement.Shared.FeatureFlags;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,13 +12,15 @@ namespace CO.CDP.UserManagement.Api.Tests.FeatureFlags;
 
 public class FeatureFlagBehaviourTests
 {
+    private const string TestFeatureFlag = "Features:TestFlag";
+
     [Fact]
     public async Task RequireFeatureFlag_WhenDisabled_ReturnsNotFoundAndSkipsAction()
     {
-        var attribute = new RequireFeatureFlagAttribute(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
+        var attribute = new RequireFeatureFlagAttribute(TestFeatureFlag);
         var context = CreateActionExecutingContext(new Dictionary<string, string?>
         {
-            [Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled] = "false"
+            [TestFeatureFlag] = "false"
         });
         var nextCalled = false;
 
@@ -37,10 +37,10 @@ public class FeatureFlagBehaviourTests
     [Fact]
     public async Task RequireFeatureFlag_WhenEnabled_ExecutesAction()
     {
-        var attribute = new RequireFeatureFlagAttribute(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
+        var attribute = new RequireFeatureFlagAttribute(TestFeatureFlag);
         var context = CreateActionExecutingContext(new Dictionary<string, string?>
         {
-            [Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled] = "true"
+            [TestFeatureFlag] = "true"
         });
         var nextCalled = false;
 
@@ -71,25 +71,6 @@ public class FeatureFlagBehaviourTests
         flags.OrganisationRegisteredEnabled.Should().BeTrue();
         flags.OrganisationUpdatedEnabled.Should().BeFalse();
         flags.PersonInviteClaimedEnabled.Should().BeTrue();
-    }
-
-    [Fact]
-    public void Controllers_AreDecoratedWithExpectedUserFlowFeatureFlags()
-    {
-        GetControllerFlag<OrganisationInvitesController>()
-            .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
-        GetControllerFlag<OrganisationInviteAcceptanceController>()
-            .Should().Be(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled);
-    }
-
-    private static string GetControllerFlag<TController>()
-    {
-        var attribute = typeof(TController)
-            .GetCustomAttributes(typeof(RequireFeatureFlagAttribute), inherit: true)
-            .Cast<RequireFeatureFlagAttribute>()
-            .Single();
-
-        return attribute.FeatureFlagName;
     }
 
     private static ActionExecutingContext CreateActionExecutingContext(

@@ -16,7 +16,6 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/invites")]
-[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled)]
 public class OrganisationInviteAcceptanceController : ControllerBase
 {
     private readonly IInviteOrchestrationService _inviteOrchestrationService;
