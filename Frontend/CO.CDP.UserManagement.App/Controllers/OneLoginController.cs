@@ -13,7 +13,7 @@ public class OneLoginController(
 {
     [AllowAnonymous]
     [IgnoreAntiforgeryToken]
-    [HttpPost("/signout-oidc")]
+    [HttpPost("/one-login/back-channel-sign-out")]
     [Consumes("application/x-www-form-urlencoded")]
     public async Task<IActionResult> BackChannelSignOut([FromForm(Name = "logout_token")] string? logoutToken)
     {

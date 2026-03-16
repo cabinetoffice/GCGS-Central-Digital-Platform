@@ -14,7 +14,7 @@ resource "aws_cognito_user_pool_client" "user_management_app" {
   ]
   generate_secret = true
   logout_urls = [
-    "${local.user_management_app_url}/signout-oidc",
+    "${local.user_management_app_url}/one-login/back-channel-sign-out",
     "${local.user_management_app_url}/signout-callback-oidc"
   ]
 

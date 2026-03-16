@@ -111,6 +111,7 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
+    options.LogoutPath = "/logout";
     options.EventsType = typeof(CO.CDP.Authentication.Services.CookieEventsService);
 })
 .AddOpenIdConnect(options =>
@@ -119,7 +120,8 @@ builder.Services.AddAuthentication(options =>
     options.ClientId = oneLoginOptions.ClientId;
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.ResponseMode = OpenIdConnectResponseMode.Query;
-    options.RemoteSignOutPath = "/signout-oidc";
+    options.SignedOutCallbackPath = "/signout-callback-oidc";
+    options.RemoteSignOutPath = "/one-login/back-channel-sign-out";
     options.Scope.Clear();
     options.Scope.Add(StandardScopes.OpenId);
     options.Scope.Add(StandardScopes.Phone);

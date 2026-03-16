@@ -56,7 +56,7 @@ public class OneLoginControllerTests
     }
 
     [Fact]
-    public void BackChannelSignOut_UsesSignoutOidcRoute()
+    public void BackChannelSignOut_UsesBackChannelSignOutRoute()
     {
         var method = typeof(OneLoginController).GetMethod(nameof(OneLoginController.BackChannelSignOut));
 
@@ -66,7 +66,7 @@ public class OneLoginControllerTests
             .Cast<HttpMethodAttribute>()
             .Select(attribute => attribute.Template)
             .Should()
-            .Contain("/signout-oidc");
+            .Contain("/one-login/back-channel-sign-out");
     }
 
     [Fact]
