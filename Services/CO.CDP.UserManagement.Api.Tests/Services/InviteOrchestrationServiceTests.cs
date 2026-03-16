@@ -22,6 +22,7 @@ public class InviteOrchestrationServiceTests
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IPersonLookupService> _personLookupServiceMock;
+    private readonly Mock<IUserAssignmentService> _userAssignmentServiceMock;
     private readonly Mock<ICdpMembershipSyncService> _membershipSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly InviteOrchestrationService _service;
@@ -33,6 +34,7 @@ public class InviteOrchestrationServiceTests
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _organisationClientMock = new Mock<IOrganisationClient>();
         _personLookupServiceMock = new Mock<IPersonLookupService>();
+        _userAssignmentServiceMock = new Mock<IUserAssignmentService>();
         _membershipSyncServiceMock = new Mock<ICdpMembershipSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         var loggerMock = new Mock<ILogger<InviteOrchestrationService>>();
@@ -57,6 +59,10 @@ public class InviteOrchestrationServiceTests
             .Setup(s => s.SyncMembershipRemovedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
+        _userAssignmentServiceMock
+            .Setup(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
         var repositories = new InviteOrchestrationServiceRepositories(
             _organisationRepositoryMock.Object,
             _inviteRoleMappingRepositoryMock.Object,
@@ -66,6 +72,7 @@ public class InviteOrchestrationServiceTests
             repositories,
             _organisationClientMock.Object,
             _personLookupServiceMock.Object,
+            _userAssignmentServiceMock.Object,
             _membershipSyncServiceMock.Object,
             _unitOfWorkMock.Object,
             loggerMock.Object);
@@ -507,6 +514,9 @@ public class InviteOrchestrationServiceTests
 
         _membershipSyncServiceMock.Verify(
             s => s.SyncMembershipCreatedAsync(It.IsAny<UserOrganisationMembership>(), default),
+            Times.Once);
+        _userAssignmentServiceMock.Verify(
+            s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), default),
             Times.Once);
 
         _inviteRoleMappingRepositoryMock.Verify(r => r.Remove(mapping), Times.Once);

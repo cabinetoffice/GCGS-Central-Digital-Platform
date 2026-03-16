@@ -41,4 +41,17 @@ public class OrganisationApplicationRepository : Repository<OrganisationApplicat
             .Distinct()
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IEnumerable<OrganisationApplication>> GetDefaultEnabledByOrganisationIdAsync(
+        int organisationId,
+        CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .Include(oa => oa.Application)
+            .Where(oa => oa.OrganisationId == organisationId
+                         && oa.IsActive
+                         && oa.Application.IsActive
+                         && oa.Application.IsEnabledByDefault)
+            .ToListAsync(cancellationToken);
+    }
 }
