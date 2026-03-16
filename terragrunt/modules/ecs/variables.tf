@@ -256,7 +256,6 @@ variable "queue_user_management_url" {
   type        = string
 }
 
-
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
@@ -382,10 +381,6 @@ variable "user_pool_commercial_tools_client_id" {
   type = string
 }
 
-variable "user_pool_user_management_client_id" {
-  type = string
-}
-
 variable "user_pool_domain" {
   type = string
 }
@@ -411,6 +406,10 @@ variable "user_pool_fts_healthcheck_client_id" {
 }
 
 variable "user_pool_fts_healthcheck_domain" {
+  type = string
+}
+
+variable "user_pool_user_management_client_id" {
   type = string
 }
 
