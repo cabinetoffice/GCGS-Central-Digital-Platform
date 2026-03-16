@@ -1,0 +1,36 @@
+@model CO.CDP.UserManagement.App.Models.RemoveApplicationSuccessViewModel
+@{
+    ViewData["Title"] = "Access revoked";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Access revoked</h1>
+            <div class="govuk-panel__body">
+                @Model.UserDisplayName no longer has access to @Model.ApplicationName
+            </div>
+        </div>
+
+        <p class="govuk-body govuk-!-margin-top-6">This user can no longer sign in to or use this application.</p>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Application</dt>
+                <dd class="govuk-summary-list__value">@Model.ApplicationName</dd>
+            </div>
+        </dl>
+
+        <p class="govuk-body">
+            <a href="/organisation/@Model.OrganisationSlug" class="govuk-link">Return to dashboard</a>
+        </p>
+    </div>
+</div>

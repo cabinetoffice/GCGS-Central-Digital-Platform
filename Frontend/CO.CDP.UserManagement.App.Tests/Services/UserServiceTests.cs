@@ -126,7 +126,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await _service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
+        var result = await _service.InviteUserAsync("org", InviteUserViewModel.Empty, CancellationToken.None);
 
         result.Should().BeFalse();
     }

@@ -598,6 +598,45 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
         }
     }
 
+    public async Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
+            var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+
+            if (user == null) return null;
+
+            var allApps = await apiClient.ApplicationsAllAsync(ct);
+            var app = allApps.FirstOrDefault(a => a.ClientId == clientId);
+
+            if (app == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            return new RemoveApplicationSuccessViewModel
+            {
+                OrganisationSlug = organisationSlug,
+                UserDisplayName = displayName,
+                Email = user.Email ?? string.Empty,
+                ApplicationName = app.Name,
+                CdpPersonId = cdpPersonId
+            };
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+
     private static IReadOnlyList<UserApplicationAccessViewModel> BuildApplicationAccess(
         IEnumerable<UserAssignmentResponse>? assignments)
     {

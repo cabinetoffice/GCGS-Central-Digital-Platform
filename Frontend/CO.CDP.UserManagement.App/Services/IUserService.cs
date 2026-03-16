@@ -58,4 +58,10 @@ public interface IUserService
         Guid? inviteGuid,
         IReadOnlyList<ApplicationRoleAssignmentPostModel> applicationRoleAssignments,
         CancellationToken ct = default);
+
+    Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
 }
