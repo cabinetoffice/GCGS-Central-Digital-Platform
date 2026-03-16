@@ -19,6 +19,10 @@ locals {
     orchestrator = {
       cidr_block             = "10.${local.cidr_b_orchestrator}.0.0/16"
       account_id             = 891377225335
+      fts_apply_master_password   = false
+      fts_extra_domains           = []
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       name                   = "orchestrator"
       postgres_instance_type = "db.t4g.micro"
       private_subnets = [
@@ -39,7 +43,10 @@ locals {
       account_id                  = 471112892058
       canary_schedule_expression  = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       cfs_extra_domains           = ["www-development.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -71,7 +78,10 @@ locals {
       account_id                  = 905418042182
       canary_schedule_expression  = "rate(30 minutes)"
       cfs_extra_domains           = ["www-preview.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = true
+      fts_snapshot_identifier     = "arn:aws:rds:eu-west-2:471112843276:cluster-snapshot:fm-571-fts-prod-share-2026-03-16"
       name                        = "staging"
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
@@ -104,7 +114,10 @@ locals {
       account_id                  = 767397666448
       canary_schedule_expression  = "rate(30 minutes)"
       cfs_extra_domains           = ["www-integration.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-tpp.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -141,7 +154,10 @@ locals {
       account_id                  = 471112843276
       canary_schedule_expression  = "rate(15 minutes)"
       cfs_extra_domains           = ["www.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -177,7 +193,10 @@ locals {
   aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_extra_domains                 = try(local.environments[local.environment].cfs_extra_domains, [])
+  fts_apply_master_password         = try(local.environments[local.environment].fts_apply_master_password, false)
   fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
+  fts_restore_from_snapshot         = try(local.environments[local.environment].fts_restore_from_snapshot, false)
+  fts_snapshot_identifier           = try(local.environments[local.environment].fts_snapshot_identifier, null)
   mail_from_domains                 = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)

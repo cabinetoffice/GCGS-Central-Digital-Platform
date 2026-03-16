@@ -59,6 +59,10 @@ inputs = {
   aurora_mysql_instance_type       = local.global_vars.locals.aurora_mysql_instance_type
   tags                             = local.tags
 
+  fts_snapshot_identifier          = local.global_vars.locals.fts_snapshot_identifier
+  fts_restore_from_snapshot        = local.global_vars.locals.fts_restore_from_snapshot
+  fts_apply_master_password        = local.global_vars.locals.fts_apply_master_password
+
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
