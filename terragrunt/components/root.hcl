@@ -19,10 +19,6 @@ locals {
     orchestrator = {
       cidr_block             = "10.${local.cidr_b_orchestrator}.0.0/16"
       account_id             = 891377225335
-      fts_apply_master_password   = false
-      fts_extra_domains           = []
-      fts_restore_from_snapshot   = false
-      fts_snapshot_identifier     = null
       name                   = "orchestrator"
       postgres_instance_type = "db.t4g.micro"
       private_subnets = [
