@@ -35,9 +35,6 @@ builder.Services.AddHttpContextAccessor();
 // Application Registry Infrastructure and Core Services
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
 var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
-var redisConnectionString = awsConfiguration?.ElastiCache is not null
-    ? $"{awsConfiguration.ElastiCache.Hostname}:{awsConfiguration.ElastiCache.Port}"
-    : throw new InvalidOperationException("AWS ElastiCache configuration is required but not found. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are configured.");
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
@@ -127,8 +124,7 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString)
-    .AddRedis(redisConnectionString);
+    .AddNpgSql(connectionString);
 
 var app = builder.Build();
 app.UseForwardedHeaders();
