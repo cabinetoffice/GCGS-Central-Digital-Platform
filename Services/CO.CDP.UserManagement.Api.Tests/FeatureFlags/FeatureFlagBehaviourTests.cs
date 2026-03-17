@@ -73,6 +73,35 @@ public class FeatureFlagBehaviourTests
         flags.PersonInviteClaimedEnabled.Should().BeTrue();
     }
 
+    [Fact]
+    public void SqsDispatcherEnabled_DefaultsToTrue_WhenNotConfigured()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>())
+            .Build();
+
+        var enabled = configuration.GetValue(
+            Shared.FeatureFlags.FeatureFlags.Messaging.SqsDispatcherEnabled, true);
+
+        enabled.Should().BeTrue();
+    }
+
+    [Fact]
+    public void SqsDispatcherEnabled_ReturnsFalse_WhenDisabledInConfiguration()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                [Shared.FeatureFlags.FeatureFlags.Messaging.SqsDispatcherEnabled] = "false"
+            })
+            .Build();
+
+        var enabled = configuration.GetValue(
+            Shared.FeatureFlags.FeatureFlags.Messaging.SqsDispatcherEnabled, true);
+
+        enabled.Should().BeFalse();
+    }
+
     private static ActionExecutingContext CreateActionExecutingContext(
         IDictionary<string, string?> settings)
     {

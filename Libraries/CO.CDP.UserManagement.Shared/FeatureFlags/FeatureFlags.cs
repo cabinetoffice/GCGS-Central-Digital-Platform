@@ -8,4 +8,13 @@ public static class FeatureFlags
         public const string OrganisationUpdatedEnabled = "Features:Subscribers:OrganisationUpdatedEnabled";
         public const string PersonInviteClaimedEnabled = "Features:Subscribers:PersonInviteClaimedEnabled";
     }
+
+    public static class Messaging
+    {
+        /// <summary>
+        /// Enables the SQS dispatcher background service and all pub/sub subscriber wiring.
+        /// Set to false to temporarily disable messaging without removing configuration.
+        /// </summary>
+        public const string SqsDispatcherEnabled = "Features:Messaging:SqsDispatcherEnabled";
+    }
 }
