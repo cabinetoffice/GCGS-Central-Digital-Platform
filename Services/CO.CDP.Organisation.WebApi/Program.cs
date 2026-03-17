@@ -20,6 +20,7 @@ using CO.CDP.OrganisationInformation.Persistence.Repositories;
 using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -119,6 +120,8 @@ builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandle
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();

@@ -1,7 +1,9 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Infrastructure.Constants;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
@@ -9,6 +11,7 @@ public class CdpMembershipSyncService(
     IUserOrganisationMembershipRepository membershipRepository,
     IRoleMappingService roleMappingService,
     IOrganisationPersonSyncRepository organisationPersonSyncRepository,
+    IFeatureManager featureManager,
     ILogger<CdpMembershipSyncService> logger) : ICdpMembershipSyncService
 {
     public Task SyncMembershipCreatedAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default) =>
@@ -19,6 +22,14 @@ public class CdpMembershipSyncService(
 
     public async Task SyncMembershipRemovedAsync(UserOrganisationMembership membership, CancellationToken cancellationToken = default)
     {
+        if (!await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+        {
+            logger.LogInformation(
+                "Skipping removal sync for membership {MembershipId}: OrganisationSyncEnabled is disabled",
+                membership.Id);
+            return;
+        }
+
         var org = membership.Organisation
             ?? (await membershipRepository.GetWithOrganisationAndRoleAsync(membership.Id, cancellationToken))?.Organisation;
 
@@ -41,6 +52,13 @@ public class CdpMembershipSyncService(
 
     public async Task SyncMembershipAccessChangedAsync(int membershipId, CancellationToken cancellationToken = default)
     {
+        if (!await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+        {
+            logger.LogInformation(
+                "Skipping OI sync for membership {MembershipId}: OrganisationSyncEnabled is disabled", membershipId);
+            return;
+        }
+
         var membership = await membershipRepository.GetWithOrganisationAndRoleAsync(membershipId, cancellationToken)
             ?? throw new EntityNotFoundException(nameof(UserOrganisationMembership), membershipId);
 

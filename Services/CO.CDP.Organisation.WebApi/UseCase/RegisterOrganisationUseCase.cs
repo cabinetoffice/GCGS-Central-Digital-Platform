@@ -3,9 +3,11 @@ using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.UserManagement.Core.Interfaces;
+using Microsoft.FeatureManagement;
 
 using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
@@ -27,6 +29,7 @@ public class RegisterOrganisationUseCase(
     ILogger<RegisterOrganisationUseCase> logger,
     IClaimService claimService,
     IUmOrganisationSyncRepository umOrganisationSyncRepository,
+    IFeatureManager featureManager,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
@@ -42,7 +45,8 @@ public class RegisterOrganisationUseCase(
         IConfiguration configuration,
         ILogger<RegisterOrganisationUseCase> logger,
         IClaimService claimService,
-        IUmOrganisationSyncRepository umOrganisationSyncRepository)
+        IUmOrganisationSyncRepository umOrganisationSyncRepository,
+        IFeatureManager featureManager)
         : this(identifierService,
               organisationRepository,
               personRepository,
@@ -53,6 +57,7 @@ public class RegisterOrganisationUseCase(
               logger,
               claimService,
               umOrganisationSyncRepository,
+              featureManager,
               Guid.NewGuid)
     {
     }
@@ -65,7 +70,10 @@ public class RegisterOrganisationUseCase(
             organisation,
             async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        await umOrganisationSyncRepository.EnsureCreatedAsync(organisation.Guid, organisation.Name);
+        if (await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+        {
+            await umOrganisationSyncRepository.EnsureCreatedAsync(organisation.Guid, organisation.Name);
+        }
 
         if (organisation.PendingRoles.Contains(CO.CDP.OrganisationInformation.PartyRole.Buyer))
         {

@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.FeatureManagement;
 using Npgsql;
 using System.Reflection;
 using CO.CDP.Configuration.Assembly;
@@ -44,6 +45,8 @@ var organisationInformationConnectionString =
 builder.Services.AddUserManagementInfrastructure(connectionString);
 
 builder.Services.AddUserManagementCaching(awsConfiguration);
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddCdpAuthentication(builder.Configuration);
 

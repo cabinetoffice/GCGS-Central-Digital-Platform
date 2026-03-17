@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
@@ -13,6 +14,7 @@ public class CdpMembershipSyncServiceTests
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository;
     private readonly Mock<IRoleMappingService> _roleMappingService;
     private readonly Mock<IOrganisationPersonSyncRepository> _syncRepository;
+    private readonly Mock<IFeatureManager> _featureManager;
     private readonly CdpMembershipSyncService _service;
 
     private static readonly Guid OrgGuid = Guid.NewGuid();
@@ -31,10 +33,14 @@ public class CdpMembershipSyncServiceTests
         _membershipRepository = new Mock<IUserOrganisationMembershipRepository>();
         _roleMappingService = new Mock<IRoleMappingService>();
         _syncRepository = new Mock<IOrganisationPersonSyncRepository>();
+        _featureManager = new Mock<IFeatureManager>();
+        _featureManager.Setup(f => f.IsEnabledAsync(Infrastructure.Constants.FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(true);
         _service = new CdpMembershipSyncService(
             _membershipRepository.Object,
             _roleMappingService.Object,
             _syncRepository.Object,
+            _featureManager.Object,
             Mock.Of<ILogger<CdpMembershipSyncService>>());
     }
 
@@ -108,6 +114,33 @@ public class CdpMembershipSyncServiceTests
         _syncRepository.Verify(r => r.UpsertAsync(
             It.IsAny<Guid>(), It.IsAny<Guid>(),
             It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task SyncMembershipCreatedAsync_WhenOrganisationSyncDisabled_DoesNotSync()
+    {
+        _featureManager.Setup(f => f.IsEnabledAsync(Infrastructure.Constants.FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(false);
+        var membership = ActiveMembership(OrganisationRole.Admin);
+
+        await _service.SyncMembershipCreatedAsync(membership);
+
+        _syncRepository.Verify(r => r.UpsertAsync(
+            It.IsAny<Guid>(), It.IsAny<Guid>(),
+            It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task SyncMembershipRemovedAsync_WhenOrganisationSyncDisabled_DoesNotRemove()
+    {
+        _featureManager.Setup(f => f.IsEnabledAsync(Infrastructure.Constants.FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(false);
+        var membership = ActiveMembership(OrganisationRole.Member);
+
+        await _service.SyncMembershipRemovedAsync(membership);
+
+        _syncRepository.Verify(r => r.RemoveAsync(
+            It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static UserOrganisationMembership ActiveMembership(OrganisationRole role, bool hasCdpPersonId = true) =>
