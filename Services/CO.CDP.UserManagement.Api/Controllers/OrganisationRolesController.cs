@@ -1,12 +1,14 @@
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.UserManagement.Api.Controllers;
 
 [ApiController]
 [Route("api/organisation-roles")]
+[Authorize]
 public class OrganisationRolesController(
     IOrganisationRoleService organisationRoleService,
     ILogger<OrganisationRolesController> logger) : ControllerBase
