@@ -7,9 +7,11 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.UserManagement.Core.Interfaces;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -23,6 +25,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly IConfiguration _configuration;
     private readonly Mock<IGovUKNotifyApiClient> _notifyClient = new();
     private readonly Mock<ILogger<UpdateOrganisationUseCase>> _logger = new();
+    private readonly Mock<IUmOrganisationSyncRepository> _umOrganisationSyncRepository = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _anotherOrganisationId = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
@@ -43,7 +47,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration, _notifyClient.Object, _logger.Object);
+        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration, _notifyClient.Object, _logger.Object, _umOrganisationSyncRepository.Object, _featureManager.Object);
     }
 
     [Fact]

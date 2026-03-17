@@ -3,7 +3,7 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
+using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -79,9 +79,9 @@ public class RemovePersonFromOrganisationUseCaseTest
         _organisationRepository.Verify(r => r.Save(organisation), Times.Never);
     }
 
-    private static Person GivenPerson()
+    private static OiPerson GivenPerson()
     {
-        return new Person
+        return new OiPerson
         {
             Id = 1,
             Guid = Guid.NewGuid(),
@@ -93,8 +93,8 @@ public class RemovePersonFromOrganisationUseCaseTest
     }
 
     private static OrganisationInformation.Persistence.Organisation GivenOrganisation(
-        Person? organisationPerson = null,
-        Person? tenantPerson = null
+        OiPerson? organisationPerson = null,
+        OiPerson? tenantPerson = null
     )
     {
         var organisation = new OrganisationInformation.Persistence.Organisation

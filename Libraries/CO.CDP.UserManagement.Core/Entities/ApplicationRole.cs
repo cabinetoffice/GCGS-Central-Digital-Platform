@@ -49,8 +49,11 @@ public class ApplicationRole : ISoftDelete, IAuditable
     public DateTimeOffset? ModifiedAt { get; set; }
     public string? ModifiedBy { get; set; }
 
+    public bool SyncToOrganisationInformation { get; set; }
+
     // Navigation properties
     public Application Application { get; set; } = null!;
     public ICollection<ApplicationPermission> Permissions { get; set; } = new List<ApplicationPermission>();
     public ICollection<UserApplicationAssignment> UserAssignments { get; set; } = new List<UserApplicationAssignment>();
+    public List<string> OrganisationInformationScopes { get; set; } = [];
 }

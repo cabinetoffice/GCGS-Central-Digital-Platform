@@ -1,16 +1,13 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
+using CO.CDP.UserManagement.Api;
 using CO.CDP.UserManagement.Infrastructure;
-using CO.CDP.UserManagement.Infrastructure.Events;
-using CO.CDP.UserManagement.Infrastructure.Subscribers;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
-using CO.CDP.MQ;
 using CO.CDP.UserManagement.Api.Validation;
-using CO.CDP.UserManagement.Api.FeatureFlags;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -19,12 +16,12 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.FeatureManagement;
 using Npgsql;
-using System.Reflection;
-using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
+UserManagementApiConfigurationValidator.Validate(builder.Configuration, builder.Environment);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -45,12 +42,11 @@ builder.Services.AddUserManagementInfrastructure(connectionString);
 
 builder.Services.AddUserManagementCaching(awsConfiguration);
 
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
+
 builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
-var subscriberFeatureFlags = SubscriberFeatureFlags.FromConfiguration(builder.Configuration);
-var sqsDispatcherEnabled = builder.Configuration.GetValue(
-    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.Messaging.SqsDispatcherEnabled, true);
 
 builder.Services.AddLoggingConfiguration(builder.Configuration);
 
@@ -70,62 +66,6 @@ if (awsConfiguration?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsC
         .AddCloudWatchSerilog(builder.Configuration);
 }
 
-if (sqsDispatcherEnabled &&
-    ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
-     (Assembly.GetEntryAssembly().IsRunAs("testhost"))))
-{
-    if (awsConfiguration?.SqsDispatcher is null)
-    {
-        throw new InvalidOperationException("AWS SQS Dispatcher configuration is required but not found. Ensure Aws:SqsDispatcher:QueueUrl is configured.");
-    }
-
-    if (string.IsNullOrWhiteSpace(awsConfiguration.SqsDispatcher.QueueUrl))
-    {
-        throw new InvalidOperationException("AWS SQS Dispatcher QueueUrl is required but not configured.");
-    }
-
-    builder.Services
-        .AddAwsSqsService()
-        .AddSqsDispatcher(
-            EventDeserializer.Deserializer,
-            enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api"),
-                services =>
-                {
-                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
-                    {
-                        services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredSubscriber>();
-                    }
-
-                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
-                    {
-                        services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedSubscriber>();
-                    }
-
-                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
-                    {
-                        services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedSubscriber>();
-                    }
-                },
-                (services, dispatcher) =>
-                {
-                    if (subscriberFeatureFlags.OrganisationRegisteredEnabled)
-                    {
-                        dispatcher.Subscribe<OrganisationRegistered>(services);
-                    }
-
-                    if (subscriberFeatureFlags.OrganisationUpdatedEnabled)
-                    {
-                        dispatcher.Subscribe<OrganisationUpdated>(services);
-                    }
-
-                    if (subscriberFeatureFlags.PersonInviteClaimedEnabled)
-                    {
-                        dispatcher.Subscribe<PersonInviteClaimed>(services);
-                    }
-                }
-            );
-}
-
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
 const string personHttpClientName = "PersonClient";
 builder.Services.AddHttpClient(personHttpClientName)
@@ -141,6 +81,7 @@ builder.Services.AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClie
     new CO.CDP.Organisation.WebApiClient.OrganisationClient(
         organisationServiceUrl ?? string.Empty,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
+builder.Services.AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter, CO.CDP.UserManagement.Api.Services.OrganisationApiAdapter>();
 
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
 builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>

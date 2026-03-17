@@ -213,7 +213,7 @@ public class OrganisationsController : ControllerBase
 
             var partyRoles = organisation.Roles
                 .Select(r => (UmPartyRole)(int)r)
-                .Where(r => Enum.IsDefined(typeof(UmPartyRole), r));
+                .Where(r => Enum.IsDefined(r));
 
             return Ok(partyRoles);
         }

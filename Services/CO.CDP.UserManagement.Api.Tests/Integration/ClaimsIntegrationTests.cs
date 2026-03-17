@@ -107,7 +107,9 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
             {
                 UserPrincipalId = userPrincipalId,
                 Organisation = org,
-                OrganisationRole = Shared.Enums.OrganisationRole.Admin,
+                OrganisationRoleId = context.OrganisationRoles
+                    .Single(d => d.Id == (int)Shared.Enums.OrganisationRole.Admin)
+                    .Id,
                 IsActive = true,
                 JoinedAt = DateTimeOffset.UtcNow
             };
