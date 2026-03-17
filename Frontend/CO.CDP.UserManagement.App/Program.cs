@@ -18,6 +18,7 @@ using static IdentityModel.OidcConstants;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
+UserManagementAppConfigurationValidator.Validate(builder.Configuration, builder.Environment);
 
 // Routing configuration
 builder.Services.AddRouting(options =>
@@ -49,7 +50,8 @@ builder.Services
 builder.Services.AddDataProtection()
     .SetApplicationName("CDP-Frontends")
     .PersistKeysToAWSSystemsManager(
-        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix"));
+        builder.Configuration.GetValue<string>("Aws:SystemManager:DataProtectionPrefix")
+        ?? throw new InvalidOperationException("Missing configuration key: Aws:SystemManager:DataProtectionPrefix."));
 
 var cookieSettings = new CO.CDP.UI.Foundation.Cookies.CookieSettings();
 builder.Configuration.GetSection("CookieSettings").Bind(cookieSettings);

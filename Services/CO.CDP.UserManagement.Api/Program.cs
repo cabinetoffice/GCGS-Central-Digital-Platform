@@ -1,5 +1,6 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
+using CO.CDP.UserManagement.Api;
 using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
@@ -20,6 +21,7 @@ using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
+UserManagementApiConfigurationValidator.Validate(builder.Configuration, builder.Environment);
 
 // Add services to the container
 builder.Services.AddControllers();
