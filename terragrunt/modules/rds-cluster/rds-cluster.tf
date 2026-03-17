@@ -3,16 +3,18 @@ resource "aws_rds_cluster" "this" {
   backup_retention_period          = var.backup_retention_period
   cluster_identifier               = var.db_name
   copy_tags_to_snapshot            = var.copy_tags_to_snapshot
-  database_name                    = replace(var.db_name, "-", "_")
+  database_name                    = var.restore_from_snapshot ? null : replace(var.db_name, "-", "_")
   db_cluster_parameter_group_name  = aws_rds_cluster_parameter_group.this.name
   db_instance_parameter_group_name = aws_db_parameter_group.this.name
   db_subnet_group_name             = length(var.public_subnet_ids) > 0 ? aws_db_subnet_group.public[0].name : aws_db_subnet_group.this.name
   deletion_protection              = var.deletion_protection
+  skip_final_snapshot              = var.deletion_protection ? false : true
   engine                           = var.engine
   engine_version                   = var.engine_version
+  snapshot_identifier            = var.snapshot_identifier
   # kms_key_id                       = module.storage_encryption_key.key_arn
-  master_password   = jsondecode(data.aws_secretsmanager_secret_version.fetched_password.secret_string)["password"]
-  master_username   = "${replace(var.db_name, "-", "_")}_user"
+  master_password   = (var.restore_from_snapshot && !var.apply_master_password) ? null : jsondecode(data.aws_secretsmanager_secret_version.fetched_password.secret_string)["password"]
+  master_username   = var.restore_from_snapshot ? null : "${replace(var.db_name, "-", "_")}_user"
   storage_encrypted = true
 
   vpc_security_group_ids = [var.db_sg_id]

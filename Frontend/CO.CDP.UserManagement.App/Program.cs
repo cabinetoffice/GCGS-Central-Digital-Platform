@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.App;
+using CO.CDP.UserManagement.App.Authentication;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
@@ -62,6 +63,13 @@ builder.Services.AddUiFoundation(builder.Configuration, ui => {
 });
 builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>();
 builder.Services.AddCdpAuthentication(builder.Configuration);
+builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
+builder.Services.AddOptions<OneLoginOptions>()
+    .Bind(builder.Configuration.GetSection("OneLogin"))
+    .ValidateDataAnnotations()
+    .Validate(options => Uri.TryCreate(options.Authority, UriKind.Absolute, out _),
+        "OneLogin:Authority must be a valid absolute URI.")
+    .ValidateOnStart();
 
 // API client configuration with bearer token handler
 var apiBaseUrl = builder.Configuration["UserManagementApi:BaseUrl"]
@@ -78,10 +86,8 @@ builder.Services.AddTransient<CO.CDP.UserManagement.WebApiClient.UserManagementC
 });
 
 // Authentication configuration
-var oneLoginAuthority = builder.Configuration.GetValue<string>("OneLogin:Authority")
-    ?? throw new InvalidOperationException("Missing configuration key: OneLogin:Authority.");
-var oneLoginClientId = builder.Configuration.GetValue<string>("OneLogin:ClientId")
-    ?? throw new InvalidOperationException("Missing configuration key: OneLogin:ClientId.");
+var oneLoginOptions = builder.Configuration.GetSection("OneLogin").Get<OneLoginOptions>()
+                     ?? new OneLoginOptions();
 var cookieSecurePolicy = builder.Environment.IsDevelopment()
     ? CookieSecurePolicy.SameAsRequest
     : CookieSecurePolicy.Always;
@@ -105,14 +111,17 @@ builder.Services.AddAuthentication(options =>
 {
     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
     options.SlidingExpiration = true;
+    options.LogoutPath = "/logout";
     options.EventsType = typeof(CO.CDP.Authentication.Services.CookieEventsService);
 })
 .AddOpenIdConnect(options =>
 {
-    options.Authority = oneLoginAuthority;
-    options.ClientId = oneLoginClientId;
+    options.Authority = oneLoginOptions.Authority;
+    options.ClientId = oneLoginOptions.ClientId;
     options.ResponseType = OpenIdConnectResponseType.Code;
     options.ResponseMode = OpenIdConnectResponseMode.Query;
+    options.SignedOutCallbackPath = "/signout-callback-oidc";
+    options.RemoteSignOutPath = "/one-login/back-channel-sign-out";
     options.Scope.Clear();
     options.Scope.Add(StandardScopes.OpenId);
     options.Scope.Add(StandardScopes.Phone);

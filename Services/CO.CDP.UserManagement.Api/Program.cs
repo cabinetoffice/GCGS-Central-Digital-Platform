@@ -1,7 +1,6 @@
 using CO.CDP.UserManagement.Api.Api;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Infrastructure;
-using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
@@ -18,8 +17,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement;
 using Npgsql;
-using System.Reflection;
-using CO.CDP.Configuration.Assembly;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -93,15 +90,7 @@ builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-    {
-        options.Authority = builder.Configuration["Authentication:Authority"];
-        options.RequireHttpsMetadata = builder.Environment.IsProduction();
-        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-        {
-            ValidateAudience = false
-        };
-    })
+    .AddJwtBearerAuthentication(builder.Configuration, builder.Environment)
     .AddApiKeyAuthentication();
 
 builder.Services.AddApiKeyAuthenticationServices();
