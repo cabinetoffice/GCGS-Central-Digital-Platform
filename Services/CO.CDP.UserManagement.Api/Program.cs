@@ -52,6 +52,8 @@ builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 var subscriberFeatureFlags = SubscriberFeatureFlags.FromConfiguration(builder.Configuration);
+var sqsDispatcherEnabled = builder.Configuration.GetValue(
+    CO.CDP.UserManagement.Shared.FeatureFlags.FeatureFlags.Messaging.SqsDispatcherEnabled, true);
 
 builder.Services.AddLoggingConfiguration(builder.Configuration);
 
@@ -71,8 +73,9 @@ if (awsConfiguration?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsC
         .AddCloudWatchSerilog(builder.Configuration);
 }
 
-if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
-    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
+if (sqsDispatcherEnabled &&
+    ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api")) ||
+     (Assembly.GetEntryAssembly().IsRunAs("testhost"))))
 {
     if (awsConfiguration?.SqsDispatcher is null)
     {
