@@ -69,6 +69,7 @@ public class OrganisationInvitesControllerTests
                 Id = 5,
                 OrganisationId = organisation.Id,
                 OrganisationRoleId = (int)OrganisationRole.Admin,
+                CdpPersonInviteGuid = cdpInviteGuid,
                 CreatedBy = "inviter",
                 CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)
             }
