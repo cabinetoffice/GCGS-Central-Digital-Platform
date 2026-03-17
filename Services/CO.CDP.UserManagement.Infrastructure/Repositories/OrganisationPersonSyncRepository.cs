@@ -34,8 +34,6 @@ public class OrganisationPersonSyncRepository(OrganisationInformationContext con
             return;
         }
 
-        if (merged.Count == 0) return;
-
         var org = await context.Organisations
             .FirstOrDefaultAsync(o => o.Guid == cdpOrganisationGuid, cancellationToken);
         var person = await context.Persons
