@@ -180,6 +180,8 @@ app.UseStatusCodePages(context =>
 
 app.UseStaticFiles();
 
+app.MapHealthChecks("/health").AllowAnonymous();
+
 app.UseRouting();
 
 app.UseContentSecurityPolicy();
@@ -190,7 +192,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseGovUkFrontend();
-app.MapHealthChecks("/health").AllowAnonymous();
 
 app.MapControllerRoute(
     name: "organisation_by_guid",
@@ -206,5 +207,8 @@ app.MapFallback(ctx =>
     ctx.Response.Redirect("/page-not-found");
     return Task.CompletedTask;
 });
+
+app.Lifetime.ApplicationStopping.Register(() =>
+    app.Logger.LogWarning("UserManagement App: ApplicationStopping triggered"));
 
 await app.RunAsync();

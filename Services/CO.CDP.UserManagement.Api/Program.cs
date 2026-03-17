@@ -16,6 +16,8 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using Npgsql;
 
@@ -136,11 +138,48 @@ if (swaggerEnabled)
     app.UseSwaggerUI();
 }
 
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = async (context, report) =>
+    {
+        if (report.Status != HealthStatus.Healthy)
+        {
+            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+            foreach (var (name, entry) in report.Entries)
+            {
+                logger.LogError(
+                    "Health check '{CheckName}': {Status} — {Description}",
+                    name, entry.Status,
+                    entry.Description ?? entry.Exception?.Message ?? "(no details)");
+            }
+        }
+
+        context.Response.ContentType = "text/plain";
+        await context.Response.WriteAsync(report.Status.ToString());
+    }
+}).AllowAnonymous();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapHealthChecks("/health").AllowAnonymous();
+
+try
+{
+    using var conn = new NpgsqlConnection(connectionString);
+    conn.Open();
+    using var cmd = conn.CreateCommand();
+    cmd.CommandText = "SELECT 1";
+    cmd.ExecuteScalar();
+    app.Logger.LogInformation("UserManagement database connectivity check: OK");
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "UserManagement database connectivity check FAILED: {Message}", ex.Message);
+}
+
+app.Lifetime.ApplicationStopping.Register(() =>
+    app.Logger.LogWarning("UserManagement API: ApplicationStopping triggered"));
 
 app.Run();
 
