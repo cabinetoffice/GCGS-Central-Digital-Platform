@@ -1,10 +1,13 @@
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.MQ;
-using CO.CDP.Person.WebApi.Events;
+using CO.CDP.Person.WebApi.Features;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
+using CO.CDP.UserManagement.Core.Interfaces;
 using FluentAssertions;
+using Microsoft.FeatureManagement;
 using Moq;
+using IOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
+using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Person.WebApi.Tests.UseCase;
 
@@ -13,7 +16,8 @@ public class ClaimPersonInviteUseCaseTests
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
     private readonly Mock<IOrganisationRepository> _mockOrganizationRepository;
-    private readonly Mock<IPublisher> _mockPublisher;
+    private readonly Mock<IUmOrganisationSyncRepository> _mockUmOrgSyncRepository;
+    private readonly Mock<IFeatureManager> _mockFeatureManager;
 
     private readonly ClaimPersonInviteUseCase _useCase;
     private Guid _defaultPersonGuid;
@@ -28,12 +32,14 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
         _mockOrganizationRepository = new Mock<IOrganisationRepository>();
-        _mockPublisher = new Mock<IPublisher>();
+        _mockUmOrgSyncRepository = new Mock<IUmOrganisationSyncRepository>();
+        _mockFeatureManager = new Mock<IFeatureManager>();
         _useCase = new ClaimPersonInviteUseCase(
                         _mockPersonRepository.Object,
                         _mockPersonInviteRepository.Object,
                         _mockOrganizationRepository.Object,
-                        _mockPublisher.Object);
+                        _mockFeatureManager.Object,
+                        _mockUmOrgSyncRepository.Object);
         _defaultPersonGuid = new Guid();
         _defaultPersonInviteGuid = new Guid();
         _defaultOrganisationGuid = new Guid();
@@ -227,6 +233,7 @@ public class ClaimPersonInviteUseCaseTests
     [Fact]
     public async Task Execute_Adds_Person_To_Organisation_And_Tenant_And_Claims_Invite()
     {
+        var inviteScopes = new List<string> { "EDITOR", "ADMIN" };
         var personInvite = new PersonInvite
         {
             Id = 0,
@@ -237,7 +244,7 @@ public class ClaimPersonInviteUseCaseTests
             Email = null!,
             OrganisationId = 1,
             Organisation = _defaultOrganisation,
-            Scopes = new List<string> { "EDITOR", "ADMIN" }
+            Scopes = inviteScopes
         };
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = personInvite.Guid });
 
@@ -248,6 +255,8 @@ public class ClaimPersonInviteUseCaseTests
         _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
             .ReturnsAsync(personInvite.Organisation);
         _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
+            .ReturnsAsync(true);
+        _mockFeatureManager.Setup(fm => fm.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
             .ReturnsAsync(true);
 
         await _useCase.Execute(command);
@@ -260,10 +269,12 @@ public class ClaimPersonInviteUseCaseTests
 
         _mockPersonRepository.Verify(repo => repo.Save(_defaultPerson), Times.Once);
         _mockPersonInviteRepository.Verify(repo => repo.Save(personInvite), Times.Once);
-        _mockPublisher.Verify(p => p.Publish(It.Is<PersonInviteClaimed>(e =>
-            e.PersonInviteGuid == personInvite.Guid &&
-            e.PersonGuid == _defaultPerson.Guid &&
-            e.UserUrn == _defaultPerson.UserUrn &&
-            e.OrganisationGuid == _defaultOrganisation.Guid)), Times.Once);
+        _mockUmOrgSyncRepository.Verify(r => r.EnsureMemberCreatedAsync(
+            _defaultOrganisation.Guid,
+            _defaultPerson.Guid,
+            _defaultPerson.UserUrn,
+            inviteScopes,
+            It.IsAny<IReadOnlyCollection<UmPartyRole>>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 }

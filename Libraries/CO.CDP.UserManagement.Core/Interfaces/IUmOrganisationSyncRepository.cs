@@ -33,4 +33,16 @@ public interface IUmOrganisationSyncRepository
         string userPrincipalId,
         IReadOnlyCollection<PartyRole> organisationPartyRoles,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates a member membership for a person who has claimed an invite, resolving the UM
+    /// <c>OrganisationRole</c> from the invite's OI scopes via the <c>organisation_roles</c> table.
+    /// </summary>
+    Task EnsureMemberCreatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        IReadOnlyList<string> inviteScopes,
+        IReadOnlyCollection<PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken = default);
 }

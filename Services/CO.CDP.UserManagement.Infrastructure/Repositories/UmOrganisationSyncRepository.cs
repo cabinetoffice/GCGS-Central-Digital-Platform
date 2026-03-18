@@ -89,27 +89,49 @@ public class UmOrganisationSyncRepository(
                                      organisation.Id,
                                      cancellationToken);
 
-        var membership = existingMembership;
+        var membership = existingMembership
+            ?? await CreateMembershipAsync(
+                organisation.Id, cdpPersonGuid, userPrincipalId, OrganisationRole.Owner, cancellationToken);
 
-        if (membership is null)
-        {
-            membership = new UserOrganisationMembership
-            {
-                UserPrincipalId = userPrincipalId,
-                CdpPersonId = cdpPersonGuid,
-                OrganisationId = organisation.Id,
-                OrganisationRoleId = (int)OrganisationRole.Owner,
-                IsActive = true,
-                JoinedAt = DateTimeOffset.UtcNow,
-                CreatedBy = SystemUser
-            };
+        await EnsureDefaultApplicationsAssignedAsync(
+            membership, organisationPartyRoles, FounderOrganisationInformationScopes, cancellationToken);
+    }
 
-            membershipRepository.Add(membership);
+    public async Task EnsureMemberCreatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        IReadOnlyList<string> inviteScopes,
+        IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userPrincipalId);
 
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken)
+            ?? throw new InvalidOperationException(
+                $"Cannot create member membership because User Management organisation '{cdpOrganisationGuid}' does not exist.");
 
-        await EnsureDefaultApplicationsAssignedAsync(membership, organisationPartyRoles, cancellationToken);
+        var organisationRole = ResolveOrganisationRole(inviteScopes);
+
+        var roleEntity = await membershipRepository.GetOrganisationRoleAsync(organisationRole, cancellationToken)
+            ?? throw new InvalidOperationException(
+                $"Organisation role '{organisationRole}' not found in User Management.");
+
+        var existingMembership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
+                                     cdpPersonGuid,
+                                     organisation.Id,
+                                     cancellationToken)
+                                 ?? await membershipRepository.GetByUserAndOrganisationAsync(
+                                     userPrincipalId,
+                                     organisation.Id,
+                                     cancellationToken);
+
+        var membership = existingMembership
+            ?? await CreateMembershipAsync(
+                organisation.Id, cdpPersonGuid, userPrincipalId, organisationRole, cancellationToken);
+
+        await EnsureDefaultApplicationsAssignedAsync(
+            membership, organisationPartyRoles, roleEntity.OrganisationInformationScopes, cancellationToken);
     }
 
     private Task UpdateNameIfChangedAsync(
@@ -132,6 +154,7 @@ public class UmOrganisationSyncRepository(
     private async Task EnsureDefaultApplicationsAssignedAsync(
         UserOrganisationMembership membership,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        IReadOnlyList<string> organisationInformationScopes,
         CancellationToken cancellationToken)
     {
         var defaultOrganisationApplications =
@@ -144,6 +167,7 @@ public class UmOrganisationSyncRepository(
             .SelectAwait(async organisationApplication => await EnsureDefaultApplicationAssignedAsync(
                 membership,
                 organisationPartyRoles,
+                organisationInformationScopes,
                 organisationApplication,
                 cancellationToken))
             .ToListAsync(cancellationToken);
@@ -200,6 +224,7 @@ public class UmOrganisationSyncRepository(
     private async Task<bool> EnsureDefaultApplicationAssignedAsync(
         UserOrganisationMembership membership,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        IReadOnlyList<string> organisationInformationScopes,
         OrganisationApplication organisationApplication,
         CancellationToken cancellationToken)
     {
@@ -210,6 +235,7 @@ public class UmOrganisationSyncRepository(
         var defaultRoles = await GetDefaultRolesAsync(
             organisationApplication,
             organisationPartyRoles,
+            organisationInformationScopes,
             cancellationToken);
 
         if (existingAssignment is null)
@@ -250,12 +276,13 @@ public class UmOrganisationSyncRepository(
     private async Task<IReadOnlyList<ApplicationRole>> GetDefaultRolesAsync(
         OrganisationApplication organisationApplication,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        IReadOnlyList<string> organisationInformationScopes,
         CancellationToken cancellationToken) =>
         DefaultApplicationRoleSelector.SelectFor(
             organisationApplication,
             await roleRepository.GetByApplicationIdAsync(organisationApplication.ApplicationId, cancellationToken),
             organisationPartyRoles,
-            FounderOrganisationInformationScopes);
+            organisationInformationScopes);
 
     private static bool AssignmentMatches(
         UserApplicationAssignment assignment,
@@ -274,6 +301,33 @@ public class UmOrganisationSyncRepository(
         {
             assignment.Roles.Add(role);
         }
+    }
+
+    private static OrganisationRole ResolveOrganisationRole(IReadOnlyList<string> inviteScopes) =>
+        inviteScopes.Contains(OrganisationPersonScopes.Admin, StringComparer.Ordinal)
+            ? OrganisationRole.Admin
+            : OrganisationRole.Member;
+
+    private async Task<UserOrganisationMembership> CreateMembershipAsync(
+        int organisationId,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        OrganisationRole role,
+        CancellationToken cancellationToken)
+    {
+        var membership = new UserOrganisationMembership
+        {
+            UserPrincipalId = userPrincipalId,
+            CdpPersonId = cdpPersonGuid,
+            OrganisationId = organisationId,
+            OrganisationRoleId = (int)role,
+            IsActive = true,
+            JoinedAt = DateTimeOffset.UtcNow,
+            CreatedBy = SystemUser
+        };
+        membershipRepository.Add(membership);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return membership;
     }
 
     private async Task<string> ResolveUniqueSlugAsync(
