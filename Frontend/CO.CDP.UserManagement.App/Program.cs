@@ -6,11 +6,13 @@ using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.UI.Foundation;
+using CO.CDP.UI.Foundation.Cookies;
 using CO.CDP.UI.Foundation.Middleware;
 using GovUk.Frontend.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
@@ -63,6 +65,7 @@ builder.Services.AddUiFoundation(builder.Configuration, ui => {
     ui.AddCookiePreferenceService();
     ui.AddContentSecurityPolicy();
 });
+builder.Services.AddScoped<CookieAcceptanceMiddleware>();
 builder.Services.AddScoped<ISessionManager, CO.CDP.Authentication.Services.SessionService>();
 builder.Services.AddCdpAuthentication(builder.Configuration);
 builder.Services.AddSingleton<IOneLoginAuthority, OneLoginAuthority>();
@@ -100,8 +103,23 @@ builder.Services.AddSession(options =>
     options.Cookie.Name = ".AspNetCore.CDP.Session";
     options.IdleTimeout = TimeSpan.FromMinutes(sessionTimeoutInMinutes);
     options.Cookie.IsEssential = true;
+    options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
     options.Cookie.SecurePolicy = cookieSecurePolicy;
+});
+
+builder.Services.AddCookiePolicy(options =>
+{
+    options.MinimumSameSitePolicy = SameSiteMode.Lax;
+    options.HttpOnly = HttpOnlyPolicy.Always;
+    options.Secure = cookieSecurePolicy;
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.SecurePolicy = cookieSecurePolicy;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.HttpOnly = true;
 });
 
 builder.Services.AddAuthentication(options =>
@@ -178,6 +196,8 @@ app.UseStatusCodePages(context =>
     return Task.CompletedTask;
 });
 
+app.UseMiddleware<CookieAcceptanceMiddleware>();
+app.UseCookiePolicy();
 app.UseStaticFiles();
 
 app.MapHealthChecks("/health").AllowAnonymous();
@@ -188,6 +208,11 @@ app.UseContentSecurityPolicy();
 
 app.UseSession();
 
+if (!app.Environment.IsDevelopment())
+{
+    app.UseAntiforgery();
+}
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -196,6 +221,16 @@ app.UseGovUkFrontend();
 app.MapControllerRoute(
     name: "organisation_by_guid",
     pattern: "organisation/by-id/{cdpOrganisationId:guid}/{controller=Home}/{action=Index}/{id?}");
+
+var diagnosticPage = builder.Configuration.GetValue<string?>("Features:DiagnosticPage:Path", null);
+if (builder.Configuration.GetValue("Features:DiagnosticPage:Enabled", false)
+    && !string.IsNullOrWhiteSpace(diagnosticPage))
+{
+    app.MapControllerRoute(
+        name: "diagnostic",
+        pattern: diagnosticPage.Trim('/'),
+        defaults: new { controller = "Diagnostic", action = "Index" });
+}
 
 app.MapControllerRoute(
     name: "default",
@@ -207,8 +242,5 @@ app.MapFallback(ctx =>
     ctx.Response.Redirect("/page-not-found");
     return Task.CompletedTask;
 });
-
-app.Lifetime.ApplicationStopping.Register(() =>
-    app.Logger.LogWarning("UserManagement App: ApplicationStopping triggered"));
 
 await app.RunAsync();
