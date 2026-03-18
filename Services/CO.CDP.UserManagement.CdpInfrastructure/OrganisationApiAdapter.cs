@@ -3,7 +3,7 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using OiPartyRole = CO.CDP.Organisation.WebApiClient.PartyRole;
 using CorePartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
-namespace CO.CDP.UserManagement.Api.Services;
+namespace CO.CDP.UserManagement.CdpInfrastructure;
 
 public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IOrganisationApiAdapter
 {

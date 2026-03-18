@@ -42,4 +42,23 @@ public sealed class OrganisationMembershipSync(
         CancellationToken ct = default) =>
         umRepo.EnsureNameSyncedAsync(organisationGuid, name, ct)
             .MapToSyncResult(_ => Unit.Value);
+
+    public Task<Result<SyncError, Unit>> UpdateMembershipScopesAsync(
+        UpdateMembershipScopesCommand command,
+        CancellationToken ct = default) =>
+        umRepo.EnsureMemberScopesUpdatedAsync(
+            command.OrganisationGuid,
+            command.PersonGuid,
+            command.NewScopes,
+            ct)
+        .MapToSyncResult(_ => Unit.Value);
+
+    public Task<Result<SyncError, Unit>> RemoveMembershipAsync(
+        RemoveMembershipCommand command,
+        CancellationToken ct = default) =>
+        umRepo.EnsureMemberRemovedAsync(
+            command.OrganisationGuid,
+            command.PersonGuid,
+            ct)
+        .MapToSyncResult(_ => Unit.Value);
 }

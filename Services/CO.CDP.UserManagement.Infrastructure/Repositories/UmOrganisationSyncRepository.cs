@@ -317,6 +317,73 @@ public class UmOrganisationSyncRepository(
             ? OrganisationRole.Admin
             : OrganisationRole.Member;
 
+    public async Task<Result<string, Unit>> EnsureMemberScopesUpdatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        IReadOnlyList<string> newScopes,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        return organisation is null
+            ? Result<string, Unit>.Success(Unit.Value)
+            : await UpdateMembershipRoleAsync(organisation, cdpPersonGuid, newScopes, cancellationToken);
+    }
+
+    private async Task<Result<string, Unit>> UpdateMembershipRoleAsync(
+        CoreOrganisation organisation,
+        Guid cdpPersonGuid,
+        IReadOnlyList<string> newScopes,
+        CancellationToken cancellationToken)
+    {
+        var membership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
+            cdpPersonGuid, organisation.Id, cancellationToken);
+        return membership is null
+            ? Result<string, Unit>.Success(Unit.Value)
+            : UpdateAndTrackMembership(membership, newScopes);
+    }
+
+    private Result<string, Unit> UpdateAndTrackMembership(
+        UserOrganisationMembership membership,
+        IReadOnlyList<string> newScopes)
+    {
+        membership.OrganisationRoleId = (int)ResolveOrganisationRole(newScopes);
+        membership.ModifiedBy = SystemUser;
+        membershipRepository.Update(membership);
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
+    public async Task<Result<string, Unit>> EnsureMemberRemovedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        return organisation is null
+            ? Result<string, Unit>.Success(Unit.Value)
+            : await RemoveMembershipAsync(organisation, cdpPersonGuid, cancellationToken);
+    }
+
+    private async Task<Result<string, Unit>> RemoveMembershipAsync(
+        CoreOrganisation organisation,
+        Guid cdpPersonGuid,
+        CancellationToken cancellationToken)
+    {
+        var membership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
+            cdpPersonGuid, organisation.Id, cancellationToken);
+        return membership is null
+            ? Result<string, Unit>.Success(Unit.Value)
+            : DeactivateAndTrackMembership(membership);
+    }
+
+    private Result<string, Unit> DeactivateAndTrackMembership(UserOrganisationMembership membership)
+    {
+        membership.IsActive = false;
+        membership.IsDeleted = true;
+        membership.ModifiedBy = SystemUser;
+        membershipRepository.Update(membership);
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
     private async Task<string> ResolveUniqueSlugAsync(
         string name, int? excludeId = null, CancellationToken cancellationToken = default) =>
         await BuildSlugCandidates(slugGeneratorService.GenerateSlug(name))

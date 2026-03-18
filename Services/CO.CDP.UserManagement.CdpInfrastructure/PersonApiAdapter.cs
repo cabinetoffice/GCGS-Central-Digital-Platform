@@ -4,19 +4,19 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.UserManagement.Api.Services;
+namespace CO.CDP.UserManagement.CdpInfrastructure;
 
 /// <summary>
-/// Service for looking up person details from the CDP Person API.
+/// Adapter for looking up person details from the CDP Person API.
 /// </summary>
-public class PersonLookupService : IPersonLookupService
+public class PersonApiAdapter : IPersonApiAdapter
 {
     private readonly IPersonClient _personClient;
-    private readonly ILogger<PersonLookupService> _logger;
+    private readonly ILogger<PersonApiAdapter> _logger;
 
-    public PersonLookupService(
+    public PersonApiAdapter(
         IPersonClient personClient,
-        ILogger<PersonLookupService> logger)
+        ILogger<PersonApiAdapter> logger)
     {
         _personClient = personClient;
         _logger = logger;

@@ -19,16 +19,16 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;
-    private readonly IPersonLookupService _personLookupService;
+    private readonly IPersonApiAdapter _personApiAdapter;
     private readonly ILogger<OrganisationUsersController> _logger;
 
     public OrganisationUsersController(
         IOrganisationUserService organisationUserService,
-        IPersonLookupService personLookupService,
+        IPersonApiAdapter personLookupService,
         ILogger<OrganisationUsersController> logger)
     {
         _organisationUserService = organisationUserService;
-        _personLookupService = personLookupService;
+        _personApiAdapter = personLookupService;
         _logger = logger;
     }
 
@@ -54,7 +54,7 @@ public class OrganisationUsersController : ControllerBase
                 .Select(m => m.CdpPersonId!.Value)
                 .Distinct()
                 .ToArray();
-            var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
+            var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
 
             var responses = memberships
                 .Select(membership => membership.ToResponse(
@@ -200,7 +200,7 @@ public class OrganisationUsersController : ControllerBase
             return null;
         }
 
-        var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(
+        var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(
             [cdpPersonId.Value],
             cancellationToken);
         return personsById.TryGetValue(cdpPersonId.Value, out var person)

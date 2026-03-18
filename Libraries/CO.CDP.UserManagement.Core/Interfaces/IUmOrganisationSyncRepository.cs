@@ -34,4 +34,15 @@ public interface IUmOrganisationSyncRepository
         IReadOnlyList<string> inviteScopes,
         IReadOnlyCollection<PartyRole> organisationPartyRoles,
         CancellationToken cancellationToken = default);
+
+    Task<Result<string, Unit>> EnsureMemberScopesUpdatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        IReadOnlyList<string> newScopes,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<string, Unit>> EnsureMemberRemovedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        CancellationToken cancellationToken = default);
 }

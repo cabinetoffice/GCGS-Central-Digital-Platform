@@ -80,10 +80,10 @@ builder.Services
             sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
 builder.Services
     .AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter,
-        CO.CDP.UserManagement.Api.Services.OrganisationApiAdapter>();
+        CO.CDP.UserManagement.CdpInfrastructure.OrganisationApiAdapter>();
 builder.Services
-    .AddScoped<CO.CDP.UserManagement.Core.Interfaces.IPersonLookupService,
-        CO.CDP.UserManagement.Api.Services.PersonLookupService>();
+    .AddScoped<CO.CDP.UserManagement.Core.Interfaces.IPersonApiAdapter,
+        CO.CDP.UserManagement.CdpInfrastructure.PersonApiAdapter>();
 
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
 builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>

@@ -3,9 +3,9 @@ using CO.CDP.UserManagement.Core.Models;
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
 /// <summary>
-/// Service for looking up person details from the CDP Person service.
+/// Adapter for looking up person details from the CDP Person API.
 /// </summary>
-public interface IPersonLookupService
+public interface IPersonApiAdapter
 {
     /// <summary>
     /// Retrieves person details by their user principal identifier.

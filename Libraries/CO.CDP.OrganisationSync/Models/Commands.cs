@@ -17,3 +17,14 @@ public sealed record CreateFounderCommand(
     Guid PersonGuid,
     string UserPrincipalId,
     IReadOnlyCollection<UmPartyRole> OrganisationPartyRoles);
+
+/// <summary>Command for updating a UM membership role when a person's OI scopes change.</summary>
+public sealed record UpdateMembershipScopesCommand(
+    Guid OrganisationGuid,
+    Guid PersonGuid,
+    IReadOnlyList<string> NewScopes);
+
+/// <summary>Command for removing a UM membership when a person is removed from an OI organisation.</summary>
+public sealed record RemoveMembershipCommand(
+    Guid OrganisationGuid,
+    Guid PersonGuid);

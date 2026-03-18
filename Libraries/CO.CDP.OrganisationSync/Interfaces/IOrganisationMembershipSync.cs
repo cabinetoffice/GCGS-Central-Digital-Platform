@@ -33,4 +33,20 @@ public interface IOrganisationMembershipSync
         Guid organisationGuid,
         string name,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Updates a UM membership role to reflect the person's new OI scopes.
+    /// No-op if membership does not exist in UM.
+    /// </summary>
+    Task<Result<SyncError, Unit>> UpdateMembershipScopesAsync(
+        UpdateMembershipScopesCommand command,
+        CancellationToken ct = default);
+
+    /// <summary>
+    /// Removes a UM membership when a person is removed from an OI organisation.
+    /// No-op if membership does not exist in UM.
+    /// </summary>
+    Task<Result<SyncError, Unit>> RemoveMembershipAsync(
+        RemoveMembershipCommand command,
+        CancellationToken ct = default);
 }
