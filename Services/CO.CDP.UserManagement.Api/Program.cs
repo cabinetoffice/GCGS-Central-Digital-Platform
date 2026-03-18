@@ -6,6 +6,7 @@ using CO.CDP.Logging;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
+using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.UserManagement.Api.Validation;
 using CO.CDP.Person.WebApiClient;
@@ -16,8 +17,6 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.FeatureManagement;
 using Npgsql;
 
@@ -40,6 +39,10 @@ var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfigurat
 var organisationInformationConnectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 
+builder.Services
+    .AddAwsConfiguration(builder.Configuration)
+    .AddLoggingConfiguration(builder.Configuration);
+
 builder.Services.AddUserManagementInfrastructure(connectionString);
 
 builder.Services.AddUserManagementCaching(awsConfiguration);
@@ -50,18 +53,8 @@ builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
-builder.Services.AddLoggingConfiguration(builder.Configuration);
-
-var awsSection = builder.Configuration.GetSection("Aws");
-if (awsSection.Exists())
-{
-    builder.Services.AddAwsConfiguration(builder.Configuration);
-}
-
-var awsRegion = builder.Configuration["AWS:Region"]
-                ?? Environment.GetEnvironmentVariable("AWS_REGION");
-if (awsConfiguration?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfiguration.ServiceURL) ||
-                                         !string.IsNullOrWhiteSpace(awsRegion)))
+if (System.Reflection.Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api") ||
+    System.Reflection.Assembly.GetEntryAssembly().IsRunAs("testhost"))
 {
     builder.Services
         .AddAmazonCloudWatchLogsService()
@@ -79,11 +72,15 @@ var organisationServiceUrl = builder.Configuration.GetValue<string>("Organisatio
 const string organisationHttpClientName = "OrganisationClient";
 builder.Services.AddHttpClient(organisationHttpClientName)
     .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
-builder.Services.AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClient, CO.CDP.Organisation.WebApiClient.OrganisationClient>(sc =>
-    new CO.CDP.Organisation.WebApiClient.OrganisationClient(
-        organisationServiceUrl ?? string.Empty,
-        sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
-builder.Services.AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter, CO.CDP.UserManagement.Api.Services.OrganisationApiAdapter>();
+builder.Services
+    .AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClient,
+        CO.CDP.Organisation.WebApiClient.OrganisationClient>(sc =>
+        new CO.CDP.Organisation.WebApiClient.OrganisationClient(
+            organisationServiceUrl ?? string.Empty,
+            sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
+builder.Services
+    .AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter,
+        CO.CDP.UserManagement.Api.Services.OrganisationApiAdapter>();
 
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
 builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
@@ -138,26 +135,9 @@ if (swaggerEnabled)
     app.UseSwaggerUI();
 }
 
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = async (context, report) =>
-    {
-        if (report.Status != HealthStatus.Healthy)
-        {
-            var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
-            foreach (var (name, entry) in report.Entries)
-            {
-                logger.LogError(
-                    "Health check '{CheckName}': {Status} — {Description}",
-                    name, entry.Status,
-                    entry.Description ?? entry.Exception?.Message ?? "(no details)");
-            }
-        }
+app.UseStatusCodePages();
 
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync(report.Status.ToString());
-    }
-}).AllowAnonymous();
+app.MapHealthChecks("/health").AllowAnonymous();
 
 app.UseAuthentication();
 app.UseAuthorization();
