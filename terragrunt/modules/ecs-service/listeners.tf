@@ -127,6 +127,38 @@ resource "aws_lb_listener_rule" "external" {
   tags = merge(var.tags, { Name : var.name })
 }
 
+resource "aws_lb_listener_rule" "external_path_routing" {
+  for_each = var.alb_enabled ? { for rule in var.path_routing_rules : tostring(rule.priority) => rule } : {}
+
+  listener_arn = var.ecs_listener_arn
+  priority     = each.value.priority
+
+  action {
+    type  = "forward"
+    order = 1
+
+    forward {
+      target_group {
+        arn = aws_lb_target_group.external[0].arn
+      }
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = each.value.path_patterns
+    }
+  }
+
+  condition {
+    host_header {
+      values = each.value.host_headers
+    }
+  }
+
+  tags = merge(var.tags, { Name : "${var.name}-path-${each.key}" })
+}
+
 resource "aws_lb_listener_rule" "internal" {
   count = var.internal_alb_enabled && var.internal_listener_arn != null && var.internal_domain != null ? 1 : 0
 
