@@ -73,6 +73,10 @@ public class RegisterOrganisationUseCase(
         if (await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
         {
             await umOrganisationSyncRepository.EnsureCreatedAsync(organisation.Guid, organisation.Name);
+            await umOrganisationSyncRepository.EnsureFounderOwnerCreatedAsync(
+                organisation.Guid,
+                person.Guid,
+                person.UserUrn);
         }
 
         if (organisation.PendingRoles.Contains(CO.CDP.OrganisationInformation.PartyRole.Buyer))

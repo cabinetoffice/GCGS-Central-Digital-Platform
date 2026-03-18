@@ -348,6 +348,11 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         await UseCase.Execute(GivenRegisterOrganisationCommand());
 
         _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+        _umOrganisationSyncRepository.Verify(r => r.EnsureFounderOwnerCreatedAsync(
+            _generatedGuid,
+            person.Guid,
+            "test_urn",
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -360,6 +365,11 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         await UseCase.Execute(GivenRegisterOrganisationCommand());
 
         _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        _umOrganisationSyncRepository.Verify(r => r.EnsureFounderOwnerCreatedAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<Guid>(),
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand(

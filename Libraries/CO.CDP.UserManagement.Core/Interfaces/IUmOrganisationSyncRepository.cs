@@ -16,4 +16,13 @@ public interface IUmOrganisationSyncRepository
     /// Falls back to <see cref="EnsureCreatedAsync"/> if the row does not yet exist.
     /// </summary>
     Task EnsureNameSyncedAsync(Guid cdpGuid, string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Creates the founding person's Owner membership for the synced organisation if one does not already exist.
+    /// </summary>
+    Task EnsureFounderOwnerCreatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        CancellationToken cancellationToken = default);
 }

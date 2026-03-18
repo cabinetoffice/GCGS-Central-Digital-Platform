@@ -77,6 +77,7 @@ public static class ServiceCollectionExtensions
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+        services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
         services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUmOrganisationSyncRepository, UmOrganisationSyncRepository>();

@@ -1,11 +1,13 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 
 public class UmOrganisationSyncRepository(
     IOrganisationRepository organisationRepository,
+    IUserOrganisationMembershipRepository membershipRepository,
     ISlugGeneratorService slugGeneratorService,
     IUnitOfWork unitOfWork) : IUmOrganisationSyncRepository
 {
@@ -15,11 +17,12 @@ public class UmOrganisationSyncRepository(
         Guid cdpGuid, string name, CancellationToken cancellationToken = default)
     {
         var existing = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken);
-        if (existing is not null) return;
-
-        var slug = await ResolveUniqueSlugAsync(name, cancellationToken: cancellationToken);
-        organisationRepository.Add(BuildOrganisation(cdpGuid, name, slug));
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        if (existing is null)
+        {
+            var slug = await ResolveUniqueSlugAsync(name, cancellationToken: cancellationToken);
+            organisationRepository.Add(BuildOrganisation(cdpGuid, name, slug));
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 
     public async Task EnsureNameSyncedAsync(
@@ -29,6 +32,44 @@ public class UmOrganisationSyncRepository(
         await (existing is null
             ? EnsureCreatedAsync(cdpGuid, name, cancellationToken)
             : UpdateNameIfChangedAsync(existing, name, cancellationToken));
+    }
+
+    public async Task EnsureFounderOwnerCreatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(userPrincipalId);
+
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken)
+            ?? throw new InvalidOperationException(
+                $"Cannot create founder membership because User Management organisation '{cdpOrganisationGuid}' does not exist.");
+
+        var existingMembership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
+                                     cdpPersonGuid,
+                                     organisation.Id,
+                                     cancellationToken)
+                                 ?? await membershipRepository.GetByUserAndOrganisationAsync(
+                                     userPrincipalId,
+                                     organisation.Id,
+                                     cancellationToken);
+
+        if (existingMembership is null)
+        {
+            membershipRepository.Add(new UserOrganisationMembership
+            {
+                UserPrincipalId = userPrincipalId,
+                CdpPersonId = cdpPersonGuid,
+                OrganisationId = organisation.Id,
+                OrganisationRoleId = (int)OrganisationRole.Owner,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedBy = SystemUser
+            });
+
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
     }
 
     private Task UpdateNameIfChangedAsync(
