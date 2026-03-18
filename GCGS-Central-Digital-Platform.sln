@@ -193,6 +193,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.UserManagement.Api.Tests", "Services\CO.CDP.UserManagement.Api.Tests\CO.CDP.UserManagement.Api.Tests.csproj", "{75310FBF-B7AB-47B1-880F-957DA9718C18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CO.CDP.OrganisationSync", "Libraries\CO.CDP.OrganisationSync\CO.CDP.OrganisationSync.csproj", "{A879812F-DBEF-460E-9242-7D377962FB7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1205,6 +1207,18 @@ Global
 		{3F358BE9-D239-40BD-BAC0-7F95DB17E3C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8D9E5BD-7D25-416D-855D-D49AA3E19D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E8D9E5BD-7D25-416D-855D-D49AA3E19D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|x64.Build.0 = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|x64.ActiveCfg = Release|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|x64.Build.0 = Release|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{A879812F-DBEF-460E-9242-7D377962FB7B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

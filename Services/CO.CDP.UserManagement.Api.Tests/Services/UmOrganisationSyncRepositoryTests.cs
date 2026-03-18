@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
@@ -19,7 +20,6 @@ public class UmOrganisationSyncRepositoryTests
     private readonly Mock<IUserApplicationAssignmentRepository> _userApplicationAssignmentRepository = new();
     private readonly Mock<IRoleRepository> _roleRepository = new();
     private readonly Mock<ISlugGeneratorService> _slugGeneratorService = new();
-    private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
     private UmOrganisationSyncRepository CreateSut() => new(
         _organisationRepository.Object,
@@ -28,8 +28,7 @@ public class UmOrganisationSyncRepositoryTests
         _organisationApplicationRepository.Object,
         _userApplicationAssignmentRepository.Object,
         _roleRepository.Object,
-        _slugGeneratorService.Object,
-        _unitOfWork.Object);
+        _slugGeneratorService.Object);
 
     [Fact]
     public async Task EnsureFounderOwnerCreatedAsync_AddsOwnerMembership_WhenFounderDoesNotExist()
@@ -68,7 +67,6 @@ public class UmOrganisationSyncRepositoryTests
             m.OrganisationRoleId == (int)OrganisationRole.Owner &&
             m.IsActive &&
             m.CreatedBy == "system:org-sync")), Times.Once);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -99,7 +97,6 @@ public class UmOrganisationSyncRepositoryTests
         await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         _membershipRepository.Verify(r => r.Add(It.IsAny<UserOrganisationMembership>()), Times.Never);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -133,11 +130,10 @@ public class UmOrganisationSyncRepositoryTests
         await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         _membershipRepository.Verify(r => r.Add(It.IsAny<UserOrganisationMembership>()), Times.Never);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public async Task EnsureFounderOwnerCreatedAsync_Throws_WhenOrganisationHasNotBeenSynced()
+    public async Task EnsureFounderOwnerCreatedAsync_ReturnsFailure_WhenOrganisationHasNotBeenSynced()
     {
         var organisationGuid = Guid.NewGuid();
         var personGuid = Guid.NewGuid();
@@ -146,10 +142,11 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UmOrganisation?)null);
 
-        var act = () => CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
+        var result = await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
-        await act.Should().ThrowAsync<InvalidOperationException>()
-            .WithMessage($"*{organisationGuid}*");
+        result.Match(
+            onLeft: e => { e.Should().Contain(organisationGuid.ToString()); return true; },
+            onRight: _ => throw new Xunit.Sdk.XunitException("Expected failure but got success"));
     }
 
     [Fact]
@@ -194,7 +191,6 @@ public class UmOrganisationSyncRepositoryTests
             oa.CreatedBy == "system:org-sync")), Times.Once);
         _organisationApplicationRepository.Verify(r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 2)), Times.Never);
         _organisationApplicationRepository.Verify(r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 3)), Times.Never);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -245,7 +241,6 @@ public class UmOrganisationSyncRepositoryTests
             oa.DeletedBy == null &&
             oa.EnabledBy == "system:org-sync" &&
             oa.ModifiedBy == "system:org-sync")), Times.Once);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -351,7 +346,6 @@ public class UmOrganisationSyncRepositoryTests
             assignment.AssignedBy == "system:org-sync" &&
             assignment.CreatedBy == "system:org-sync" &&
             assignment.Roles.Select(role => role.Id).OrderBy(id => id).SequenceEqual(new[] { 6 }))), Times.Once);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Exactly(2));
     }
 
     [Fact]
@@ -446,7 +440,6 @@ public class UmOrganisationSyncRepositoryTests
             assignment.AssignedBy == "system:org-sync" &&
             assignment.ModifiedBy == "system:org-sync" &&
             assignment.Roles.Select(role => role.Id).OrderBy(id => id).SequenceEqual(new[] { 7 }))), Times.Once);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -618,6 +611,5 @@ public class UmOrganisationSyncRepositoryTests
             [CorePartyRole.Tenderer]);
 
         _userApplicationAssignmentRepository.Verify(r => r.Update(It.IsAny<UserApplicationAssignment>()), Times.Never);
-        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
 }

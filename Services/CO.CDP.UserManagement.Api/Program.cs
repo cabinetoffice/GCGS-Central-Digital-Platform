@@ -81,6 +81,9 @@ builder.Services
 builder.Services
     .AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter,
         CO.CDP.UserManagement.Api.Services.OrganisationApiAdapter>();
+builder.Services
+    .AddScoped<CO.CDP.UserManagement.Core.Interfaces.IPersonLookupService,
+        CO.CDP.UserManagement.Api.Services.PersonLookupService>();
 
 builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
 builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>

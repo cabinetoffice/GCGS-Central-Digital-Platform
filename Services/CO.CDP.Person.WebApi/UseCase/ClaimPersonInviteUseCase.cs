@@ -1,7 +1,7 @@
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
 using CO.CDP.Person.WebApi.Features;
 using CO.CDP.Person.WebApi.Model;
-using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.FeatureManagement;
 using IOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
@@ -13,7 +13,9 @@ public class ClaimPersonInviteUseCase(
     IPersonInviteRepository personInviteRepository,
     IOrganisationRepository organisationRepository,
     IFeatureManager featureManager,
-    IUmOrganisationSyncRepository? umOrgSyncRepository = null)
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
+    ILogger<ClaimPersonInviteUseCase> logger)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
@@ -31,33 +33,42 @@ public class ClaimPersonInviteUseCase(
             ?? throw new UnknownOrganisationException(
                 $"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}.");
 
-        organisation.OrganisationPersons.Add(new OrganisationPerson
+        return await atomicScope.ExecuteAsync(async ct =>
         {
-            Person = person,
-            Scopes = personInvite.Scopes,
-            OrganisationId = organisation.Id,
+            organisation.OrganisationPersons.Add(new OrganisationPerson
+            {
+                Person = person,
+                Scopes = personInvite.Scopes,
+                OrganisationId = organisation.Id,
+            });
+
+            person.Tenants.Add(organisation.Tenant);
+            personInvite.Person = person;
+
+            personRepository.Track(person);
+            personInviteRepository.Track(personInvite);
+
+            var syncEnabled = await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled);
+            var orgPartyRoles = organisation.Roles.Select(r => (UmPartyRole)(int)r).ToList();
+
+            return syncEnabled
+                ? (await membershipSync.ClaimMembershipAsync(
+                        new ClaimMembershipCommand(
+                            organisation.Guid,
+                            person.Guid,
+                            person.UserUrn,
+                            personInvite.Scopes,
+                            orgPartyRoles), ct))
+                    .Match(
+                        onLeft: error => LogAndContinue(error),
+                        onRight: _ => true)
+                : true;
         });
+    }
 
-        person.Tenants.Add(organisation.Tenant);
-        personInvite.Person = person;
-
-        personRepository.Save(person);
-        personInviteRepository.Save(personInvite);
-
-        if (umOrgSyncRepository is not null && await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
-        {
-            var orgPartyRoles = organisation.Roles
-                .Select(r => (UmPartyRole)(int)r)
-                .ToList();
-
-            await umOrgSyncRepository.EnsureMemberCreatedAsync(
-                organisation.Guid,
-                person.Guid,
-                person.UserUrn,
-                personInvite.Scopes,
-                orgPartyRoles);
-        }
-
+    private bool LogAndContinue(SyncError error)
+    {
+        logger.LogError("UM membership sync failed: {Error}", error.Message);
         return true;
     }
 

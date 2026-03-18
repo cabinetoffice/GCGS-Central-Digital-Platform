@@ -4,7 +4,7 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.Person.WebApiClient;
 using Microsoft.Extensions.Logging;
 
-namespace CO.CDP.UserManagement.Infrastructure.Services;
+namespace CO.CDP.UserManagement.Api.Services;
 
 /// <summary>
 /// Service for looking up person details from the CDP Person API.

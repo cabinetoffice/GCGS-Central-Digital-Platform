@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence.Constants;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
@@ -14,13 +15,12 @@ public class UmOrganisationSyncRepository(
     IOrganisationApplicationRepository organisationApplicationRepository,
     IUserApplicationAssignmentRepository userApplicationAssignmentRepository,
     IRoleRepository roleRepository,
-    ISlugGeneratorService slugGeneratorService,
-    IUnitOfWork unitOfWork) : IUmOrganisationSyncRepository
+    ISlugGeneratorService slugGeneratorService) : IUmOrganisationSyncRepository
 {
     private const string SystemUser = "system:org-sync";
     private static readonly IReadOnlyList<string> FounderOrganisationInformationScopes = [OrganisationPersonScopes.Admin];
 
-    public async Task EnsureCreatedAsync(
+    public async Task<Result<string, Unit>> EnsureCreatedAsync(
         Guid cdpGuid, string name, CancellationToken cancellationToken = default)
     {
         var existing = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken);
@@ -28,76 +28,44 @@ public class UmOrganisationSyncRepository(
         {
             var slug = await ResolveUniqueSlugAsync(name, cancellationToken: cancellationToken);
             organisationRepository.Add(BuildOrganisation(cdpGuid, name, slug));
-            await unitOfWork.SaveChangesAsync(cancellationToken);
         }
+        return Result<string, Unit>.Success(Unit.Value);
     }
 
-    public async Task EnsureNameSyncedAsync(
+    public async Task<Result<string, Unit>> EnsureNameSyncedAsync(
         Guid cdpGuid, string name, CancellationToken cancellationToken = default)
     {
         var existing = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken);
-        await (existing is null
-            ? EnsureCreatedAsync(cdpGuid, name, cancellationToken)
-            : UpdateNameIfChangedAsync(existing, name, cancellationToken));
+        return existing is null
+            ? await EnsureCreatedAsync(cdpGuid, name, cancellationToken)
+            : await UpdateNameIfChangedAsync(existing, name, cancellationToken);
     }
 
-    public async Task EnsureActiveApplicationsEnabledAsync(
+    public async Task<Result<string, Unit>> EnsureActiveApplicationsEnabledAsync(
         Guid cdpGuid,
         CancellationToken cancellationToken = default)
     {
-        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken)
-            ?? throw new InvalidOperationException(
-                $"Cannot enable applications because User Management organisation '{cdpGuid}' does not exist.");
-
-        var activeApplications = (await applicationRepository.FindAsync(
-            application => application.IsActive && !application.IsDeleted,
-            cancellationToken)).ToList();
-
-        var changes = await activeApplications
-            .ToAsyncEnumerable()
-            .SelectAwait(async application => await EnsureApplicationEnabledAsync(
-                organisation.Id,
-                application,
-                cancellationToken))
-            .ToListAsync(cancellationToken);
-
-        if (changes.Any(changed => changed))
-        {
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpGuid, cancellationToken);
+        return organisation is null
+            ? Result<string, Unit>.Failure($"Cannot enable applications: UM organisation '{cdpGuid}' does not exist.")
+            : await EnableActiveApplicationsAsync(organisation.Id, cancellationToken);
     }
 
-    public async Task EnsureFounderOwnerCreatedAsync(
+    public async Task<Result<string, Unit>> EnsureFounderOwnerCreatedAsync(
         Guid cdpOrganisationGuid,
         Guid cdpPersonGuid,
         string userPrincipalId,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(userPrincipalId);
-
-        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken)
-            ?? throw new InvalidOperationException(
-                $"Cannot create founder membership because User Management organisation '{cdpOrganisationGuid}' does not exist.");
-
-        var existingMembership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
-                                     cdpPersonGuid,
-                                     organisation.Id,
-                                     cancellationToken)
-                                 ?? await membershipRepository.GetByUserAndOrganisationAsync(
-                                     userPrincipalId,
-                                     organisation.Id,
-                                     cancellationToken);
-
-        var membership = existingMembership
-            ?? await CreateMembershipAsync(
-                organisation.Id, cdpPersonGuid, userPrincipalId, OrganisationRole.Owner, cancellationToken);
-
-        await EnsureDefaultApplicationsAssignedAsync(
-            membership, organisationPartyRoles, FounderOrganisationInformationScopes, cancellationToken);
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        return organisation is null
+            ? Result<string, Unit>.Failure($"Cannot create founder membership: UM organisation '{cdpOrganisationGuid}' does not exist.")
+            : await EnsureFounderMembershipTrackedAsync(
+                organisation, cdpPersonGuid, userPrincipalId, organisationPartyRoles, cancellationToken);
     }
 
-    public async Task EnsureMemberCreatedAsync(
+    public async Task<Result<string, Unit>> EnsureMemberCreatedAsync(
         Guid cdpOrganisationGuid,
         Guid cdpPersonGuid,
         string userPrincipalId,
@@ -105,42 +73,68 @@ public class UmOrganisationSyncRepository(
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
         CancellationToken cancellationToken = default)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(userPrincipalId);
-
-        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken)
-            ?? throw new InvalidOperationException(
-                $"Cannot create member membership because User Management organisation '{cdpOrganisationGuid}' does not exist.");
-
-        var organisationRole = ResolveOrganisationRole(inviteScopes);
-
-        var roleEntity = await membershipRepository.GetOrganisationRoleAsync(organisationRole, cancellationToken)
-            ?? throw new InvalidOperationException(
-                $"Organisation role '{organisationRole}' not found in User Management.");
-
-        var existingMembership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
-                                     cdpPersonGuid,
-                                     organisation.Id,
-                                     cancellationToken)
-                                 ?? await membershipRepository.GetByUserAndOrganisationAsync(
-                                     userPrincipalId,
-                                     organisation.Id,
-                                     cancellationToken);
-
-        var membership = existingMembership
-            ?? await CreateMembershipAsync(
-                organisation.Id, cdpPersonGuid, userPrincipalId, organisationRole, cancellationToken);
-
-        await EnsureDefaultApplicationsAssignedAsync(
-            membership, organisationPartyRoles, roleEntity.OrganisationInformationScopes, cancellationToken);
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        return organisation is null
+            ? Result<string, Unit>.Failure($"Cannot create member membership: UM organisation '{cdpOrganisationGuid}' does not exist.")
+            : await EnsureMemberMembershipTrackedAsync(
+                organisation, cdpPersonGuid, userPrincipalId, inviteScopes, organisationPartyRoles, cancellationToken);
     }
 
-    private Task UpdateNameIfChangedAsync(
+    private async Task<Result<string, Unit>> EnsureFounderMembershipTrackedAsync(
+        CoreOrganisation organisation,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken)
+    {
+        var membership = await ResolveOrCreateMembershipAsync(
+            organisation.Id, cdpPersonGuid, userPrincipalId, OrganisationRole.Owner, cancellationToken);
+        await TrackDefaultApplicationAssignmentsAsync(
+            membership, organisationPartyRoles, FounderOrganisationInformationScopes, cancellationToken);
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
+    private async Task<Result<string, Unit>> EnsureMemberMembershipTrackedAsync(
+        CoreOrganisation organisation,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        IReadOnlyList<string> inviteScopes,
+        IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken)
+    {
+        var organisationRole = ResolveOrganisationRole(inviteScopes);
+        var roleEntity = await membershipRepository.GetOrganisationRoleAsync(organisationRole, cancellationToken);
+        return roleEntity is null
+            ? Result<string, Unit>.Failure($"Organisation role '{organisationRole}' not found in User Management.")
+            : await TrackMemberMembershipAsync(
+                organisation.Id, cdpPersonGuid, userPrincipalId,
+                organisationRole, organisationPartyRoles,
+                roleEntity.OrganisationInformationScopes, cancellationToken);
+    }
+
+    private async Task<Result<string, Unit>> TrackMemberMembershipAsync(
+        int organisationId,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        OrganisationRole organisationRole,
+        IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        IReadOnlyList<string> organisationInformationScopes,
+        CancellationToken cancellationToken)
+    {
+        var membership = await ResolveOrCreateMembershipAsync(
+            organisationId, cdpPersonGuid, userPrincipalId, organisationRole, cancellationToken);
+        await TrackDefaultApplicationAssignmentsAsync(
+            membership, organisationPartyRoles, organisationInformationScopes, cancellationToken);
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
+    private Task<Result<string, Unit>> UpdateNameIfChangedAsync(
         CoreOrganisation organisation, string name, CancellationToken cancellationToken) =>
         organisation.Name == name
-            ? Task.CompletedTask
+            ? Task.FromResult(Result<string, Unit>.Success(Unit.Value))
             : ApplyNameUpdateAsync(organisation, name, cancellationToken);
 
-    private async Task ApplyNameUpdateAsync(
+    private async Task<Result<string, Unit>> ApplyNameUpdateAsync(
         CoreOrganisation organisation, string name, CancellationToken cancellationToken)
     {
         var slug = await ResolveUniqueSlugAsync(name, organisation.Id, cancellationToken);
@@ -148,129 +142,146 @@ public class UmOrganisationSyncRepository(
         organisation.Slug = slug;
         organisation.ModifiedBy = SystemUser;
         organisationRepository.Update(organisation);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
+        return Result<string, Unit>.Success(Unit.Value);
     }
 
-    private async Task EnsureDefaultApplicationsAssignedAsync(
+    private async Task<Result<string, Unit>> EnableActiveApplicationsAsync(
+        int organisationId, CancellationToken cancellationToken)
+    {
+        var activeApplications = await applicationRepository.FindAsync(
+            application => application.IsActive && !application.IsDeleted,
+            cancellationToken);
+
+        foreach (var application in activeApplications)
+            await TrackApplicationEnabledAsync(organisationId, application, cancellationToken);
+
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
+    private async Task TrackApplicationEnabledAsync(
+        int organisationId,
+        Application application,
+        CancellationToken cancellationToken)
+    {
+        var existing = await organisationApplicationRepository.GetByOrganisationAndApplicationAsync(
+            organisationId, application.Id, cancellationToken);
+
+        switch (existing)
+        {
+            case null:
+                organisationApplicationRepository.Add(new OrganisationApplication
+                {
+                    OrganisationId = organisationId,
+                    ApplicationId = application.Id,
+                    IsActive = true,
+                    EnabledAt = DateTimeOffset.UtcNow,
+                    EnabledBy = SystemUser,
+                    CreatedBy = SystemUser
+                });
+                break;
+            case { IsActive: true, IsDeleted: false }:
+                break;
+            default:
+                existing.IsActive = true;
+                existing.IsDeleted = false;
+                existing.EnabledAt = DateTimeOffset.UtcNow;
+                existing.EnabledBy = SystemUser;
+                existing.DisabledAt = null;
+                existing.DisabledBy = null;
+                existing.DeletedAt = null;
+                existing.DeletedBy = null;
+                existing.ModifiedBy = SystemUser;
+                organisationApplicationRepository.Update(existing);
+                break;
+        }
+    }
+
+    private async Task TrackDefaultApplicationAssignmentsAsync(
         UserOrganisationMembership membership,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
         IReadOnlyList<string> organisationInformationScopes,
         CancellationToken cancellationToken)
     {
-        var defaultOrganisationApplications =
-            (await organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
-                membership.OrganisationId,
-                cancellationToken)).ToList();
+        var defaultApps = await organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
+            membership.OrganisationId, cancellationToken);
 
-        var changes = await defaultOrganisationApplications
-            .ToAsyncEnumerable()
-            .SelectAwait(async organisationApplication => await EnsureDefaultApplicationAssignedAsync(
-                membership,
-                organisationPartyRoles,
-                organisationInformationScopes,
-                organisationApplication,
-                cancellationToken))
-            .ToListAsync(cancellationToken);
-
-        if (changes.Any(changed => changed))
-        {
-            await unitOfWork.SaveChangesAsync(cancellationToken);
-        }
+        foreach (var orgApp in defaultApps)
+            await TrackDefaultApplicationAssignmentAsync(
+                membership, organisationPartyRoles, organisationInformationScopes, orgApp, cancellationToken);
     }
 
-    private async Task<bool> EnsureApplicationEnabledAsync(
-        int organisationId,
-        Application application,
-        CancellationToken cancellationToken)
-    {
-        var existingRelationship = await organisationApplicationRepository.GetByOrganisationAndApplicationAsync(
-            organisationId,
-            application.Id,
-            cancellationToken);
-
-        if (existingRelationship is null)
-        {
-            organisationApplicationRepository.Add(new OrganisationApplication
-            {
-                OrganisationId = organisationId,
-                ApplicationId = application.Id,
-                IsActive = true,
-                EnabledAt = DateTimeOffset.UtcNow,
-                EnabledBy = SystemUser,
-                CreatedBy = SystemUser
-            });
-            return true;
-        }
-
-        if (existingRelationship.IsActive && !existingRelationship.IsDeleted)
-        {
-            return false;
-        }
-
-        existingRelationship.IsActive = true;
-        existingRelationship.IsDeleted = false;
-        existingRelationship.EnabledAt = DateTimeOffset.UtcNow;
-        existingRelationship.EnabledBy = SystemUser;
-        existingRelationship.DisabledAt = null;
-        existingRelationship.DisabledBy = null;
-        existingRelationship.DeletedAt = null;
-        existingRelationship.DeletedBy = null;
-        existingRelationship.ModifiedBy = SystemUser;
-
-        organisationApplicationRepository.Update(existingRelationship);
-        return true;
-    }
-
-    private async Task<bool> EnsureDefaultApplicationAssignedAsync(
+    private async Task TrackDefaultApplicationAssignmentAsync(
         UserOrganisationMembership membership,
         IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
         IReadOnlyList<string> organisationInformationScopes,
         OrganisationApplication organisationApplication,
         CancellationToken cancellationToken)
     {
-        var existingAssignment = await userApplicationAssignmentRepository.GetByMembershipAndApplicationAsync(
-            membership.Id,
-            organisationApplication.Id,
-            cancellationToken);
+        var existing = await userApplicationAssignmentRepository.GetByMembershipAndApplicationAsync(
+            membership.Id, organisationApplication.Id, cancellationToken);
         var defaultRoles = await GetDefaultRolesAsync(
-            organisationApplication,
-            organisationPartyRoles,
-            organisationInformationScopes,
-            cancellationToken);
+            organisationApplication, organisationPartyRoles, organisationInformationScopes, cancellationToken);
 
-        if (existingAssignment is null)
+        switch (existing)
         {
-            userApplicationAssignmentRepository.Add(new UserApplicationAssignment
-            {
-                UserOrganisationMembershipId = membership.Id,
-                OrganisationApplicationId = organisationApplication.Id,
-                IsActive = true,
-                AssignedAt = DateTimeOffset.UtcNow,
-                AssignedBy = SystemUser,
-                CreatedBy = SystemUser,
-                Roles = defaultRoles.ToList()
-            });
-            return true;
+            case null:
+                userApplicationAssignmentRepository.Add(new UserApplicationAssignment
+                {
+                    UserOrganisationMembershipId = membership.Id,
+                    OrganisationApplicationId = organisationApplication.Id,
+                    IsActive = true,
+                    AssignedAt = DateTimeOffset.UtcNow,
+                    AssignedBy = SystemUser,
+                    CreatedBy = SystemUser,
+                    Roles = defaultRoles.ToList()
+                });
+                break;
+            case var a when AssignmentMatches(a, defaultRoles):
+                break;
+            default:
+                existing.IsActive = true;
+                existing.IsDeleted = false;
+                existing.AssignedAt = DateTimeOffset.UtcNow;
+                existing.AssignedBy = SystemUser;
+                existing.RevokedAt = null;
+                existing.RevokedBy = null;
+                existing.DeletedAt = null;
+                existing.DeletedBy = null;
+                existing.ModifiedBy = SystemUser;
+                SyncRoles(existing, defaultRoles);
+                userApplicationAssignmentRepository.Update(existing);
+                break;
         }
+    }
 
-        if (AssignmentMatches(existingAssignment, defaultRoles))
+    private async Task<UserOrganisationMembership> ResolveOrCreateMembershipAsync(
+        int organisationId,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        OrganisationRole role,
+        CancellationToken cancellationToken) =>
+        await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonGuid, organisationId, cancellationToken)
+            ?? await membershipRepository.GetByUserAndOrganisationAsync(userPrincipalId, organisationId, cancellationToken)
+            ?? TrackNewMembership(organisationId, cdpPersonGuid, userPrincipalId, role);
+
+    private UserOrganisationMembership TrackNewMembership(
+        int organisationId,
+        Guid cdpPersonGuid,
+        string userPrincipalId,
+        OrganisationRole role)
+    {
+        var membership = new UserOrganisationMembership
         {
-            return false;
-        }
-
-        existingAssignment.IsActive = true;
-        existingAssignment.IsDeleted = false;
-        existingAssignment.AssignedAt = DateTimeOffset.UtcNow;
-        existingAssignment.AssignedBy = SystemUser;
-        existingAssignment.RevokedAt = null;
-        existingAssignment.RevokedBy = null;
-        existingAssignment.DeletedAt = null;
-        existingAssignment.DeletedBy = null;
-        existingAssignment.ModifiedBy = SystemUser;
-        SyncRoles(existingAssignment, defaultRoles);
-
-        userApplicationAssignmentRepository.Update(existingAssignment);
-        return true;
+            UserPrincipalId = userPrincipalId,
+            CdpPersonId = cdpPersonGuid,
+            OrganisationId = organisationId,
+            OrganisationRoleId = (int)role,
+            IsActive = true,
+            JoinedAt = DateTimeOffset.UtcNow,
+            CreatedBy = SystemUser
+        };
+        membershipRepository.Add(membership);
+        return membership;
     }
 
     private async Task<IReadOnlyList<ApplicationRole>> GetDefaultRolesAsync(
@@ -289,8 +300,8 @@ public class UmOrganisationSyncRepository(
         IReadOnlyList<ApplicationRole> desiredRoles) =>
         assignment.IsActive &&
         !assignment.IsDeleted &&
-        assignment.Roles.Select(role => role.Id).OrderBy(id => id)
-            .SequenceEqual(desiredRoles.Select(role => role.Id).OrderBy(id => id));
+        assignment.Roles.Select(r => r.Id).OrderBy(id => id)
+            .SequenceEqual(desiredRoles.Select(r => r.Id).OrderBy(id => id));
 
     private static void SyncRoles(
         UserApplicationAssignment assignment,
@@ -298,9 +309,7 @@ public class UmOrganisationSyncRepository(
     {
         assignment.Roles.Clear();
         foreach (var role in desiredRoles)
-        {
             assignment.Roles.Add(role);
-        }
     }
 
     private static OrganisationRole ResolveOrganisationRole(IReadOnlyList<string> inviteScopes) =>
@@ -308,39 +317,14 @@ public class UmOrganisationSyncRepository(
             ? OrganisationRole.Admin
             : OrganisationRole.Member;
 
-    private async Task<UserOrganisationMembership> CreateMembershipAsync(
-        int organisationId,
-        Guid cdpPersonGuid,
-        string userPrincipalId,
-        OrganisationRole role,
-        CancellationToken cancellationToken)
-    {
-        var membership = new UserOrganisationMembership
-        {
-            UserPrincipalId = userPrincipalId,
-            CdpPersonId = cdpPersonGuid,
-            OrganisationId = organisationId,
-            OrganisationRoleId = (int)role,
-            IsActive = true,
-            JoinedAt = DateTimeOffset.UtcNow,
-            CreatedBy = SystemUser
-        };
-        membershipRepository.Add(membership);
-        await unitOfWork.SaveChangesAsync(cancellationToken);
-        return membership;
-    }
-
     private async Task<string> ResolveUniqueSlugAsync(
-        string name, int? excludeId = null, CancellationToken cancellationToken = default)
-    {
-        var baseSlug = slugGeneratorService.GenerateSlug(name);
-        return await BuildSlugCandidates(baseSlug)
+        string name, int? excludeId = null, CancellationToken cancellationToken = default) =>
+        await BuildSlugCandidates(slugGeneratorService.GenerateSlug(name))
             .ToAsyncEnumerable()
             .FirstOrDefaultAwaitAsync(
                 async slug => !await organisationRepository.SlugExistsAsync(slug, excludeId, cancellationToken),
                 cancellationToken)
-            ?? throw new InvalidOperationException($"Could not generate a unique slug for '{name}'.");
-    }
+        ?? throw new InvalidOperationException($"Could not generate a unique slug for '{name}'.");
 
     private static IEnumerable<string> BuildSlugCandidates(string baseSlug) =>
         Enumerable.Range(0, 10).Select(i => i == 0 ? baseSlug : $"{baseSlug}-{i}");

@@ -17,9 +17,8 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
-using CO.CDP.UserManagement.Infrastructure;
+using CO.CDP.OrganisationSync;
 using CO.CDP.WebApi.Foundation;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
@@ -42,12 +41,8 @@ builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(buil
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
-
-var umConnectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
-builder.Services.AddUserManagementOrganisationSync(umConnectionString);
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();

@@ -4,14 +4,13 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
 using CO.CDP.Person.WebApi;
 using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
-using CO.CDP.UserManagement.Infrastructure;
 using CO.CDP.WebApi.Foundation;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
@@ -25,9 +24,8 @@ builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(builder.Co
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
@@ -45,8 +43,7 @@ builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, buil
 builder.Services.AddOrganisationAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
-var umConnectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
-builder.Services.AddUserManagementOrganisationSync(umConnectionString);
+
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
