@@ -13,8 +13,11 @@ public class UserAssignmentService : IUserAssignmentService
 {
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
+    private readonly IOrganisationRepository _organisationRepository;
     private readonly IOrganisationApplicationRepository _organisationApplicationRepository;
+    private readonly IRoleRepository _roleRepository;
     private readonly IRoleMappingService _roleMappingService;
+    private readonly IOrganisationApiAdapter _organisationApiAdapter;
     private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserAssignmentService> _logger;
@@ -23,16 +26,22 @@ public class UserAssignmentService : IUserAssignmentService
     public UserAssignmentService(
         IUserApplicationAssignmentRepository assignmentRepository,
         IUserOrganisationMembershipRepository membershipRepository,
+        IOrganisationRepository organisationRepository,
         IOrganisationApplicationRepository organisationApplicationRepository,
+        IRoleRepository roleRepository,
         IRoleMappingService roleMappingService,
+        IOrganisationApiAdapter organisationApiAdapter,
         ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<UserAssignmentService> logger)
     {
         _assignmentRepository = assignmentRepository;
         _membershipRepository = membershipRepository;
+        _organisationRepository = organisationRepository;
         _organisationApplicationRepository = organisationApplicationRepository;
+        _roleRepository = roleRepository;
         _roleMappingService = roleMappingService;
+        _organisationApiAdapter = organisationApiAdapter;
         _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -275,33 +284,20 @@ public class UserAssignmentService : IUserAssignmentService
             return;
         }
 
-        var existingAssignments = (await _assignmentRepository.GetByMembershipIdAsync(
-            membership.Id,
-            cancellationToken)).ToList();
+        var organisationPartyRoles = await GetOrganisationPartyRolesAsync(membership.OrganisationId, cancellationToken);
+        var changes = await defaultOrganisationApplications
+            .ToAsyncEnumerable()
+            .SelectAwait(async organisationApplication => await EnsureDefaultApplicationAssignedAsync(
+                membership,
+                organisationPartyRoles,
+                organisationApplication,
+                cancellationToken))
+            .ToListAsync(cancellationToken);
 
-        var assignmentsToCreate = defaultOrganisationApplications
-            .Where(app => !existingAssignments.Exists(a => a.OrganisationApplicationId == app.Id))
-            .Select(app => new UserApplicationAssignment
-            {
-                UserOrganisationMembershipId = membership.Id,
-                OrganisationApplicationId = app.Id,
-                IsActive = true,
-                AssignedAt = DateTimeOffset.UtcNow,
-                AssignedBy = SystemAssignedBy
-            })
-            .ToList();
-
-        if (assignmentsToCreate.Count == 0)
+        if (changes.Any(changed => changed))
         {
-            return;
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
         }
-
-        foreach (var assignment in assignmentsToCreate)
-        {
-            _assignmentRepository.Add(assignment);
-        }
-
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
     }
 
     private async Task<UserOrganisationMembership?> ResolveMembershipAsync(
@@ -340,5 +336,100 @@ public class UserAssignmentService : IUserAssignmentService
         }
 
         return assignment;
+    }
+
+    private async Task<ISet<CO.CDP.UserManagement.Core.Constants.PartyRole>> GetOrganisationPartyRolesAsync(
+        int organisationId,
+        CancellationToken cancellationToken)
+    {
+        var organisation = await _organisationRepository.GetByIdAsync(organisationId, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Organisation), organisationId);
+
+        return await _organisationApiAdapter.GetPartyRolesAsync(organisation.CdpOrganisationGuid, cancellationToken);
+    }
+
+    private async Task<IReadOnlyList<ApplicationRole>> GetDefaultRolesAsync(
+        UserOrganisationMembership membership,
+        OrganisationApplication organisationApplication,
+        ISet<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken)
+    {
+        var organisationInformationScopes = await _roleMappingService.GetInviteScopesAsync(
+            membership.OrganisationRole,
+            cancellationToken);
+
+        return DefaultApplicationRoleSelector.SelectFor(
+            organisationApplication,
+            await _roleRepository.GetByApplicationIdAsync(organisationApplication.ApplicationId, cancellationToken),
+            organisationPartyRoles,
+            organisationInformationScopes);
+    }
+
+    private async Task<bool> EnsureDefaultApplicationAssignedAsync(
+        UserOrganisationMembership membership,
+        ISet<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        OrganisationApplication organisationApplication,
+        CancellationToken cancellationToken)
+    {
+        var existingAssignment = await _assignmentRepository.GetByMembershipAndApplicationAsync(
+            membership.Id,
+            organisationApplication.Id,
+            cancellationToken);
+        var defaultRoles = await GetDefaultRolesAsync(
+            membership,
+            organisationApplication,
+            organisationPartyRoles,
+            cancellationToken);
+
+        if (existingAssignment is null)
+        {
+            _assignmentRepository.Add(new UserApplicationAssignment
+            {
+                UserOrganisationMembershipId = membership.Id,
+                OrganisationApplicationId = organisationApplication.Id,
+                IsActive = true,
+                AssignedAt = DateTimeOffset.UtcNow,
+                AssignedBy = SystemAssignedBy,
+                CreatedBy = SystemAssignedBy,
+                Roles = defaultRoles.ToList()
+            });
+            return true;
+        }
+
+        if (AssignmentMatches(existingAssignment, defaultRoles))
+        {
+            return false;
+        }
+
+        existingAssignment.IsActive = true;
+        existingAssignment.IsDeleted = false;
+        existingAssignment.RevokedAt = null;
+        existingAssignment.RevokedBy = null;
+        existingAssignment.DeletedAt = null;
+        existingAssignment.DeletedBy = null;
+        existingAssignment.ModifiedBy = SystemAssignedBy;
+        SyncRoles(existingAssignment, defaultRoles);
+
+        _assignmentRepository.Update(existingAssignment);
+        return true;
+    }
+
+    private static bool AssignmentMatches(
+        UserApplicationAssignment assignment,
+        IReadOnlyList<ApplicationRole> desiredRoles) =>
+        assignment.IsActive &&
+        !assignment.IsDeleted &&
+        assignment.Roles.Select(role => role.Id).OrderBy(id => id)
+            .SequenceEqual(desiredRoles.Select(role => role.Id).OrderBy(id => id));
+
+    private static void SyncRoles(
+        UserApplicationAssignment assignment,
+        IEnumerable<ApplicationRole> desiredRoles)
+    {
+        assignment.Roles.Clear();
+        foreach (var role in desiredRoles)
+        {
+            assignment.Roles.Add(role);
+        }
     }
 }

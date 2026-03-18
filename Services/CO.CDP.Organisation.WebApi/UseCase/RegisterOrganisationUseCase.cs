@@ -11,10 +11,12 @@ using Microsoft.FeatureManagement;
 
 using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
+using OiPartyRole = CO.CDP.OrganisationInformation.PartyRole;
 using OiPersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 using OiPersonRepository = CO.CDP.OrganisationInformation.Persistence.IPersonRepository;
 using OiTenant = CO.CDP.OrganisationInformation.Persistence.Tenant;
+using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -73,10 +75,12 @@ public class RegisterOrganisationUseCase(
         if (await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
         {
             await umOrganisationSyncRepository.EnsureCreatedAsync(organisation.Guid, organisation.Name);
+            await umOrganisationSyncRepository.EnsureActiveApplicationsEnabledAsync(organisation.Guid);
             await umOrganisationSyncRepository.EnsureFounderOwnerCreatedAsync(
                 organisation.Guid,
                 person.Guid,
-                person.UserUrn);
+                person.UserUrn,
+                MapPartyRoles(command.Roles));
         }
 
         if (organisation.PendingRoles.Contains(CO.CDP.OrganisationInformation.PartyRole.Buyer))
@@ -162,4 +166,21 @@ public class RegisterOrganisationUseCase(
                 Persons = { person }
             };
         });
+
+    private static IReadOnlyCollection<UmPartyRole> MapPartyRoles(IEnumerable<OiPartyRole> roles) =>
+        roles.Select(role => role switch
+            {
+                OiPartyRole.Buyer => UmPartyRole.Buyer,
+                OiPartyRole.ProcuringEntity => UmPartyRole.ProcuringEntity,
+                OiPartyRole.Supplier => UmPartyRole.Supplier,
+                OiPartyRole.Tenderer => UmPartyRole.Tenderer,
+                OiPartyRole.Funder => UmPartyRole.Funder,
+                OiPartyRole.Enquirer => UmPartyRole.Enquirer,
+                OiPartyRole.Payer => UmPartyRole.Payer,
+                OiPartyRole.Payee => UmPartyRole.Payee,
+                OiPartyRole.ReviewBody => UmPartyRole.ReviewBody,
+                OiPartyRole.InterestedParty => UmPartyRole.InterestedParty,
+                _ => throw new ArgumentOutOfRangeException(nameof(role), role, $"Unknown party role: {role}")
+            })
+            .ToHashSet();
 }

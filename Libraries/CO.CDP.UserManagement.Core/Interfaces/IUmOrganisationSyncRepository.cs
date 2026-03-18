@@ -1,5 +1,7 @@
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
+using PartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
+
 /// <summary>
 /// Keeps the User Management <c>organisations</c> table in sync when organisations are
 /// created or renamed in Organisation Information.
@@ -10,6 +12,11 @@ public interface IUmOrganisationSyncRepository
     /// Creates a UM organisation row for <paramref name="cdpGuid"/> if one does not already exist.
     /// </summary>
     Task EnsureCreatedAsync(Guid cdpGuid, string name, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Ensures the synced organisation has all active, non-deleted applications enabled in User Management.
+    /// </summary>
+    Task EnsureActiveApplicationsEnabledAsync(Guid cdpGuid, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates the UM organisation name (and slug) when the name has changed.
@@ -24,5 +31,6 @@ public interface IUmOrganisationSyncRepository
         Guid cdpOrganisationGuid,
         Guid cdpPersonGuid,
         string userPrincipalId,
+        IReadOnlyCollection<PartyRole> organisationPartyRoles,
         CancellationToken cancellationToken = default);
 }

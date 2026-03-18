@@ -15,6 +15,7 @@ using Microsoft.FeatureManagement;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.UserManagement.Core.Interfaces;
+using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -348,10 +349,14 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         await UseCase.Execute(GivenRegisterOrganisationCommand());
 
         _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+        _umOrganisationSyncRepository.Verify(r => r.EnsureActiveApplicationsEnabledAsync(
+            _generatedGuid,
+            It.IsAny<CancellationToken>()), Times.Once);
         _umOrganisationSyncRepository.Verify(r => r.EnsureFounderOwnerCreatedAsync(
             _generatedGuid,
             person.Guid,
             "test_urn",
+            It.Is<IReadOnlyCollection<UmPartyRole>>(roles => roles.Count == 1 && roles.Contains(UmPartyRole.Tenderer)),
             It.IsAny<CancellationToken>()), Times.Once);
     }
 
@@ -365,10 +370,14 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         await UseCase.Execute(GivenRegisterOrganisationCommand());
 
         _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        _umOrganisationSyncRepository.Verify(r => r.EnsureActiveApplicationsEnabledAsync(
+            It.IsAny<Guid>(),
+            It.IsAny<CancellationToken>()), Times.Never);
         _umOrganisationSyncRepository.Verify(r => r.EnsureFounderOwnerCreatedAsync(
             It.IsAny<Guid>(),
             It.IsAny<Guid>(),
             It.IsAny<string>(),
+            It.IsAny<IReadOnlyCollection<UmPartyRole>>(),
             It.IsAny<CancellationToken>()), Times.Never);
     }
 

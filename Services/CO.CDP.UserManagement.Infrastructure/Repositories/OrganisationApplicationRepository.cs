@@ -49,8 +49,10 @@ public class OrganisationApplicationRepository : Repository<OrganisationApplicat
         return await DbSet
             .Include(oa => oa.Application)
             .Where(oa => oa.OrganisationId == organisationId
-                         && oa.IsActive
-                         && oa.Application.IsActive
+                          && oa.IsActive
+                         && !oa.IsDeleted
+                          && oa.Application.IsActive
+                         && !oa.Application.IsDeleted
                          && oa.Application.IsEnabledByDefault)
             .ToListAsync(cancellationToken);
     }
