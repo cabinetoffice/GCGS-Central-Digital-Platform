@@ -4,7 +4,6 @@
 @{
     ViewData["Title"] = "Manage users";
     var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
-    var organisation = organisationSlug;
     string? organisationBackUrl = null;
     if (Model?.OrganisationGuid.HasValue == true)
     {
@@ -28,8 +27,8 @@
 </div>
 
 <div class="govuk-button-group govuk-!-margin-bottom-6">
-    <a href="/organisation/@organisation/add-user" class="govuk-button" data-module="govuk-button">Add a user</a>
-    <a href="/organisation/@organisation/assignments" class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage application access</a>
+    <a href="/organisation/@organisationSlug/add-user" class="govuk-button" data-module="govuk-button">Add a user</a>
+    <a href="/organisation/@organisationSlug/assignments" class="govuk-button govuk-button--secondary" data-module="govuk-button">Manage application access</a>
 </div>
 
 <form method="get" aria-label="Search and filter users" class="app-filter-container">
@@ -96,12 +95,12 @@
             <ul class="govuk-list govuk-list--bullet">
                 <li>checking your spelling</li>
                 <li>using different search terms</li>
-                <li><a href="?organisation=@organisation" class="govuk-link">clearing the filters</a></li>
+                <li><a href="?organisation=@organisationSlug" class="govuk-link">clearing the filters</a></li>
             </ul>
         }
         else
         {
-            <p><a href="/organisation/@organisation/add-user" class="govuk-link">Add your first user</a> to get started.</p>
+            <p><a href="/organisation/@organisationSlug/add-user" class="govuk-link">Add your first user</a> to get started.</p>
         }
     </div>
 }
@@ -123,7 +122,7 @@ else
                     }
                     else
                     {
-                        <a href="/organisation/@organisation/user/@user.Id" class="govuk-link">@user.Name</a>
+                        <a href="/organisation/@organisationSlug/user/@user.Id" class="govuk-link">@user.Name</a>
                     }
                 </h2>
                 <ul class="govuk-summary-card__actions">
@@ -162,15 +161,15 @@ else
                 <p class="govuk-body govuk-!-margin-top-4">
                     @if (!isPending)
                     {
-                        <a href="/organisation/@organisation/user/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
-                        <a href="/organisation/@organisation/user/@user.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
-                        <a href="/organisation/@organisation/user/@user.Id/organisation-role/change" class="govuk-link">Change organisation role</a>
+                        <a href="/organisation/@organisationSlug/user/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
+                        <a href="/organisation/@organisationSlug/user/@user.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
+                        <a href="/organisation/@organisationSlug/user/@user.Id/organisation-role/change" class="govuk-link">Change organisation role</a>
                     }
                     else if (user.InviteGuid.HasValue)
                     {
-                        <a href="/organisation/@organisation/invites/@user.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
-                        <a href="/organisation/@organisation/invites/@user.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
-                        <a href="/organisation/@organisation/invites/@user.InviteGuid/organisation-role/change" class="govuk-link">Change organisation role</a>
+                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
+                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/organisation-role/change" class="govuk-link">Change organisation role</a>
                     }
                 </p>
             </div>
