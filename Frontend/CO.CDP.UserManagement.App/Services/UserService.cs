@@ -102,6 +102,7 @@ public sealed class UserService(
             return new UsersViewModel(
                 OrganisationName: org.Name,
                 OrganisationSlug: org.Slug,
+                OrganisationGuid: org.CdpOrganisationGuid,
                 Users: filteredUsers,
                 SelectedRole: selectedRole,
                 SelectedApplication: selectedApplication,

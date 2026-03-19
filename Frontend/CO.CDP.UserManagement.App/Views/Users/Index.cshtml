@@ -1,12 +1,17 @@
 @using CO.CDP.UserManagement.Shared.Enums
 @model CO.CDP.UserManagement.App.Models.UsersViewModel
+@inject CO.CDP.UI.Foundation.Services.ISirsiUrlService SirsiUrlService
 @{
     ViewData["Title"] = "Manage users";
-    var organisation = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+    var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+    var organisation = organisationSlug;
+    var organisationBackUrl = (Model?.OrganisationGuid.HasValue == true)
+        ? SirsiUrlService.BuildAuthenticatedUrl("/organisation/" + Model.OrganisationGuid.Value)
+        : "/organisation/" + organisationSlug;
 }
 
 @section BeforeContent {
-    <a href="/organisation/@organisation" class="govuk-back-link">Back</a>
+    <a href="@organisationBackUrl" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
