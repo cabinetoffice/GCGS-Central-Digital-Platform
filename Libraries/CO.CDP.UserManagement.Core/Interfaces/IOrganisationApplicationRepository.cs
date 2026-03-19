@@ -25,6 +25,14 @@ public interface IOrganisationApplicationRepository : IRepository<OrganisationAp
     Task<OrganisationApplication?> GetByOrganisationAndApplicationAsync(int organisationId, int applicationId, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Gets active organisation applications where the underlying application is enabled by default.
+    /// </summary>
+    /// <param name="organisationId">The organisation identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>Collection of default-enabled organisation applications.</returns>
+    Task<IEnumerable<OrganisationApplication>> GetDefaultEnabledByOrganisationIdAsync(int organisationId, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Gets all applications accessible by a specific user across all their organisations.
     /// </summary>
     /// <param name="userPrincipalId">The user principal identifier.</param>

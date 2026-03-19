@@ -17,6 +17,7 @@ public class UserAssignmentService : IUserAssignmentService
     private readonly IRoleRepository _roleRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserAssignmentService> _logger;
+    private const string SystemAssignedBy = "system:default-app-assignment";
 
     public UserAssignmentService(
         IUserApplicationAssignmentRepository assignmentRepository,
@@ -253,6 +254,51 @@ public class UserAssignmentService : IUserAssignmentService
         _logger.LogInformation("Assignment ID: {AssignmentId} revoked successfully", assignmentId);
     }
 
+    public async Task AssignDefaultApplicationsAsync(
+        UserOrganisationMembership membership,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Assigning default applications for membership ID: {MembershipId} in organisation ID: {OrganisationId}",
+            membership.Id, membership.OrganisationId);
+
+        var defaultOrganisationApplications = (await _organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
+            membership.OrganisationId,
+            cancellationToken)).ToList();
+
+        if (defaultOrganisationApplications.Count == 0)
+        {
+            return;
+        }
+
+        var existingAssignments = (await _assignmentRepository.GetByMembershipIdAsync(
+            membership.Id,
+            cancellationToken)).ToList();
+
+        var assignmentsToCreate = defaultOrganisationApplications
+            .Where(app => !existingAssignments.Exists(a => a.OrganisationApplicationId == app.Id))
+            .Select(app => new UserApplicationAssignment
+            {
+                UserOrganisationMembershipId = membership.Id,
+                OrganisationApplicationId = app.Id,
+                IsActive = true,
+                AssignedAt = DateTimeOffset.UtcNow,
+                AssignedBy = SystemAssignedBy
+            })
+            .ToList();
+
+        if (assignmentsToCreate.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var assignment in assignmentsToCreate)
+        {
+            _assignmentRepository.Add(assignment);
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
     private async Task<UserOrganisationMembership?> ResolveMembershipAsync(
         string userId,
         int organisationId,
@@ -265,7 +311,6 @@ public class UserAssignmentService : IUserAssignmentService
 
         return await _membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, cancellationToken);
     }
-
 
     private async Task<UserApplicationAssignment> GetAssignmentForUserAsync(
         string userId,

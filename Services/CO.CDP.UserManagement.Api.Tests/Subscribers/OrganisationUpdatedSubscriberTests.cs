@@ -1,5 +1,6 @@
 using CO.CDP.OrganisationInformation;
 using CO.CDP.UserManagement.Infrastructure.Events;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
@@ -13,6 +14,7 @@ public class OrganisationSyncServiceUpdatedTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
+    private readonly Mock<IApplicationRepository> _applicationRepositoryMock;
     private readonly Mock<ISlugGeneratorService> _slugGeneratorMock;
     private readonly Mock<IOrganisationPersonsSyncService> _personsSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -22,6 +24,7 @@ public class OrganisationSyncServiceUpdatedTests
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
+        _applicationRepositoryMock = new Mock<IApplicationRepository>();
         _slugGeneratorMock = new Mock<ISlugGeneratorService>();
         _personsSyncServiceMock = new Mock<IOrganisationPersonsSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -34,9 +37,14 @@ public class OrganisationSyncServiceUpdatedTests
                 It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
+        _applicationRepositoryMock
+            .Setup(r => r.FindAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Application, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         _service = new OrganisationSyncService(
             _organisationRepositoryMock.Object,
             _membershipRepositoryMock.Object,
+            _applicationRepositoryMock.Object,
             _slugGeneratorMock.Object,
             _personsSyncServiceMock.Object,
             _unitOfWorkMock.Object,
@@ -143,6 +151,40 @@ public class OrganisationSyncServiceUpdatedTests
         )), Times.Once);
 
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenOrgNotExists_CreatesOrgAndEnablesAllActiveApplications()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationUpdatedEvent(cdpGuid.ToString(), "New Org");
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync((UmOrganisation?)null);
+
+        _slugGeneratorMock
+            .Setup(s => s.GenerateSlug("New Org"))
+            .Returns("new-org");
+
+        _applicationRepositoryMock
+            .Setup(r => r.FindAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Application, bool>>>(), default))
+            .ReturnsAsync(
+            [
+                new Application { Id = 301, Name = "App 1", ClientId = "app-1", IsActive = true },
+                new Application { Id = 302, Name = "App 2", ClientId = "app-2", IsActive = true }
+            ]);
+
+        // Act
+        await _service.SyncUpdatedAsync(@event.Id, @event.Name);
+
+        // Assert
+        _organisationRepositoryMock.Verify(r => r.Add(It.Is<UmOrganisation>(o =>
+            o.OrganisationApplications.Count == 2 &&
+            o.OrganisationApplications.Any(oa => oa.ApplicationId == 301 && oa.IsActive) &&
+            o.OrganisationApplications.Any(oa => oa.ApplicationId == 302 && oa.IsActive)
+        )), Times.Once);
     }
 
     [Fact]

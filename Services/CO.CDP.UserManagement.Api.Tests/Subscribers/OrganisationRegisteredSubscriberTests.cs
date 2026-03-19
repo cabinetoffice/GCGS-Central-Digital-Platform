@@ -14,6 +14,7 @@ public class OrganisationSyncServiceRegisteredTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
+    private readonly Mock<IApplicationRepository> _applicationRepositoryMock;
     private readonly Mock<ISlugGeneratorService> _slugGeneratorMock;
     private readonly Mock<IOrganisationPersonsSyncService> _personsSyncServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
@@ -23,6 +24,7 @@ public class OrganisationSyncServiceRegisteredTests
     {
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
+        _applicationRepositoryMock = new Mock<IApplicationRepository>();
         _slugGeneratorMock = new Mock<ISlugGeneratorService>();
         _personsSyncServiceMock = new Mock<IOrganisationPersonsSyncService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
@@ -39,9 +41,14 @@ public class OrganisationSyncServiceRegisteredTests
             .Setup(r => r.GetByOrganisationIdAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
+        _applicationRepositoryMock
+            .Setup(r => r.FindAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Application, bool>>>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync([]);
+
         _service = new OrganisationSyncService(
             _organisationRepositoryMock.Object,
             _membershipRepositoryMock.Object,
+            _applicationRepositoryMock.Object,
             _slugGeneratorMock.Object,
             _personsSyncServiceMock.Object,
             _unitOfWorkMock.Object,
@@ -105,6 +112,73 @@ public class OrganisationSyncServiceRegisteredTests
             cdpGuid,
             It.IsAny<int>(),
             It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenOrgNotExists_EnablesAllActiveApplications()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationRegisteredEvent(cdpGuid.ToString(), "Test Organisation");
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync((CoreOrganisation?)null);
+
+        _slugGeneratorMock
+            .Setup(s => s.GenerateSlug("Test Organisation"))
+            .Returns("test-organisation");
+
+        _applicationRepositoryMock
+            .Setup(r => r.FindAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Application, bool>>>(), default))
+            .ReturnsAsync(
+            [
+                new Application { Id = 101, Name = "App 1", ClientId = "app-1", IsActive = true },
+                new Application { Id = 102, Name = "App 2", ClientId = "app-2", IsActive = true }
+            ]);
+
+        // Act
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
+
+        // Assert
+        _organisationRepositoryMock.Verify(r => r.Add(It.Is<CoreOrganisation>(o =>
+            o.OrganisationApplications.Count == 2 &&
+            o.OrganisationApplications.Any(oa => oa.ApplicationId == 101 && oa.IsActive) &&
+            o.OrganisationApplications.Any(oa => oa.ApplicationId == 102 && oa.IsActive)
+        )), Times.Once);
+    }
+
+    [Fact]
+    public async Task Handle_WhenOrgNotExists_DoesNotEnableInactiveApplications()
+    {
+        // Arrange
+        var cdpGuid = Guid.NewGuid();
+        var @event = CreateOrganisationRegisteredEvent(cdpGuid.ToString(), "Test Organisation");
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpGuid, default))
+            .ReturnsAsync((CoreOrganisation?)null);
+
+        _slugGeneratorMock
+            .Setup(s => s.GenerateSlug("Test Organisation"))
+            .Returns("test-organisation");
+
+        _applicationRepositoryMock
+            .Setup(r => r.FindAsync(It.IsAny<System.Linq.Expressions.Expression<Func<Application, bool>>>(), default))
+            .ReturnsAsync(
+            [
+                new Application { Id = 201, Name = "Active App", ClientId = "active-app", IsActive = true },
+                new Application { Id = 202, Name = "Inactive App", ClientId = "inactive-app", IsActive = false }
+            ]);
+
+        // Act
+        await _service.SyncRegisteredAsync(@event.Id, @event.Name);
+
+        // Assert
+        _organisationRepositoryMock.Verify(r => r.Add(It.Is<CoreOrganisation>(o =>
+            o.OrganisationApplications.Count == 1 &&
+            o.OrganisationApplications.Single().ApplicationId == 201
+        )), Times.Once);
     }
 
     [Fact]

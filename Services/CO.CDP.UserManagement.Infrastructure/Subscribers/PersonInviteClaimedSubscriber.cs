@@ -13,6 +13,7 @@ public class PersonInviteClaimedSubscriber(
     IInviteRoleMappingRepository inviteRoleMappingRepository,
     IUserOrganisationMembershipRepository membershipRepository,
     IUserApplicationAssignmentRepository assignmentRepository,
+    IUserAssignmentService userAssignmentService,
     ICdpMembershipSyncService membershipSyncService,
     IUnitOfWork unitOfWork,
     ILogger<PersonInviteClaimedSubscriber> logger) : ISubscriber<PersonInviteClaimed>
@@ -68,6 +69,7 @@ public class PersonInviteClaimedSubscriber(
                     inviteRoleMappingRepository.Remove(mapping);
                     await unitOfWork.SaveChangesAsync();
 
+                    await userAssignmentService.AssignDefaultApplicationsAsync(membership, CancellationToken.None);
                     await membershipSyncService.SyncMembershipCreatedAsync(membership, CancellationToken.None);
                 }
                 else

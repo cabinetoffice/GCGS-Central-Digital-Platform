@@ -38,6 +38,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IOrganisationClient _organisationClient;
     private readonly IPersonLookupService _personLookupService;
+    private readonly IUserAssignmentService _userAssignmentService;
     private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<InviteOrchestrationService> _logger;
@@ -46,6 +47,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         InviteOrchestrationServiceRepositories repositories,
         IOrganisationClient organisationClient,
         IPersonLookupService personLookupService,
+        IUserAssignmentService userAssignmentService,
         ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<InviteOrchestrationService> logger)
@@ -55,6 +57,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         _membershipRepository = repositories.MembershipRepository;
         _organisationClient = organisationClient;
         _personLookupService = personLookupService;
+        _userAssignmentService = userAssignmentService;
         _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -213,6 +216,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         _inviteRoleMappingRepository.Remove(mapping);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        await _userAssignmentService.AssignDefaultApplicationsAsync(membership, cancellationToken);
         await _membershipSyncService.SyncMembershipCreatedAsync(membership, cancellationToken);
 
         _logger.LogInformation(
