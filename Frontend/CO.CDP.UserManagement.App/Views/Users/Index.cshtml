@@ -141,27 +141,26 @@ else
                 else
                 {
                     <p class="govuk-body-s govuk-!-margin-bottom-2"><strong>Application access:</strong></p>
-                    <div>
+                    <ul class="govuk-list govuk-list--bullet govuk-body-s govuk-!-margin-bottom-2">
                         @foreach (var app in user.ApplicationAccess)
                         {
-                            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">
-                                @app.ApplicationName: @app.RoleName
-                            </span>
+                            <li>@app.ApplicationName@(string.IsNullOrEmpty(app.RoleName) ? "" : $": {app.RoleName}")</li>
                         }
-                    </div>
+                    </ul>
                 }
 
                 <p class="govuk-body govuk-!-margin-top-4">
                     @if (!isPending)
                     {
                         <a href="/organisation/@organisation/user/@user.Id" class="govuk-link govuk-!-margin-right-4">View details</a>
-                        <a href="/organisation/@organisation/assignments/create?user=@user.Id" class="govuk-link govuk-!-margin-right-4">Manage app access</a>
-                        <a href="/organisation/@organisation/user/@user.Id/change-role" class="govuk-link">Change org role</a>
+                        <a href="/organisation/@organisation/user/@user.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
+                        <a href="/organisation/@organisation/user/@user.Id/organisation-role/change" class="govuk-link">Change organisation role</a>
                     }
                     else if (user.InviteGuid.HasValue)
                     {
                         <a href="/organisation/@organisation/invites/@user.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
-                        <a href="/organisation/@organisation/invites/@user.InviteGuid/change-role" class="govuk-link">Change org role</a>
+                        <a href="/organisation/@organisation/invites/@user.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
+                        <a href="/organisation/@organisation/invites/@user.InviteGuid/organisation-role/change" class="govuk-link">Change organisation role</a>
                     }
                 </p>
             </div>

@@ -11,8 +11,10 @@ using CO.CDP.OrganisationInformation;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.UserManagement.Core.Interfaces;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -26,6 +28,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Mock<IClaimService> _claimService = new();
+    private readonly Mock<IUmOrganisationSyncRepository> _umOrganisationSyncRepository = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
 
@@ -39,6 +43,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mockConfiguration,
         _logger.Object,
         _claimService.Object,
+        _umOrganisationSyncRepository.Object,
+        _featureManager.Object,
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
@@ -86,6 +92,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                             configurationMock,
                             _logger.Object,
                             _claimService.Object,
+                            _umOrganisationSyncRepository.Object,
+                            _featureManager.Object,
                             () => _generatedGuid
                         );
 
@@ -328,6 +336,30 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             req.TemplateId == "template-id" &&
             req.Personalisation!["org_name"] == "TheOrganisation"
         )), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItShouldSyncToUserManagementWhenOrganisationSyncEnabled()
+    {
+        var person = GivenPersonExists("test_urn");
+        _featureManager.Setup(f => f.IsEnabledAsync(CO.CDP.Organisation.WebApi.Features.FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(true);
+
+        await UseCase.Execute(GivenRegisterOrganisationCommand());
+
+        _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task ItShouldNotSyncToUserManagementWhenOrganisationSyncDisabled()
+    {
+        var person = GivenPersonExists("test_urn");
+        _featureManager.Setup(f => f.IsEnabledAsync(CO.CDP.Organisation.WebApi.Features.FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(false);
+
+        await UseCase.Execute(GivenRegisterOrganisationCommand());
+
+        _umOrganisationSyncRepository.Verify(r => r.EnsureCreatedAsync(It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand(

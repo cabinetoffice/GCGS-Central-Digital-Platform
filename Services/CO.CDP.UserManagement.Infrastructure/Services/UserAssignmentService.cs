@@ -14,67 +14,68 @@ public class UserAssignmentService : IUserAssignmentService
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IOrganisationApplicationRepository _organisationApplicationRepository;
-    private readonly IRoleRepository _roleRepository;
+    private readonly IRoleMappingService _roleMappingService;
+    private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<UserAssignmentService> _logger;
+    private const string SystemAssignedBy = "system:default-app-assignment";
 
     public UserAssignmentService(
         IUserApplicationAssignmentRepository assignmentRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IOrganisationApplicationRepository organisationApplicationRepository,
-        IRoleRepository roleRepository,
+        IRoleMappingService roleMappingService,
+        ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<UserAssignmentService> logger)
     {
         _assignmentRepository = assignmentRepository;
         _membershipRepository = membershipRepository;
         _organisationApplicationRepository = organisationApplicationRepository;
-        _roleRepository = roleRepository;
+        _roleMappingService = roleMappingService;
+        _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
 
     public async Task<IEnumerable<UserApplicationAssignment>> GetUserAssignmentsAsync(
-        string userPrincipalId,
+        string userId,
         int organisationId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting assignments for user: {UserPrincipalId} in organisation ID: {OrganisationId}",
-            userPrincipalId, organisationId);
+        _logger.LogDebug("Getting assignments for user: {UserId} in organisation ID: {OrganisationId}",
+            userId, organisationId);
 
-        // Get user's membership in the organisation
-        var membership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            userPrincipalId, organisationId, cancellationToken);
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
 
         if (membership == null)
         {
             throw new EntityNotFoundException(
                 nameof(UserOrganisationMembership),
-                $"User {userPrincipalId} in Organisation {organisationId}");
+                $"User {userId} in Organisation {organisationId}");
         }
 
         return await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
     }
 
     public async Task<UserApplicationAssignment> AssignUserAsync(
-        string userPrincipalId,
+        string userId,
         int organisationId,
         int applicationId,
         IEnumerable<int> roleIds,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Assigning user {UserPrincipalId} to application ID: {ApplicationId} in organisation ID: {OrganisationId}",
-            userPrincipalId, applicationId, organisationId);
+        _logger.LogInformation("Assigning user {UserId} to application ID: {ApplicationId} in organisation ID: {OrganisationId}",
+            userId, applicationId, organisationId);
 
         // Get user's membership in the organisation
-        var membership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            userPrincipalId, organisationId, cancellationToken);
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
 
         if (membership == null)
         {
             throw new EntityNotFoundException(
                 nameof(UserOrganisationMembership),
-                $"User {userPrincipalId} in Organisation {organisationId}");
+                $"User {userId} in Organisation {organisationId}");
         }
 
         // Get organisation-application relationship
@@ -102,34 +103,28 @@ public class UserAssignmentService : IUserAssignmentService
         {
             throw new DuplicateEntityException(
                 nameof(UserApplicationAssignment),
-                $"User {userPrincipalId}, Application {applicationId}",
-                $"{userPrincipalId}-{applicationId}");
+                $"User {userId}, Application {applicationId}",
+                $"{userId}-{applicationId}");
         }
 
-        var roleIdsList = roleIds.ToList();
+        var roles = await _roleMappingService.GetAssignableRolesAsync(
+            organisationId,
+            membership.OrganisationRole,
+            roleIds,
+            cancellationToken);
 
-        // Verify all roles exist and belong to the application
-        var roles = new List<ApplicationRole>();
-        foreach (var roleId in roleIdsList)
+        foreach (var role in roles)
         {
-            var role = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
-            if (role == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationRole), roleId);
-            }
-
             if (role.ApplicationId != applicationId)
             {
                 throw new SystemInvalidOperationException(
-                    $"Role {roleId} does not belong to application {applicationId}");
+                    $"Role {role.Id} does not belong to application {applicationId}");
             }
 
             if (!role.IsActive)
             {
-                throw new SystemInvalidOperationException($"Role {roleId} is not active");
+                throw new SystemInvalidOperationException($"Role {role.Id} is not active");
             }
-
-            roles.Add(role);
         }
 
         // If assignment exists but inactive, reactivate it
@@ -147,6 +142,7 @@ public class UserAssignmentService : IUserAssignmentService
 
             _assignmentRepository.Update(existingAssignment);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+            await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
             _logger.LogInformation("User assignment reactivated with ID: {AssignmentId}", existingAssignment.Id);
             return existingAssignment;
@@ -168,57 +164,52 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Add(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
         _logger.LogInformation("User assigned to application with assignment ID: {AssignmentId}", assignment.Id);
         return assignment;
     }
 
     public async Task<UserApplicationAssignment> UpdateAssignmentAsync(
+        string userId,
+        int organisationId,
         int assignmentId,
         IEnumerable<int> roleIds,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Updating assignment ID: {AssignmentId}", assignmentId);
+        _logger.LogInformation("Updating assignment ID: {AssignmentId} for user {UserId} in organisation ID: {OrganisationId}",
+            assignmentId, userId, organisationId);
 
-        var assignment = await _assignmentRepository.GetByIdAsync(assignmentId, cancellationToken);
-        if (assignment == null)
-        {
-            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
-        }
+        var assignment = await GetAssignmentForUserAsync(userId, organisationId, assignmentId, cancellationToken);
 
         if (!assignment.IsActive)
         {
             throw new SystemInvalidOperationException($"Assignment {assignmentId} is not active");
         }
 
-        var roleIdsList = roleIds.ToList();
-
         // Get the application ID from the organisation application
         var organisationApplication = assignment.OrganisationApplication;
         var applicationId = organisationApplication.ApplicationId;
 
-        // Verify all roles exist and belong to the application
-        var roles = new List<ApplicationRole>();
-        foreach (var roleId in roleIdsList)
-        {
-            var role = await _roleRepository.GetByIdAsync(roleId, cancellationToken);
-            if (role == null)
-            {
-                throw new EntityNotFoundException(nameof(ApplicationRole), roleId);
-            }
+        var membership = assignment.UserOrganisationMembership;
+        var roles = await _roleMappingService.GetAssignableRolesAsync(
+            organisationId,
+            membership.OrganisationRole,
+            roleIds,
+            cancellationToken);
 
+        foreach (var role in roles)
+        {
             if (role.ApplicationId != applicationId)
             {
                 throw new SystemInvalidOperationException(
-                    $"Role {roleId} does not belong to application {applicationId}");
+                    $"Role {role.Id} does not belong to application {applicationId}");
             }
 
             if (!role.IsActive)
             {
-                throw new SystemInvalidOperationException($"Role {roleId} is not active");
+                throw new SystemInvalidOperationException($"Role {role.Id} is not active");
             }
-
-            roles.Add(role);
         }
 
         // Update roles
@@ -230,19 +221,23 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Update(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
         _logger.LogInformation("Assignment ID: {AssignmentId} updated successfully", assignmentId);
         return assignment;
     }
 
-    public async Task RevokeAssignmentAsync(int assignmentId, CancellationToken cancellationToken = default)
+    public async Task RevokeAssignmentAsync(string userId, int organisationId, int assignmentId, CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Revoking assignment ID: {AssignmentId}", assignmentId);
+        _logger.LogInformation("Revoking assignment ID: {AssignmentId} for user {UserId} in organisation ID: {OrganisationId}",
+            assignmentId, userId, organisationId);
 
-        var assignment = await _assignmentRepository.GetByIdAsync(assignmentId, cancellationToken);
-        if (assignment == null)
+        var assignment = await GetAssignmentForUserAsync(userId, organisationId, assignmentId, cancellationToken);
+
+        if (assignment.OrganisationApplication.Application.IsEnabledByDefault)
         {
-            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
+            throw new SystemInvalidOperationException(
+                $"Application {assignment.OrganisationApplication.ApplicationId} is enabled by default and user access cannot be revoked");
         }
 
         assignment.IsActive = false;
@@ -250,7 +245,100 @@ public class UserAssignmentService : IUserAssignmentService
 
         _assignmentRepository.Update(assignment);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(assignment.UserOrganisationMembershipId, cancellationToken);
 
         _logger.LogInformation("Assignment ID: {AssignmentId} revoked successfully", assignmentId);
+    }
+
+    public async Task AssignDefaultApplicationsAsync(
+        UserOrganisationMembership membership,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogInformation("Assigning default applications for membership ID: {MembershipId} in organisation ID: {OrganisationId}",
+            membership.Id, membership.OrganisationId);
+
+        if (!await _roleMappingService.ShouldAutoAssignDefaultApplicationsAsync(membership, cancellationToken))
+        {
+            _logger.LogInformation(
+                "Skipping default application assignment for membership {MembershipId} because organisation role {OrganisationRole} is not eligible",
+                membership.Id,
+                membership.OrganisationRole);
+            return;
+        }
+
+        var defaultOrganisationApplications = (await _organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
+            membership.OrganisationId,
+            cancellationToken)).ToList();
+
+        if (defaultOrganisationApplications.Count == 0)
+        {
+            return;
+        }
+
+        var existingAssignments = (await _assignmentRepository.GetByMembershipIdAsync(
+            membership.Id,
+            cancellationToken)).ToList();
+
+        var assignmentsToCreate = defaultOrganisationApplications
+            .Where(app => !existingAssignments.Exists(a => a.OrganisationApplicationId == app.Id))
+            .Select(app => new UserApplicationAssignment
+            {
+                UserOrganisationMembershipId = membership.Id,
+                OrganisationApplicationId = app.Id,
+                IsActive = true,
+                AssignedAt = DateTimeOffset.UtcNow,
+                AssignedBy = SystemAssignedBy
+            })
+            .ToList();
+
+        if (assignmentsToCreate.Count == 0)
+        {
+            return;
+        }
+
+        foreach (var assignment in assignmentsToCreate)
+        {
+            _assignmentRepository.Add(assignment);
+        }
+
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+    }
+
+    private async Task<UserOrganisationMembership?> ResolveMembershipAsync(
+        string userId,
+        int organisationId,
+        CancellationToken cancellationToken)
+    {
+        if (Guid.TryParse(userId, out var cdpPersonId))
+        {
+            return await _membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, cancellationToken);
+        }
+
+        return await _membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, cancellationToken);
+    }
+
+    private async Task<UserApplicationAssignment> GetAssignmentForUserAsync(
+        string userId,
+        int organisationId,
+        int assignmentId,
+        CancellationToken cancellationToken)
+    {
+        var membership = await ResolveMembershipAsync(userId, organisationId, cancellationToken);
+        if (membership == null)
+        {
+            throw new EntityNotFoundException(
+                nameof(UserOrganisationMembership),
+                $"User {userId} in Organisation {organisationId}");
+        }
+
+        var assignment = (await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken))
+            .SingleOrDefault(a => a.Id == assignmentId);
+
+        if (assignment == null)
+        {
+            throw new EntityNotFoundException(nameof(UserApplicationAssignment), assignmentId);
+        }
+
+        return assignment;
     }
 }

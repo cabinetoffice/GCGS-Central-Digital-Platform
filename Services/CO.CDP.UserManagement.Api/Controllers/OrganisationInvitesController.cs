@@ -5,8 +5,6 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
-using CO.CDP.UserManagement.Api.FeatureFlags;
-using CO.CDP.UserManagement.Shared.FeatureFlags;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +19,6 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/invites")]
 [Authorize(Policy = PolicyNames.OrganisationAdmin)]
-[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.InviteFlowEnabled)]
 public class OrganisationInvitesController : ControllerBase
 {
     private readonly IUmOrganisationRepository _organisationRepository;
@@ -92,7 +89,14 @@ public class OrganisationInvitesController : ControllerBase
                                 Status = UserStatus.Pending,
                                 InvitedBy = mapping.CreatedBy,
                                 ExpiresOn = cdpInvite.ExpiresOn,
-                                CreatedAt = cdpInvite.CreatedOn
+                                CreatedAt = cdpInvite.CreatedOn,
+                                ApplicationAssignments = mapping.ApplicationAssignments.Select(a => new InviteApplicationAssignmentResponse
+                                {
+                                    OrganisationApplicationId = a.OrganisationApplicationId,
+                                    ApplicationId = a.OrganisationApplication?.ApplicationId,
+                                    ApplicationName = a.OrganisationApplication?.Application?.Name ?? string.Empty,
+                                    ApplicationRoleId = a.ApplicationRoleId
+                                })
                             };
 
             return Ok(responses.ToList());

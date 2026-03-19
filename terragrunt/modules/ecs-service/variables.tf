@@ -25,18 +25,6 @@ variable "cpu" {
   type        = number
 }
 
-variable "force_new_deployment" {
-  description = "Force a new ECS deployment on every apply"
-  type        = bool
-  default     = false
-}
-
-variable "listener_rule_propagation_delay" {
-  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
-  type        = string
-  default     = "10s"
-}
-
 variable "deployment_maximum_percent" {
   description = "Upper limit (as a percentage of the service's desiredCount) of the number of running tasks that can be running in a service during a deployment"
   default     = 200
@@ -96,6 +84,18 @@ variable "family" {
   type        = string
 }
 
+variable "force_new_deployment" {
+  description = "Force a new ECS deployment on every apply"
+  type        = bool
+  default     = false
+}
+
+variable "health_check_grace_period_seconds" {
+  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
+  type        = number
+  default     = 60
+}
+
 variable "healthcheck_healthy_threshold" {
   description = "Health-check threshold"
   default     = 3
@@ -119,12 +119,6 @@ variable "healthcheck_path" {
 variable "healthcheck_timeout" {
   description = "Health-check timeout"
   default     = 6
-}
-
-variable "health_check_grace_period_seconds" {
-  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
-  type        = number
-  default     = 60
 }
 
 variable "internal_alb_enabled" {
@@ -167,6 +161,12 @@ variable "listener_priority" {
   description = "Listener rule priority (optional override)"
   type        = number
   default     = null
+}
+
+variable "listener_rule_propagation_delay" {
+  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
+  type        = string
+  default     = "10s"
 }
 
 variable "memory" {

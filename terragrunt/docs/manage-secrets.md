@@ -19,6 +19,7 @@
 - [Update ODI Data Platform Secrets](#update-odi-data-platform-secrets)
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
+- [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
 - [Update Production Database Users](#update-production-database-users)
 - [Update Slack Configuration](#update-slack-configuration)
@@ -226,6 +227,23 @@ ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-
 ```
 
 3. Redeploy the `organisation-app` service.
+
+---
+
+## Update User Management Service Key API Key
+
+1. Use `uuidgen` (or your preferred secure generator) to create a service key and store it in the target account's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
+
+# Or update an existing key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
+```
+
+2. Redeploy the `user-management-api` service.
 
 ---
 

@@ -63,7 +63,7 @@ public class ClaimsServiceTests
             UserPrincipalId = userId,
             OrganisationId = 1,
             Organisation = org,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true
         };
 

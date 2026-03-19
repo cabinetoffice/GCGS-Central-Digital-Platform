@@ -32,6 +32,12 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AllowsMultipleRoleAssignments")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("allows_multiple_role_assignments");
+
                     b.Property<string>("Category")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
@@ -80,6 +86,12 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")
                         .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsEnabledByDefault")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_enabled_by_default");
 
                     b.Property<DateTimeOffset?>("ModifiedAt")
                         .HasColumnType("timestamp with time zone")
@@ -238,6 +250,24 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("character varying(255)")
                         .HasColumnName("name");
 
+                    b.Property<string>("OrganisationInformationScopes")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("organisation_information_scopes")
+                        .HasDefaultValueSql("'[]'");
+
+                    b.Property<IEnumerable<int>>("RequiredPartyRoles")
+                        .IsRequired()
+                        .HasColumnType("integer[]")
+                        .HasColumnName("required_party_roles");
+
+                    b.Property<bool>("SyncToOrganisationInformation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("sync_to_organisation_information");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationId", "Name")
@@ -362,10 +392,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
-                    b.Property<string>("OrganisationRole")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("organisation_role");
+                    b.Property<int>("OrganisationRoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_role_id");
 
                     b.HasKey("Id");
 
@@ -374,6 +403,8 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasDatabaseName("ix_invite_role_mappings_cdp_person_invite_guid");
 
                     b.HasIndex("OrganisationId");
+
+                    b.HasIndex("OrganisationRoleId");
 
                     b.ToTable("invite_role_mappings", "user_management");
                 });
@@ -534,6 +565,75 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                     b.ToTable("organisation_applications", "user_management");
                 });
 
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationRoleEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    b.Property<bool>("AutoAssignDefaultApplications")
+                        .HasColumnType("boolean")
+                        .HasColumnName("auto_assign_default_applications");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTimeOffset?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<string>("DeletedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("deleted_by");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1000)
+                        .HasColumnType("character varying(1000)")
+                        .HasColumnName("description");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("display_name");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_deleted");
+
+                    b.Property<DateTimeOffset?>("ModifiedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("modified_at");
+
+                    b.Property<string>("ModifiedBy")
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)")
+                        .HasColumnName("modified_by");
+
+                    b.Property<string>("OrganisationInformationScopes")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("text")
+                        .HasColumnName("organisation_information_scopes")
+                        .HasDefaultValueSql("'[]'");
+
+                    b.Property<bool>("SyncToOrganisationInformation")
+                        .HasColumnType("boolean")
+                        .HasColumnName("sync_to_organisation_information");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("organisation_roles", "user_management");
+                });
+
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserApplicationAssignment", b =>
                 {
                     b.Property<int>("Id")
@@ -678,10 +778,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("organisation_id");
 
-                    b.Property<string>("OrganisationRole")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("organisation_role");
+                    b.Property<int>("OrganisationRoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("organisation_role_id");
 
                     b.Property<string>("UserPrincipalId")
                         .IsRequired()
@@ -695,6 +794,8 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasDatabaseName("ix_user_org_memberships_cdp_person_id");
 
                     b.HasIndex("OrganisationId");
+
+                    b.HasIndex("OrganisationRoleId");
 
                     b.HasIndex("UserPrincipalId", "OrganisationId")
                         .IsUnique()
@@ -790,7 +891,15 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.OrganisationRoleEntity", "OrganisationRoleEntity")
+                        .WithMany("InviteRoleMappings")
+                        .HasForeignKey("OrganisationRoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Organisation");
+
+                    b.Navigation("OrganisationRoleEntity");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
@@ -839,7 +948,15 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("CO.CDP.UserManagement.Core.Entities.OrganisationRoleEntity", "OrganisationRoleEntity")
+                        .WithMany("Memberships")
+                        .HasForeignKey("OrganisationRoleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Organisation");
+
+                    b.Navigation("OrganisationRoleEntity");
                 });
 
             modelBuilder.Entity("application_role_permissions", b =>
@@ -896,6 +1013,13 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationApplication", b =>
                 {
                     b.Navigation("UserAssignments");
+                });
+
+            modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.OrganisationRoleEntity", b =>
+                {
+                    b.Navigation("InviteRoleMappings");
+
+                    b.Navigation("Memberships");
                 });
 
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership", b =>

@@ -51,6 +51,16 @@ public class ApplicationConfiguration : IEntityTypeConfiguration<Application>
             .HasColumnName("is_active")
             .IsRequired();
 
+        builder.Property(a => a.AllowsMultipleRoleAssignments)
+            .HasColumnName("allows_multiple_role_assignments")
+            .HasDefaultValue(false)
+            .IsRequired();
+
+        builder.Property(a => a.IsEnabledByDefault)
+            .HasColumnName("is_enabled_by_default")
+            .HasDefaultValue(false)
+            .IsRequired();
+
         // Soft delete properties
         builder.Property(a => a.IsDeleted).HasColumnName("is_deleted");
         builder.Property(a => a.DeletedAt).HasColumnName("deleted_at");

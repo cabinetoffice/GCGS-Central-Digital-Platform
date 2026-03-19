@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
@@ -10,8 +11,10 @@ namespace CO.CDP.UserManagement.App.Controllers;
 [Route("organisation/{organisationSlug}")]
 public class UsersController(
     IUserService userService,
+    IOrganisationRoleService organisationRoleService,
     IInviteUserStateStore inviteUserStateStore,
-    IChangeRoleStateStore changeRoleStateStore) : Controller
+    IChangeRoleStateStore changeRoleStateStore,
+    IChangeApplicationRoleStateStore changeApplicationRoleStateStore) : Controller
 {
     [HttpGet("")]
     public async Task<IActionResult> Index(
@@ -100,7 +103,8 @@ public class UsersController(
     [HttpGet("add-user/organisation-role")]
     public async Task<IActionResult> OrganisationRoleStep(
         string organisationSlug,
-        bool returnToCheckAnswers = false)
+        bool returnToCheckAnswers = false,
+        CancellationToken ct = default)
     {
         var state = await inviteUserStateStore.GetAsync();
         if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
@@ -108,8 +112,7 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-        return View("OrganisationRole", state);
+        return View("OrganisationRole", await BuildOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
     }
 
     [HttpGet("add-user/application-roles")]
@@ -174,7 +177,15 @@ public class UsersController(
             {
                 var postedSelection = postedSelections[application.OrganisationApplicationId];
                 application.GiveAccess = postedSelection.GiveAccess;
-                application.SelectedRoleId = postedSelection.SelectedRoleId;
+                if (application.AllowsMultipleRoleAssignments)
+                {
+                    application.SelectedRoleIds = postedSelection.SelectedRoleIds;
+                    application.SelectedRoleId = postedSelection.SelectedRoleIds.Count > 0 ? postedSelection.SelectedRoleIds[0] : null;
+                }
+                else
+                {
+                    application.SelectedRoleId = postedSelection.SelectedRoleId;
+                }
             });
 
         var selectedApplications = viewModel.Applications.Where(a => a.GiveAccess).ToList();
@@ -185,9 +196,7 @@ public class UsersController(
 
         viewModel.Applications
             .Select((application, index) => new { application, index })
-            .Where(item => item.application.GiveAccess &&
-                           (!item.application.SelectedRoleId.HasValue ||
-                            item.application.Roles.All(role => role.Id != item.application.SelectedRoleId.Value)))
+            .Where(item => item.application.GiveAccess && !HasRoleSelected(item.application))
             .ToList()
             .ForEach(item =>
                 ModelState.AddModelError(
@@ -200,11 +209,14 @@ public class UsersController(
         }
 
         var assignments = selectedApplications
-            .Where(a => a.SelectedRoleId is not null)
+            .Where(HasRoleSelected)
             .Select(a => new InviteApplicationAssignment
             {
                 OrganisationApplicationId = a.OrganisationApplicationId,
-                ApplicationRoleId = a.SelectedRoleId.GetValueOrDefault()
+                ApplicationRoleId = a.AllowsMultipleRoleAssignments
+                    ? (a.SelectedRoleIds.Count > 0 ? a.SelectedRoleIds[0] : 0)
+                    : a.SelectedRoleId.GetValueOrDefault(),
+                ApplicationRoleIds = a.AllowsMultipleRoleAssignments ? a.SelectedRoleIds : null
             })
             .ToList();
 
@@ -341,7 +353,12 @@ public class UsersController(
             inviteInput,
             ct,
             assignments);
-        if (!success)
+        if (success.IsLeft())
+        {
+            return Redirect("/error");
+        }
+
+        if (success.Match(_ => false, outcome => outcome == ServiceOutcome.NotFound))
         {
             return NotFound();
         }
@@ -391,10 +408,14 @@ public class UsersController(
     public async Task<IActionResult> ResendInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
         var success = await userService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(Index), new { organisationSlug })!);
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]
     public async Task<IActionResult> ChangeRole(
         string organisationSlug,
         Guid cdpPersonId,
@@ -407,10 +428,10 @@ public class UsersController(
         }
 
         var state = await GetOrCreateChangeRoleStateAsync(organisationSlug, cdpPersonId, null, viewModel);
-        return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
+        return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/change-role")]
+    [HttpPost("user/{cdpPersonId:guid}/organisation-role/change")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeRoleSubmit(
         string organisationSlug,
@@ -426,7 +447,9 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
-            return viewModel is null ? NotFound() : View("ChangeRole", viewModel);
+            return viewModel is null
+                ? NotFound()
+                : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
@@ -440,7 +463,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeRoleCheck), new { organisationSlug, cdpPersonId });
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role/check")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/check")]
     public async Task<IActionResult> ChangeRoleCheck(
         string organisationSlug,
         Guid cdpPersonId,
@@ -455,7 +478,7 @@ public class UsersController(
         return View("ChangeRoleCheck", ToChangeRoleViewModel(state));
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/change-role/check")]
+    [HttpPost("user/{cdpPersonId:guid}/organisation-role/change/check")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeRoleCheckSubmit(
         string organisationSlug,
@@ -474,15 +497,14 @@ public class UsersController(
             null,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId })!);
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/change-role/success")]
+    [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/success")]
     public async Task<IActionResult> ChangeRoleSuccess(
         string organisationSlug,
         Guid cdpPersonId,
@@ -496,14 +518,15 @@ public class UsersController(
 
         await changeRoleStateStore.ClearAsync();
 
+        var roleDescription = (await organisationRoleService.GetRoleAsync(state.SelectedRole, ct))?.Description ?? string.Empty;
         return View("ChangeRoleSuccess", new ChangeUserRoleSuccessViewModel(
             OrganisationSlug: organisationSlug,
             UserDisplayName: state.UserDisplayName,
             NewRole: state.SelectedRole,
-            RoleDescription: state.SelectedRole.GetDescription()));
+            RoleDescription: roleDescription));
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change")]
     public async Task<IActionResult> ChangeInviteRole(
         string organisationSlug,
         Guid inviteGuid,
@@ -516,10 +539,10 @@ public class UsersController(
         }
 
         var state = await GetOrCreateChangeRoleStateAsync(organisationSlug, null, inviteGuid, viewModel);
-        return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
+        return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
-    [HttpPost("invites/{inviteGuid:guid}/change-role")]
+    [HttpPost("invites/{inviteGuid:guid}/organisation-role/change")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeInviteRoleSubmit(
         string organisationSlug,
@@ -535,7 +558,9 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
-            return viewModel is null ? NotFound() : View("ChangeRole", viewModel);
+            return viewModel is null
+                ? NotFound()
+                : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
@@ -549,7 +574,7 @@ public class UsersController(
         return RedirectToAction(nameof(ChangeInviteRoleCheck), new { organisationSlug, inviteGuid });
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role/check")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/check")]
     public async Task<IActionResult> ChangeInviteRoleCheck(
         string organisationSlug,
         Guid inviteGuid,
@@ -564,7 +589,7 @@ public class UsersController(
         return View("ChangeRoleCheck", ToChangeRoleViewModel(state));
     }
 
-    [HttpPost("invites/{inviteGuid:guid}/change-role/check")]
+    [HttpPost("invites/{inviteGuid:guid}/organisation-role/change/check")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ChangeInviteRoleCheckSubmit(
         string organisationSlug,
@@ -583,15 +608,14 @@ public class UsersController(
             inviteGuid,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid })!);
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/change-role/success")]
+    [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/success")]
     public async Task<IActionResult> ChangeInviteRoleSuccess(
         string organisationSlug,
         Guid inviteGuid,
@@ -605,11 +629,258 @@ public class UsersController(
 
         await changeRoleStateStore.ClearAsync();
 
+        var roleDescription = (await organisationRoleService.GetRoleAsync(state.SelectedRole, ct))?.Description ?? string.Empty;
         return View("ChangeRoleSuccess", new ChangeUserRoleSuccessViewModel(
             OrganisationSlug: organisationSlug,
             UserDisplayName: state.UserDisplayName,
             NewRole: state.SelectedRole,
-            RoleDescription: state.SelectedRole.GetDescription()));
+            RoleDescription: roleDescription));
+    }
+
+    [HttpGet("user/{cdpPersonId:guid}/application-roles/change")]
+    public async Task<IActionResult> ChangeApplicationRoles(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, cdpPersonId, null);
+        if (state is not null)
+        {
+            var stateByOrgAppId = state.Applications.ToDictionary(a => a.OrganisationApplicationId);
+            foreach (var app in viewModel.Applications)
+            {
+                if (stateByOrgAppId.TryGetValue(app.OrganisationApplicationId, out var stateApp))
+                {
+                    app.GiveAccess = stateApp.GiveAccess;
+                    app.SelectedRoleId = stateApp.SelectedRoleId;
+                }
+            }
+        }
+
+        return View("ChangeApplicationRoles", viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/application-roles/change")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeApplicationRolesSubmit(
+        string organisationSlug,
+        Guid cdpPersonId,
+        ApplicationRoleChangePostModel input,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        return await HandleApplicationRolesSubmit(
+            organisationSlug, cdpPersonId, null, input, viewModel,
+            nameof(ChangeApplicationRolesCheck), ct);
+    }
+
+    [HttpGet("user/{cdpPersonId:guid}/application-roles/change/check")]
+    public async Task<IActionResult> ChangeApplicationRolesCheck(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, cdpPersonId, null);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
+        }
+
+        return View("CheckApplicationRoles", BuildCheckViewModel(state));
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/application-roles/change/check")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeApplicationRolesCheckSubmit(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, cdpPersonId, null);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
+        }
+
+        var assignments = BuildAssignmentPostModels(state);
+        var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, cdpPersonId, null, assignments, ct);
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeApplicationRolesSuccess), new { organisationSlug, cdpPersonId })!);
+    }
+
+    [HttpGet("user/{cdpPersonId:guid}/application-roles/change/success")]
+    public async Task<IActionResult> ChangeApplicationRolesSuccess(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, cdpPersonId, null);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
+        }
+
+        await changeApplicationRoleStateStore.ClearAsync();
+
+        var changedApplications = state.Applications
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
+            .Select(a => new ChangedApplicationRoleViewModel
+            {
+                ApplicationName = a.ApplicationName,
+                CurrentRoleName = a.CurrentRoleName,
+                NewRoleName = a.SelectedRoleName,
+                IsNewAssignment = !a.HasExistingAccess
+            })
+            .ToList();
+
+        if (changedApplications.Count == 0)
+        {
+            return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
+        }
+
+        return View("ChangeApplicationRolesSuccess", new ChangeApplicationRolesSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            ChangedApplications = changedApplications
+        });
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/application-roles/change")]
+    public async Task<IActionResult> ChangeInviteApplicationRoles(
+        string organisationSlug,
+        Guid inviteGuid,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, null, inviteGuid, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, null, inviteGuid);
+        if (state is not null)
+        {
+            var stateByOrgAppId = state.Applications.ToDictionary(a => a.OrganisationApplicationId);
+            foreach (var app in viewModel.Applications)
+            {
+                if (stateByOrgAppId.TryGetValue(app.OrganisationApplicationId, out var stateApp))
+                {
+                    app.GiveAccess = stateApp.GiveAccess;
+                    app.SelectedRoleId = stateApp.SelectedRoleId;
+                }
+            }
+        }
+
+        return View("ChangeApplicationRoles", viewModel);
+    }
+
+    [HttpPost("invites/{inviteGuid:guid}/application-roles/change")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeInviteApplicationRolesSubmit(
+        string organisationSlug,
+        Guid inviteGuid,
+        ApplicationRoleChangePostModel input,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, null, inviteGuid, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        return await HandleApplicationRolesSubmit(
+            organisationSlug, null, inviteGuid, input, viewModel,
+            nameof(ChangeInviteApplicationRolesCheck), ct);
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/application-roles/change/check")]
+    public async Task<IActionResult> ChangeInviteApplicationRolesCheck(
+        string organisationSlug,
+        Guid inviteGuid,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, null, inviteGuid);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
+        }
+
+        return View("CheckApplicationRoles", BuildCheckViewModel(state));
+    }
+
+    [HttpPost("invites/{inviteGuid:guid}/application-roles/change/check")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ChangeInviteApplicationRolesCheckSubmit(
+        string organisationSlug,
+        Guid inviteGuid,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, null, inviteGuid);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
+        }
+
+        var assignments = BuildAssignmentPostModels(state);
+        var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, null, inviteGuid, assignments, ct);
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteApplicationRolesSuccess), new { organisationSlug, inviteGuid })!);
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/application-roles/change/success")]
+    public async Task<IActionResult> ChangeInviteApplicationRolesSuccess(
+        string organisationSlug,
+        Guid inviteGuid,
+        CancellationToken ct)
+    {
+        var state = await GetValidatedChangeApplicationRoleStateAsync(organisationSlug, null, inviteGuid);
+        if (state is null)
+        {
+            return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
+        }
+
+        await changeApplicationRoleStateStore.ClearAsync();
+
+        var changedApplications = state.Applications
+            .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
+            .Select(a => new ChangedApplicationRoleViewModel
+            {
+                ApplicationName = a.ApplicationName,
+                CurrentRoleName = a.CurrentRoleName,
+                NewRoleName = a.SelectedRoleName,
+                IsNewAssignment = !a.HasExistingAccess
+            })
+            .ToList();
+
+        if (changedApplications.Count == 0)
+        {
+            return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
+        }
+
+        return View("ChangeApplicationRolesSuccess", new ChangeApplicationRolesSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            ChangedApplications = changedApplications
+        });
     }
 
     private async Task<ChangeRoleState> GetOrCreateChangeRoleStateAsync(
@@ -673,4 +944,221 @@ public class UsersController(
             IsPending: state.InviteGuid.HasValue,
             CdpPersonId: state.CdpPersonId,
             InviteGuid: state.InviteGuid);
+
+    private async Task<OrganisationRoleStepViewModel> BuildOrganisationRoleStepViewModelAsync(
+        InviteUserState state,
+        bool returnToCheckAnswers,
+        CancellationToken ct)
+    {
+        return new OrganisationRoleStepViewModel(
+            state.OrganisationSlug,
+            state.FirstName,
+            state.LastName,
+            state.Email,
+            state.OrganisationRole,
+            returnToCheckAnswers,
+            (await organisationRoleService.GetRolesAsync(ct)).ToOptions());
+    }
+
+    private async Task<ChangeUserRolePageViewModel> BuildChangeUserRolePageViewModelAsync(
+        ChangeUserRoleViewModel viewModel,
+        OrganisationRole? selectedRole,
+        CancellationToken ct)
+    {
+        return ChangeUserRolePageViewModel.From(
+            viewModel,
+            (await organisationRoleService.GetRolesAsync(ct)).ToOptions(),
+            selectedRole);
+    }
+
+    private async Task<IActionResult> HandleApplicationRolesSubmit(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        Guid? inviteGuid,
+        ApplicationRoleChangePostModel input,
+        ChangeUserApplicationRolesViewModel viewModel,
+        string checkActionName,
+        CancellationToken ct)
+    {
+        // Capture current (API) role IDs before applying the posted values
+        var originalRoles = viewModel.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleId);
+        var originalRoleIds = viewModel.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a.SelectedRoleIds.ToList());
+
+        // Apply posted selections to view model so errors re-display correct state
+        var postedMap = input.Applications.ToDictionary(a => a.OrganisationApplicationId, a => a);
+        foreach (var app in viewModel.Applications)
+        {
+            if (postedMap.TryGetValue(app.OrganisationApplicationId, out var posted))
+            {
+                app.GiveAccess = app.HasExistingAccess || posted.GiveAccess;
+                if (app.AllowsMultipleRoleAssignments)
+                {
+                    app.SelectedRoleIds = posted.SelectedRoleIds;
+                    app.SelectedRoleId = posted.SelectedRoleIds.Count > 0 ? posted.SelectedRoleIds[0] : null;
+                }
+                else
+                {
+                    app.SelectedRoleId = posted.SelectedRoleId;
+                }
+            }
+        }
+
+        // Validate: for any newly-granted app, a role must be selected
+        bool hasRoleError = false;
+        foreach (var item in viewModel.Applications.Select((app, i) => (app, i)))
+        {
+            if (item.app.GiveAccess && !HasRoleSelected(item.app))
+            {
+                ModelState.AddModelError($"Applications[{item.i}].SelectedRoleId", "Select a role for this application");
+                hasRoleError = true;
+            }
+        }
+
+        // Validate: something must have actually changed (new access grant or different role)
+        var anyNewAccess = viewModel.Applications.Any(app =>
+            !app.HasExistingAccess && app.GiveAccess);
+
+        var anyRoleChanged = viewModel.Applications.Any(app =>
+            app.HasExistingAccess && RolesChanged(app, originalRoles, originalRoleIds));
+
+        if (!hasRoleError && !anyNewAccess && !anyRoleChanged)
+        {
+            ModelState.AddModelError("Applications", "Select a different role or grant access to at least one application to continue");
+            return View("ChangeApplicationRoles", viewModel);
+        }
+
+        if (hasRoleError)
+        {
+            return View("ChangeApplicationRoles", viewModel);
+        }
+
+        var assignmentStates = viewModel.Applications
+            .Where(app => app.HasExistingAccess || app.GiveAccess)
+            .Select(app =>
+            {
+                var origRoleId = originalRoles.TryGetValue(app.OrganisationApplicationId, out var orig) ? orig : null;
+                var origRoleIds = originalRoleIds.TryGetValue(app.OrganisationApplicationId, out var origIds) ? origIds : new List<int>();
+                var newRoleIds = app.AllowsMultipleRoleAssignments ? app.SelectedRoleIds : (app.SelectedRoleId.HasValue ? new List<int> { app.SelectedRoleId.Value } : new List<int>());
+                var origRoleNames = origRoleIds.Count > 0
+                    ? string.Join(", ", origRoleIds.Select(id => app.Roles.FirstOrDefault(r => r.Id == id)?.Name ?? string.Empty).Where(n => n != string.Empty))
+                    : (origRoleId.HasValue ? app.Roles.FirstOrDefault(r => r.Id == origRoleId)?.Name ?? string.Empty : string.Empty);
+                var newRoleName = string.Join(", ", newRoleIds.Select(id => app.Roles.FirstOrDefault(r => r.Id == id)?.Name ?? string.Empty).Where(n => n != string.Empty));
+                return new ApplicationRoleAssignmentState(
+                    app.OrganisationApplicationId,
+                    app.ApplicationId,
+                    app.ApplicationName,
+                    app.HasExistingAccess,
+                    app.GiveAccess,
+                    origRoleIds.Count > 0 ? origRoleIds[0] : origRoleId,
+                    origRoleNames,
+                    newRoleIds.Count > 0 ? newRoleIds[0] : null,
+                    newRoleName,
+                    SelectedRoleIds: newRoleIds,
+                    CurrentRoleIds: origRoleIds.Count > 0 ? origRoleIds : null);
+            }).ToList();
+
+        var state = new ChangeApplicationRoleState(
+            organisationSlug,
+            cdpPersonId,
+            inviteGuid,
+            viewModel.UserDisplayName,
+            viewModel.Email,
+            assignmentStates);
+
+        await changeApplicationRoleStateStore.SetAsync(state);
+
+        object routeValues = cdpPersonId.HasValue
+            ? new { organisationSlug, cdpPersonId }
+            : new { organisationSlug, inviteGuid };
+
+        return RedirectToAction(checkActionName, routeValues);
+    }
+
+    private static ChangeApplicationRolesCheckViewModel BuildCheckViewModel(ChangeApplicationRoleState state) =>
+        new()
+        {
+            OrganisationSlug = state.OrganisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            Email = state.Email,
+            IsPending = state.InviteGuid.HasValue,
+            CdpPersonId = state.CdpPersonId,
+            InviteGuid = state.InviteGuid,
+            ChangedApplications = state.Applications
+                .Where(a => !a.HasExistingAccess && a.GiveAccess || a.HasExistingAccess && HasRoleChanged(a))
+                .Select(a => new ChangedApplicationRoleViewModel
+                {
+                    ApplicationName = a.ApplicationName,
+                    CurrentRoleName = a.CurrentRoleName,
+                    NewRoleName = a.SelectedRoleName,
+                    IsNewAssignment = !a.HasExistingAccess
+                })
+                .ToList()
+        };
+
+    private static IReadOnlyList<ApplicationRoleAssignmentPostModel> BuildAssignmentPostModels(ChangeApplicationRoleState state) =>
+        state.Applications
+            .Where(a => a.GiveAccess && (a.SelectedRoleIds is { Count: > 0 } || a.SelectedRoleId.HasValue))
+            .Select(a => new ApplicationRoleAssignmentPostModel
+            {
+                OrganisationApplicationId = a.OrganisationApplicationId,
+                ApplicationId = a.ApplicationId,
+                GiveAccess = a.GiveAccess,
+                SelectedRoleId = a.SelectedRoleId,
+                SelectedRoleIds = a.SelectedRoleIds?.ToList() ?? []
+            })
+            .ToList();
+
+    private async Task<ChangeApplicationRoleState?> GetValidatedChangeApplicationRoleStateAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        Guid? inviteGuid)
+    {
+        var state = await changeApplicationRoleStateStore.GetAsync();
+        if (state is null)
+        {
+            return null;
+        }
+
+        if (!state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase) ||
+            state.CdpPersonId != cdpPersonId ||
+            state.InviteGuid != inviteGuid)
+        {
+            await changeApplicationRoleStateStore.ClearAsync();
+            return null;
+        }
+
+        return state;
+    }
+
+    private static bool HasRoleSelected(ApplicationAccessSelectionViewModel app) =>
+        app.AllowsMultipleRoleAssignments
+            ? app.SelectedRoleIds.Count > 0
+            : app.SelectedRoleId.HasValue && app.Roles.Any(r => r.Id == app.SelectedRoleId.Value);
+
+    private static bool HasRoleSelected(ApplicationRoleChangeViewModel app) =>
+        app.AllowsMultipleRoleAssignments
+            ? app.SelectedRoleIds.Count > 0
+            : app.SelectedRoleId.HasValue;
+
+    private static bool HasRoleChanged(ApplicationRoleAssignmentState a)
+    {
+        var selected = (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
+        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : [])).OrderBy(x => x);
+        return !selected.SequenceEqual(current);
+    }
+
+    private static bool RolesChanged(
+        ApplicationRoleChangeViewModel app,
+        Dictionary<int, int?> originalSingleRoles,
+        Dictionary<int, List<int>> originalMultiRoles)
+    {
+        if (app.AllowsMultipleRoleAssignments)
+        {
+            var orig = originalMultiRoles.TryGetValue(app.OrganisationApplicationId, out var ids) ? ids : new List<int>();
+            return !orig.OrderBy(x => x).SequenceEqual(app.SelectedRoleIds.OrderBy(x => x));
+        }
+
+        return originalSingleRoles.TryGetValue(app.OrganisationApplicationId, out var origId) && origId != app.SelectedRoleId;
+    }
+
 }

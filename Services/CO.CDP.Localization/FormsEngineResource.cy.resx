@@ -595,6 +595,25 @@
   <data name="CyberEssentials_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth ar gyfer cynllun ardystio Cyber Essentials</value>
   </data>
+  <data name="CyberEssentials_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      Mae cynllun ardystio Cyber Essentials yn un o fentrau Llywodraeth y DU sy'n helpu sefydliadau i amddiffyn eu hunain rhag bygythiadau seiber cyffredin. Mae'r ardystiad hwn yn lleihau risgiau yn y gadwyn gyflenwi ac mae'n bwysig er mwyn meithrin ymddiriedaeth yng nghontractau'r llywodraeth. Bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn rhoi gwybod i chi pa ardystiad sydd ei angen arnoch.
+    &lt;/p&gt;
+    &lt;p class=&quot;govuk-body&quot;&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol yn gymwys.
+    &lt;/p&gt;
+    &lt;h2 class=&quot;govuk-heading-m&quot;&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+    &lt;div class=&quot;govuk-body&quot;&gt;
+      Bydd angen i chi ddarparu gwybodaeth am eich ardystiad Cyber Essentials neu Cyber Essentials Plus (neu ardystiad cyfatebol). Gall hyn gynnwys:
+      &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;cadarnhad eich bod yn bodloni gofynion y cynllun ardystio &lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;dyddiad dirwyn i ben eich ardystiad&lt;/li&gt;
+        &lt;li class=&quot;govuk-!-margin-top-2&quot;&gt;tystiolaeth o'ch ardystiad&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+    </value>
+  </data>
   <data name="CyberEssentials_02_Title" xml:space="preserve">
     <value>Ydych chi'n bodloni gofynion ardystio Cyber Essentials? </value>
   </data>
@@ -1201,5 +1220,13 @@
   </data>
   <data name="HealthAndSafety_SectionTitle" xml:space="preserve">
     <value>Iechyd a Diogelwch</value>
+  </data>
+  <data name="CarbonNetZero_01_Description" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;
+      Carbon Sero Net yw'r ymrwymiad i gydbwyso allyriadau nwyon tŷ gwydr â symiau cyfatebol a ddilëir erbyn 2050. Efallai y bydd angen i sefydliadau sydd o fewn y cwmpas gyflwyno Cynllun Lleihau Carbon wrth gynnig am gontractau penodol gan y llywodraeth. &lt;/p&gt; &lt;p class="govuk-body"&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso. &lt;/p&gt; &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch &lt;/h2&gt; &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys: &lt;ul class="govuk-list govuk-list--bullet"&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; y dyddiad y daw eich Cynllun Lleihau Carbon i ben&lt;/li&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;  &lt;li class="govuk-!-margin-top-2"&gt; eich data blwyddyn sylfaen a blwyddyn adrodd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+    </value>
   </data>
 </root>
