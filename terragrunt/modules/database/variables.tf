@@ -52,6 +52,24 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_apply_master_password" {
+  description = "When restoring from snapshot, apply the generated master password after restore"
+  type        = bool
+  default     = false
+}
+
+variable "fts_restore_from_snapshot" {
+  description = "Whether FTS Aurora should be restored from a snapshot (staging only)"
+  type        = bool
+  default     = false
+}
+
+variable "fts_snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore FTS Aurora cluster from"
+  type        = string
+  default     = null
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool

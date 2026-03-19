@@ -179,7 +179,6 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct))
                 .Where(app => app.IsActive && app.Application != null)
                 .ToList();
@@ -190,14 +189,13 @@ public sealed class UserService(
                 ICollection<RoleResponse> roles;
                 try
                 {
-                    roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                    roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, state.OrganisationRole, ct);
                 }
                 catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                 {
                     roles = [];
                 }
 
-                var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                 var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
 
                 applicationSelections.Add(new ApplicationAccessSelectionViewModel
@@ -207,7 +205,7 @@ public sealed class UserService(
                     ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                     AllowsMultipleRoleAssignments = allowsMultiple,
                     IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
-                    Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                    Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                     {
                         Id = role.Id,
                         Name = role.Name,
@@ -372,7 +370,6 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             string userDisplayName = string.Empty;
             string userEmail = string.Empty;
             bool isPending = false;
@@ -402,14 +399,13 @@ public sealed class UserService(
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                        roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, invite.OrganisationRole, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
-                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                     var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
                     var assignedGroup = assignedByOrgAppId[enabledApp.Id].ToList();
                     var hasAccess = assignedGroup.Count > 0;
@@ -432,7 +428,7 @@ public sealed class UserService(
                         GiveAccess = hasAccess,
                         SelectedRoleId = assignedRoleIds.Count > 0 ? assignedRoleIds[0] : null,
                         SelectedRoleIds = assignedRoleIds,
-                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,
@@ -461,14 +457,13 @@ public sealed class UserService(
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                        roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, user.OrganisationRole, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
-                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                     var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
                     var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
                     var currentRoleIds = hasAccess
@@ -489,7 +484,7 @@ public sealed class UserService(
                         GiveAccess = hasAccess,
                         SelectedRoleId = currentRoleId,
                         SelectedRoleIds = currentRoleIds,
-                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,

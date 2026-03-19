@@ -8,12 +8,9 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// <summary>
 /// Repository implementation for UserApplicationAssignment entities.
 /// </summary>
-public class UserApplicationAssignmentRepository : Repository<UserApplicationAssignment>, IUserApplicationAssignmentRepository
+public class UserApplicationAssignmentRepository(UserManagementDbContext context)
+    : Repository<UserApplicationAssignment>(context), IUserApplicationAssignmentRepository
 {
-    public UserApplicationAssignmentRepository(UserManagementDbContext context) : base(context)
-    {
-    }
-
     public async Task<IEnumerable<UserApplicationAssignment>> GetByMembershipIdAsync(int userOrganisationMembershipId, CancellationToken cancellationToken = default)
     {
         return await DbSet
@@ -68,4 +65,14 @@ public class UserApplicationAssignmentRepository : Repository<UserApplicationAss
                          ua.OrganisationApplication.IsActive)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IEnumerable<UserApplicationAssignment>> GetActiveForSyncAsync(int membershipId, CancellationToken cancellationToken = default) =>
+        await DbSet
+            .Include(a => a.Roles)
+            .Where(a => a.UserOrganisationMembershipId == membershipId
+                        && !a.IsDeleted
+                        && a.IsActive
+                        && a.UserOrganisationMembership.IsActive
+                        && a.OrganisationApplication.IsActive)
+            .ToListAsync(cancellationToken);
 }

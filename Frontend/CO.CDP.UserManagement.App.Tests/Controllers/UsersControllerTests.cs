@@ -12,6 +12,7 @@ namespace CO.CDP.UserManagement.App.Tests.Controllers;
 public class UsersControllerTests
 {
     private readonly Mock<IUserService> _userService;
+    private readonly Mock<IOrganisationRoleService> _organisationRoleService;
     private readonly Mock<IInviteUserStateStore> _inviteUserStateStore;
     private readonly Mock<IChangeRoleStateStore> _changeRoleStateStore;
     private readonly Mock<IChangeApplicationRoleStateStore> _changeApplicationRoleStateStore;
@@ -20,6 +21,7 @@ public class UsersControllerTests
     public UsersControllerTests()
     {
         _userService = new Mock<IUserService>();
+        _organisationRoleService = new Mock<IOrganisationRoleService>();
         _inviteUserStateStore = new Mock<IInviteUserStateStore>();
         _changeRoleStateStore = new Mock<IChangeRoleStateStore>();
         _changeApplicationRoleStateStore = new Mock<IChangeApplicationRoleStateStore>();
@@ -35,8 +37,19 @@ public class UsersControllerTests
         _changeApplicationRoleStateStore.Setup(store => store.GetAsync()).ReturnsAsync((ChangeApplicationRoleState?)null);
         _changeApplicationRoleStateStore.Setup(store => store.SetAsync(It.IsAny<ChangeApplicationRoleState>())).Returns(Task.CompletedTask);
         _changeApplicationRoleStateStore.Setup(store => store.ClearAsync()).Returns(Task.CompletedTask);
+        var roles = new[]
+        {
+            new CO.CDP.UserManagement.Shared.Responses.OrganisationRoleDefinitionResponse { Id = OrganisationRole.Member, DisplayName = "Member", Description = "Member description" },
+            new CO.CDP.UserManagement.Shared.Responses.OrganisationRoleDefinitionResponse { Id = OrganisationRole.Admin, DisplayName = "Admin", Description = "Admin description" },
+            new CO.CDP.UserManagement.Shared.Responses.OrganisationRoleDefinitionResponse { Id = OrganisationRole.Owner, DisplayName = "Owner", Description = "Owner description" }
+        };
+        _organisationRoleService.Setup(service => service.GetRolesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(roles);
+        _organisationRoleService.Setup(service => service.GetRoleAsync(It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((OrganisationRole role, CancellationToken _) => roles.FirstOrDefault(r => r.Id == role));
         _controller = new UsersController(
             _userService.Object,
+            _organisationRoleService.Object,
             _inviteUserStateStore.Object,
             _changeRoleStateStore.Object,
             _changeApplicationRoleStateStore.Object);
@@ -214,24 +227,24 @@ public class UsersControllerTests
     {
         var state = new InviteUserState("org", "user@example.com", "First", "Last");
         _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync(state);
-
         var result = await _controller.OrganisationRoleStep("org");
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("OrganisationRole");
-        viewResult.Model.Should().Be(state);
+        viewResult.Model.Should().BeOfType<OrganisationRoleStepViewModel>()
+            .Which.OrganisationSlug.Should().Be("org");
     }
 
     [Fact]
-    public async Task OrganisationRole_WhenReturnToCheckAnswers_SetsViewDataFlag()
+    public async Task OrganisationRole_WhenReturnToCheckAnswers_ReturnsTypedModelFlag()
     {
         var state = new InviteUserState("org", "user@example.com", "First", "Last");
         _inviteUserStateStore.Setup(store => store.GetAsync()).ReturnsAsync(state);
-
         var result = await _controller.OrganisationRoleStep("org", returnToCheckAnswers: true);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewData["ReturnToCheckAnswers"].Should().Be(true);
+        viewResult.Model.Should().BeOfType<OrganisationRoleStepViewModel>()
+            .Which.ReturnToCheckAnswers.Should().BeTrue();
     }
 
     [Fact]
@@ -526,7 +539,7 @@ public class UsersControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
-        viewResult.Model.Should().BeOfType<ChangeUserRoleViewModel>()
+        viewResult.Model.Should().BeOfType<ChangeUserRolePageViewModel>()
             .Which.SelectedRole.Should().Be(OrganisationRole.Admin);
     }
 
@@ -541,7 +554,10 @@ public class UsersControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
-        viewResult.Model.Should().Be(viewModel);
+        viewResult.Model.Should().BeEquivalentTo(
+            ChangeUserRolePageViewModel.From(
+                viewModel,
+                _organisationRoleService.Object.GetRolesAsync(CancellationToken.None).Result.ToOptions()));
     }
 
     [Fact]
@@ -671,7 +687,7 @@ public class UsersControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
-        viewResult.Model.Should().BeOfType<ChangeUserRoleViewModel>()
+        viewResult.Model.Should().BeOfType<ChangeUserRolePageViewModel>()
             .Which.SelectedRole.Should().Be(OrganisationRole.Member);
     }
 
@@ -687,7 +703,10 @@ public class UsersControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ChangeRole");
-        viewResult.Model.Should().Be(viewModel);
+        viewResult.Model.Should().BeEquivalentTo(
+            ChangeUserRolePageViewModel.From(
+                viewModel,
+                _organisationRoleService.Object.GetRolesAsync(CancellationToken.None).Result.ToOptions()));
     }
 
     [Fact]

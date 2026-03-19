@@ -1,10 +1,14 @@
+using CO.CDP.Functional;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.MQ;
-using CO.CDP.Person.WebApi.Events;
+using CO.CDP.OrganisationSync;
+using CO.CDP.Person.WebApi.Features;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
+using IOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 
 namespace CO.CDP.Person.WebApi.Tests.UseCase;
 
@@ -13,30 +17,47 @@ public class ClaimPersonInviteUseCaseTests
     private readonly Mock<IPersonRepository> _mockPersonRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
     private readonly Mock<IOrganisationRepository> _mockOrganizationRepository;
-    private readonly Mock<IPublisher> _mockPublisher;
+    private readonly Mock<IFeatureManager> _mockFeatureManager;
+    private readonly Mock<IAtomicScope> _mockAtomicScope;
+    private readonly Mock<IOrganisationMembershipSync> _mockMembershipSync;
+    private readonly Mock<ILogger<ClaimPersonInviteUseCase>> _mockLogger;
 
     private readonly ClaimPersonInviteUseCase _useCase;
-    private Guid _defaultPersonGuid;
-    private Guid _defaultPersonInviteGuid;
-    private Guid _defaultOrganisationGuid;
-    private OrganisationInformation.Persistence.Person _defaultPerson;
-    private Organisation _defaultOrganisation;
-    private Tenant _defaultTenant;
+    private readonly Guid _defaultPersonGuid;
+    private readonly Guid _defaultPersonInviteGuid;
+    private readonly Guid _defaultOrganisationGuid;
+    private readonly OrganisationInformation.Persistence.Person _defaultPerson;
+    private readonly Organisation _defaultOrganisation;
+    private readonly Tenant _defaultTenant;
 
     public ClaimPersonInviteUseCaseTests()
     {
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
         _mockOrganizationRepository = new Mock<IOrganisationRepository>();
-        _mockPublisher = new Mock<IPublisher>();
+        _mockFeatureManager = new Mock<IFeatureManager>();
+        _mockAtomicScope = new Mock<IAtomicScope>();
+        _mockMembershipSync = new Mock<IOrganisationMembershipSync>();
+        _mockLogger = new Mock<ILogger<ClaimPersonInviteUseCase>>();
+
+        // Make ExecuteAsync run the action immediately (no real transaction in tests)
+        _mockAtomicScope
+            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<bool>>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<CancellationToken, Task<bool>>, CancellationToken>((action, ct) => action(ct));
+
         _useCase = new ClaimPersonInviteUseCase(
-                        _mockPersonRepository.Object,
-                        _mockPersonInviteRepository.Object,
-                        _mockOrganizationRepository.Object,
-                        _mockPublisher.Object);
-        _defaultPersonGuid = new Guid();
-        _defaultPersonInviteGuid = new Guid();
-        _defaultOrganisationGuid = new Guid();
+            _mockPersonRepository.Object,
+            _mockPersonInviteRepository.Object,
+            _mockOrganizationRepository.Object,
+            _mockFeatureManager.Object,
+            _mockAtomicScope.Object,
+            _mockMembershipSync.Object,
+            _mockLogger.Object);
+
+        _defaultPersonGuid = Guid.NewGuid();
+        _defaultPersonInviteGuid = Guid.NewGuid();
+        _defaultOrganisationGuid = Guid.NewGuid();
+
         _defaultPerson = new OrganisationInformation.Persistence.Person
         {
             Id = 0,
@@ -50,7 +71,7 @@ public class ClaimPersonInviteUseCaseTests
         _defaultTenant = new Tenant
         {
             Id = 1,
-            Guid = new Guid(),
+            Guid = Guid.NewGuid(),
             Name = "Test Organisation Tenant"
         };
 
@@ -94,7 +115,6 @@ public class ClaimPersonInviteUseCaseTests
         await act.Should()
             .ThrowAsync<UnknownPersonInviteException>()
             .WithMessage($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
-
     }
 
     [Fact]
@@ -127,7 +147,7 @@ public class ClaimPersonInviteUseCaseTests
     }
 
     [Fact]
-    public async Task Execute_Throws_UnknownOrganisationException_When_PersonInvite_Already_Claimed()
+    public async Task Execute_Throws_UnknownOrganisationException_When_Organisation_Not_Found()
     {
         var claimedPersonInvite = new PersonInvite
         {
@@ -173,14 +193,12 @@ public class ClaimPersonInviteUseCaseTests
             OrganisationId = 1,
             Organisation = _defaultOrganisation,
             Scopes = new List<string> { "EDITOR", "ADMIN" },
-            ExpiresOn = DateTimeOffset.UtcNow.AddDays(-1) // Set invite to expired
+            ExpiresOn = DateTimeOffset.UtcNow.AddDays(-1)
         };
-
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = expiredInvite.Guid });
 
         _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
             .ReturnsAsync(_defaultPerson);
-
         _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
             .ReturnsAsync(expiredInvite);
 
@@ -194,7 +212,7 @@ public class ClaimPersonInviteUseCaseTests
     [Fact]
     public async Task Execute_Throws_DuplicateEmailWithinOrganisationException_When_EmailNotUniqueToOrganisation()
     {
-        var claimedPersonInvite = new PersonInvite
+        var personInvite = new PersonInvite
         {
             Id = 0,
             Person = null,
@@ -211,9 +229,7 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
             .ReturnsAsync(_defaultPerson);
         _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
-            .ReturnsAsync(claimedPersonInvite);
-        _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
-            .ReturnsAsync(_defaultOrganisation);
+            .ReturnsAsync(personInvite);
         _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
             .ReturnsAsync(false);
 
@@ -227,6 +243,7 @@ public class ClaimPersonInviteUseCaseTests
     [Fact]
     public async Task Execute_Adds_Person_To_Organisation_And_Tenant_And_Claims_Invite()
     {
+        var inviteScopes = new List<string> { "EDITOR", "ADMIN" };
         var personInvite = new PersonInvite
         {
             Id = 0,
@@ -237,7 +254,7 @@ public class ClaimPersonInviteUseCaseTests
             Email = null!,
             OrganisationId = 1,
             Organisation = _defaultOrganisation,
-            Scopes = new List<string> { "EDITOR", "ADMIN" }
+            Scopes = inviteScopes
         };
         var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = personInvite.Guid });
 
@@ -249,21 +266,59 @@ public class ClaimPersonInviteUseCaseTests
             .ReturnsAsync(personInvite.Organisation);
         _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
             .ReturnsAsync(true);
+        _mockFeatureManager.Setup(fm => fm.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+            .ReturnsAsync(true);
+        _mockMembershipSync
+            .Setup(s => s.ClaimMembershipAsync(It.IsAny<ClaimMembershipCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<SyncError, MembershipSynced>.Success(
+                new MembershipSynced(_defaultOrganisationGuid, _defaultPersonGuid)));
 
-        await _useCase.Execute(command);
+        var result = await _useCase.Execute(command);
 
+        result.Should().BeTrue();
         personInvite.Person.Should().Be(_defaultPerson);
         personInvite.Person?.Tenants.Should().Contain(_defaultTenant);
         personInvite.Organisation.OrganisationPersons.Should().Contain(op =>
             op.Person == _defaultPerson && op.OrganisationId == personInvite.OrganisationId);
         personInvite.Scopes.Should().Equal(personInvite.Organisation.OrganisationPersons.First().Scopes);
 
-        _mockPersonRepository.Verify(repo => repo.Save(_defaultPerson), Times.Once);
-        _mockPersonInviteRepository.Verify(repo => repo.Save(personInvite), Times.Once);
-        _mockPublisher.Verify(p => p.Publish(It.Is<PersonInviteClaimed>(e =>
-            e.PersonInviteGuid == personInvite.Guid &&
-            e.PersonGuid == _defaultPerson.Guid &&
-            e.UserUrn == _defaultPerson.UserUrn &&
-            e.OrganisationGuid == _defaultOrganisation.Guid)), Times.Once);
+        _mockPersonRepository.Verify(repo => repo.Track(_defaultPerson), Times.Once);
+        _mockPersonInviteRepository.Verify(repo => repo.Track(personInvite), Times.Once);
+        _mockMembershipSync.Verify(s => s.ClaimMembershipAsync(
+            It.Is<ClaimMembershipCommand>(c =>
+                c.OrganisationGuid == _defaultOrganisationGuid &&
+                c.PersonGuid == _defaultPersonGuid &&
+                c.UserPrincipalId == _defaultPerson.UserUrn &&
+                c.InviteScopes == inviteScopes),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_Skips_MembershipSync_When_Feature_Flag_Disabled()
+    {
+        var personInvite = new PersonInvite
+        {
+            Id = 0,
+            Person = null,
+            Guid = _defaultPersonInviteGuid,
+            FirstName = null!,
+            LastName = null!,
+            Email = null!,
+            OrganisationId = 1,
+            Organisation = _defaultOrganisation,
+            Scopes = new List<string> { "EDITOR" }
+        };
+        var command = (personId: _defaultPerson.Guid, claimPersonInvite: new ClaimPersonInvite { PersonInviteId = personInvite.Guid });
+
+        _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid)).ReturnsAsync(_defaultPerson);
+        _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId)).ReturnsAsync(personInvite);
+        _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1)).ReturnsAsync(personInvite.Organisation);
+        _mockOrganizationRepository.Setup(repo => repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email)).ReturnsAsync(true);
+        _mockFeatureManager.Setup(fm => fm.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled)).ReturnsAsync(false);
+
+        var result = await _useCase.Execute(command);
+
+        result.Should().BeTrue();
+        _mockMembershipSync.Verify(s => s.ClaimMembershipAsync(It.IsAny<ClaimMembershipCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

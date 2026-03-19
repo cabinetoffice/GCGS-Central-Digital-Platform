@@ -141,5 +141,9 @@ services:
   user-management-app:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+      OneLogin__AccountUrl: "https://home.integration.account.gov.uk"
+      OneLogin__Authority: "https://oidc.integration.account.gov.uk"
+      OneLogin__ClientId: "${SIRSI_ONELOGIN_CLIENTID}"
+      OneLogin__PrivateKey: "${SIRSI_ONELOGIN_PRIVATEKEY}"
     deploy:
       replicas: 1

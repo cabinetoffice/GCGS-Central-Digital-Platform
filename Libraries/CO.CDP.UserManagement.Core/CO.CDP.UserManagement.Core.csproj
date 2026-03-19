@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
+        <ProjectReference Include="..\CO.CDP.Functional\CO.CDP.Functional.csproj" />
     </ItemGroup>
 
 </Project>

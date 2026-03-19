@@ -1,16 +1,15 @@
 using FluentAssertions;
 using Moq;
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using AutoMapper;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using OrganisationJoinRequestModel = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -24,7 +23,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
     private readonly Mock<ILogger<CreateOrganisationJoinRequestUseCase>> _logger = new();
     private readonly CreateOrganisationJoinRequestUseCase _useCase;
     private readonly OrganisationInformation.Persistence.Organisation _organisation;
-    private readonly Person _person;
+    private readonly OrganisationInformation.Persistence.Person _person;
 
     public CreateOrganisationJoinRequestUseCaseTests()
     {
@@ -41,7 +40,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
             Tenant = null!
         };
 
-        _person = new Person
+        _person = new OrganisationInformation.Persistence.Person
         {
             Id = 0,
             Guid = default,
@@ -126,7 +125,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
 
         var result = await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
 
-        result.Status.Should().Be(OrganisationJoinRequestStatus.Pending);        
+        result.Status.Should().Be(OrganisationJoinRequestStatus.Pending);
         _mockOrganisationJoinRequestRepository.Verify(repo => repo.Save(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
         _mockMapper.Verify(mapper => mapper.Map<OrganisationJoinRequestModel>(It.IsAny<CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest>()), Times.Once);
     }
@@ -141,7 +140,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
             .ReturnsAsync(_organisation);
 
         _mockPersonRepository.Setup(repo => repo.Find(personId))
-            .ReturnsAsync((Person)null!);
+            .ReturnsAsync((OrganisationInformation.Persistence.Person)null!);
 
         Func<Task> action = async () => await _useCase.Execute((_organisation.Guid, createJoinRequestCommand));
 
@@ -222,9 +221,9 @@ public class CreateOrganisationJoinRequestUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        var adminUsers = new List<Person>
+        var adminUsers = new List<OrganisationInformation.Persistence.Person>
         {
-            new Person
+            new()
             {
                 Email = "admin1@example.com",
                 FirstName = "Admin",
@@ -232,7 +231,7 @@ public class CreateOrganisationJoinRequestUseCaseTests
                 Guid = new Guid(),
                 UserUrn = "urn:abc123"
             },
-            new Person
+            new()
             {
                 Email = "admin2@example.com",
                 FirstName = "Admin",

@@ -4,6 +4,12 @@ variable "apply_immediately" {
   default     = false
 }
 
+variable "apply_master_password" {
+  description = "When restoring from snapshot, apply master password on update"
+  type        = bool
+  default     = false
+}
+
 variable "backup_retention_period" {
   description = "The number of days to retain backups for"
   type        = number
@@ -111,9 +117,21 @@ variable "publicly_accessible" {
   default     = false
 }
 
+variable "restore_from_snapshot" {
+  description = "Whether this cluster is restored from snapshot (affects create-only fields)"
+  type        = bool
+  default     = false
+}
+
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string
+}
+
+variable "snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore the cluster from"
+  type        = string
+  default     = null
 }
 
 variable "tags" {

@@ -1,5 +1,5 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -8,7 +8,6 @@ using Moq;
 using Mou = CO.CDP.OrganisationInformation.Persistence.Mou;
 using MouSignature = CO.CDP.OrganisationInformation.Persistence.MouSignature;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -101,12 +100,12 @@ public class GetOrganisationMouSignatureLatestUseCaseTest(AutoMapperFixture mapp
         _repository.Setup(repo => repo.GetLatestMou()).ReturnsAsync((Mou)null!);
 
         Func<Task> act = async () => await _useCase.Execute(organisation.Guid);
-        
+
         await act.Should().ThrowAsync<UnknownMouException>()
             .WithMessage("No MOU found.");
     }
 
-    public static Person FakePerson(
+    public static Persistence.Person FakePerson(
    Guid? guid = null,
    string? userUrn = null,
    string firstname = "Jon",
@@ -120,7 +119,7 @@ public class GetOrganisationMouSignatureLatestUseCaseTest(AutoMapperFixture mapp
     {
         scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
-        var person = new Person
+        var person = new Persistence.Person
         {
             Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",
