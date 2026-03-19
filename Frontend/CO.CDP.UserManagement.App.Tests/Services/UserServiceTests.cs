@@ -345,7 +345,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse>());
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse>());
 
         var result = await _service.GetRemoveUserViewModelAsync("org", null, 99, CancellationToken.None);
 
@@ -360,7 +360,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
 
         var result = await _service.GetRemoveUserViewModelAsync("org", null, 2, CancellationToken.None);
 
@@ -379,22 +379,24 @@ public class UserServiceTests
     public async Task GetRemoveUserViewModelAsync_WhenPendingInviteFoundWithoutName_ReturnsViewModelWithEmptyName()
     {
         var org = BuildOrganisationResponse();
-        var invite = new ApiClient.PendingOrganisationInviteResponse(
-            cdpPersonInviteGuid: Guid.NewGuid(),
-            createdAt: DateTimeOffset.UtcNow,
-            email: "test@example.com",
-            expiresOn: null,
-            firstName: null,
-            invitedBy: "inviter",
-            lastName: null,
-            organisationId: org.Id,
-            organisationRole: OrganisationRole.Member,
-            pendingInviteId: 3,
-            status: UserStatus.Pending);
+        var invite = new PendingOrganisationInviteResponse
+        {
+            CdpPersonInviteGuid = Guid.NewGuid(),
+            CreatedAt = DateTimeOffset.UtcNow,
+            Email = "test@example.com",
+            ExpiresOn = null,
+            FirstName = null,
+            InvitedBy = "inviter",
+            LastName = null,
+            OrganisationId = org.Id,
+            OrganisationRole = OrganisationRole.Member,
+            PendingInviteId = 3,
+            Status = UserStatus.Pending
+        };
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<ApiClient.PendingOrganisationInviteResponse> { invite });
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
 
         var result = await _service.GetRemoveUserViewModelAsync("org", null, 3, CancellationToken.None);
 
