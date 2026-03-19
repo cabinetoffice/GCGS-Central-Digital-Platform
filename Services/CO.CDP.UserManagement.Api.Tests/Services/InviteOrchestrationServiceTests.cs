@@ -18,7 +18,7 @@ public class InviteOrchestrationServiceTests
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapterMock;
-    private readonly Mock<IPersonLookupService> _personLookupServiceMock;
+    private readonly Mock<IPersonApiAdapter> _personLookupServiceMock;
     private readonly Mock<IUserAssignmentService> _userAssignmentServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IRoleMappingService> _roleMappingServiceMock;
@@ -31,7 +31,7 @@ public class InviteOrchestrationServiceTests
         _inviteRoleMappingRepositoryMock = new Mock<IInviteRoleMappingRepository>();
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _organisationApiAdapterMock = new Mock<IOrganisationApiAdapter>();
-        _personLookupServiceMock = new Mock<IPersonLookupService>();
+        _personLookupServiceMock = new Mock<IPersonApiAdapter>();
         _userAssignmentServiceMock = new Mock<IUserAssignmentService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _roleMappingServiceMock = new Mock<IRoleMappingService>();

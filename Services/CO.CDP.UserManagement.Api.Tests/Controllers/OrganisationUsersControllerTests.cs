@@ -16,13 +16,13 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 public class OrganisationUsersControllerTests
 {
     private readonly Mock<IOrganisationUserService> _organisationUserService;
-    private readonly Mock<IPersonLookupService> _personLookupService;
+    private readonly Mock<IPersonApiAdapter> _personLookupService;
     private readonly OrganisationUsersController _controller;
 
     public OrganisationUsersControllerTests()
     {
         _organisationUserService = new Mock<IOrganisationUserService>();
-        _personLookupService = new Mock<IPersonLookupService>();
+        _personLookupService = new Mock<IPersonApiAdapter>();
         var logger = new Mock<ILogger<OrganisationUsersController>>();
         _controller = new OrganisationUsersController(
             _organisationUserService.Object,

@@ -6,8 +6,7 @@ using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.OrganisationSync;
 using Microsoft.FeatureManagement;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
@@ -22,7 +21,8 @@ public class UpdateOrganisationUseCase(
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
     ILogger<UpdateOrganisationUseCase> logger,
-    IUmOrganisationSyncRepository umOrganisationSyncRepository,
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
     IFeatureManager featureManager
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
@@ -229,15 +229,23 @@ public class UpdateOrganisationUseCase(
 
         await ResetRejectedStatus(command.updateOrganisation.Type, organisation);
 
-        await organisationRepository.SaveAsync(organisation,
-            async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
-
-        if (isNameUpdate && await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+        await atomicScope.ExecuteAsync(async ct =>
         {
-            await umOrganisationSyncRepository.EnsureNameSyncedAsync(organisation.Guid, organisation.Name);
-        }
+            await organisationRepository.SaveAsync(organisation,
+                async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
-        return await Task.FromResult(true);
+            if (isNameUpdate && await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+            {
+                (await membershipSync.SyncOrganisationNameAsync(organisation.Guid, organisation.Name, ct))
+                    .Match(
+                        onLeft: error => logger.LogError("UM name sync failed for org {Guid}: {Error}", organisation.Guid, error.Message),
+                        onRight: _ => { });
+            }
+
+            return true;
+        });
+
+        return true;
     }
 
     private async Task ResetRejectedStatus(OrganisationUpdateType updateType, Persistence.Organisation organisation)

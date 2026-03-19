@@ -2,19 +2,22 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.OrganisationSync;
 using Microsoft.FeatureManagement;
 
 using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
+using OiPartyRole = CO.CDP.OrganisationInformation.PartyRole;
 using OiPersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
 using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 using OiPersonRepository = CO.CDP.OrganisationInformation.Persistence.IPersonRepository;
 using OiTenant = CO.CDP.OrganisationInformation.Persistence.Tenant;
+using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -28,7 +31,8 @@ public class RegisterOrganisationUseCase(
     IConfiguration configuration,
     ILogger<RegisterOrganisationUseCase> logger,
     IClaimService claimService,
-    IUmOrganisationSyncRepository umOrganisationSyncRepository,
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
     IFeatureManager featureManager,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
@@ -45,7 +49,8 @@ public class RegisterOrganisationUseCase(
         IConfiguration configuration,
         ILogger<RegisterOrganisationUseCase> logger,
         IClaimService claimService,
-        IUmOrganisationSyncRepository umOrganisationSyncRepository,
+        IAtomicScope atomicScope,
+        IOrganisationMembershipSync membershipSync,
         IFeatureManager featureManager)
         : this(identifierService,
               organisationRepository,
@@ -56,7 +61,8 @@ public class RegisterOrganisationUseCase(
               configuration,
               logger,
               claimService,
-              umOrganisationSyncRepository,
+              atomicScope,
+              membershipSync,
               featureManager,
               Guid.NewGuid)
     {
@@ -66,21 +72,39 @@ public class RegisterOrganisationUseCase(
     {
         var person = await FindPerson();
         var organisation = CreateOrganisation(command, person);
-        await organisationRepository.SaveAsync(
-            organisation,
-            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        if (await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+        var result = await atomicScope.ExecuteAsync(async ct =>
         {
-            await umOrganisationSyncRepository.EnsureCreatedAsync(organisation.Guid, organisation.Name);
-        }
+            await organisationRepository.SaveAsync(
+                organisation,
+                async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        if (organisation.PendingRoles.Contains(CO.CDP.OrganisationInformation.PartyRole.Buyer))
-        {
+            var syncEnabled = await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled);
+            return syncEnabled
+                ? (await membershipSync.CreateFounderMembershipAsync(
+                        new CreateFounderCommand(
+                            organisation.Guid,
+                            organisation.Name,
+                            person.Guid,
+                            person.UserUrn,
+                            MapPartyRoles(command.Roles)), ct))
+                    .Match(
+                        onLeft: error => LogAndContinue(error, organisation.Guid),
+                        onRight: _ => mapper.Map<Model.Organisation>(organisation))
+                : mapper.Map<Model.Organisation>(organisation);
+        });
+
+        if (organisation.PendingRoles.Contains(OiPartyRole.Buyer))
             await NotifyAdminOfApprovalRequest(organisation);
-        }
 
-        return mapper.Map<Model.Organisation>(organisation);
+        return result;
+    }
+
+    private Model.Organisation LogAndContinue(SyncError error, Guid orgGuid)
+    {
+        logger.LogError("UM founder sync failed for org {OrgGuid}: {Error}", orgGuid, error.Message);
+        return mapper.Map<Model.Organisation>(
+            organisationRepository.Find(orgGuid).GetAwaiter().GetResult()!);
     }
 
     private async Task<OiPerson> FindPerson()
@@ -158,4 +182,21 @@ public class RegisterOrganisationUseCase(
                 Persons = { person }
             };
         });
+
+    private static IReadOnlyCollection<UmPartyRole> MapPartyRoles(IEnumerable<OiPartyRole> roles) =>
+        roles.Select(role => role switch
+            {
+                OiPartyRole.Buyer => UmPartyRole.Buyer,
+                OiPartyRole.ProcuringEntity => UmPartyRole.ProcuringEntity,
+                OiPartyRole.Supplier => UmPartyRole.Supplier,
+                OiPartyRole.Tenderer => UmPartyRole.Tenderer,
+                OiPartyRole.Funder => UmPartyRole.Funder,
+                OiPartyRole.Enquirer => UmPartyRole.Enquirer,
+                OiPartyRole.Payer => UmPartyRole.Payer,
+                OiPartyRole.Payee => UmPartyRole.Payee,
+                OiPartyRole.ReviewBody => UmPartyRole.ReviewBody,
+                OiPartyRole.InterestedParty => UmPartyRole.InterestedParty,
+                _ => throw new ArgumentOutOfRangeException(nameof(role), role, $"Unknown party role: {role}")
+            })
+            .ToHashSet();
 }

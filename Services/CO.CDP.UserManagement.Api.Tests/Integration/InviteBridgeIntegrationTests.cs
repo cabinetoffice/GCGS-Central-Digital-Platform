@@ -41,7 +41,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         var umPostgreSql1 = umPostgreSql;
         var cdpPostgreSql1 = cdpPostgreSql;
         _mockOrganisationApiAdapter = new Mock<IOrganisationApiAdapter>();
-        var mockPersonLookupService = new Mock<IPersonLookupService>();
+        var mockPersonApiAdapter = new Mock<IPersonApiAdapter>();
 
         TestWebApplicationFactory<Program> factory = new(builder =>
         {
@@ -65,8 +65,8 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
                 services.RemoveAll<IOrganisationApiAdapter>();
                 services.AddScoped(_ => _mockOrganisationApiAdapter.Object);
 
-                services.RemoveAll<IPersonLookupService>();
-                services.AddScoped(_ => mockPersonLookupService.Object);
+                services.RemoveAll<IPersonApiAdapter>();
+                services.AddScoped(_ => mockPersonApiAdapter.Object);
 
             });
         });
@@ -75,7 +75,7 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         _umContext = umPostgreSql1.UserManagementContext();
         _cdpContext = cdpPostgreSql1.OrganisationInformationContext();
 
-        mockPersonLookupService
+        mockPersonApiAdapter
             .Setup(c => c.GetPersonDetailsByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((PersonDetails?)null);
     }

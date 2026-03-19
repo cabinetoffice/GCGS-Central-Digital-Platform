@@ -16,7 +16,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IOrganisationApiAdapter _organisationApiAdapter;
-    private readonly IPersonLookupService _personLookupService;
+    private readonly IPersonApiAdapter _personApiAdapter;
     private readonly IUserAssignmentService _userAssignmentService;
     private readonly IRoleMappingService _roleMappingService;
     private readonly ICdpMembershipSyncService _membershipSyncService;
@@ -28,7 +28,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         IInviteRoleMappingRepository inviteRoleMappingRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IOrganisationApiAdapter organisationApiAdapter,
-        IPersonLookupService personLookupService,
+        IPersonApiAdapter personApiAdapter,
         IUserAssignmentService userAssignmentService,
         IRoleMappingService roleMappingService,
         ICdpMembershipSyncService membershipSyncService,
@@ -39,7 +39,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         _inviteRoleMappingRepository = inviteRoleMappingRepository;
         _membershipRepository = membershipRepository;
         _organisationApiAdapter = organisationApiAdapter;
-        _personLookupService = personLookupService;
+        _personApiAdapter = personApiAdapter;
         _userAssignmentService = userAssignmentService;
         _roleMappingService = roleMappingService;
         _membershipSyncService = membershipSyncService;
@@ -110,7 +110,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         var email = request.Email;
         var personDetails = string.IsNullOrWhiteSpace(email)
             ? null
-            : await _personLookupService.GetPersonDetailsByEmailAsync(email, cancellationToken);
+            : await _personApiAdapter.GetPersonDetailsByEmailAsync(email, cancellationToken);
 
         var memberExists = personDetails != null &&
                            await _membershipRepository.ExistsByPersonIdAndOrganisationAsync(

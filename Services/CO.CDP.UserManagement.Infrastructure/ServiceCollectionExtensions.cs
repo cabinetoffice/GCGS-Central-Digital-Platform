@@ -45,7 +45,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<IPersonLookupService, PersonLookupService>();
         services.AddScoped<ICdpMembershipSyncService, CdpMembershipSyncService>();
 
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
@@ -76,9 +75,13 @@ public static class ServiceCollectionExtensions
                     .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+        services.AddScoped<IOrganisationApplicationRepository, OrganisationApplicationRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
+        services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
         services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddScoped<IUmOrganisationSyncRepository, UmOrganisationSyncRepository>();
 
         return services;
