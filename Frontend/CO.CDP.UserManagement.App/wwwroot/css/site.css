@@ -111,3 +111,21 @@
     padding-left: 15px;
     padding-right: 15px;
 }
+
+/* Destructive notification banner */
+.app-destructive-notification-banner {
+    border-color: #d4351c;
+    margin-bottom: 40px;
+}
+
+.app-destructive-notification-banner .govuk-notification-banner__header {
+    background-color: #d4351c;
+}
+
+.app-destructive-notification-banner .govuk-notification-banner__heading {
+    color: #d4351c;
+}
+
+.app-destructive-notification-banner .govuk-body {
+    margin-bottom: 0;
+}

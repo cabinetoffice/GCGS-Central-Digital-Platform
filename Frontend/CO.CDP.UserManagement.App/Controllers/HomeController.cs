@@ -1,16 +1,11 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.UserManagement.WebApiClient;
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Services;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
 [Authorize]
-public class HomeController(
-    IApplicationService applicationService,
-    UserManagementClient apiClient) : Controller
+public class HomeController(UserManagementClient apiClient) : Controller
 {
     public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
     {
@@ -41,9 +36,20 @@ public class HomeController(
     }
 
     [AllowAnonymous]
+    [Route("/error")]
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        Response.StatusCode = 500;
+        return View();
     }
+
+    [AllowAnonymous]
+    [Route("/page-not-found")]
+    public IActionResult PageNotFound()
+    {
+        Response.StatusCode = 404;
+        return View();
+    }
+
 }

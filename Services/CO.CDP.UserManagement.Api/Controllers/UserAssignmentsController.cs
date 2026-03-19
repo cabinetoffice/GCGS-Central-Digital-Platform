@@ -167,5 +167,9 @@ public class UserAssignmentsController : ControllerBase
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
         }
+        catch (SystemInvalidOperationException ex)
+        {
+            return BadRequest(new ErrorResponse { Message = ex.Message, Code = "INVALID_OPERATION" });
+        }
     }
 }

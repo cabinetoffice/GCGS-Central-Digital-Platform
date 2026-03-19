@@ -4,6 +4,9 @@ public interface IPersonRepository : IDisposable
 {
     public void Save(Person person);
 
+    /// <summary>Tracks changes without calling SaveChanges — for use within an outer transaction.</summary>
+    public void Track(Person person);
+
     public Task<Person?> Find(Guid personId);
 
     public Task<Person?> FindByUrn(string urn);

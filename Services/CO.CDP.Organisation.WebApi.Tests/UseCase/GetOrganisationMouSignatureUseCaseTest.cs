@@ -1,5 +1,5 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -7,7 +7,6 @@ using FluentAssertions;
 using Moq;
 using Mou = CO.CDP.OrganisationInformation.Persistence.Mou;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -85,7 +84,7 @@ public class GetOrganisationMouSignatureUseCaseTest(AutoMapperFixture mapperFixt
                  .WithMessage($"Unknown organisation {organisationId}.");
     }
 
-    public static Person FakePerson(
+    public static Persistence.Person FakePerson(
        Guid? guid = null,
        string? userUrn = null,
        string firstname = "Jon",
@@ -99,7 +98,7 @@ public class GetOrganisationMouSignatureUseCaseTest(AutoMapperFixture mapperFixt
     {
         scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
-        var person = new Person
+        var person = new Persistence.Person
         {
             Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",

@@ -39,6 +39,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "rds:RemoveTagsFromResource",
       "rds:ResetDBClusterParameterGroup",
       "rds:ResetDBParameterGroup",
+      "rds:RestoreDBClusterFromSnapshot",
     ]
     effect = "Allow"
     resources = [

@@ -19,6 +19,7 @@ public sealed class ApplicationRoleChangeViewModel
     public string ApplicationName { get; init; } = string.Empty;
     public string ApplicationDescription { get; init; } = string.Empty;
     public bool AllowsMultipleRoleAssignments { get; init; }
+    public bool IsEnabledByDefault { get; init; }
     public bool HasExistingAccess { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }

@@ -284,7 +284,7 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
         }
 
         [Fact]
-        public async Task ShouldMapYesNoAnswerFalse_ResultsInNotSpecified()
+        public async Task ShouldMapYesNoAnswerFalse_WithoutOptionValue_ResultsInNo()
         {
             var org = CreateOrganisation();
             var sharedConsent = NonEfEntityFactory.GetSharedConsent(org.Guid, Guid.NewGuid());
@@ -303,6 +303,28 @@ namespace CO.CDP.DataSharing.WebApi.Tests.DataService
 
             _shareCodeRepository.Setup(r => r.GetByShareCode("BOOL-FALSE")).ReturnsAsync(sharedConsent);
             var result = await DataService.GetSharedSupplierInformationAsync("BOOL-FALSE");
+            var section = result.FormAnswerSetForPdfs.First();
+            section.QuestionAnswers.Should().Contain(qa => qa.Item2 == "No");
+        }
+
+        [Fact]
+        public async Task ShouldMapYesNoAnswerNull_WithoutOptionValue_ResultsInNotSpecified()
+        {
+            var org = CreateOrganisation();
+            var sharedConsent = NonEfEntityFactory.GetSharedConsent(org.Guid, Guid.NewGuid());
+            sharedConsent.Organisation = org;
+
+            var firstAnswerSet = sharedConsent.AnswerSets.FirstOrDefault();
+            if (firstAnswerSet?.Answers.Any() == true)
+            {
+                var yesNoAnswer = firstAnswerSet.Answers.First();
+                yesNoAnswer.Question.Type = OrganisationInformation.Persistence.Forms.FormQuestionType.YesOrNo;
+                yesNoAnswer.BoolValue = null;
+                yesNoAnswer.OptionValue = null;
+            }
+
+            _shareCodeRepository.Setup(r => r.GetByShareCode("BOOL-NULL")).ReturnsAsync(sharedConsent);
+            var result = await DataService.GetSharedSupplierInformationAsync("BOOL-NULL");
             var section = result.FormAnswerSetForPdfs.First();
             section.QuestionAnswers.Should().Contain(qa => qa.Item2 == "Not specified");
         }

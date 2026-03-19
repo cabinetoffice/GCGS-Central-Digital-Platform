@@ -20,7 +20,7 @@ public class HomeControllerTests
     {
         _applicationService = new Mock<IApplicationService>();
         _apiClient = new Mock<UserManagementClient>("http://localhost", new HttpClient());
-        _controller = new HomeController(_applicationService.Object, _apiClient.Object);
+        _controller = new HomeController(_apiClient.Object);
     }
 
     [Fact]
@@ -104,6 +104,47 @@ public class HomeControllerTests
         var result = _controller.Error();
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.Model.Should().BeOfType<ErrorViewModel>();
+        viewResult.Model.Should().BeNull();
+    }
+
+    [Fact]
+    public void Error_HasErrorRoute()
+    {
+        var method = typeof(HomeController).GetMethod(nameof(HomeController.Error));
+
+        method.Should().NotBeNull();
+        method!
+            .GetCustomAttributes(typeof(RouteAttribute), inherit: false)
+            .Cast<RouteAttribute>()
+            .Select(attribute => attribute.Template)
+            .Should()
+            .Contain("/error");
+    }
+
+    [Fact]
+    public void PageNotFound_ReturnsView()
+    {
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext()
+        };
+
+        var result = _controller.PageNotFound();
+
+        result.Should().BeOfType<ViewResult>();
+    }
+
+    [Fact]
+    public void PageNotFound_HasExpectedRoute()
+    {
+        var method = typeof(HomeController).GetMethod(nameof(HomeController.PageNotFound));
+
+        method.Should().NotBeNull();
+        method!
+            .GetCustomAttributes(typeof(RouteAttribute), inherit: false)
+            .Cast<RouteAttribute>()
+            .Select(attribute => attribute.Template)
+            .Should()
+            .Contain("/page-not-found");
     }
 }

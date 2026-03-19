@@ -5,7 +5,7 @@ using CO.CDP.Organisation.WebApi.UseCase;
 using FluentAssertions;
 using Moq;
 using PersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -46,7 +46,7 @@ public class GetPersonsUseCaseTest
         _organisationRepositoryMock.Setup(repo => repo.Find(organisationId))
             .ReturnsAsync(_organisationMock.Object);
         _personRepositoryMock.Setup(repo => repo.FindByOrganisation(organisationId))
-            .ReturnsAsync(new List<Person>());
+            .ReturnsAsync(new List<Persistence.Person>());
 
         var result = await _useCase.Execute(organisationId);
 
@@ -66,9 +66,9 @@ public class GetPersonsUseCaseTest
             Type = OrganisationInformation.OrganisationType.Organisation
         };
 
-        var persons = new List<Person>
+        var persons = new List<Persistence.Person>
         {
-            new Person
+            new Persistence.Person
             {
                 Id = 1,
                 PersonOrganisations = new List<OrganisationPerson>
@@ -87,9 +87,8 @@ public class GetPersonsUseCaseTest
                 Email = "bill@billson.com",
                 UserUrn = "urn:1234",
             },
-            new Person
+            new Persistence.Person
             {
-                Id = 2,
                 PersonOrganisations = new List<OrganisationPerson>
                 {
                     new OrganisationPerson
@@ -114,8 +113,8 @@ public class GetPersonsUseCaseTest
         _personRepositoryMock.Setup(repo => repo.FindByOrganisation(organisationGuid))
             .ReturnsAsync(persons);
 
-        _mapperMock.Setup(mapper => mapper.Map<CO.CDP.Organisation.WebApi.Model.Person>(It.IsAny<Person>()))
-            .Returns((Person source) => new CO.CDP.Organisation.WebApi.Model.Person
+        _mapperMock.Setup(mapper => mapper.Map<CO.CDP.Organisation.WebApi.Model.Person>(It.IsAny<Persistence.Person>()))
+            .Returns((Persistence.Person source) => new CO.CDP.Organisation.WebApi.Model.Person
             {
                 Id = Guid.NewGuid(),
                 FirstName = null!,

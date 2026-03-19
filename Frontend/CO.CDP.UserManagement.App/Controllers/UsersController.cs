@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
@@ -10,6 +11,7 @@ namespace CO.CDP.UserManagement.App.Controllers;
 [Route("organisation/{organisationSlug}")]
 public class UsersController(
     IUserService userService,
+    IOrganisationRoleService organisationRoleService,
     IInviteUserStateStore inviteUserStateStore,
     IChangeRoleStateStore changeRoleStateStore,
     IChangeApplicationRoleStateStore changeApplicationRoleStateStore) : Controller
@@ -101,7 +103,8 @@ public class UsersController(
     [HttpGet("add-user/organisation-role")]
     public async Task<IActionResult> OrganisationRoleStep(
         string organisationSlug,
-        bool returnToCheckAnswers = false)
+        bool returnToCheckAnswers = false,
+        CancellationToken ct = default)
     {
         var state = await inviteUserStateStore.GetAsync();
         if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
@@ -109,8 +112,7 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-        return View("OrganisationRole", state);
+        return View("OrganisationRole", await BuildOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
     }
 
     [HttpGet("add-user/application-roles")]
@@ -351,7 +353,12 @@ public class UsersController(
             inviteInput,
             ct,
             assignments);
-        if (!success)
+        if (success.IsLeft())
+        {
+            return Redirect("/error");
+        }
+
+        if (success.Match(_ => false, outcome => outcome == ServiceOutcome.NotFound))
         {
             return NotFound();
         }
@@ -401,7 +408,11 @@ public class UsersController(
     public async Task<IActionResult> ResendInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
         var success = await userService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
-        return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(Index), new { organisationSlug })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -417,7 +428,7 @@ public class UsersController(
         }
 
         var state = await GetOrCreateChangeRoleStateAsync(organisationSlug, cdpPersonId, null, viewModel);
-        return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
+        return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -436,7 +447,9 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
-            return viewModel is null ? NotFound() : View("ChangeRole", viewModel);
+            return viewModel is null
+                ? NotFound()
+                : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
@@ -484,12 +497,11 @@ public class UsersController(
             null,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change/success")]
@@ -506,11 +518,12 @@ public class UsersController(
 
         await changeRoleStateStore.ClearAsync();
 
+        var roleDescription = (await organisationRoleService.GetRoleAsync(state.SelectedRole, ct))?.Description ?? string.Empty;
         return View("ChangeRoleSuccess", new ChangeUserRoleSuccessViewModel(
             OrganisationSlug: organisationSlug,
             UserDisplayName: state.UserDisplayName,
             NewRole: state.SelectedRole,
-            RoleDescription: state.SelectedRole.GetDescription()));
+            RoleDescription: roleDescription));
     }
 
     [HttpGet("invites/{inviteGuid:guid}/organisation-role/change")]
@@ -526,7 +539,7 @@ public class UsersController(
         }
 
         var state = await GetOrCreateChangeRoleStateAsync(organisationSlug, null, inviteGuid, viewModel);
-        return View("ChangeRole", viewModel with { SelectedRole = state.SelectedRole });
+        return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
     [HttpPost("invites/{inviteGuid:guid}/organisation-role/change")]
@@ -545,7 +558,9 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
-            return viewModel is null ? NotFound() : View("ChangeRole", viewModel);
+            return viewModel is null
+                ? NotFound()
+                : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
@@ -593,12 +608,11 @@ public class UsersController(
             inviteGuid,
             state.SelectedRole,
             ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid })!);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/organisation-role/change/success")]
@@ -615,11 +629,12 @@ public class UsersController(
 
         await changeRoleStateStore.ClearAsync();
 
+        var roleDescription = (await organisationRoleService.GetRoleAsync(state.SelectedRole, ct))?.Description ?? string.Empty;
         return View("ChangeRoleSuccess", new ChangeUserRoleSuccessViewModel(
             OrganisationSlug: organisationSlug,
             UserDisplayName: state.UserDisplayName,
             NewRole: state.SelectedRole,
-            RoleDescription: state.SelectedRole.GetDescription()));
+            RoleDescription: roleDescription));
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application-roles/change")]
@@ -700,12 +715,11 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, cdpPersonId, null, assignments, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeApplicationRolesSuccess), new { organisationSlug, cdpPersonId });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeApplicationRolesSuccess), new { organisationSlug, cdpPersonId })!);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application-roles/change/success")]
@@ -845,12 +859,11 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success = await userService.UpdateUserApplicationRolesAsync(organisationSlug, null, inviteGuid, assignments, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(ChangeInviteApplicationRolesSuccess), new { organisationSlug, inviteGuid });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(ChangeInviteApplicationRolesSuccess), new { organisationSlug, inviteGuid })!);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/application-roles/change/success")]
@@ -952,6 +965,32 @@ public class UsersController(
             IsPending: state.InviteGuid.HasValue,
             CdpPersonId: state.CdpPersonId,
             InviteGuid: state.InviteGuid);
+
+    private async Task<OrganisationRoleStepViewModel> BuildOrganisationRoleStepViewModelAsync(
+        InviteUserState state,
+        bool returnToCheckAnswers,
+        CancellationToken ct)
+    {
+        return new OrganisationRoleStepViewModel(
+            state.OrganisationSlug,
+            state.FirstName,
+            state.LastName,
+            state.Email,
+            state.OrganisationRole,
+            returnToCheckAnswers,
+            (await organisationRoleService.GetRolesAsync(ct)).ToOptions());
+    }
+
+    private async Task<ChangeUserRolePageViewModel> BuildChangeUserRolePageViewModelAsync(
+        ChangeUserRoleViewModel viewModel,
+        OrganisationRole? selectedRole,
+        CancellationToken ct)
+    {
+        return ChangeUserRolePageViewModel.From(
+            viewModel,
+            (await organisationRoleService.GetRolesAsync(ct)).ToOptions(),
+            selectedRole);
+    }
 
     private async Task<IActionResult> HandleApplicationRolesSubmit(
         string organisationSlug,
@@ -1142,4 +1181,73 @@ public class UsersController(
 
         return originalSingleRoles.TryGetValue(app.OrganisationApplicationId, out var origId) && origId != app.SelectedRoleId;
     }
+
+    [HttpGet("user/{cdpPersonId:guid}/remove")]
+    public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        return viewModel is null ? NotFound() : View("Remove", viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/remove")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveUser(
+        string organisationSlug,
+        Guid cdpPersonId,
+        RemoveUserViewModel input,
+        CancellationToken ct)
+    {
+        if (input.RemoveConfirmed == false)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            return viewModel is null ? NotFound() : View("Remove", viewModel);
+        }
+
+        var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
+
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+    }
+
+    [HttpGet("invites/{pendingInviteId:int}/remove")]
+    public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
+        return viewModel is null ? NotFound() : View("Remove", viewModel);
+    }
+
+    [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveInvite(
+        string organisationSlug,
+        int pendingInviteId,
+        RemoveUserViewModel input,
+        CancellationToken ct)
+    {
+        if (input.RemoveConfirmed == false)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
+            return viewModel is null ? NotFound() : View("Remove", viewModel);
+        }
+
+        var success = await userService.RemoveUserAsync(organisationSlug, null, pendingInviteId, ct);
+
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+    }
+
+    [HttpGet("remove/success")]
+    public IActionResult RemoveSuccess(string organisationSlug)
+    {
+        return View("RemoveSuccess");
+    }
+
 }

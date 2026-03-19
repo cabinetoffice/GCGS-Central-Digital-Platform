@@ -2,6 +2,7 @@ module "cluster_fts" {
   source = "../rds-cluster"
 
   apply_immediately            = true
+  apply_master_password        = var.fts_apply_master_password
   backup_retention_period      = var.is_production ? 14 : 1
   copy_tags_to_snapshot        = true
   db_name                      = local.fts_cluster_name
@@ -19,6 +20,8 @@ module "cluster_fts" {
   private_subnet_ids           = var.private_subnet_ids
   public_subnet_ids            = var.environment == "development" ? var.public_subnet_ids : [] # @TODO (ABN) burn me once migration is done
   publicly_accessible          = true                                                          # @TODO (ABN) Disable after migration
+  restore_from_snapshot        = var.fts_restore_from_snapshot
   role_terraform_arn           = var.role_terraform_arn
+  snapshot_identifier          = var.fts_snapshot_identifier
   tags                         = var.tags
 }

@@ -79,15 +79,24 @@
                                 @if (application.HasExistingAccess)
                                 {
                                     <input type="hidden" name="Applications[@index].GiveAccess" value="true" />
-                                    var removeUrl = Model.IsPending
-                                        ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/application/{application.ApplicationClientId}/remove"
-                                        : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application/{application.ApplicationClientId}/remove";
                                     <p class="govuk-body govuk-!-margin-bottom-1">
                                         This user already has access to @application.ApplicationName.
                                     </p>
-                                    <p class="govuk-body govuk-!-margin-bottom-0">
-                                        <a href="@removeUrl" class="govuk-link">To remove access, click here.</a>
-                                    </p>
+                                    @if (application.IsEnabledByDefault)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-bottom-0">
+                                            Access to this application cannot be removed because it is enabled for everyone.
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        var removeUrl = Model.IsPending
+                                            ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/application/{application.ApplicationClientId}/remove"
+                                            : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application/{application.ApplicationClientId}/remove";
+                                        <p class="govuk-body govuk-!-margin-bottom-0">
+                                            <a href="@removeUrl" class="govuk-link">To remove access, click here.</a>
+                                        </p>
+                                    }
                                 }
                                 else
                                 {

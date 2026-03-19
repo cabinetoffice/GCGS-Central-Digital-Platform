@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Api.Controllers;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.Organisation.WebApiClient;

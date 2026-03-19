@@ -3,8 +3,10 @@ using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SystemInvalidOperationException = System.InvalidOperationException;
 
 namespace CO.CDP.UserManagement.Api.Controllers;
 
@@ -17,13 +19,19 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 public class OrganisationApplicationsController : ControllerBase
 {
     private readonly IOrganisationApplicationService _organisationApplicationService;
+    private readonly IRoleService _roleService;
+    private readonly IRoleMappingService _roleMappingService;
     private readonly ILogger<OrganisationApplicationsController> _logger;
 
     public OrganisationApplicationsController(
         IOrganisationApplicationService organisationApplicationService,
+        IRoleService roleService,
+        IRoleMappingService roleMappingService,
         ILogger<OrganisationApplicationsController> logger)
     {
         _organisationApplicationService = organisationApplicationService;
+        _roleService = roleService;
+        _roleMappingService = roleMappingService;
         _logger = logger;
     }
 
@@ -44,6 +52,35 @@ public class OrganisationApplicationsController : ControllerBase
         {
             var orgApps = await _organisationApplicationService.GetByOrganisationIdAsync(orgId, cancellationToken);
             return Ok(orgApps.ToResponses());
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Gets the application roles available to an organisation for a specific organisation role.
+    /// </summary>
+    [HttpGet("{applicationId:int}/roles")]
+    [ProducesResponseType(typeof(IEnumerable<RoleResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<IEnumerable<RoleResponse>>> GetApplicationRoles(
+        int orgId,
+        int applicationId,
+        [FromQuery] OrganisationRole organisationRole,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var roles = await _roleService.GetByApplicationIdAsync(applicationId, cancellationToken);
+            var assignableRoles = await _roleMappingService.GetAssignableRolesAsync(
+                orgId,
+                organisationRole,
+                roles.Select(role => role.Id),
+                cancellationToken);
+
+            return Ok(assignableRoles.ToResponses(includePermissions: false));
         }
         catch (EntityNotFoundException ex)
         {
@@ -130,6 +167,10 @@ public class OrganisationApplicationsController : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (SystemInvalidOperationException ex)
+        {
+            return BadRequest(new ErrorResponse { Message = ex.Message, Code = "INVALID_OPERATION" });
         }
     }
 }

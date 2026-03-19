@@ -46,6 +46,8 @@ public class DatabasePersonRepository(OrganisationInformationContext context) : 
         }
     }
 
+    public void Track(Person person) => context.Update(person);
+
     private static void HandleDbUpdateException(Person person, DbUpdateException cause)
     {
         switch (cause.InnerException)

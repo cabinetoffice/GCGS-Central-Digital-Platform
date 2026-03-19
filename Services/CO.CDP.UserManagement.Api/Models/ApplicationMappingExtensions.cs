@@ -19,6 +19,7 @@ public static class ApplicationMappingExtensions
             Category = application.Category,
             IsActive = application.IsActive,
             AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+            IsEnabledByDefault = application.IsEnabledByDefault,
             CreatedAt = application.CreatedAt
         };
     }
@@ -30,7 +31,8 @@ public static class ApplicationMappingExtensions
             Id = application.Id,
             Name = application.Name,
             ClientId = application.ClientId,
-            IsActive = application.IsActive
+            IsActive = application.IsActive,
+            IsEnabledByDefault = application.IsEnabledByDefault
         };
     }
 }

@@ -41,6 +41,11 @@ public record ApplicationResponse
     public bool AllowsMultipleRoleAssignments { get; init; }
 
     /// <summary>
+    /// Gets or sets whether this application is enabled by default for organisations.
+    /// </summary>
+    public bool IsEnabledByDefault { get; init; }
+
+    /// <summary>
     /// Gets or sets the creation timestamp.
     /// </summary>
     public required DateTimeOffset CreatedAt { get; init; }

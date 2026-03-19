@@ -16,14 +16,14 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [Authorize]
 public class UsersController : ControllerBase
 {
-    private readonly IPersonLookupService _personLookupService;
+    private readonly IPersonApiAdapter _personApiAdapter;
     private readonly ILogger<UsersController> _logger;
 
     public UsersController(
-        IPersonLookupService personLookupService,
+        IPersonApiAdapter personLookupService,
         ILogger<UsersController> logger)
     {
-        _personLookupService = personLookupService;
+        _personApiAdapter = personLookupService;
         _logger = logger;
     }
 
@@ -49,7 +49,7 @@ public class UsersController : ControllerBase
 
         try
         {
-            var personDetails = await _personLookupService.GetPersonDetailsAsync(userPrincipalId, cancellationToken);
+            var personDetails = await _personApiAdapter.GetPersonDetailsAsync(userPrincipalId, cancellationToken);
 
             if (personDetails == null)
             {

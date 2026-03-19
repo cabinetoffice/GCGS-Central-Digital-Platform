@@ -10,7 +10,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Mou = CO.CDP.OrganisationInformation.Persistence.Mou;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -53,7 +52,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {           
+        {
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -88,7 +87,7 @@ public class SignOrganisationMouUseCaseTest
     {
         var organisationId = Guid.NewGuid();
         var signMouRequest = new SignMouRequest
-        {          
+        {
             MouId = Guid.NewGuid(),
             Name = "John Doe",
             JobTitle = "CEO",
@@ -114,7 +113,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {        
+        {
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -127,7 +126,7 @@ public class SignOrganisationMouUseCaseTest
 
         _personRepository
             .Setup(repo => repo.Find(person.Guid))
-            .ReturnsAsync((Person)null!);
+            .ReturnsAsync((Persistence.Person)null!);
 
         Func<Task> act = async () => await _useCase.Execute((organisation.Guid, signMouRequest));
 
@@ -146,7 +145,7 @@ public class SignOrganisationMouUseCaseTest
         organisation.Persons.Add(person);
 
         var signMouRequest = new SignMouRequest
-        {           
+        {
             MouId = mou.Guid,
             Name = "John Doe",
             JobTitle = "CEO",
@@ -170,7 +169,7 @@ public class SignOrganisationMouUseCaseTest
             .WithMessage($"Unknown Mou {mou.Guid}.");
     }
 
-    public static Person FakePerson(
+    public static Persistence.Person FakePerson(
    Guid? guid = null,
    string? userUrn = null,
    string firstname = "Jon",
@@ -184,7 +183,7 @@ public class SignOrganisationMouUseCaseTest
     {
         scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
-        var person = new Person
+        var person = new Persistence.Person
         {
             Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",
