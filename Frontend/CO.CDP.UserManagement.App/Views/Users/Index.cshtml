@@ -5,13 +5,18 @@
     ViewData["Title"] = "Manage users";
     var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
     var organisation = organisationSlug;
-    var organisationBackUrl = (Model?.OrganisationGuid.HasValue == true)
-        ? SirsiUrlService.BuildAuthenticatedUrl("/organisation/" + Model.OrganisationGuid.Value)
-        : "/organisation/" + organisationSlug;
+    string? organisationBackUrl = null;
+    if (Model?.OrganisationGuid.HasValue == true)
+    {
+        organisationBackUrl = SirsiUrlService.BuildAuthenticatedUrl("/organisation/" + Model.OrganisationGuid.Value);
+    }
 }
 
 @section BeforeContent {
-    <a href="@organisationBackUrl" class="govuk-back-link">Back</a>
+    @if (!string.IsNullOrEmpty(organisationBackUrl))
+    {
+        <a href="@organisationBackUrl" class="govuk-back-link">Back</a>
+    }
 }
 
 <div class="govuk-grid-row">
