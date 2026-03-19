@@ -71,4 +71,10 @@ public interface IUserService
         Guid? cdpPersonId,
         int? pendingInviteId,
         CancellationToken ct = default);
+
+    Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
 }

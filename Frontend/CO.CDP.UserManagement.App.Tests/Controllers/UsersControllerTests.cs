@@ -1358,4 +1358,68 @@ public class UsersControllerTests
         viewResult.ViewName.Should().Be("Remove");
         _userService.Verify(service => service.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [Fact]
+    public async Task RemoveApplicationSuccess_Get_WhenViewModelNull_RedirectsToIndex()
+    {
+        var userId = Guid.NewGuid();
+        _userService.Setup(s => s.GetRemoveApplicationSuccessViewModelAsync("org", userId, "app-slug-1", It.IsAny<CancellationToken>()))
+            .ReturnsAsync((RemoveApplicationSuccessViewModel?)null);
+
+        var result = await _controller.RemoveApplicationSuccess("org", userId, "app-slug-1", CancellationToken.None);
+
+        var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirect.ActionName.Should().Be(nameof(UsersController.Index));
+        redirect.RouteValues!["organisationSlug"].Should().Be("org");
+    }
+
+    [Fact]
+    public async Task RemoveApplicationSuccess_Get_WhenViewModelValid_ReturnsSuccessView()
+    {
+        var userId = Guid.NewGuid();
+        var viewModel = new RemoveApplicationSuccessViewModel
+        {
+            OrganisationSlug = "org",
+            UserDisplayName = "John Doe",
+            Email = "john@example.com",
+            ApplicationName = "Test App",
+            CdpPersonId = userId
+        };
+        _userService.Setup(s => s.GetRemoveApplicationSuccessViewModelAsync("org", userId, "app-slug-2", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.RemoveApplicationSuccess("org", userId, "app-slug-2", CancellationToken.None);
+
+        var view = result.Should().BeOfType<ViewResult>().Subject;
+        view.ViewName.Should().Be("RemoveApplicationSuccess");
+        view.Model.Should().BeOfType<RemoveApplicationSuccessViewModel>()
+            .Which.UserDisplayName.Should().Be("John Doe");
+        view.Model.Should().BeOfType<RemoveApplicationSuccessViewModel>()
+            .Which.ApplicationName.Should().Be("Test App");
+        view.Model.Should().BeOfType<RemoveApplicationSuccessViewModel>()
+            .Which.Email.Should().Be("john@example.com");
+    }
+
+    [Fact]
+    public async Task RemoveApplicationSuccess_Get_PassesCorrectParametersToService()
+    {
+        var userId = Guid.NewGuid();
+        var appId = "test-app-slug";
+        var viewModel = new RemoveApplicationSuccessViewModel
+        {
+            OrganisationSlug = "org",
+            UserDisplayName = "Jane Smith",
+            Email = "jane@example.com",
+            ApplicationName = "Finance App",
+            CdpPersonId = userId
+        };
+        _userService.Setup(s => s.GetRemoveApplicationSuccessViewModelAsync("org", userId, appId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        await _controller.RemoveApplicationSuccess("org", userId, appId, CancellationToken.None);
+
+        _userService.Verify(
+            s => s.GetRemoveApplicationSuccessViewModelAsync("org", userId, appId, It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
 }

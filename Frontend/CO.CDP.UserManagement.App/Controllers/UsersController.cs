@@ -760,6 +760,27 @@ public class UsersController(
         });
     }
 
+    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/success")]
+    public async Task<IActionResult> RemoveApplicationSuccess(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveApplicationSuccessViewModelAsync(
+            organisationSlug,
+            cdpPersonId,
+            clientId,
+            ct);
+
+        if (viewModel is null)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        return View("RemoveApplicationSuccess", viewModel);
+    }
+
     [HttpGet("invites/{inviteGuid:guid}/application-roles/change")]
     public async Task<IActionResult> ChangeInviteApplicationRoles(
         string organisationSlug,

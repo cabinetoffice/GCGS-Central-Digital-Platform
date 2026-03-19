@@ -101,7 +101,7 @@ public class UserServiceTests
             .Callback<Guid, InviteUserRequest, CancellationToken>((_, request, _) => capturedRequest = request)
             .ReturnsAsync(BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member));
 
-        var result = await _service.InviteUserAsync("org", new Models.InviteUserViewModel
+        var result = await _service.InviteUserAsync("org", new InviteUserViewModel
         {
             Email = "test@example.com",
             FirstName = "Test",
@@ -126,7 +126,7 @@ public class UserServiceTests
         _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await _service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
+        var result = await _service.InviteUserAsync("org", InviteUserViewModel.Empty, CancellationToken.None);
 
         result.IsLeft().Should().BeTrue();
     }
@@ -718,5 +718,120 @@ public class UserServiceTests
             PendingInviteId = pendingInviteId,
             Status = UserStatus.Pending
         };
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationSuccessViewModelAsync_WhenOrganisationNotFound_ReturnsNull()
+    {
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", Guid.NewGuid(), "test-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationSuccessViewModelAsync_WhenUserNotFound_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var userId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OrganisationUserResponse>());
+
+        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "test-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationSuccessViewModelAsync_WhenApplicationNotFound_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var userId = Guid.NewGuid();
+        var users = new List<OrganisationUserResponse>
+        {
+            new()
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            }
+        };
+
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(users);
+        _apiClient.Setup(client => client.ApplicationsAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ApplicationResponse>());
+
+        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "non-existent-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationSuccessViewModelAsync_WhenValid_ReturnsPopulatedViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var userId = Guid.NewGuid();
+        var appClientId = "test-app";
+        var users = new List<OrganisationUserResponse>
+        {
+            new()
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            }
+        };
+        var apps = new List<ApplicationResponse>
+        {
+            new()
+            {
+                Id = 42,
+                Name = "Test Application",
+                ClientId = appClientId,
+                IsActive = true,
+                CreatedAt = DateTimeOffset.UtcNow
+            }
+        };
+
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(users);
+        _apiClient.Setup(client => client.ApplicationsAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(apps);
+
+        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, appClientId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.OrganisationSlug.Should().Be("org");
+        result.UserDisplayName.Should().Be("John Doe");
+        result.Email.Should().Be("john@example.com");
+        result.ApplicationName.Should().Be("Test Application");
+        result.CdpPersonId.Should().Be(userId);
     }
 }
