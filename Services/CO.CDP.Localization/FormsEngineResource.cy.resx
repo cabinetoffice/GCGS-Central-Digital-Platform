@@ -864,6 +864,28 @@
   <data name="ModernSlavery_SectionTitle" xml:space="preserve">
     <value>Caethwasiaeth Fodern</value>
   </data>
+  <data name="Payments_SectionTitle" xml:space="preserve">
+    <value>Gwybodaeth am Daliadau</value>
+  </data>
+  <data name="Payments_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      Mae'r Llywodraeth wedi ymrwymo i fynd i'r afael â thaliadau hwyr fel rhan o'i Chynllun ar gyfer Busnesau Bach. Mae'r modiwl hwn yn canolbwyntio ar nodi pa mor ddibynadwy yw systemau talu cyflenwr, er mwyn sicrhau cydymffurfedd â pholisïau talu'r llywodraeth a hyrwyddo llif arian parod teg ar gyfer busnesau.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;
+      Bydd angen i chi ddarparu gwybodaeth am eich taliadau a'ch anfonebau. Gall hyn gynnwys:
+    &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;cydymffurfedd â'ch telerau talu&lt;/li&gt;
+      &lt;li&gt;manylion taliadau ac anfonebau ar gyfer y ddau gyfnod adrodd diwethaf o chwe mis&lt;/li&gt;
+      &lt;li&gt;cynllun gweithredu ar gyfer lleihau nifer y taliadau hwyr (lle y bo'n berthnasol)&lt;/li&gt;
+    &lt;/ul&gt;
+    </value>
+  </data>
   <data name="Payments_01_Title" xml:space="preserve">
     <value>Cyflwyno eich gwybodaeth am daliadau</value>
   </data>
