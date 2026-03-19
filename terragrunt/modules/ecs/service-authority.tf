@@ -4,39 +4,44 @@ module "ecs_service_authority" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.authority.name}.json.tftpl",
     {
-      aspcore_environment   = local.aspcore_environment
-      authority_private_key = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
-      container_port        = var.service_configs.authority.port
-      cpu                   = var.service_configs.authority.cpu
-      db_address            = var.db_sirsi_cluster_address
-      db_name               = var.db_sirsi_cluster_name
-      db_password           = local.db_sirsi_password
-      db_username           = local.db_sirsi_username
-      host_port             = var.service_configs.authority.port
-      image                 = local.ecr_urls[var.service_configs.authority.name]
-      lg_name               = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
-      lg_prefix             = "app"
-      lg_region             = data.aws_region.current.region
-      memory                = var.service_configs.authority.memory
-      name                  = var.service_configs.authority.name
-      onelogin_authority    = local.one_login.credential_locations.authority
-      onelogin_client_id    = local.one_login.credential_locations.client_id
-      onelogin_private_key  = local.one_login.credential_locations.private_key
-      public_domain         = var.public_domain
-      service_version       = local.service_version_sirsi
-      vpc_cidr              = var.vpc_cider
+      aspcore_environment       = local.aspcore_environment
+      authority_private_key     = "${data.aws_secretsmanager_secret.authority_keys.arn}:PRIVATE::"
+      cpu                       = var.service_configs.authority.cpu
+      db_address                = var.db_sirsi_cluster_address
+      db_name                   = var.db_sirsi_cluster_name
+      db_password               = local.db_sirsi_password
+      db_username               = local.db_sirsi_username
+      image                     = local.ecr_urls[var.service_configs.authority.name]
+      internal_service_urls     = local.internal_service_urls
+      lg_name                   = aws_cloudwatch_log_group.tasks[var.service_configs.authority.name].name
+      lg_prefix                 = "app"
+      lg_region                 = data.aws_region.current.region
+      memory                    = var.service_configs.authority.memory
+      name                      = var.service_configs.authority.name
+      onelogin_authority        = local.one_login.credential_locations.authority
+      onelogin_client_id        = local.one_login.credential_locations.client_id
+      onelogin_private_key      = local.one_login.credential_locations.private_key
+      public_domain             = var.public_domain
+      public_service_urls       = local.public_service_urls
+      service_port              = local.service_ports_by_service[var.service_configs.authority.name]
+      service_version           = local.service_version_sirsi
+      use_internal_issuer       = local.use_internal_issuer
+      use_internal_service_urls = local.use_internal_service_urls
+      vpc_cidr                  = var.vpc_cider
     }
   )
 
   cluster_id             = local.main_cluster_id
-  container_port         = var.service_configs.authority.port
   cpu                    = var.service_configs.authority.cpu
   desired_count          = var.service_configs.authority.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
-  host_port              = var.service_configs.authority.port_host
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
+  listener_priority      = var.service_configs.authority.listener_priority
   memory                 = var.service_configs.authority.memory
   name                   = var.service_configs.authority.name
   private_subnet_ids     = var.private_subnet_ids
@@ -44,6 +49,7 @@ module "ecs_service_authority" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_ports_by_service[var.service_configs.authority.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

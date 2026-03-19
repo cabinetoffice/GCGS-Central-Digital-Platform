@@ -18,6 +18,10 @@ locals {
   cloud_beaver_container_path = "/opt/cloudbeaver/workspace"
   cloud_beaver_volume_name    = "workspace"
 
+  tools_alb_ports = distinct([
+    for name, config in var.tools_configs :
+    config.port if config.name != "k6"
+  ])
 
   rds_creds_sirsi = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_sirsi.secret_string)
   rds_creds_ev    = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_ev.secret_string)

@@ -39,6 +39,7 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
+    internal_hosted_zone_id     = "mock"
     private_subnet_ids          = "mock"
     private_subnets_cidr_blocks = "mock"
     public_domain               = "mock"
@@ -56,6 +57,7 @@ dependency core_networking {
 dependency core_security_groups {
   config_path = "../../core/security-groups"
   mock_outputs = {
+    alb_internal_sg_id        = "mock"
     alb_sg_id                 = "mock"
     db_mysql_sg_id            = "mock"
     db_postgres_sg_id         = "mock"
@@ -140,6 +142,8 @@ dependency service_queue {
     entity_verification_queue_url = "mock"
     organisation_queue_arn        = "mock"
     organisation_queue_url        = "mock"
+    user_management_queue_arn     = "mock"
+    user_management_queue_url     = "mock"
   }
 }
 
@@ -177,6 +181,7 @@ inputs = {
 
   vpce_s3_prefix_list_id = dependency.common_networking.outputs.vpce_s3_prefix_list_id
 
+  internal_hosted_zone_id     = dependency.core_networking.outputs.internal_hosted_zone_id
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
   public_domain               = dependency.core_networking.outputs.public_domain
@@ -185,12 +190,13 @@ inputs = {
   public_hosted_zone_id       = dependency.core_networking.outputs.public_hosted_zone_id
   public_subnet_ids           = dependency.core_networking.outputs.public_subnet_ids
   public_subnets_cidr_blocks  = dependency.core_networking.outputs.public_subnets_cidr_blocks
-  vpc_id                      = dependency.core_networking.outputs.vpc_id
   vpc_cider                   = dependency.core_networking.outputs.vpc_cider
+  vpc_id                      = dependency.core_networking.outputs.vpc_id
   waf_acl_arn                 = dependency.core_networking.outputs.waf_acl_arn
-  waf_acl_php_arn             = dependency.core_networking.outputs.waf_acl_php_arn
   waf_acl_fts_arn             = dependency.core_networking.outputs.waf_acl_fts_arn
+  waf_acl_php_arn             = dependency.core_networking.outputs.waf_acl_php_arn
 
+  alb_internal_sg_id        = dependency.core_security_groups.outputs.alb_internal_sg_id
   alb_sg_id                 = dependency.core_security_groups.outputs.alb_sg_id
   db_mysql_sg_id            = dependency.core_security_groups.outputs.db_mysql_sg_id
   db_postgres_sg_id         = dependency.core_security_groups.outputs.db_postgres_sg_id
@@ -205,6 +211,7 @@ inputs = {
   user_pool_arn                        = dependency.service_auth.outputs.organisation_app_user_pool_arn
   user_pool_client_id                  = dependency.service_auth.outputs.organisation_app_user_pool_client_id
   user_pool_commercial_tools_client_id = dependency.service_auth.outputs.commercial_tools_app_user_pool_client_id
+  user_pool_user_management_client_id  = dependency.service_auth.outputs.user_management_app_user_pool_client_id
   user_pool_cfs_arn                    = dependency.service_auth.outputs.cfs_user_pool_arn
   user_pool_cfs_client_id              = dependency.service_auth.outputs.cfs_user_pool_client_id
   user_pool_cfs_domain                 = dependency.service_auth.outputs.user_pool_domain
@@ -246,6 +253,8 @@ inputs = {
   queue_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
   queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
   queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
+  queue_user_management_arn     = dependency.service_queue.outputs.user_management_queue_arn
+  queue_user_management_url     = dependency.service_queue.outputs.user_management_queue_url
 
   ses_configuration_set_arn  = dependency.service_notification.outputs.configuration_set_arn
   ses_configuration_set_name = dependency.service_notification.outputs.configuration_set_name

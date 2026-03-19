@@ -14,5 +14,8 @@ public interface IPersonInviteRepository : IDisposable
 
     void Save(PersonInvite personInvite);
 
+    /// <summary>Tracks changes without calling SaveChanges — for use within an outer transaction.</summary>
+    void Track(PersonInvite personInvite);
+
     Task SaveNewInvite(PersonInvite personInvite, IEnumerable<PersonInvite> expiredExistingInvites);
 }

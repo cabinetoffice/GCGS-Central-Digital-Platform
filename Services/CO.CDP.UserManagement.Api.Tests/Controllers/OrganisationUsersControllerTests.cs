@@ -16,13 +16,13 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 public class OrganisationUsersControllerTests
 {
     private readonly Mock<IOrganisationUserService> _organisationUserService;
-    private readonly Mock<IPersonLookupService> _personLookupService;
+    private readonly Mock<IPersonApiAdapter> _personLookupService;
     private readonly OrganisationUsersController _controller;
 
     public OrganisationUsersControllerTests()
     {
         _organisationUserService = new Mock<IOrganisationUserService>();
-        _personLookupService = new Mock<IPersonLookupService>();
+        _personLookupService = new Mock<IPersonApiAdapter>();
         var logger = new Mock<ILogger<OrganisationUsersController>>();
         _controller = new OrganisationUsersController(
             _organisationUserService.Object,
@@ -41,7 +41,7 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-1",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)
@@ -91,7 +91,7 @@ public class OrganisationUsersControllerTests
             Id = 2,
             OrganisationId = 10,
             UserPrincipalId = "user-2",
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero),
@@ -157,7 +157,7 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-3",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero)
@@ -241,7 +241,7 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-4",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 4, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 4, 1, 0, 0, 0, TimeSpan.Zero)

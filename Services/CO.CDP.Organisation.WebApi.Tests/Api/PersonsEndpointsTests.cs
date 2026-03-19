@@ -1,8 +1,10 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
+using ApiPerson = CO.CDP.Organisation.WebApi.Model.Person;
+using UpdatePersonToOrganisation = CO.CDP.Organisation.WebApi.Model.UpdatePersonToOrganisation;
+using RemovePersonFromOrganisation = CO.CDP.Organisation.WebApi.Model.RemovePersonFromOrganisation;
 using Moq;
 using System.Net;
 using System.Net.Http.Json;
@@ -13,8 +15,8 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 
 public class PersonsEndpointsTests
 {
-    private readonly Mock<IUseCase<Guid, IEnumerable<Person>>> _getPersonsUseCase = new();
-    private readonly Mock<IUseCase<(Guid, string), IEnumerable<Person>>> _getOrganisationPersonsUseCase = new();
+    private readonly Mock<IUseCase<Guid, IEnumerable<ApiPerson>>> _getPersonsUseCase = new();
+    private readonly Mock<IUseCase<(Guid, string), IEnumerable<ApiPerson>>> _getOrganisationPersonsUseCase = new();
     private readonly Mock<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>> _updatePersonToOrganisationUseCase = new();
     private readonly Mock<IUseCase<(Guid, RemovePersonFromOrganisation), bool>> _removePersonFromOrganisationUseCase = new();
 

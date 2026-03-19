@@ -56,6 +56,12 @@
                                 <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">Give access to @application.ApplicationName</label>
                             </div>
                         </div>
+                        @if (application.IsEnabledByDefault)
+                        {
+                            <p class="govuk-body-s govuk-!-margin-top-2 govuk-!-margin-bottom-0">
+                                This application is enabled by default for everyone.
+                            </p>
+                        }
 
                         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
@@ -82,16 +88,32 @@
                                 </div>
                             </details>
 
-                            <div class="govuk-radios" data-module="govuk-radios">
-                                @foreach (var role in application.Roles)
-                                {
-                                    var isRoleSelected = application.SelectedRoleId == role.Id;
-                                    <div class="govuk-radios__item">
-                                        <input class="govuk-radios__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleId" type="radio" value="@role.Id" checked="@isRoleSelected">
-                                        <label class="govuk-label govuk-radios__label" for="applications-@index-role-@role.Id">@role.Name</label>
-                                    </div>
-                                }
-                            </div>
+                            @if (application.AllowsMultipleRoleAssignments)
+                            {
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    @foreach (var role in application.Roles)
+                                    {
+                                        var isRoleChecked = application.SelectedRoleIds.Contains(role.Id);
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleIds" type="checkbox" value="@role.Id" @(isRoleChecked ? "checked=\"checked\"" : "")>
+                                            <label class="govuk-label govuk-checkboxes__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="govuk-radios" data-module="govuk-radios">
+                                    @foreach (var role in application.Roles)
+                                    {
+                                        var isRoleSelected = application.SelectedRoleId == role.Id;
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleId" type="radio" value="@role.Id" checked="@isRoleSelected">
+                                            <label class="govuk-label govuk-radios__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
                         </div>
                     </div>
                 }

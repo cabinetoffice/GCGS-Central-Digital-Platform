@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.UserManagement.Api.Authorization;
@@ -10,40 +11,44 @@ public class OrganisationAdminHandler : AuthorizationHandler<OrganisationAdminRe
 {
     private readonly ILogger<OrganisationAdminHandler> _logger;
     private readonly IOrganisationRepository _organisationRepository;
+    private readonly IUserOrganisationMembershipRepository _membershipRepository;
 
     public OrganisationAdminHandler(
         ILogger<OrganisationAdminHandler> logger,
-        IOrganisationRepository organisationRepository)
+        IOrganisationRepository organisationRepository,
+        IUserOrganisationMembershipRepository membershipRepository)
     {
         _logger = logger;
         _organisationRepository = organisationRepository;
+        _membershipRepository = membershipRepository;
     }
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         OrganisationAdminRequirement requirement)
     {
-        // Get organisation ID from route data
-        if (context.Resource is HttpContext httpContext)
-        {
-            var cdpOrganisationIdValue = httpContext.Request.RouteValues["cdpOrganisationId"]?.ToString();
-            if (Guid.TryParse(cdpOrganisationIdValue, out var cdpOrganisationId))
+        var membershipContextResult = await OrganisationAuthorizationContextHelper.GetMembershipContextAsync(
+            context,
+            _organisationRepository,
+            _membershipRepository);
+
+        membershipContextResult.Match(
+            reason => _logger.LogInformation(
+                "Denied organisation admin authorisation: {Reason}",
+                reason.Code),
+            state =>
             {
-                var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId);
-                if (organisation == null)
+                if (state.Membership.IsActive
+                    && state.Membership.OrganisationRole is OrganisationRole.Admin or OrganisationRole.Owner)
                 {
-                    return;
+                    _logger.LogInformation(
+                        "Authorised organisation admin {UserPrincipalId} for organisation {CdpOrganisationId} with role {OrganisationRole}",
+                        state.UserPrincipalId.Value,
+                        state.CdpOrganisationId.Value,
+                        state.Membership.OrganisationRole);
+                    context.Succeed(requirement);
                 }
-
-                // In a real implementation, verify the user is an admin/owner of the organisation
-                // For now, we'll mark as succeeded
-                // TODO: Implement actual admin verification logic
-                _logger.LogDebug("Checking organisation admin role for user in organisation {OrganisationId}", organisation.Id);
-                context.Succeed(requirement);
-            }
-        }
-
-        return;
+            });
     }
 }
 

@@ -23,6 +23,7 @@ public class UserManagementDbContext : DbContext
     public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments => Set<CoreEntities.UserApplicationAssignment>();
     public DbSet<CoreEntities.InviteRoleMapping> InviteRoleMappings => Set<CoreEntities.InviteRoleMapping>();
     public DbSet<CoreEntities.InviteRoleApplicationAssignment> InviteRoleApplicationAssignments => Set<CoreEntities.InviteRoleApplicationAssignment>();
+    public DbSet<CoreEntities.OrganisationRoleEntity> OrganisationRoles => Set<CoreEntities.OrganisationRoleEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +41,7 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new UserApplicationAssignmentConfiguration());
         modelBuilder.ApplyConfiguration(new InviteRoleMappingConfiguration());
         modelBuilder.ApplyConfiguration(new InviteRoleApplicationAssignmentConfiguration());
+        modelBuilder.ApplyConfiguration(new OrganisationRoleConfiguration());
 
         // Global query filters for soft delete
         modelBuilder.Entity<CoreEntities.Organisation>().HasQueryFilter(e => !e.IsDeleted);
@@ -51,5 +53,6 @@ public class UserManagementDbContext : DbContext
         modelBuilder.Entity<CoreEntities.UserApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.InviteRoleMapping>().HasQueryFilter(e => !e.IsDeleted);
         modelBuilder.Entity<CoreEntities.InviteRoleApplicationAssignment>().HasQueryFilter(e => !e.IsDeleted);
+        modelBuilder.Entity<CoreEntities.OrganisationRoleEntity>().HasQueryFilter(e => !e.IsDeleted);
     }
 }

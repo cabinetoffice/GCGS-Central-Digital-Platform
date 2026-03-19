@@ -5,8 +5,6 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.UserManagement.Api.FeatureFlags;
-using CO.CDP.UserManagement.Shared.FeatureFlags;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,20 +16,19 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{cdpOrganisationId:guid}/users")]
 [Authorize(Policy = PolicyNames.OrganisationMember)]
-[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled)]
 public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;
-    private readonly IPersonLookupService _personLookupService;
+    private readonly IPersonApiAdapter _personApiAdapter;
     private readonly ILogger<OrganisationUsersController> _logger;
 
     public OrganisationUsersController(
         IOrganisationUserService organisationUserService,
-        IPersonLookupService personLookupService,
+        IPersonApiAdapter personLookupService,
         ILogger<OrganisationUsersController> logger)
     {
         _organisationUserService = organisationUserService;
-        _personLookupService = personLookupService;
+        _personApiAdapter = personLookupService;
         _logger = logger;
     }
 
@@ -57,11 +54,11 @@ public class OrganisationUsersController : ControllerBase
                 .Select(m => m.CdpPersonId!.Value)
                 .Distinct()
                 .ToArray();
-            var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
+            var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
 
             var responses = memberships
                 .Select(membership => membership.ToResponse(
-                    includeAssignments: false,
+                    includeAssignments: true,
                     personDetails: membership.CdpPersonId.HasValue &&
                                    personsById.TryGetValue(membership.CdpPersonId.Value, out var person)
                         ? person
@@ -203,7 +200,7 @@ public class OrganisationUsersController : ControllerBase
             return null;
         }
 
-        var personsById = await _personLookupService.GetPersonDetailsByIdsAsync(
+        var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(
             [cdpPersonId.Value],
             cancellationToken);
         return personsById.TryGetValue(cdpPersonId.Value, out var person)

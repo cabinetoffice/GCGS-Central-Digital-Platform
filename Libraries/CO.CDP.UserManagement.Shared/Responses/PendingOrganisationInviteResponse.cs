@@ -61,4 +61,27 @@ public record PendingOrganisationInviteResponse
     /// Gets or sets the creation timestamp.
     /// </summary>
     public required DateTimeOffset CreatedAt { get; init; }
+
+    /// <summary>
+    /// Gets or sets the application role assignments for this invite.
+    /// </summary>
+    public IEnumerable<InviteApplicationAssignmentResponse>? ApplicationAssignments { get; init; }
+}
+
+/// <summary>
+/// Response model for an application role assignment on a pending invite.
+/// </summary>
+public record InviteApplicationAssignmentResponse
+{
+    /// <summary>Gets or sets the organisation application identifier.</summary>
+    public required int OrganisationApplicationId { get; init; }
+
+    /// <summary>Gets or sets the application identifier.</summary>
+    public int? ApplicationId { get; init; }
+
+    /// <summary>Gets or sets the application name.</summary>
+    public string ApplicationName { get; init; } = string.Empty;
+
+    /// <summary>Gets or sets the assigned application role identifier.</summary>
+    public required int ApplicationRoleId { get; init; }
 }

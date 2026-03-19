@@ -9,21 +9,24 @@ using Moq;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Person.WebApi.Tests.Api;
-public class RegisterPersonTest
+public class RegisterPersonTest : IDisposable
 {
     private readonly HttpClient _httpClient;
+    private readonly TestWebApplicationFactory<Program> _factory;
     private readonly Mock<IUseCase<RegisterPerson, Model.Person>> _registerPersonUseCase = new();
 
     public RegisterPersonTest()
     {
-        TestWebApplicationFactory<Program> factory = new(builder =>
+        _factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureServices(services =>
                 services.AddScoped<IUseCase<RegisterPerson, Model.Person>>(_ => _registerPersonUseCase.Object)
             );
         });
-        _httpClient = factory.CreateClient();
+        _httpClient = _factory.CreateClient();
     }
+
+    public void Dispose() => _factory.Dispose();
 
     [Fact]
     public async Task ItRegistersNewPerson()

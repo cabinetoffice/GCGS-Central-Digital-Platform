@@ -6,17 +6,22 @@ namespace CO.CDP.UserManagement.Shared.Enums;
 public enum OrganisationRole
 {
     /// <summary>
+    /// External agent associated to the organisation for application access.
+    /// </summary>
+    Agent = 0,
+
+    /// <summary>
     /// Standard member with basic access.
     /// </summary>
-    Member = 0,
+    Member = 1,
 
     /// <summary>
     /// Administrator with elevated permissions.
     /// </summary>
-    Admin = 1,
+    Admin = 2,
 
     /// <summary>
     /// Owner with full control over the organisation.
     /// </summary>
-    Owner = 2
+    Owner = 3
 }

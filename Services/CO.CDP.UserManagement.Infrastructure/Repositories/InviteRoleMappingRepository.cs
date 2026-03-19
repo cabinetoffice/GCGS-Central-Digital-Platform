@@ -20,6 +20,7 @@ public class InviteRoleMappingRepository : Repository<InviteRoleMapping>, IInvit
             .Include(i => i.Organisation)
             .Include(i => i.ApplicationAssignments)
                 .ThenInclude(a => a.OrganisationApplication)
+                    .ThenInclude(oa => oa.Application)
             .Include(i => i.ApplicationAssignments)
                 .ThenInclude(a => a.ApplicationRole)
             .FirstOrDefaultAsync(i => i.CdpPersonInviteGuid == cdpPersonInviteGuid, cancellationToken);
@@ -31,6 +32,7 @@ public class InviteRoleMappingRepository : Repository<InviteRoleMapping>, IInvit
             .Include(i => i.Organisation)
             .Include(i => i.ApplicationAssignments)
                 .ThenInclude(a => a.OrganisationApplication)
+                    .ThenInclude(oa => oa.Application)
             .Include(i => i.ApplicationAssignments)
                 .ThenInclude(a => a.ApplicationRole)
             .Where(i => i.OrganisationId == organisationId)

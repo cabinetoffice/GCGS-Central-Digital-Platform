@@ -6,8 +6,7 @@
     "memory": ${memory},
     "portMappings": [
       {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
+        "containerPort": ${service_port},
         "protocol": "tcp"
       }
     ],
@@ -27,7 +26,7 @@
       "--region", "${lg_region}",
       "--upstream-url-scheme", "https",
       "--host", "${opensearch_endpoint}",
-      "--port", ":${container_port}",
+      "--port", ":${service_port}",
       "--name", "es",
       "--log-failed-requests",
       "--log-signing-process"

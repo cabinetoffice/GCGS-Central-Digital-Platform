@@ -80,6 +80,10 @@
     margin-bottom: 20px;
 }
 
+.govuk-tag {
+    max-width: none;
+}
+
 .app-application-role-card {
     border: 1px solid #b1b4b6;
     padding: 20px;

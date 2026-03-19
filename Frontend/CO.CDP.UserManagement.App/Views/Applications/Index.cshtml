@@ -174,7 +174,14 @@ else
                         </div>
                     </dl>
                     <p class="govuk-body">
-                        <a href="/organisation/@organisationSlug/applications/@app.Slug/enable" class="govuk-button govuk-button--secondary" data-module="govuk-button">Enable for your organisation</a>
+                        @if (!app.IsEnabledByDefault)
+                        {
+                            <a href="/organisation/@organisationSlug/applications/@app.Slug/enable" class="govuk-button govuk-button--secondary" data-module="govuk-button">Enable for your organisation</a>
+                        }
+                        else
+                        {
+                            <span class="govuk-body">This application is enabled by default for everyone.</span>
+                        }
                         <a href="/organisation/@organisationSlug/applications/@app.Slug" class="govuk-link govuk-!-margin-left-4">View details</a>
                     </p>
                 </div>

@@ -17,8 +17,9 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
+using CO.CDP.OrganisationSync;
 using CO.CDP.WebApi.Foundation;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -27,7 +28,7 @@ using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLo
 using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
-using Person = CO.CDP.Organisation.WebApi.Model.Person;
+using WebApiPerson = CO.CDP.Organisation.WebApi.Model.Person;
 using SupplierInformation = CO.CDP.Organisation.WebApi.Model.SupplierInformation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,9 +41,8 @@ builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(buil
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
@@ -75,7 +75,7 @@ builder.Services.AddScoped<IUseCase<(Guid, UpdateSupplierInformation), bool>, Up
 builder.Services.AddScoped<IUseCase<(Guid, RegisterConnectedEntity), bool>, RegisterConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateConnectedEntity), bool>, UpdateConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), DeleteConnectedEntityResult>, DeleteConnectedEntityUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Person>>, GetPersonsUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<WebApiPerson>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), bool>, InvitePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), CO.CDP.OrganisationInformation.Persistence.PersonInvite>, InvitePersonToOrganisationWithResponseUseCase>();
@@ -104,7 +104,7 @@ builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLa
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<Person>>, GetPersonsInRoleUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<WebApiPerson>>, GetPersonsInRoleUseCase>();
 builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
 builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
@@ -115,6 +115,8 @@ builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandle
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
+
+builder.Services.AddFeatureManagement(builder.Configuration.GetSection("Features"));
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddOrganisationAuthorization();
@@ -128,7 +130,7 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration)
         .AddAwsSqsService()
-        .AddOutboxSqsPublisher<OrganisationInformationContext>(
+        .AddMultiQueueOutboxSqsPublisher<OrganisationInformationContext>(
             builder.Configuration,
             enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
             notificationChannel: "organisation_information_outbox")

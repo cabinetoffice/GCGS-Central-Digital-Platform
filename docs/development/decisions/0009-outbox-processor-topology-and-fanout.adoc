@@ -1,0 +1,97 @@
+= 9. Outbox processor topology and fan-out strategy
+
+Date: 2026-03-09
+
+== Status
+
+Accepted
+
+== Context
+
+We reviewed how events should flow from Organisation and Person domains to both Entity Verification and User Management.
+The previous approach added dedicated outbox processors per destination queue, which increased infrastructure footprint and
+introduced operational problems. It also exposed fragility around shared PostgreSQL NOTIFY channels.
+
+We need to keep cross-system consistency while maintaining loose coupling and avoiding unnecessary processor sprawl.
+
+== Options considered
+
+=== Option 1: Dedicated outbox processor per destination queue
+
+Run one outbox processor service for each destination queue.
+
+Advantages:
+
+* Minimal change to current publisher code.
+* Clear one-processor-to-one-queue mapping.
+
+Disadvantages:
+
+* More ECS services, task definitions, Docker targets, and Terraform resources to maintain.
+* Resource naming and deployment complexity increase as destinations grow.
+* Multiple processors competing on the same outbox/listener channel can be fragile.
+
+=== Option 2: Write-time fan-out in publisher (multi-queue outbox rows)
+
+Use a multi-queue publisher that writes one outbox row per destination queue, while keeping processor runtime logic unchanged.
+
+Advantages:
+
+* Consolidates to two processors (organisation + entity-verification) while supporting multiple destinations.
+* Reuses existing outbox + SQS patterns already implemented in the platform.
+* Keeps routing data with each message row (`QueueUrl`, `MessageGroupId`), simplifying processor behaviour.
+
+Disadvantages:
+
+* Publisher becomes responsible for destination fan-out configuration.
+* Produces duplicate outbox rows per event (one per destination).
+* Broad fan-out means consumers must continue to ignore irrelevant event types.
+
+=== Option 3: SNS topic fan-out
+
+Publish outbox events to an SNS topic and let queues subscribe.
+
+Advantages:
+
+* Strong decoupling between producers and consumers.
+* Easier to add future consumers without changing producers.
+
+Disadvantages:
+
+* Introduces a messaging pattern not currently used in application code.
+* Requires additional infrastructure and operational model changes.
+* Needs careful FIFO and ordering design to match current queue behaviour.
+
+=== Option 4: EventBridge routing
+
+Use EventBridge for routing and filtering events to downstream targets.
+
+Advantages:
+
+* Flexible rules-based routing and filtering.
+* Good long-term model for many consumers and event contracts.
+
+Disadvantages:
+
+* Highest implementation and operational complexity of the options considered.
+* Larger migration from current outbox/SQS setup for immediate needs.
+
+== Decision
+
+Adopt **Option 2 (write-time fan-out)**.
+
+We will:
+
+* Keep two outbox processors:
+** `outbox-processor-organisation` for `organisation_information_outbox`
+** `outbox-processor-entity-verification` for `entity_verification_outbox`
+* Fan out at publish time by writing one outbox row per destination queue.
+* Route Organisation and Person events to both Entity Verification and User Management queues.
+* Keep consumer-side subscription filtering for irrelevant event types.
+
+== Consequences
+
+* Lower infrastructure footprint and fewer moving parts than processor-per-destination.
+* Avoids recurrence of long-name resource issues from additional processor services.
+* Requires reliable configuration of outbox destination arrays in each publishing service.
+* If destination count or routing needs grow significantly, we should revisit SNS or EventBridge in a later ADR.

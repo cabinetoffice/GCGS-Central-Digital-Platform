@@ -35,9 +35,8 @@ public class UserOrganisationMembershipConfiguration : IEntityTypeConfiguration<
             .IsUnique()
             .HasDatabaseName("ix_user_org_memberships_user_org");
 
-        builder.Property(m => m.OrganisationRole)
-            .HasColumnName("organisation_role")
-            .HasConversion<string>()
+        builder.Property(m => m.OrganisationRoleId)
+            .HasColumnName("organisation_role_id")
             .IsRequired();
 
         builder.Property(m => m.IsActive)
@@ -68,5 +67,10 @@ public class UserOrganisationMembershipConfiguration : IEntityTypeConfiguration<
             .WithOne(a => a.UserOrganisationMembership)
             .HasForeignKey(a => a.UserOrganisationMembershipId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(m => m.OrganisationRoleEntity)
+            .WithMany(d => d.Memberships)
+            .HasForeignKey(m => m.OrganisationRoleId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,5 +1,11 @@
+moved {
+  from = module.s3_kms_key
+  to   = module.s3_kms_key[0]
+}
+
 module "s3_kms_key" {
   source = "../kms"
+  count  = var.create_kms_key ? 1 : 0
 
   bucket_enable_presigned  = var.enable_presigned_urls
   bucket_name              = var.bucket_name

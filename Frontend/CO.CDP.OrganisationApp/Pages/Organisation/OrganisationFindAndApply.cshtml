@@ -1,0 +1,89 @@
+@page "/organisation/{id}/find-and-apply"
+@using CO.CDP.Localization
+@using CO.CDP.Organisation.WebApiClient
+@using CO.CDP.OrganisationApp.Extensions
+@model OrganisationFindAndApplyModel
+
+@{
+    ViewData["Title"] = StaticTextResource.FindAndApply_Title;
+}
+
+@section BeforeContent {
+    <a class="govuk-back-link" href="@Model.BackLinkUrl">@StaticTextResource.Global_Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">@StaticTextResource.FindAndApply_MainHeading</h1>
+
+        <p class="govuk-body-l">
+            @StaticTextResource.FindAndApply_Intro
+        </p>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.FindAndApply_FindAGrant_Heading</h2>
+        <p class="govuk-body">@StaticTextResource.FindAndApply_FindAGrant_Description</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@StaticTextResource.FindAndApply_FindAGrant_List_Individuals</li>
+            <li>@StaticTextResource.FindAndApply_FindAGrant_List_PublicSector</li>
+            <li>@StaticTextResource.FindAndApply_FindAGrant_List_PrivateSector</li>
+            <li>@StaticTextResource.FindAndApply_FindAGrant_List_NonProfit</li>
+            <li>@StaticTextResource.FindAndApply_FindAGrant_List_LocalAuthorities</li>
+        </ul>
+        <a href="https://www.find-government-grants.service.gov.uk/" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            @StaticTextResource.FindAndApply_FindAGrant_Button
+        </a>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.FindAndApply_ManageAGrant_Heading</h2>
+        <p class="govuk-body">@StaticTextResource.FindAndApply_ManageAGrant_Description</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@StaticTextResource.FindAndApply_ManageAGrant_List_CreateAdvert</li>
+            <li>@StaticTextResource.FindAndApply_ManageAGrant_List_CheckStatus</li>
+            <li>@StaticTextResource.FindAndApply_ManageAGrant_List_BuildForm</li>
+            <li>@StaticTextResource.FindAndApply_ManageAGrant_List_ReviewApplications</li>
+        </ul>
+        <a href="https://find-government-grants.service.gov.uk/apply/admin/dashboard" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+            @StaticTextResource.FindAndApply_ManageAGrant_Button
+        </a>
+
+        <h2 class="govuk-heading-m">@StaticTextResource.FindAndApply_GetHelp_Heading</h2>
+        <p class="govuk-body">
+            @StaticTextResource.FindAndApply_GetHelp_Description
+        </p>
+        <p class="govuk-body">
+            <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/about-the-gep/apply-for-a-grant/" class="govuk-link">@StaticTextResource.FindAndApply_GetHelp_LinkText</a>
+        </p>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+        <h2 class="govuk-heading-m">@StaticTextResource.FindAndApply_RelatedContent_Heading</h2>
+        <p class="govuk-body">@StaticTextResource.FindAndApply_RelatedContent_Description</p>
+
+        <ul class="govuk-list">
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/government-grants-information-system-refresh/" class="govuk-link govuk-link--no-visited-state">@StaticTextResource.FindAndApply_RelatedContent_GGIS_Title</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">@StaticTextResource.FindAndApply_RelatedContent_GGIS_Description</p>
+            </li>
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/about-the-gep/grants-lifecycle-utility/" class="govuk-link govuk-link--no-visited-state">@StaticTextResource.FindAndApply_RelatedContent_GLU_Title</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">@StaticTextResource.FindAndApply_RelatedContent_GLU_Description</p>
+            </li>
+            <li>
+                <a href="https://gcoe.civilservice.gov.uk/data-and-digital-services/spotlight/" class="govuk-link govuk-link--no-visited-state">@StaticTextResource.FindAndApply_RelatedContent_Spotlight_Title</a>
+                <p class="govuk-body-s govuk-!-margin-top-1">@StaticTextResource.FindAndApply_RelatedContent_Spotlight_Description</p>
+            </li>
+        </ul>
+    </div>
+</div>
+
+@section Scripts {
+    <script nonce-csp>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sortOrderSelect = document.getElementById('sort-order');
+            if (sortOrderSelect) {
+                sortOrderSelect.addEventListener('change', function () {
+                    document.getElementById('sort-submit').click();
+                });
+            }
+        });
+    </script>
+}

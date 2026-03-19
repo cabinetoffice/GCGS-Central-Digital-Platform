@@ -4,44 +4,48 @@ using Microsoft.AspNetCore.Authorization;
 namespace CO.CDP.UserManagement.Api.Authorization;
 
 /// <summary>
-    /// Authorization handler for verifying organisation membership.
+/// Authorization handler for verifying organisation membership.
 /// </summary>
 public class OrganisationMemberHandler : AuthorizationHandler<OrganisationMemberRequirement>
 {
     private readonly ILogger<OrganisationMemberHandler> _logger;
     private readonly IOrganisationRepository _organisationRepository;
+    private readonly IUserOrganisationMembershipRepository _membershipRepository;
 
     public OrganisationMemberHandler(
         ILogger<OrganisationMemberHandler> logger,
-        IOrganisationRepository organisationRepository)
+        IOrganisationRepository organisationRepository,
+        IUserOrganisationMembershipRepository membershipRepository)
     {
         _logger = logger;
         _organisationRepository = organisationRepository;
+        _membershipRepository = membershipRepository;
     }
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         OrganisationMemberRequirement requirement)
     {
-        // Get organisation ID from route data
-        if (context.Resource is HttpContext httpContext)
-        {
-            var cdpOrganisationIdValue = httpContext.Request.RouteValues["cdpOrganisationId"]?.ToString();
-            if (Guid.TryParse(cdpOrganisationIdValue, out var cdpOrganisationId))
+        var membershipContextResult = await OrganisationAuthorizationContextHelper.GetMembershipContextAsync(
+            context,
+            _organisationRepository,
+            _membershipRepository);
+
+        membershipContextResult.Match(
+            reason => _logger.LogInformation(
+                "Denied organisation member authorisation: {Reason}",
+                reason.Code),
+            state =>
             {
-                var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId);
-                if (organisation == null)
+                if (state.Membership.IsActive)
                 {
-                    return;
+                    _logger.LogInformation(
+                        "Authorised organisation member {UserPrincipalId} for organisation {CdpOrganisationId}",
+                        state.UserPrincipalId.Value,
+                        state.CdpOrganisationId.Value);
+                    context.Succeed(requirement);
                 }
-
-                // TODO: Implement actual membership verification logic
-                _logger.LogDebug("Checking organisation membership for user in organisation {OrganisationId}", organisation.Id);
-                context.Succeed(requirement);
-            }
-        }
-
-        return;
+            });
     }
 }
 

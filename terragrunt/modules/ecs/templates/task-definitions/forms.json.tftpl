@@ -6,8 +6,7 @@
     "memory": ${memory},
     "portMappings": [
       {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
+        "containerPort": ${service_port},
         "protocol": "tcp"
       }
     ],
@@ -21,7 +20,6 @@
     },
     "environment": [
         { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
-        { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
         { "name" : "AWS_REGION", "value" : "eu-west-2"},
         { "name" : "Aws__Buckets__PermanentBucket", "value" : "${s3_permanent_bucket}"},
         { "name" : "Aws__Buckets__StagingBucket", "value" : "${s3_staging_bucket}"},
@@ -32,7 +30,7 @@
         { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
         { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
         { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
-        { "name" : "Organisation__Authority", "value" : "https://authority.${public_domain}"}
+        { "name" : "Organisation__Authority", "value" : "${use_internal_service_urls ? internal_service_urls["authority"] : public_service_urls["authority"]}"}
     ],
     "secrets": [
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},

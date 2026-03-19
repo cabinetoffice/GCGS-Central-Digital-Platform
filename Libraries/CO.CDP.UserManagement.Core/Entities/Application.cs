@@ -11,6 +11,11 @@ public class Application : ISoftDelete, IAuditable
     public int Id { get; set; }
 
     /// <summary>
+    /// Gets or sets the unique GUID for this application.
+    /// </summary>
+    public Guid Guid { get; set; }
+
+    /// <summary>
     /// Gets or sets the name of the application.
     /// </summary>
     public string Name { get; set; } = string.Empty;
@@ -34,6 +39,18 @@ public class Application : ISoftDelete, IAuditable
     /// Gets or sets a value indicating whether this application is active.
     /// </summary>
     public bool IsActive { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether users can be assigned multiple roles simultaneously within this application.
+    /// When false (the default), only a single role can be assigned per user per application.
+    /// </summary>
+    public bool AllowsMultipleRoleAssignments { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether this application is enabled by default for organisations.
+    /// When true, organisations cannot disable it and user access cannot be revoked in User Management.
+    /// </summary>
+    public bool IsEnabledByDefault { get; set; }
 
     // ISoftDelete
     public bool IsDeleted { get; set; }

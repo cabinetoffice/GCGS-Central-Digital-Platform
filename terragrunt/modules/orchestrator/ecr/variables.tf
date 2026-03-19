@@ -20,11 +20,10 @@ variable "product" {
 variable "service_configs" {
   description = "Map of services and their attributes"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = optional(number)
   }))
 }
 
@@ -36,10 +35,9 @@ variable "tags" {
 variable "tools_configs" {
   description = "Map of tools and their attributes"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = optional(number)
   }))
 }

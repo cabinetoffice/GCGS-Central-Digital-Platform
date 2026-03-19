@@ -78,12 +78,11 @@ public class ApplicationsController(
         }
 
         var success = await applicationService.EnableApplicationAsync(organisationSlug, application, ct);
-        if (!success)
-        {
-            return NotFound();
-        }
-
-        return RedirectToAction(nameof(EnableSuccess), new { organisationSlug, application });
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(EnableSuccess), new { organisationSlug, application })!);
     }
 
     [HttpGet]
@@ -122,7 +121,17 @@ public class ApplicationsController(
         }
 
         var viewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
-        return viewModel is null ? NotFound() : View(viewModel);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (viewModel.IsEnabledByDefault)
+        {
+            return RedirectToAction(nameof(Details), new { organisationSlug, application });
+        }
+
+        return View(viewModel);
     }
 
     [HttpPost]
@@ -141,12 +150,23 @@ public class ApplicationsController(
             return View(viewModel);
         }
 
-        var success = await applicationService.DisableApplicationAsync(organisationSlug, application, ct);
-        if (!success)
+        var disableViewModel = await applicationService.GetDisableApplicationViewModelAsync(organisationSlug, application, ct);
+        if (disableViewModel is null)
         {
             return NotFound();
         }
 
-        return RedirectToAction(nameof(Details), new { organisationSlug, application });
+        if (disableViewModel.IsEnabledByDefault)
+        {
+            return RedirectToAction(nameof(Details), new { organisationSlug, application });
+        }
+
+        var success = await applicationService.DisableApplicationAsync(organisationSlug, application, ct);
+        return success.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(Details), new { organisationSlug, application })!);
     }
+
 }

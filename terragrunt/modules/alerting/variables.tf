@@ -54,8 +54,7 @@ variable "service_configs" {
     desired_count = number
     memory        = number
     name          = string
-    port          = number
-    port_host     = number
+    port          = optional(number)
   }))
 }
 

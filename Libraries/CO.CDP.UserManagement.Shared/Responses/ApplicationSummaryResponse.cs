@@ -24,4 +24,9 @@ public record ApplicationSummaryResponse
     /// Gets or sets whether the application is active.
     /// </summary>
     public required bool IsActive { get; init; }
+
+    /// <summary>
+    /// Gets or sets whether this application is enabled by default for organisations.
+    /// </summary>
+    public bool IsEnabledByDefault { get; init; }
 }

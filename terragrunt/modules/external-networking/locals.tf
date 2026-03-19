@@ -17,4 +17,31 @@ locals {
       validator_records = ["_1616d9f5d97e70042aafc1b4ecb98fab.xlfgrmvvlj.acm-validations.aws."]
     }
   }
+
+  payments_records = {
+    oechestrator = null
+    development = null
+    staging     = {
+      name              = "payments"
+      records           = ["cdp-payments-alb-staging-1243004017.eu-west-2.elb.amazonaws.com"]
+      lb_zone_id        = "ZHURV8PSTC4K8"
+      validator_name    = "_52736daa2f84679208a08c42f427e677.payments.staging.supplier-information.find-tender.service.gov.uk."
+      validator_records = ["_aa597b611a8bfdf011f6b2328f946e8f.jkddzztszm.acm-validations.aws."]
+    }
+    integration = null
+    production = null
+  }
+
+  docs_records = {
+    oechestrator = null
+    development  = null
+    staging      = null
+    integration  = null
+    production = {
+      name              = "docs"
+      records           = ["d3ilb273zh778b.cloudfront.net"]
+      validator_name    = "_6503e13207edacb70a31e80c16cfe3da.docs.supplier-information.find-tender.service.gov.uk."
+      validator_records = ["_f6b5f10281167eb861a98afc996f9afd.jkddzztszm.acm-validations.aws."]
+    }
+  }
 }

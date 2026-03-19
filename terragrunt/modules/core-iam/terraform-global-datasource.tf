@@ -26,7 +26,13 @@ data "aws_iam_policy_document" "terraform_global" {
       "iam:CreateServiceLinkedRole",
       "iam:GetPolicy",
       "iam:GetPolicyVersion",
+      "iam:CreateOpenIDConnectProvider",
+      "iam:DeleteOpenIDConnectProvider",
+      "iam:GetOpenIDConnectProvider",
+      "iam:ListOpenIDConnectProviders",
+      "iam:TagOpenIDConnectProvider",
       "iam:TagPolicy",
+      "iam:UpdateOpenIDConnectProviderThumbprint",
     ]
     effect = "Allow"
     resources = [
@@ -85,6 +91,14 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
+      "cloudfront:CreateDistribution",
+      "cloudfront:DeleteDistribution",
+      "cloudfront:GetDistribution",
+      "cloudfront:GetDistributionConfig",
+      "cloudfront:ListDistributions",
+      "cloudfront:ListTagsForResource",
+      "cloudfront:TagResource",
+      "cloudfront:UntagResource",
       "cloudfront:UpdateDistribution",
     ]
     effect = "Allow"
@@ -161,10 +175,12 @@ data "aws_iam_policy_document" "terraform_global" {
       "rds:CreateDBInstanceReadReplica",
       "rds:DescribeDBInstances",
       "rds:RemoveTagsFromResource",
+      "rds:RestoreDBClusterFromSnapshot",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-snapshot:*",
     ]
     sid = "ManageRDS"
   }

@@ -2,24 +2,38 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.Functional;
 using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
+using CO.CDP.OrganisationSync;
+using Microsoft.FeatureManagement;
+
+using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
+using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
+using OiPartyRole = CO.CDP.OrganisationInformation.PartyRole;
+using OiPersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
+using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
+using OiPersonRepository = CO.CDP.OrganisationInformation.Persistence.IPersonRepository;
+using OiTenant = CO.CDP.OrganisationInformation.Persistence.Tenant;
+using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class RegisterOrganisationUseCase(
     IIdentifierService identifierService,
-    IOrganisationRepository organisationRepository,
-    IPersonRepository personRepository,
+    OiOrganisationRepository organisationRepository,
+    OiPersonRepository personRepository,
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IPublisher publisher,
     IMapper mapper,
     IConfiguration configuration,
     ILogger<RegisterOrganisationUseCase> logger,
     IClaimService claimService,
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
+    IFeatureManager featureManager,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
@@ -27,14 +41,17 @@ public class RegisterOrganisationUseCase(
 
     public RegisterOrganisationUseCase(
         IIdentifierService identifierService,
-        IOrganisationRepository organisationRepository,
-        IPersonRepository personRepository,
+        OiOrganisationRepository organisationRepository,
+        OiPersonRepository personRepository,
         IGovUKNotifyApiClient govUKNotifyApiClient,
         IPublisher publisher,
         IMapper mapper,
         IConfiguration configuration,
         ILogger<RegisterOrganisationUseCase> logger,
-        IClaimService claimService)
+        IClaimService claimService,
+        IAtomicScope atomicScope,
+        IOrganisationMembershipSync membershipSync,
+        IFeatureManager featureManager)
         : this(identifierService,
               organisationRepository,
               personRepository,
@@ -44,6 +61,9 @@ public class RegisterOrganisationUseCase(
               configuration,
               logger,
               claimService,
+              atomicScope,
+              membershipSync,
+              featureManager,
               Guid.NewGuid)
     {
     }
@@ -52,19 +72,42 @@ public class RegisterOrganisationUseCase(
     {
         var person = await FindPerson();
         var organisation = CreateOrganisation(command, person);
-        await organisationRepository.SaveAsync(
-            organisation,
-            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        if (organisation.PendingRoles.Contains(OrganisationInformation.PartyRole.Buyer))
+        var result = await atomicScope.ExecuteAsync(async ct =>
         {
-            await NotifyAdminOfApprovalRequest(organisation);
-        }
+            await organisationRepository.SaveAsync(
+                organisation,
+                async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
-        return mapper.Map<Model.Organisation>(organisation);
+            var syncEnabled = await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled);
+            return syncEnabled
+                ? (await membershipSync.CreateFounderMembershipAsync(
+                        new CreateFounderCommand(
+                            organisation.Guid,
+                            organisation.Name,
+                            person.Guid,
+                            person.UserUrn,
+                            MapPartyRoles(command.Roles)), ct))
+                    .Match(
+                        onLeft: error => LogAndContinue(error, organisation.Guid),
+                        onRight: _ => mapper.Map<Model.Organisation>(organisation))
+                : mapper.Map<Model.Organisation>(organisation);
+        });
+
+        if (organisation.PendingRoles.Contains(OiPartyRole.Buyer))
+            await NotifyAdminOfApprovalRequest(organisation);
+
+        return result;
     }
 
-    private async Task<Person> FindPerson()
+    private Model.Organisation LogAndContinue(SyncError error, Guid orgGuid)
+    {
+        logger.LogError("UM founder sync failed for org {OrgGuid}: {Error}", orgGuid, error.Message);
+        return mapper.Map<Model.Organisation>(
+            organisationRepository.Find(orgGuid).GetAwaiter().GetResult()!);
+    }
+
+    private async Task<OiPerson> FindPerson()
     {
         var userUrn = claimService.GetUserUrn()
             ?? throw new UnknownPersonException("Ensure the token is valid and contains the necessary claims.");
@@ -72,13 +115,10 @@ public class RegisterOrganisationUseCase(
         return await personRepository.FindByUrn(userUrn) ?? throw new UnknownPersonException($"Unknown person {userUrn}.");
     }
 
-    private OrganisationInformation.Persistence.Organisation CreateOrganisation(
-        RegisterOrganisation command,
-        Person person
-    )
+    private OiPersistenceOrganisation CreateOrganisation(RegisterOrganisation command, OiPerson person)
     {
         var organisation = MapRequestToOrganisation(command, person);
-        organisation.OrganisationPersons.Add(new OrganisationPerson
+        organisation.OrganisationPersons.Add(new OiOrganisationPerson
         {
             Person = person,
             Organisation = organisation,
@@ -94,7 +134,8 @@ public class RegisterOrganisationUseCase(
         organisation.UpdateSupplierInformation();
         return organisation;
     }
-    private async Task NotifyAdminOfApprovalRequest(OrganisationInformation.Persistence.Organisation organisation)
+
+    private async Task NotifyAdminOfApprovalRequest(OiPersistenceOrganisation organisation)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestReviewApplicationEmailTemplateId") ?? "";
@@ -108,7 +149,8 @@ public class RegisterOrganisationUseCase(
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send email to support admin"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
+            logger.LogError(new Exception("Unable to send email to support admin"),
+                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
             return;
         }
 
@@ -119,35 +161,42 @@ public class RegisterOrganisationUseCase(
             EmailAddress = supportAdminEmailAddress,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string>
-                {
-                    { "org_name", organisation.Name },
-                    { "request_link", requestLink }
-                }
+            {
+                { "org_name", organisation.Name },
+                { "request_link", requestLink }
+            }
         };
 
-        try
-        {
-            await govUKNotifyApiClient.SendEmail(emailRequest);
-        }
-        catch
-        {
-            return;
-        }
-
+        try { await govUKNotifyApiClient.SendEmail(emailRequest); }
+        catch { /* swallow — email failure must not abort org registration */ }
     }
 
-    private OrganisationInformation.Persistence.Organisation MapRequestToOrganisation(
-        RegisterOrganisation command,
-        Person person
-    ) =>
-        mapper.Map<OrganisationInformation.Persistence.Organisation>(command, o =>
+    private OiPersistenceOrganisation MapRequestToOrganisation(RegisterOrganisation command, OiPerson person) =>
+        mapper.Map<OiPersistenceOrganisation>(command, o =>
         {
             o.Items["Guid"] = guidFactory();
-            o.Items["Tenant"] = new Tenant
+            o.Items["Tenant"] = new OiTenant
             {
                 Guid = guidFactory(),
                 Name = command.Name,
                 Persons = { person }
             };
         });
+
+    private static IReadOnlyCollection<UmPartyRole> MapPartyRoles(IEnumerable<OiPartyRole> roles) =>
+        roles.Select(role => role switch
+            {
+                OiPartyRole.Buyer => UmPartyRole.Buyer,
+                OiPartyRole.ProcuringEntity => UmPartyRole.ProcuringEntity,
+                OiPartyRole.Supplier => UmPartyRole.Supplier,
+                OiPartyRole.Tenderer => UmPartyRole.Tenderer,
+                OiPartyRole.Funder => UmPartyRole.Funder,
+                OiPartyRole.Enquirer => UmPartyRole.Enquirer,
+                OiPartyRole.Payer => UmPartyRole.Payer,
+                OiPartyRole.Payee => UmPartyRole.Payee,
+                OiPartyRole.ReviewBody => UmPartyRole.ReviewBody,
+                OiPartyRole.InterestedParty => UmPartyRole.InterestedParty,
+                _ => throw new ArgumentOutOfRangeException(nameof(role), role, $"Unknown party role: {role}")
+            })
+            .ToHashSet();
 }
