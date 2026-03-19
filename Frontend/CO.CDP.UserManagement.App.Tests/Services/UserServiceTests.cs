@@ -328,6 +328,255 @@ public class UserServiceTests
     }
 
     [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenOrganisationMissing_ReturnsNull()
+    {
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", null, null, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenPendingInviteMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse>());
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", null, 99, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenPendingInviteFound_ReturnsViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var invite = BuildPendingInviteResponse(org.Id, 2, OrganisationRole.Admin);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", null, 2, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.OrganisationName.Should().Be("Org");
+        result.OrganisationSlug.Should().Be("org");
+        result.UserDisplayName.Should().Be("Test User");
+        result.Email.Should().Be("test@example.com");
+        result.CurrentRole.Should().Be(OrganisationRole.Admin);
+        result.MemberSinceFormatted.Should().Match("* * *");
+        result.PendingInviteId.Should().Be(2);
+        result.CdpPersonId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenPendingInviteFoundWithoutName_ReturnsViewModelWithEmptyName()
+    {
+        var org = BuildOrganisationResponse();
+        var invite = new PendingOrganisationInviteResponse
+        {
+            CdpPersonInviteGuid = Guid.NewGuid(),
+            CreatedAt = DateTimeOffset.UtcNow,
+            Email = "test@example.com",
+            ExpiresOn = null,
+            FirstName = null,
+            InvitedBy = "inviter",
+            LastName = null,
+            OrganisationId = org.Id,
+            OrganisationRole = OrganisationRole.Member,
+            PendingInviteId = 3,
+            Status = UserStatus.Pending
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", null, 3, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.UserDisplayName.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenUserMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((OrganisationUserResponse?)null);
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenUserFound_ReturnsViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var user = new OrganisationUserResponse
+        {
+            MembershipId = 1,
+            OrganisationId = org.Id,
+            CdpPersonId = personId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "john@example.com",
+            OrganisationRole = OrganisationRole.Owner,
+            Status = UserStatus.Active,
+            IsActive = true,
+            JoinedAt = DateTimeOffset.UtcNow,
+            CreatedAt = new DateTimeOffset(2025, 1, 15, 0, 0, 0, TimeSpan.Zero),
+            ApplicationAssignments = []
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.OrganisationName.Should().Be("Org");
+        result.OrganisationSlug.Should().Be("org");
+        result.UserDisplayName.Should().Be("John Doe");
+        result.Email.Should().Be("john@example.com");
+        result.CurrentRole.Should().Be(OrganisationRole.Owner);
+        result.MemberSinceFormatted.Should().Be("15 January 2025");
+        result.CdpPersonId.Should().Be(personId);
+        result.PendingInviteId.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenUserFoundWithoutName_ReturnsViewModelWithEmptyName()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var user = new OrganisationUserResponse
+        {
+            MembershipId = 1,
+            OrganisationId = org.Id,
+            CdpPersonId = personId,
+            FirstName = null,
+            LastName = null,
+            Email = "test@example.com",
+            OrganisationRole = OrganisationRole.Member,
+            Status = UserStatus.Active,
+            IsActive = true,
+            JoinedAt = DateTimeOffset.UtcNow,
+            CreatedAt = DateTimeOffset.UtcNow,
+            ApplicationAssignments = []
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(user);
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.UserDisplayName.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetRemoveUserViewModelAsync_WhenApiException_ReturnsNull()
+    {
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetRemoveUserViewModelAsync("org", null, null, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenOrganisationMissing_ReturnsFalse()
+    {
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.RemoveUserAsync("org", null, null, CancellationToken.None);
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenPendingInviteDeleted_ReturnsTrue()
+    {
+        var org = BuildOrganisationResponse();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
+
+        result.Should().BeTrue();
+        _apiClient.Verify(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenPendingInviteDeleteFails_ReturnsFalse()
+    {
+        var org = BuildOrganisationResponse();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenCdpPersonIdProvided_ReturnsTrue()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+
+        var result = await _service.RemoveUserAsync("org", personId, null, CancellationToken.None);
+
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenNeitherIdProvided_ReturnsFalse()
+    {
+        var org = BuildOrganisationResponse();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+
+        var result = await _service.RemoveUserAsync("org", null, null, CancellationToken.None);
+
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_WhenApiExceptionOnOrgLookup_ReturnsFalse()
+    {
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Bad", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
+
+        result.Should().BeFalse();
+    }
+
+
+    [Fact]
     public async Task GetApplicationRolesStepViewModelAsync_WhenValid_ReturnsMappedApplications()
     {
         var org = BuildOrganisationResponse();

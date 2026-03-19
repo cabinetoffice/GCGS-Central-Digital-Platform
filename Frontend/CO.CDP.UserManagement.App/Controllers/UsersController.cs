@@ -1161,4 +1161,72 @@ public class UsersController(
         return originalSingleRoles.TryGetValue(app.OrganisationApplicationId, out var origId) && origId != app.SelectedRoleId;
     }
 
+    [HttpGet("user/{cdpPersonId:guid}/remove")]
+    public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        return viewModel is null ? NotFound() : View("Remove", viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/remove")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveUser(
+        string organisationSlug,
+        Guid cdpPersonId,
+        RemoveUserViewModel input,
+        CancellationToken ct)
+    {
+        if (input.RemoveConfirmed == false)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            return viewModel is null ? NotFound() : View("Remove", viewModel);
+        }
+
+        var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
+
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+    }
+
+    [HttpGet("invites/{pendingInviteId:int}/remove")]
+    public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
+        return viewModel is null ? NotFound() : View("Remove", viewModel);
+    }
+
+    [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveInvite(
+        string organisationSlug,
+        int pendingInviteId,
+        RemoveUserViewModel input,
+        CancellationToken ct)
+    {
+        if (input.RemoveConfirmed == false)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
+            return viewModel is null ? NotFound() : View("Remove", viewModel);
+        }
+
+        var success = await userService.RemoveUserAsync(organisationSlug, null, pendingInviteId, ct);
+
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+    }
+
+    [HttpGet("remove/success")]
+    public IActionResult RemoveSuccess(string organisationSlug)
+    {
+        return View("RemoveSuccess");
+    }
+
 }

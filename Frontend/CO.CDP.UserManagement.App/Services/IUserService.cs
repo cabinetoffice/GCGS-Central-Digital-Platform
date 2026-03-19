@@ -59,4 +59,16 @@ public interface IUserService
         Guid? inviteGuid,
         IReadOnlyList<ApplicationRoleAssignmentPostModel> applicationRoleAssignments,
         CancellationToken ct = default);
+
+    Task<RemoveUserViewModel?> GetRemoveUserViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
+
+    Task<bool> RemoveUserAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
 }
