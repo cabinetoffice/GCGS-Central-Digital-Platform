@@ -1,5 +1,5 @@
 using CO.CDP.UserManagement.Shared.Responses;
-using CO.CDP.UserManagement.Api.Models;
+using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +12,7 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Policy = PolicyNames.ServiceAccount)]
 public class ClaimsController : ControllerBase
 {
     private readonly IClaimsCacheService _claimsCacheService;

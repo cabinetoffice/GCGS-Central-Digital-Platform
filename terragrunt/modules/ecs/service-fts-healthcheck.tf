@@ -18,7 +18,7 @@ module "ecs_service_fts_healthcheck" {
       memory                     = var.service_configs.fts_healthcheck.memory
       name                       = var.service_configs.fts_healthcheck.name
       public_domain              = var.public_domain
-      service_port               = local.service_port_by_cluster[var.service_configs.fts_healthcheck.cluster]
+      service_port               = local.service_ports_by_service[var.service_configs.fts_healthcheck.name]
       service_version            = "latest"
       ses_configuration_set_name = var.ses_configuration_set_name
       vpc_cidr                   = var.vpc_cider
@@ -33,6 +33,9 @@ module "ecs_service_fts_healthcheck" {
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
   healthcheck_path       = "/healthz.php"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   listener_priority      = var.service_configs.fts_healthcheck.listener_priority
   memory                 = var.service_configs.fts_healthcheck.memory
@@ -42,7 +45,7 @@ module "ecs_service_fts_healthcheck" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts_healthcheck.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts_healthcheck.name]
   tags                   = var.tags
   user_pool_arn          = var.user_pool_fts_healthcheck_arn
   user_pool_client_id    = var.user_pool_fts_healthcheck_client_id

@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "alb_internal_sg_id" {
+  description = "Internal application load-balancer security group ID"
+  type        = string
+}
+
 variable "alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -123,6 +128,11 @@ variable "fts_extra_host_headers" {
   default     = []
 }
 
+variable "internal_hosted_zone_id" {
+  description = "ID of the internal hosted zone"
+  type        = string
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
@@ -236,6 +246,16 @@ variable "queue_organisation_url" {
   type        = string
 }
 
+variable "queue_user_management_arn" {
+  description = "ARN of the User Management's SQS queue"
+  type        = string
+}
+
+variable "queue_user_management_url" {
+  description = "URL of the User Management's outbound SQS queue"
+  type        = string
+}
+
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
@@ -325,6 +345,18 @@ variable "tags" {
   type        = map(string)
 }
 
+variable "use_internal_issuer" {
+  description = "Whether to use internal authority URL as token issuer (null defaults to environment-based behavior)"
+  type        = bool
+  default     = null
+}
+
+variable "use_internal_service_urls" {
+  description = "Whether to use internal service URLs for service-to-service calls (null defaults to environment-based behavior)"
+  type        = bool
+  default     = null
+}
+
 variable "user_pool_arn" {
   type = string
 }
@@ -374,6 +406,10 @@ variable "user_pool_fts_healthcheck_client_id" {
 }
 
 variable "user_pool_fts_healthcheck_domain" {
+  type = string
+}
+
+variable "user_pool_user_management_client_id" {
   type = string
 }
 

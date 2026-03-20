@@ -11,7 +11,7 @@ module "ecs_service_fts_search_api" {
         lg_name      = aws_cloudwatch_log_group.tasks[var.service_configs.fts_search_api.name].name
         memory       = var.service_configs.fts_search_api.memory
         name         = var.service_configs.fts_search_api.name
-        service_port = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
+        service_port = local.service_ports_by_service[var.service_configs.fts_search_api.name]
       }
     )
   )
@@ -24,6 +24,9 @@ module "ecs_service_fts_search_api" {
   ecs_service_base_sg_id = var.ecs_sg_id
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "dotnet-${var.service_configs.fts_search_api.name}"
   listener_priority      = var.service_configs.fts_search_api.listener_priority
   memory                 = var.service_configs.fts_search_api.memory
@@ -33,7 +36,7 @@ module "ecs_service_fts_search_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts_search_api.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts_search_api.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

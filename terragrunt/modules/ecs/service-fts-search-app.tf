@@ -8,14 +8,18 @@ module "ecs_service_fts_app" {
       {
         cpu                            = var.service_configs.fts_app.cpu
         image                          = local.ecr_urls[var.service_configs.fts_app.name]
+        internal_service_urls          = local.internal_service_urls
         lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
         memory                         = var.service_configs.fts_app.memory
         name                           = var.service_configs.fts_app.name
+        public_service_urls            = local.public_service_urls
         redis_auth_token_arn           = var.redis_auth_token_arn
         redis_port                     = var.redis_port
         redis_primary_endpoint_address = var.redis_primary_endpoint
+        service_port                   = local.service_ports_by_service[var.service_configs.fts_app.name]
         ssm_data_protection_prefix     = local.ssm_data_protection_prefix
-        service_port                   = local.service_port_by_cluster[var.service_configs.fts_app.cluster]
+        use_internal_issuer            = local.use_internal_issuer
+        use_internal_service_urls      = local.use_internal_service_urls
       }
     )
   )
@@ -28,6 +32,9 @@ module "ecs_service_fts_app" {
   ecs_service_base_sg_id = var.ecs_sg_id
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "dotnet-${var.service_configs.fts_app.name}"
   listener_priority      = var.service_configs.fts_app.listener_priority
   memory                 = var.service_configs.fts_app.memory
@@ -37,7 +44,7 @@ module "ecs_service_fts_app" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts_app.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts_app.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

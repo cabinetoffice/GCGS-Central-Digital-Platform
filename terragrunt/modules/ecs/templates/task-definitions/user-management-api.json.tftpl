@@ -1,0 +1,51 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${service_port},
+        "protocol": "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+        { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+        { "name" : "AWS_REGION", "value" : "eu-west-2"},
+        { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+        { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+        { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
+        { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
+        { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+        { "name" : "OrganisationInformationDatabase__Database", "value" : "${db_name}"},
+        { "name" : "OrganisationInformationDatabase__Host", "value" : "${db_address}"},
+        { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Organisation__Authority", "value" : "${use_internal_service_urls ? internal_service_urls["authority"] : public_service_urls["authority"]}"},
+        { "name" : "PersonService", "value" : "${use_internal_service_urls ? internal_service_urls["person"] : public_service_urls["person"]}"},
+        { "name" : "OrganisationService", "value" : "${use_internal_service_urls ? internal_service_urls["organisation"] : public_service_urls["organisation"]}"},
+        { "name" : "UserManagementDatabase__Database", "value" : "${db_name}"},
+        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Aws__SqsDispatcher__QueueUrl", "value" : "${queue_user_management_url}"}
+    ],
+    "secrets": [
+        { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
+        { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"},
+        { "name" : "UserManagementDatabase__Password", "valueFrom" : "${db_password}"},
+        { "name" : "UserManagementDatabase__Username", "valueFrom" : "${db_username}"}%{ if servicekey_apikey != null && servicekey_apikey != "" },
+        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${servicekey_apikey}"}%{ endif }
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

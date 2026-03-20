@@ -1,3 +1,9 @@
+variable "allow_github_pull_requests" {
+  description = "Whether to allow GitHub pull request workflows to assume the OIDC role."
+  type        = bool
+  default     = false
+}
+
 variable "allowed_github_branches" {
   description = "Allowed GitHub branches for OIDC role assumption (e.g. main, sandbox, previews/*)."
   type        = list(string)

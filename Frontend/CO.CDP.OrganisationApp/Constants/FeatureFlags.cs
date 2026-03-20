@@ -16,5 +16,6 @@ public static class FeatureFlags
     public const string Payments = "Payments";
     public const string FvraToolBuyer = "FvraToolBuyer";
     public const string FvraToolSupplier = "FvraToolSupplier";
+    public const string FindAndApply = "FindAndApply";
     public const string UserManagement = "UserManagement";
 }

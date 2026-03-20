@@ -1,8 +1,7 @@
-@model CO.CDP.UserManagement.App.Models.InviteUserState
+@model CO.CDP.UserManagement.App.Models.OrganisationRoleStepViewModel
 @{
     ViewData["Title"] = "What is their role in your organisation?";
-    var returnToCheckAnswers = ViewData["ReturnToCheckAnswers"] as bool? ?? false;
-    var continueUrl = returnToCheckAnswers
+    var continueUrl = Model.ReturnToCheckAnswers
         ? $"/organisation/{Model.OrganisationSlug}/add-user/check-answers"
         : $"/organisation/{Model.OrganisationSlug}/add-user/application-roles";
 }
@@ -27,13 +26,13 @@
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">What is their role in your organisation?</legend>
                     <div class="govuk-radios" data-module="govuk-radios">
-                        @foreach (var roleOption in OrganisationRoleContent.Options)
+                        @foreach (var roleOption in Model.RoleOptions)
                         {
                             var role = roleOption.Role;
                             var roleId = role.ToString().ToLowerInvariant();
                             <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="organisation-role-@roleId" name="organisationRole" type="radio" value="@role" checked="@(Model.OrganisationRole == role)">
-                                <label class="govuk-label govuk-radios__label" for="organisation-role-@roleId"><strong>@role</strong></label>
+                                <input class="govuk-radios__input" id="organisation-role-@roleId" name="organisationRole" type="radio" value="@role" checked="@(Model.SelectedRole == role)">
+                                <label class="govuk-label govuk-radios__label" for="organisation-role-@roleId"><strong>@roleOption.DisplayName</strong></label>
                                 <div class="govuk-hint govuk-radios__hint">
                                     @roleOption.Description
                                 </div>

@@ -4,11 +4,11 @@ output "service_name" {
 
 
 output "service_target_group_arn" {
-  value = try(aws_lb_target_group.this[0].arn, "")
+  value = try(aws_lb_target_group.external[0].arn, "")
 }
 
 output "service_target_group_arn_suffix" {
-  value = try(aws_lb_target_group.this[0].arn_suffix, "")
+  value = try(aws_lb_target_group.external[0].arn_suffix, "")
 }
 
 output "task_definition_arn" {

@@ -25,5 +25,6 @@ public sealed record ApplicationViewModel(
     string Description,
     string Category,
     bool IsEnabled,
+    bool IsEnabledByDefault,
     int UsersAssigned,
     int RolesAvailable);

@@ -66,6 +66,8 @@ public class DatabasePersonInviteRepository(OrganisationInformationContext conte
         }
     }
 
+    public void Track(PersonInvite personInvite) => context.Update(personInvite);
+
     public async Task SaveNewInvite(PersonInvite personInvite,
         IEnumerable<PersonInvite> expiredExistingInvites)
     {

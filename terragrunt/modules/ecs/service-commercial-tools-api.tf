@@ -23,7 +23,7 @@ module "ecs_service_commercial_tools_api" {
       redis_primary_endpoint_address = var.redis_primary_endpoint
       service_version                = var.environment == "development" ? local.service_version_sirsi : "1.0.80-98036a04a"
       vpc_cidr                       = var.vpc_cider
-      service_port                   = local.service_port_by_cluster[var.service_configs.commercial_tools_api.cluster]
+      service_port                   = local.service_ports_by_service[var.service_configs.commercial_tools_api.name]
     }
   )
 
@@ -34,6 +34,9 @@ module "ecs_service_commercial_tools_api" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_priority      = var.service_configs.commercial_tools_api.listener_priority
   memory                 = var.service_configs.commercial_tools_api.memory
   name                   = var.service_configs.commercial_tools_api.name
@@ -42,7 +45,7 @@ module "ecs_service_commercial_tools_api" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.commercial_tools_api.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.commercial_tools_api.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

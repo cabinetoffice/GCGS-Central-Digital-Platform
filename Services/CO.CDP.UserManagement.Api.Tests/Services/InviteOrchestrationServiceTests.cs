@@ -8,9 +8,6 @@ using CO.CDP.UserManagement.Shared.Requests;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using IOrganisationClient = CO.CDP.Organisation.WebApiClient.IOrganisationClient;
-using PersonInviteModel = CO.CDP.Organisation.WebApiClient.PersonInviteModel;
-using InvitePersonToOrganisation = CO.CDP.Organisation.WebApiClient.InvitePersonToOrganisation;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
 namespace CO.CDP.UserManagement.Api.Tests.Services;
@@ -20,10 +17,12 @@ public class InviteOrchestrationServiceTests
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
-    private readonly Mock<IOrganisationClient> _organisationClientMock;
-    private readonly Mock<IPersonLookupService> _personLookupServiceMock;
-    private readonly Mock<ICdpMembershipSyncService> _membershipSyncServiceMock;
+    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapterMock;
+    private readonly Mock<IPersonApiAdapter> _personLookupServiceMock;
+    private readonly Mock<IUserAssignmentService> _userAssignmentServiceMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+    private readonly Mock<IRoleMappingService> _roleMappingServiceMock;
+    private readonly Mock<ICdpMembershipSyncService> _membershipSyncServiceMock;
     private readonly InviteOrchestrationService _service;
 
     public InviteOrchestrationServiceTests()
@@ -31,10 +30,12 @@ public class InviteOrchestrationServiceTests
         _organisationRepositoryMock = new Mock<IOrganisationRepository>();
         _inviteRoleMappingRepositoryMock = new Mock<IInviteRoleMappingRepository>();
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
-        _organisationClientMock = new Mock<IOrganisationClient>();
-        _personLookupServiceMock = new Mock<IPersonLookupService>();
-        _membershipSyncServiceMock = new Mock<ICdpMembershipSyncService>();
+        _organisationApiAdapterMock = new Mock<IOrganisationApiAdapter>();
+        _personLookupServiceMock = new Mock<IPersonApiAdapter>();
+        _userAssignmentServiceMock = new Mock<IUserAssignmentService>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
+        _roleMappingServiceMock = new Mock<IRoleMappingService>();
+        _membershipSyncServiceMock = new Mock<ICdpMembershipSyncService>();
         var loggerMock = new Mock<ILogger<InviteOrchestrationService>>();
 
         _membershipRepositoryMock
@@ -45,27 +46,42 @@ public class InviteOrchestrationServiceTests
             .Setup(s => s.GetPersonDetailsByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((PersonDetails?)null);
 
-        _membershipSyncServiceMock
-            .Setup(s => s.SyncMembershipCreatedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
+        _userAssignmentServiceMock
+            .Setup(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         _membershipSyncServiceMock
-            .Setup(s => s.SyncMembershipRoleChangedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.SyncMembershipAccessChangedAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        _membershipSyncServiceMock
-            .Setup(s => s.SyncMembershipRemovedAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
+        _roleMappingServiceMock
+            .Setup(r => r.GetInviteScopesAsync(It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<string>());
 
-        var repositories = new InviteOrchestrationServiceRepositories(
-            _organisationRepositoryMock.Object,
-            _inviteRoleMappingRepositoryMock.Object,
-            _membershipRepositoryMock.Object);
+        _roleMappingServiceMock
+            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<InviteRoleMapping>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .Returns<InviteRoleMapping, OrganisationRole, CancellationToken>((m, role, _) =>
+            {
+                m.OrganisationRoleId = (int)role;
+                return Task.CompletedTask;
+            });
+
+        _roleMappingServiceMock
+            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .Returns<UserOrganisationMembership, OrganisationRole, CancellationToken>((m, role, _) =>
+            {
+                m.OrganisationRoleId = (int)role;
+                return Task.CompletedTask;
+            });
 
         _service = new InviteOrchestrationService(
-            repositories,
-            _organisationClientMock.Object,
+            _organisationRepositoryMock.Object,
+            _inviteRoleMappingRepositoryMock.Object,
+            _membershipRepositoryMock.Object,
+            _organisationApiAdapterMock.Object,
             _personLookupServiceMock.Object,
+            _userAssignmentServiceMock.Object,
+            _roleMappingServiceMock.Object,
             _membershipSyncServiceMock.Object,
             _unitOfWorkMock.Object,
             loggerMock.Object);
@@ -93,25 +109,19 @@ public class InviteOrchestrationServiceTests
             ApplicationAssignments = new List<ApplicationAssignment>()
         };
 
-        var personInviteModel = new PersonInviteModel(
-            email: "john.doe@example.com",
-            expiresOn: DateTimeOffset.UtcNow.AddDays(7),
-            firstName: "John",
-            id: cdpInviteGuid,
-            lastName: "Doe",
-            scopes: new List<string> { "ADMIN" }
-        );
-
         _organisationRepositoryMock
             .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
             .ReturnsAsync(organisation);
 
-        _organisationClientMock
-            .Setup(c => c.CreatePersonInviteForServiceAsync(
+        _organisationApiAdapterMock
+            .Setup(c => c.CreatePersonInviteAsync(
                 cdpOrgGuid,
-                It.IsAny<InvitePersonToOrganisation>(),
+                request.Email,
+                request.FirstName,
+                request.LastName,
+                It.IsAny<IReadOnlyList<string>>(),
                 default))
-            .ReturnsAsync(personInviteModel);
+            .ReturnsAsync(cdpInviteGuid);
 
         _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync(default))
@@ -183,10 +193,13 @@ public class InviteOrchestrationServiceTests
             .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
             .ReturnsAsync(organisation);
 
-        _organisationClientMock
-            .Setup(c => c.CreatePersonInviteForServiceAsync(
+        _organisationApiAdapterMock
+            .Setup(c => c.CreatePersonInviteAsync(
                 cdpOrgGuid,
-                It.IsAny<InvitePersonToOrganisation>(),
+                request.Email,
+                request.FirstName,
+                request.LastName,
+                It.IsAny<IReadOnlyList<string>>(),
                 default))
             .ThrowsAsync(new HttpRequestException("Service unavailable"));
 
@@ -318,25 +331,19 @@ public class InviteOrchestrationServiceTests
             }
         };
 
-        var personInviteModel = new PersonInviteModel(
-            email: "john.doe@example.com",
-            expiresOn: DateTimeOffset.UtcNow.AddDays(7),
-            firstName: "John",
-            id: cdpInviteGuid,
-            lastName: "Doe",
-            scopes: new List<string> { "ADMIN" }
-        );
-
         _organisationRepositoryMock
             .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
             .ReturnsAsync(organisation);
 
-        _organisationClientMock
-            .Setup(c => c.CreatePersonInviteForServiceAsync(
+        _organisationApiAdapterMock
+            .Setup(c => c.CreatePersonInviteAsync(
                 cdpOrgGuid,
-                It.IsAny<InvitePersonToOrganisation>(),
+                request.Email,
+                request.FirstName,
+                request.LastName,
+                It.IsAny<IReadOnlyList<string>>(),
                 default))
-            .ReturnsAsync(personInviteModel);
+            .ReturnsAsync(cdpInviteGuid);
 
         _unitOfWorkMock
             .Setup(u => u.SaveChangesAsync(default))
@@ -369,7 +376,7 @@ public class InviteOrchestrationServiceTests
             Id = 1,
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = 1,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             Organisation = organisation
         };
 
@@ -421,7 +428,7 @@ public class InviteOrchestrationServiceTests
             Id = 1,
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = 1,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             Organisation = organisation
         };
 
@@ -462,7 +469,7 @@ public class InviteOrchestrationServiceTests
             Id = 1,
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = 1,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             Organisation = organisation,
             ApplicationAssignments = new List<InviteRoleApplicationAssignment>
             {
@@ -505,8 +512,8 @@ public class InviteOrchestrationServiceTests
                 m.OrganisationRole == OrganisationRole.Admin)),
             Times.Once);
 
-        _membershipSyncServiceMock.Verify(
-            s => s.SyncMembershipCreatedAsync(It.IsAny<UserOrganisationMembership>(), default),
+        _userAssignmentServiceMock.Verify(
+            s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), default),
             Times.Once);
 
         _inviteRoleMappingRepositoryMock.Verify(r => r.Remove(mapping), Times.Once);
@@ -531,7 +538,7 @@ public class InviteOrchestrationServiceTests
             Id = 1,
             CdpPersonInviteGuid = Guid.NewGuid(),
             OrganisationId = 1,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             Organisation = organisation
         };
 
@@ -540,7 +547,7 @@ public class InviteOrchestrationServiceTests
             Id = 1,
             UserPrincipalId = userPrincipalId,
             OrganisationId = 1,
-            OrganisationRole = OrganisationRole.Member
+            OrganisationRoleId = (int)OrganisationRole.Member
         };
 
         var request = new AcceptOrganisationInviteRequest

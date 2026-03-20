@@ -15,6 +15,9 @@ module "ecs_service_fts" {
   extra_host_headers     = var.fts_extra_host_headers
   family                 = "app"
   healthcheck_path       = "/health"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts.name}"
   listener_priority      = var.service_configs.fts.listener_priority
   memory                 = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
@@ -24,7 +27,7 @@ module "ecs_service_fts" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.fts.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.fts.name]
   tags                   = var.tags
   user_pool_arn          = contains(["staging"], var.environment) ? var.user_pool_fts_arn : null
   user_pool_client_id    = contains(["staging"], var.environment) ? var.user_pool_fts_client_id : null

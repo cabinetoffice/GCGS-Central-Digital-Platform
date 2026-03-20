@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.WebApiClient;
+using CO.CDP.Functional;
 using FluentAssertions;
 using Moq;
 
@@ -115,7 +116,7 @@ public class ApplicationServiceTests
     }
 
     [Fact]
-    public async Task EnableApplicationAsync_WhenAppMissing_ReturnsFalse()
+    public async Task EnableApplicationAsync_WhenAppMissing_ReturnsNotFoundOutcome()
     {
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
@@ -125,7 +126,9 @@ public class ApplicationServiceTests
 
         var result = await _service.EnableApplicationAsync("org", "missing", CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
     }
 
     [Fact]
@@ -150,7 +153,7 @@ public class ApplicationServiceTests
 
         var result = await _service.EnableApplicationAsync("org", "app-1", CancellationToken.None);
 
-        result.Should().BeTrue();
+        result.IsRight().Should().BeTrue();
     }
 
     [Fact]
@@ -167,7 +170,25 @@ public class ApplicationServiceTests
 
         var result = await _service.EnableApplicationAsync("org", "app-1", CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsLeft().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task EnableApplicationAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new ApplicationService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var app = BuildApplicationResponse(10, "app-1");
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.ApplicationsAllAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<ApplicationResponse> { app });
+        _apiClient.Setup(client => client.ApplicationsPOSTAsync(org.Id, It.IsAny<EnableApplicationRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.EnableApplicationAsync("org", "app-1", CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     [Fact]
@@ -215,7 +236,7 @@ public class ApplicationServiceTests
     }
 
     [Fact]
-    public async Task DisableApplicationAsync_WhenAppMissing_ReturnsFalse()
+    public async Task DisableApplicationAsync_WhenAppMissing_ReturnsNotFoundOutcome()
     {
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
@@ -225,7 +246,9 @@ public class ApplicationServiceTests
 
         var result = await _service.DisableApplicationAsync("org", "missing", CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
     }
 
     [Fact]
@@ -242,7 +265,25 @@ public class ApplicationServiceTests
 
         var result = await _service.DisableApplicationAsync("org", "app-1", CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsLeft().Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DisableApplicationAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
+    {
+                var service = new ApplicationService(_apiClient.Object);
+        var org = BuildOrganisationResponse();
+        var orgApp = BuildOrganisationApplicationResponse(org.Id, 10);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OrganisationApplicationResponse> { orgApp });
+        _apiClient.Setup(client => client.ApplicationsDELETEAsync(org.Id, orgApp.ApplicationId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await service.DisableApplicationAsync("org", "app-1", CancellationToken.None);
+
+        result.IsLeft().Should().BeTrue();
     }
 
     private static OrganisationResponse BuildOrganisationResponse() =>

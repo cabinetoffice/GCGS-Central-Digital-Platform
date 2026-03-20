@@ -62,7 +62,8 @@ public class OrganisationHomeModel(
             AiToolEnabled: await featureManager.IsEnabledAsync(FeatureFlags.AiTool),
             PaymentsEnabled: await featureManager.IsEnabledAsync(FeatureFlags.Payments),
             FvraToolBuyerEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolBuyer),
-            FvraToolSupplierEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolSupplier)
+            FvraToolSupplierEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolSupplier),
+            FindAndApplyEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FindAndApply)
         );
 
         Tiles = BuildTiles(featureConfig);
@@ -72,7 +73,7 @@ public class OrganisationHomeModel(
 
     private List<Tile> BuildTiles(FeatureConfiguration featureConfig)
     {
-        var tiles = AddCommonTiles();
+        var tiles = AddCommonTiles(featureConfig);
 
         if (OrganisationDetails!.IsTenderer())
         {
@@ -87,9 +88,9 @@ public class OrganisationHomeModel(
         return tiles;
     }
 
-    private List<Tile> AddCommonTiles()
+    private List<Tile> AddCommonTiles(FeatureConfiguration featureConfig)
     {
-        return new List<Tile>
+        var tiles = new List<Tile>
         {
             new()
             {
@@ -98,6 +99,18 @@ public class OrganisationHomeModel(
                 Href = $"/organisation/{Id}?origin=organisation-home"
             }
         };
+
+        if (featureConfig.FindAndApplyEnabled)
+        {
+            tiles.Add(new Tile
+            {
+                Title = StaticTextResource.FindAGrant_Title,
+                Body = StaticTextResource.OrganisationHome_TileNine_Body,
+                Href = $"/organisation/{Id}/find-and-apply"
+            });
+        }
+
+        return tiles;
     }
 
     private void AddSupplierTiles(List<Tile> tiles, FeatureConfiguration featureConfig)
@@ -197,5 +210,6 @@ public class OrganisationHomeModel(
         bool AiToolEnabled,
         bool PaymentsEnabled,
         bool FvraToolBuyerEnabled,
-        bool FvraToolSupplierEnabled);
+        bool FvraToolSupplierEnabled,
+        bool FindAndApplyEnabled);
 }

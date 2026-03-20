@@ -7,6 +7,7 @@ using Address = CO.CDP.OrganisationInformation.Address;
 using ContactPoint = CO.CDP.OrganisationInformation.ContactPoint;
 using Identifier = CO.CDP.OrganisationInformation.Identifier;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
+using WebApiPerson = CO.CDP.Organisation.WebApi.Model.Person;
 
 namespace CO.CDP.Organisation.WebApi.AutoMapper;
 
@@ -187,7 +188,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.UpdatedOn, o => o.Ignore())
             .ReverseMap();
 
-        CreateMap<Persistence.Person, Person>()
+        CreateMap<Persistence.Person, WebApiPerson>()
             .ForMember(m => m.Scopes, o => o.Ignore())
             .ForMember(m => m.Id, o => o.MapFrom(m => m.Guid));
 

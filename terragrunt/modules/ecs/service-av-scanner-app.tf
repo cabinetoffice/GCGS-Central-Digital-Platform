@@ -1,6 +1,7 @@
 module "ecs_service_av_scanner_app" {
   source = "../ecs-service"
 
+  # @TODO (ABN) Consider internal DNS for clamav-rest (tools ALB) before switching ClamAvScanUrl to internal.
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.av_scanner_app.name}.json.tftpl",
     {
@@ -21,7 +22,7 @@ module "ecs_service_av_scanner_app" {
       service_version          = local.service_version_sirsi
       uuid_ppon_service_enable = false
       vpc_cidr                 = var.vpc_cider
-      service_port             = local.service_port_by_cluster[var.service_configs.av_scanner_app.cluster]
+      service_port             = local.service_ports_by_service[var.service_configs.av_scanner_app.name]
     }
   )
 
@@ -32,6 +33,9 @@ module "ecs_service_av_scanner_app" {
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
   listener_priority      = var.service_configs.av_scanner_app.listener_priority
   memory                 = var.service_configs.av_scanner_app.memory
   name                   = var.service_configs.av_scanner_app.name
@@ -40,7 +44,7 @@ module "ecs_service_av_scanner_app" {
   public_domain          = var.public_domain
   role_ecs_task_arn      = var.role_ecs_task_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
-  service_port           = local.service_port_by_cluster[var.service_configs.av_scanner_app.cluster]
+  service_port           = local.service_ports_by_service[var.service_configs.av_scanner_app.name]
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

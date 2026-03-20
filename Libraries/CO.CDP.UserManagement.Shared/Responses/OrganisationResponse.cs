@@ -34,4 +34,5 @@ public record OrganisationResponse
     /// Gets or sets the creation timestamp.
     /// </summary>
     public required DateTimeOffset CreatedAt { get; init; }
+
 }
