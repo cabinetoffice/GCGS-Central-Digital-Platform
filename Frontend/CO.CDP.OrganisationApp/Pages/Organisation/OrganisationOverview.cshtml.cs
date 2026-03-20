@@ -3,6 +3,7 @@ using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,7 +15,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager, IConfiguration configuration) : PageModel
+public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager, IUserManagementUrlService userManagementUrlService) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -51,10 +52,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
             if (await featureManager.IsEnabledAsync(FeatureFlags.UserManagement))
             {
-                var baseUrl = configuration["UserManagementApp:ServiceBaseUrl"]
-                    ?? throw new InvalidOperationException("UserManagementApp:ServiceBaseUrl configuration is missing");
-
-                UserManagementUrl = $"{baseUrl.TrimEnd('/')}/organisation/{Id}/users";
+                UserManagementUrl = userManagementUrlService.BuildUrl($"/organisation/{Id}", null, null, null, null);
             }
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)

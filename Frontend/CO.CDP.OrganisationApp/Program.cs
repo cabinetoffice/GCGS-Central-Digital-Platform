@@ -176,6 +176,7 @@ builder.Services.AddUiFoundation(builder.Configuration, uiFoundationBuilder =>
                       .AddAiToolUrlService()
                       .AddPaymentsUrlService()
                       .AddFvraUrlService()
+                      .AddUserManagementUrlService()
                       .AddExternalServiceUrlBuilder()
                       .AddDiagnosticPage<DiagnosticPage>();
 });
