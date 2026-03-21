@@ -358,6 +358,10 @@ locals {
       name = "opensearch-gateway"
       port = 5602
     }
+    opensearch_debugtask = {
+      name = "opensearch-debugtask"
+      port = 5603
+    }
     s3_uploader = {
       name = "s3-uploader"
       port = 8000

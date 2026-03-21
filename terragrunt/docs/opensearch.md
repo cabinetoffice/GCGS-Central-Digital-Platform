@@ -1,0 +1,344 @@
+## Access via OpenSearch tools (admin, gateway, debugtask)
+
+OpenSearch tools are behind **separate Cognito user pools**:
+- Admin pool: `cdp-sirsi-opensearch-admin` (domain prefix: `cdp-sirsi-opensearch-admin`)
+- Gateway pool: `cdp-sirsi-opensearch-gateway` (domain prefix: `cdp-sirsi-opensearch-gateway`)
+- Debugtask pool: `cdp-sirsi-opensearch-debugtask` (domain prefix: `cdp-sirsi-opensearch-debugtask`)
+
+App clients:
+- `cdp-sirsi-<env>-opensearch-admin`
+- `cdp-sirsi-<env>-opensearch-gateway`
+- `cdp-sirsi-<env>-opensearch-debugtask`
+
+User management for these clients (create users, reset password, etc.) is documented in
+`docs/tools-users.md`.
+
+## Bootstrap process (new environments)
+
+OpenSearch uses **advanced security** with an external master user (IAM role). The master user is:
+- `cdp-sirsi-ecs-task-opensearch-admin`
+
+That role must be used to bootstrap OpenSearch Security **roles and role mappings** for the app and gateway.
+You can do this via the **opensearch-admin** service (recommended).
+
+Minimum bootstrap steps (run once per environment):
+
+1) Ensure opensearch-admin is deployed and reachable.
+2) Apply the **service writer** role + mapping (application role).
+3) Apply the **gateway readonly** role + mapping (gateway role).
+
+Example bootstrap commands are included in the **Permissions and role mappings** section below.
+
+## Dev Tools quick checks
+
+These examples reflect the **development** account and the current index naming convention.
+We standardize on:
+- `fts_*` for OpenSearch indices
+- `.fts_*` for internal/migration indices
+
+### Cluster and node health
+
+```bash
+GET /
+GET _cluster/health
+GET _cat/nodes?v
+GET _cat/indices?v
+```
+
+### Index discovery (current naming convention)
+
+```bash
+GET _cat/indices/fts_*?v
+GET _cat/indices/.fts_*?v
+```
+
+### Security: confirm auth context
+
+```bash
+GET _plugins/_security/authinfo
+GET /_plugins/_security/api/rolesmapping
+```
+
+## Permissions and role mappings
+
+These examples configure roles for the **service writer** (application role) and a **gateway readonly** role.
+Adjust backend role ARNs to match your environment.
+
+### Service writer role (application)
+
+```bash
+GET _plugins/_security/api/roles/cdp_sirsi_service_writer
+PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
+{
+  "cluster_permissions": [
+    "cluster:monitor/main",
+    "cluster:monitor/health"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "fts_*",
+        ".fts_*"
+      ],
+      "allowed_actions": [
+        "indices:admin/aliases",
+        "indices:admin/aliases/get",
+        "indices:admin/exists",
+        "indices:admin/create",
+        "indices:admin/mapping/put",
+        "indices:admin/settings/update",
+        "indices:data/write/bulk",
+        "indices:data/write/index",
+        "indices:data/write/update",
+        "indices:data/read/search",
+        "indices:data/read/get"
+      ]
+    }
+  ],
+  "tenant_permissions": []
+}
+```
+
+```bash
+GET /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
+PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
+{
+  "backend_roles": [
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task"
+  ],
+  "hosts": [],
+  "users": []
+}
+```
+
+### Gateway readonly role
+
+```bash
+GET _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
+PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
+{
+  "cluster_permissions": [
+    "cluster:monitor/main",
+    "cluster:monitor/health"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "fts_*",
+        ".fts_*"
+      ],
+      "allowed_actions": [
+        "indices:admin/aliases/get",
+        "indices:admin/exists",
+        "indices:data/read/search",
+        "indices:data/read/get"
+      ]
+    }
+  ],
+  "tenant_permissions": []
+}
+```
+
+```bash
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
+PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
+{
+  "backend_roles": [
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-readonly",
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-gateway"
+  ],
+  "hosts": [],
+  "users": []
+}
+```
+
+### Admin mappings (if needed in dev)
+
+```bash
+GET _plugins/_security/api/rolesmapping/all_access
+PUT _plugins/_security/api/rolesmapping/all_access
+{
+  "backend_roles": [
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-admin"
+  ],
+  "hosts": [],
+  "users": []
+}
+```
+
+```bash
+GET _plugins/_security/api/rolesmapping/security_manager
+PUT _plugins/_security/api/rolesmapping/security_manager
+{
+  "backend_roles": [
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-admin"
+  ],
+  "hosts": [],
+  "users": []
+}
+```
+
+## Index and alias operations (examples)
+
+## Debugtask permission check (fts_* and .fts_*)
+
+These commands are safe to run from **opensearch-debugtask** to validate the
+`cdp_sirsi_service_writer` permissions. They use test indices so cleanup is easy.
+
+### Create test indices
+
+```bash
+PUT fts_debug_test_public
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+
+PUT .fts_debug_test_internal
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  }
+}
+```
+
+### Write and read
+
+```bash
+POST fts_debug_test_public/_doc
+{ "message": "public index write ok" }
+
+POST .fts_debug_test_internal/_doc
+{ "message": "internal index write ok" }
+
+GET fts_debug_test_public/_search
+{
+  "query": { "match_all": {} }
+}
+
+GET .fts_debug_test_internal/_search
+{
+  "query": { "match_all": {} }
+}
+```
+
+### Alias operations
+
+```bash
+POST _aliases
+{
+  "actions": [
+    { "add": { "index": "fts_debug_test_public", "alias": "fts_debug_test_current" } },
+    { "add": { "index": ".fts_debug_test_internal", "alias": ".fts_debug_test_current" } }
+  ]
+}
+
+GET fts_debug_test_current/_search
+{
+  "query": { "match_all": {} }
+}
+
+GET .fts_debug_test_current/_search
+{
+  "query": { "match_all": {} }
+}
+```
+
+### Cleanup
+
+```bash
+DELETE fts_debug_test_public
+DELETE .fts_debug_test_internal
+```
+
+### Create a test index
+
+```bash
+PUT fts_test_permissions
+{
+  "settings": {
+    "index": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    }
+  },
+  "mappings": {
+    "properties": {
+      "id": { "type": "keyword" },
+      "title": { "type": "text" },
+      "createdAt": { "type": "date" },
+      "tags": { "type": "keyword" }
+    }
+  }
+}
+```
+
+### Index data
+
+```bash
+PUT fts_test_permissions/_doc/1
+{
+  "id": "1",
+  "title": "First test document",
+  "createdAt": "2026-01-27T21:00:00Z",
+  "tags": ["dev", "fts"]
+}
+
+POST _bulk
+{ "index": { "_index": "fts_test_permissions", "_id": "2" } }
+{ "id": "2", "title": "Second test document", "createdAt": "2026-01-27T21:05:00Z", "tags": ["dev"] }
+{ "index": { "_index": "fts_test_permissions", "_id": "3" } }
+{ "id": "3", "title": "Third test document", "createdAt": "2026-01-27T21:10:00Z", "tags": ["fts"] }
+
+POST fts_test_permissions/_refresh
+```
+
+### Query data
+
+```bash
+GET fts_test_permissions/_search
+{
+  "query": {
+    "match": {
+      "title": "test"
+    }
+  }
+}
+
+GET fts_test_permissions/_count
+{
+  "query": {
+    "match_all": {}
+  }
+}
+```
+
+### Alias operations
+
+```bash
+POST _aliases
+{
+  "actions": [
+    { "add": { "index": "fts_test_permissions", "alias": "fts_test_current" } }
+  ]
+}
+
+GET fts_test_current/_search
+{
+  "query": { "match_all": {} }
+}
+```
+
+### Cleanup
+
+```bash
+DELETE fts_test_permissions/_doc/2
+DELETE fts_test_permissions
+```

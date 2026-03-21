@@ -29,6 +29,8 @@ dependency core_iam {
     ecs_task_exec_arn                   = "mock"
     ecs_task_exec_name                  = "mock"
     ecs_task_name                       = "mock"
+    ecs_task_opensearch_admin_arn       = "mock"
+    ecs_task_opensearch_gateway_arn     = "mock"
     rds_cloudwatch_arn                  = "mock"
     service_deployer_step_function_arn  = "mock"
     service_deployer_step_function_name = "mock"
@@ -62,9 +64,18 @@ dependency core_security_groups {
 dependency service_auth {
   config_path = "../../service/auth"
   mock_outputs = {
-    healthcheck_user_pool_arn       = "mock"
-    healthcheck_user_pool_client_id = "mock"
-    user_pool_domain                = "mock"
+    healthcheck_user_pool_arn              = "mock"
+    healthcheck_user_pool_client_id        = "mock"
+    opensearch_admin_user_pool_client_id   = "mock"
+    opensearch_gateway_user_pool_client_id = "mock"
+    opensearch_debugtask_user_pool_client_id = "mock"
+    opensearch_admin_user_pool_arn         = "mock"
+    opensearch_gateway_user_pool_arn       = "mock"
+    opensearch_debugtask_user_pool_arn     = "mock"
+    opensearch_admin_user_pool_domain      = "mock"
+    opensearch_gateway_user_pool_domain    = "mock"
+    opensearch_debugtask_user_pool_domain  = "mock"
+    user_pool_domain                       = "mock"
   }
 }
 
@@ -131,6 +142,7 @@ inputs = {
   healthcheck_config        = local.global_vars.locals.tools_configs.healthcheck
   opensearch_admin_config   = local.global_vars.locals.tools_configs.opensearch_admin
   opensearch_gateway_config = local.global_vars.locals.tools_configs.opensearch_gateway
+  opensearch_debugtask_config = local.global_vars.locals.tools_configs.opensearch_debugtask
   s3_uploader_config        = local.global_vars.locals.tools_configs.s3_uploader
   tags                      = local.tags
   tools_configs             = local.global_vars.locals.tools_configs
@@ -142,6 +154,7 @@ inputs = {
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
   role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_opensearch_admin_arn       = dependency.core_iam.outputs.ecs_task_opensearch_admin_arn
+  role_ecs_task_opensearch_gateway_arn     = dependency.core_iam.outputs.ecs_task_opensearch_gateway_arn
   role_rds_cloudwatch_arn                  = dependency.core_iam.outputs.rds_cloudwatch_arn
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
   role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
@@ -161,15 +174,21 @@ inputs = {
   ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
   efs_sg_id         = dependency.core_security_groups.outputs.efs_sg_id
 
-  user_pool_arn_cloud_beaver           = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
-  user_pool_arn_healthcheck            = dependency.service_auth.outputs.healthcheck_user_pool_arn
-  user_pool_arn_opensearch_admin       = dependency.service_auth.outputs.opensearch_admin_user_pool_arn
-  user_pool_client_id_cloud_beaver     = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
-  user_pool_client_id_healthcheck      = dependency.service_auth.outputs.healthcheck_user_pool_client_id
-  user_pool_client_id_opensearch_admin = dependency.service_auth.outputs.opensearch_admin_user_pool_client_id
-  user_pool_domain_cloud_beaver        = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain_healthcheck         = dependency.service_auth.outputs.user_pool_domain
-  user_pool_domain_opensearch_admin    = dependency.service_auth.outputs.user_pool_domain
+  user_pool_arn_cloud_beaver             = dependency.service_auth.outputs.cloud_beaver_user_pool_arn
+  user_pool_arn_healthcheck              = dependency.service_auth.outputs.healthcheck_user_pool_arn
+  user_pool_arn_opensearch_admin         = dependency.service_auth.outputs.opensearch_admin_user_pool_arn
+  user_pool_arn_opensearch_gateway       = dependency.service_auth.outputs.opensearch_gateway_user_pool_arn
+  user_pool_arn_opensearch_debugtask     = dependency.service_auth.outputs.opensearch_debugtask_user_pool_arn
+  user_pool_client_id_cloud_beaver       = dependency.service_auth.outputs.cloud_beaver_user_pool_client_id
+  user_pool_client_id_healthcheck        = dependency.service_auth.outputs.healthcheck_user_pool_client_id
+  user_pool_client_id_opensearch_admin     = dependency.service_auth.outputs.opensearch_admin_user_pool_client_id
+  user_pool_client_id_opensearch_gateway   = dependency.service_auth.outputs.opensearch_gateway_user_pool_client_id
+  user_pool_client_id_opensearch_debugtask = dependency.service_auth.outputs.opensearch_debugtask_user_pool_client_id
+  user_pool_domain_cloud_beaver          = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_healthcheck           = dependency.service_auth.outputs.user_pool_domain
+  user_pool_domain_opensearch_admin      = dependency.service_auth.outputs.opensearch_admin_user_pool_domain
+  user_pool_domain_opensearch_gateway    = dependency.service_auth.outputs.opensearch_gateway_user_pool_domain
+  user_pool_domain_opensearch_debugtask  = dependency.service_auth.outputs.opensearch_debugtask_user_pool_domain
 
   user_pool_arn_tools                   = dependency.service_auth.outputs.tools_user_pool_arn
   user_pool_client_id_tools_s3_uploader = dependency.service_auth.outputs.tools_user_pool_client_id_s3_uploader
