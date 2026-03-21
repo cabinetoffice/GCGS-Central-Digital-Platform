@@ -20,6 +20,7 @@ locals {
       cidr_block             = "10.${local.cidr_b_orchestrator}.0.0/16"
       account_id             = 891377225335
       name                   = "orchestrator"
+      opensearch_audit_logs_enabled = true
       postgres_instance_type = "db.t4g.micro"
       private_subnets = [
         "10.${local.cidr_b_orchestrator}.101.0/24",
@@ -48,6 +49,7 @@ locals {
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.large"
       name                        = "dev"
+      opensearch_audit_logs_enabled = true
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
@@ -83,6 +85,7 @@ locals {
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.xlarge"
+      opensearch_audit_logs_enabled = true
       onelogin_logout_notification_urls = [
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
@@ -119,6 +122,7 @@ locals {
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.xlarge"
       name                        = "integration"
+      opensearch_audit_logs_enabled = true
       onelogin_logout_notification_urls = [
         "https://truk-alpha.nqc.com/auth/backchannellogout",
         "https://truk-performance.nqc.com/auth/backchannellogout",
@@ -159,6 +163,7 @@ locals {
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.8xlarge"
       name                        = "production"
+      opensearch_audit_logs_enabled = true
       onelogin_logout_notification_urls = [
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"

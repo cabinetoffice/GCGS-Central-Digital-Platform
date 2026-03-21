@@ -66,6 +66,15 @@ resource "aws_opensearch_domain" "this" {
     enabled                  = true
   }
 
+  dynamic "log_publishing_options" {
+    for_each = var.audit_logs_enabled ? [1] : []
+    content {
+      log_type                 = "AUDIT_LOGS"
+      cloudwatch_log_group_arn = aws_cloudwatch_log_group.audit.arn
+      enabled                  = true
+    }
+  }
+
   tags = var.tags
 
   depends_on = [
