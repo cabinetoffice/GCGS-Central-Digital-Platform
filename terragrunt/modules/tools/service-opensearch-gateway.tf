@@ -20,7 +20,7 @@ module "ecs_service_opensearch_gateway" {
 
   cluster_id             = var.ecs_cluster_id
   cpu                    = var.opensearch_gateway_config.cpu
-  desired_count          = 0
+  desired_count          = 1
   ecs_alb_sg_id          = var.alb_tools_sg_id
   ecs_listener_arn       = aws_lb_listener.tools.arn
   ecs_service_base_sg_id = var.ecs_sg_id
@@ -31,12 +31,12 @@ module "ecs_service_opensearch_gateway" {
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
   public_domain          = var.public_domain
-  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_arn      = var.role_ecs_task_opensearch_gateway_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   service_port           = var.opensearch_gateway_config.port
   tags                   = var.tags
-  # user_pool_arn           = var.user_pool_arn_opensearch_gateway
-  # user_pool_client_id     = var.user_pool_client_id_opensearch_gateway
-  # user_pool_domain        = var.user_pool_domain_opensearch_gateway
-  vpc_id = var.vpc_id
+  user_pool_arn          = var.user_pool_arn_opensearch_gateway
+  user_pool_client_id    = var.user_pool_client_id_opensearch_gateway
+  user_pool_domain       = var.user_pool_domain_opensearch_gateway
+  vpc_id                 = var.vpc_id
 }

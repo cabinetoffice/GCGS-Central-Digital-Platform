@@ -78,20 +78,20 @@ output "ecs_task_opensearch_admin_name" {
   value = aws_iam_role.ecs_task_opensearch_admin.name
 }
 
+output "ecs_task_opensearch_gateway_arn" {
+  value = aws_iam_role.ecs_task_opensearch_gateway.arn
+}
+
+output "ecs_task_opensearch_gateway_name" {
+  value = aws_iam_role.ecs_task_opensearch_gateway.name
+}
+
 output "notification_step_function_arn" {
   value = aws_iam_role.notification_step_function.arn
 }
 
 output "notification_step_function_name" {
   value = aws_iam_role.notification_step_function.name
-}
-
-output "opensearch_admin_arn" {
-  value = aws_iam_role.opensearch_admin.arn
-}
-
-output "opensearch_admin_name" {
-  value = aws_iam_role.opensearch_admin.name
 }
 
 output "rds_backup_arn" {

@@ -175,6 +175,15 @@ variable "opensearch_admin_config" {
   })
 }
 
+variable "opensearch_debugtask_config" {
+  description = "OpenSearch Debug Task services configuration"
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
+  })
+}
+
 variable "opensearch_endpoint" {
   description = "OpenSearch RUL"
   type        = string
@@ -253,6 +262,11 @@ variable "role_ecs_task_opensearch_admin_arn" {
   type        = string
 }
 
+variable "role_ecs_task_opensearch_gateway_arn" {
+  description = "OpenSearch Gateway Task IAM role ARN"
+  type        = string
+}
+
 variable "role_service_deployer_step_function_arn" {
   description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
@@ -322,6 +336,16 @@ variable "user_pool_arn_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_arn_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_arn_opensearch_gateway" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_arn_tools" {
   default = null
   type    = string
@@ -342,6 +366,16 @@ variable "user_pool_client_id_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_client_id_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_opensearch_gateway" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_tools_s3_uploader" {
   default = null
   type    = string
@@ -358,6 +392,16 @@ variable "user_pool_domain_healthcheck" {
 }
 
 variable "user_pool_domain_opensearch_admin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_opensearch_gateway" {
   default = null
   type    = string
 }

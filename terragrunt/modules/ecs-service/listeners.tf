@@ -91,29 +91,31 @@ resource "aws_lb_listener_rule" "external" {
   priority     = local.service_listener_rule_priority
 
   dynamic "action" {
-    for_each = var.user_pool_arn != null && var.user_pool_client_id != null && var.user_pool_domain != null ? [1] : []
+    for_each = local.external_listener_actions
 
     content {
-      type = "authenticate-cognito"
-      authenticate_cognito {
-        user_pool_arn              = var.user_pool_arn
-        user_pool_client_id        = var.user_pool_client_id
-        user_pool_domain           = var.user_pool_domain
-        session_cookie_name        = "AWSELBAuthSessionCookie"
-        scope                      = "openid"
-        on_unauthenticated_request = "authenticate"
+      type  = action.value.type
+      order = action.value.order
+
+      dynamic "authenticate_cognito" {
+        for_each = action.value.type == "authenticate-cognito" ? [1] : []
+        content {
+          user_pool_arn              = var.user_pool_arn
+          user_pool_client_id        = var.user_pool_client_id
+          user_pool_domain           = var.user_pool_domain
+          session_cookie_name        = "AWSELBAuthSessionCookie"
+          scope                      = "openid"
+          on_unauthenticated_request = "authenticate"
+        }
       }
-      order = 1
-    }
-  }
 
-  action {
-    type  = "forward"
-    order = 2
-
-    forward {
-      target_group {
-        arn = aws_lb_target_group.external[0].arn
+      dynamic "forward" {
+        for_each = action.value.type == "forward" ? [1] : []
+        content {
+          target_group {
+            arn = aws_lb_target_group.external[0].arn
+          }
+        }
       }
     }
   }

@@ -105,8 +105,13 @@ variable "role_ecs_task_opensearch_admin_name" {
   type        = string
 }
 
-variable "role_opensearch_admin_arn" {
-  description = "ARN the IAM role to be used to administrate OpenSearch"
+variable "role_ecs_task_opensearch_gateway_arn" {
+  description = "OpenSearch Gateway Task IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_opensearch_gateway_name" {
+  description = "OpenSearch Gateway Task IAM role Name"
   type        = string
 }
 

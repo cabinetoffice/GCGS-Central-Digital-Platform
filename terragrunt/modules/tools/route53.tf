@@ -46,6 +46,15 @@ resource "aws_route53_record" "opensearch_admin" {
   records = [aws_lb.tools.dns_name]
 }
 
+resource "aws_route53_record" "opensearch_debugtask" {
+  zone_id = var.public_hosted_zone_id
+  name    = var.opensearch_debugtask_config.name
+  type    = "CNAME"
+  ttl     = 60
+
+  records = [aws_lb.tools.dns_name]
+}
+
 resource "aws_route53_record" "opensearch_gateway" {
   zone_id = var.public_hosted_zone_id
   name    = var.opensearch_gateway_config.name

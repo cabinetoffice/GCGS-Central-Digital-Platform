@@ -59,11 +59,39 @@ output "healthcheck_user_pool_client_id" {
 }
 
 output "opensearch_admin_user_pool_arn" {
-  value = aws_cognito_user_pool.auth.arn
+  value = aws_cognito_user_pool.opensearch_admin.arn
 }
 
 output "opensearch_admin_user_pool_client_id" {
   value = aws_cognito_user_pool_client.opensearch_admin.id
+}
+
+output "opensearch_admin_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.opensearch_admin.domain
+}
+
+output "opensearch_debugtask_user_pool_arn" {
+  value = aws_cognito_user_pool.opensearch_debugtask.arn
+}
+
+output "opensearch_debugtask_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.opensearch_debugtask.id
+}
+
+output "opensearch_debugtask_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.opensearch_debugtask.domain
+}
+
+output "opensearch_gateway_user_pool_arn" {
+  value = aws_cognito_user_pool.opensearch_gateway.arn
+}
+
+output "opensearch_gateway_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.opensearch_gateway.id
+}
+
+output "opensearch_gateway_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.opensearch_gateway.domain
 }
 
 output "organisation_app_user_pool_arn" {
