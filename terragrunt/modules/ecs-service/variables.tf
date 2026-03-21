@@ -169,6 +169,16 @@ variable "listener_rule_propagation_delay" {
   default     = "10s"
 }
 
+variable "path_routing_rules" {
+  description = "Optional list of extra listener rules based on path patterns."
+  type = list(object({
+    host_headers  = list(string)
+    path_patterns = list(string)
+    priority      = number
+  }))
+  default = []
+}
+
 variable "memory" {
   description = "Amount (in MiB) of memory used by the tas"
   type        = number

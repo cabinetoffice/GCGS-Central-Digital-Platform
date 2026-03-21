@@ -97,3 +97,37 @@ resource "aws_lb_listener_rule" "unauthenticated_assets" {
     }
   )
 }
+
+resource "aws_lb_listener_rule" "fts_redirect_from_public_domain" {
+  count = var.environment != "orchestrator" ? 1 : 0
+
+  listener_arn = local.main_ecs_listener_arn
+  priority     = 500
+
+  action {
+    type = "redirect"
+
+    redirect {
+      protocol    = "HTTPS"
+      port        = "443"
+      host        = local.fts_redirect_domains[var.environment]
+      path        = "/#{path}"
+      query       = "#{query}"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = [var.public_domain]
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/search/opportunities", "/search/contracts", "/contracts/*"]
+    }
+  }
+
+  tags = merge(var.tags, { Name : "fts-redirect-from-public-domain" })
+}

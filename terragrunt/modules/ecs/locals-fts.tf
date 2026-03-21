@@ -13,6 +13,13 @@ locals {
     production  = "www.find-tender.service.gov.uk"
   }
 
+  fts_redirect_domains = {
+    development = "fts-app.${var.public_domain}"
+    staging     = "www-staging.find-tender.service.gov.uk"
+    integration = "www-tpp.find-tender.service.gov.uk"
+    production  = "www.find-tender.service.gov.uk"
+  }
+
   fts_secrets = {
     email_contactus                           = "${local.fts_secrets_arn}:CONTACTUS_EMAIL::"
     email_e_enablement                        = "${local.fts_secrets_arn}:EENABLEMENT_EMAIL::"
