@@ -37,15 +37,15 @@ locals {
   healthcheck_url    = "https://healthcheck.${var.public_domain}"
 
   opensearch_admin_domain          = "${local.auth_domain}-opensearch-admin"
-  opensearch_admin_pool_domain     = "cdp-sirsi-opensearch-admin"
+  opensearch_admin_pool_domain     = "${local.auth_domain}-opensearch-admin"
   opensearch_admin_pool_name       = "${local.name_prefix}-opensearch-admin"
   opensearch_admin_url             = "https://opensearch-admin.${var.public_domain}"
   opensearch_debugtask_domain      = "${local.auth_domain}-opensearch-debugtask"
-  opensearch_debugtask_pool_domain = "cdp-sirsi-opensearch-debugtask"
+  opensearch_debugtask_pool_domain = "${local.auth_domain}-opensearch-debugtask"
   opensearch_debugtask_pool_name   = "${local.name_prefix}-opensearch-debugtask"
   opensearch_debugtask_url         = "https://opensearch-debugtask.${var.public_domain}"
   opensearch_gateway_domain        = "${local.auth_domain}-opensearch-gateway"
-  opensearch_gateway_pool_domain   = "cdp-sirsi-opensearch-gateway"
+  opensearch_gateway_pool_domain   = "${local.auth_domain}-opensearch-gateway"
   opensearch_gateway_pool_name     = "${local.name_prefix}-opensearch-gateway"
   opensearch_gateway_url           = "https://opensearch-gateway.${var.public_domain}"
 
