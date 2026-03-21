@@ -63,6 +63,11 @@ resource "aws_cognito_user_pool" "opensearch_admin" {
 
   admin_create_user_config {
     allow_admin_create_user_only = true
+    invite_message_template {
+      email_subject = "CDP SIRSI ${var.environment} - OpenSearch Admin temporary password"
+      email_message = "You have been invited to CDP SIRSI ${var.environment} - OpenSearch Admin. Username: {username} Temporary password: {####}"
+      sms_message   = "CDP SIRSI ${var.environment} - OpenSearch Admin. Username: {username} Temp password: {####}"
+    }
   }
 
   password_policy {
@@ -72,6 +77,12 @@ resource "aws_cognito_user_pool" "opensearch_admin" {
     require_symbols                  = true
     require_uppercase                = true
     temporary_password_validity_days = 1
+  }
+
+  verification_message_template {
+    default_email_option = "CONFIRM_WITH_CODE"
+    email_subject        = "CDP SIRSI ${var.environment} - OpenSearch Admin verification code"
+    email_message        = "Your verification code for CDP SIRSI ${var.environment} - OpenSearch Admin is {####}"
   }
 
   username_configuration {
@@ -89,6 +100,11 @@ resource "aws_cognito_user_pool" "opensearch_gateway" {
 
   admin_create_user_config {
     allow_admin_create_user_only = true
+    invite_message_template {
+      email_subject = "CDP SIRSI ${var.environment} - OpenSearch Gateway temporary password"
+      email_message = "You have been invited to CDP SIRSI ${var.environment} - OpenSearch Gateway. Username: {username} Temporary password: {####}"
+      sms_message   = "CDP SIRSI ${var.environment} - OpenSearch Gateway. Username: {username} Temp password: {####}"
+    }
   }
 
   password_policy {
@@ -98,6 +114,12 @@ resource "aws_cognito_user_pool" "opensearch_gateway" {
     require_symbols                  = true
     require_uppercase                = true
     temporary_password_validity_days = 1
+  }
+
+  verification_message_template {
+    default_email_option = "CONFIRM_WITH_CODE"
+    email_subject        = "CDP SIRSI ${var.environment} - OpenSearch Gateway verification code"
+    email_message        = "Your verification code for CDP SIRSI ${var.environment} - OpenSearch Gateway is {####}"
   }
 
   username_configuration {
@@ -115,6 +137,11 @@ resource "aws_cognito_user_pool" "opensearch_debugtask" {
 
   admin_create_user_config {
     allow_admin_create_user_only = true
+    invite_message_template {
+      email_subject = "CDP SIRSI ${var.environment} - OpenSearch Debug Task temporary password"
+      email_message = "You have been invited to CDP SIRSI ${var.environment} - OpenSearch Debug Task. Username: {username} Temporary password: {####}"
+      sms_message   = "CDP SIRSI ${var.environment} - OpenSearch Debug Task. Username: {username} Temp password: {####}"
+    }
   }
 
   password_policy {
@@ -124,6 +151,12 @@ resource "aws_cognito_user_pool" "opensearch_debugtask" {
     require_symbols                  = true
     require_uppercase                = true
     temporary_password_validity_days = 1
+  }
+
+  verification_message_template {
+    default_email_option = "CONFIRM_WITH_CODE"
+    email_subject        = "CDP SIRSI ${var.environment} - OpenSearch Debug Task verification code"
+    email_message        = "Your verification code for CDP SIRSI ${var.environment} - OpenSearch Debug Task is {####}"
   }
 
   username_configuration {

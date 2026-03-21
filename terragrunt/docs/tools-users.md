@@ -8,9 +8,9 @@ and the **separate OpenSearch user pools** for admin/gateway/debug access.
 
 Pools:
 - **Shared tools pool:** `cdp-sirsi-tools`
-- **OpenSearch admin pool:** `cdp-sirsi-opensearch-admin` (domain prefix: `cdp-sirsi-opensearch-admin`)
-- **OpenSearch gateway pool:** `cdp-sirsi-opensearch-gateway` (domain prefix: `cdp-sirsi-opensearch-gateway`)
-- **OpenSearch debugtask pool:** `cdp-sirsi-opensearch-debugtask` (domain prefix: `cdp-sirsi-opensearch-debugtask`)
+- **OpenSearch admin pool:** `cdp-sirsi-opensearch-admin` (domain prefix: `cdp-sirsi-<env>-opensearch-admin`)
+- **OpenSearch gateway pool:** `cdp-sirsi-opensearch-gateway` (domain prefix: `cdp-sirsi-<env>-opensearch-gateway`)
+- **OpenSearch debugtask pool:** `cdp-sirsi-opensearch-debugtask` (domain prefix: `cdp-sirsi-<env>-opensearch-debugtask`)
 
 Each tool/service has its own **app client** (for example, s3-uploader, opensearch-admin),
 and access can be restricted via **Cognito groups** (only configured for the shared tools pool today).
@@ -100,42 +100,64 @@ ave aws cognito-idp list-user-pool-clients \
 
 Creates a user and sends an email invite with a temporary password. The user sets their own password on first login.
 
+### Shared tools pool
+
 ```shell
+POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
+  --query 'UserPools[?Name==`cdp-sirsi-tools`].Id' --output text)
+echo "POOL_ID=${POOL_ID}"
+
 EMAIL="ali.bahman@goaco.com"
 
+# Shared tools pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${POOL_ID}" \
   --username "${EMAIL}" \
   --user-attributes Name=email,Value="${EMAIL}" Name=email_verified,Value=true
 ```
 
-For OpenSearch admin:
+### OpenSearch admin pool
 
 ```shell
+OPENSEARCH_ADMIN_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
+  --query 'UserPools[?Name==`cdp-sirsi-opensearch-admin`].Id' --output text)
+echo "OPENSEARCH_ADMIN_POOL_ID=${OPENSEARCH_ADMIN_POOL_ID}"
+
 EMAIL="ali.bahman@goaco.com"
 
+# OpenSearch admin pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_ADMIN_POOL_ID}" \
   --username "${EMAIL}" \
   --user-attributes Name=email,Value="${EMAIL}" Name=email_verified,Value=true | jq .
 ```
 
-For OpenSearch gateway:
+### OpenSearch gateway pool
 
 ```shell
+OPENSEARCH_GATEWAY_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
+  --query 'UserPools[?Name==`cdp-sirsi-opensearch-gateway`].Id' --output text)
+echo "OPENSEARCH_GATEWAY_POOL_ID=${OPENSEARCH_GATEWAY_POOL_ID}"
+
 EMAIL="ali.bahman@goaco.com"
 
+# OpenSearch gateway pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_GATEWAY_POOL_ID}" \
   --username "${EMAIL}" \
   --user-attributes Name=email,Value="${EMAIL}" Name=email_verified,Value=true | jq .
 ```
 
-For OpenSearch debugtask:
+### OpenSearch debugtask pool
 
 ```shell
+OPENSEARCH_DEBUGTASK_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
+  --query 'UserPools[?Name==`cdp-sirsi-opensearch-debugtask`].Id' --output text)
+echo "OPENSEARCH_DEBUGTASK_POOL_ID=${OPENSEARCH_DEBUGTASK_POOL_ID}"
+
 EMAIL="ali.bahman@goaco.com"
 
+# OpenSearch debugtask pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_DEBUGTASK_POOL_ID}" \
   --username "${EMAIL}" \
@@ -314,17 +336,17 @@ Examples:
 
 - OpenSearch admin:
 ```
-https://cdp-sirsi-opensearch-admin.auth.eu-west-2.amazoncognito.com/logout?client_id=<ADMIN_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-admin.<env>.supplier-information.find-tender.service.gov.uk%2F
+https://cdp-sirsi-<env>-opensearch-admin.auth.eu-west-2.amazoncognito.com/logout?client_id=<ADMIN_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-admin.<env>.supplier-information.find-tender.service.gov.uk%2F
 ```
 
 - OpenSearch gateway:
 ```
-https://cdp-sirsi-opensearch-gateway.auth.eu-west-2.amazoncognito.com/logout?client_id=<GATEWAY_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-gateway.<env>.supplier-information.find-tender.service.gov.uk%2F
+https://cdp-sirsi-<env>-opensearch-gateway.auth.eu-west-2.amazoncognito.com/logout?client_id=<GATEWAY_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-gateway.<env>.supplier-information.find-tender.service.gov.uk%2F
 ```
 
 - OpenSearch debugtask:
 ```
-https://cdp-sirsi-opensearch-debugtask.auth.eu-west-2.amazoncognito.com/logout?client_id=<DEBUGTASK_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-debugtask.<env>.supplier-information.find-tender.service.gov.uk%2F
+https://cdp-sirsi-<env>-opensearch-debugtask.auth.eu-west-2.amazoncognito.com/logout?client_id=<DEBUGTASK_CLIENT_ID>&logout_uri=https%3A%2F%2Fopensearch-debugtask.<env>.supplier-information.find-tender.service.gov.uk%2F
 ```
 
 ## Self-signup and approvals
