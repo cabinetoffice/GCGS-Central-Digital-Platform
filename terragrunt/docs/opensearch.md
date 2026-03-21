@@ -61,12 +61,11 @@ GET /_plugins/_security/api/rolesmapping
 
 ## Permissions and role mappings
 
-These examples configure roles for the **service writer** (application role) and a **gateway readonly** role.
-Adjust backend role ARNs to match your environment.
-
-### Service writer role (application)
+These commands are intended to be run **in the opensearch-admin Dev Tools console**
+and in this order. Adjust backend role ARNs to match your environment.
 
 ```bash
+# Service writer role (application)
 GET _plugins/_security/api/roles/cdp_sirsi_service_writer
 PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
 {
@@ -97,9 +96,7 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
   ],
   "tenant_permissions": []
 }
-```
 
-```bash
 GET /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 {
@@ -109,11 +106,17 @@ PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
   "hosts": [],
   "users": []
 }
-```
 
-### Gateway readonly role
+# Dashboards role mapping (required for Dev Tools to avoid bulk 403s)
+GET _plugins/_security/api/roles/opensearch_dashboards_user
+PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
+{
+  "backend_roles": [
+    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task"
+  ]
+}
 
-```bash
+# Gateway readonly role
 GET _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
 PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
 {
@@ -137,9 +140,7 @@ PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
   ],
   "tenant_permissions": []
 }
-```
 
-```bash
 GET _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 {
@@ -150,11 +151,8 @@ PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
   "hosts": [],
   "users": []
 }
-```
 
-### Admin mappings (if needed in dev)
-
-```bash
+# Admin mappings (if needed in dev)
 GET _plugins/_security/api/rolesmapping/all_access
 PUT _plugins/_security/api/rolesmapping/all_access
 {
@@ -164,9 +162,7 @@ PUT _plugins/_security/api/rolesmapping/all_access
   "hosts": [],
   "users": []
 }
-```
 
-```bash
 GET _plugins/_security/api/rolesmapping/security_manager
 PUT _plugins/_security/api/rolesmapping/security_manager
 {

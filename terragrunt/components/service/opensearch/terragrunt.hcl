@@ -62,4 +62,6 @@ inputs = {
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
 
   ecs_sg_id = dependency.core_security_groups.outputs.ecs_sg_id
+
+  audit_logs_enabled = local.global_vars.locals.environments[local.global_vars.locals.environment].opensearch_audit_logs_enabled
 }
