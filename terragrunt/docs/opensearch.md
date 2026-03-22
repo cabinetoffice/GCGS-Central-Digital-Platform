@@ -62,7 +62,7 @@ GET /_plugins/_security/api/rolesmapping
 ## Permissions and role mappings
 
 These commands are intended to be run **in the opensearch-admin Dev Tools console**
-and in this order. Adjust backend role ARNs to match your environment.
+and in this order. Replace `<ACCOUNT_ID>` with the target account ID.
 
 ```bash
 # Service writer role (application)
@@ -87,6 +87,7 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
         "indices:admin/mapping/put",
         "indices:admin/settings/update",
         "indices:data/write/bulk",
+        "indices:data/write/bulk[s]",
         "indices:data/write/index",
         "indices:data/write/update",
         "indices:data/read/search",
@@ -101,19 +102,55 @@ GET /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 {
   "backend_roles": [
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
   ],
   "hosts": [],
   "users": []
 }
 
 # Dashboards role mapping (required for Dev Tools to avoid bulk 403s)
+# 1) Built-in dashboards role mapping
 GET _plugins/_security/api/roles/opensearch_dashboards_user
 PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
 {
   "backend_roles": [
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
   ]
+}
+
+# 2) Dashboards writer role (explicit bulk/index permissions on dashboards indices)
+GET _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
+PUT _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
+{
+  "cluster_permissions": [],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        ".opensearch_dashboards*",
+        ".kibana*",
+        ".kibana_task_manager*"
+      ],
+      "allowed_actions": [
+        "indices:data/write/index",
+        "indices:data/write/bulk",
+        "indices:data/write/bulk[s]",
+        "indices:data/read/search",
+        "indices:data/read/get",
+        "indices:admin/*"
+      ]
+    }
+  ],
+  "tenant_permissions": []
+}
+
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
+PUT _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
+{
+  "backend_roles": [
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
+  ],
+  "hosts": [],
+  "users": []
 }
 
 # Gateway readonly role
@@ -145,8 +182,8 @@ GET _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 {
   "backend_roles": [
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-readonly",
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-gateway"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-readonly",
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-gateway"
   ],
   "hosts": [],
   "users": []
@@ -157,7 +194,7 @@ GET _plugins/_security/api/rolesmapping/all_access
 PUT _plugins/_security/api/rolesmapping/all_access
 {
   "backend_roles": [
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-admin"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-admin"
   ],
   "hosts": [],
   "users": []
@@ -167,7 +204,7 @@ GET _plugins/_security/api/rolesmapping/security_manager
 PUT _plugins/_security/api/rolesmapping/security_manager
 {
   "backend_roles": [
-    "arn:aws:iam::471112892058:role/cdp-sirsi-ecs-task-opensearch-admin"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-admin"
   ],
   "hosts": [],
   "users": []
@@ -252,6 +289,31 @@ GET .fts_debug_test_current/_search
 ```bash
 DELETE fts_debug_test_public
 DELETE .fts_debug_test_internal
+```
+
+## Troubleshooting (403s / permissions)
+
+Use this block from **opensearch-admin Dev Tools** to verify roles/mappings and clear caches.
+
+```bash
+# Confirm which backend role you're authenticated as
+GET _plugins/_security/authinfo
+
+# Inspect role definitions (service writer + dashboards writer)
+GET _plugins/_security/api/roles/cdp_sirsi_service_writer
+GET _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
+GET _plugins/_security/api/roles/opensearch_dashboards_user
+
+# Inspect role mappings (service writer + dashboards writer + dashboards user)
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
+GET _plugins/_security/api/rolesmapping/opensearch_dashboards_user
+
+# Clear security cache after role/mapping updates
+DELETE _plugins/_security/api/cache
+
+# NOTE: "allow_restricted_indices" is not supported in this OpenSearch version.
+# If you see errors like unrecognized_property_exception, remove that field.
 ```
 
 ### Create a test index
