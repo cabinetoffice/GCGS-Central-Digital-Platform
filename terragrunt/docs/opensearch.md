@@ -87,6 +87,7 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
         "indices:admin/mapping/put",
         "indices:admin/settings/update",
         "indices:data/write/bulk",
+        "indices:data/write/bulk[s]",
         "indices:data/write/index",
         "indices:data/write/update",
         "indices:data/read/search",
@@ -132,6 +133,7 @@ PUT _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
       "allowed_actions": [
         "indices:data/write/index",
         "indices:data/write/bulk",
+        "indices:data/write/bulk[s]",
         "indices:data/read/search",
         "indices:data/read/get",
         "indices:admin/*"
@@ -287,6 +289,31 @@ GET .fts_debug_test_current/_search
 ```bash
 DELETE fts_debug_test_public
 DELETE .fts_debug_test_internal
+```
+
+## Troubleshooting (403s / permissions)
+
+Use this block from **opensearch-admin Dev Tools** to verify roles/mappings and clear caches.
+
+```bash
+# Confirm which backend role you're authenticated as
+GET _plugins/_security/authinfo
+
+# Inspect role definitions (service writer + dashboards writer)
+GET _plugins/_security/api/roles/cdp_sirsi_service_writer
+GET _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
+GET _plugins/_security/api/roles/opensearch_dashboards_user
+
+# Inspect role mappings (service writer + dashboards writer + dashboards user)
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
+GET _plugins/_security/api/rolesmapping/opensearch_dashboards_user
+
+# Clear security cache after role/mapping updates
+DELETE _plugins/_security/api/cache
+
+# NOTE: "allow_restricted_indices" is not supported in this OpenSearch version.
+# If you see errors like unrecognized_property_exception, remove that field.
 ```
 
 ### Create a test index
