@@ -55,4 +55,15 @@ public interface IOrganisationUserService
         Guid cdpPersonId,
         OrganisationRole organisationRole,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Removes a user from an organisation atomically (UM soft-delete + OI scope removal).
+    /// Idempotent — succeeds without error if membership is already inactive.
+    /// Throws <see cref="CO.CDP.UserManagement.Core.Exceptions.EntityNotFoundException"/> if the organisation or membership does not exist.
+    /// Throws <see cref="CO.CDP.UserManagement.Core.Exceptions.LastOwnerRemovalException"/> if removing would leave the organisation with no active Owner.
+    /// </summary>
+    Task RemoveUserFromOrganisationAsync(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken = default);
 }

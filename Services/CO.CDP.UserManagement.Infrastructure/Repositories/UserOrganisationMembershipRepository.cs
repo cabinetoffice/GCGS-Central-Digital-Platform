@@ -56,4 +56,12 @@ public class UserOrganisationMembershipRepository(UserManagementDbContext contex
     public async Task<OrganisationRoleEntity?> GetOrganisationRoleAsync(OrganisationRole role, CancellationToken cancellationToken = default) =>
         await Context.Set<OrganisationRoleEntity>()
             .FirstOrDefaultAsync(d => d.Id == (int)role, cancellationToken);
+
+    public async Task<int> CountActiveOwnersByOrganisationIdAsync(
+        int organisationId, CancellationToken cancellationToken = default) =>
+        await DbSet.CountAsync(
+            m => m.OrganisationId == organisationId
+                 && m.IsActive
+                 && m.OrganisationRoleId == (int)OrganisationRole.Owner,
+            cancellationToken);
 }
