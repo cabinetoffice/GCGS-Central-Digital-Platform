@@ -20,6 +20,11 @@ public class AuthorityBearerTokenHandler(
         var httpContext = httpContextAccessor.HttpContext;
         if (httpContext == null)
         {
+            logger.LogWarning(
+                "No HttpContext available while preparing bearer token for outbound request {Method} {RequestUri}.",
+                request.Method,
+                request.RequestUri);
+
             return await base.SendAsync(request, cancellationToken);
         }
 
@@ -28,6 +33,13 @@ public class AuthorityBearerTokenHandler(
         if (!string.IsNullOrEmpty(token))
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+        else
+        {
+            logger.LogWarning(
+                "No Authority bearer token available for outbound request {Method} {RequestUri}. Request will be sent without an Authorization header.",
+                request.Method,
+                request.RequestUri);
         }
 
         return await base.SendAsync(request, cancellationToken);
@@ -46,9 +58,16 @@ public class AuthorityBearerTokenHandler(
             DateTimeOffset.UtcNow
         );
 
+        logger.LogInformation(
+            "Evaluated Authority token lifecycle. Action: {Action}. HasStoredAuthorityTokens: {HasStoredAuthorityTokens}. HasOneLoginToken: {HasOneLoginToken}. OneLoginExpiry: {OneLoginExpiry}.",
+            action.GetType().Name,
+            currentTokens != null,
+            !string.IsNullOrWhiteSpace(oneLoginToken),
+            oneLoginExpiry);
+
         return action switch
         {
-            TokenAction.UseExisting useExisting => useExisting.Tokens.AccessToken,
+            TokenAction.UseExisting useExisting => LogAndReturnExistingToken(useExisting),
 
             TokenAction.RefreshTokens refreshTokens =>
                 await RefreshTokensAsync(httpContext, refreshTokens.RefreshToken, cancellationToken),
@@ -56,11 +75,24 @@ public class AuthorityBearerTokenHandler(
             TokenAction.FetchNew fetchNew =>
                 await FetchNewTokensAsync(httpContext, fetchNew.OneLoginAccessToken, cancellationToken),
 
-            TokenAction.UserLoggedOut or TokenAction.OneLoginExpired =>
-                await HandleLoggedOutAsync(httpContext),
+            TokenAction.UserLoggedOut =>
+                await HandleLoggedOutAsync(),
+
+            TokenAction.OneLoginExpired oneLoginExpired =>
+                await HandleOneLoginExpiredAsync(oneLoginExpired.ExpiryTime),
 
             _ => null
         };
+    }
+
+    private string LogAndReturnExistingToken(TokenAction.UseExisting useExisting)
+    {
+        logger.LogInformation(
+            "Using existing Authority access token. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+            useExisting.Tokens.AccessTokenExpiry,
+            useExisting.Tokens.RefreshTokenExpiry);
+
+        return useExisting.Tokens.AccessToken;
     }
 
     private async Task<string?> RefreshTokensAsync(HttpContext httpContext, string refreshToken, CancellationToken cancellationToken)
@@ -69,11 +101,17 @@ public class AuthorityBearerTokenHandler(
         {
             var newTokens = await tokenExchangeService.RefreshTokensAsync(refreshToken, cancellationToken);
             await sessionManager.SetTokensAsync(httpContext, newTokens);
+
+            logger.LogInformation(
+                "Refreshed Authority tokens successfully. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+                newTokens.AccessTokenExpiry,
+                newTokens.RefreshTokenExpiry);
+
             return newTokens.AccessToken;
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to refresh tokens");
+            logger.LogWarning(ex, "Failed to refresh Authority tokens.");
             return null;
         }
     }
@@ -84,19 +122,33 @@ public class AuthorityBearerTokenHandler(
         {
             var newTokens = await tokenExchangeService.ExchangeOneLoginTokenAsync(oneLoginToken, cancellationToken);
             await sessionManager.SetTokensAsync(httpContext, newTokens);
+
+            logger.LogInformation(
+                "Exchanged OneLogin token for Authority tokens successfully. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+                newTokens.AccessTokenExpiry,
+                newTokens.RefreshTokenExpiry);
+
             return newTokens.AccessToken;
         }
         catch (Exception ex)
         {
-            logger.LogWarning(ex, "Failed to exchange OneLogin token");
+            logger.LogWarning(ex, "Failed to exchange OneLogin token for Authority tokens.");
             return null;
         }
     }
 
-    private Task<string?> HandleLoggedOutAsync(HttpContext httpContext)
+    private Task<string?> HandleLoggedOutAsync()
     {
-        _ = httpContext;
-        logger.LogInformation("User is logged out or OneLogin token expired");
+        logger.LogInformation("No OneLogin token is available in the current authenticated session.");
+        return Task.FromResult<string?>(null);
+    }
+
+    private Task<string?> HandleOneLoginExpiredAsync(DateTimeOffset expiresAt)
+    {
+        logger.LogInformation(
+            "OneLogin token is expired. Expired at {ExpiresAt}.",
+            expiresAt);
+
         return Task.FromResult<string?>(null);
     }
 }

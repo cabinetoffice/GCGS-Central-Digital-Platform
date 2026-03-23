@@ -12,4 +12,8 @@ public class OneLoginOptions
 
     [Required]
     public string PrivateKey { get; init; } = string.Empty;
+
+    public string CallbackPath { get; init; } = "/signin-oidc";
+
+    public string SignedOutCallbackPath { get; init; } = "/signout-callback-oidc";
 }
