@@ -108,6 +108,7 @@ public static class ViewModelMapper
             Description: orgApp.Application?.Description ?? string.Empty,
             Category: orgApp.Application?.Category ?? string.Empty,
             IsEnabled: isEnabled,
+            IsEnabledByDefault: orgApp.Application?.IsEnabledByDefault ?? false,
             UsersAssigned: 0, // TODO: Calculate from user assignments
             RolesAvailable: 0 // TODO: Calculate from roles
         );
@@ -122,6 +123,7 @@ public static class ViewModelMapper
             Description: app.Description ?? string.Empty,
             Category: app.Category ?? string.Empty,
             IsEnabled: isEnabled,
+            IsEnabledByDefault: app.IsEnabledByDefault,
             UsersAssigned: 0,
             RolesAvailable: 0
         );
@@ -176,6 +178,7 @@ public static class ViewModelMapper
             ApplicationCategory: app.Category,
             SupportContact: null, // TODO: Add support contact when available
             IsEnabled: orgApp.IsActive,
+            IsEnabledByDefault: app.IsEnabledByDefault,
             EnabledAt: orgApp.EnabledAt,
             EnabledBy: orgApp.EnabledBy,
             UsersAssigned: activeAssignments.Count,
@@ -201,6 +204,7 @@ public static class ViewModelMapper
             ApplicationSlug: app.ClientId,
             ApplicationName: app.Name,
             ApplicationDescription: app.Description,
+            IsEnabledByDefault: app.IsEnabledByDefault,
             UsersAssigned: activeAssignments.Count,
             ActiveAssignments: activeAssignments.Count
         );

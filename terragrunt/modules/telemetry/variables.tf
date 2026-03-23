@@ -36,17 +36,22 @@ variable "environment" {
 variable "grafana_config" {
   description = "Grafana services configuration"
   type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
+}
+
+variable "pinned_service_version_sirsi" {
+  description = "Pinned version of the Sirsi service (optional)"
+  type        = string
+  default     = null
 }
 
 variable "private_subnet_ids" {
@@ -94,13 +99,12 @@ variable "role_telemetry_arn" {
 }
 
 variable "service_configs" {
-  description = "Map of services to their ports"
+  description = "Map of services to their config"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = optional(number)
   }))
 }
 

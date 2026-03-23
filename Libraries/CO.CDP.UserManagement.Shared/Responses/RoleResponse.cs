@@ -38,6 +38,12 @@ public record RoleResponse
     public IEnumerable<PermissionResponse>? Permissions { get; init; }
 
     /// <summary>
+    /// Gets or sets the party roles required to be assigned this role.
+    /// An empty or null collection means the role is available to all organisations.
+    /// </summary>
+    public IEnumerable<PartyRole>? RequiredPartyRoles { get; init; }
+
+    /// <summary>
     /// Gets or sets the creation timestamp.
     /// </summary>
     public required DateTimeOffset CreatedAt { get; init; }

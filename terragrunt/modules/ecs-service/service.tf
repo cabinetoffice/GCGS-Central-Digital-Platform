@@ -38,6 +38,13 @@ resource "aws_ecs_service" "this" {
   launch_type                        = "FARGATE"
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
+  force_new_deployment               = var.force_new_deployment
+  wait_for_steady_state              = false
+  health_check_grace_period_seconds  = var.alb_enabled || var.internal_alb_enabled ? var.health_check_grace_period_seconds : null
+
+  depends_on = [
+    time_sleep.listener_rule_propagation
+  ]
 
   network_configuration {
     assign_public_ip = false
@@ -46,13 +53,32 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "load_balancer" {
-    for_each = aws_lb_target_group.this
+    for_each = var.alb_enabled ? aws_lb_target_group.external : []
     content {
       target_group_arn = load_balancer.value.arn
       container_name   = var.name
-      container_port   = var.container_port
+      container_port   = var.service_port
+    }
+  }
+
+  dynamic "load_balancer" {
+    for_each = var.internal_alb_enabled ? aws_lb_target_group.internal : []
+    content {
+      target_group_arn = load_balancer.value.arn
+      container_name   = var.name
+      container_port   = var.service_port
     }
   }
 
   tags = var.tags
+}
+
+resource "time_sleep" "listener_rule_propagation" {
+  depends_on = [
+    aws_lb_listener_rule.external,
+    aws_lb_listener_rule.internal,
+    aws_lb_listener_rule.this_allowed_unauthenticated_paths
+  ]
+
+  create_duration = var.listener_rule_propagation_delay
 }

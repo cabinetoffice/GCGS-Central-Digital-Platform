@@ -11,13 +11,7 @@
       "retries": 3,
       "startPeriod": 10
     },
-    "portMappings": [
-      {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
-        "protocol" : "tcp"
-      }
-    ],
+    "portMappings": [],
     "logConfiguration": {
       "logDriver" : "awslogs",
       "options": {

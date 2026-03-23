@@ -1,3 +1,9 @@
+variable "alb_enabled" {
+  description = "Whether to create ALB target group and listener rule"
+  type        = bool
+  default     = true
+}
+
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
@@ -12,11 +18,6 @@ variable "cluster_id" {
 variable "container_definitions" {
   description = "A list of valid container definitions provided as a single valid JSON document"
   type        = string
-}
-
-variable "container_port" {
-  description = "The port number on the container that's bound to the host port"
-  type        = number
 }
 
 variable "cpu" {
@@ -43,13 +44,15 @@ variable "desired_count" {
 }
 
 variable "ecs_alb_sg_id" {
-  description = "Application load-balancer security group ID"
+  description = "Security group ID for the ECS ALB"
   type        = string
+  default     = null
 }
 
 variable "ecs_listener_arn" {
   description = "ECS Application Loadbalancer Listener ARN"
   type        = string
+  default     = null
 }
 
 variable "ecs_service_base_sg_id" {
@@ -81,6 +84,18 @@ variable "family" {
   type        = string
 }
 
+variable "force_new_deployment" {
+  description = "Force a new ECS deployment on every apply"
+  type        = bool
+  default     = false
+}
+
+variable "health_check_grace_period_seconds" {
+  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
+  type        = number
+  default     = 60
+}
+
 variable "healthcheck_healthy_threshold" {
   description = "Health-check threshold"
   default     = 3
@@ -106,9 +121,21 @@ variable "healthcheck_timeout" {
   default     = 6
 }
 
-variable "host_port" {
-  description = "The port number on the container instance to reserve for container, if not set we ignore port mapping and listener links"
-  type        = number
+variable "internal_alb_enabled" {
+  description = "Whether to create internal ALB listener rule"
+  type        = bool
+  default     = false
+}
+
+variable "internal_domain" {
+  description = "Internal domain used for internal service host headers"
+  type        = string
+  default     = null
+}
+
+variable "internal_listener_arn" {
+  description = "Internal ECS Application Loadbalancer Listener ARN"
+  type        = string
   default     = null
 }
 
@@ -130,6 +157,28 @@ variable "listener_name" {
   default     = null
 }
 
+variable "listener_priority" {
+  description = "Listener rule priority (optional override)"
+  type        = number
+  default     = null
+}
+
+variable "listener_rule_propagation_delay" {
+  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
+  type        = string
+  default     = "10s"
+}
+
+variable "path_routing_rules" {
+  description = "Optional list of extra listener rules based on path patterns."
+  type = list(object({
+    host_headers  = list(string)
+    path_patterns = list(string)
+    priority      = number
+  }))
+  default = []
+}
+
 variable "memory" {
   description = "Amount (in MiB) of memory used by the tas"
   type        = number
@@ -146,7 +195,7 @@ variable "private_subnet_ids" {
 }
 
 variable "product" {
-  description = "product's common attributes"
+  description = "Product's common attributes"
   type = object({
     name               = string
     resource_name      = string
@@ -157,6 +206,7 @@ variable "product" {
 variable "public_domain" {
   description = "The fully qualified domain name (FQDN) that may differ from the main delegated domain specified by 'public_hosted_zone_fqdn'. This domain represents the public-facing endpoint."
   type        = string
+  default     = null
 }
 
 variable "role_ecs_task_arn" {
@@ -169,9 +219,21 @@ variable "role_ecs_task_exec_arn" {
   type        = string
 }
 
+variable "service_port" {
+  description = "Container/listener port for this service"
+  type        = number
+  default     = null
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "tg_suffix" {
+  description = "Optional short suffix for target group names to allow create_before_destroy without name collision"
+  type        = string
+  default     = "v1"
 }
 
 variable "unhealthy_threshold" {

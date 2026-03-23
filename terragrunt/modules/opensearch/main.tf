@@ -44,7 +44,7 @@ resource "aws_opensearch_domain" "this" {
     internal_user_database_enabled = false
 
     master_user_options {
-      master_user_arn = var.role_ecs_task_arn
+      master_user_arn = var.role_ecs_task_opensearch_admin_arn
     }
   }
 
@@ -64,6 +64,15 @@ resource "aws_opensearch_domain" "this" {
     log_type                 = "ES_APPLICATION_LOGS"
     cloudwatch_log_group_arn = aws_cloudwatch_log_group.es_application.arn
     enabled                  = true
+  }
+
+  dynamic "log_publishing_options" {
+    for_each = var.audit_logs_enabled ? [1] : []
+    content {
+      log_type                 = "AUDIT_LOGS"
+      cloudwatch_log_group_arn = aws_cloudwatch_log_group.audit.arn
+      enabled                  = true
+    }
   }
 
   tags = var.tags

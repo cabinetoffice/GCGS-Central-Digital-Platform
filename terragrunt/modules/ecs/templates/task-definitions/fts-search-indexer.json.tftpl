@@ -15,6 +15,8 @@
     },
     "environment": [
       { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+      { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+      { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
       { "name" : "FtsDatabase__Database", "value" : "${db_name}"},
       { "name" : "FtsDatabase__Host", "value" : "${db_address}"},
       { "name" : "FtsDatabase__Port", "value" : "${db_port}"},

@@ -15,12 +15,10 @@ variable "certificate_arn" {
 
 variable "cloud_beaver_config" {
   description = "Cloud Beaver services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -150,12 +148,10 @@ variable "environment" {
 
 variable "healthcheck_config" {
   description = "Health-check services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -164,14 +160,27 @@ variable "is_production" {
   type        = bool
 }
 
+variable "manage_tools_alb_ecs_sg_rules" {
+  description = "Whether to manage Tools ALB <-> ECS security group rules"
+  type        = bool
+  default     = true
+}
+
 variable "opensearch_admin_config" {
   description = "OpenSearch Admin services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
+  })
+}
+
+variable "opensearch_debugtask_config" {
+  description = "OpenSearch Debug Task services configuration"
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -182,12 +191,10 @@ variable "opensearch_endpoint" {
 
 variable "opensearch_gateway_config" {
   description = "OpenSearch Gateway services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -255,6 +262,11 @@ variable "role_ecs_task_opensearch_admin_arn" {
   type        = string
 }
 
+variable "role_ecs_task_opensearch_gateway_arn" {
+  description = "OpenSearch Gateway Task IAM role ARN"
+  type        = string
+}
+
 variable "role_service_deployer_step_function_arn" {
   description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string
@@ -277,12 +289,10 @@ variable "s3_fts_bucket" {
 
 variable "s3_uploader_config" {
   description = "S3 Uploader services configuration"
-  type = object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+  type = object({ cpu = number
+    memory = number
+    name   = string
+    port   = number
   })
 }
 
@@ -304,11 +314,10 @@ variable "tags" {
 variable "tools_configs" {
   description = "Map of tools and their attributes"
   type = map(object({
-    cpu       = number
-    memory    = number
-    name      = string
-    port      = number
-    port_host = number
+    cpu    = number
+    memory = number
+    name   = string
+    port   = number
   }))
 }
 
@@ -323,6 +332,16 @@ variable "user_pool_arn_healthcheck" {
 }
 
 variable "user_pool_arn_opensearch_admin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_arn_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_arn_opensearch_gateway" {
   default = null
   type    = string
 }
@@ -347,6 +366,16 @@ variable "user_pool_client_id_opensearch_admin" {
   type    = string
 }
 
+variable "user_pool_client_id_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_opensearch_gateway" {
+  default = null
+  type    = string
+}
+
 variable "user_pool_client_id_tools_s3_uploader" {
   default = null
   type    = string
@@ -363,6 +392,16 @@ variable "user_pool_domain_healthcheck" {
 }
 
 variable "user_pool_domain_opensearch_admin" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_opensearch_debugtask" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_domain_opensearch_gateway" {
   default = null
   type    = string
 }

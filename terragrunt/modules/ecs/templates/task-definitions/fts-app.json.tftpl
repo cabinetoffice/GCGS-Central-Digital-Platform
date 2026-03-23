@@ -6,8 +6,7 @@
     "memory": ${memory},
     "portMappings": [
       {
-        "containerPort": ${container_port},
-        "hostPort": ${host_port},
+        "containerPort": ${service_port},
         "protocol" : "tcp"
       }
     ],
@@ -21,12 +20,17 @@
     },
     "environment": [
       { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
-      { "name" : "ASPNETCORE_HTTP_PORTS", "value" : "${host_port}"},
+      { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+      { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+      { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
+      { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
+      { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
       { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
       { "name" : "FtsService", "value" : "${fts_service_url}"},
-      { "name" : "SearchApiClient__BaseUrl", "value" : "https://fts-search-api.${public_domain}"}
+      { "name" : "SearchApiClient__BaseUrl", "value" : "${use_internal_service_urls ? internal_service_urls["fts-search-api"] : public_service_urls["fts-search-api"]}"}
     ],
     "secrets": [
+      { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
       { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
       { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
       { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"}

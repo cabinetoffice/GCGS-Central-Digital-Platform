@@ -4,10 +4,6 @@ data "aws_region" "current" {}
 
 # Configure the provider to assume the role in the orchestrator account and fetch the latest service version
 provider "aws" {
-  alias  = "orchestrator"
-  region = "eu-west-2"
-}
-provider "aws" {
   alias  = "orchestrator_assume_role"
   region = "eu-west-2"
   assume_role {
@@ -77,6 +73,10 @@ data "aws_secretsmanager_secret" "one_login_forward_logout_notification_api_key"
   name = "${local.name_prefix}-one-login-forward-logout-notification-api-key"
 }
 
+data "aws_secretsmanager_secret" "user_management_servicekey_apikey" {
+  name = "${local.name_prefix}-user-management-servicekey-apikey"
+}
+
 data "aws_iam_policy_document" "ecs_task_access_secrets" {
   statement {
     sid    = "AllowAccessToProductSecrets"
@@ -119,7 +119,8 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
     resources = [
       var.queue_av_scanner_arn,
       var.queue_entity_verification_arn,
-      var.queue_organisation_arn
+      var.queue_organisation_arn,
+      var.queue_user_management_arn
     ]
   }
 }
@@ -199,26 +200,17 @@ data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" 
 data "aws_iam_policy_document" "step_function_manage_services" {
   statement {
     actions = ["ecs:UpdateService"]
-
-    resources = concat(
-      [
-        for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/${service}"
-      ],
-      [
-        for service, config in local.service_configs :
-        "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/${service}"
-      ]
-    )
-
+    resources = [
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.main_cluster_name}/*",
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:service/${local.php_cluster_name}/*"
+    ]
     sid = "ManageECSService"
   }
 
   statement {
     actions = ["ecs:RunTask"]
     resources = [
-      for task in local.tasks :
-      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*${task}:*"
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/*"
     ]
     sid = "MangeECSTask"
   }
@@ -256,4 +248,3 @@ data "aws_iam_policy_document" "ecr_pull_from_orchestrator" {
     resources = ["*"]
   }
 }
-

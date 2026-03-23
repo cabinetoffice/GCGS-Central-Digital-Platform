@@ -14,6 +14,7 @@ public class OrganisationUserService : IOrganisationUserService
     private readonly IOrganisationRepository _organisationRepository;
     private readonly IUserOrganisationMembershipRepository _membershipRepository;
     private readonly IUserApplicationAssignmentRepository _assignmentRepository;
+    private readonly IRoleMappingService _roleMappingService;
     private readonly ICdpMembershipSyncService _membershipSyncService;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<OrganisationUserService> _logger;
@@ -22,6 +23,7 @@ public class OrganisationUserService : IOrganisationUserService
         IOrganisationRepository organisationRepository,
         IUserOrganisationMembershipRepository membershipRepository,
         IUserApplicationAssignmentRepository assignmentRepository,
+        IRoleMappingService roleMappingService,
         ICdpMembershipSyncService membershipSyncService,
         IUnitOfWork unitOfWork,
         ILogger<OrganisationUserService> logger)
@@ -29,6 +31,7 @@ public class OrganisationUserService : IOrganisationUserService
         _organisationRepository = organisationRepository;
         _membershipRepository = membershipRepository;
         _assignmentRepository = assignmentRepository;
+        _roleMappingService = roleMappingService;
         _membershipSyncService = membershipSyncService;
         _unitOfWork = unitOfWork;
         _logger = logger;
@@ -52,16 +55,11 @@ public class OrganisationUserService : IOrganisationUserService
 
         var membershipIds = memberships.Select(membership => membership.Id).ToArray();
         var assignments = await _assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
-        var assignmentsByMembership = assignments.ToLookup(assignment => assignment.UserOrganisationMembershipId);
+        var assignmentsByMembership = assignments.ToLookup(a => a.UserOrganisationMembershipId);
 
         foreach (var membership in memberships)
         {
-            var membershipAssignments = assignmentsByMembership[membership.Id].ToArray();
-            _logger.LogDebug("Membership {MembershipId} has {AssignmentCount} assignments", membership.Id, membershipAssignments.Length);
-            foreach (var assignment in membershipAssignments)
-            {
-                membership.ApplicationAssignments.Add(assignment);
-            }
+            SetAssignments(membership, assignmentsByMembership[membership.Id]);
         }
 
         return memberships;
@@ -90,10 +88,7 @@ public class OrganisationUserService : IOrganisationUserService
         }
 
         var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
-        foreach (var assignment in assignments)
-        {
-            membership.ApplicationAssignments.Add(assignment);
-        }
+        SetAssignments(membership, assignments);
 
         return membership;
     }
@@ -121,12 +116,21 @@ public class OrganisationUserService : IOrganisationUserService
         }
 
         var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
+        SetAssignments(membership, assignments);
+
+        return membership;
+    }
+
+    private static void SetAssignments(
+        UserOrganisationMembership membership,
+        IEnumerable<UserApplicationAssignment> assignments)
+    {
+        membership.ApplicationAssignments.Clear();
+
         foreach (var assignment in assignments)
         {
             membership.ApplicationAssignments.Add(assignment);
         }
-
-        return membership;
     }
 
     public async Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
@@ -150,11 +154,11 @@ public class OrganisationUserService : IOrganisationUserService
             throw new EntityNotFoundException(nameof(UserOrganisationMembership), cdpPersonId);
         }
 
-        membership.OrganisationRole = organisationRole;
+        await _roleMappingService.ApplyRoleDefinitionAsync(membership, organisationRole, cancellationToken);
         _membershipRepository.Update(membership);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        await _membershipSyncService.SyncMembershipRoleChangedAsync(membership, cancellationToken);
+        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
 
         return membership;
     }

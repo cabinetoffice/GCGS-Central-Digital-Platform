@@ -80,6 +80,15 @@
     margin-bottom: 20px;
 }
 
+.govuk-tag {
+    max-width: none;
+}
+
+.app-application-role-card {
+    border: 1px solid #b1b4b6;
+    padding: 20px;
+}
+
 .govuk-blue-banner {
     background: #1d70b8;
     padding: 30px 0;
@@ -103,3 +112,20 @@
     padding-right: 15px;
 }
 
+/* Destructive notification banner */
+.app-destructive-notification-banner {
+    border-color: #d4351c;
+    margin-bottom: 40px;
+}
+
+.app-destructive-notification-banner .govuk-notification-banner__header {
+    background-color: #d4351c;
+}
+
+.app-destructive-notification-banner .govuk-notification-banner__heading {
+    color: #d4351c;
+}
+
+.app-destructive-notification-banner .govuk-body {
+    margin-bottom: 0;
+}

@@ -1,8 +1,6 @@
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Api.Models;
-using CO.CDP.UserManagement.Api.FeatureFlags;
-using CO.CDP.UserManagement.Shared.FeatureFlags;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -17,7 +15,6 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [ApiController]
 [Route("api/organisations/{orgId:int}/users/{userId}/assignments")]
 [Authorize]
-[RequireFeatureFlag(Shared.FeatureFlags.FeatureFlags.UserFlows.MembershipFlowEnabled)]
 public class UserAssignmentsController : ControllerBase
 {
     private readonly IUserAssignmentService _userAssignmentService;
@@ -35,7 +32,7 @@ public class UserAssignmentsController : ControllerBase
     /// Gets all assignments for a user within an organisation.
     /// </summary>
     /// <param name="orgId">The organisation identifier.</param>
-    /// <param name="userId">The user principal identifier.</param>
+    /// <param name="userId">The CDP Person GUID of the user.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of user application assignments.</returns>
     [HttpGet]
@@ -61,7 +58,7 @@ public class UserAssignmentsController : ControllerBase
     /// Assigns a user to an application with specific roles.
     /// </summary>
     /// <param name="orgId">The organisation identifier.</param>
-    /// <param name="userId">The user principal identifier.</param>
+    /// <param name="userId">The CDP Person GUID of the user.</param>
     /// <param name="request">The assignment request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The created assignment.</returns>
@@ -107,7 +104,7 @@ public class UserAssignmentsController : ControllerBase
     /// Updates a user's role assignments for an application.
     /// </summary>
     /// <param name="orgId">The organisation identifier.</param>
-    /// <param name="userId">The user principal identifier.</param>
+    /// <param name="userId">The CDP Person GUID of the user.</param>
     /// <param name="assignmentId">The assignment identifier.</param>
     /// <param name="request">The update assignment request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -126,6 +123,8 @@ public class UserAssignmentsController : ControllerBase
         try
         {
             var assignment = await _userAssignmentService.UpdateAssignmentAsync(
+                userId,
+                orgId,
                 assignmentId,
                 request.RoleIds,
                 cancellationToken);
@@ -146,7 +145,7 @@ public class UserAssignmentsController : ControllerBase
     /// Revokes a user's assignment to an application.
     /// </summary>
     /// <param name="orgId">The organisation identifier.</param>
-    /// <param name="userId">The user principal identifier.</param>
+    /// <param name="userId">The CDP Person GUID of the user.</param>
     /// <param name="assignmentId">The assignment identifier.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>No content.</returns>
@@ -161,12 +160,16 @@ public class UserAssignmentsController : ControllerBase
     {
         try
         {
-            await _userAssignmentService.RevokeAssignmentAsync(assignmentId, cancellationToken);
+            await _userAssignmentService.RevokeAssignmentAsync(userId, orgId, assignmentId, cancellationToken);
             return NoContent();
         }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (SystemInvalidOperationException ex)
+        {
+            return BadRequest(new ErrorResponse { Message = ex.Message, Code = "INVALID_OPERATION" });
         }
     }
 }

@@ -18,6 +18,14 @@ output "ecs_cluster_name" {
   value = local.main_cluster_name
 }
 
+output "ecs_internal_alb_dns_name" {
+  value = aws_lb.ecs_internal.dns_name
+}
+
+output "ecs_internal_listener_arn" {
+  value = local.internal_ecs_listener_arn
+}
+
 output "ecs_listener_arn" {
   value = local.main_ecs_listener_arn
 }
@@ -42,6 +50,10 @@ output "fts_ecs_listener_arn" {
   value = local.fts_ecs_listener_arn
 }
 
+output "internal_domain" {
+  value = local.internal_domain
+}
+
 output "php_ecs_cluster_id" {
   value = local.php_cluster_id
 }
@@ -59,15 +71,36 @@ output "s3_fts_bucket" {
 }
 
 output "service_configs" {
-  value = local.service_configs
+  value = {
+    for name, config in local.service_configs :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
 }
 
 output "service_configs_fts" {
-  value = local.service_configs_fts_cluster
+  value = {
+    for name, config in local.service_configs_fts :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
 }
 
 output "service_configs_php" {
-  value = local.service_configs_sirsi_php_cluster
+  value = {
+    for name, config in local.service_configs_php :
+    name => {
+      cpu           = config.cpu
+      desired_count = config.desired_count
+      memory        = config.memory
+    }
+  }
 }
 
 output "service_version_cfs" {
@@ -106,6 +139,8 @@ output "services_target_group_arn_suffix_map" {
     (module.ecs_service_outbox_processor_organisation.service_name)        = module.ecs_service_outbox_processor_organisation.service_target_group_arn_suffix,
     (module.ecs_service_person.service_name)                               = module.ecs_service_person.service_target_group_arn_suffix,
     (module.ecs_service_tenant.service_name)                               = module.ecs_service_tenant.service_target_group_arn_suffix,
+    (module.ecs_service_user_management_api.service_name)                  = module.ecs_service_user_management_api.service_target_group_arn_suffix,
+    (module.ecs_service_user_management_app.service_name)                  = module.ecs_service_user_management_app.service_target_group_arn_suffix,
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
     (module.ecs_service_fts.service_name)                                  = module.ecs_service_fts.service_target_group_arn_suffix,
   }

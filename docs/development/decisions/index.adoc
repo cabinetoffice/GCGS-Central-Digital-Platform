@@ -24,4 +24,8 @@ include::0006-acceptance-tests.adoc[]
 
 include::0007-shared-sessions.adoc[]
 
+include::0008-git-merge-strategy.adoc[]
+
+include::0009-outbox-processor-topology-and-fanout.adoc[]
+
 :leveloffset: -1

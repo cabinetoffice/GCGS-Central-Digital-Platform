@@ -2,7 +2,7 @@ using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
+using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
@@ -76,7 +76,7 @@ public class CreateOrganisationJoinRequestUseCase(
 
     private Persistence.OrganisationJoinRequest CreateOrganisationJoinRequest(
         Persistence.Organisation organisation,
-        Person person
+        OiPerson person
     )
     {
         var organisationJoinRequest = new Persistence.OrganisationJoinRequest
@@ -90,7 +90,7 @@ public class CreateOrganisationJoinRequestUseCase(
         return organisationJoinRequest;
     }
 
-    private async Task NotifyOrgAdminsOfApprovalRequest(Persistence.Organisation organisation, Person person)
+    private async Task NotifyOrgAdminsOfApprovalRequest(Persistence.Organisation organisation, OiPerson person)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinNotifyOrgAdminTemplateId") ?? "";
@@ -138,7 +138,7 @@ public class CreateOrganisationJoinRequestUseCase(
         }
     }
 
-    private async Task NotifyUserRequestSent(Persistence.Organisation organisation, Person person)
+    private async Task NotifyUserRequestSent(Persistence.Organisation organisation, OiPerson person)
     {
         var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinConfirmationEmailTemplateId") ?? "";
 
@@ -174,7 +174,7 @@ public class CreateOrganisationJoinRequestUseCase(
         }
     }
 
-    private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, Person person)
+    private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, OiPerson person)
     {
         var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
 

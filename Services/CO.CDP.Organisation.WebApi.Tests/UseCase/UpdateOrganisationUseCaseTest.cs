@@ -1,5 +1,6 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
@@ -7,9 +8,11 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationSync;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.FeatureManagement;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -23,6 +26,9 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly IConfiguration _configuration;
     private readonly Mock<IGovUKNotifyApiClient> _notifyClient = new();
     private readonly Mock<ILogger<UpdateOrganisationUseCase>> _logger = new();
+    private readonly Mock<IAtomicScope> _atomicScope = new();
+    private readonly Mock<IOrganisationMembershipSync> _membershipSync = new();
+    private readonly Mock<IFeatureManager> _featureManager = new();
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _anotherOrganisationId = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
@@ -43,7 +49,11 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration, _notifyClient.Object, _logger.Object);
+        _atomicScope
+            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<bool>>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<CancellationToken, Task<bool>>, CancellationToken>((action, ct) => action(ct));
+
+        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration, _notifyClient.Object, _logger.Object, _atomicScope.Object, _membershipSync.Object, _featureManager.Object);
     }
 
     [Fact]

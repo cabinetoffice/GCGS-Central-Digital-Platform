@@ -22,6 +22,7 @@ public class MappingExtensionsTests
             Description = "desc",
             Category = "cat",
             IsActive = true,
+            IsEnabledByDefault = true,
             CreatedAt = createdAt
         };
 
@@ -30,6 +31,7 @@ public class MappingExtensionsTests
         response.Id.Should().Be(1);
         response.ClientId.Should().Be("client");
         response.Category.Should().Be("cat");
+        response.IsEnabledByDefault.Should().BeTrue();
         response.CreatedAt.Should().Be(createdAt);
     }
 
@@ -41,13 +43,15 @@ public class MappingExtensionsTests
             Id = 2,
             Name = "App",
             ClientId = "client",
-            IsActive = false
+            IsActive = false,
+            IsEnabledByDefault = true
         };
 
         var response = application.ToSummaryResponse();
 
         response.Id.Should().Be(2);
         response.IsActive.Should().BeFalse();
+        response.IsEnabledByDefault.Should().BeTrue();
     }
 
     [Fact]
@@ -221,7 +225,7 @@ public class MappingExtensionsTests
             OrganisationId = 11,
             UserPrincipalId = "user-1",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero)
@@ -248,14 +252,14 @@ public class MappingExtensionsTests
             Id = 14,
             OrganisationId = 11,
             UserPrincipalId = "user-1",
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero)
         };
         var orgApp = new OrganisationApplication
         {
-            Id = 20,
+            Id = 1,
             OrganisationId = 11,
             ApplicationId = 12,
             IsActive = true,

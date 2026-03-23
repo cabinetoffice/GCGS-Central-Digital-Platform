@@ -1,7 +1,7 @@
-@using CO.CDP.UserManagement.Shared.Enums
-@model CO.CDP.UserManagement.App.Models.ChangeUserRoleViewModel
+@model CO.CDP.UserManagement.App.Models.ChangeUserRolePageViewModel
 @{
-    ViewData["Title"] = "Change organisation role";
+    ViewData["Title"] = "What is their role in your organisation?";
+    var currentRoleTagClass = OrganisationRoleContent.GetTagClass(Model.CurrentRole);
 }
 
 @section BeforeContent {
@@ -13,27 +13,24 @@
 
         <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
 
-        <h1 class="govuk-heading-xl">Change organisation role</h1>
+        <div class="app-filter-container govuk-!-margin-bottom-6">
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">Changing user role:</p>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-2">@Model.UserDisplayName</h2>
+            <p class="govuk-body govuk-!-margin-bottom-2">@Model.Email</p>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                Current role: <strong class="govuk-tag @currentRoleTagClass">@Model.CurrentRole</strong>
+            </p>
+        </div>
 
-        <dl class="govuk-summary-list govuk-summary-list--no-border">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">User</dt>
-                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Email</dt>
-                <dd class="govuk-summary-list__value">@Model.Email</dd>
-            </div>
-        </dl>
+        <h1 class="govuk-heading-xl">What is their role in your organisation?</h1>
+        <p class="govuk-body">This determines what the user can manage at the organisation level, separate to application-specific roles.</p>
 
         <form method="post">
             @Html.AntiForgeryToken()
 
             <div class="govuk-form-group @(ViewData.ModelState.ContainsKey("organisationRole") && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
                 <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                        <h2 class="govuk-fieldset__heading">Select a role</h2>
-                    </legend>
+                    <legend class="govuk-visually-hidden">What is their role in your organisation?</legend>
                     @if (ViewData.ModelState.ContainsKey("organisationRole") && !ViewData.ModelState.IsValid)
                     {
                         <p class="govuk-error-message">
@@ -41,21 +38,39 @@
                         </p>
                     }
                     <div class="govuk-radios" data-module="govuk-radios">
-                        @foreach (var role in Enum.GetValues<OrganisationRole>())
+                        @foreach (var roleOption in Model.RoleOptions)
                         {
-                            var roleValue = role.ToString();
-                            var isChecked = Model.SelectedRole == role;
+                            var roleValue = roleOption.Role.ToString();
+                            var isChecked = Model.SelectedRole == roleOption.Role;
                             <div class="govuk-radios__item">
                                 <input class="govuk-radios__input" id="role-@roleValue" name="organisationRole" type="radio" value="@roleValue" checked="@isChecked">
-                                <label class="govuk-label govuk-radios__label" for="role-@roleValue">@role</label>
+                                <label class="govuk-label govuk-radios__label" for="role-@roleValue"><strong>@roleOption.DisplayName</strong></label>
+                                <div class="govuk-hint govuk-radios__hint">
+                                    @roleOption.Description
+                                </div>
                             </div>
                         }
                     </div>
                 </fieldset>
             </div>
 
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">More about organisation roles</span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body"><strong>Organisation roles vs Application roles</strong></p>
+                    <p class="govuk-body">Organisation roles control what a user can do at the organisation level, such as managing users and enabling applications. Application roles are separate and control what a user can do within each specific application they are assigned to.</p>
+                    <p class="govuk-body">A user needs both:</p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>An organisation role to be part of your organisation</li>
+                        <li>Application roles to access specific applications</li>
+                    </ul>
+                </div>
+            </details>
+
             <div class="govuk-button-group">
-                <button class="govuk-button" data-module="govuk-button">Save</button>
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
                 <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
             </div>
         </form>

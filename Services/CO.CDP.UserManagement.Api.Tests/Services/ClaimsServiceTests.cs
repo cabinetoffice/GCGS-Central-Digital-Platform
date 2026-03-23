@@ -37,7 +37,7 @@ public class ClaimsServiceTests
         // Assert
         result.Should().NotBeNull();
         result.UserPrincipalId.Should().Be(userId);
-        result.OrganisationMemberships.Should().BeEmpty();
+        result.Organisations.Should().BeEmpty();
     }
 
     [Fact]
@@ -45,13 +45,15 @@ public class ClaimsServiceTests
     {
         // Arrange
         var userId = "user123";
+        var orgGuid = Guid.NewGuid();
+        var appGuid = Guid.NewGuid();
 
         var org = new CoreEntities.Organisation
         {
             Id = 1,
             Name = "Test Org",
             Slug = "test-org",
-            CdpOrganisationGuid = Guid.NewGuid(),
+            CdpOrganisationGuid = orgGuid,
             IsActive = true
         };
 
@@ -61,13 +63,14 @@ public class ClaimsServiceTests
             UserPrincipalId = userId,
             OrganisationId = 1,
             Organisation = org,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true
         };
 
         var app = new Application
         {
             Id = 1,
+            Guid = appGuid,
             Name = "Test App",
             ClientId = "test-app-client",
             IsActive = true
@@ -122,17 +125,16 @@ public class ClaimsServiceTests
         // Assert
         result.Should().NotBeNull();
         result.UserPrincipalId.Should().Be(userId);
-        result.OrganisationMemberships.Should().HaveCount(1);
+        result.Organisations.Should().HaveCount(1);
 
-        var orgClaim = result.OrganisationMemberships.First();
-        orgClaim.OrganisationId.Should().Be(1);
+        var orgClaim = result.Organisations.First();
+        orgClaim.OrganisationId.Should().Be(orgGuid);
         orgClaim.OrganisationName.Should().Be("Test Org");
-        orgClaim.OrganisationSlug.Should().Be("test-org");
         orgClaim.OrganisationRole.Should().Be("Admin");
 
-        orgClaim.ApplicationAssignments.Should().HaveCount(1);
-        var appClaim = orgClaim.ApplicationAssignments.First();
-        appClaim.ApplicationId.Should().Be(1);
+        orgClaim.Applications.Should().HaveCount(1);
+        var appClaim = orgClaim.Applications.First();
+        appClaim.ApplicationId.Should().Be(appGuid);
         appClaim.ApplicationName.Should().Be("Test App");
         appClaim.ClientId.Should().Be("test-app-client");
         appClaim.Roles.Should().Contain("Admin");

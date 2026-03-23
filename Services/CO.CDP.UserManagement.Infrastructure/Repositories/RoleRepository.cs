@@ -8,12 +8,8 @@ namespace CO.CDP.UserManagement.Infrastructure.Repositories;
 /// <summary>
 /// Repository implementation for ApplicationRole entities.
 /// </summary>
-public class RoleRepository : Repository<ApplicationRole>, IRoleRepository
+public class RoleRepository(UserManagementDbContext context) : Repository<ApplicationRole>(context), IRoleRepository
 {
-    public RoleRepository(UserManagementDbContext context) : base(context)
-    {
-    }
-
     public async Task<IEnumerable<ApplicationRole>> GetByApplicationIdAsync(int applicationId, CancellationToken cancellationToken = default)
     {
         return await DbSet
@@ -34,5 +30,13 @@ public class RoleRepository : Repository<ApplicationRole>, IRoleRepository
         return await DbSet
             .Include(r => r.Permissions)
             .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+    }
+
+    public async Task<IReadOnlyList<ApplicationRole>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken = default)
+    {
+        var idArray = ids.Distinct().ToArray();
+        return await DbSet
+            .Where(r => idArray.Contains(r.Id))
+            .ToListAsync(cancellationToken);
     }
 }

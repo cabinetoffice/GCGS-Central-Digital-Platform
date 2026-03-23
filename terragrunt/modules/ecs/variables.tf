@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "alb_internal_sg_id" {
+  description = "Internal application load-balancer security group ID"
+  type        = string
+}
+
 variable "alb_sg_id" {
   description = "Application load-balancer security group ID"
   type        = string
@@ -123,9 +128,20 @@ variable "fts_extra_host_headers" {
   default     = []
 }
 
+variable "internal_hosted_zone_id" {
+  description = "ID of the internal hosted zone"
+  type        = string
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
+}
+
+variable "manage_alb_ecs_sg_rules" {
+  description = "Whether to manage ALB <-> ECS security group rules for shared service ports"
+  type        = bool
+  default     = true
 }
 
 variable "onelogin_logout_notification_urls" {
@@ -230,6 +246,16 @@ variable "queue_organisation_url" {
   type        = string
 }
 
+variable "queue_user_management_arn" {
+  description = "ARN of the User Management's SQS queue"
+  type        = string
+}
+
+variable "queue_user_management_url" {
+  description = "URL of the User Management's outbound SQS queue"
+  type        = string
+}
+
 variable "redis_auth_token_arn" {
   description = "The ARN of the Secrets Manager secret storing the Redis authentication token."
   type        = string
@@ -291,16 +317,16 @@ variable "role_terraform_arn" {
 }
 
 variable "service_configs" {
-  description = "Map of services to their ports"
+  description = "Map of service configuration metadata"
   type = map(object({
-    cluster       = string
-    cpu           = number
-    desired_count = number
-    memory        = number
-    name          = string
-    port          = number
-    port_host     = number
-    type          = string
+    cluster           = string
+    cpu               = number
+    desired_count     = number
+    listener_priority = optional(number)
+    memory            = number
+    name              = string
+    port              = optional(number)
+    type              = string
   }))
 }
 
@@ -317,6 +343,18 @@ variable "ses_configuration_set_name" {
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "use_internal_issuer" {
+  description = "Whether to use internal authority URL as token issuer (null defaults to environment-based behavior)"
+  type        = bool
+  default     = null
+}
+
+variable "use_internal_service_urls" {
+  description = "Whether to use internal service URLs for service-to-service calls (null defaults to environment-based behavior)"
+  type        = bool
+  default     = null
 }
 
 variable "user_pool_arn" {
@@ -368,6 +406,10 @@ variable "user_pool_fts_healthcheck_client_id" {
 }
 
 variable "user_pool_fts_healthcheck_domain" {
+  type = string
+}
+
+variable "user_pool_user_management_client_id" {
   type = string
 }
 

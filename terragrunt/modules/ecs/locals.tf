@@ -1,40 +1,39 @@
 locals {
 
-  main_cluster_id       = aws_ecs_cluster.this.id
-  main_cluster_name     = aws_ecs_cluster.this.name
-  main_ecs_listener_arn = aws_lb_listener.ecs.arn
-  php_services          = ["cfs", "cfs-scheduler", "fts", "fts-healthcheck", "fts-scheduler"]
-  php_cluster_id        = aws_ecs_cluster.that.id
-  php_cluster_name      = aws_ecs_cluster.that.name
-  php_ecs_listener_arn  = aws_lb_listener.ecs_php.arn
-  fts_cluster_id        = aws_ecs_cluster.fts.id
-  fts_cluster_name      = aws_ecs_cluster.fts.name
-  fts_ecs_listener_arn  = aws_lb_listener.ecs_fts.arn
-
+  aspcore_environment          = "Aws${title(var.environment)}"
+  cognito_enabled              = contains(["development", "staging"], var.environment)
+  fts_cluster_id               = aws_ecs_cluster.fts.id
+  fts_cluster_name             = aws_ecs_cluster.fts.name
+  fts_ecs_listener_arn         = aws_lb_listener.ecs_fts.arn
+  internal_prefix              = length("internal.${var.public_domain}") > 64 ? "in" : "internal"
+  internal_domain              = "${local.internal_prefix}.${var.public_domain}"
+  internal_ecs_listener_arn    = aws_lb_listener.ecs_internal.arn
+  use_internal_service_urls    = false # var.use_internal_service_urls != null ? var.use_internal_service_urls : contains(["development", "staging", "integration"], var.environment)
+  use_internal_issuer          = false # var.use_internal_issuer != null ? var.use_internal_issuer : contains(["development", "staging", "integration"], var.environment)
+  main_cluster_id              = aws_ecs_cluster.sirsi.id
+  main_cluster_name            = aws_ecs_cluster.sirsi.name
+  main_ecs_listener_arn        = aws_lb_listener.ecs.arn
+  name_prefix                  = var.product.resource_name
+  name_prefix_fts              = "${local.name_prefix}-fts"
+  name_prefix_php              = "${local.name_prefix}-php"
+  php_cluster_id               = aws_ecs_cluster.php.id
+  php_cluster_name             = aws_ecs_cluster.php.name
+  php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
-  aspcore_environment = "Aws${title(var.environment)}"
-
-  cognito_enabled = contains(["development", "staging"], var.environment)
-
+  db_ev_password      = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn    = var.db_ev_cluster_credentials_arn
+  db_ev_username      = "${local.db_ev_secret_arn}:username::"
+  db_fts_password     = "${local.db_fts_secret_arn}:password::"
   db_fts_secret_arn   = var.db_fts_cluster_credentials_arn
+  db_fts_username     = "${local.db_fts_secret_arn}:username::"
+  db_sirsi_password   = "${local.db_sirsi_secret_arn}:password::"
   db_sirsi_secret_arn = var.db_sirsi_cluster_credentials_arn
-
-  db_ev_password    = "${local.db_ev_secret_arn}:password::"
-  db_ev_username    = "${local.db_ev_secret_arn}:username::"
-  db_fts_password   = "${local.db_fts_secret_arn}:password::"
-  db_fts_username   = "${local.db_fts_secret_arn}:username::"
-  db_sirsi_password = "${local.db_sirsi_secret_arn}:password::"
-  db_sirsi_username = "${local.db_sirsi_secret_arn}:username::"
+  db_sirsi_username   = "${local.db_sirsi_secret_arn}:username::"
 
   ecr_urls = {
     for task in local.tasks : task => "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-${task}"
   }
-
-  name_prefix     = var.product.resource_name
-  name_prefix_php = "${local.name_prefix}-php"
-  name_prefix_fts = "${local.name_prefix}-fts"
 
   one_login = {
     credential_locations = {
@@ -64,22 +63,52 @@ locals {
 
   service_configs = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration"
   }
 
-  service_configs_sirsi_cluster = {
-    for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "sirsi"
+  internal_service_urls = {
+    for name, config in local.service_configs :
+    config.name => "https://${config.name}.${local.internal_domain}"
   }
 
-  service_configs_sirsi_php_cluster = {
-    for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "sirsi-php"
+  public_service_urls = {
+    for name, config in local.service_configs :
+    config.name => "https://${config.name}.${var.public_domain}"
   }
 
-  service_configs_fts_cluster = {
+  service_configs_php = {
     for name, config in var.service_configs :
-    config.name => config if config.type != "db-migration" && config.cluster == "fts"
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration" && config.cluster == "sirsi-php"
+  }
+
+  service_configs_fts = {
+    for name, config in var.service_configs :
+    config.name => {
+      for key, value in config :
+      key => value if value != null
+    } if config.type != "db-migration" && config.cluster == "fts"
+  }
+
+  service_ports = {
+    "cluster:sirsi"     = 8080
+    "cluster:fts"       = 8080
+    "cluster:sirsi-php" = 8070
+    "service:cfs"       = 8060
+  }
+
+  service_ports_by_service = {
+    for name, config in var.service_configs :
+    config.name => lookup(
+      local.service_ports,
+      "service:${config.name}",
+      local.service_ports["cluster:${config.cluster}"]
+    )
   }
 
   tasks = [

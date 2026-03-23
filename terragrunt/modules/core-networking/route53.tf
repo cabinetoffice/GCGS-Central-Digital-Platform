@@ -29,3 +29,17 @@ resource "aws_route53_zone" "fts" {
     prevent_destroy = true
   }
 }
+
+resource "aws_route53_zone" "internal" {
+  name = length("internal.${aws_route53_zone.public.name}") > 64 ? "in.${aws_route53_zone.public.name}" : "internal.${aws_route53_zone.public.name}"
+
+  vpc {
+    vpc_id = aws_vpc.this.id
+  }
+
+  tags = var.tags
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}

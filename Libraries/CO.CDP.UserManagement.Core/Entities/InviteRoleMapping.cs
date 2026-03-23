@@ -28,9 +28,14 @@ public class InviteRoleMapping : ISoftDelete, IAuditable
     public int OrganisationId { get; set; }
 
     /// <summary>
-    /// Gets or sets the role for the invited user within the organisation.
+    /// Gets or sets the organisation role identifier.
     /// </summary>
-    public OrganisationRole OrganisationRole { get; set; }
+    public int OrganisationRoleId { get; set; }
+
+    /// <summary>
+    /// Gets the role for the invited user within the organisation, derived from <see cref="OrganisationRoleId"/>.
+    /// </summary>
+    public OrganisationRole OrganisationRole => (OrganisationRole)OrganisationRoleId;
 
     // ISoftDelete
     public bool IsDeleted { get; set; }
@@ -45,5 +50,6 @@ public class InviteRoleMapping : ISoftDelete, IAuditable
 
     // Navigation properties
     public Organisation Organisation { get; set; } = null!;
+    public OrganisationRoleEntity OrganisationRoleEntity { get; set; } = null!;
     public ICollection<InviteRoleApplicationAssignment> ApplicationAssignments { get; set; } = new List<InviteRoleApplicationAssignment>();
 }

@@ -13,12 +13,12 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 
 public class UsersControllerTests
 {
-    private readonly Mock<IPersonLookupService> _personLookupService;
+    private readonly Mock<IPersonApiAdapter> _personLookupService;
     private readonly UsersController _controller;
 
     public UsersControllerTests()
     {
-        _personLookupService = new Mock<IPersonLookupService>();
+        _personLookupService = new Mock<IPersonApiAdapter>();
         var logger = new Mock<ILogger<UsersController>>();
         _controller = new UsersController(_personLookupService.Object, logger.Object);
     }

@@ -1,10 +1,10 @@
+using CO.CDP.AwsServices;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
 namespace CO.CDP.UserManagement.Infrastructure;
 
 /// <summary>
@@ -39,13 +39,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationApplicationService, OrganisationApplicationService>();
         services.AddScoped<IUserAssignmentService, UserAssignmentService>();
         services.AddScoped<IOrganisationUserService, OrganisationUserService>();
-        services.AddScoped<InviteOrchestrationServiceRepositories>();
+        services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
+        services.AddScoped<IRoleMappingService, RoleMappingService>();
+        services.AddScoped<IOrganisationPersonSyncRepository, OrganisationPersonSyncRepository>();
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<IPersonLookupService, PersonLookupService>();
-        services.AddScoped<IOrganisationPersonsSyncService, OrganisationPersonsSyncService>();
-        services.AddScoped<IOrganisationSyncService, OrganisationSyncService>();
         services.AddScoped<ICdpMembershipSyncService, CdpMembershipSyncService>();
 
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
@@ -63,27 +62,52 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
-    /// Adds caching services for user management.
+    /// Registers the minimal UM services needed to sync organisations from another service
+    /// (e.g. Organisation WebApi) directly into the UserManagement database.
+    /// </summary>
+    public static IServiceCollection AddUserManagementOrganisationSync(
+        this IServiceCollection services,
+        string connectionString)
+    {
+        services.AddDbContext<UserManagementDbContext>(options =>
+            options.UseNpgsql(connectionString,
+                npgsql => npgsql
+                    .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+
+        services.AddScoped<IApplicationRepository, ApplicationRepository>();
+        services.AddScoped<IOrganisationRepository, OrganisationRepository>();
+        services.AddScoped<IOrganisationApplicationRepository, OrganisationApplicationRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
+        services.AddScoped<IUserOrganisationMembershipRepository, UserOrganisationMembershipRepository>();
+        services.AddScoped<IUserApplicationAssignmentRepository, UserApplicationAssignmentRepository>();
+        services.AddScoped<ISlugGeneratorService, SlugGeneratorService>();
+        services.AddScoped<IUmOrganisationSyncRepository, UmOrganisationSyncRepository>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds caching services for user management using ElastiCache.
     /// </summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="redisConnectionString">Optional Redis connection string. If null, uses in-memory cache.</param>
+    /// <param name="awsConfiguration">AWS configuration containing ElastiCache settings.</param>
     /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementCaching(
         this IServiceCollection services,
-        string? redisConnectionString = null)
+        AwsConfiguration? awsConfiguration = null)
     {
-        if (!string.IsNullOrEmpty(redisConnectionString))
+        if (awsConfiguration?.ElastiCache is null)
         {
-            services.AddStackExchangeRedisCache(options =>
-            {
-                options.Configuration = redisConnectionString;
-                options.InstanceName = "UserManagement_";
-            });
+            throw new InvalidOperationException(
+                "ElastiCache is not configured. Ensure Aws:ElastiCache:Hostname and Aws:ElastiCache:Port are set.");
         }
-        else
+
+        services.AddStackExchangeRedisCache(options =>
         {
-            services.AddDistributedMemoryCache();
-        }
+            options.Configuration = $"{awsConfiguration.ElastiCache.Hostname}:{awsConfiguration.ElastiCache.Port}";
+            options.InstanceName = "UserManagement_";
+        });
 
         services.AddScoped<IClaimsCacheService, CachedClaimsService>();
 
