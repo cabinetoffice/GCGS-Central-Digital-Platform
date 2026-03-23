@@ -411,7 +411,7 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((OrganisationUserResponse?)null);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
@@ -441,7 +441,7 @@ public class UserServiceTests
         };
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
@@ -479,7 +479,7 @@ public class UserServiceTests
         };
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);

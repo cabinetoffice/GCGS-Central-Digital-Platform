@@ -440,7 +440,7 @@ public sealed class UserService(
             }
             else if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 userDisplayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -725,7 +725,7 @@ public sealed class UserService(
 
             if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)

@@ -145,7 +145,7 @@ public class TokenService(
             logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from UserManagement.", urn);
             try
             {
-                var userClaims = await userManagementClient.UsersAsync(urn);
+                var userClaims = await userManagementClient.UsersGETAsync(urn);
                 claims.Add(new Claim("cdp_claims", JsonSerializer.Serialize(userClaims), JsonClaimValueTypes.Json));
                 logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
             }
