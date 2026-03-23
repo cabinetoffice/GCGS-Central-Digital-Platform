@@ -31,8 +31,3 @@ public record LookupPerson
     public string? Urn { get; }
     public string? Email { get; }
 }
-
-public record BulkLookupPerson
-{
-    [Required] public required IReadOnlyList<string> Urns { get; init; }
-}
