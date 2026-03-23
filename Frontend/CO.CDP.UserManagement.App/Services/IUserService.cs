@@ -77,4 +77,16 @@ public interface IUserService
         Guid cdpPersonId,
         string clientId,
         CancellationToken ct = default);
+
+    Task<RevokeApplicationAccessViewModel?> GetRevokeApplicationAccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> RevokeApplicationAccessAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default);
 }

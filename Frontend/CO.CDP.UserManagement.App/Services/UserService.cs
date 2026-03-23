@@ -780,4 +780,74 @@ public sealed class UserService(
             return false;
         }
     }
+
+    public async Task<RevokeApplicationAccessViewModel?> GetRevokeApplicationAccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return null;
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Id == assignmentId);
+            if (assignment == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            var roleName = string.Join(", ", (assignment.Roles ?? [])
+                .Select(r => r.Name)
+                .Where(n => !string.IsNullOrWhiteSpace(n)));
+
+            return new RevokeApplicationAccessViewModel(
+                OrganisationSlug: org.Slug,
+                UserDisplayName: displayName,
+                UserEmail: user.Email ?? string.Empty,
+                ApplicationName: assignment.Application?.Name ?? string.Empty,
+                ApplicationSlug: assignment.Application?.ClientId ?? string.Empty,
+                AssignmentId: assignment.Id,
+                OrgId: org.Id,
+                UserPrincipalId: assignment.UserPrincipalId ?? string.Empty,
+                RoleName: roleName,
+                AssignedAt: assignment.AssignedAt,
+                AssignedByName: assignment.AssignedBy,
+                CdpPersonId: cdpPersonId);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<Result<ServiceFailure, ServiceOutcome>> RevokeApplicationAccessAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Id == assignmentId);
+            if (assignment == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var userPrincipalId = assignment.UserPrincipalId ?? cdpPersonId.ToString();
+            await apiClient.AssignmentsDELETEAsync(org.Id, userPrincipalId, assignmentId, ct);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
+        }
+    }
 }

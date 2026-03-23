@@ -129,3 +129,15 @@
 .app-destructive-notification-banner .govuk-body {
     margin-bottom: 0;
 }
+
+/* Destructive alert box (solid red border, red heading) */
+.app-destructive-alert {
+    border: 5px solid #d4351c;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+}
+
+.app-destructive-alert__heading {
+    color: #d4351c;
+    font-weight: 700;
+}
