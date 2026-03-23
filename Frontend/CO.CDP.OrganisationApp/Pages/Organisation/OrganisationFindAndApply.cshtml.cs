@@ -1,5 +1,3 @@
-using System.Collections.Immutable;
-using System.Text.RegularExpressions;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Localization;
 using CO.CDP.OrganisationApp.Logging;
 using CO.CDP.OrganisationApp.WebApiClients;
-using CO.CDP.UI.Foundation.Utilities;
 using Microsoft.FeatureManagement.Mvc;
 
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
@@ -17,9 +14,14 @@ namespace CO.CDP.OrganisationApp.Pages.Organisation;
 public partial class OrganisationFindAndApplyModel(
     IOrganisationClient organisationClient,
     ISession session,
+    IConfiguration configuration,
     ILogger<OrganisationFindAndApplyModel> logger) : LoggedInUserAwareModel(session)
 {
     public string BackLinkUrl { get; set; } = default!;
+
+    public string FindAGrantUrl { get; private set; } = default!;
+
+    public string ManageAGrantUrl { get; private set; } = default!;
 
     [BindProperty(SupportsGet = true)] public Guid Id { get; set; }
 
@@ -31,6 +33,10 @@ public partial class OrganisationFindAndApplyModel(
     public async Task<IActionResult> OnGet()
     {
         SetBackLinkUrl();
+        FindAGrantUrl = configuration["FindAndApplyApp:FindAGrantUrl"]
+            ?? throw new InvalidOperationException("FindAndApplyApp:FindAGrantUrl is not configured.");
+        ManageAGrantUrl = configuration["FindAndApplyApp:ManageAGrantUrl"]
+            ?? throw new InvalidOperationException("FindAndApplyApp:ManageAGrantUrl is not configured.");
         return Page();
     }
 
