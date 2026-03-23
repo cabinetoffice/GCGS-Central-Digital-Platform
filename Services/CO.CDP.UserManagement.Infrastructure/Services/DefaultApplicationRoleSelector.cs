@@ -4,11 +4,11 @@ using CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
-internal static class DefaultApplicationRoleSelector
+public static class DefaultApplicationRoleSelector
 {
     private const string FindATenderClientId = "find-a-tender";
 
-    internal static IReadOnlyList<ApplicationRole> SelectFor(
+    public static IReadOnlyList<ApplicationRole> SelectFor(
         OrganisationApplication organisationApplication,
         IEnumerable<ApplicationRole> applicationRoles,
         IEnumerable<PartyRole> organisationPartyRoles,

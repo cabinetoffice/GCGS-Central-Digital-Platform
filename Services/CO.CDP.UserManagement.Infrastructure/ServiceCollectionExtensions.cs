@@ -63,7 +63,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
-        services.AddScoped<ICdpMembershipSyncService, CdpMembershipSyncService>();
 
         services.AddScoped<IOrganisationRepository, OrganisationRepository>();
         services.AddScoped<IApplicationRepository, ApplicationRepository>();

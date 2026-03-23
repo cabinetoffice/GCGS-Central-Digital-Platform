@@ -3,10 +3,12 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Requests;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CorePartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.UserManagement.Api.Tests.Services;
 
@@ -16,9 +18,14 @@ public class AtomicMembershipSyncTests
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository = new();
     private readonly Mock<IUserApplicationAssignmentRepository> _assignmentRepository = new();
+    private readonly Mock<IOrganisationApplicationRepository> _organisationApplicationRepository = new();
+    private readonly Mock<IRoleRepository> _roleRepository = new();
+    private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepository = new();
     private readonly Mock<IRoleMappingService> _roleMappingService = new();
     private readonly Mock<IOrganisationPersonSyncRepository> _organisationPersonSyncRepository = new();
+    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter = new();
     private readonly Mock<ICurrentUserService> _currentUserService = new();
+    private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
     public AtomicMembershipSyncTests()
     {
@@ -30,6 +37,10 @@ public class AtomicMembershipSyncTests
             .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<UserOrganisationMembership>>>(), It.IsAny<CancellationToken>()))
             .Returns<Func<CancellationToken, Task<UserOrganisationMembership>>, CancellationToken>((action, ct) => action(ct));
 
+        _atomicScope
+            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<UserApplicationAssignment>>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<CancellationToken, Task<UserApplicationAssignment>>, CancellationToken>((action, ct) => action(ct));
+
         _currentUserService.Setup(s => s.GetUserPrincipalId()).Returns("urn:fdc:gov.uk:2022:test-actor");
     }
 
@@ -38,9 +49,14 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Object,
         _membershipRepository.Object,
         _assignmentRepository.Object,
+        _organisationApplicationRepository.Object,
+        _roleRepository.Object,
+        _inviteRoleMappingRepository.Object,
         _roleMappingService.Object,
         _organisationPersonSyncRepository.Object,
+        _organisationApiAdapter.Object,
         _currentUserService.Object,
+        _unitOfWork.Object,
         NullLogger<AtomicMembershipSync>.Instance);
 
     private static CoreOrganisation GivenOrganisation(Guid cdpGuid) => new()
@@ -297,5 +313,174 @@ public class AtomicMembershipSyncTests
         _atomicScope.Verify(
             s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<UserOrganisationMembership>>>(), It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    // ── AssignUserToApplication ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task AssignUser_HappyPath_CreatesAssignmentAndSyncsOi()
+    {
+        var membership = GivenMembership(Guid.NewGuid(), 42);
+        var orgApp = new OrganisationApplication { Id = 5, OrganisationId = 42, ApplicationId = 1, IsActive = true };
+        var role = new ApplicationRole { Id = 1, ApplicationId = 1, IsActive = true };
+
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(membership.CdpPersonId!.Value, 42, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+        _organisationApplicationRepository.Setup(r => r.GetByOrganisationAndApplicationAsync(42, 1, It.IsAny<CancellationToken>())).ReturnsAsync(orgApp);
+        _assignmentRepository.Setup(r => r.GetByMembershipAndApplicationAsync(membership.Id, orgApp.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserApplicationAssignment?)null);
+        _roleMappingService.Setup(r => r.GetAssignableRolesAsync(42, membership.OrganisationRole, It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>())).ReturnsAsync([role]);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(["ADMIN"]);
+        _organisationRepository.Setup(r => r.GetByIdAsync(42, It.IsAny<CancellationToken>())).ReturnsAsync(new CoreOrganisation { Id = 42, CdpOrganisationGuid = Guid.NewGuid(), Name = "Acme", Slug = "acme", IsActive = true, CreatedBy = "seed" });
+
+        var result = await CreateSut().AssignUserToApplicationAsync(membership.CdpPersonId!.Value.ToString(), 42, 1, [1]);
+
+        _assignmentRepository.Verify(r => r.Add(It.Is<UserApplicationAssignment>(a => a.IsActive && a.Roles.Contains(role))), Times.Once);
+        _unitOfWork.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        _organisationPersonSyncRepository.Verify(r => r.UpsertAsync(It.IsAny<Guid>(), membership.CdpPersonId!.Value, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task AssignUser_WhenDuplicate_ThrowsDuplicateEntityException()
+    {
+        var membership = GivenMembership(Guid.NewGuid(), 42);
+        var orgApp = new OrganisationApplication { Id = 5, OrganisationId = 42, ApplicationId = 1, IsActive = true };
+        var existing = new UserApplicationAssignment { Id = 1, IsActive = true };
+
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(membership.CdpPersonId!.Value, 42, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+        _organisationApplicationRepository.Setup(r => r.GetByOrganisationAndApplicationAsync(42, 1, It.IsAny<CancellationToken>())).ReturnsAsync(orgApp);
+        _assignmentRepository.Setup(r => r.GetByMembershipAndApplicationAsync(membership.Id, orgApp.Id, It.IsAny<CancellationToken>())).ReturnsAsync(existing);
+
+        var act = () => CreateSut().AssignUserToApplicationAsync(membership.CdpPersonId!.Value.ToString(), 42, 1, [1]);
+
+        await act.Should().ThrowAsync<DuplicateEntityException>();
+    }
+
+    // ── RevokeApplicationAssignment ─────────────────────────────────────────
+
+    [Fact]
+    public async Task RevokeAssignment_HappyPath_DeactivatesAndSyncsOi()
+    {
+        var membership = GivenMembership(Guid.NewGuid(), 42);
+        var assignment = new UserApplicationAssignment
+        {
+            Id = 99,
+            UserOrganisationMembershipId = membership.Id,
+            UserOrganisationMembership = membership,
+            IsActive = true,
+            OrganisationApplication = new OrganisationApplication
+            {
+                Id = 5,
+                ApplicationId = 1,
+                Application = new Application { Id = 1, ClientId = "test", IsEnabledByDefault = false }
+            }
+        };
+
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(membership.CdpPersonId!.Value, 42, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+        _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([assignment]);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _organisationRepository.Setup(r => r.GetByIdAsync(42, It.IsAny<CancellationToken>())).ReturnsAsync(new CoreOrganisation { Id = 42, CdpOrganisationGuid = Guid.NewGuid(), Name = "Acme", Slug = "acme", IsActive = true, CreatedBy = "seed" });
+
+        await CreateSut().RevokeApplicationAssignmentAsync(membership.CdpPersonId!.Value.ToString(), 42, 99);
+
+        assignment.IsActive.Should().BeFalse();
+        assignment.RevokedAt.Should().NotBeNull();
+        _assignmentRepository.Verify(r => r.Update(assignment), Times.Once);
+    }
+
+    [Fact]
+    public async Task RevokeAssignment_WhenDefaultApp_ThrowsInvalidOperationException()
+    {
+        var membership = GivenMembership(Guid.NewGuid(), 42);
+        var assignment = new UserApplicationAssignment
+        {
+            Id = 99,
+            UserOrganisationMembershipId = membership.Id,
+            UserOrganisationMembership = membership,
+            IsActive = true,
+            OrganisationApplication = new OrganisationApplication
+            {
+                Id = 5,
+                ApplicationId = 1,
+                Application = new Application { Id = 1, ClientId = "test", IsEnabledByDefault = true }
+            }
+        };
+
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(membership.CdpPersonId!.Value, 42, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+        _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([assignment]);
+
+        var act = () => CreateSut().RevokeApplicationAssignmentAsync(membership.CdpPersonId!.Value.ToString(), 42, 99);
+
+        await act.Should().ThrowAsync<System.InvalidOperationException>().WithMessage("*enabled by default*");
+    }
+
+    // ── AcceptInvite ────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task AcceptInvite_HappyPath_CreatesMembershipAndSyncsOi()
+    {
+        var orgGuid = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var mapping = new InviteRoleMapping
+        {
+            Id = 7,
+            OrganisationId = org.Id,
+            CdpPersonInviteGuid = Guid.NewGuid(),
+            CreatedBy = "inviter",
+            OrganisationRoleId = (int)OrganisationRole.Member
+        };
+        var request = new AcceptOrganisationInviteRequest
+        {
+            UserPrincipalId = "urn:fdc:gov.uk:2022:new-user",
+            CdpPersonId = Guid.NewGuid()
+        };
+
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _inviteRoleMappingRepository.Setup(r => r.GetByIdAsync(7, It.IsAny<CancellationToken>())).ReturnsAsync(mapping);
+        _membershipRepository.Setup(r => r.GetByUserAndOrganisationAsync(request.UserPrincipalId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserOrganisationMembership?)null);
+        _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<UserOrganisationMembership>(), mapping.OrganisationRole, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+        _roleMappingService.Setup(r => r.ShouldAutoAssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
+        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+        _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(["VIEWER"]);
+
+        await CreateSut().AcceptInviteAsync(orgGuid, 7, request);
+
+        _membershipRepository.Verify(r => r.Add(It.Is<UserOrganisationMembership>(m =>
+            m.UserPrincipalId == request.UserPrincipalId &&
+            m.CdpPersonId == request.CdpPersonId &&
+            m.IsActive)), Times.Once);
+        _inviteRoleMappingRepository.Verify(r => r.Remove(mapping), Times.Once);
+        _organisationPersonSyncRepository.Verify(r => r.UpsertAsync(orgGuid, request.CdpPersonId, It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task AcceptInvite_WhenDuplicateMembership_ThrowsDuplicateEntityException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var mapping = new InviteRoleMapping { Id = 7, OrganisationId = org.Id, CdpPersonInviteGuid = Guid.NewGuid(), CreatedBy = "x" };
+        var request = new AcceptOrganisationInviteRequest { UserPrincipalId = "existing", CdpPersonId = Guid.NewGuid() };
+
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _inviteRoleMappingRepository.Setup(r => r.GetByIdAsync(7, It.IsAny<CancellationToken>())).ReturnsAsync(mapping);
+        _membershipRepository.Setup(r => r.GetByUserAndOrganisationAsync("existing", org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(GivenMembership(Guid.NewGuid(), org.Id));
+
+        var act = () => CreateSut().AcceptInviteAsync(orgGuid, 7, request);
+
+        await act.Should().ThrowAsync<DuplicateEntityException>();
+    }
+
+    [Fact]
+    public async Task AcceptInvite_WhenMappingNotFound_ThrowsEntityNotFoundException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var request = new AcceptOrganisationInviteRequest { UserPrincipalId = "x", CdpPersonId = Guid.NewGuid() };
+
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _inviteRoleMappingRepository.Setup(r => r.GetByIdAsync(7, It.IsAny<CancellationToken>())).ReturnsAsync((InviteRoleMapping?)null);
+
+        var act = () => CreateSut().AcceptInviteAsync(orgGuid, 7, request);
+
+        await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*InviteRoleMapping*");
     }
 }
