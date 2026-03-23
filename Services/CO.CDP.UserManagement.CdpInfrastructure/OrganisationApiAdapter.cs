@@ -56,6 +56,8 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
                 .Select(p => new OiOrganisationPerson
                 {
                     Id = p.Id,
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
                     Email = p.Email,
                     Scopes = p.Scopes?.ToList() ?? []
                 })
