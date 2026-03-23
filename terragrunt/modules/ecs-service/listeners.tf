@@ -35,6 +35,43 @@ resource "aws_lb_target_group" "external" {
   )
 }
 
+resource "aws_lb_target_group" "external_extra" {
+  for_each = var.alb_enabled ? { for rule in var.additional_external_target_groups : rule.name_suffix => rule } : {}
+
+  deregistration_delay = 30
+  name                 = "${local.tg_base_name_sanitized}-${each.key}"
+  port                 = var.service_port
+  protocol             = "HTTP"
+  target_type          = "ip"
+  vpc_id               = var.vpc_id
+
+  stickiness {
+    type    = "lb_cookie"
+    enabled = false
+  }
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = var.healthcheck_healthy_threshold
+    interval            = var.healthcheck_interval
+    matcher             = var.healthcheck_matcher
+    path                = var.healthcheck_path
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = var.healthcheck_timeout
+    unhealthy_threshold = var.unhealthy_threshold
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  tags = merge(
+    { Service = var.name },
+    var.tags
+  )
+}
+
 
 
 moved {
