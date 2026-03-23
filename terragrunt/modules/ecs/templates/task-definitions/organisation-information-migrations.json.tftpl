@@ -25,7 +25,8 @@
     ],
     "secrets": [
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
-        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}
+        { "name" : "OrganisationInformationDatabase__Username", "valueFrom" : "${db_username}"}%{ if user_management_servicekey_apikey_arn != "" },
+        { "name" : "ServiceKey__ApiKey", "valueFrom" : "${user_management_servicekey_apikey_arn}"}%{ endif }
     ],
     "volumesFrom": [],
     "mountPoints": [],
