@@ -3,6 +3,7 @@ using System.Text.Json;
 using CO.CDP.Authentication.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace CO.CDP.Authentication.Services;
 
@@ -10,29 +11,58 @@ namespace CO.CDP.Authentication.Services;
 /// Manages authentication tokens using ASP.NET Core distributed session (e.g., Redis).
 /// Stores Authority tokens in session and retrieves OneLogin tokens from the authentication ticket.
 /// </summary>
-public class SessionService(IHttpContextAccessor httpContextAccessor) : ISessionManager
+public class SessionService(
+    IHttpContextAccessor httpContextAccessor,
+    ILogger<SessionService> logger) : ISessionManager
 {
     /// <summary>
-    /// Session key for storing Authority tokens.
+    /// Session key for storing Authority tokens. This matches OrganisationApp so
+    /// shared Redis-backed sessions can be reused across frontend apps.
     /// </summary>
-    public const string AuthorityTokensKey = "AuthorityTokens";
+    public const string AuthorityTokensKey = "UserAuthTokens";
 
     public Task<AuthorityTokenSet?> GetTokensAsync(HttpContext context)
     {
         if (context.Items.TryGetValue(AuthorityTokensKey, out var item) && item is AuthorityTokenSet cachedTokens)
+        {
+            logger.LogInformation(
+                "Using cached Authority tokens from HttpContext items for session key {SessionKey}. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+                AuthorityTokensKey,
+                cachedTokens.AccessTokenExpiry,
+                cachedTokens.RefreshTokenExpiry);
+
             return Task.FromResult<AuthorityTokenSet?>(cachedTokens);
+        }
 
         var session = GetSession();
         var tokensJson = session.GetString(AuthorityTokensKey);
 
         if (string.IsNullOrEmpty(tokensJson))
+        {
+            logger.LogInformation(
+                "No Authority tokens found in session key {SessionKey}.",
+                AuthorityTokensKey);
+
             return Task.FromResult<AuthorityTokenSet?>(null);
+        }
 
         var tokens = JsonSerializer.Deserialize<AuthorityTokenSet>(tokensJson);
 
         if (tokens != null)
         {
             context.Items[AuthorityTokensKey] = tokens;
+
+            logger.LogInformation(
+                "Loaded Authority tokens from session key {SessionKey}. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+                AuthorityTokensKey,
+                tokens.AccessTokenExpiry,
+                tokens.RefreshTokenExpiry);
+        }
+        else
+        {
+            logger.LogWarning(
+                "Failed to deserialize Authority tokens from session key {SessionKey}.",
+                AuthorityTokensKey);
         }
 
         return Task.FromResult(tokens);
@@ -45,6 +75,12 @@ public class SessionService(IHttpContextAccessor httpContextAccessor) : ISession
 
         context.Items[AuthorityTokensKey] = tokens;
 
+        logger.LogInformation(
+            "Stored Authority tokens in session key {SessionKey}. Access token expires at {AccessTokenExpiry}, refresh token expires at {RefreshTokenExpiry}.",
+            AuthorityTokensKey,
+            tokens.AccessTokenExpiry,
+            tokens.RefreshTokenExpiry);
+
         return Task.CompletedTask;
     }
 
@@ -54,18 +90,35 @@ public class SessionService(IHttpContextAccessor httpContextAccessor) : ISession
         session.Remove(AuthorityTokensKey);
         context.Items.Remove(AuthorityTokensKey);
 
+        logger.LogInformation(
+            "Removed Authority tokens from session key {SessionKey}.",
+            AuthorityTokensKey);
+
         return Task.CompletedTask;
     }
 
     public async Task<string?> GetOneLoginTokenAsync(HttpContext context)
     {
-        return await context.GetTokenAsync("access_token");
+        var token = await context.GetTokenAsync("access_token");
+
+        logger.LogInformation(
+            "Resolved OneLogin access token from authentication ticket. Present: {HasToken}.",
+            !string.IsNullOrWhiteSpace(token));
+
+        return token;
     }
 
     public async Task<DateTimeOffset?> GetOneLoginExpiryAsync(HttpContext context)
     {
         var expiresAt = await context.GetTokenAsync("expires_at");
-        return ParseOneLoginExpiry(expiresAt);
+        var expiry = ParseOneLoginExpiry(expiresAt);
+
+        logger.LogInformation(
+            "Resolved OneLogin expiry from authentication ticket. Present: {HasExpiry}. Expires at: {Expiry}.",
+            expiry.HasValue,
+            expiry);
+
+        return expiry;
     }
 
     /// <summary>
