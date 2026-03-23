@@ -65,7 +65,20 @@ These commands are intended to be run **in the opensearch-admin Dev Tools consol
 and in this order. Replace `<ACCOUNT_ID>` with the target account ID.
 
 ```bash
-# Service writer role (application)
+# Action group used by the service writer role (covers bulk and bulk*).
+GET _plugins/_security/api/actiongroups/fts_write_with_bulk
+PUT _plugins/_security/api/actiongroups/fts_write_with_bulk
+{
+  "allowed_actions": [
+    "indices:data/write/bulk",
+    "indices:data/write/bulk*",
+    "indices:data/write/*",
+    "indices:data/read/*",
+    "indices:admin/*"
+  ]
+}
+
+# Service writer role (application + debugtask)
 GET _plugins/_security/api/roles/cdp_sirsi_service_writer
 PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
 {
@@ -80,18 +93,17 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
         ".fts_*"
       ],
       "allowed_actions": [
-        "indices:admin/aliases",
-        "indices:admin/aliases/get",
-        "indices:admin/exists",
-        "indices:admin/create",
-        "indices:admin/mapping/put",
-        "indices:admin/settings/update",
-        "indices:data/write/bulk",
-        "indices:data/write/bulk[s]",
-        "indices:data/write/index",
-        "indices:data/write/update",
-        "indices:data/read/search",
-        "indices:data/read/get"
+        "fts_write_with_bulk"
+      ]
+    },
+    {
+      "index_patterns": [
+        ".opensearch_dashboards*",
+        ".kibana*",
+        ".kibana_task_manager*"
+      ],
+      "allowed_actions": [
+        "fts_write_with_bulk"
       ]
     }
   ],
@@ -109,48 +121,13 @@ PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 }
 
 # Dashboards role mapping (required for Dev Tools to avoid bulk 403s)
-# 1) Built-in dashboards role mapping
+# Built-in dashboards role mapping
 GET _plugins/_security/api/roles/opensearch_dashboards_user
 PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
 {
   "backend_roles": [
     "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
   ]
-}
-
-# 2) Dashboards writer role (explicit bulk/index permissions on dashboards indices)
-GET _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
-PUT _plugins/_security/api/roles/cdp_sirsi_dashboards_writer
-{
-  "cluster_permissions": [],
-  "index_permissions": [
-    {
-      "index_patterns": [
-        ".opensearch_dashboards*",
-        ".kibana*",
-        ".kibana_task_manager*"
-      ],
-      "allowed_actions": [
-        "indices:data/write/index",
-        "indices:data/write/bulk",
-        "indices:data/write/bulk[s]",
-        "indices:data/read/search",
-        "indices:data/read/get",
-        "indices:admin/*"
-      ]
-    }
-  ],
-  "tenant_permissions": []
-}
-
-GET _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
-PUT _plugins/_security/api/rolesmapping/cdp_sirsi_dashboards_writer
-{
-  "backend_roles": [
-    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
-  ],
-  "hosts": [],
-  "users": []
 }
 
 # Gateway readonly role
