@@ -1,0 +1,20 @@
+@model CO.CDP.UserManagement.App.Models.RevokeApplicationAccessSuccessViewModel
+@{
+    ViewData["Title"] = "Access revoked";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">Access revoked</h1>
+            <div class="govuk-panel__body">
+                @Model.UserDisplayName's access to @Model.ApplicationName has been revoked.
+            </div>
+        </div>
+
+        <p class="govuk-body">
+            <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Return to manage users</a>
+        </p>
+    </div>
+</div>
+

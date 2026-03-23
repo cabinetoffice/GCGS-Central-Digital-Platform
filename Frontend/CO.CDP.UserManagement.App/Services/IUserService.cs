@@ -45,4 +45,17 @@ public interface IUserService
         string organisationSlug,
         Guid inviteGuid,
         CancellationToken ct = default);
+
+    Task<RevokeApplicationAccessViewModel?> GetRevokeApplicationAccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default);
+
+    Task<bool> RevokeApplicationAccessAsync(
+        string organisationSlug,
+        string userPrincipalId,
+        int orgId,
+        int assignmentId,
+        CancellationToken ct = default);
 }

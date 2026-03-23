@@ -394,6 +394,82 @@ public class UsersController(
         return success ? RedirectToAction(nameof(Index), new { organisationSlug }) : NotFound();
     }
 
+    [HttpGet("user/{cdpPersonId:guid}/assignments/{assignmentId:int}/revoke")]
+    public async Task<IActionResult> RevokeApplicationAccess(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrEmpty(organisationSlug))
+            return NotFound();
+
+        var viewModel = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/assignments/{assignmentId:int}/revoke")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RevokeApplicationAccess(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        bool? confirmRevoke,
+        CancellationToken ct)
+    {
+        if (confirmRevoke == null)
+        {
+            ModelState.AddModelError(nameof(confirmRevoke), "Select if you want to revoke access");
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
+            return viewModel is null ? NotFound() : View(viewModel);
+        }
+
+        // "No, keep access" — redirect back without calling the API
+        if (confirmRevoke == false)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        // "Yes, revoke access" — call the API
+        var revokeViewModel = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
+        if (revokeViewModel is null)
+            return NotFound();
+
+        var success = await userService.RevokeApplicationAccessAsync(
+            organisationSlug,
+            revokeViewModel.UserPrincipalId,
+            revokeViewModel.OrgId,
+            assignmentId,
+            ct);
+
+        if (!success)
+            return RedirectToAction("Error", "Home");
+
+        TempData["RevokeSuccessUserName"] = revokeViewModel.UserDisplayName;
+        TempData["RevokeSuccessApplicationName"] = revokeViewModel.ApplicationName;
+
+        return RedirectToAction(nameof(RevokeApplicationAccessSuccess), new { organisationSlug, cdpPersonId, assignmentId });
+    }
+
+    [HttpGet("user/{cdpPersonId:guid}/assignments/{assignmentId:int}/revoke/success")]
+    public IActionResult RevokeApplicationAccessSuccess(string organisationSlug, Guid cdpPersonId, int assignmentId)
+    {
+        var userName = TempData["RevokeSuccessUserName"] as string;
+        var applicationName = TempData["RevokeSuccessApplicationName"] as string;
+
+        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(applicationName))
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+
+        return View(new RevokeApplicationAccessSuccessViewModel(
+            OrganisationSlug: organisationSlug,
+            UserDisplayName: userName,
+            ApplicationName: applicationName));
+    }
+
     [HttpGet("user/{cdpPersonId:guid}/change-role")]
     public async Task<IActionResult> ChangeRole(
         string organisationSlug,

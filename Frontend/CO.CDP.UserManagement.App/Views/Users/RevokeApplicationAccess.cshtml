@@ -1,0 +1,133 @@
+@model CO.CDP.UserManagement.App.Models.RevokeApplicationAccessViewModel
+@{
+    ViewData["Title"] = $"Revoke access to {Model.ApplicationName}";
+    var organisation = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+    var cdpPersonId = ViewContext.RouteData.Values["cdpPersonId"]?.ToString() ?? "";
+    var hasError = ViewData.ModelState.ContainsKey("confirmRevoke") && ViewData.ModelState["confirmRevoke"]!.Errors.Count > 0;
+    var errorMessage = hasError ? ViewData.ModelState["confirmRevoke"]!.Errors[0].ErrorMessage : string.Empty;
+    var changeRoleUrl = $"/organisation/{organisation}/user/{cdpPersonId}/change-role";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@organisation" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        @if (hasError)
+        {
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">There is a problem</h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <li><a href="#confirmRevoke">@errorMessage</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div style="border: 4px solid #d4351c; padding: 20px; margin-bottom: 30px;">
+            <h2 class="govuk-heading-m" style="color: #d4351c; margin-bottom: 10px;">You are about to revoke access</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">
+                This action will immediately remove the user's access to this application.
+                They will no longer be able to sign in or use any features.
+            </p>
+        </div>
+
+        <h1 class="govuk-heading-l">Revoke access to @Model.ApplicationName</h1>
+
+        <h2 class="govuk-heading-m">User details</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.UserEmail</dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Current access</h2>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Application</dt>
+                <dd class="govuk-summary-list__value">@Model.ApplicationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Role</dt>
+                <dd class="govuk-summary-list__value">@Model.RoleName</dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="@changeRoleUrl">
+                        Change<span class="govuk-visually-hidden"> role for @Model.ApplicationName</span>
+                    </a>
+                </dd>
+            </div>
+            @if (Model.AssignedAt.HasValue)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Assigned</dt>
+                    <dd class="govuk-summary-list__value">@Model.AssignedAt.Value.ToString("d MMMM yyyy")</dd>
+                </div>
+            }
+            @if (!string.IsNullOrWhiteSpace(Model.AssignedByName))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Assigned by</dt>
+                    <dd class="govuk-summary-list__value">@Model.AssignedByName</dd>
+                </div>
+            }
+        </dl>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                This action cannot be undone. You will need to re-assign the user if you want to restore their access.
+            </strong>
+        </div>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="govuk-form-group @(hasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset" @(hasError ? Html.Raw("aria-describedby=\"confirmRevoke-error\"") : Html.Raw(""))>
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        Are you sure you want to revoke access?
+                    </legend>
+                    @if (hasError)
+                    {
+                        <p id="confirmRevoke-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @errorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="confirmRevoke-yes" name="confirmRevoke" type="radio" value="true">
+                            <label class="govuk-label govuk-radios__label" for="confirmRevoke-yes">
+                                Yes, revoke access
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="confirmRevoke-no" name="confirmRevoke" type="radio" value="false">
+                            <label class="govuk-label govuk-radios__label" for="confirmRevoke-no">
+                                No, keep access
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning" data-module="govuk-button">
+                    Confirm
+                </button>
+                <a class="govuk-link" href="/organisation/@organisation">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>

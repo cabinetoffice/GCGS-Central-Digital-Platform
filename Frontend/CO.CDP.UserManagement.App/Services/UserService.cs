@@ -326,4 +326,83 @@ public sealed class UserService(ApiClient.UserManagementClient apiClient) : IUse
             return false;
         }
     }
+
+    public async Task<RevokeApplicationAccessViewModel?> GetRevokeApplicationAccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        int assignmentId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
+            var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+            if (user == null) return null;
+
+            var assignment = user.ApplicationAssignments?
+                .FirstOrDefault(a => a.Id == assignmentId);
+            if (assignment == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            var roleName = assignment.Roles != null
+                ? string.Join(", ", assignment.Roles.Select(r => r.Name))
+                : string.Empty;
+
+            // Resolve assignedBy principal ID to a display name if possible
+            string? assignedByName = null;
+            if (!string.IsNullOrWhiteSpace(assignment.AssignedBy))
+            {
+                try
+                {
+                    var assignedByUser = await apiClient.LookupUserAsync(assignment.AssignedBy, ct);
+                    assignedByName = !string.IsNullOrWhiteSpace(assignedByUser.FirstName) && !string.IsNullOrWhiteSpace(assignedByUser.LastName)
+                        ? $"{assignedByUser.FirstName} {assignedByUser.LastName}"
+                        : assignment.AssignedBy;
+                }
+                catch (ApiClient.ApiException)
+                {
+                    assignedByName = assignment.AssignedBy;
+                }
+            }
+
+            return new RevokeApplicationAccessViewModel(
+                OrganisationSlug: org.Slug,
+                UserDisplayName: displayName,
+                UserEmail: user.Email ?? string.Empty,
+                ApplicationName: assignment.Application?.Name ?? string.Empty,
+                ApplicationSlug: assignment.Application?.ClientId ?? string.Empty,
+                AssignmentId: assignment.Id,
+                OrgId: org.Id,
+                UserPrincipalId: assignment.UserPrincipalId ?? string.Empty,
+                RoleName: roleName,
+                AssignedAt: assignment.AssignedAt,
+                AssignedByName: assignedByName);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> RevokeApplicationAccessAsync(
+        string organisationSlug,
+        string userPrincipalId,
+        int orgId,
+        int assignmentId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            await apiClient.AssignmentsDELETEAsync(orgId, userPrincipalId, assignmentId, ct);
+            return true;
+        }
+        catch (ApiClient.ApiException)
+        {
+            return false;
+        }
+    }
 }
