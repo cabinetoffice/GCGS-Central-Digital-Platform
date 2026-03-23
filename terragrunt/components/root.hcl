@@ -51,6 +51,12 @@ locals {
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
+      opensearch_instance_type               = "t3.small.search"
+      opensearch_instance_count              = 2
+      opensearch_availability_zone_count     = 2
+      opensearch_dedicated_master_enabled    = true
+      opensearch_dedicated_master_count      = 3
+      opensearch_dedicated_master_type       = "t3.small.search"
       pinned_service_version_cfs    = null
       pinned_service_version_fts    = null
       pinned_service_version        = null
@@ -87,6 +93,12 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
+      opensearch_instance_type               = "t3.medium.search"
+      opensearch_instance_count              = 2
+      opensearch_availability_zone_count     = 2
+      opensearch_dedicated_master_enabled    = true
+      opensearch_dedicated_master_count      = 3
+      opensearch_dedicated_master_type       = "t3.small.search"
       pinned_service_version_cfs    = "1.0.7"
       pinned_service_version_fts    = "1.2.5"
       pinned_service_version        = "1.0.83"
@@ -127,6 +139,12 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
+      opensearch_instance_type               = "t3.medium.search"
+      opensearch_instance_count              = 2
+      opensearch_availability_zone_count     = 2
+      opensearch_dedicated_master_enabled    = true
+      opensearch_dedicated_master_count      = 3
+      opensearch_dedicated_master_type       = "t3.small.search"
       pinned_service_version_cfs    = "1.0.7"
       pinned_service_version_fts    = "1.2.4"
       pinned_service_version        = "1.0.82"
@@ -163,6 +181,12 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
+      opensearch_instance_type               = "m6g.large.search"
+      opensearch_instance_count              = 3
+      opensearch_availability_zone_count     = 3
+      opensearch_dedicated_master_enabled    = true
+      opensearch_dedicated_master_count      = 3
+      opensearch_dedicated_master_type       = "m6g.large.search"
       pinned_service_version_cfs       = "1.0.7"
       pinned_service_version_fts       = "1.2.2"
       pinned_service_version           = "1.0.82"
@@ -195,6 +219,12 @@ locals {
   fts_snapshot_identifier           = try(local.environments[local.environment].fts_snapshot_identifier, null)
   mail_from_domains                 = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
+  opensearch_instance_type          = try(local.environments[local.environment].opensearch_instance_type, "t3.small.search")
+  opensearch_instance_count         = try(local.environments[local.environment].opensearch_instance_count, 2)
+  opensearch_availability_zone_count = try(local.environments[local.environment].opensearch_availability_zone_count, 2)
+  opensearch_dedicated_master_enabled = try(local.environments[local.environment].opensearch_dedicated_master_enabled, true)
+  opensearch_dedicated_master_count   = try(local.environments[local.environment].opensearch_dedicated_master_count, 3)
+  opensearch_dedicated_master_type    = try(local.environments[local.environment].opensearch_dedicated_master_type, "t3.small.search")
   pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
   pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
   pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
@@ -414,6 +444,12 @@ inputs = {
   environment                    = local.environment
   externals_product              = local.external_product
   is_production                  = local.is_production
+  opensearch_instance_type       = local.opensearch_instance_type
+  opensearch_instance_count      = local.opensearch_instance_count
+  opensearch_availability_zone_count = local.opensearch_availability_zone_count
+  opensearch_dedicated_master_enabled = local.opensearch_dedicated_master_enabled
+  opensearch_dedicated_master_count   = local.opensearch_dedicated_master_count
+  opensearch_dedicated_master_type    = local.opensearch_dedicated_master_type
   postgres_instance_type         = local.environments[local.environment].postgres_instance_type
   product                        = local.product
   tags                           = local.tags

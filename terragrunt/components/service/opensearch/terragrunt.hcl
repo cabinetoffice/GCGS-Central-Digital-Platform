@@ -63,4 +63,11 @@ inputs = {
 
   ecs_sg_id = dependency.core_security_groups.outputs.ecs_sg_id
 
+  instance_type               = local.global_vars.inputs.opensearch_instance_type
+  instance_count              = local.global_vars.inputs.opensearch_instance_count
+  availability_zone_count     = local.global_vars.inputs.opensearch_availability_zone_count
+  dedicated_master_enabled    = local.global_vars.inputs.opensearch_dedicated_master_enabled
+  dedicated_master_count      = local.global_vars.inputs.opensearch_dedicated_master_count
+  dedicated_master_type       = local.global_vars.inputs.opensearch_dedicated_master_type
+
 }

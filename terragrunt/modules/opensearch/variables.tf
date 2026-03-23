@@ -62,6 +62,24 @@ variable "instance_type" {
   default     = "t3.small.search"
 }
 
+variable "dedicated_master_enabled" {
+  description = "Enable dedicated master nodes."
+  type        = bool
+  default     = false
+}
+
+variable "dedicated_master_count" {
+  description = "Number of dedicated master nodes."
+  type        = number
+  default     = 3
+}
+
+variable "dedicated_master_type" {
+  description = "Dedicated master node instance type."
+  type        = string
+  default     = "t3.small.search"
+}
+
 variable "internal_user_database_enabled" {
   description = "Internal user database for fine grained access control (only relevant if advanced_security_enabled is true)."
   type        = bool
