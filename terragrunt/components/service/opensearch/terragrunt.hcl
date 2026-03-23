@@ -49,8 +49,14 @@ dependency core_security_groups {
 }
 
 inputs = {
-  opensearch_sg_id = dependency.core_security_groups.outputs.opensearch_sg_id
-  tags             = local.tags
+  availability_zone_count  = local.global_vars.inputs.opensearch_availability_zone_count
+  dedicated_master_count   = local.global_vars.inputs.opensearch_dedicated_master_count
+  dedicated_master_enabled = local.global_vars.inputs.opensearch_dedicated_master_enabled
+  dedicated_master_type    = local.global_vars.inputs.opensearch_dedicated_master_type
+  instance_count           = local.global_vars.inputs.opensearch_instance_count
+  instance_type            = local.global_vars.inputs.opensearch_instance_type
+  opensearch_sg_id         = dependency.core_security_groups.outputs.opensearch_sg_id
+  tags                     = local.tags
 
   role_ecs_task_arn                     = dependency.core_iam.outputs.ecs_task_arn
   role_ecs_task_name                    = dependency.core_iam.outputs.ecs_task_name
@@ -62,12 +68,4 @@ inputs = {
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
 
   ecs_sg_id = dependency.core_security_groups.outputs.ecs_sg_id
-
-  instance_type               = local.global_vars.inputs.opensearch_instance_type
-  instance_count              = local.global_vars.inputs.opensearch_instance_count
-  availability_zone_count     = local.global_vars.inputs.opensearch_availability_zone_count
-  dedicated_master_enabled    = local.global_vars.inputs.opensearch_dedicated_master_enabled
-  dedicated_master_count      = local.global_vars.inputs.opensearch_dedicated_master_count
-  dedicated_master_type       = local.global_vars.inputs.opensearch_dedicated_master_type
-
 }
