@@ -87,7 +87,7 @@ resource "aws_lb_listener_rule" "public_domain_commercial_tools_path_routing" {
 
   action {
     type             = "forward"
-    target_group_arn = module.ecs_service_commercial_tools_app.service_extra_target_group_arns["ov1"]
+    target_group_arn = module.ecs_service_fts_app.service_extra_target_group_arns["ov1"]
     order            = 1
   }
 
@@ -99,7 +99,7 @@ resource "aws_lb_listener_rule" "public_domain_commercial_tools_path_routing" {
 
   condition {
     path_pattern {
-      values = ["/search/commercial-tools", "/commercial-tools/*"]
+      values = ["/search/commercial-tools*", "/commercial-tools*"]
     }
   }
 
