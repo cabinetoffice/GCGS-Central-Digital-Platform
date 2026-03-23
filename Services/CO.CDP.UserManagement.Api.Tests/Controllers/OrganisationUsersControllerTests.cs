@@ -17,16 +17,24 @@ public class OrganisationUsersControllerTests
 {
     private readonly Mock<IOrganisationUserService> _organisationUserService;
     private readonly Mock<IPersonApiAdapter> _personLookupService;
+    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter;
     private readonly OrganisationUsersController _controller;
 
     public OrganisationUsersControllerTests()
     {
         _organisationUserService = new Mock<IOrganisationUserService>();
         _personLookupService = new Mock<IPersonApiAdapter>();
+        _organisationApiAdapter = new Mock<IOrganisationApiAdapter>();
         var logger = new Mock<ILogger<OrganisationUsersController>>();
+
+        _organisationApiAdapter
+            .Setup(a => a.GetOrganisationPersonsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Array.Empty<CO.CDP.UserManagement.Core.Models.OiOrganisationPerson>());
+
         _controller = new OrganisationUsersController(
             _organisationUserService.Object,
             _personLookupService.Object,
+            _organisationApiAdapter.Object,
             logger.Object);
     }
 

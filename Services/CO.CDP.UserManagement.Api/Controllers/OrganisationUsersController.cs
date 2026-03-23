@@ -1,7 +1,9 @@
 using CO.CDP.UserManagement.Api.Models;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
@@ -20,15 +22,18 @@ public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;
     private readonly IPersonApiAdapter _personApiAdapter;
+    private readonly IOrganisationApiAdapter _organisationApiAdapter;
     private readonly ILogger<OrganisationUsersController> _logger;
 
     public OrganisationUsersController(
         IOrganisationUserService organisationUserService,
         IPersonApiAdapter personLookupService,
+        IOrganisationApiAdapter organisationApiAdapter,
         ILogger<OrganisationUsersController> logger)
     {
         _organisationUserService = organisationUserService;
         _personApiAdapter = personLookupService;
+        _organisationApiAdapter = organisationApiAdapter;
         _logger = logger;
     }
 
@@ -64,6 +69,8 @@ public class OrganisationUsersController : ControllerBase
                         ? person
                         : null))
                 .ToArray();
+
+            await LogScopeRoleMismatchesAsync(cdpOrganisationId, memberships, cancellationToken);
 
             return Ok(responses);
         }
@@ -188,6 +195,51 @@ public class OrganisationUsersController : ControllerBase
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    private async Task LogScopeRoleMismatchesAsync(
+        Guid cdpOrganisationId,
+        IEnumerable<UserOrganisationMembership> memberships,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var oiPersons = await _organisationApiAdapter.GetOrganisationPersonsAsync(
+                cdpOrganisationId, cancellationToken);
+
+            var oiPersonById = oiPersons.ToDictionary(p => p.Id);
+
+            foreach (var membership in memberships.Where(m => m.CdpPersonId.HasValue))
+            {
+                if (!oiPersonById.TryGetValue(membership.CdpPersonId!.Value, out var oiPerson))
+                {
+                    _logger.LogDebug(
+                        "Organisation {CdpOrganisationId}: UM member {CdpPersonId} (role={UmRole}) has no matching OI person record",
+                        cdpOrganisationId, membership.CdpPersonId, membership.OrganisationRole);
+                    continue;
+                }
+
+                _logger.LogDebug(
+                    "Organisation {CdpOrganisationId}: person {Email} has OI scopes [{OiScopes}] and UM role {UmRole}",
+                    cdpOrganisationId, oiPerson.Email, string.Join(", ", oiPerson.Scopes), membership.OrganisationRole);
+
+                var hasAdminScope = oiPerson.Scopes.Contains("ADMIN", StringComparer.OrdinalIgnoreCase);
+                var isUmAdmin = membership.OrganisationRole >= OrganisationRole.Admin;
+
+                if (hasAdminScope != isUmAdmin)
+                {
+                    _logger.LogWarning(
+                        "Organisation {CdpOrganisationId}: scope/role mismatch for person {Email} — OI scopes [{OiScopes}] vs UM role {UmRole}",
+                        cdpOrganisationId, oiPerson.Email, string.Join(", ", oiPerson.Scopes), membership.OrganisationRole);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex,
+                "Organisation {CdpOrganisationId}: failed to retrieve OI persons for scope/role comparison — skipping",
+                cdpOrganisationId);
         }
     }
 
