@@ -60,4 +60,10 @@ public interface IUserOrganisationMembershipRepository : IRepository<UserOrganis
     /// Gets the organisation role definition for the given role enum value.
     /// </summary>
     Task<OrganisationRoleEntity?> GetOrganisationRoleAsync(OrganisationRole role, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Counts active, non-deleted memberships with the Owner role for an organisation.
+    /// </summary>
+    Task<int> CountActiveOwnersByOrganisationIdAsync(
+        int organisationId, CancellationToken cancellationToken = default);
 }

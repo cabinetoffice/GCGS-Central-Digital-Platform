@@ -171,6 +171,35 @@ public class OrganisationUsersController : ControllerBase
     }
 
     /// <summary>
+    /// Removes a user from an organisation (soft-delete). Idempotent — returns 204 if already removed.
+    /// </summary>
+    [HttpDelete("{cdpPersonId:guid}")]
+    [Authorize(Policy = PolicyNames.OrganisationAdmin)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> RemoveUser(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _organisationUserService.RemoveUserFromOrganisationAsync(
+                cdpOrganisationId, cdpPersonId, cancellationToken);
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (LastOwnerRemovalException ex)
+        {
+            return Conflict(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Gets a specific user in an organisation.
     /// </summary>
     /// <param name="cdpOrganisationId">The CDP organisation identifier.</param>

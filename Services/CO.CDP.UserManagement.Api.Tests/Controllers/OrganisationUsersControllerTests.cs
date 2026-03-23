@@ -262,4 +262,63 @@ public class OrganisationUsersControllerTests
         var response = okResult.Value.Should().BeOfType<OrganisationUserResponse>().Subject;
         response.Email.Should().Be("test@example.com");
     }
+
+    [Fact]
+    public async Task RemoveUser_WhenValid_ReturnsNoContent()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NoContentResult>();
+        _organisationUserService.Verify(
+            s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenOrganisationNotFound_ReturnsNotFound()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EntityNotFoundException("Organisation", orgId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenMembershipNotFound_ReturnsNotFound()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EntityNotFoundException("UserOrganisationMembership", personId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenLastOwner_ReturnsConflict()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new LastOwnerRemovalException(orgId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<ConflictObjectResult>();
+    }
 }
