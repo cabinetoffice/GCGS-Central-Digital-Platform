@@ -32,6 +32,7 @@ builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteReposito
 builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Person.WebApi.Model.Person?>, GetPersonUseCase>();
 builder.Services.AddScoped<IUseCase<LookupPerson, CO.CDP.Person.WebApi.Model.Person?>, LookupPersonUseCase>();
+builder.Services.AddScoped<IUseCase<BulkLookupPerson, IReadOnlyDictionary<Guid, CO.CDP.Person.WebApi.Model.BulkLookupPersonResult>>, BulkLookupPersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdatePerson), bool>, UpdatePersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), bool>, ClaimPersonInviteUseCase>();
 builder.Services.AddProblemDetails();

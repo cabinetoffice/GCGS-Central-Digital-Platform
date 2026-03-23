@@ -1,3 +1,4 @@
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.UserManagement.Api.Authorization;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
@@ -6,6 +7,7 @@ using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using IUmOrganisationRepository = CO.CDP.UserManagement.Core.Interfaces.IOrganisationRepository;
 
@@ -21,20 +23,20 @@ public class OrganisationInvitesController : ControllerBase
 {
     private readonly IUmOrganisationRepository _organisationRepository;
     private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
-    private readonly IOrganisationApiAdapter _organisationApiAdapter;
+    private readonly OrganisationInformationContext _organisationInformationContext;
     private readonly IInviteOrchestrationService _inviteOrchestrationService;
     private readonly ICurrentUserService _currentUserService;
 
     public OrganisationInvitesController(
         IUmOrganisationRepository organisationRepository,
         IInviteRoleMappingRepository inviteRoleMappingRepository,
-        IOrganisationApiAdapter organisationApiAdapter,
+        OrganisationInformationContext organisationInformationContext,
         IInviteOrchestrationService inviteOrchestrationService,
         ICurrentUserService currentUserService)
     {
         _organisationRepository = organisationRepository;
         _inviteRoleMappingRepository = inviteRoleMappingRepository;
-        _organisationApiAdapter = organisationApiAdapter;
+        _organisationInformationContext = organisationInformationContext;
         _inviteOrchestrationService = inviteOrchestrationService;
         _currentUserService = currentUserService;
     }
@@ -57,6 +59,7 @@ public class OrganisationInvitesController : ControllerBase
                 throw new EntityNotFoundException(nameof(CoreEntities.Organisation), cdpOrganisationId);
             }
 
+            // Get InviteRoleMappings from UserManagement DB
             var mappings = (await _inviteRoleMappingRepository.GetByOrganisationIdAsync(
                 organisation.Id, cancellationToken)).ToList();
 
@@ -65,27 +68,28 @@ public class OrganisationInvitesController : ControllerBase
                 return Ok(Enumerable.Empty<PendingOrganisationInviteResponse>());
             }
 
-            var oiInvites = await _organisationApiAdapter.GetOrganisationPersonInvitesAsync(
-                cdpOrganisationId, cancellationToken);
+            // Get CDP PersonInvites via OrganisationInformationContext
+            var cdpInviteGuids = mappings.Select(m => m.CdpPersonInviteGuid).ToList();
+            var cdpInvites = await _organisationInformationContext.PersonInvites
+                .Where(pi => cdpInviteGuids.Contains(pi.Guid))
+                .ToListAsync(cancellationToken);
 
-            var oiInviteById = oiInvites.ToDictionary(i => i.Id);
-
+            // Join and map to response
             var responses = from mapping in mappings
-                            where oiInviteById.ContainsKey(mapping.CdpPersonInviteGuid)
-                            let oiInvite = oiInviteById[mapping.CdpPersonInviteGuid]
+                            join cdpInvite in cdpInvites on mapping.CdpPersonInviteGuid equals cdpInvite.Guid
                             select new PendingOrganisationInviteResponse
                             {
                                 PendingInviteId = mapping.Id,
                                 OrganisationId = mapping.OrganisationId,
-                                CdpPersonInviteGuid = oiInvite.Id,
-                                Email = oiInvite.Email,
-                                FirstName = oiInvite.FirstName,
-                                LastName = oiInvite.LastName,
+                                CdpPersonInviteGuid = cdpInvite.Guid,
+                                Email = cdpInvite.Email,
+                                FirstName = cdpInvite.FirstName,
+                                LastName = cdpInvite.LastName,
                                 OrganisationRole = mapping.OrganisationRole,
                                 Status = UserStatus.Pending,
                                 InvitedBy = mapping.CreatedBy,
-                                ExpiresOn = oiInvite.ExpiresOn,
-                                CreatedAt = oiInvite.CreatedOn ?? mapping.CreatedAt,
+                                ExpiresOn = cdpInvite.ExpiresOn,
+                                CreatedAt = cdpInvite.CreatedOn,
                                 ApplicationAssignments = mapping.ApplicationAssignments.Select(a => new InviteApplicationAssignmentResponse
                                 {
                                     OrganisationApplicationId = a.OrganisationApplicationId,
@@ -124,18 +128,23 @@ public class OrganisationInvitesController : ControllerBase
                 inviter,
                 cancellationToken);
 
+            // Get CDP invite details for response
+            var cdpInvite = await _organisationInformationContext.PersonInvites
+                .FirstOrDefaultAsync(pi => pi.Guid == mapping.CdpPersonInviteGuid, cancellationToken);
+
             var response = new PendingOrganisationInviteResponse
             {
                 PendingInviteId = mapping.Id,
                 OrganisationId = mapping.OrganisationId,
                 CdpPersonInviteGuid = mapping.CdpPersonInviteGuid,
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
+                Email = cdpInvite?.Email ?? request.Email,
+                FirstName = cdpInvite?.FirstName ?? request.FirstName,
+                LastName = cdpInvite?.LastName ?? request.LastName,
                 OrganisationRole = mapping.OrganisationRole,
                 Status = UserStatus.Pending,
                 InvitedBy = mapping.CreatedBy,
-                CreatedAt = mapping.CreatedAt
+                ExpiresOn = cdpInvite?.ExpiresOn,
+                CreatedAt = cdpInvite?.CreatedOn ?? mapping.CreatedAt
             };
 
             return CreatedAtAction(nameof(GetInvites), new { cdpOrganisationId }, response);
@@ -203,4 +212,3 @@ public class OrganisationInvitesController : ControllerBase
         }
     }
 }
-

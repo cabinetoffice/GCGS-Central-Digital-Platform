@@ -17,24 +17,16 @@ public class OrganisationUsersControllerTests
 {
     private readonly Mock<IOrganisationUserService> _organisationUserService;
     private readonly Mock<IPersonApiAdapter> _personLookupService;
-    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter;
     private readonly OrganisationUsersController _controller;
 
     public OrganisationUsersControllerTests()
     {
         _organisationUserService = new Mock<IOrganisationUserService>();
         _personLookupService = new Mock<IPersonApiAdapter>();
-        _organisationApiAdapter = new Mock<IOrganisationApiAdapter>();
         var logger = new Mock<ILogger<OrganisationUsersController>>();
-
-        _organisationApiAdapter
-            .Setup(a => a.GetOrganisationPersonsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Array.Empty<CO.CDP.UserManagement.Core.Models.OiOrganisationPerson>());
-
         _controller = new OrganisationUsersController(
             _organisationUserService.Object,
             _personLookupService.Object,
-            _organisationApiAdapter.Object,
             logger.Object);
     }
 
@@ -54,14 +46,19 @@ public class OrganisationUsersControllerTests
             JoinedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)
         };
+        var personDetails = new PersonDetails
+        {
+            CdpPersonId = personId,
+            FirstName = "Test",
+            LastName = "User",
+            Email = "test@example.com"
+        };
         _organisationUserService.Setup(service => service.GetOrganisationUsersAsync(orgId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { membership });
-        _organisationApiAdapter
-            .Setup(a => a.GetOrganisationPersonsAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<OiOrganisationPerson>
-            {
-                new() { Id = personId, FirstName = "Test", LastName = "User", Email = "test@example.com", Scopes = [] }
-            });
+        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, PersonDetails> { [personId] = personDetails });
 
         var result = await _controller.GetUsers(orgId, CancellationToken.None);
 
@@ -167,13 +164,18 @@ public class OrganisationUsersControllerTests
         };
         _organisationUserService.Setup(service => service.GetOrganisationUserByPersonIdAsync(orgId, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(membership);
-        _personLookupService.Setup(service => service.GetPersonDetailsAsync("user-3", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new PersonDetails
+        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, PersonDetails>
             {
-                CdpPersonId = personId,
-                FirstName = "Test",
-                LastName = "User",
-                Email = "test@example.com"
+                [personId] = new PersonDetails
+                {
+                    CdpPersonId = personId,
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@example.com"
+                }
             });
 
         var result = await _controller.GetUserByPersonId(orgId, personId, CancellationToken.None);
@@ -246,13 +248,18 @@ public class OrganisationUsersControllerTests
         };
         _organisationUserService.Setup(service => service.GetOrganisationUserAsync(orgId, "user-4", It.IsAny<CancellationToken>()))
             .ReturnsAsync(membership);
-        _personLookupService.Setup(service => service.GetPersonDetailsAsync("user-4", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new PersonDetails
+        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
+                It.IsAny<IEnumerable<Guid>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Dictionary<Guid, PersonDetails>
             {
-                CdpPersonId = personId,
-                FirstName = "Test",
-                LastName = "User",
-                Email = "test@example.com"
+                [personId] = new PersonDetails
+                {
+                    CdpPersonId = personId,
+                    FirstName = "Test",
+                    LastName = "User",
+                    Email = "test@example.com"
+                }
             });
 
         var result = await _controller.GetUser(orgId, "user-4", CancellationToken.None);

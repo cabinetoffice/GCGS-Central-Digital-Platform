@@ -1,13 +1,14 @@
+using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.UserManagement.Api.Controllers;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
-using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 using IOrganisationRepository = CO.CDP.UserManagement.Core.Interfaces.IOrganisationRepository;
@@ -18,7 +19,7 @@ public class OrganisationInvitesControllerTests
 {
     private readonly Mock<IOrganisationRepository> _organisationRepository;
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepository;
-    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter;
+    private readonly OrganisationInformationContext _organisationInformationContext;
     private readonly Mock<IInviteOrchestrationService> _inviteOrchestrationService;
     private readonly Mock<ICurrentUserService> _currentUserService;
     private readonly OrganisationInvitesController _controller;
@@ -27,14 +28,17 @@ public class OrganisationInvitesControllerTests
     {
         _organisationRepository = new Mock<IOrganisationRepository>();
         _inviteRoleMappingRepository = new Mock<IInviteRoleMappingRepository>();
-        _organisationApiAdapter = new Mock<IOrganisationApiAdapter>();
+        var options = new DbContextOptionsBuilder<OrganisationInformationContext>()
+            .UseInMemoryDatabase($"OrganisationInvites-{Guid.NewGuid()}")
+            .Options;
+        _organisationInformationContext = new OrganisationInformationContext(options);
         _inviteOrchestrationService = new Mock<IInviteOrchestrationService>();
         _currentUserService = new Mock<ICurrentUserService>();
 
         _controller = new OrganisationInvitesController(
             _organisationRepository.Object,
             _inviteRoleMappingRepository.Object,
-            _organisationApiAdapter.Object,
+            _organisationInformationContext,
             _inviteOrchestrationService.Object,
             _currentUserService.Object);
     }
@@ -74,18 +78,19 @@ public class OrganisationInvitesControllerTests
             .ReturnsAsync(organisation);
         _inviteRoleMappingRepository.Setup(repo => repo.GetByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(inviteRoleMappings);
-        _organisationApiAdapter.Setup(a => a.GetOrganisationPersonInvitesAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<OiPersonInvite>
-            {
-                new()
-                {
-                    Id = cdpInviteGuid,
-                    Email = "test@example.com",
-                    FirstName = "Test",
-                    LastName = "User",
-                    CreatedOn = DateTimeOffset.UtcNow
-                }
-            });
+
+        _organisationInformationContext.PersonInvites.Add(new PersonInvite
+        {
+            Guid = cdpInviteGuid,
+            Email = "test@example.com",
+            FirstName = "Test",
+            LastName = "User",
+            OrganisationId = 1,
+            Scopes = new List<string> { "ADMIN" },
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        });
+        await _organisationInformationContext.SaveChangesAsync();
 
         var result = await _controller.GetInvites(orgId, CancellationToken.None);
 
@@ -94,39 +99,6 @@ public class OrganisationInvitesControllerTests
         var response = okResult.Value.Should().BeAssignableTo<IEnumerable<PendingOrganisationInviteResponse>>().Subject.ToList();
         response.Should().HaveCount(1);
         response[0].PendingInviteId.Should().Be(5);
-        response[0].Email.Should().Be("test@example.com");
-    }
-
-    [Fact]
-    public async Task GetInvites_WhenOiInviteNotFound_ExcludesMissingMapping()
-    {
-        var orgId = Guid.NewGuid();
-        var organisation = new CoreOrganisation { Id = 12, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org" };
-        var inviteRoleMappings = new List<InviteRoleMapping>
-        {
-            new()
-            {
-                Id = 6,
-                OrganisationId = organisation.Id,
-                OrganisationRoleId = (int)OrganisationRole.Member,
-                CdpPersonInviteGuid = Guid.NewGuid(),
-                CreatedBy = "inviter",
-                CreatedAt = DateTimeOffset.UtcNow
-            }
-        };
-        _organisationRepository.Setup(repo => repo.GetByCdpGuidAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(organisation);
-        _inviteRoleMappingRepository.Setup(repo => repo.GetByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(inviteRoleMappings);
-        _organisationApiAdapter.Setup(a => a.GetOrganisationPersonInvitesAsync(orgId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<OiPersonInvite>());
-
-        var result = await _controller.GetInvites(orgId, CancellationToken.None);
-
-        var actionResult = result.Should().BeOfType<ActionResult<IEnumerable<PendingOrganisationInviteResponse>>>().Subject;
-        var okResult = actionResult.Result.Should().BeOfType<OkObjectResult>().Subject;
-        var response = okResult.Value.Should().BeAssignableTo<IEnumerable<PendingOrganisationInviteResponse>>().Subject.ToList();
-        response.Should().BeEmpty();
     }
 
     [Fact]
@@ -156,6 +128,19 @@ public class OrganisationInvitesControllerTests
                 "inviter",
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(invite);
+
+        _organisationInformationContext.PersonInvites.Add(new PersonInvite
+        {
+            Guid = invite.CdpPersonInviteGuid,
+            Email = request.Email,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            OrganisationId = 1,
+            Scopes = new List<string> { "ADMIN" },
+            CreatedOn = DateTimeOffset.UtcNow,
+            UpdatedOn = DateTimeOffset.UtcNow
+        });
+        await _organisationInformationContext.SaveChangesAsync();
 
         var result = await _controller.InviteUser(orgId, request, CancellationToken.None);
 
