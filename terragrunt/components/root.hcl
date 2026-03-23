@@ -100,7 +100,7 @@ locals {
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.2.5"
+      pinned_service_version_fts          = "1.2.6"
       pinned_service_version              = "1.0.83"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
