@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.Core.Constants;
+using CO.CDP.UserManagement.Core.Models;
 
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
@@ -18,5 +19,21 @@ public interface IOrganisationApiAdapter
         string firstName,
         string lastName,
         IReadOnlyList<string> scopes,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Returns all persons in the given organisation with their Organisation Information scopes.
+    /// Returns an empty list if the organisation is not found.
+    /// </summary>
+    Task<IReadOnlyList<OiOrganisationPerson>> GetOrganisationPersonsAsync(
+        Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Returns all pending person invites for the given organisation.
+    /// Returns an empty list if the organisation is not found.
+    /// </summary>
+    Task<IReadOnlyList<OiPersonInvite>> GetOrganisationPersonInvitesAsync(
+        Guid cdpOrganisationGuid,
         CancellationToken cancellationToken = default);
 }

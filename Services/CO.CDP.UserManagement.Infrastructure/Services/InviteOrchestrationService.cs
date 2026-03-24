@@ -8,45 +8,20 @@ using Microsoft.Extensions.Logging;
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
-/// Service for orchestrating user invites via CDP bridge.
+/// Orchestrates invite lifecycle. Write operations that touch OI
+/// delegate to <see cref="IAtomicMembershipSync"/> for atomic consistency.
 /// </summary>
-public class InviteOrchestrationService : IInviteOrchestrationService
+public class InviteOrchestrationService(
+    IOrganisationRepository organisationRepository,
+    IInviteRoleMappingRepository inviteRoleMappingRepository,
+    IUserOrganisationMembershipRepository membershipRepository,
+    IOrganisationApiAdapter organisationApiAdapter,
+    IPersonApiAdapter personApiAdapter,
+    IRoleMappingService roleMappingService,
+    IAtomicMembershipSync atomicMembershipSync,
+    IUnitOfWork unitOfWork,
+    ILogger<InviteOrchestrationService> logger) : IInviteOrchestrationService
 {
-    private readonly IOrganisationRepository _organisationRepository;
-    private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
-    private readonly IUserOrganisationMembershipRepository _membershipRepository;
-    private readonly IOrganisationApiAdapter _organisationApiAdapter;
-    private readonly IPersonApiAdapter _personApiAdapter;
-    private readonly IUserAssignmentService _userAssignmentService;
-    private readonly IRoleMappingService _roleMappingService;
-    private readonly ICdpMembershipSyncService _membershipSyncService;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<InviteOrchestrationService> _logger;
-
-    public InviteOrchestrationService(
-        IOrganisationRepository organisationRepository,
-        IInviteRoleMappingRepository inviteRoleMappingRepository,
-        IUserOrganisationMembershipRepository membershipRepository,
-        IOrganisationApiAdapter organisationApiAdapter,
-        IPersonApiAdapter personApiAdapter,
-        IUserAssignmentService userAssignmentService,
-        IRoleMappingService roleMappingService,
-        ICdpMembershipSyncService membershipSyncService,
-        IUnitOfWork unitOfWork,
-        ILogger<InviteOrchestrationService> logger)
-    {
-        _organisationRepository = organisationRepository;
-        _inviteRoleMappingRepository = inviteRoleMappingRepository;
-        _membershipRepository = membershipRepository;
-        _organisationApiAdapter = organisationApiAdapter;
-        _personApiAdapter = personApiAdapter;
-        _userAssignmentService = userAssignmentService;
-        _roleMappingService = roleMappingService;
-        _membershipSyncService = membershipSyncService;
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
-
     public async Task<InviteRoleMapping> InviteUserAsync(
         Guid cdpOrganisationId,
         InviteUserRequest request,
@@ -58,7 +33,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
         await EnsureMemberDoesNotAlreadyExistAsync(organisation, request, cancellationToken);
 
-        var cdpScopes = await _roleMappingService.GetInviteScopesAsync(request.OrganisationRole, cancellationToken);
+        var cdpScopes = await roleMappingService.GetInviteScopesAsync(request.OrganisationRole, cancellationToken);
 
         var cdpInviteGuid = await CreatePersonInviteAsync(
             organisation,
@@ -74,7 +49,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
             OrganisationId = organisation.Id,
             CreatedBy = inviterPrincipalId ?? "system"
         };
-        await _roleMappingService.ApplyRoleDefinitionAsync(inviteRoleMapping, request.OrganisationRole, cancellationToken);
+        await roleMappingService.ApplyRoleDefinitionAsync(inviteRoleMapping, request.OrganisationRole, cancellationToken);
 
         if (request.ApplicationAssignments != null && request.ApplicationAssignments.Any())
         {
@@ -92,28 +67,67 @@ public class InviteOrchestrationService : IInviteOrchestrationService
             }
         }
 
-        _inviteRoleMappingRepository.Add(inviteRoleMapping);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        inviteRoleMappingRepository.Add(inviteRoleMapping);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "Created InviteRoleMapping {MappingId} for CDP invite {CdpInviteGuid}",
             inviteRoleMapping.Id, inviteRoleMapping.CdpPersonInviteGuid);
 
         return inviteRoleMapping;
     }
 
+    public async Task RemoveInviteAsync(
+        Guid cdpOrganisationId,
+        int inviteRoleMappingId,
+        CancellationToken cancellationToken = default)
+    {
+        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
+
+        inviteRoleMappingRepository.Remove(mapping);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation(
+            "Removed InviteRoleMapping {MappingId} for organisation {OrganisationId}",
+            inviteRoleMappingId, mapping.OrganisationId);
+    }
+
+    public async Task ChangeInviteRoleAsync(
+        Guid cdpOrganisationId,
+        int inviteRoleMappingId,
+        OrganisationRole organisationRole,
+        CancellationToken cancellationToken = default)
+    {
+        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
+
+        await roleMappingService.ApplyRoleDefinitionAsync(mapping, organisationRole, cancellationToken);
+        inviteRoleMappingRepository.Update(mapping);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+
+        logger.LogInformation(
+            "Changed role to {Role} for InviteRoleMapping {MappingId}",
+            organisationRole, inviteRoleMappingId);
+    }
+
+    public Task AcceptInviteAsync(
+        Guid cdpOrganisationId,
+        int inviteRoleMappingId,
+        AcceptOrganisationInviteRequest request,
+        CancellationToken cancellationToken = default) =>
+        atomicMembershipSync.AcceptInviteAsync(cdpOrganisationId, inviteRoleMappingId, request, cancellationToken);
+
     private async Task EnsureMemberDoesNotAlreadyExistAsync(
-        Core.Entities.Organisation organisation,
+        Organisation organisation,
         InviteUserRequest request,
         CancellationToken cancellationToken)
     {
         var email = request.Email;
         var personDetails = string.IsNullOrWhiteSpace(email)
             ? null
-            : await _personApiAdapter.GetPersonDetailsByEmailAsync(email, cancellationToken);
+            : await personApiAdapter.GetPersonDetailsByEmailAsync(email, cancellationToken);
 
         var memberExists = personDetails != null &&
-                           await _membershipRepository.ExistsByPersonIdAndOrganisationAsync(
+                           await membershipRepository.ExistsByPersonIdAndOrganisationAsync(
                                personDetails.CdpPersonId,
                                organisation.Id,
                                cancellationToken);
@@ -127,94 +141,10 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         }
     }
 
-    public async Task RemoveInviteAsync(
-        Guid cdpOrganisationId,
-        int inviteRoleMappingId,
-        CancellationToken cancellationToken = default)
-    {
-        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
-
-        _inviteRoleMappingRepository.Remove(mapping);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        _logger.LogInformation(
-            "Removed InviteRoleMapping {MappingId} for organisation {OrganisationId}",
-            inviteRoleMappingId, mapping.OrganisationId);
-    }
-
-    public async Task ChangeInviteRoleAsync(
-        Guid cdpOrganisationId,
-        int inviteRoleMappingId,
-        OrganisationRole organisationRole,
-        CancellationToken cancellationToken = default)
-    {
-        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
-
-        await _roleMappingService.ApplyRoleDefinitionAsync(mapping, organisationRole, cancellationToken);
-        _inviteRoleMappingRepository.Update(mapping);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        _logger.LogInformation(
-            "Changed role to {Role} for InviteRoleMapping {MappingId}",
-            organisationRole, inviteRoleMappingId);
-    }
-
-    public async Task AcceptInviteAsync(
-        Guid cdpOrganisationId,
-        int inviteRoleMappingId,
-        AcceptOrganisationInviteRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        if (request == null) throw new ArgumentNullException(nameof(request));
-
-        var mapping = await GetInviteRoleMappingAsync(cdpOrganisationId, inviteRoleMappingId, cancellationToken);
-
-        var existingMembership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            request.UserPrincipalId,
-            mapping.OrganisationId,
-            cancellationToken);
-        if (existingMembership != null)
-        {
-            throw new DuplicateEntityException(
-                nameof(UserOrganisationMembership),
-                nameof(UserOrganisationMembership.UserPrincipalId),
-                request.UserPrincipalId);
-        }
-
-        var membership = new UserOrganisationMembership
-        {
-            UserPrincipalId = request.UserPrincipalId,
-            CdpPersonId = request.CdpPersonId,
-            OrganisationId = mapping.OrganisationId,
-            IsActive = true,
-            JoinedAt = DateTimeOffset.UtcNow,
-            InvitedBy = mapping.CreatedBy
-        };
-        await _roleMappingService.ApplyRoleDefinitionAsync(membership, mapping.OrganisationRole, cancellationToken);
-
-        _membershipRepository.Add(membership);
-        _inviteRoleMappingRepository.Remove(mapping);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        await _userAssignmentService.AssignDefaultApplicationsAsync(membership, cancellationToken);
-        await _membershipSyncService.SyncMembershipAccessChangedAsync(membership.Id, cancellationToken);
-
-        _logger.LogInformation(
-            "Accepted invite {MappingId}, created membership {MembershipId}",
-            inviteRoleMappingId, membership.Id);
-    }
-
-    private async Task<CO.CDP.UserManagement.Core.Entities.Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
-        CancellationToken cancellationToken)
-    {
-        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
-        if (organisation == null)
-        {
-            throw new EntityNotFoundException(nameof(CO.CDP.UserManagement.Core.Entities.Organisation), cdpOrganisationId);
-        }
-
-        return organisation;
-    }
+    private async Task<Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
+        CancellationToken cancellationToken) =>
+        await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
     private async Task<InviteRoleMapping> GetInviteRoleMappingAsync(
         Guid cdpOrganisationId,
@@ -222,7 +152,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         CancellationToken cancellationToken)
     {
         var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
-        var mapping = await _inviteRoleMappingRepository.GetByIdAsync(inviteRoleMappingId, cancellationToken);
+        var mapping = await inviteRoleMappingRepository.GetByIdAsync(inviteRoleMappingId, cancellationToken);
 
         if (mapping == null || mapping.OrganisationId != organisation.Id)
         {
@@ -233,7 +163,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     }
 
     private async Task<Guid> CreatePersonInviteAsync(
-        Core.Entities.Organisation organisation,
+        Organisation organisation,
         string email,
         string firstName,
         string lastName,
@@ -242,7 +172,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
     {
         try
         {
-            var inviteId = await _organisationApiAdapter.CreatePersonInviteAsync(
+            var inviteId = await organisationApiAdapter.CreatePersonInviteAsync(
                 organisation.CdpOrganisationGuid,
                 email,
                 firstName,
@@ -250,7 +180,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
                 scopes,
                 cancellationToken);
 
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Created CDP invite {CdpInviteGuid} in organisation {OrganisationId}",
                 inviteId, organisation.Id);
 
@@ -258,7 +188,7 @@ public class InviteOrchestrationService : IInviteOrchestrationService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex,
+            logger.LogError(ex,
                 "Failed to create CDP invite in organisation {OrganisationId}, aborting",
                 organisation.Id);
             throw new Core.Exceptions.InvalidOperationException(

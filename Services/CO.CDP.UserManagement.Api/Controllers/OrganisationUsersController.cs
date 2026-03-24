@@ -1,7 +1,9 @@
 using CO.CDP.UserManagement.Api.Models;
+using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Api.Authorization;
@@ -20,15 +22,18 @@ public class OrganisationUsersController : ControllerBase
 {
     private readonly IOrganisationUserService _organisationUserService;
     private readonly IPersonApiAdapter _personApiAdapter;
+    private readonly IOrganisationApiAdapter _organisationApiAdapter;
     private readonly ILogger<OrganisationUsersController> _logger;
 
     public OrganisationUsersController(
         IOrganisationUserService organisationUserService,
         IPersonApiAdapter personLookupService,
+        IOrganisationApiAdapter organisationApiAdapter,
         ILogger<OrganisationUsersController> logger)
     {
         _organisationUserService = organisationUserService;
         _personApiAdapter = personLookupService;
+        _organisationApiAdapter = organisationApiAdapter;
         _logger = logger;
     }
 
@@ -50,20 +55,26 @@ public class OrganisationUsersController : ControllerBase
             _logger.LogInformation("Getting organisation users for CDP organisation {CdpOrganisationId}", cdpOrganisationId);
             var memberships = (await _organisationUserService.GetOrganisationUsersAsync(cdpOrganisationId, cancellationToken)).ToArray();
             _logger.LogInformation("Retrieved {MembershipCount} memberships for CDP organisation {CdpOrganisationId}", memberships.Length, cdpOrganisationId);
-            var personIds = memberships.Where(m => m.CdpPersonId.HasValue)
-                .Select(m => m.CdpPersonId!.Value)
-                .Distinct()
-                .ToArray();
-            var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(personIds, cancellationToken);
+
+            var oiPersons = await _organisationApiAdapter.GetOrganisationPersonsAsync(cdpOrganisationId, cancellationToken);
+            var oiPersonById = oiPersons.ToDictionary(p => p.Id);
 
             var responses = memberships
                 .Select(membership => membership.ToResponse(
                     includeAssignments: true,
                     personDetails: membership.CdpPersonId.HasValue &&
-                                   personsById.TryGetValue(membership.CdpPersonId.Value, out var person)
-                        ? person
+                                   oiPersonById.TryGetValue(membership.CdpPersonId.Value, out var oiPerson)
+                        ? new PersonDetails
+                        {
+                            CdpPersonId = oiPerson.Id,
+                            FirstName = oiPerson.FirstName,
+                            LastName = oiPerson.LastName,
+                            Email = oiPerson.Email
+                        }
                         : null))
                 .ToArray();
+
+            LogScopeMismatches(cdpOrganisationId, memberships, oiPersonById);
 
             return Ok(responses);
         }
@@ -123,7 +134,7 @@ public class OrganisationUsersController : ControllerBase
                 return NotFound(new ErrorResponse { Message = $"User with CDP Person ID {cdpPersonId} not found in organisation {cdpOrganisationId}." });
             }
 
-            var personDetails = await GetPersonDetailsAsync(membership.CdpPersonId, cancellationToken);
+            var personDetails = await GetPersonDetailsAsync(membership.UserPrincipalId, cancellationToken);
             return Ok(membership.ToResponse(includeAssignments: true, personDetails: personDetails));
         }
         catch (EntityNotFoundException ex)
@@ -160,6 +171,35 @@ public class OrganisationUsersController : ControllerBase
     }
 
     /// <summary>
+    /// Removes a user from an organisation (soft-delete). Idempotent — returns 204 if already removed.
+    /// </summary>
+    [HttpDelete("{cdpPersonId:guid}")]
+    [Authorize(Policy = PolicyNames.OrganisationAdmin)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult> RemoveUser(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _organisationUserService.RemoveUserFromOrganisationAsync(
+                cdpOrganisationId, cdpPersonId, cancellationToken);
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+        catch (LastOwnerRemovalException ex)
+        {
+            return Conflict(new ErrorResponse { Message = ex.Message });
+        }
+    }
+
+    /// <summary>
     /// Gets a specific user in an organisation.
     /// </summary>
     /// <param name="cdpOrganisationId">The CDP organisation identifier.</param>
@@ -182,7 +222,7 @@ public class OrganisationUsersController : ControllerBase
                 return NotFound(new ErrorResponse { Message = $"User {userId} not found in organisation {cdpOrganisationId}." });
             }
 
-            var personDetails = await GetPersonDetailsAsync(membership.CdpPersonId, cancellationToken);
+            var personDetails = await GetPersonDetailsAsync(membership.UserPrincipalId, cancellationToken);
             return Ok(membership.ToResponse(includeAssignments: true, personDetails: personDetails));
         }
         catch (EntityNotFoundException ex)
@@ -191,20 +231,37 @@ public class OrganisationUsersController : ControllerBase
         }
     }
 
+    private void LogScopeMismatches(
+        Guid cdpOrganisationId,
+        IEnumerable<UserOrganisationMembership> memberships,
+        IDictionary<Guid, OiOrganisationPerson> oiPersonById)
+    {
+        foreach (var membership in memberships.Where(m => m.CdpPersonId.HasValue))
+        {
+            if (!oiPersonById.TryGetValue(membership.CdpPersonId!.Value, out var oiPerson))
+            {
+                _logger.LogWarning(
+                    "Organisation {CdpOrganisationId}: UM member {CdpPersonId} (role={UmRole}) has no matching OI person record",
+                    cdpOrganisationId, membership.CdpPersonId, membership.OrganisationRole);
+                continue;
+            }
+
+            var hasAdminScope = oiPerson.Scopes.Contains("ADMIN", StringComparer.OrdinalIgnoreCase);
+            var isUmAdmin = membership.OrganisationRole >= OrganisationRole.Admin;
+
+            if (hasAdminScope != isUmAdmin)
+            {
+                _logger.LogWarning(
+                    "Organisation {CdpOrganisationId}: scope/role mismatch for person {Email} — OI scopes [{OiScopes}] vs UM role {UmRole}",
+                    cdpOrganisationId, oiPerson.Email, string.Join(", ", oiPerson.Scopes), membership.OrganisationRole);
+            }
+        }
+    }
+
     private async Task<PersonDetails?> GetPersonDetailsAsync(
-        Guid? cdpPersonId,
+        string userPrincipalId,
         CancellationToken cancellationToken)
     {
-        if (!cdpPersonId.HasValue)
-        {
-            return null;
-        }
-
-        var personsById = await _personApiAdapter.GetPersonDetailsByIdsAsync(
-            [cdpPersonId.Value],
-            cancellationToken);
-        return personsById.TryGetValue(cdpPersonId.Value, out var person)
-            ? person
-            : null;
+        return await _personApiAdapter.GetPersonDetailsAsync(userPrincipalId, cancellationToken);
     }
 }

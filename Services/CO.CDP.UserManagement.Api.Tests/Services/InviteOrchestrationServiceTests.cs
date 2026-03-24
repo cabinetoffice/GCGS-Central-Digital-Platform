@@ -19,10 +19,9 @@ public class InviteOrchestrationServiceTests
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapterMock;
     private readonly Mock<IPersonApiAdapter> _personLookupServiceMock;
-    private readonly Mock<IUserAssignmentService> _userAssignmentServiceMock;
+    private readonly Mock<IAtomicMembershipSync> _atomicMembershipSyncMock;
     private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IRoleMappingService> _roleMappingServiceMock;
-    private readonly Mock<ICdpMembershipSyncService> _membershipSyncServiceMock;
     private readonly InviteOrchestrationService _service;
 
     public InviteOrchestrationServiceTests()
@@ -32,10 +31,9 @@ public class InviteOrchestrationServiceTests
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _organisationApiAdapterMock = new Mock<IOrganisationApiAdapter>();
         _personLookupServiceMock = new Mock<IPersonApiAdapter>();
-        _userAssignmentServiceMock = new Mock<IUserAssignmentService>();
+        _atomicMembershipSyncMock = new Mock<IAtomicMembershipSync>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _roleMappingServiceMock = new Mock<IRoleMappingService>();
-        _membershipSyncServiceMock = new Mock<ICdpMembershipSyncService>();
         var loggerMock = new Mock<ILogger<InviteOrchestrationService>>();
 
         _membershipRepositoryMock
@@ -46,12 +44,8 @@ public class InviteOrchestrationServiceTests
             .Setup(s => s.GetPersonDetailsByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((PersonDetails?)null);
 
-        _userAssignmentServiceMock
-            .Setup(s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.CompletedTask);
-
-        _membershipSyncServiceMock
-            .Setup(s => s.SyncMembershipAccessChangedAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+        _atomicMembershipSyncMock
+            .Setup(s => s.AcceptInviteAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<AcceptOrganisationInviteRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         _roleMappingServiceMock
@@ -80,9 +74,8 @@ public class InviteOrchestrationServiceTests
             _membershipRepositoryMock.Object,
             _organisationApiAdapterMock.Object,
             _personLookupServiceMock.Object,
-            _userAssignmentServiceMock.Object,
             _roleMappingServiceMock.Object,
-            _membershipSyncServiceMock.Object,
+            _atomicMembershipSyncMock.Object,
             _unitOfWorkMock.Object,
             loggerMock.Object);
     }
@@ -455,118 +448,32 @@ public class InviteOrchestrationServiceTests
     public async Task AcceptInviteAsync_WithValidInvite_CreatesUserMembership()
     {
         var cdpOrgGuid = Guid.NewGuid();
-        var userPrincipalId = "user-123";
-        var organisation = new CoreOrganisation
-        {
-            Id = 1,
-            CdpOrganisationGuid = cdpOrgGuid,
-            Name = "Test Org",
-            Slug = "test-org"
-        };
-
-        var mapping = new InviteRoleMapping
-        {
-            Id = 1,
-            CdpPersonInviteGuid = Guid.NewGuid(),
-            OrganisationId = 1,
-            OrganisationRoleId = (int)OrganisationRole.Admin,
-            Organisation = organisation,
-            ApplicationAssignments = new List<InviteRoleApplicationAssignment>
-            {
-                new()
-                {
-                    OrganisationApplicationId = 1,
-                    ApplicationRoleId = 1
-                }
-            }
-        };
-
         var request = new AcceptOrganisationInviteRequest
         {
-            UserPrincipalId = userPrincipalId,
+            UserPrincipalId = "user-123",
             CdpPersonId = Guid.NewGuid()
         };
-
-        _inviteRoleMappingRepositoryMock
-            .Setup(r => r.GetByIdAsync(1, default))
-            .ReturnsAsync(mapping);
-
-        _organisationRepositoryMock
-            .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
-            .ReturnsAsync(organisation);
-
-        _membershipRepositoryMock
-            .Setup(r => r.GetByUserAndOrganisationAsync(userPrincipalId, 1, default))
-            .ReturnsAsync((UserOrganisationMembership?)null);
-
-        _unitOfWorkMock
-            .Setup(u => u.SaveChangesAsync(default))
-            .ReturnsAsync(1);
 
         await _service.AcceptInviteAsync(cdpOrgGuid, 1, request);
 
-        _membershipRepositoryMock.Verify(
-            r => r.Add(It.Is<UserOrganisationMembership>(m =>
-                m.UserPrincipalId == userPrincipalId &&
-                m.OrganisationId == 1 &&
-                m.OrganisationRole == OrganisationRole.Admin)),
+        _atomicMembershipSyncMock.Verify(
+            s => s.AcceptInviteAsync(cdpOrgGuid, 1, request, It.IsAny<CancellationToken>()),
             Times.Once);
-
-        _userAssignmentServiceMock.Verify(
-            s => s.AssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), default),
-            Times.Once);
-
-        _inviteRoleMappingRepositoryMock.Verify(r => r.Remove(mapping), Times.Once);
-        _unitOfWorkMock.Verify(u => u.SaveChangesAsync(default), Times.Once);
     }
 
     [Fact]
-    public async Task AcceptInviteAsync_WhenUserAlreadyMember_ThrowsDuplicateEntityException()
+    public async Task AcceptInviteAsync_WhenAtomicSyncThrows_PropagatesException()
     {
         var cdpOrgGuid = Guid.NewGuid();
-        var userPrincipalId = "user-123";
-        var organisation = new CoreOrganisation
-        {
-            Id = 1,
-            CdpOrganisationGuid = cdpOrgGuid,
-            Name = "Test Org",
-            Slug = "test-org"
-        };
-
-        var mapping = new InviteRoleMapping
-        {
-            Id = 1,
-            CdpPersonInviteGuid = Guid.NewGuid(),
-            OrganisationId = 1,
-            OrganisationRoleId = (int)OrganisationRole.Admin,
-            Organisation = organisation
-        };
-
-        var existingMembership = new UserOrganisationMembership
-        {
-            Id = 1,
-            UserPrincipalId = userPrincipalId,
-            OrganisationId = 1,
-            OrganisationRoleId = (int)OrganisationRole.Member
-        };
-
         var request = new AcceptOrganisationInviteRequest
         {
-            UserPrincipalId = userPrincipalId,
+            UserPrincipalId = "user-123",
             CdpPersonId = Guid.NewGuid()
         };
 
-        _inviteRoleMappingRepositoryMock
-            .Setup(r => r.GetByIdAsync(1, default))
-            .ReturnsAsync(mapping);
-
-        _organisationRepositoryMock
-            .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
-            .ReturnsAsync(organisation);
-
-        _membershipRepositoryMock
-            .Setup(r => r.GetByUserAndOrganisationAsync(userPrincipalId, 1, default))
-            .ReturnsAsync(existingMembership);
+        _atomicMembershipSyncMock
+            .Setup(s => s.AcceptInviteAsync(cdpOrgGuid, 1, request, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new DuplicateEntityException("UserOrganisationMembership", "UserPrincipalId", "user-123"));
 
         var act = () => _service.AcceptInviteAsync(cdpOrgGuid, 1, request);
 

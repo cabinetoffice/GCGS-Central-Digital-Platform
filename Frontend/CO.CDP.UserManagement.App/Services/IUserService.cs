@@ -77,4 +77,9 @@ public interface IUserService
         Guid cdpPersonId,
         string clientId,
         CancellationToken ct = default);
+
+    Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
 }

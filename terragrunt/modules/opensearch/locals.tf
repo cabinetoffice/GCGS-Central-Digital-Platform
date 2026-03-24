@@ -12,5 +12,5 @@ locals {
     var.role_ecs_task_opensearch_gateway_arn
   ]
 
-  private_subnet_ids = var.is_production ? var.private_subnet_ids : slice(var.private_subnet_ids, 0, 2)
+  private_subnet_ids = var.is_production ? var.private_subnet_ids : slice(var.private_subnet_ids, 0, var.availability_zone_count)
 }

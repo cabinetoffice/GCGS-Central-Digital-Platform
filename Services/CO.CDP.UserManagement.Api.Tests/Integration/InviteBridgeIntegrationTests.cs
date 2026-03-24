@@ -140,20 +140,6 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         var umOrg = CreateUmOrganisation(cdpOrg.Guid, "Test Organisation");
         var cdpPersonInviteGuid = Guid.NewGuid();
 
-        var cdpPersonInvite = new PersonInvite
-        {
-            Guid = cdpPersonInviteGuid,
-            FirstName = "Jane",
-            LastName = "Smith",
-            Email = "jane.smith@example.com",
-            OrganisationId = cdpOrg.Id,
-            Scopes = new List<string> { "VIEWER" },
-            CreatedOn = DateTimeOffset.UtcNow,
-            UpdatedOn = DateTimeOffset.UtcNow
-        };
-        _cdpContext.PersonInvites.Add(cdpPersonInvite);
-        await _cdpContext.SaveChangesAsync();
-
         var inviteRoleMapping = new InviteRoleMapping
         {
             CdpPersonInviteGuid = cdpPersonInviteGuid,
@@ -165,6 +151,20 @@ public class InviteBridgeIntegrationTests : IClassFixture<UserManagementPostgreS
         };
         _umContext.InviteRoleMappings.Add(inviteRoleMapping);
         await _umContext.SaveChangesAsync();
+
+        _mockOrganisationApiAdapter
+            .Setup(a => a.GetOrganisationPersonInvitesAsync(cdpOrg.Guid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OiPersonInvite>
+            {
+                new()
+                {
+                    Id = cdpPersonInviteGuid,
+                    FirstName = "Jane",
+                    LastName = "Smith",
+                    Email = "jane.smith@example.com",
+                    CreatedOn = DateTimeOffset.UtcNow
+                }
+            });
 
         var response = await _httpClient.GetAsync($"/api/organisations/{cdpOrg.Guid}/invites");
 

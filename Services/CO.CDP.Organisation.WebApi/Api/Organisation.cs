@@ -785,10 +785,11 @@ public static class EndpointExtensions
     {
         app.MapGet("/{organisationId}/persons",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
                 OrganisationIdLocation.Path,
-                [Constants.PersonScope.SupportAdmin])]
+                [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
         async (Guid organisationId, IUseCase<Guid, IEnumerable<WebApiPerson>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))

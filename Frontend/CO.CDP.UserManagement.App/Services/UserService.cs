@@ -440,7 +440,7 @@ public sealed class UserService(
             }
             else if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 userDisplayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -725,7 +725,7 @@ public sealed class UserService(
 
             if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -778,6 +778,49 @@ public sealed class UserService(
         catch (ApiClient.ApiException)
         {
             return false;
+        }
+    }
+
+        public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            var fullName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+            var memberSince = user.JoinedAt.HasValue
+                ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
+                : "Not available";
+
+            var applicationAccess = user.ApplicationAssignments?
+                .Where(assignment => assignment.Application != null)
+                .Select(assignment => new UserApplicationAccessDetailViewModel(
+                    ApplicationId: assignment.Application!.Id,
+                    ApplicationName: assignment.Application!.Name,
+                    ApplicationDescription: assignment.Application!.Description,
+                    Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
+                    AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
+                    AssignedByEmail: assignment.AssignedBy ?? string.Empty,
+                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.Name))
+                .ToList() ?? [];
+
+            return new UserDetailsViewModel(
+                Organisation: org,
+                CdpPersonId: user.CdpPersonId ?? cdpPersonId,
+                FullName: fullName,
+                Email: user.Email ?? string.Empty,
+                OrganisationRole: user.OrganisationRole,
+                MemberSince: memberSince,
+                ApplicationAccess: applicationAccess);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
         }
     }
 }

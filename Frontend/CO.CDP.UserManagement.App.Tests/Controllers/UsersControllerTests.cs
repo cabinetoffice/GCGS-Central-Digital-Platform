@@ -3,6 +3,7 @@ using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -500,6 +501,65 @@ public class UsersControllerTests
         var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Details_WhenViewModelNull_ReturnsNotFound()
+    {
+        _userService.Setup(service => service.GetUserDetailsViewModelAsync("org", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((UserDetailsViewModel?)null);
+
+        var result = await _controller.Details("org", Guid.NewGuid(), CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task Details_WhenViewModelAvailable_ReturnsView()
+    {
+        var applicationAccess = new[]
+        {
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 1,
+                ApplicationName: "Edit",
+                ApplicationDescription: "Edit application",
+                Permissions: new[] { "Read", "Write" },
+                AssignedDate: DateTimeOffset.UtcNow,
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Admin"),
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 2,
+                ApplicationName: "View",
+                ApplicationDescription: "View application",
+                Permissions: new[] { "Read" },
+                AssignedDate: DateTimeOffset.UtcNow.AddDays(-1),
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Editor")
+        };
+        var organisation = new OrganisationResponse
+        {
+            Id = 1,
+            CdpOrganisationGuid = Guid.NewGuid(),
+            Name = "Org",
+            Slug = "org",
+            IsActive = true,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+        var viewModel = new UserDetailsViewModel(
+            Organisation: organisation,
+            CdpPersonId: Guid.NewGuid(),
+            FullName: "Test User",
+            Email: "test@example.com",
+            OrganisationRole: OrganisationRole.Admin,
+            MemberSince: "19 February 2026",
+            ApplicationAccess: applicationAccess);
+        _userService.Setup(service => service.GetUserDetailsViewModelAsync("org", It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.Details("org", Guid.NewGuid(), CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.Model.Should().Be(viewModel);
     }
 
     [Fact]
