@@ -98,7 +98,7 @@ public class UserServiceTests
         var joinedAt = new DateTimeOffset(2026, 2, 19, 0, 0, 0, TimeSpan.Zero);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,
@@ -129,7 +129,7 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,
@@ -159,7 +159,7 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
@@ -283,7 +283,7 @@ public class UserServiceTests
 
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Users2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,

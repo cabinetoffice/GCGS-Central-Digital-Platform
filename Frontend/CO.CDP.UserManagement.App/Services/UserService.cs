@@ -789,7 +789,7 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
             var fullName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
                 ? $"{user.FirstName} {user.LastName}"
                 : string.Empty;
