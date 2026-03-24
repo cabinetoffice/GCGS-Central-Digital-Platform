@@ -1250,4 +1250,10 @@ public class UsersController(
         return View("RemoveSuccess");
     }
 
+    [HttpGet("user/{cdpPersonId:guid}")]
+    public async Task<IActionResult> Details(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    {
+        var viewModel = await userService.GetUserDetailsViewModelAsync(organisationSlug, cdpPersonId, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
+    }
 }

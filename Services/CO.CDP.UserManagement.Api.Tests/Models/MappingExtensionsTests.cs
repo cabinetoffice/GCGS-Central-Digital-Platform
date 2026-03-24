@@ -4,6 +4,7 @@ using CO.CDP.UserManagement.Core.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
+using CoreApplicationRole = CO.CDP.UserManagement.Core.Entities.ApplicationRole;
 
 namespace CO.CDP.UserManagement.Api.Tests.Models;
 
@@ -115,7 +116,7 @@ public class MappingExtensionsTests
     [Fact]
     public void RoleMappingExtensions_ToResponse_IncludesPermissionsByDefault()
     {
-        var role = new ApplicationRole
+        var role = new CoreApplicationRole
         {
             Id = 7,
             ApplicationId = 8,
@@ -146,7 +147,7 @@ public class MappingExtensionsTests
     [Fact]
     public void RoleMappingExtensions_ToResponse_ExcludePermissions_ReturnsNull()
     {
-        var role = new ApplicationRole
+        var role = new CoreApplicationRole
         {
             Id = 9,
             ApplicationId = 8,
@@ -289,7 +290,7 @@ public class MappingExtensionsTests
             CreatedAt = new DateTimeOffset(2024, 6, 1, 0, 0, 0, TimeSpan.Zero),
             UserOrganisationMembership = membership,
             OrganisationApplication = orgApp,
-            Roles = new List<ApplicationRole>
+            Roles = new List<CoreApplicationRole>
             {
                 new()
                 {
