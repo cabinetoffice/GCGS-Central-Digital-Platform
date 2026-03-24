@@ -10,6 +10,14 @@ variable "allowed_unauthenticated_paths" {
   default     = []
 }
 
+variable "additional_external_target_groups" {
+  description = "Optional extra target groups to attach to the ECS service."
+  type = list(object({
+    name_suffix = string
+  }))
+  default = []
+}
+
 variable "cluster_id" {
   description = "Cluster ID of which the service will be part of"
   type        = string
