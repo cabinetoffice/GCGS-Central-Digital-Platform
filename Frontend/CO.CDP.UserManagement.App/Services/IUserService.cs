@@ -82,4 +82,16 @@ public interface IUserService
         string organisationSlug,
         Guid cdpPersonId,
         CancellationToken ct = default);
+
+    Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
 }

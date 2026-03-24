@@ -1,8 +1,8 @@
-@model CO.CDP.UserManagement.App.Models.RevokeApplicationAccessViewModel
+@model CO.CDP.UserManagement.App.Models.RemoveApplicationViewModel
 @{
     ViewData["Title"] = "Revoke access to " + Model.ApplicationName;
     var userDetailsUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}";
-    var changeRoleUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/assignment/{Model.AssignmentId}/change-role";
+    var changeRoleUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application-roles/change";
 }
 
 @section BeforeContent {
@@ -46,7 +46,9 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Role</dt>
-                <dd class="govuk-summary-list__value">@Model.RoleName</dd>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag govuk-tag--purple">@Model.RoleName</strong>
+                </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link" href="@changeRoleUrl">
                         Change<span class="govuk-visually-hidden"> role for @Model.ApplicationName</span>

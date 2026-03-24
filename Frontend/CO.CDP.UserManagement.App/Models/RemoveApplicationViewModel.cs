@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CO.CDP.UserManagement.App.Models;
 
-public sealed record RevokeApplicationAccessViewModel(
+public sealed record RemoveApplicationViewModel(
     string OrganisationSlug = "",
     string UserDisplayName = "",
     string UserEmail = "",
@@ -17,8 +17,3 @@ public sealed record RevokeApplicationAccessViewModel(
     Guid? CdpPersonId = null,
     [Required(ErrorMessage = "Select if you want to revoke access")]
     bool? RevokeConfirmed = null);
-
-public sealed record RevokeApplicationAccessSuccessViewModel(
-    string OrganisationSlug = "",
-    string UserDisplayName = "",
-    string ApplicationName = "");
