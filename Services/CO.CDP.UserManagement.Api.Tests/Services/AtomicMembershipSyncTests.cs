@@ -237,8 +237,6 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Admin, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
-        _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(["ADMIN"]);
 
         var result = await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin);
 
@@ -246,7 +244,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Verify(r => r.Update(membership), Times.Once);
         _organisationPersonSyncRepository.Verify(
             r => r.UpsertAsync(org.CdpOrganisationGuid, personId, It.Is<IReadOnlyList<string>>(s => s.Contains("ADMIN")), It.IsAny<CancellationToken>()),
-            Times.Once);
+            Times.Never);
     }
 
     [Fact]
@@ -260,7 +258,6 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Member, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
         await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Member);
 
@@ -306,7 +303,6 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Admin, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(false);
 
         await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin);
 
@@ -328,7 +324,6 @@ public class AtomicMembershipSyncTests
         _organisationApplicationRepository.Setup(r => r.GetByOrganisationAndApplicationAsync(42, 1, It.IsAny<CancellationToken>())).ReturnsAsync(orgApp);
         _assignmentRepository.Setup(r => r.GetByMembershipAndApplicationAsync(membership.Id, orgApp.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserApplicationAssignment?)null);
         _roleMappingService.Setup(r => r.GetAssignableRolesAsync(42, membership.OrganisationRole, It.IsAny<IEnumerable<int>>(), It.IsAny<CancellationToken>())).ReturnsAsync([role]);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(true);
         _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(["ADMIN"]);
         _organisationRepository.Setup(r => r.GetByIdAsync(42, It.IsAny<CancellationToken>())).ReturnsAsync(new CoreOrganisation { Id = 42, CdpOrganisationGuid = Guid.NewGuid(), Name = "Acme", Slug = "acme", IsActive = true, CreatedBy = "seed" });
 
@@ -377,7 +372,6 @@ public class AtomicMembershipSyncTests
 
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(membership.CdpPersonId!.Value, 42, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([assignment]);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync(false);
         _organisationRepository.Setup(r => r.GetByIdAsync(42, It.IsAny<CancellationToken>())).ReturnsAsync(new CoreOrganisation { Id = 42, CdpOrganisationGuid = Guid.NewGuid(), Name = "Acme", Slug = "acme", IsActive = true, CreatedBy = "seed" });
 
         await CreateSut().RevokeApplicationAssignmentAsync(membership.CdpPersonId!.Value.ToString(), 42, 99);
@@ -439,7 +433,6 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByUserAndOrganisationAsync(request.UserPrincipalId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserOrganisationMembership?)null);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<UserOrganisationMembership>(), mapping.OrganisationRole, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
         _roleMappingService.Setup(r => r.ShouldAutoAssignDefaultApplicationsAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<CancellationToken>())).ReturnsAsync(false);
-        _roleMappingService.Setup(r => r.ShouldSyncToOrganisationInformationAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
         _roleMappingService.Setup(r => r.GetOrganisationInformationScopesAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(["VIEWER"]);
 
         await CreateSut().AcceptInviteAsync(orgGuid, 7, request);

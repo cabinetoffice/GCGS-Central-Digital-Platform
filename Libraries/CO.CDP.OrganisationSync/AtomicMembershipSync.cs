@@ -117,7 +117,6 @@ public sealed class AtomicMembershipSync(
         membershipRepository.Update(membership);
 
         await unitOfWork.SaveChangesAsync(ct);
-        await SyncScopesAsync(membership, organisation, ct);
 
         logger.LogInformation(
             "Role for user {CdpPersonId} in organisation {CdpOrganisationId} updated to {NewRole}",
@@ -334,8 +333,6 @@ public sealed class AtomicMembershipSync(
     private async Task SyncScopesAsync(
         UserOrganisationMembership membership, Organisation organisation, CancellationToken ct)
     {
-        if (!await roleMappingService.ShouldSyncToOrganisationInformationAsync(membership.Id, ct))
-            return;
         if (!membership.CdpPersonId.HasValue)
             return;
 
