@@ -57,6 +57,7 @@ module "ecs_service_commercial_tools_app" {
       priority      = var.service_configs.commercial_tools_app.listener_priority - 5
     }
   ]
+  additional_external_target_groups = []
   memory                        = var.service_configs.commercial_tools_app.memory
   name                          = var.service_configs.commercial_tools_app.name
   private_subnet_ids            = var.private_subnet_ids
