@@ -21,8 +21,10 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
-            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+
+            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct)?? new List<OrganisationUserResponse>();
+
+            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct) ?? new List<PendingOrganisationInviteResponse>();
 
             var inviteAppIds = invitesResponse
                 .SelectMany(i => i.ApplicationAssignments ?? [])
@@ -40,9 +42,24 @@ public sealed class UserService(
                 }
                 catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                 {
-                    rolesByAppId[appId] = [];
+                    rolesByAppId[appId] = new List<RoleResponse>();
                 }
             }
+
+            var organisationApplicationResponse = await apiClient.ApplicationsAllAsync(org.Id, ct) ?? new List<OrganisationApplicationResponse>();
+            var availableApplications = organisationApplicationResponse
+                .Where(app => app.IsActive && app.Application != null)
+                .Select(enabledApp => new ApplicationViewModel(
+                    enabledApp.Id,
+                    enabledApp.Application?.ClientId ?? string.Empty,
+                    enabledApp.Application?.Name ?? string.Empty,
+                    enabledApp.Application?.Description ?? string.Empty,
+                    enabledApp.Application?.Category ?? string.Empty,
+                    enabledApp.IsActive,
+                    enabledApp.Application?.IsEnabledByDefault ?? false,
+                    0,
+                    0))
+                .ToList();
 
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
@@ -104,6 +121,7 @@ public sealed class UserService(
                 OrganisationSlug: org.Slug,
                 OrganisationGuid: org.CdpOrganisationGuid,
                 Users: filteredUsers,
+                AvailableApplications: availableApplications,
                 SelectedRole: selectedRole,
                 SelectedApplication: selectedApplication,
                 SearchTerm: searchTerm,
