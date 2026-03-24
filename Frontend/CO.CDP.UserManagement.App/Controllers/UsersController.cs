@@ -4,11 +4,13 @@ using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.App.Attributes;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
 [Authorize]
 [Route("organisation/{organisationSlug}")]
+[OrganisationOwnerOrAdmin]
 public class UsersController(
     IUserService userService,
     IOrganisationRoleService organisationRoleService,
