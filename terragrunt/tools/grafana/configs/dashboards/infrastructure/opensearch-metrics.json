@@ -1247,7 +1247,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1261,7 +1261,7 @@
   },
   "timezone": "utc",
   "title": "OpenSearch Metrics",
-  "uid": "opensearch",
+  "uid": "opensearch-metrics",
   "version": 3,
   "weekStart": ""
 }
