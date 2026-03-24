@@ -123,7 +123,8 @@ public class AuthorizationTests
             });
             builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
                 [
-                    new KeyValuePair<string, string?>("Features:SharedSessions", "false")
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false"),
+                    new KeyValuePair<string, string?>("Features:UserManagement", "false")
                 ]
             ));
         });

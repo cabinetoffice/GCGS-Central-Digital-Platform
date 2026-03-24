@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Organisation;
+using CO.CDP.UI.Foundation.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
@@ -15,6 +16,7 @@ public class OrganisationOverviewTest
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
     private readonly Mock<IFeatureManager> _featureManagerMock = new();
+    private readonly Mock<IUserManagementUrlService> _userManagementUrlServiceMock = new();
     private readonly OrganisationOverviewModel _model;
 
     public OrganisationOverviewTest()
@@ -23,7 +25,8 @@ public class OrganisationOverviewTest
         _model = new OrganisationOverviewModel(
             _organisationClientMock.Object,
             _pponClient.Object,
-            _featureManagerMock.Object);
+            _featureManagerMock.Object,
+            _userManagementUrlServiceMock.Object);
     }
 
     [Fact]

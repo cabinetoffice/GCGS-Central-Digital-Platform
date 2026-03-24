@@ -3,6 +3,7 @@ using CO.CDP.Localization;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.UI.Foundation.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,7 +15,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.Organisation;
 
 [Authorize(Policy = OrgScopeRequirement.Viewer)]
-public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager) : PageModel
+public class OrganisationOverviewModel(IOrganisationClient organisationClient, IPponClient pponClient, IFeatureManager featureManager, IUserManagementUrlService userManagementUrlService) : PageModel
 {
     public OrganisationWebApiClient.Organisation? OrganisationDetails { get; set; }
 
@@ -37,6 +38,7 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
 
     public bool SearchRegistryPponEnabled { get; private set; }
     public string BackLinkUrl { get; private set; } = "";
+    public string? UserManagementUrl { get; private set; }
 
     public ICollection<OrganisationSummary>? ChildOrganisations { get; set; }
 
@@ -47,6 +49,11 @@ public class OrganisationOverviewModel(IOrganisationClient organisationClient, I
             OrganisationDetails = await organisationClient.GetOrganisationAsync(Id);
 
             SearchRegistryPponEnabled = await featureManager.IsEnabledAsync(FeatureFlags.SearchRegistryPpon);
+
+            if (await featureManager.IsEnabledAsync(FeatureFlags.UserManagement))
+            {
+                UserManagementUrl = userManagementUrlService.BuildUrl($"/organisation/{Id}", null, null, null, null);
+            }
 
             if (OrganisationDetails.Type == OrganisationWebApiClient.OrganisationType.InformalConsortium)
             {
