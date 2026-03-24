@@ -1250,67 +1250,10 @@ public class UsersController(
         return View("RemoveSuccess");
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/assignment/{assignmentId:int}/revoke")]
-    public async Task<IActionResult> RevokeApplicationAccess(
-        string organisationSlug,
-        Guid cdpPersonId,
-        int assignmentId,
-        CancellationToken ct)
+    [HttpGet("user/{cdpPersonId:guid}")]
+    public async Task<IActionResult> Details(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
-        return viewModel is null ? NotFound() : View("RevokeApplicationAccess", viewModel);
+        var viewModel = await userService.GetUserDetailsViewModelAsync(organisationSlug, cdpPersonId, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
-
-    [HttpPost("user/{cdpPersonId:guid}/assignment/{assignmentId:int}/revoke")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RevokeApplicationAccess(
-        string organisationSlug,
-        Guid cdpPersonId,
-        int assignmentId,
-        RevokeApplicationAccessViewModel input,
-        CancellationToken ct)
-    {
-        if (input.RevokeConfirmed == false)
-        {
-            return RedirectToAction(nameof(Index), new { organisationSlug });
-        }
-
-        if (!ModelState.IsValid)
-        {
-            var viewModel = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
-            return viewModel is null ? NotFound() : View("RevokeApplicationAccess", viewModel);
-        }
-
-        // Capture details before deletion for the success page
-        var details = await userService.GetRevokeApplicationAccessViewModelAsync(organisationSlug, cdpPersonId, assignmentId, ct);
-        if (details is null) return NotFound();
-
-        var result = await userService.RevokeApplicationAccessAsync(organisationSlug, cdpPersonId, assignmentId, ct);
-        return result.Match<IActionResult>(
-            _ => Redirect("/error"),
-            outcome => outcome == ServiceOutcome.NotFound
-                ? NotFound()
-                : RedirectToAction(nameof(RevokeApplicationAccessSuccess), new
-                {
-                    organisationSlug,
-                    cdpPersonId,
-                    userDisplayName = details.UserDisplayName,
-                    applicationName = details.ApplicationName
-                }));
-    }
-
-    [HttpGet("user/{cdpPersonId:guid}/assignment/revoke/success")]
-    public IActionResult RevokeApplicationAccessSuccess(
-        string organisationSlug,
-        Guid cdpPersonId,
-        string userDisplayName,
-        string applicationName)
-    {
-        var vm = new RevokeApplicationAccessSuccessViewModel(
-            OrganisationSlug: organisationSlug,
-            UserDisplayName: userDisplayName,
-            ApplicationName: applicationName);
-        return View("RevokeApplicationAccessSuccess", vm);
-    }
-
 }

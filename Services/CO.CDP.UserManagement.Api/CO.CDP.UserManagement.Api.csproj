@@ -37,6 +37,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Swashbuckle\CO.CDP.Swashbuckle.csproj"/>
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.OrganisationSync\CO.CDP.OrganisationSync.csproj" />
     </ItemGroup>
 
     <ItemGroup>

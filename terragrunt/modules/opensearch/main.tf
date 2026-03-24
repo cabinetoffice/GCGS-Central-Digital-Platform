@@ -4,11 +4,15 @@ resource "aws_opensearch_domain" "this" {
 
   cluster_config {
     instance_type          = var.instance_type
-    instance_count         = length(local.private_subnet_ids)
-    zone_awareness_enabled = true
+    instance_count         = var.instance_count
+    zone_awareness_enabled = var.zone_awareness_enabled
+
+    dedicated_master_enabled = var.dedicated_master_enabled
+    dedicated_master_type    = var.dedicated_master_type
+    dedicated_master_count   = var.dedicated_master_count
 
     zone_awareness_config {
-      availability_zone_count = length(local.private_subnet_ids)
+      availability_zone_count = var.availability_zone_count
     }
 
   }

@@ -33,7 +33,7 @@ public static class UserAssignmentMappingExtensions
                 : null,
             ApplicationId = includeDetails && orgApp != null ? orgApp.ApplicationId : null,
             Application = includeDetails && orgApp?.Application != null
-                ? orgApp.Application.ToSummaryResponse()
+                ? orgApp.Application.ToResponse()
                 : null,
             Roles = includeDetails && assignment.Roles != null
                 ? assignment.Roles.Select(r => r.ToResponse(includePermissions: false))

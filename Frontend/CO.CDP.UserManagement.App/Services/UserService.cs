@@ -21,8 +21,10 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
-            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+
+            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct)?? new List<OrganisationUserResponse>();
+
+            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct) ?? new List<PendingOrganisationInviteResponse>();
 
             var inviteAppIds = invitesResponse
                 .SelectMany(i => i.ApplicationAssignments ?? [])
@@ -40,9 +42,24 @@ public sealed class UserService(
                 }
                 catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                 {
-                    rolesByAppId[appId] = [];
+                    rolesByAppId[appId] = new List<RoleResponse>();
                 }
             }
+
+            var organisationApplicationResponse = await apiClient.ApplicationsAllAsync(org.Id, ct) ?? new List<OrganisationApplicationResponse>();
+            var availableApplications = organisationApplicationResponse
+                .Where(app => app.IsActive && app.Application != null)
+                .Select(enabledApp => new ApplicationViewModel(
+                    enabledApp.Id,
+                    enabledApp.Application?.ClientId ?? string.Empty,
+                    enabledApp.Application?.Name ?? string.Empty,
+                    enabledApp.Application?.Description ?? string.Empty,
+                    enabledApp.Application?.Category ?? string.Empty,
+                    enabledApp.IsActive,
+                    enabledApp.Application?.IsEnabledByDefault ?? false,
+                    0,
+                    0))
+                .ToList();
 
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
@@ -104,6 +121,7 @@ public sealed class UserService(
                 OrganisationSlug: org.Slug,
                 OrganisationGuid: org.CdpOrganisationGuid,
                 Users: filteredUsers,
+                AvailableApplications: availableApplications,
                 SelectedRole: selectedRole,
                 SelectedApplication: selectedApplication,
                 SearchTerm: searchTerm,
@@ -440,7 +458,7 @@ public sealed class UserService(
             }
             else if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 userDisplayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -725,7 +743,7 @@ public sealed class UserService(
 
             if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -781,73 +799,46 @@ public sealed class UserService(
         }
     }
 
-    public async Task<RevokeApplicationAccessViewModel?> GetRevokeApplicationAccessViewModelAsync(
+        public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
         string organisationSlug,
         Guid cdpPersonId,
-        int assignmentId,
         CancellationToken ct = default)
     {
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
-            if (user == null) return null;
-
-            var assignment = (user.ApplicationAssignments ?? [])
-                .FirstOrDefault(a => a.Id == assignmentId);
-            if (assignment == null) return null;
-
-            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            var fullName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
                 ? $"{user.FirstName} {user.LastName}"
                 : string.Empty;
+            var memberSince = user.JoinedAt.HasValue
+                ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
+                : "Not available";
 
-            var roleName = string.Join(", ", (assignment.Roles ?? [])
-                .Select(r => r.Name)
-                .Where(n => !string.IsNullOrWhiteSpace(n)));
+            var applicationAccess = user.ApplicationAssignments?
+                .Where(assignment => assignment.Application != null)
+                .Select(assignment => new UserApplicationAccessDetailViewModel(
+                    ApplicationId: assignment.Application!.Id,
+                    ApplicationName: assignment.Application!.Name,
+                    ApplicationDescription: assignment.Application!.Description,
+                    Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
+                    AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
+                    AssignedByEmail: assignment.AssignedBy ?? string.Empty,
+                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.Name))
+                .ToList() ?? [];
 
-            return new RevokeApplicationAccessViewModel(
-                OrganisationSlug: org.Slug,
-                UserDisplayName: displayName,
-                UserEmail: user.Email ?? string.Empty,
-                ApplicationName: assignment.Application?.Name ?? string.Empty,
-                ApplicationSlug: assignment.Application?.ClientId ?? string.Empty,
-                AssignmentId: assignment.Id,
-                OrgId: org.Id,
-                UserPrincipalId: assignment.UserPrincipalId ?? string.Empty,
-                RoleName: roleName,
-                AssignedAt: assignment.AssignedAt,
-                AssignedByName: assignment.AssignedBy,
-                CdpPersonId: cdpPersonId);
+            return new UserDetailsViewModel(
+                Organisation: org,
+                CdpPersonId: user.CdpPersonId ?? cdpPersonId,
+                FullName: fullName,
+                Email: user.Email ?? string.Empty,
+                OrganisationRole: user.OrganisationRole,
+                MemberSince: memberSince,
+                ApplicationAccess: applicationAccess);
         }
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
-        }
-    }
-
-    public async Task<Result<ServiceFailure, ServiceOutcome>> RevokeApplicationAccessAsync(
-        string organisationSlug,
-        Guid cdpPersonId,
-        int assignmentId,
-        CancellationToken ct = default)
-    {
-        try
-        {
-            var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
-            if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            var assignment = (user.ApplicationAssignments ?? [])
-                .FirstOrDefault(a => a.Id == assignmentId);
-            if (assignment == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            var userPrincipalId = assignment.UserPrincipalId ?? cdpPersonId.ToString();
-            await apiClient.AssignmentsDELETEAsync(org.Id, userPrincipalId, assignmentId, ct);
-            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
-        }
-        catch (ApiClient.ApiException ex)
-        {
-            return ServiceResultMapper.FromApiException(ex);
         }
     }
 }

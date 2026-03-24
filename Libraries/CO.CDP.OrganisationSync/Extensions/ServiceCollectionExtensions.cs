@@ -59,4 +59,18 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
+
+    /// <summary>
+    /// Registers <see cref="IAtomicMembershipSync"/> and its dependencies for use in the
+    /// UserManagement API. DbContexts and UM repositories are expected to be already registered
+    /// (e.g. via <c>AddUserManagementInfrastructure</c>). Uses <c>TryAddScoped</c> throughout.
+    /// </summary>
+    public static IServiceCollection AddAtomicMembershipSync(this IServiceCollection services)
+    {
+        services.TryAddScoped<IAtomicScope, AtomicScope>();
+        services.TryAddScoped<IOrganisationMembershipSync, OrganisationMembershipSync>();
+        services.TryAddScoped<IUmOrganisationSyncRepository, UmOrganisationSyncRepository>();
+        services.TryAddScoped<IAtomicMembershipSync, AtomicMembershipSync>();
+        return services;
+    }
 }

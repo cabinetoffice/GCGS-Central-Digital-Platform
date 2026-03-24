@@ -10,6 +10,14 @@ variable "allowed_unauthenticated_paths" {
   default     = []
 }
 
+variable "additional_external_target_groups" {
+  description = "Optional extra target groups to attach to the ECS service."
+  type = list(object({
+    name_suffix = string
+  }))
+  default = []
+}
+
 variable "cluster_id" {
   description = "Cluster ID of which the service will be part of"
   type        = string
@@ -169,16 +177,6 @@ variable "listener_rule_propagation_delay" {
   default     = "10s"
 }
 
-variable "path_routing_rules" {
-  description = "Optional list of extra listener rules based on path patterns."
-  type = list(object({
-    host_headers  = list(string)
-    path_patterns = list(string)
-    priority      = number
-  }))
-  default = []
-}
-
 variable "memory" {
   description = "Amount (in MiB) of memory used by the tas"
   type        = number
@@ -187,6 +185,16 @@ variable "memory" {
 variable "name" {
   description = "The service name"
   type        = string
+}
+
+variable "path_routing_rules" {
+  description = "Optional list of extra listener rules based on path patterns."
+  type = list(object({
+    host_headers  = list(string)
+    path_patterns = list(string)
+    priority      = number
+  }))
+  default = []
 }
 
 variable "private_subnet_ids" {

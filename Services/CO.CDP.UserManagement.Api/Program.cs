@@ -12,6 +12,7 @@ using CO.CDP.UserManagement.Api.Validation;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
@@ -34,16 +35,24 @@ builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(bu
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
-var organisationInformationConnectionString =
-    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+
+// Shared NpgsqlDataSource + scoped connection — both OI and UM contexts use this so
+// IAtomicScope can enlist them in a single PostgreSQL transaction.
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
+builder.Services.AddScoped(sp => sp.GetRequiredService<NpgsqlDataSource>().CreateConnection());
+
+builder.Services.AddUserManagementInfrastructure(connectionString, useSharedConnection: true);
+
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
+    options.UseNpgsql(sp.GetRequiredService<NpgsqlConnection>()));
+
+builder.Services.AddAtomicMembershipSync();
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration);
-
-builder.Services.AddUserManagementInfrastructure(connectionString);
 
 builder.Services.AddUserManagementCaching(awsConfiguration);
 
@@ -84,10 +93,6 @@ builder.Services
 builder.Services
     .AddScoped<CO.CDP.UserManagement.Core.Interfaces.IPersonApiAdapter,
         CO.CDP.UserManagement.CdpInfrastructure.PersonApiAdapter>();
-
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(organisationInformationConnectionString).MapEnums().Build());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-    options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
