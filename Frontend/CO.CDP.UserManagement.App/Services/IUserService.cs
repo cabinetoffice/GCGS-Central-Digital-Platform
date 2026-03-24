@@ -82,4 +82,25 @@ public interface IUserService
         string organisationSlug,
         Guid cdpPersonId,
         CancellationToken ct = default);
+
+    Task<bool> IsEmailAlreadyInOrganisationAsync(
+        string organisationSlug,
+        string email,
+        CancellationToken ct = default);
+
+    Task<bool> IsLastOwnerAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
+    Task<bool> IsOwnerOrAdminAsync(
+        string organisationSlug,
+        string userUrn,
+        CancellationToken ct = default);
+
+    Task<bool> IsCurrentUserAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string userUrn,
+        CancellationToken ct = default);
 }

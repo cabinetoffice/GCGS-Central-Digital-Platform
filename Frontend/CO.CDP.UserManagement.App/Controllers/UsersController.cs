@@ -79,6 +79,14 @@ public class UsersController(
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
+        if (await userService.IsEmailAlreadyInOrganisationAsync(organisationSlug, input.Email!, ct))
+        {
+            ModelState.AddModelError(nameof(input.Email), "A user with this email address is already in this organisation");
+            ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
+            var viewModel = await userService.GetInviteUserViewModelAsync(organisationSlug, input, ct);
+            return viewModel is null ? NotFound() : View(viewModel);
+        }
+
         var existingState = await inviteUserStateStore.GetAsync();
         var canPreserveSelections = existingState is not null &&
             existingState.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase);
@@ -459,6 +467,12 @@ public class UsersController(
         }
 
         var selectedRole = organisationRole.GetValueOrDefault();
+        if (selectedRole == viewModelToPersist.CurrentRole)
+        {
+            ModelState.AddModelError(nameof(organisationRole), "Select a different role to continue");
+            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
+        }
+
         await changeRoleStateStore.SetAsync(ToChangeRoleState(viewModelToPersist, selectedRole));
         return RedirectToAction(nameof(ChangeRoleCheck), new { organisationSlug, cdpPersonId });
     }
@@ -489,6 +503,13 @@ public class UsersController(
         if (state is null)
         {
             return RedirectToAction(nameof(ChangeRole), new { organisationSlug, cdpPersonId });
+        }
+
+        // Idempotency: if the role has already been applied, treat as success
+        var currentViewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        if (currentViewModel is not null && currentViewModel.CurrentRole == state.SelectedRole)
+        {
+            return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
         }
 
         var success = await userService.UpdateUserRoleAsync(
@@ -570,6 +591,12 @@ public class UsersController(
         }
 
         var selectedRole = organisationRole.GetValueOrDefault();
+        if (selectedRole == viewModelToPersist.CurrentRole)
+        {
+            ModelState.AddModelError(nameof(organisationRole), "Select a different role to continue");
+            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
+        }
+
         await changeRoleStateStore.SetAsync(ToChangeRoleState(viewModelToPersist, selectedRole));
         return RedirectToAction(nameof(ChangeInviteRoleCheck), new { organisationSlug, inviteGuid });
     }
@@ -600,6 +627,13 @@ public class UsersController(
         if (state is null)
         {
             return RedirectToAction(nameof(ChangeInviteRole), new { organisationSlug, inviteGuid });
+        }
+
+        // Idempotency: if the role has already been applied to the invite, treat as success
+        var currentViewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
+        if (currentViewModel is not null && currentViewModel.CurrentRole == state.SelectedRole)
+        {
+            return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
         }
 
         var success = await userService.UpdateUserRoleAsync(
@@ -1186,7 +1220,26 @@ public class UsersController(
     public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
         var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
-        return viewModel is null ? NotFound() : View("Remove", viewModel);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (await userService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct))
+        {
+            ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
+            return View("Remove", viewModel);
+        }
+
+        var currentUserUrn = User.FindFirst("sub")?.Value;
+        if (!string.IsNullOrEmpty(currentUserUrn) &&
+            await userService.IsCurrentUserAsync(organisationSlug, cdpPersonId, currentUserUrn, ct))
+        {
+            ModelState.AddModelError(string.Empty, "You cannot remove yourself from the organisation.");
+            return View("Remove", viewModel);
+        }
+
+        return View("Remove", viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/remove")]
@@ -1197,6 +1250,29 @@ public class UsersController(
         RemoveUserViewModel input,
         CancellationToken ct)
     {
+        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        if (viewModel is null)
+        {
+            return NotFound();
+        }
+
+        if (cdpPersonId != Guid.Empty)
+        {
+            var isLastOwnerTask = userService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
+            if (await isLastOwnerTask)
+            {
+                ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
+                return View("Remove", viewModel);
+            }
+        }
+
+        var currentUserEmail = User?.FindFirst("email")?.Value;
+        if (!string.IsNullOrEmpty(currentUserEmail) && string.Equals(viewModel.Email, currentUserEmail, StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.AddModelError(string.Empty, "You cannot remove yourself from the organisation.");
+            return View("Remove", viewModel);
+        }
+
         if (input.RemoveConfirmed == false)
         {
             return RedirectToAction(nameof(Index), new { organisationSlug });
@@ -1204,8 +1280,18 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
-            return viewModel is null ? NotFound() : View("Remove", viewModel);
+            return View("Remove", viewModel);
+        }
+
+        // Re-check last-owner status immediately before performing the removal to avoid race conditions
+        if (cdpPersonId != Guid.Empty)
+        {
+            var isLastOwnerNow = await userService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
+            if (isLastOwnerNow)
+            {
+                ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
+                return View("Remove", viewModel);
+            }
         }
 
         var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
