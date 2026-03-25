@@ -2279,14 +2279,14 @@
     "list": [
       {
         "current": {
-          "text": "471112892058",
-          "value": "471112892058"
+          "text": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+          "value": "GRAFANA_CLOUDWATCH_ACCOUNT_ID"
         },
         "hide": 2,
         "label": "ClientId",
         "name": "client_id",
         "options": [],
-        "query": "471112892058",
+        "query": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
         "type": "custom",
         "valuesFormat": "csv"
       },
