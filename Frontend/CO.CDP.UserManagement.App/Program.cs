@@ -16,6 +16,10 @@ using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc.ApplicationModels;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using CO.CDP.UserManagement.App.Constants;
+using CO.CDP.UserManagement.App.Authorization.Requirements;
+using CO.CDP.UserManagement.App.Authorization.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -160,8 +164,17 @@ builder.Services.AddAuthentication(options =>
     options.NonceCookie.HttpOnly = true;
 });
 
-// Application services
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
+// Authorization policies and handlers for organisation-level checks
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(PolicyNames.OrganisationOwnerOrAdmin, policy => policy.Requirements.Add(new OrganisationOwnerOrAdminRequirement()));
+    options.AddPolicy(PolicyNames.OrganisationOwner, policy => policy.Requirements.Add(new OrganisationOwnerRequirement()));
+    options.AddPolicy(PolicyNames.OrganisationAdmin, policy => policy.Requirements.Add(new OrganisationAdminRequirement()));
+});
+
+builder.Services.AddScoped<IAuthorizationHandler, OrganisationOwnerOrAdminHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, OrganisationOwnerHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();

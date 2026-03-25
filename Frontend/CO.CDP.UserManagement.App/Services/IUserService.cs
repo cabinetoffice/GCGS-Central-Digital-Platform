@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Services;
 
@@ -82,4 +83,21 @@ public interface IUserService
         string organisationSlug,
         Guid cdpPersonId,
         CancellationToken ct = default);
+
+    Task<bool> IsEmailAlreadyInOrganisationAsync(
+        string organisationSlug,
+        string email,
+        CancellationToken ct = default);
+
+    Task<bool> IsLastOwnerAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
+    Task<bool> IsOwnerOrAdminAsync(
+        string organisationSlug,
+        string userUrn,
+        CancellationToken ct = default);
+
+    Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct);
 }
