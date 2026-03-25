@@ -11,6 +11,12 @@ namespace CO.CDP.UserManagement.App.Services;
 public sealed class UserService(
     ApiClient.UserManagementClient apiClient) : IUserService
 {
+    public async Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct)
+    {
+        try { return await apiClient.BySlugAsync(organisationSlug, ct); }
+        catch (ApiClient.ApiException) { return null; }
+    }
+
     public async Task<UsersViewModel?> GetUsersViewModelAsync(
         string organisationSlug,
         string? selectedRole = null,

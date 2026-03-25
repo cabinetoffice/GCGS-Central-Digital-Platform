@@ -6,6 +6,8 @@ using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.App.Attributes;
 using CO.CDP.UserManagement.App.Constants;
+using CO.CDP.UserManagement.Core;
+using CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
@@ -476,7 +478,8 @@ public class UsersController(
         if (IsSelf(viewModelToPersist.Email))
         {
             ModelState.AddModelError(nameof(organisationRole), "You cannot change your own organisation role.");
-            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
+            return View("ChangeRole",
+                await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
         }
 
         var selectedRole = organisationRole.GetValueOrDefault();
@@ -610,7 +613,8 @@ public class UsersController(
         if (IsSelf(viewModelToPersist.Email))
         {
             ModelState.AddModelError(nameof(organisationRole), "You cannot change your own organisation role.");
-            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
+            return View("ChangeRole",
+                await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
         }
 
         var selectedRole = organisationRole.GetValueOrDefault();
@@ -1319,6 +1323,14 @@ public class UsersController(
             return View("Remove", viewModel);
         }
 
+        // Permission check: prevent Admins from removing Owners
+        if (await IsAdminTargetingOwnerAsync(organisationSlug, viewModel.CurrentRole, ct))
+        {
+            ModelState.AddModelError(string.Empty, "You do not have permission to remove an Owner.");
+            return View("Remove", viewModel);
+        }
+
+
         if (input.RemoveConfirmed == false)
         {
             return RedirectToAction(nameof(Index), new { organisationSlug });
@@ -1387,5 +1399,25 @@ public class UsersController(
     {
         var viewModel = await userService.GetUserDetailsViewModelAsync(organisationSlug, cdpPersonId, ct);
         return viewModel is null ? NotFound() : View(viewModel);
+    }
+
+    // Helper: Prevent Admins from changing/removing Owners
+    private async Task<bool> IsAdminTargetingOwnerAsync(
+        string organisationSlug, OrganisationRole targetRole, CancellationToken ct)
+    {
+        if (targetRole != OrganisationRole.Owner) return false;
+
+        var cdpClaimsJson = User.FindFirst("cdp_claims")?.Value;
+        var userClaims = JsonHelper.TryDeserialize<UserClaims>(cdpClaimsJson);
+        if (userClaims is null) return false;
+
+        var org = await userService.GetOrganisationBySlugAsync(organisationSlug, ct);
+        if (org is null) return false;
+
+        var currentRole = userClaims.Organisations
+            .FirstOrDefault(o => o.OrganisationId == org.CdpOrganisationGuid)
+            ?.OrganisationRole;
+
+        return string.Equals(currentRole, "Admin", StringComparison.OrdinalIgnoreCase);
     }
 }
