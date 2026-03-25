@@ -5,10 +5,11 @@ using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.App.Attributes;
+using CO.CDP.UserManagement.App.Constants;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
-[Authorize]
+[Authorize(Policy = PolicyNames.OrganisationOwnerOrAdmin)]
 [Route("organisation/{organisationSlug}")]
 [OrganisationOwnerOrAdmin]
 public class UsersController(

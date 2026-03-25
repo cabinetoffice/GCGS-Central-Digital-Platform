@@ -164,9 +164,6 @@ builder.Services.AddAuthentication(options =>
     options.NonceCookie.HttpOnly = true;
 });
 
-// Application services
-builder.Services.AddScoped<IApplicationService, ApplicationService>();
-
 // Authorization policies and handlers for organisation-level checks
 builder.Services.AddAuthorization(options =>
 {
