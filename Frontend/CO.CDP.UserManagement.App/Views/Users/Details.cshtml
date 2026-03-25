@@ -29,7 +29,7 @@
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Organisation</dt>
-                <dd class="govuk-summary-list__value">@Model.Organisation?.Slug</dd>
+                <dd class="govuk-summary-list__value">@Model.Organisation?.Name</dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Organisation role</dt>
@@ -46,18 +46,14 @@
     <div class="govuk-grid-column-one-third">
         <h2 class="govuk-heading-m">Actions</h2>
         <ul class="govuk-list">
-            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/assign-application" class="govuk-link">Assign to application</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/change-role" class="govuk-link">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link">Change application roles</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/organisation-role/change" class="govuk-link">Change organisation role</a></li>
             <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
         </ul>
     </div>
 </div>
 
 <h2 class="govuk-heading-l">Application access</h2>
-
-<div class="govuk-button-group govuk-!-margin-bottom-4">
-    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/assign-application" class="govuk-button govuk-button--secondary" data-module="govuk-button">Assign to another application</a>
-</div>
 
 @if (Model.ApplicationAccess.Count == 0)
 {
@@ -92,8 +88,8 @@ else
                 <p class="govuk-body-s govuk-!-margin-bottom-3">Assigned: @app.AssignedDate.ToString("d MMMM yyyy") by @app.AssignedByEmail</p>
 
                 <p class="govuk-body">
-                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
-                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationId/revoke" class="govuk-link">Revoke access</a>
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationClientId/remove/check" class="govuk-link">Revoke access</a>
                 </p>
             </div>
         </div>

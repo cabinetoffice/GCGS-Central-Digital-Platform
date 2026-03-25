@@ -560,6 +560,7 @@ public class UsersControllerTests
         {
             new UserApplicationAccessDetailViewModel(
                 ApplicationId: 1,
+                ApplicationClientId: "Test-Application-Edit",
                 ApplicationName: "Edit",
                 ApplicationDescription: "Edit application",
                 Permissions: new[] { "Read", "Write" },
@@ -568,6 +569,7 @@ public class UsersControllerTests
                 ApplicationRole: "Admin"),
             new UserApplicationAccessDetailViewModel(
                 ApplicationId: 2,
+                ApplicationClientId: "Test-Application-View",
                 ApplicationName: "View",
                 ApplicationDescription: "View application",
                 Permissions: new[] { "Read" },
