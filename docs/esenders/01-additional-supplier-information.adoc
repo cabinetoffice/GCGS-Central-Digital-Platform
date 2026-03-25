@@ -180,7 +180,36 @@ No changes have been made to the Data Sharing API contract:
 
 For technical queries regarding the Additional SI modules or integration support, contact the CDP technical team through standard support channels.
 
+== Production Release – 8th April 2026
+
+=== Summary of Changes
+This release introduces updates to Additional Supplier Information (ASI) modules, focusing on Welsh translations and PDF output improvements.
+
+=== New Features / Updates
+
+==== Welsh Translations
+Welsh language support added for additional SI modules including:
+
+* Health & Safety
+* Modern Slavery
+* Cyber Essentials
+* Payments Information
+* Carbon Net Zero
+* Data Protection
+
+Users can now switch between English and Welsh, with content dynamically updating.
+
+==== PDF Output Improvements
+Updated PDF generation logic for Yes/No responses:
+
+* True values now render as "Yes"
+* False values now render as "No"
+* Skipped or missing responses render as "Not specified"
+* Ensures clearer representation of supplier responses in exported documents
+* Existing tests updated and new tests added to cover these cases
+* No changes to persisted data or forms engine logic
+
 '''
 
-_Last Updated: 18 December 2025_ +
+_Last Updated: 25 March 2026_ +
 _Target Audience: eSender Technical Teams_
