@@ -33,7 +33,4 @@ public interface IRoleMappingService
         int membershipId,
         CancellationToken cancellationToken = default);
 
-    Task<bool> ShouldSyncToOrganisationInformationAsync(
-        int membershipId,
-        CancellationToken cancellationToken = default);
 }

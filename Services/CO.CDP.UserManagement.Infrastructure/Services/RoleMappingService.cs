@@ -87,35 +87,21 @@ public class RoleMappingService(
         int membershipId,
         CancellationToken cancellationToken = default)
     {
-        var membership = await LoadMembershipWithOrgAsync(membershipId, cancellationToken);
         var applicationRoleScopes = await LoadSyncableApplicationRoleScopesAsync(membershipId, cancellationToken);
 
-        return BuildOrganisationInformationScopes(membership, applicationRoleScopes);
+        return BuildOrganisationInformationScopes(applicationRoleScopes);
     }
 
-    public async Task<bool> ShouldSyncToOrganisationInformationAsync(
-        int membershipId,
-        CancellationToken cancellationToken = default)
-    {
-        var membership = await membershipRepository.GetWithOrganisationAndRoleAsync(membershipId, cancellationToken)
-            ?? throw new EntityNotFoundException(nameof(UserOrganisationMembership), membershipId);
-
-        return membership.OrganisationRoleEntity.SyncToOrganisationInformation;
-    }
 
     private static IReadOnlyList<string> BuildOrganisationInformationScopes(
-        UserOrganisationMembership membership,
         IEnumerable<string> applicationRoleScopes) =>
-        membership.OrganisationRoleEntity.OrganisationInformationScopes
-            .Concat(applicationRoleScopes)
-            .Concat(ResponderScope(membership.OrganisationRole))
+        applicationRoleScopes
+            .Concat(ResponderScope())
             .Distinct(StringComparer.Ordinal)
             .ToList();
 
-    private static IEnumerable<string> ResponderScope(OrganisationRole organisationRole) =>
-        organisationRole != OrganisationRole.Agent
-            ? [OrganisationPersonScopes.Responder]
-            : [];
+    private static IEnumerable<string> ResponderScope() =>
+        [OrganisationPersonScopes.Responder];
 
     private async Task<UserOrganisationMembership> LoadMembershipWithOrgAsync(
         int membershipId,
