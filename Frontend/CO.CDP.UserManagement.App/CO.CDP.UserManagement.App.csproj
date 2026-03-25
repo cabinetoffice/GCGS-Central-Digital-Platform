@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Shared\CO.CDP.UserManagement.Shared.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.Functional\CO.CDP.Functional.csproj"/>
         <ProjectReference Include="..\..\Libraries\CO.CDP.Authentication\CO.CDP.Authentication.csproj"/>

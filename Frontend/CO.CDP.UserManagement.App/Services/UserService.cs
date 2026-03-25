@@ -11,6 +11,12 @@ namespace CO.CDP.UserManagement.App.Services;
 public sealed class UserService(
     ApiClient.UserManagementClient apiClient) : IUserService
 {
+    public async Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct)
+    {
+        try { return await apiClient.BySlugAsync(organisationSlug, ct); }
+        catch (ApiClient.ApiException) { return null; }
+    }
+
     public async Task<UsersViewModel?> GetUsersViewModelAsync(
         string organisationSlug,
         string? selectedRole = null,
@@ -766,6 +772,65 @@ public sealed class UserService(
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
+        }
+    }
+
+    public async Task<bool> IsEmailAlreadyInOrganisationAsync(string organisationSlug, string email, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct) ?? new List<OrganisationUserResponse>();
+            var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct) ?? new List<PendingOrganisationInviteResponse>();
+            return users.Any(u => u.Email?.Equals(email, StringComparison.OrdinalIgnoreCase) == true)
+                || invites.Any(i => string.Equals(i.Email, email, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsLastOwnerAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct) ?? new List<OrganisationUserResponse>();
+            var owners = users.Where(u => u.OrganisationRole == OrganisationRole.Owner).ToList();
+            return owners.Count == 1 && owners[0].CdpPersonId == cdpPersonId;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsOwnerOrAdminAsync(string organisationSlug, string userUrn, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET3Async(org.CdpOrganisationGuid, userUrn, ct);
+            return user?.OrganisationRole is OrganisationRole.Owner or OrganisationRole.Admin;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsCurrentUserAsync(string organisationSlug, Guid cdpPersonId, string userUrn, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var currentUser = await apiClient.UsersGET3Async(org.CdpOrganisationGuid, userUrn, ct);
+            return currentUser?.CdpPersonId == cdpPersonId;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
         }
     }
 

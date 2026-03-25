@@ -24,7 +24,8 @@ public class UserServiceTests
     public async Task GetUsersViewModelAsync_WhenOrganisationMissing_ReturnsNull()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.GetUsersViewModelAsync("org", ct: CancellationToken.None);
 
@@ -70,7 +71,8 @@ public class UserServiceTests
     public async Task GetInviteUserViewModelAsync_WhenOrganisationMissing_ReturnsNull()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.GetInviteUserViewModelAsync("org", ct: CancellationToken.None);
 
@@ -98,7 +100,8 @@ public class UserServiceTests
         var joinedAt = new DateTimeOffset(2026, 2, 19, 0, 0, 0, TimeSpan.Zero);
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,
@@ -129,7 +132,8 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,
@@ -159,8 +163,10 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.GetUserDetailsViewModelAsync("org", personId, CancellationToken.None);
 
@@ -168,7 +174,8 @@ public class UserServiceTests
     }
 
     [Fact]
-    public async Task GetUserDetailsViewModelAsync_WhenApplicationAssignmentsPresent_ReturnsViewModelWithApplicationAccess()
+    public async Task
+        GetUserDetailsViewModelAsync_WhenApplicationAssignmentsPresent_ReturnsViewModelWithApplicationAccess()
     {
         var org = BuildOrganisationResponse();
         var personId = Guid.NewGuid();
@@ -283,7 +290,8 @@ public class UserServiceTests
 
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationUserResponse
             {
                 MembershipId = 1,
@@ -320,17 +328,19 @@ public class UserServiceTests
         InviteUserRequest? capturedRequest = null;
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(),
+                It.IsAny<CancellationToken>()))
             .Callback<Guid, InviteUserRequest, CancellationToken>((_, request, _) => capturedRequest = request)
             .ReturnsAsync(BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member));
 
         var result = await _service.InviteUserAsync("org", new InviteUserViewModel
-        {
-            Email = "test@example.com",
-            FirstName = "Test",
-            LastName = "User",
-            OrganisationRole = OrganisationRole.Member
-        }, CancellationToken.None, [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 99 }]);
+            {
+                Email = "test@example.com",
+                FirstName = "Test",
+                LastName = "User",
+                OrganisationRole = OrganisationRole.Member
+            }, CancellationToken.None,
+            [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 99 }]);
 
         result.IsRight().Should().BeTrue();
         capturedRequest.Should().NotBeNull();
@@ -346,8 +356,10 @@ public class UserServiceTests
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(
+                new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.InviteUserAsync("org", InviteUserViewModel.Empty, CancellationToken.None);
 
@@ -357,12 +369,14 @@ public class UserServiceTests
     [Fact]
     public async Task InviteUserAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
     {
-                var service = new UserService(_apiClient.Object);
+        var service = new UserService(_apiClient.Object);
         var org = BuildOrganisationResponse();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty,
+                new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await service.InviteUserAsync("org", Models.InviteUserViewModel.Empty, CancellationToken.None);
 
@@ -425,7 +439,8 @@ public class UserServiceTests
         _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<OrganisationUserResponse> { user });
 
-        var result = await _service.GetChangeUserRoleViewModelAsync("org", user.CdpPersonId, null, CancellationToken.None);
+        var result =
+            await _service.GetChangeUserRoleViewModelAsync("org", user.CdpPersonId, null, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.IsPending.Should().BeFalse();
@@ -441,10 +456,12 @@ public class UserServiceTests
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
-        _apiClient.Setup(client => client.RoleAsync(org.CdpOrganisationGuid, 2, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.RoleAsync(org.CdpOrganisationGuid, 2,
+                It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var result = await _service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
+        var result =
+            await _service.UpdateUserRoleAsync("org", null, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
 
         result.IsRight().Should().BeTrue();
     }
@@ -456,10 +473,12 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId,
+                It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
-        var result = await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
+        var result =
+            await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
 
         result.IsRight().Should().BeTrue();
     }
@@ -471,7 +490,8 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
 
-        var result = await _service.UpdateUserRoleAsync("org", null, null, OrganisationRole.Admin, CancellationToken.None);
+        var result =
+            await _service.UpdateUserRoleAsync("org", null, null, OrganisationRole.Admin, CancellationToken.None);
 
         result.Match(
             _ => throw new Exception("Expected right-side not-found outcome."),
@@ -485,10 +505,13 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId,
+                It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(
+                new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
+        var result =
+            await _service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
 
         result.IsLeft().Should().BeTrue();
     }
@@ -496,15 +519,18 @@ public class UserServiceTests
     [Fact]
     public async Task UpdateUserRoleAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
     {
-                var service = new UserService(_apiClient.Object);
+        var service = new UserService(_apiClient.Object);
         var org = BuildOrganisationResponse();
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId, It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client => client.Role2Async(org.CdpOrganisationGuid, personId,
+                It.IsAny<ChangeOrganisationRoleRequest>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty,
+                new Dictionary<string, IEnumerable<string>>(), null));
 
-        var result = await service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
+        var result =
+            await service.UpdateUserRoleAsync("org", personId, null, OrganisationRole.Admin, CancellationToken.None);
 
         result.IsLeft().Should().BeTrue();
     }
@@ -519,10 +545,12 @@ public class UserServiceTests
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
-        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(invite);
         _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(
+                new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.ResendInviteAsync("org", inviteGuid, CancellationToken.None);
 
@@ -532,7 +560,7 @@ public class UserServiceTests
     [Fact]
     public async Task ResendInviteAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
     {
-                var service = new UserService(_apiClient.Object);
+        var service = new UserService(_apiClient.Object);
         var org = BuildOrganisationResponse();
         var inviteGuid = Guid.NewGuid();
         var invite = BuildPendingInviteResponse(org.Id, 1, OrganisationRole.Member, inviteGuid);
@@ -540,10 +568,12 @@ public class UserServiceTests
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesAllAsync(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<PendingOrganisationInviteResponse> { invite });
-        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(), It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client => client.InvitesPOSTAsync(org.CdpOrganisationGuid, It.IsAny<InviteUserRequest>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(invite);
         _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 1, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty,
+                new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await service.ResendInviteAsync("org", inviteGuid, CancellationToken.None);
 
@@ -554,7 +584,8 @@ public class UserServiceTests
     public async Task GetRemoveUserViewModelAsync_WhenOrganisationMissing_ReturnsNull()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.GetRemoveUserViewModelAsync("org", null, null, CancellationToken.None);
 
@@ -634,7 +665,8 @@ public class UserServiceTests
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((OrganisationUserResponse?)null);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
@@ -664,7 +696,8 @@ public class UserServiceTests
         };
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
@@ -702,7 +735,8 @@ public class UserServiceTests
         };
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(user);
 
         var result = await _service.GetRemoveUserViewModelAsync("org", personId, null, CancellationToken.None);
@@ -715,7 +749,8 @@ public class UserServiceTests
     public async Task GetRemoveUserViewModelAsync_WhenApiException_ReturnsNull()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.GetRemoveUserViewModelAsync("org", null, null, CancellationToken.None);
 
@@ -726,7 +761,8 @@ public class UserServiceTests
     public async Task RemoveUserAsync_WhenOrganisationMissing_ReturnsFalse()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
         var result = await _service.RemoveUserAsync("org", null, null, CancellationToken.None);
 
@@ -745,7 +781,8 @@ public class UserServiceTests
         var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
 
         result.Should().BeTrue();
-        _apiClient.Verify(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()), Times.Once);
+        _apiClient.Verify(
+            client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -755,7 +792,8 @@ public class UserServiceTests
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.InvitesDELETEAsync(org.CdpOrganisationGuid, 5, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(
+                new ApiException("Bad", 400, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
 
@@ -791,7 +829,8 @@ public class UserServiceTests
     public async Task RemoveUserAsync_WhenApiExceptionOnOrgLookup_ReturnsFalse()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Bad", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(
+                new ApiException("Bad", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await _service.RemoveUserAsync("org", null, 5, CancellationToken.None);
 
@@ -842,7 +881,8 @@ public class UserServiceTests
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisationApps);
-        _apiClient.Setup(client => client.RolesAll2Async(org.Id, 20, state.OrganisationRole, It.IsAny<CancellationToken>()))
+        _apiClient.Setup(client =>
+                client.RolesAll2Async(org.Id, 20, state.OrganisationRole, It.IsAny<CancellationToken>()))
             .ReturnsAsync(roles);
 
         var result = await _service.GetApplicationRolesStepViewModelAsync("org", state, CancellationToken.None);
@@ -861,8 +901,10 @@ public class UserServiceTests
         var state = new InviteUserState("org", "user@example.com", "First", "Last");
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
-        _apiClient.Setup(client => client.RolesAll2Async(org.Id, It.IsAny<int>(), state.OrganisationRole, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+        _apiClient.Setup(client =>
+                client.RolesAll2Async(org.Id, It.IsAny<int>(), state.OrganisationRole, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty,
+                new Dictionary<string, IEnumerable<string>>(), null));
         _apiClient.Setup(client => client.ApplicationsAllAsync(org.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<OrganisationApplicationResponse>
             {
@@ -892,13 +934,14 @@ public class UserServiceTests
     [Fact]
     public async Task UpdateUserApplicationRolesAsync_WhenApiExceptionIsServerError_ReturnsFalseAndSetsErrorFlag()
     {
-                var service = new UserService(_apiClient.Object);
+        var service = new UserService(_apiClient.Object);
         var org = BuildOrganisationResponse();
         var personId = Guid.NewGuid();
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(org);
         _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty,
+                new Dictionary<string, IEnumerable<string>>(), null));
 
         var result = await service.UpdateUserApplicationRolesAsync(
             "org",
@@ -947,9 +990,12 @@ public class UserServiceTests
     public async Task GetRemoveApplicationSuccessViewModelAsync_WhenOrganisationNotFound_ReturnsNull()
     {
         _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
 
-        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", Guid.NewGuid(), "test-app", CancellationToken.None);
+        var result =
+            await _service.GetRemoveApplicationSuccessViewModelAsync("org", Guid.NewGuid(), "test-app",
+                CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -964,7 +1010,8 @@ public class UserServiceTests
         _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<OrganisationUserResponse>());
 
-        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "test-app", CancellationToken.None);
+        var result =
+            await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "test-app", CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -1000,7 +1047,9 @@ public class UserServiceTests
         _apiClient.Setup(client => client.ApplicationsAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<ApplicationResponse>());
 
-        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "non-existent-app", CancellationToken.None);
+        var result =
+            await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, "non-existent-app",
+                CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -1048,7 +1097,9 @@ public class UserServiceTests
         _apiClient.Setup(client => client.ApplicationsAllAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(apps);
 
-        var result = await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, appClientId, CancellationToken.None);
+        var result =
+            await _service.GetRemoveApplicationSuccessViewModelAsync("org", userId, appClientId,
+                CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.OrganisationSlug.Should().Be("org");
