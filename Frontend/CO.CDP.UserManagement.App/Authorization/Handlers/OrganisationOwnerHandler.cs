@@ -1,41 +1,79 @@
-using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc.Filters;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
-using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.Authentication;
 using CO.CDP.UserManagement.App.Authorization.Requirements;
+using CO.CDP.UserManagement.Core;
+using CO.CDP.UserManagement.Core.Models;
+using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Authorization.Handlers;
 
-public sealed class OrganisationOwnerHandler : AuthorizationHandler<OrganisationOwnerRequirement>
+public sealed class OrganisationOwnerHandler(
+    ApiClient.UserManagementClient apiClient,
+    ISessionManager sessionManager,
+    ILogger<OrganisationOwnerHandler> logger)
+    : AuthorizationHandler<OrganisationOwnerRequirement>
 {
-    private readonly ApiClient.UserManagementClient _apiClient;
-
-    public OrganisationOwnerHandler(ApiClient.UserManagementClient apiClient) => _apiClient = apiClient;
-
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, OrganisationOwnerRequirement requirement)
+    protected override async Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        OrganisationOwnerRequirement requirement)
     {
-        var sub = context.User?.FindFirst("sub")?.Value;
-        var mvcContext = context.Resource as AuthorizationFilterContext;
-        var organisationSlug = mvcContext?.RouteData?.Values["organisationSlug"] as string;
+        var httpContext = context.Resource as HttpContext;
+        var organisationSlug = httpContext?.GetRouteData().Values["organisationSlug"] as string;
 
-        if (string.IsNullOrEmpty(sub) || string.IsNullOrEmpty(organisationSlug))
-        {
+        if (string.IsNullOrWhiteSpace(organisationSlug))
             return;
-        }
+
+        var cdpClaimsJson = await ResolveCdpClaimsJsonAsync(context, httpContext);
+
+        if (string.IsNullOrWhiteSpace(cdpClaimsJson))
+            return;
 
         try
         {
-            var org = await _apiClient.BySlugAsync(organisationSlug);
-            var user = await _apiClient.UsersGET3Async(org.CdpOrganisationGuid, sub);
-            if (user?.OrganisationRole == OrganisationRole.Owner)
-            {
+            var org = await apiClient.BySlugAsync(organisationSlug);
+            var orgId = org?.CdpOrganisationGuid ?? Guid.Empty;
+
+            if (orgId == Guid.Empty)
+                return;
+
+            var userClaims = JsonHelper.TryDeserialize<UserClaims>(cdpClaimsJson);
+            var isOwner = userClaims?.Organisations.Any(o =>
+                o.OrganisationId == orgId &&
+                string.Equals(o.OrganisationRole, "Owner", StringComparison.OrdinalIgnoreCase)) ?? false;
+
+            if (isOwner)
                 context.Succeed(requirement);
-            }
         }
-        catch (ApiClient.ApiException)
+        catch (ApiClient.ApiException ex)
         {
-            // treat not found or other API errors as unauthorized
+            logger.LogWarning(ex, "OrganisationOwnerHandler: API error for slug {Slug}", organisationSlug);
+        }
+    }
+
+    private async Task<string?> ResolveCdpClaimsJsonAsync(
+        AuthorizationHandlerContext context,
+        HttpContext? httpContext)
+    {
+        var fromPrincipal = context.User.FindFirst("cdp_claims")?.Value;
+        if (!string.IsNullOrWhiteSpace(fromPrincipal))
+            return fromPrincipal;
+
+        var tokenSet = await sessionManager.GetTokensAsync(httpContext!);
+        var authorityToken = tokenSet?.AccessToken;
+
+        if (string.IsNullOrWhiteSpace(authorityToken))
+            return null;
+
+        try
+        {
+            var token = new JwtSecurityTokenHandler().ReadJwtToken(authorityToken);
+            return token.Claims.FirstOrDefault(c => c.Type == "cdp_claims")?.Value;
+        }
+        catch (Exception ex)
+        {
+            logger.LogDebug(ex, "OrganisationOwnerHandler: failed to read JWT or extract cdp_claims");
+            return null;
         }
     }
 }
