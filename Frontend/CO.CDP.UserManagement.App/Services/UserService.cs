@@ -1,5 +1,7 @@
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Mapping;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
@@ -9,8 +11,10 @@ using ClientPartyRole = CO.CDP.UserManagement.WebApiClient.PartyRole;
 namespace CO.CDP.UserManagement.App.Services;
 
 public sealed class UserService(
-    ApiClient.UserManagementClient apiClient) : IUserService
+    ApiClient.UserManagementClient apiClient,
+    IUserManagementApiAdapter apiAdapter) : IUserService
 {
+    public UserService(ApiClient.UserManagementClient apiClient) : this(apiClient, new UserManagementApiAdapter(apiClient)) { }
     public async Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct)
     {
         try { return await apiClient.BySlugAsync(organisationSlug, ct); }
@@ -174,21 +178,24 @@ public sealed class UserService(
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
             var assignments = applicationAssignments?
-                .Select(a => new ApiClient.ApplicationAssignment(
-                    a.ApplicationRoleIds is { Count: > 0 }
-                        ? a.ApplicationRoleIds.ToList()
-                        : new List<int> { a.ApplicationRoleId },
-                    a.OrganisationApplicationId))
-                .ToList() ?? new List<ApiClient.ApplicationAssignment>();
-            var request = new ApiClient.InviteUserRequest(
-                assignments,
-                input.Email ?? string.Empty,
-                input.FirstName ?? string.Empty,
-                input.LastName ?? string.Empty,
-                input.OrganisationRole ?? OrganisationRole.Member);
+                .Select(a => new ApplicationAssignment
+                {
+                    OrganisationApplicationId = a.OrganisationApplicationId,
+                    ApplicationRoleIds = a.ApplicationRoleIds is { Count: > 0 } ? a.ApplicationRoleIds.ToList() : new List<int> { a.ApplicationRoleId }
+                })
+                .ToList() ?? new List<ApplicationAssignment>();
 
-            await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
-            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+            var request = new InviteUserRequest
+            {
+                FirstName = input.FirstName ?? string.Empty,
+                LastName = input.LastName ?? string.Empty,
+                Email = input.Email ?? string.Empty,
+                OrganisationRole = input.OrganisationRole ?? OrganisationRole.Member,
+                ApplicationAssignments = assignments
+            };
+
+            var result = await apiAdapter.InviteUserAsync(org.CdpOrganisationGuid, request, ct);
+            return result;
         }
         catch (ApiClient.ApiException ex)
         {
@@ -325,7 +332,10 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var request = new ApiClient.ChangeOrganisationRoleRequest(organisationRole);
+            var request = new CO.CDP.UserManagement.Shared.Requests.ChangeOrganisationRoleRequest
+            {
+                OrganisationRole = organisationRole
+            };
 
             if (inviteGuid.HasValue)
             {
@@ -336,14 +346,12 @@ public sealed class UserService(
                     return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
                 }
 
-                await apiClient.RoleAsync(org.CdpOrganisationGuid, invite.PendingInviteId, request, ct);
-                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+                return await apiAdapter.UpdateInviteOrganisationRoleAsync(org.CdpOrganisationGuid, inviteGuid.Value, request, ct);
             }
 
             if (cdpPersonId.HasValue)
             {
-                await apiClient.Role2Async(org.CdpOrganisationGuid, cdpPersonId.Value, request, ct);
-                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+                return await apiAdapter.UpdateUserOrganisationRoleAsync(org.CdpOrganisationGuid, cdpPersonId.Value, request, ct);
             }
 
             return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
@@ -369,16 +377,7 @@ public sealed class UserService(
                 return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
             }
 
-            var request = new ApiClient.InviteUserRequest(
-                new List<ApiClient.ApplicationAssignment>(),
-                invite.Email,
-                invite.FirstName,
-                invite.LastName,
-                invite.OrganisationRole);
-
-            await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, request, ct);
-            await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
-            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+            return await apiAdapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
         }
         catch (ApiClient.ApiException ex)
         {
@@ -553,66 +552,42 @@ public sealed class UserService(
 
             if (cdpPersonId.HasValue)
             {
+                // Ensure user lookup happens so API exceptions (e.g., 500) are surfaced and mapped
                 var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
-                var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+                var user = users?.FirstOrDefault(u => u.CdpPersonId == cdpPersonId.Value);
                 if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
-                var userPrincipalId = cdpPersonId.Value.ToString();
-
-                foreach (var assignment in applicationRoleAssignments)
-                {
-                    var roleIds = GetEffectiveRoleIds(assignment);
-                    if (roleIds.Count == 0) continue;
-
-                    var existingAssignment = user.ApplicationAssignments
-                        ?.FirstOrDefault(a => a.OrganisationApplicationId == assignment.OrganisationApplicationId);
-
-                    if (existingAssignment != null)
+                var assignments = applicationRoleAssignments
+                    .Select(a => new ApplicationRoleAssignment
                     {
-                        var updateRequest = new UpdateAssignmentRolesRequest { RoleIds = roleIds };
-                        await apiClient.AssignmentsPUTAsync(
-                            org.Id,
-                            userPrincipalId,
-                            existingAssignment.Id,
-                            updateRequest,
-                            ct);
-                    }
-                    else
-                    {
-                        var createRequest = new AssignUserToApplicationRequest
-                        {
-                            ApplicationId = assignment.ApplicationId,
-                            RoleIds = roleIds
-                        };
-                        await apiClient.AssignmentsPOSTAsync(org.Id, userPrincipalId, createRequest, ct);
-                    }
-                }
+                        OrganisationApplicationId = a.OrganisationApplicationId,
+                        ApplicationId = a.ApplicationId,
+                        RoleIds = GetEffectiveRoleIds(a)
+                    })
+                    .ToList();
 
-                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+                var req = new UpdateUserAssignmentsRequest { Assignments = assignments };
+                return await apiAdapter.UpdateUserApplicationRolesAsync(org.Id, cdpPersonId.Value, req, ct);
             }
 
             if (inviteGuid.HasValue)
             {
+                // Ensure invite lookup happens so API exceptions are surfaced
                 var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
-                var invite = invites.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid);
+                var invite = invites?.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid.Value);
                 if (invite == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
                 var assignments = applicationRoleAssignments
-                    .Select(a => (roleIds: GetEffectiveRoleIds(a), orgAppId: a.OrganisationApplicationId))
-                    .Where(x => x.roleIds.Count > 0)
-                    .Select(x => new ApiClient.ApplicationAssignment(x.roleIds, x.orgAppId))
+                    .Select(a => new ApplicationRoleAssignment
+                    {
+                        OrganisationApplicationId = a.OrganisationApplicationId,
+                        ApplicationId = a.ApplicationId,
+                        RoleIds = GetEffectiveRoleIds(a)
+                    })
                     .ToList();
 
-                var newInviteRequest = new ApiClient.InviteUserRequest(
-                    assignments,
-                    invite.Email,
-                    invite.FirstName ?? string.Empty,
-                    invite.LastName ?? string.Empty,
-                    invite.OrganisationRole);
-
-                await apiClient.InvitesPOSTAsync(org.CdpOrganisationGuid, newInviteRequest, ct);
-                await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
-                return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+                var req = new UpdateUserAssignmentsRequest { Assignments = assignments };
+                return await apiAdapter.UpdateInviteApplicationRolesAsync(org.CdpOrganisationGuid, inviteGuid.Value, req, ct);
             }
 
             return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
