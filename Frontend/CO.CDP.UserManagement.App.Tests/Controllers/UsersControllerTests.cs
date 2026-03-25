@@ -1343,6 +1343,14 @@ public class UsersControllerTests
         _userService.Setup(service => service.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
+
         var result = await _controller.RemoveUser("org", cdpPersonId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -1358,6 +1366,14 @@ public class UsersControllerTests
 
         _userService.Setup(service => service.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
 
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
@@ -1376,6 +1392,14 @@ public class UsersControllerTests
         _userService.Setup(service => service.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
+
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
@@ -1392,13 +1416,21 @@ public class UsersControllerTests
         _userService.Setup(service => service.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
+
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
 
     [Fact]
-    public async Task RemoveUser_Post_RecheckPreventsRemoval_WhenLastOwnerBecomesTrue()
+    public async Task RemoveUser_Post_ReturnsView_WhenLastOwnerCheckFails()
     {
         var cdpPersonId = Guid.NewGuid();
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
@@ -1406,19 +1438,25 @@ public class UsersControllerTests
         _userService.Setup(service => service.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
 
-        // Initial check returns false, re-check before removal returns true
-        _userService.SetupSequence(service => service.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false)
+        _userService.Setup(service => service.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
 
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
         view.ViewName.Should().Be("Remove");
-
-        _userService.Verify(service => service.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Never);
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
+        _userService.Verify(service => service.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
 
     [Fact]
     public async Task RemoveInvite_Get_WhenViewModelNull_ReturnsNotFound()
@@ -1477,6 +1515,14 @@ public class UsersControllerTests
         _userService.Setup(service => service.RemoveUserAsync("org", null, 1, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
+
         var result = await _controller.RemoveInvite("org", 1, input, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
@@ -1489,6 +1535,14 @@ public class UsersControllerTests
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org" };
         _userService.Setup(service => service.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
 
         _controller.ModelState.AddModelError(nameof(RemoveUserViewModel.RemoveConfirmed), "Select if you want to remove this user");
 
@@ -1644,7 +1698,7 @@ public class UsersControllerTests
         {
             HttpContext = new DefaultHttpContext
             {
-                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("userPrincipalId", "principal-1") }))
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
             }
         };
 
@@ -1687,7 +1741,7 @@ public class UsersControllerTests
         {
             HttpContext = new DefaultHttpContext
             {
-                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("userPrincipalId", "principal-1") }))
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
             }
         };
 
@@ -1710,6 +1764,14 @@ public class UsersControllerTests
             .ReturnsAsync(viewModel);
         _userService.Setup(service => service.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") }))
+            }
+        };
 
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
