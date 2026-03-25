@@ -473,6 +473,12 @@ public class UsersController(
             return NotFound();
         }
 
+        if (IsSelf(viewModelToPersist.Email))
+        {
+            ModelState.AddModelError(nameof(organisationRole), "You cannot change your own organisation role.");
+            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
+        }
+
         var selectedRole = organisationRole.GetValueOrDefault();
         if (selectedRole == viewModelToPersist.CurrentRole)
         {
@@ -599,6 +605,12 @@ public class UsersController(
         if (viewModelToPersist is null)
         {
             return NotFound();
+        }
+
+        if (IsSelf(viewModelToPersist.Email))
+        {
+            ModelState.AddModelError(nameof(organisationRole), "You cannot change your own organisation role.");
+            return View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModelToPersist, organisationRole, ct));
         }
 
         var selectedRole = organisationRole.GetValueOrDefault();
@@ -1256,11 +1268,12 @@ public class UsersController(
                origId != app.SelectedRoleId;
     }
 
-    private bool IsSelfRemoval(string? email)
+    private bool IsSelf(string? userEmail)
     {
         var currentUserEmail = User.FindFirst("email")?.Value;
-        return !string.IsNullOrEmpty(currentUserEmail) &&
-               string.Equals(email, currentUserEmail, StringComparison.OrdinalIgnoreCase);
+        return !string.IsNullOrEmpty(userEmail) &&
+               !string.IsNullOrEmpty(currentUserEmail) &&
+               string.Equals(currentUserEmail, userEmail, StringComparison.OrdinalIgnoreCase);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/remove")]
@@ -1278,10 +1291,9 @@ public class UsersController(
             return View("Remove", viewModel);
         }
 
-        if (IsSelfRemoval(viewModel.Email))
+        if (IsSelf(viewModel.Email))
         {
             ModelState.AddModelError(string.Empty, "You cannot remove yourself from the organisation.");
-            return View("Remove", viewModel);
         }
 
         return View("Remove", viewModel);
@@ -1301,7 +1313,7 @@ public class UsersController(
             return NotFound();
         }
 
-        if (IsSelfRemoval(viewModel.Email))
+        if (IsSelf(viewModel.Email))
         {
             ModelState.AddModelError(string.Empty, "You cannot remove yourself from the organisation.");
             return View("Remove", viewModel);
