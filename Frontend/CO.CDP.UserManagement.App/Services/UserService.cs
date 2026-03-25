@@ -864,7 +864,7 @@ public sealed class UserService(
         }
     }
 
-        public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+    public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
         string organisationSlug,
         Guid cdpPersonId,
         CancellationToken ct = default)
@@ -904,6 +904,76 @@ public sealed class UserService(
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
             return null;
+        }
+    }
+
+    public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return null;
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (assignment == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            var roleName = string.Join(", ", (assignment.Roles ?? [])
+                .Select(r => r.Name)
+                .Where(n => !string.IsNullOrWhiteSpace(n)));
+
+            return new RemoveApplicationViewModel(
+                OrganisationSlug: org.Slug,
+                UserDisplayName: displayName,
+                UserEmail: user.Email ?? string.Empty,
+                ApplicationName: assignment.Application?.Name ?? string.Empty,
+                ApplicationSlug: assignment.Application?.ClientId ?? string.Empty,
+                AssignmentId: assignment.Id,
+                OrgId: org.Id,
+                UserPrincipalId: assignment.UserPrincipalId ?? string.Empty,
+                RoleName: roleName,
+                AssignedAt: assignment.AssignedAt,
+                AssignedByName: assignment.AssignedBy,
+                CdpPersonId: cdpPersonId);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (assignment == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var userPrincipalId = assignment.UserPrincipalId ?? cdpPersonId.ToString();
+            await apiClient.AssignmentsDELETEAsync(org.Id, userPrincipalId, assignment.Id, ct);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
         }
     }
 }

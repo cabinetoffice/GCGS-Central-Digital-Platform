@@ -1108,4 +1108,356 @@ public class UserServiceTests
         result.ApplicationName.Should().Be("Test Application");
         result.CdpPersonId.Should().Be(userId);
     }
+
+    [Fact]
+    public async Task GetRemoveApplicationViewModelAsync_WhenOrganisationMissing_ReturnsNull()
+    {
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.GetRemoveApplicationViewModelAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationViewModelAsync_WhenUserMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((OrganisationUserResponse?)null);
+
+        var result = await _service.GetRemoveApplicationViewModelAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationViewModelAsync_WhenAssignmentMissing_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.GetRemoveApplicationViewModelAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveApplicationViewModelAsync_WhenValid_ReturnsMappedViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var assignedAt = new DateTimeOffset(2026, 3, 12, 9, 15, 0, TimeSpan.Zero);
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Jane",
+                LastName = "Smith",
+                Email = "jane@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments =
+                [
+                    new UserAssignmentResponse
+                    {
+                        Id = 19,
+                        UserOrganisationMembershipId = 1,
+                        OrganisationApplicationId = 15,
+                        ApplicationId = 42,
+                        IsActive = true,
+                        AssignedAt = assignedAt,
+                        AssignedBy = "admin@example.com",
+                        UserPrincipalId = "principal-1",
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        Application = new ApplicationResponse
+                        {
+                            Id = 42,
+                            Name = "Test Application",
+                            ClientId = "test-app",
+                            IsActive = true,
+                            CreatedAt = DateTimeOffset.UtcNow
+                        },
+                        Roles =
+                        [
+                            new RoleResponse
+                            {
+                                Id = 1,
+                                ApplicationId = 42,
+                                Name = "Admin",
+                                IsActive = true,
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedBy = "system"
+                            },
+                            new RoleResponse
+                            {
+                                Id = 2,
+                                ApplicationId = 42,
+                                Name = "Editor",
+                                IsActive = true,
+                                CreatedAt = DateTimeOffset.UtcNow,
+                                CreatedBy = "system"
+                            }
+                        ]
+                    }
+                ]
+            });
+
+        var result = await _service.GetRemoveApplicationViewModelAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.OrganisationSlug.Should().Be("org");
+        result.UserDisplayName.Should().Be("Jane Smith");
+        result.UserEmail.Should().Be("jane@example.com");
+        result.ApplicationName.Should().Be("Test Application");
+        result.ApplicationSlug.Should().Be("test-app");
+        result.AssignmentId.Should().Be(19);
+        result.OrgId.Should().Be(org.Id);
+        result.UserPrincipalId.Should().Be("principal-1");
+        result.RoleName.Should().Be("Admin, Editor");
+        result.AssignedAt.Should().Be(assignedAt);
+        result.AssignedByName.Should().Be("admin@example.com");
+        result.CdpPersonId.Should().Be(personId);
+    }
+
+    [Fact]
+    public async Task RemoveApplicationAsync_WhenUserMissing_ReturnsNotFoundOutcome()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((OrganisationUserResponse?)null);
+
+        var result = await _service.RemoveApplicationAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
+    }
+
+    [Fact]
+    public async Task RemoveApplicationAsync_WhenAssignmentMissing_ReturnsNotFoundOutcome()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "User",
+                LastName = "One",
+                Email = "user@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            });
+
+        var result = await _service.RemoveApplicationAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
+    }
+
+    [Fact]
+    public async Task RemoveApplicationAsync_WhenValid_DeletesAssignmentAndReturnsSuccess()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "User",
+                LastName = "One",
+                Email = "user@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments =
+                [
+                    new UserAssignmentResponse
+                    {
+                        Id = 27,
+                        UserOrganisationMembershipId = 1,
+                        OrganisationApplicationId = 3,
+                        ApplicationId = 4,
+                        IsActive = true,
+                        UserPrincipalId = "principal-27",
+                        AssignedAt = DateTimeOffset.UtcNow,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        Application = new ApplicationResponse
+                        {
+                            Id = 4,
+                            Name = "Test Application",
+                            ClientId = "test-app",
+                            IsActive = true,
+                            CreatedAt = DateTimeOffset.UtcNow
+                        }
+                    }
+                ]
+            });
+        _apiClient.Setup(client => client.AssignmentsDELETEAsync(org.Id, "principal-27", 27, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _service.RemoveApplicationAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Match(
+            _ => throw new Exception("Expected right-side success outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.Success));
+        _apiClient.Verify(client => client.AssignmentsDELETEAsync(org.Id, "principal-27", 27, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveApplicationAsync_WhenDeleteReturnsNotFound_ReturnsNotFoundOutcome()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "User",
+                LastName = "One",
+                Email = "user@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments =
+                [
+                    new UserAssignmentResponse
+                    {
+                        Id = 28,
+                        UserOrganisationMembershipId = 1,
+                        OrganisationApplicationId = 3,
+                        ApplicationId = 4,
+                        IsActive = true,
+                        UserPrincipalId = "principal-28",
+                        AssignedAt = DateTimeOffset.UtcNow,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        Application = new ApplicationResponse
+                        {
+                            Id = 4,
+                            Name = "Test Application",
+                            ClientId = "test-app",
+                            IsActive = true,
+                            CreatedAt = DateTimeOffset.UtcNow
+                        }
+                    }
+                ]
+            });
+        _apiClient.Setup(client => client.AssignmentsDELETEAsync(org.Id, "principal-28", 28, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.RemoveApplicationAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Match(
+            _ => throw new Exception("Expected right-side not-found outcome."),
+            outcome => outcome.Should().Be(ServiceOutcome.NotFound));
+    }
+
+    [Fact]
+    public async Task RemoveApplicationAsync_WhenDeleteReturnsServerError_ReturnsUnexpectedFailure()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersGET2Async(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new OrganisationUserResponse
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "User",
+                LastName = "One",
+                Email = "user@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments =
+                [
+                    new UserAssignmentResponse
+                    {
+                        Id = 29,
+                        UserOrganisationMembershipId = 1,
+                        OrganisationApplicationId = 3,
+                        ApplicationId = 4,
+                        IsActive = true,
+                        UserPrincipalId = "principal-29",
+                        AssignedAt = DateTimeOffset.UtcNow,
+                        CreatedAt = DateTimeOffset.UtcNow,
+                        Application = new ApplicationResponse
+                        {
+                            Id = 4,
+                            Name = "Test Application",
+                            ClientId = "test-app",
+                            IsActive = true,
+                            CreatedAt = DateTimeOffset.UtcNow
+                        }
+                    }
+                ]
+            });
+        _apiClient.Setup(client => client.AssignmentsDELETEAsync(org.Id, "principal-29", 29, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Server error", 500, string.Empty, new Dictionary<string, IEnumerable<string>>(), null));
+
+        var result = await _service.RemoveApplicationAsync("org", personId, "test-app", CancellationToken.None);
+
+        result.Match(
+            failure => failure.Should().Be(ServiceFailure.Unexpected),
+            _ => throw new Exception("Expected left-side failure outcome."));
+    }
 }

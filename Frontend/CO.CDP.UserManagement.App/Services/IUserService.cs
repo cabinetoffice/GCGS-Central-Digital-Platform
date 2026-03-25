@@ -84,6 +84,18 @@ public interface IUserService
         Guid cdpPersonId,
         CancellationToken ct = default);
 
+    Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
     Task<bool> IsEmailAlreadyInOrganisationAsync(
         string organisationSlug,
         string email,
@@ -100,4 +112,5 @@ public interface IUserService
         CancellationToken ct = default);
 
     Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct);
+
 }

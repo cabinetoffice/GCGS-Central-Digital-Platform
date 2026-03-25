@@ -1,0 +1,113 @@
+@model CO.CDP.UserManagement.App.Models.RemoveApplicationViewModel
+@{
+    ViewData["Title"] = "Revoke access to " + Model.ApplicationName;
+    var userDetailsUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}";
+    var changeRoleUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application-roles/change";
+}
+
+@section BeforeContent {
+    <a href="@userDetailsUrl" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <div class="govuk-notification-banner app-destructive-notification-banner" role="region" aria-labelledby="revoke-access-notification-title" data-module="govuk-notification-banner">
+            <div class="govuk-notification-banner__header">
+                <h2 class="govuk-notification-banner__title" id="revoke-access-notification-title">Important</h2>
+            </div>
+            <div class="govuk-notification-banner__content">
+                <h3 class="govuk-notification-banner__heading">You are about to revoke access</h3>
+                <p class="govuk-body">This action will immediately remove the user's access to this application. They will no longer be able to sign in or use any features.</p>
+            </div>
+        </div>
+
+        <h1 class="govuk-heading-l">Revoke access to @Model.ApplicationName</h1>
+
+        <h2 class="govuk-heading-m">User details</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.UserEmail</dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">Current access</h2>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Application</dt>
+                <dd class="govuk-summary-list__value">@Model.ApplicationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Role</dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag govuk-tag--purple">@Model.RoleName</strong>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="@changeRoleUrl">
+                        Change<span class="govuk-visually-hidden"> role for @Model.ApplicationName</span>
+                    </a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Assigned</dt>
+                <dd class="govuk-summary-list__value">
+                    @(Model.AssignedAt.HasValue ? Model.AssignedAt.Value.ToString("d MMMM yyyy") : "—")
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Assigned by</dt>
+                <dd class="govuk-summary-list__value">
+                    @(string.IsNullOrWhiteSpace(Model.AssignedByName) ? "—" : Model.AssignedByName)
+                </dd>
+            </div>
+        </dl>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                This action cannot be undone. You will need to re-assign the user if you want to restore their access.
+            </strong>
+        </div>
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="govuk-form-group @(ViewData.ModelState.ContainsKey(nameof(Model.RevokeConfirmed)) && !ViewData.ModelState.IsValid ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Are you sure you want to revoke access?</h2>
+                    </legend>
+                    @if (ViewData.ModelState.ContainsKey(nameof(Model.RevokeConfirmed)) && !ViewData.ModelState.IsValid)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[nameof(Model.RevokeConfirmed)]?.Errors.FirstOrDefault()?.ErrorMessage
+                        </p>
+                    }
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="revoke-confirmed-true" name="revokeConfirmed" type="radio" value="true" checked="@(Model.RevokeConfirmed == true)">
+                            <label class="govuk-label govuk-radios__label" for="revoke-confirmed-true">Yes, revoke access</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="revoke-confirmed-false" name="revokeConfirmed" type="radio" value="false" checked="@(Model.RevokeConfirmed == false)">
+                            <label class="govuk-label govuk-radios__label" for="revoke-confirmed-false">No, keep access</label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button govuk-button--warning" data-module="govuk-button">Confirm</button>
+                <a class="govuk-link" href="@userDetailsUrl">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

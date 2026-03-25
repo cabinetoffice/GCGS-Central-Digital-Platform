@@ -1401,6 +1401,50 @@ public class UsersController(
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
+    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    public async Task<IActionResult> RemoveApplication(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct)
+    {
+        var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+        return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+    }
+
+    [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveApplication(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        RemoveApplicationViewModel input,
+        CancellationToken ct)
+    {
+        if (input.RevokeConfirmed == false)
+        {
+            return RedirectToAction(nameof(Details), new { organisationSlug, cdpPersonId });
+        }
+
+        if (!ModelState.IsValid)
+        {
+            var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+            return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+        }
+
+        var result = await userService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
+        return result.Match<IActionResult>(
+            _ => Redirect("/error"),
+            outcome => outcome == ServiceOutcome.NotFound
+                ? NotFound()
+                : RedirectToAction(nameof(RemoveApplicationSuccess), new
+                {
+                    organisationSlug,
+                    cdpPersonId,
+                    clientId
+                }));
+    }
+
     // Helper: Prevent Admins from changing/removing Owners
     private async Task<bool> IsAdminTargetingOwnerAsync(
         string organisationSlug, OrganisationRole targetRole, CancellationToken ct)
