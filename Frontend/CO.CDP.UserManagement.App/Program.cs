@@ -7,6 +7,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.UI.Foundation;
 using CO.CDP.UI.Foundation.Middleware;
+using CO.CDP.UserManagement.App.Adapters;
 using GovUk.Frontend.AspNetCore;
 using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
@@ -180,6 +181,7 @@ builder.Services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();
+builder.Services.AddScoped<IUserManagementApiAdapter, UserManagementApiAdapter>();
 
 var app = builder.Build();
 app.UseForwardedHeaders();
