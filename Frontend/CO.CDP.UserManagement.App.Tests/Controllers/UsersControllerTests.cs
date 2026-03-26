@@ -2249,4 +2249,57 @@ public class UsersControllerTests
             service => service.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(),
                 It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    [Fact]
+    public async Task RemoveSuccess_WhenViewModelIsNull_RedirectsToIndex()
+    {
+        var organisationSlug = "test-org";
+        var cdpPersonId = Guid.NewGuid();
+        _userService.Setup(s => s.GetRemoveSuccessViewModelAsync(
+                It.IsAny<string>(),
+                It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((RemoveSuccessViewModel?)null);
+
+        var result = await _controller.RemoveSuccess(organisationSlug, cdpPersonId, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be(nameof(UsersController.Index));
+        redirectResult.RouteValues!["organisationSlug"].Should().Be(organisationSlug);
+    }
+
+    [Fact]
+    public async Task RemoveSuccess_WithValidViewModelContainingAllData_ReturnsCorrectViewModel()
+    {
+        var organisationSlug = "acme-corp";
+        var cdpPersonId = Guid.NewGuid();
+        var viewModel = new RemoveSuccessViewModel
+        {
+            OrganisationSlug = "acme-corp",
+            UserDisplayName = "Robert Johnson",
+            Email = "robert.johnson@example.com",
+            OrganisationName = "ACME Corporation",
+            Role = OrganisationRole.Owner,
+            MemberSince = "01 March 2023",
+            CdpPersonId = cdpPersonId
+        };
+        _userService.Setup(s => s.GetRemoveSuccessViewModelAsync(
+                organisationSlug,
+                cdpPersonId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.RemoveSuccess(organisationSlug, cdpPersonId, CancellationToken.None);
+
+        var viewResult = (ViewResult)result;
+        var returnedModel = (RemoveSuccessViewModel)viewResult.Model!;
+        returnedModel.OrganisationSlug.Should().Be("acme-corp");
+        returnedModel.UserDisplayName.Should().Be("Robert Johnson");
+        returnedModel.Email.Should().Be("robert.johnson@example.com");
+        returnedModel.OrganisationName.Should().Be("ACME Corporation");
+        returnedModel.Role.Should().Be(OrganisationRole.Owner);
+        returnedModel.MemberSince.Should().Be("01 March 2023");
+        returnedModel.CdpPersonId.Should().Be(cdpPersonId);
+    }
 }

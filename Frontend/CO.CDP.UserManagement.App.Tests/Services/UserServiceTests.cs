@@ -1460,4 +1460,142 @@ public class UserServiceTests
             failure => failure.Should().Be(ServiceFailure.Unexpected),
             _ => throw new Exception("Expected left-side failure outcome."));
     }
+
+    [Fact]
+    public async Task GetRemoveSuccessViewModelAsync_WhenOrganisationNotFound_ReturnsNull()
+    {
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new ApiException("Not Found", 404, string.Empty, new Dictionary<string, IEnumerable<string>>(),
+                null));
+
+        var result = await _service.GetRemoveSuccessViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveSuccessViewModelAsync_WhenUserNotFound_ReturnsNull()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OrganisationUserResponse>());
+
+        var result = await _service.GetRemoveSuccessViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task GetRemoveSuccessViewModelAsync_WhenUserHasNames_ReturnsFormattedDisplayName()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var users = new List<OrganisationUserResponse>
+        {
+            new()
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john@example.com",
+                OrganisationRole = OrganisationRole.Admin,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            }
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(users);
+
+        var result = await _service.GetRemoveSuccessViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.UserDisplayName.Should().Be("John Doe");
+    }
+
+    [Fact]
+    public async Task GetRemoveSuccessViewModelAsync_WhenUserHasJoinedDate_ReturnsFormattedDate()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var joinedDate = new DateTimeOffset(2026, 1, 15, 10, 30, 0, TimeSpan.Zero);
+        var users = new List<OrganisationUserResponse>
+        {
+            new()
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "john@example.com",
+                OrganisationRole = OrganisationRole.Member,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = joinedDate,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            }
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(users);
+
+        var result = await _service.GetRemoveSuccessViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.MemberSince.Should().Be("15 January 2026");
+    }
+
+    [Fact]
+    public async Task GetRemoveSuccessViewModelAsync_WhenValidData_ReturnsCompleteViewModel()
+    {
+        var org = BuildOrganisationResponse();
+        var personId = Guid.NewGuid();
+        var joinedDate = new DateTimeOffset(2024, 6, 10, 0, 0, 0, TimeSpan.Zero);
+        var users = new List<OrganisationUserResponse>
+        {
+            new()
+            {
+                MembershipId = 1,
+                OrganisationId = org.Id,
+                CdpPersonId = personId,
+                FirstName = "Jane",
+                LastName = "Smith",
+                Email = "jane@example.com",
+                OrganisationRole = OrganisationRole.Owner,
+                Status = UserStatus.Active,
+                IsActive = true,
+                JoinedAt = joinedDate,
+                CreatedAt = DateTimeOffset.UtcNow,
+                ApplicationAssignments = []
+            }
+        };
+        _apiClient.Setup(client => client.BySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(org);
+        _apiClient.Setup(client => client.UsersAll2Async(org.CdpOrganisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(users);
+
+        var result = await _service.GetRemoveSuccessViewModelAsync("org", personId, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.OrganisationSlug.Should().Be("org");
+        result.UserDisplayName.Should().Be("Jane Smith");
+        result.Email.Should().Be("jane@example.com");
+        result.OrganisationName.Should().Be("Org");
+        result.Role.Should().Be(OrganisationRole.Owner);
+        result.MemberSince.Should().Be("10 June 2024");
+        result.CdpPersonId.Should().Be(personId);
+    }
 }

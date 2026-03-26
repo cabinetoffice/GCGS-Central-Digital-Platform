@@ -79,6 +79,11 @@ public interface IUserService
         string clientId,
         CancellationToken ct = default);
 
+    Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
     Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
         string organisationSlug,
         Guid cdpPersonId,
