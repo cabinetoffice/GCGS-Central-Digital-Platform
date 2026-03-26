@@ -116,7 +116,7 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
         }
     }
 
-    public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserOrganisationRoleAsync(Guid organisationId, Guid cdpPersonId, CO.CDP.UserManagement.Shared.Requests.ChangeOrganisationRoleRequest request, CancellationToken ct)
+    public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserOrganisationRoleAsync(Guid organisationId, Guid cdpPersonId, ChangeOrganisationRoleRequest request, CancellationToken ct)
     {
         try
         {

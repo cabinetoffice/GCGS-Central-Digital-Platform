@@ -12,6 +12,9 @@ public class Result<TError, TValue> : Either<TError, TValue>
     public static Result<TError, TValue> Success(TValue value) => new(Right(value));
     public static Result<TError, TValue> Failure(TError error) => new(Left(error));
 
+    public bool IsSuccess => _either.IsRight();
+    public bool IsFailure => _either.IsLeft();
+
     public override TResult Match<TResult>(Func<TError, TResult> onLeft, Func<TValue, TResult> onRight)
         => _either.Match(onLeft, onRight);
 
