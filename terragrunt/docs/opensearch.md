@@ -126,11 +126,12 @@ GET _plugins/_security/api/roles/opensearch_dashboards_user
 PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
 {
   "backend_roles": [
-    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task"
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task",
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-gateway"
   ]
 }
 
-# Gateway readonly role
+# Gateway readonly role (FTS indices + dashboards index read + admin read)
 GET _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
 PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
 {
@@ -147,8 +148,22 @@ PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
       "allowed_actions": [
         "indices:admin/aliases/get",
         "indices:admin/exists",
+        "indices:admin/get",
+        "indices:admin/mappings/get",
+        "indices:admin/settings/get",
         "indices:data/read/search",
         "indices:data/read/get"
+      ]
+    },
+    {
+      "index_patterns": [
+        ".opensearch_dashboards*",
+        ".kibana*",
+        ".kibana_task_manager*"
+      ],
+      "allowed_actions": [
+        "indices:data/read/*",
+        "indices:admin/*"
       ]
     }
   ],
