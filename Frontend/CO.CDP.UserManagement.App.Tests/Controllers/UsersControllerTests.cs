@@ -1825,7 +1825,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task RemoveApplication_Get_WhenViewModelAvailable_ReturnsCheckView()
+    public async Task RemoveApplication_Get_WhenViewModelAvailable_ReturnsRemoveView()
     {
         var cdpPersonId = Guid.NewGuid();
         var viewModel = new RemoveApplicationViewModel(
@@ -1846,7 +1846,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("RemoveApplicationCheck");
+        viewResult.ViewName.Should().Be("RemoveApplication");
         viewResult.Model.Should().Be(viewModel);
     }
 
@@ -1891,7 +1891,7 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task RemoveApplication_Post_WhenModelStateInvalidAndViewModelAvailable_ReturnsCheckView()
+    public async Task RemoveApplication_Post_WhenModelStateInvalidAndViewModelAvailable_ReturnsRemoveView()
     {
         var cdpPersonId = Guid.NewGuid();
         var viewModel = new RemoveApplicationViewModel(
@@ -1914,7 +1914,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("RemoveApplicationCheck");
+        viewResult.ViewName.Should().Be("RemoveApplication");
         viewResult.Model.Should().Be(viewModel);
         _userService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
