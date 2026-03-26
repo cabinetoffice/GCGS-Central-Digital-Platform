@@ -1354,7 +1354,7 @@ public class UsersController(
 
         var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
 
-        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug, cdpPersonId }) : NotFound();
     }
 
     [HttpGet("invites/{pendingInviteId:int}/remove")]
@@ -1388,10 +1388,17 @@ public class UsersController(
         return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("remove/success")]
-    public IActionResult RemoveSuccess(string organisationSlug)
+    [HttpGet("user/{cdpPersonId:guid}/remove/success")]
+    public async Task<IActionResult> RemoveSuccess(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        return View("RemoveSuccess");
+        var viewModel = await userService.GetRemoveSuccessViewModelAsync(organisationSlug, cdpPersonId, ct);
+
+        if (viewModel is null)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        return View("RemoveSuccess", viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}")]
