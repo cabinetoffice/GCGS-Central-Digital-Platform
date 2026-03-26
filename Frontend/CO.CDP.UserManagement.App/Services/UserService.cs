@@ -923,6 +923,7 @@ public sealed class UserService(
                 .Where(assignment => assignment.Application != null)
                 .Select(assignment => new UserApplicationAccessDetailViewModel(
                     ApplicationId: assignment.Application!.Id,
+                    ApplicationClientId: assignment.Application!.ClientId,
                     ApplicationName: assignment.Application!.Name,
                     ApplicationDescription: assignment.Application!.Description,
                     Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],

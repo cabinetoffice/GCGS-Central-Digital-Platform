@@ -1408,7 +1408,7 @@ public class UsersController(
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     public async Task<IActionResult> RemoveApplication(
         string organisationSlug,
         Guid cdpPersonId,
@@ -1416,10 +1416,10 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
-        return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+        return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveApplication(
         string organisationSlug,
@@ -1436,7 +1436,7 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
-            return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+            return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
         }
 
         var result = await userService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
