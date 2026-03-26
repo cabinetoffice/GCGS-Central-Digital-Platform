@@ -1418,7 +1418,7 @@ public class UsersController(
         string clientId,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+        var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
         return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
     }
 
@@ -1438,11 +1438,11 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+            var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
             return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
         }
 
-        var result = await userService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
+        var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
         return result.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == ServiceOutcome.NotFound

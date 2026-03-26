@@ -1,6 +1,3 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.Functional;
@@ -35,7 +32,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CdpPersonId: cdpPersonId,
                 PendingInviteId: null,
                 RemoveConfirmed: null);
-            
+
         }
 
         public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
@@ -57,7 +54,54 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CdpPersonId: null,
                 PendingInviteId: pendingInviteId,
                 RemoveConfirmed: null);
-            
+
+        }
+
+        public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return null;
+
+            var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user is null) return null;
+
+            var apps = await _adapter.GetApplicationsAsync(org.Id, ct);
+            var app = apps.FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (app is null || app.Application is null) return null;
+
+            var assignments = await _adapter.GetUserAssignmentsAsync(org.Id, cdpPersonId, ct);
+            var assignment = assignments.FirstOrDefault(a => a.IsActive && a.OrganisationApplicationId == app.Id);
+
+            return new RemoveApplicationViewModel(
+                OrganisationSlug: organisationSlug,
+                UserDisplayName: $"{user.FirstName} {user.LastName}",
+                UserEmail: user.Email,
+                ApplicationName: app.Application.Name ?? string.Empty,
+                ApplicationSlug: app.Application.ClientId ?? string.Empty,
+                AssignmentId: assignment?.Id ?? 0,
+                OrgId: org.Id,
+                UserPrincipalId: cdpPersonId.ToString(),
+                RoleName: assignment?.Roles?.FirstOrDefault()?.Name ?? string.Empty,
+                AssignedAt: assignment?.AssignedAt ?? assignment?.CreatedAt,
+                AssignedByName: assignment?.AssignedBy,
+                CdpPersonId: cdpPersonId,
+                RevokeConfirmed: null);
+        }
+
+        public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var apps = await _adapter.GetApplicationsAsync(org.Id, ct);
+            var app = apps.FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (app is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var assignments = await _adapter.GetUserAssignmentsAsync(org.Id, cdpPersonId, ct);
+            var assignment = assignments.FirstOrDefault(a => a.IsActive && a.OrganisationApplicationId == app.Id);
+            if (assignment is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            return await _adapter.DeleteUserAssignmentAsync(org.Id, cdpPersonId, assignment.Id, ct);
         }
 
         public async Task<bool> IsLastOwnerAsync(

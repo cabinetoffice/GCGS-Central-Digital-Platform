@@ -53,6 +53,12 @@ public interface IUserManagementApiAdapter
         Guid cdpOrganisationId, Guid inviteGuid,
         UpdateUserAssignmentsRequest request, CancellationToken ct);
 
+    Task<ICollection<UserAssignmentResponse>> GetUserAssignmentsAsync(
+        int organisationId, Guid cdpPersonId, CancellationToken ct);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> DeleteUserAssignmentAsync(
+        int organisationId, Guid cdpPersonId, int assignmentId, CancellationToken ct);
+
     Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(
         Guid organisationId, Guid cdpPersonId, CancellationToken ct);
 

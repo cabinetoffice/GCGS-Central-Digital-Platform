@@ -19,6 +19,12 @@ namespace CO.CDP.UserManagement.App.Application.Removal
             int pendingInviteId,
             CancellationToken ct);
 
+        Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+            string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+
+        Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+            string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+
         Task<bool> IsLastOwnerAsync(
             string organisationSlug,
             Guid cdpPersonId,

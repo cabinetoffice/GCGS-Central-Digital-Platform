@@ -218,6 +218,33 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
         }
     }
 
+    public async Task<ICollection<UserAssignmentResponse>> GetUserAssignmentsAsync(int organisationId, Guid cdpPersonId, CancellationToken ct)
+    {
+        try
+        {
+            var userPrincipalId = cdpPersonId.ToString();
+            return (await _client.AssignmentsAllAsync(organisationId, userPrincipalId, ct).ConfigureAwait(false)) ?? new List<UserAssignmentResponse>();
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<UserAssignmentResponse>();
+        }
+    }
+
+    public async Task<Result<ServiceFailure, ServiceOutcome>> DeleteUserAssignmentAsync(int organisationId, Guid cdpPersonId, int assignmentId, CancellationToken ct)
+    {
+        try
+        {
+            var userPrincipalId = cdpPersonId.ToString();
+            await _client.AssignmentsDELETEAsync(organisationId, userPrincipalId, assignmentId, ct).ConfigureAwait(false);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
+        }
+    }
+
     public Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(Guid organisationId, Guid cdpPersonId, CancellationToken ct)
     {
         return Task.FromResult(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
