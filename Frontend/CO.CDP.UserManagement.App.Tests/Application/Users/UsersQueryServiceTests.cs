@@ -182,4 +182,55 @@ public class UsersQueryServiceTests : AdapterTestFixture
 
         result!.OrganisationName.Should().Be("My Organisation");
     }
+
+    [Fact]
+    public async Task GetViewModelAsync_InviteApplicationAssignments_AreMappedToApplicationAccess()
+    {
+        SetupOrg();
+
+        var app = MakeApplication(orgAppId: 99, appId: 5, name: "FallbackApp");
+        var invite = MakeInvite();
+        invite = invite with
+        {
+            ApplicationAssignments = new[]
+            {
+                new InviteApplicationAssignmentResponse
+                {
+                    OrganisationApplicationId = 99,
+                    ApplicationId = 5,
+                    ApplicationName = "InvApp",
+                    ApplicationRoleId = 1
+                }
+            }
+        };
+
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<OrganisationUserResponse>());
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { invite });
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(new[] { app });
+
+        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        var user = result!.Users.Single();
+        user.InviteGuid.Should().NotBeNull();
+        user.ApplicationAccess.Should().HaveCount(1);
+        var access = user.ApplicationAccess[0];
+        access.ApplicationName.Should().Be("InvApp");
+        access.ApplicationSlug.Should().Be("app-5");
+        access.RoleName.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetViewModelAsync_TotalCount_IncludesInvites()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeUser() });
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeInvite() });
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
+
+        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.TotalCount.Should().Be(2);
+    }
 }

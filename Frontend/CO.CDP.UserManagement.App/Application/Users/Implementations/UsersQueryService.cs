@@ -85,7 +85,15 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     i.Email,
                     i.OrganisationRole,
                     i.Status,
-                    new List<UserApplicationAccessViewModel>()))
+                    (i.ApplicationAssignments ?? Enumerable.Empty<InviteApplicationAssignmentResponse>())
+                        .Select(ar =>
+                        {
+                            var orgApp = applications.FirstOrDefault(a => a.Id == ar.OrganisationApplicationId);
+                            var appName = !string.IsNullOrEmpty(ar.ApplicationName) ? ar.ApplicationName : orgApp?.Application?.Name ?? string.Empty;
+                            var appSlug = orgApp?.Application?.ClientId ?? string.Empty;
+                            return new UserApplicationAccessViewModel(appName, appSlug, string.Empty);
+                        })
+                        .ToList()))
                 .ToList();
 
             var appsVm = (applications ?? Enumerable.Empty<OrganisationApplicationResponse>())
@@ -110,7 +118,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 role,
                 application,
                 search,
-                users.Count
+                users.Count + (invitesTask.Result?.Count ?? 0)
             );
         }
     }
@@ -186,6 +194,36 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 ApplicationName = app.Application.Name ?? string.Empty,
                 CdpPersonId = cdpPersonId
             };
+        }
+    }
+
+    public class InviteDetailsQueryService : IInviteDetailsQueryService
+    {
+        private readonly IUserManagementApiAdapter _adapter;
+        public InviteDetailsQueryService(IUserManagementApiAdapter adapter) => _adapter = adapter;
+
+        public async Task<InviteDetailsViewModel?> GetViewModelAsync(
+            string organisationSlug, Guid inviteGuid, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org == null) return null;
+            var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            if (invite == null) return null;
+
+            var appNames = (invite.ApplicationAssignments ?? Enumerable.Empty<InviteApplicationAssignmentResponse>())
+                .Select(ar => ar.ApplicationName)
+                .Where(n => !string.IsNullOrEmpty(n))
+                .ToList();
+
+            return new InviteDetailsViewModel(
+                org,
+                invite.CdpPersonInviteGuid,
+                invite.PendingInviteId,
+                $"{invite.FirstName} {invite.LastName}".Trim(),
+                invite.Email,
+                invite.OrganisationRole,
+                invite.CreatedAt,
+                appNames);
         }
     }
 }

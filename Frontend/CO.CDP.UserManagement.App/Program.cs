@@ -189,6 +189,7 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 builder.Services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
 builder.Services.AddScoped<IUsersQueryService, UsersQueryService>();
 builder.Services.AddScoped<IUserDetailsQueryService, UserDetailsQueryService>();
+builder.Services.AddScoped<IInviteDetailsQueryService, InviteDetailsQueryService>();
 builder.Services.AddScoped<IInviteUserFlowService, InviteUserFlowService>();
 builder.Services.AddScoped<IOrganisationRoleFlowService, OrganisationRoleFlowService>();
 builder.Services.AddScoped<IApplicationRoleFlowService, ApplicationRoleFlowService>();

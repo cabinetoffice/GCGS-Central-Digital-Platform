@@ -120,7 +120,7 @@ else
                     }
                     @if (isPending)
                     {
-                        @user.Name
+                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid" class="govuk-link">@user.Name</a>
                     }
                     else
                     {
@@ -169,7 +169,7 @@ else
                     }
                     else if (user.InviteGuid.HasValue)
                     {
-                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-right-4">Resend invite</a>
+                        <a href="/organisation/@organisationSlug/invites/@user.InviteGuid" class="govuk-link govuk-!-margin-right-4">View details</a>
                         <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-right-4">Manage application access</a>
                         <a href="/organisation/@organisationSlug/invites/@user.InviteGuid/organisation-role/change" class="govuk-link">Change organisation role</a>
                     }

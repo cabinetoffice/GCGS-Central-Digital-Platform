@@ -23,6 +23,7 @@ namespace CO.CDP.UserManagement.App.Controllers;
 public class UsersController(
     IUsersQueryService usersQueryService,
     IUserDetailsQueryService userDetailsQueryService,
+    IInviteDetailsQueryService inviteDetailsQueryService,
     IInviteUserFlowService inviteUserFlowService,
     IOrganisationRoleFlowService organisationRoleFlowService,
     IApplicationRoleFlowService applicationRoleFlowService,
@@ -440,6 +441,13 @@ public class UsersController(
             outcome => outcome == ServiceOutcome.NotFound
                 ? NotFound()
                 : RedirectToAction(nameof(Index), new { organisationSlug })!);
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}")]
+    public async Task<IActionResult> InviteDetails(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    {
+        var viewModel = await inviteDetailsQueryService.GetViewModelAsync(organisationSlug, inviteGuid, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]

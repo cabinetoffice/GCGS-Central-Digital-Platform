@@ -31,6 +31,7 @@ public class UsersControllerTests
     private readonly Mock<IChangeRoleStateStore> _changeRoleStateStore;
     private readonly Mock<IChangeApplicationRoleStateStore> _changeApplicationRoleStateStore;
     private readonly Mock<IUserManagementApiAdapter> _adapter;
+    private readonly Mock<IInviteDetailsQueryService> _inviteDetailsQueryService;
     private readonly UsersController _controller;
 
     public UsersControllerTests()
@@ -46,6 +47,7 @@ public class UsersControllerTests
         _changeRoleStateStore = new Mock<IChangeRoleStateStore>();
         _changeApplicationRoleStateStore = new Mock<IChangeApplicationRoleStateStore>();
         _adapter = new Mock<IUserManagementApiAdapter>();
+        _inviteDetailsQueryService = new Mock<IInviteDetailsQueryService>();
 
         _inviteUserStateStore.Setup(s => s.ClearAsync()).Returns(Task.CompletedTask);
         _inviteUserStateStore.Setup(s => s.ClearSuccessAsync()).Returns(Task.CompletedTask);
@@ -85,6 +87,7 @@ public class UsersControllerTests
         _controller = new UsersController(
             _usersQueryService.Object,
             _userDetailsQueryService.Object,
+            _inviteDetailsQueryService.Object,
             _inviteUserFlowService.Object,
             _organisationRoleFlowService.Object,
             _applicationRoleFlowService.Object,
@@ -540,6 +543,43 @@ public class UsersControllerTests
         var result = await _controller.ResendInvite("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
+    }
+
+    // ── InviteDetails ───────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task InviteDetails_WhenViewModelNull_ReturnsNotFound()
+    {
+        var guid = Guid.NewGuid();
+        _inviteDetailsQueryService.Setup(s => s.GetViewModelAsync("org", guid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((InviteDetailsViewModel?)null);
+
+        var result = await _controller.InviteDetails("org", guid, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task InviteDetails_WhenViewModelAvailable_ReturnsViewWithModel()
+    {
+        var guid = Guid.NewGuid();
+        var org = new OrganisationResponse
+        {
+            Id = 1,
+            CdpOrganisationGuid = Guid.NewGuid(),
+            Name = "Org",
+            Slug = "org",
+            IsActive = true,
+            CreatedAt = DateTimeOffset.UtcNow
+        };
+
+        var vm = new InviteDetailsViewModel(org, guid, 123, "Test Invite", "invite@example.com", OrganisationRole.Member, DateTimeOffset.UtcNow, new List<string> { "AppA" });
+        _inviteDetailsQueryService.Setup(s => s.GetViewModelAsync("org", guid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(vm);
+
+        var result = await _controller.InviteDetails("org", guid, CancellationToken.None);
+
+        result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(vm);
     }
 
     // ── Details ───────────────────────────────────────────────────────────────

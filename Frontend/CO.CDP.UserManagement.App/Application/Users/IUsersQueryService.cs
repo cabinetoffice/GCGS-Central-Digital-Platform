@@ -26,4 +26,12 @@ namespace CO.CDP.UserManagement.App.Application.Users
             string clientId,
             CancellationToken ct);
     }
+
+    public interface IInviteDetailsQueryService
+    {
+        Task<InviteDetailsViewModel?> GetViewModelAsync(
+            string organisationSlug,
+            Guid inviteGuid,
+            CancellationToken ct);
+    }
 }
