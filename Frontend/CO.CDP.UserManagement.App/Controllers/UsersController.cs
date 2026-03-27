@@ -1406,9 +1406,10 @@ public class UsersController(
         return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("remove/success")]
-    public IActionResult RemoveSuccess(string organisationSlug)
+    [HttpGet("user/{cdpPersonId:guid}/remove/success")]
+    public async Task<IActionResult> RemoveSuccess(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
+        //TODO: move service, use vm
         return View("RemoveSuccess");
     }
 
@@ -1419,7 +1420,7 @@ public class UsersController(
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
-    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     public async Task<IActionResult> RemoveApplication(
         string organisationSlug,
         Guid cdpPersonId,
@@ -1430,7 +1431,7 @@ public class UsersController(
         return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
     }
 
-    [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove/check")]
+    [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveApplication(
         string organisationSlug,

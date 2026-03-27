@@ -606,6 +606,23 @@ public class UsersControllerTests
             new UserApplicationAccessDetailViewModel(ApplicationId: 2, ApplicationName: "View",
                 ApplicationDescription: "View application", Permissions: new[] { "Read" },
                 AssignedDate: DateTimeOffset.UtcNow.AddDays(-1), AssignedByEmail: "admin@example.com",
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 1,
+                ApplicationClientId: "Test-Application-Edit",
+                ApplicationName: "Edit",
+                ApplicationDescription: "Edit application",
+                Permissions: new[] { "Read", "Write" },
+                AssignedDate: DateTimeOffset.UtcNow,
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Admin"),
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 2,
+                ApplicationClientId: "Test-Application-View",
+                ApplicationName: "View",
+                ApplicationDescription: "View application",
+                Permissions: new[] { "Read" },
+                AssignedDate: DateTimeOffset.UtcNow.AddDays(-1),
+                AssignedByEmail: "admin@example.com",
                 ApplicationRole: "Editor")
         };
         var organisation = new OrganisationResponse
@@ -1777,6 +1794,90 @@ public class UsersControllerTests
     }
 
     [Fact]
+    public async Task RemoveApplication_Get_PassesCorrectParametersToService()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        const string clientId = "test-app";
+        var viewModel = new RemoveApplicationViewModel(
+            OrganisationSlug: "org",
+            UserDisplayName: "Jane Doe",
+            UserEmail: "jane@example.com",
+            ApplicationName: "Finance App",
+            ApplicationSlug: clientId,
+            AssignmentId: 456,
+            OrgId: 1,
+            UserPrincipalId: "principal-2",
+            RoleName: "Editor",
+            CdpPersonId: cdpPersonId);
+
+        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync("org", cdpPersonId, clientId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        await _controller.RemoveApplication("org", cdpPersonId, clientId, CancellationToken.None);
+
+        _userRemovalService.Verify(service => service.GetRemoveApplicationViewModelAsync("org", cdpPersonId, clientId, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveApplication_Post_WhenNotConfirmed_RedirectsToDetails()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        var input = new RemoveApplicationViewModel(RevokeConfirmed: false);
+
+        var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
+
+        var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
+        redirectResult.ActionName.Should().Be(nameof(UsersController.Details));
+        redirectResult.RouteValues.Should().Contain("organisationSlug", "org");
+        redirectResult.RouteValues.Should().Contain("cdpPersonId", cdpPersonId);
+        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task RemoveApplication_Post_WhenModelStateInvalidAndViewModelAvailable_ReturnsRemoveView()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        var viewModel = new RemoveApplicationViewModel(
+            OrganisationSlug: "org",
+            UserDisplayName: "John Doe",
+            UserEmail: "john@example.com",
+            ApplicationName: "Test App",
+            ApplicationSlug: "test-app",
+            AssignmentId: 123,
+            OrgId: 1,
+            UserPrincipalId: "principal-1",
+            RoleName: "Admin",
+            CdpPersonId: cdpPersonId);
+
+        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync("org", cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed), "Select if you want to revoke access");
+
+        var input = new RemoveApplicationViewModel(RevokeConfirmed: true);
+        var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("RemoveApplication");
+        viewResult.Model.Should().Be(viewModel);
+        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task RemoveApplication_Post_WhenModelStateInvalidAndViewModelMissing_ReturnsNotFound()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync("org", cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
+            .ReturnsAsync((RemoveApplicationViewModel?)null);
+        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed), "Select if you want to revoke access");
+
+        var input = new RemoveApplicationViewModel(RevokeConfirmed: true);
+        var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
     public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveSuccess()
     {
         _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
@@ -1863,5 +1964,58 @@ public class UsersControllerTests
         _userDetailsQueryService.Verify(
             s => s.GetRemoveApplicationSuccessViewModelAsync("org", userId, appId, It.IsAny<CancellationToken>()),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveSuccess_WhenViewModelIsNull_RedirectsToIndex()
+    {
+        var organisationSlug = "test-org";
+        var cdpPersonId = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetRemoveSuccessViewModelAsync(
+                It.IsAny<string>(),
+                It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((RemoveSuccessViewModel?)null);
+
+        var result = await _controller.RemoveSuccess(organisationSlug, cdpPersonId, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>();
+        var redirectResult = (RedirectToActionResult)result;
+        redirectResult.ActionName.Should().Be(nameof(UsersController.Index));
+        redirectResult.RouteValues!["organisationSlug"].Should().Be(organisationSlug);
+    }
+
+    [Fact]
+    public async Task RemoveSuccess_WithValidViewModelContainingAllData_ReturnsCorrectViewModel()
+    {
+        var organisationSlug = "acme-corp";
+        var cdpPersonId = Guid.NewGuid();
+        var viewModel = new RemoveSuccessViewModel
+        {
+            OrganisationSlug = "acme-corp",
+            UserDisplayName = "Robert Johnson",
+            Email = "robert.johnson@example.com",
+            OrganisationName = "ACME Corporation",
+            Role = OrganisationRole.Owner,
+            MemberSince = "01 March 2023",
+            CdpPersonId = cdpPersonId
+        };
+        _userService.Setup(s => s.GetRemoveSuccessViewModelAsync(
+                organisationSlug,
+                cdpPersonId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+
+        var result = await _controller.RemoveSuccess(organisationSlug, cdpPersonId, CancellationToken.None);
+
+        var viewResult = (ViewResult)result;
+        var returnedModel = (RemoveSuccessViewModel)viewResult.Model!;
+        returnedModel.OrganisationSlug.Should().Be("acme-corp");
+        returnedModel.UserDisplayName.Should().Be("Robert Johnson");
+        returnedModel.Email.Should().Be("robert.johnson@example.com");
+        returnedModel.OrganisationName.Should().Be("ACME Corporation");
+        returnedModel.Role.Should().Be(OrganisationRole.Owner);
+        returnedModel.MemberSince.Should().Be("01 March 2023");
+        returnedModel.CdpPersonId.Should().Be(cdpPersonId);
     }
 }

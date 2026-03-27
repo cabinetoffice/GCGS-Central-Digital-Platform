@@ -65,8 +65,16 @@ These commands are intended to be run **in the opensearch-admin Dev Tools consol
 and in this order. Replace `<ACCOUNT_ID>` with the target account ID.
 
 ```bash
-# Action group used by the service writer role (covers bulk and bulk*).
-GET _plugins/_security/api/actiongroups/fts_write_with_bulk
+# 0) Quick audit (optional)
+GET _plugins/_security/authinfo
+GET _plugins/_security/api/roles/cdp_sirsi_service_writer
+GET _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
+GET _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
+GET _plugins/_security/api/rolesmapping/opensearch_dashboards_user
+GET _plugins/_security/api/rolesmapping/readall_and_monitor
+
+# 1) Action group used by the service writer role (covers bulk and bulk*).
 PUT _plugins/_security/api/actiongroups/fts_write_with_bulk
 {
   "allowed_actions": [
@@ -78,13 +86,14 @@ PUT _plugins/_security/api/actiongroups/fts_write_with_bulk
   ]
 }
 
-# Service writer role (application + debugtask)
-GET _plugins/_security/api/roles/cdp_sirsi_service_writer
+# 2) Service writer role (application + debugtask)
 PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
 {
   "cluster_permissions": [
     "cluster:monitor/main",
-    "cluster:monitor/health"
+    "cluster:monitor/health",
+    "cluster:monitor/task/get",
+    "cluster:monitor/tasks/get"
   ],
   "index_permissions": [
     {
@@ -110,7 +119,6 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
   "tenant_permissions": []
 }
 
-GET /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
 {
   "backend_roles": [
@@ -120,9 +128,7 @@ PUT /_plugins/_security/api/rolesmapping/cdp_sirsi_service_writer
   "users": []
 }
 
-# Dashboards role mapping (required for Dev Tools to avoid bulk 403s)
-# Built-in dashboards role mapping
-GET _plugins/_security/api/roles/opensearch_dashboards_user
+# 3) Dashboards role mapping (required for Dev Tools access)
 PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
 {
   "backend_roles": [
@@ -131,8 +137,7 @@ PUT _plugins/_security/api/rolesmapping/opensearch_dashboards_user
   ]
 }
 
-# Gateway readonly role (FTS indices + dashboards index read + admin read)
-GET _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
+# 4) Gateway readonly role (FTS indices + dashboards index read)
 PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
 {
   "cluster_permissions": [
@@ -170,7 +175,6 @@ PUT _plugins/_security/api/roles/cdp_sirsi_gateway_readonly
   "tenant_permissions": []
 }
 
-GET _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
 {
   "backend_roles": [
@@ -181,8 +185,17 @@ PUT _plugins/_security/api/rolesmapping/cdp_sirsi_gateway_readonly
   "users": []
 }
 
-# Admin mappings (if needed in dev)
-GET _plugins/_security/api/rolesmapping/all_access
+# 5) Map gateway role to readall_and_monitor (needed for admin/get reads)
+PUT _plugins/_security/api/rolesmapping/readall_and_monitor
+{
+  "backend_roles": [
+    "arn:aws:iam::<ACCOUNT_ID>:role/cdp-sirsi-ecs-task-opensearch-gateway"
+  ],
+  "hosts": [],
+  "users": []
+}
+
+# 6) Admin mappings (required for bootstrap)
 PUT _plugins/_security/api/rolesmapping/all_access
 {
   "backend_roles": [
@@ -192,7 +205,6 @@ PUT _plugins/_security/api/rolesmapping/all_access
   "users": []
 }
 
-GET _plugins/_security/api/rolesmapping/security_manager
 PUT _plugins/_security/api/rolesmapping/security_manager
 {
   "backend_roles": [
@@ -201,7 +213,24 @@ PUT _plugins/_security/api/rolesmapping/security_manager
   "hosts": [],
   "users": []
 }
+
+# 7) Clear cache after any changes
+DELETE _plugins/_security/api/cache
 ```
+
+### Debugtask lock test
+
+From **opensearch-debugtask** Dev Tools:
+
+```bash
+PUT /.fts_migration_lock/_doc/lock?op_type=create
+{
+  "ts": "manual-check"
+}
+```
+
+If the lock already exists, you will get **409** (version conflict), which is OK and
+means permissions are working.
 
 ## Index and alias operations (examples)
 
