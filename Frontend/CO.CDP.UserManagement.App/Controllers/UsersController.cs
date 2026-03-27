@@ -149,12 +149,6 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        if (organisationRole.HasValue && state.OrganisationRole != organisationRole.Value)
-        {
-            state = state with { OrganisationRole = organisationRole.Value };
-            await inviteUserStateStore.SetAsync(state);
-        }
-
         var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (viewModel is null)
         {
@@ -163,16 +157,52 @@ public class UsersController(
 
         var selectedAssignments = (state.ApplicationAssignments ?? [])
             .ToDictionary(a => a.OrganisationApplicationId, a => a.ApplicationRoleId);
-        viewModel.Applications
-            .Where(application => selectedAssignments.ContainsKey(application.OrganisationApplicationId))
-            .ToList()
-            .ForEach(application =>
-            {
-                application.GiveAccess = true;
-                application.SelectedRoleId = selectedAssignments[application.OrganisationApplicationId];
-            });
 
-        return View("ApplicationRoles", viewModel);
+        var updatedApplications = viewModel.Applications
+            .Select(application =>
+            {
+                if (selectedAssignments.TryGetValue(application.OrganisationApplicationId, out var roleId))
+                {
+                    return new ApplicationAccessSelectionViewModel
+                    {
+                        OrganisationApplicationId = application.OrganisationApplicationId,
+                        ApplicationName = application.ApplicationName,
+                        ApplicationDescription = application.ApplicationDescription,
+                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                        IsEnabledByDefault = application.IsEnabledByDefault,
+                        GiveAccess = true,
+                        SelectedRoleId = roleId,
+                        SelectedRoleIds = application.SelectedRoleIds,
+                        Roles = application.Roles
+                    };
+                }
+
+                return new ApplicationAccessSelectionViewModel
+                {
+                    OrganisationApplicationId = application.OrganisationApplicationId,
+                    ApplicationName = application.ApplicationName,
+                    ApplicationDescription = application.ApplicationDescription,
+                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                    IsEnabledByDefault = application.IsEnabledByDefault,
+                    GiveAccess = application.GiveAccess,
+                    SelectedRoleId = application.SelectedRoleId,
+                    SelectedRoleIds = application.SelectedRoleIds,
+                    Roles = application.Roles
+                };
+            })
+            .ToList();
+
+        var viewModelUpdated = new ApplicationRolesStepViewModel
+        {
+            OrganisationSlug = viewModel.OrganisationSlug,
+            FirstName = viewModel.FirstName,
+            LastName = viewModel.LastName,
+            Email = viewModel.Email,
+            OrganisationRole = viewModel.OrganisationRole,
+            Applications = updatedApplications
+        };
+
+        return View("ApplicationRoles", viewModelUpdated);
     }
 
     [HttpPost("add-user/application-roles")]
@@ -195,33 +225,76 @@ public class UsersController(
         }
 
         var postedSelections = input.Applications.ToDictionary(a => a.OrganisationApplicationId);
-        viewModel.Applications
-            .Where(application => postedSelections.ContainsKey(application.OrganisationApplicationId))
-            .ToList()
-            .ForEach(application =>
-            {
-                var postedSelection = postedSelections[application.OrganisationApplicationId];
-                application.GiveAccess = postedSelection.GiveAccess;
-                if (application.AllowsMultipleRoleAssignments)
-                {
-                    application.SelectedRoleIds = postedSelection.SelectedRoleIds;
-                    application.SelectedRoleId = postedSelection.SelectedRoleIds.Count > 0
-                        ? postedSelection.SelectedRoleIds[0]
-                        : null;
-                }
-                else
-                {
-                    application.SelectedRoleId = postedSelection.SelectedRoleId;
-                }
-            });
 
-        var selectedApplications = viewModel.Applications.Where(a => a.GiveAccess).ToList();
+        var updatedApplications = viewModel.Applications
+            .Select(application =>
+            {
+                if (postedSelections.TryGetValue(application.OrganisationApplicationId, out var postedSelection))
+                {
+                    var giveAccess = postedSelection.GiveAccess || application.IsEnabledByDefault;
+                    if (application.AllowsMultipleRoleAssignments)
+                    {
+                        var selectedRoleIds = postedSelection.SelectedRoleIds ?? new List<int>();
+                        return new ApplicationAccessSelectionViewModel
+                        {
+                            OrganisationApplicationId = application.OrganisationApplicationId,
+                            ApplicationName = application.ApplicationName,
+                            ApplicationDescription = application.ApplicationDescription,
+                            AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                            IsEnabledByDefault = application.IsEnabledByDefault,
+                            GiveAccess = giveAccess,
+                            SelectedRoleId = selectedRoleIds.Count > 0 ? selectedRoleIds[0] : (int?)null,
+                            SelectedRoleIds = selectedRoleIds,
+                            Roles = application.Roles
+                        };
+                    }
+
+                    return new ApplicationAccessSelectionViewModel
+                    {
+                        OrganisationApplicationId = application.OrganisationApplicationId,
+                        ApplicationName = application.ApplicationName,
+                        ApplicationDescription = application.ApplicationDescription,
+                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                        IsEnabledByDefault = application.IsEnabledByDefault,
+                        GiveAccess = giveAccess,
+                        SelectedRoleId = postedSelection.SelectedRoleId,
+                        SelectedRoleIds = application.SelectedRoleIds,
+                        Roles = application.Roles
+                    };
+                }
+
+                return new ApplicationAccessSelectionViewModel
+                {
+                    OrganisationApplicationId = application.OrganisationApplicationId,
+                    ApplicationName = application.ApplicationName,
+                    ApplicationDescription = application.ApplicationDescription,
+                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                    IsEnabledByDefault = application.IsEnabledByDefault,
+                    GiveAccess = application.GiveAccess || application.IsEnabledByDefault,
+                    SelectedRoleId = application.SelectedRoleId,
+                    SelectedRoleIds = application.SelectedRoleIds,
+                    Roles = application.Roles
+                };
+            })
+            .ToList();
+
+        var viewModelUpdated = new ApplicationRolesStepViewModel
+        {
+            OrganisationSlug = viewModel.OrganisationSlug,
+            FirstName = viewModel.FirstName,
+            LastName = viewModel.LastName,
+            Email = viewModel.Email,
+            OrganisationRole = viewModel.OrganisationRole,
+            Applications = updatedApplications
+        };
+
+        var selectedApplications = viewModelUpdated.Applications.Where(a => a.GiveAccess).ToList();
         if (selectedApplications.Count == 0)
         {
             ModelState.AddModelError("applicationSelections", "You must select at least one application and role");
         }
 
-        viewModel.Applications
+        viewModelUpdated.Applications
             .Select((application, index) => new { application, index })
             .Where(item => item.application.GiveAccess && !HasRoleSelected(item.application))
             .ToList()
@@ -232,7 +305,7 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            return View("ApplicationRoles", viewModel);
+            return View("ApplicationRoles", viewModelUpdated);
         }
 
         var assignments = selectedApplications
@@ -262,12 +335,6 @@ public class UsersController(
         if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
         {
             return RedirectToAction(nameof(Add), new { organisationSlug });
-        }
-
-        if (organisationRole.HasValue && state.OrganisationRole != organisationRole.Value)
-        {
-            state = state with { OrganisationRole = organisationRole.Value };
-            await inviteUserStateStore.SetAsync(state);
         }
 
         var selectedAssignments = state.ApplicationAssignments ?? [];
@@ -1433,7 +1500,7 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
-        return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+        return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
@@ -1453,7 +1520,7 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
-            return viewModel is null ? NotFound() : View("RemoveApplicationCheck", viewModel);
+            return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
         }
 
         var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);

@@ -50,7 +50,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 UserDisplayName: $"{invite.FirstName} {invite.LastName}",
                 Email: invite.Email,
                 CurrentRole: invite.OrganisationRole,
-                MemberSinceFormatted: string.Empty,
+                MemberSinceFormatted: invite.InvitedAt.ToString("d MMMM yyyy"),
                 CdpPersonId: null,
                 PendingInviteId: pendingInviteId,
                 RemoveConfirmed: null);

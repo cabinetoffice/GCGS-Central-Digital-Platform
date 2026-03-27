@@ -59,8 +59,15 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Member since</dt>
-                <dd class="govuk-summary-list__value">@Model.MemberSinceFormatted</dd>
+                @if (Model.PendingInviteId.HasValue)
+                {
+                    <dt class="govuk-summary-list__key">Invited on</dt>
+                }
+                else
+                {
+                    <dt class="govuk-summary-list__key">Member since</dt>
+                }
+                <dd class="govuk-summary-list__value">@(string.IsNullOrWhiteSpace(Model.MemberSinceFormatted) ? "—" : Model.MemberSinceFormatted)</dd>
             </div>
         </dl>
 
