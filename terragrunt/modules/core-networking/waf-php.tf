@@ -256,6 +256,169 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  rule {
+    name     = "${local.name_prefix_php}-bot-control-notice"
+    priority = 5
+
+    override_action {
+      none {}
+    }
+
+    statement {
+      managed_rule_group_statement {
+        name        = "AWSManagedRulesBotControlRuleSet"
+        vendor_name = "AWS"
+
+        rule_action_override {
+          name = "CategoryAI"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryAdvertising"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryArchiver"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryContentFetcher"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryLinkChecker"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryMiscellaneous"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryMonitoring"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryPagePreview"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryScrapingFramework"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategorySearchEngine"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategorySecurity"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategorySeo"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategorySocialMedia"
+          action_to_use {
+            block {}
+          }
+        }
+        rule_action_override {
+          name = "CategoryWebhooks"
+          action_to_use {
+            block {}
+          }
+        }
+
+        scope_down_statement {
+          regex_match_statement {
+            regex_string = local.waf_php_notice_paths_all
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-bot-control-notice"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "${local.name_prefix_php}-block-verified-bots-notice"
+    priority = 7
+
+    action {
+      block {}
+    }
+
+    statement {
+      and_statement {
+        statement {
+          regex_match_statement {
+            regex_string = local.waf_php_notice_paths_all
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+
+        statement {
+          label_match_statement {
+            scope = "LABEL"
+            key   = "awswaf:managed:aws:bot-control:bot:verified"
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-block-verified-bots-notice"
+      sampled_requests_enabled   = true
+    }
+  }
+
   dynamic "rule" {
     for_each = local.waf_rule_sets_priority_blockers
     content {

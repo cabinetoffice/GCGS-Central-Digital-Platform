@@ -10,6 +10,14 @@ output "ecs_alb_dns_name" {
   value = aws_lb.ecs.dns_name
 }
 
+output "cloudfront_fts_downloads_domain_name" {
+  value = var.cloudfront_downloads_enabled ? module.cloudfront_fts_downloads.cloudfront_domain_name : null
+}
+
+output "cloudfront_cfs_downloads_domain_name" {
+  value = var.cloudfront_downloads_enabled ? module.cloudfront_cfs_downloads.cloudfront_domain_name : null
+}
+
 output "ecs_cluster_id" {
   value = local.main_cluster_id
 }

@@ -94,24 +94,29 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "cloudfront:CreateDistribution",
+      "cloudfront:CreateRealtimeLogConfig",
       "cloudfront:CreateOriginAccessControl",
       "cloudfront:CreateResponseHeadersPolicy",
       "cloudfront:DeleteDistribution",
+      "cloudfront:DeleteRealtimeLogConfig",
       "cloudfront:DeleteOriginAccessControl",
       "cloudfront:DeleteResponseHeadersPolicy",
       "cloudfront:GetDistribution",
       "cloudfront:GetDistributionConfig",
       "cloudfront:GetOriginAccessControl",
+      "cloudfront:GetRealtimeLogConfig",
       "cloudfront:GetResponseHeadersPolicy",
       "cloudfront:GetResponseHeadersPolicyConfig",
       "cloudfront:ListDistributions",
       "cloudfront:ListOriginAccessControls",
+      "cloudfront:ListRealtimeLogConfigs",
       "cloudfront:ListResponseHeadersPolicies",
       "cloudfront:ListTagsForResource",
       "cloudfront:TagResource",
       "cloudfront:UntagResource",
       "cloudfront:UpdateDistribution",
       "cloudfront:UpdateOriginAccessControl",
+      "cloudfront:UpdateRealtimeLogConfig",
       "cloudfront:UpdateResponseHeadersPolicy",
     ]
     effect = "Allow"
@@ -119,6 +124,25 @@ data "aws_iam_policy_document" "terraform_global" {
       "*"
     ]
     sid = "ManageCloudfront"
+  }
+
+  statement {
+    actions = [
+      "kinesis:AddTagsToStream",
+      "kinesis:CreateStream",
+      "kinesis:DeleteStream",
+      "kinesis:DescribeStreamSummary",
+      "kinesis:IncreaseStreamRetentionPeriod",
+      "kinesis:DescribeStream",
+      "kinesis:ListStreams",
+      "kinesis:ListTagsForStream",
+      "kinesis:RemoveTagsFromStream"
+    ]
+    effect = "Allow"
+    resources = [
+      "*"
+    ]
+    sid = "ManageKinesis"
   }
 
   statement {
