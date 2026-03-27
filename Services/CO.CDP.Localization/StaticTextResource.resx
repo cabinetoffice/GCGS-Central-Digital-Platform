@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!--
-    Microsoft ResX Schema
-
+  <!-- 
+    Microsoft ResX Schema 
+    
     Version 2.0
-
-    The primary goals of this format is to allow a simple XML format
-    that is mostly human readable. The generation and parsing of the
-    various data types are done through the TypeConverter classes
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
     associated with the data types.
-
+    
     Example:
-
+    
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,80 +26,79 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-
-    There are any number of "resheader" rows that contain simple
+                
+    There are any number of "resheader" rows that contain simple 
     name/value pairs.
-
-    Each data row contains a name, and value. The row also contains a
-    type or mimetype. Type corresponds to a .NET class that support
-    text/value conversion through the TypeConverter architecture.
-    Classes that don't support this are serialized and stored with the
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
     mimetype set.
-
-    The mimetype is used for serialized objects, and tells the
-    ResXResourceReader how to depersist the object. This is currently not
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
     extensible. For a given mimetype the value must be set accordingly:
-
-    Note - application/x-microsoft.net.object.binary.base64 is the format
-    that the ResXResourceWriter will generate, however the reader can
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
     read any of the formats listed below.
-
+    
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-
+    
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with
+    value   : The object must be serialized with 
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array
+    value   : The object must be serialized into a byte array 
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-              xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -113,20 +112,16 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral,
-      PublicKeyToken=b77a5c561934e089
-    </value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SupplierInformationStatus_StepStatus_NotStarted" xml:space="preserve">
-    <value>Not&#160;started</value>
+    <value>Not started</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_InProcess" xml:space="preserve">
-    <value>In&#160;progress</value>
+    <value>In progress</value>
   </data>
   <data name="SupplierInformationStatus_StepStatus_Completed" xml:space="preserve">
     <value>Completed</value>
@@ -153,18 +148,18 @@
     <value>What supplier information is</value>
   </data>
   <data name="SupplierInformation_WhatSupplierInformationIs_Message" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-body&quot;&gt;Suppliers must provide contracting authorities with certain information under the Procurement Act 2024 if they want to bid on a public procurement. The information is not specific to one bid and can be used repeatedly if it hasn’t changed.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;The supplier information section of this service replaces the supplier questionnaire. It allows suppliers to fill out the required information and create a share code or pdf file to supply to the contracting authority when bidding on a procurement.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If a contracting authority wants more information specific to a procurement, they will include a &lt;a href=&quot;https://www.procurementpathway.civilservice.gov.uk/documents/template/pa-2023-procurement-specific-questionnaire&quot; target=&quot;_blank&quot;&gt;procurement specific questionnaire (opens in new tab)&lt;/a&gt; in the bid pack.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Watch the &lt;a href=&quot;https://www.youtube.com/watch?v=i4ZdbMGRqeQ&quot; target=&quot;_blank&quot;&gt;guide for suppliers video (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
+    <value>&lt;p class="govuk-body"&gt;Suppliers must provide contracting authorities with certain information under the Procurement Act 2024 if they want to bid on a public procurement. The information is not specific to one bid and can be used repeatedly if it hasn’t changed.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;The supplier information section of this service replaces the supplier questionnaire. It allows suppliers to fill out the required information and create a share code or pdf file to supply to the contracting authority when bidding on a procurement.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If a contracting authority wants more information specific to a procurement, they will include a &lt;a href="https://www.procurementpathway.civilservice.gov.uk/documents/template/pa-2023-procurement-specific-questionnaire" target="_blank"&gt;procurement specific questionnaire (opens in new tab)&lt;/a&gt; in the bid pack.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Watch the &lt;a href="https://www.youtube.com/watch?v=i4ZdbMGRqeQ" target="_blank"&gt;guide for suppliers video (opens in a new tab)&lt;/a&gt;.&lt;/p&gt;</value>
   </data>
   <data name="SupplierInformation_WhenToUpdateSupplierInformation_Heading" xml:space="preserve">
     <value>When to update your supplier information</value>
   </data>
   <data name="SupplierInformation_WhenToUpdateSupplierInformation_Message" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-body&quot;&gt;You’ll be asked for your supplier information in the form of a share code or file when you bid for a public procurement.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Your supplier information is saved in this service. You only need to update it when information changes.&lt;/p&gt;
-&lt;div class=&quot;govuk-inset-text&quot;&gt;
+    <value>&lt;p class="govuk-body"&gt;You’ll be asked for your supplier information in the form of a share code or file when you bid for a public procurement.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Your supplier information is saved in this service. You only need to update it when information changes.&lt;/p&gt;
+&lt;div class="govuk-inset-text"&gt;
     You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
 &lt;/div&gt;</value>
   </data>
@@ -172,10 +167,10 @@
     <value>When your information is saved</value>
   </data>
   <data name="SupplierInformation_WhenYourInformationIsSaved_Message" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-body&quot;&gt;You don’t have to enter your supplier information in one go but your information is only saved when you click a ‘save’ button.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;In some sections, you can save after one or 2 pages. In other sections, it may be 10 or more pages before you can save your information.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If you start a section but haven’t clicked the ‘save’ button, your information will be lost if you:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    <value>&lt;p class="govuk-body"&gt;You don’t have to enter your supplier information in one go but your information is only saved when you click a ‘save’ button.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;In some sections, you can save after one or 2 pages. In other sections, it may be 10 or more pages before you can save your information.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you start a section but haven’t clicked the ‘save’ button, your information will be lost if you:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;close your browser&lt;/li&gt;
     &lt;li&gt;navigate away from the service&lt;/li&gt;
     &lt;li&gt;leave the page unattended for more than an hour&lt;/li&gt;
@@ -185,18 +180,18 @@
     <value>The information you need for each section</value>
   </data>
   <data name="SupplierInformation_InformationYouNeed_Message" xml:space="preserve">
-    <value>&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Your organisation&lt;/h3&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Each of these sections within ‘Your organisation’ can be saved independently. You can complete one and save it and then come back to complete another.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Where a question isn’t relevant, you need to answer ‘no’ to complete the section.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;For the whole ‘Your organisation’ section, you’ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+    <value>&lt;h3 class="govuk-heading-m"&gt;Your organisation&lt;/h3&gt;
+&lt;p class="govuk-body"&gt;Each of these sections within ‘Your organisation’ can be saved independently. You can complete one and save it and then come back to complete another.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Where a question isn’t relevant, you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;For the whole ‘Your organisation’ section, you’ll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;the name of your organisation or the name you trade under&lt;/li&gt;
     &lt;li&gt;your organisation’s registered address&lt;/li&gt;
     &lt;li&gt;your business postal address, if different or if you aren’t a registered company&lt;/li&gt;
     &lt;li&gt;a registry number if you have one, for example a Companies House number or a Charity number&lt;/li&gt;
     &lt;li&gt;your VAT number, if you have one&lt;/li&gt;
     &lt;li&gt;whether your organisation is a:&lt;/li&gt;
-    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+    &lt;ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-2"&gt;
         &lt;li&gt;small or medium-sized enterprise (SME)&lt;/li&gt;
         &lt;li&gt;voluntary, community and social enterprise (VCSE)&lt;/li&gt;
         &lt;li&gt;supported employment provider&lt;/li&gt;
@@ -205,28 +200,28 @@
     &lt;li&gt;the legal formation of your company and the law that defines it. For example, a private limited company under the Companies Act 2006.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 class=&quot;govuk-heading-m&quot;&gt;People connected to your organisation&lt;/h3&gt;
+&lt;h3 class="govuk-heading-m"&gt;People connected to your organisation&lt;/h3&gt;
 
-&lt;p class=&quot;govuk-body&quot;&gt;A &#39;connected person&#39; is someone who influences or controls your company. It includes ‘people of significant control’ and any other individual, group or company that has a declarable interest in your business.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;For example, a director, a trustee of a trust, a majority shareholder or a parent or subsidiary company.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If your company isn’t influenced or controlled by anyone you need to answer ‘no’ to complete the section.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;You can only add one connected person at a time. The information you complete will depend on who the ‘person’ is and how they’re connected to your organisation.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;For organisations, you&#39;ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;A 'connected person' is someone who influences or controls your company. It includes ‘people of significant control’ and any other individual, group or company that has a declarable interest in your business.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;For example, a director, a trustee of a trust, a majority shareholder or a parent or subsidiary company.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If your company isn’t influenced or controlled by anyone you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;You can only add one connected person at a time. The information you complete will depend on who the ‘person’ is and how they’re connected to your organisation.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;For organisations, you'll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;the name of the connected organisation&lt;/li&gt;
     &lt;li&gt;its registered address&lt;/li&gt;
     &lt;li&gt;its business postal address, if different&lt;/li&gt;
     &lt;li&gt;the legal formation of the organisation and the law that defines it. For example, a private limited company under the Companies Act 2006.&lt;/li&gt;
     &lt;li&gt;its company number if registered with Companies House, or non-UK equivalent&lt;/li&gt;
     &lt;li&gt;if the organisation is a registered company or any other organisation with significant influence or control, you need:&lt;/li&gt;
-    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+    &lt;ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-2"&gt;
         &lt;li&gt;how the organisation is connected to yours. For example, owns shares or has voting rights.&lt;/li&gt;
         &lt;li&gt;the date it was registered as a person of significant control&lt;/li&gt;
         &lt;li&gt;the name of the register&lt;/li&gt;
     &lt;/ul&gt;
 &lt;/ul&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;For individuals or trustees, you&#39;ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;For individuals or trustees, you'll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;their name, date of birth and nationality&lt;/li&gt;
     &lt;li&gt;their business postal address&lt;/li&gt;
     &lt;li&gt;how they are connected to your organisation. For example, owns shares or has voting rights.&lt;/li&gt;
@@ -234,33 +229,33 @@
     &lt;li&gt;the name of the register&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Any general qualifications your organisation holds&lt;/h3&gt;
+&lt;h3 class="govuk-heading-m"&gt;Any general qualifications your organisation holds&lt;/h3&gt;
 
-&lt;p class=&quot;govuk-body&quot;&gt;If you don&#39;t have any general qualifications to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If you do have any general qualification to share, you&#39;ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;If you don't have any general qualifications to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you do have any general qualification to share, you'll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;the qualification name&lt;/li&gt;
     &lt;li&gt;who awarded the qualification&lt;/li&gt;
     &lt;li&gt;the date it was awarded&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Contracting authorities will usually ask for qualifications that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Contracting authorities will usually ask for qualifications that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
 
-&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Any general trade assurances your oganisation holds&lt;/h3&gt;
+&lt;h3 class="govuk-heading-m"&gt;Any general trade assurances your oganisation holds&lt;/h3&gt;
 
-&lt;p class=&quot;govuk-body&quot;&gt;If you don&#39;t have any general trade assurances to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If you do have any general trade assurances to share, you&#39;ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;If you don't have any general trade assurances to share you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you do have any general trade assurances to share, you'll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;the name of organisation that awarded the trade assurance&lt;/li&gt;
     &lt;li&gt;a reference number if you have one&lt;/li&gt;
     &lt;li&gt;the date it was awarded&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Contracting authorities will usually ask for trade assurances that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Contracting authorities will usually ask for trade assurances that are specific to a procurement in the bid pack with instructions on how to provide the information.&lt;/p&gt;
 
-&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Anything that may exclude your organisation from procurement &lt;/h3&gt;
+&lt;h3 class="govuk-heading-m"&gt;Anything that may exclude your organisation from procurement &lt;/h3&gt;
 
-&lt;p class=&quot;govuk-body&quot;&gt;If there isn’t anything that may exclude your organisation from public procurement you need to answer ‘no’ to complete the section.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If you have an exclusion to declare, you&#39;ll need:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;If there isn’t anything that may exclude your organisation from public procurement you need to answer ‘no’ to complete the section.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;If you have an exclusion to declare, you'll need:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;to say whether the exclusion happened in the UK or not&lt;/li&gt;
     &lt;li&gt;what the exclusionary penalty, conviction or other event was&lt;/li&gt;
     &lt;li&gt;who the exclusion applied to. For example, your organisation or a person connected to your organisation.&lt;/li&gt;
@@ -272,16 +267,16 @@
     &lt;li&gt;the date the circumstances that led to the exclusion ended&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h3 class=&quot;govuk-heading-m&quot;&gt;Your organisation’s recent financial information&lt;/h3&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If your accounts were audited:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;h3 class="govuk-heading-m"&gt;Your organisation’s recent financial information&lt;/h3&gt;
+&lt;p class="govuk-body"&gt;If your accounts were audited:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;upload one or more files with your most recent 2 financial years, or most recent year if you don’t have 2&lt;/li&gt;
     &lt;li&gt;the financial year end date of the information uploaded &lt;/li&gt;
 &lt;/ul&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;If your accounts were not audited:&lt;/p&gt;
-&lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+&lt;p class="govuk-body"&gt;If your accounts were not audited:&lt;/p&gt;
+&lt;ul class="govuk-list govuk-list--bullet"&gt;
     &lt;li&gt;upload one or more files with account or financial statements for:&lt;/li&gt;
-    &lt;ul class=&quot;govuk-list govuk-list--bullet govuk-!-margin-bottom-2&quot;&gt;
+    &lt;ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-2"&gt;
         &lt;li&gt;your most recent 2 financial years, or your most recent year if you don’t have 2&lt;/li&gt;
         &lt;li&gt;a statement showing your organisation’s financial standing if you do not have a full year of accounts&lt;/li&gt;
     &lt;/ul&gt;
@@ -292,12 +287,12 @@
     <value>How to share your supplier information</value>
   </data>
   <data name="SupplierInformation_HowToShare_Message" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-body&quot;&gt;When you bid on a public procurement, you’ll be asked to provide a share code or pdf file of your supplier information.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;When you create a share code a snapshot of your supplier information is stored against the code, and a pdf file of the information is available to download.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;The contracting authority will specify in the bid pack how they want to receive your supplier information.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;They may ask you to put the share code into their e-procurement system, also called an eSender. For example, Atamis or Jaggaer.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;Alternatively, you may be asked to email a pdf file of your supplier information which you can download from the ‘Declare and create a share code’ section.&lt;/p&gt;
-&lt;div class=&quot;govuk-inset-text&quot;&gt;
+    <value>&lt;p class="govuk-body"&gt;When you bid on a public procurement, you’ll be asked to provide a share code or pdf file of your supplier information.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;When you create a share code a snapshot of your supplier information is stored against the code, and a pdf file of the information is available to download.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;The contracting authority will specify in the bid pack how they want to receive your supplier information.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;They may ask you to put the share code into their e-procurement system, also called an eSender. For example, Atamis or Jaggaer.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;Alternatively, you may be asked to email a pdf file of your supplier information which you can download from the ‘Declare and create a share code’ section.&lt;/p&gt;
+&lt;div class="govuk-inset-text"&gt;
     You can update your supplier information whenever it changes but you must create a new share code and file to share the new information.
 &lt;/div&gt;</value>
   </data>
@@ -961,8 +956,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_EnforcedBy" xml:space="preserve">
     <value>Enforced by</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompaniesHouseRegistered" xml:space="preserve">
     <value>Companies House registered:</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_CompanyHouseNumber" xml:space="preserve">
@@ -1034,20 +1028,16 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasVotingRightsHint" xml:space="preserve">
     <value>Directly or indirectly holds more than 25% of the voting rights in the company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsLabel" xml:space="preserve">
     <value>Can appoint or remove directors</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_CanAppointOrRemoveDirectorsHint" xml:space="preserve">
     <value>Directly or indirectly holds the right to appoint or remove a majority of the company's board of directors</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlLabel" xml:space="preserve">
     <value>Has other significant influence or control</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_HasOtherSignificantInfluenceOrControlHint" xml:space="preserve">
     <value>Has the right to exercise, or exercises, significant influence or control over the company. As defined in the &lt;a class="govuk-link" href="https://www.gov.uk/government/publications/guidance-to-the-people-with-significant-control-requirements-for-companies-and-limited-liability-partnerships" target="_blank"&gt;person of significant control (PSC) guidance&lt;/a&gt;.</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityControlCondition_NoneApplyLabel" xml:space="preserve">
@@ -1089,8 +1079,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameLabel" xml:space="preserve">
     <value>Register name</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_OtherRegisterNameRequiredError" xml:space="preserve">
     <value>Enter register name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyRegisterName_Heading" xml:space="preserve">
@@ -1120,8 +1109,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityLawRegister_LawEnforcesHint" xml:space="preserve">
     <value>For example, Companies Act 2006</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_LegalFormNameRequiredError" xml:space="preserve">
     <value>Enter the legal form name</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityLegalFormQuestion_Heading" xml:space="preserve">
@@ -1142,27 +1130,22 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_SelectCategoryError" xml:space="preserve">
     <value>Select the category</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompany" xml:space="preserve">
     <value>registered company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_RegisteredCompanyOrEquivalent" xml:space="preserve">
     <value>registered company or equivalent</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_Director" xml:space="preserve">
     <value>director or organisation with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_ParentOrSubCompany" xml:space="preserve">
     <value>parent or subsidiary company</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_CompanyTakenOver" xml:space="preserve">
     <value>a company your organisation has taken over</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOrganisationCategory_Option_OrgWithSignificantControl" xml:space="preserve">
     <value>any other organisation with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPostalSameAsRegisteredAddress_PageTitle" xml:space="preserve">
@@ -1252,8 +1235,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_Hint" xml:space="preserve">
     <value>In the UK this is defined by &lt;a class="govuk-link" href="https://www.legislation.gov.uk/ukpga/2006/46/section/790C" target="_blank"&gt;section 790C(4) of the Companies Act 2006 (opens in new tab)&lt;/a&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredLabel" xml:space="preserve">
     <value>Date registered</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityRegistrationDateQuestion_DateRegisteredHint" xml:space="preserve">
@@ -1334,8 +1316,7 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_Director" xml:space="preserve">
     <value>Director or individual with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_IndividualWithSignificantControl"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_IndividualWithSignificantControl" xml:space="preserve">
     <value>Any other individual with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_SelectCategoryError" xml:space="preserve">
@@ -1365,12 +1346,10 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_Hint" xml:space="preserve">
     <value>Is the 'connected person' registered with a similar non-UK body that incorporates companies?</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberLabel" xml:space="preserve">
     <value>Company registration number</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityOverseasCompanyQuestion_CompanyRegistrationNumberRequiredError" xml:space="preserve">
     <value>Enter the overseas company registration number</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityPersonType_PageTitle" xml:space="preserve">
@@ -1454,16 +1433,13 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompanyName" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the company name&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredAddress" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt;the registered address&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangePostalAddress" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the postal address&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalFormAndLaw" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the legal form and law&lt;/span&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeLegalForm" xml:space="preserve">
@@ -1472,24 +1448,19 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeEnforcedBy" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the "enforced by" law&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeCompaniesHouseRegistered" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the Companies House registration status and number&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeOverseasEquivalent" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered with overseas equivalent&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeControlConditions" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the conditions of control&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisteredDate" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the registered date&lt;/span&gt;</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeInsolvencyDate" xml:space="preserve">
     <value>Change&lt;span class="govuk-visually-hidden"&gt; the insolvency date&lt;/span&gt;</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCheckAnswersOrganisation_ChangeRegisterName" xml:space="preserve">
@@ -1504,12 +1475,10 @@
   <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC" xml:space="preserve">
     <value>person with significant control</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Director" xml:space="preserve">
     <value>director or individual with the same responsibilities</value>
   </data>
-  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual"
-        xml:space="preserve">
+  <data name="Supplier_ConnectedEntity_ConnectedEntityIndividualCategory_CategoryOption_PSC_Individual" xml:space="preserve">
     <value>any other individual with significant influence or control</value>
   </data>
   <data name="Supplier_ConnectedEntity_ConnectedEntityCompanyInsolvencyDate_DayRequiredError" xml:space="preserve">
@@ -1830,12 +1799,10 @@
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_Hint" xml:space="preserve">
     <value>You can &lt;a class="govuk-link" href="https://find-and-update.company-information.service.gov.uk/" target="_blank"&gt;find your company number on Companies House (opens in a new tab)&lt;/a&gt;. It is made up of 8 letters or numbers. For example, 12345678, SC123456 or SL12345A.</value>
   </data>
-  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner"
-        xml:space="preserve">
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyNotFound_NotificationBanner" xml:space="preserve">
     <value>We cannot find your company number on Companies House. If it’s correct, continue and enter your details manually.</value>
   </data>
-  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner"
-        xml:space="preserve">
+  <data name="OrganisationRegistration_CompanyHouseNumberQuestion_CompanyAlreadyRegistered_NotificationBanner" xml:space="preserve">
     <value>An organisation with this company number already exists. Change the company number or &lt;a class="govuk-notification-banner__link" href="/registration/{organisationIdentifier}/join-organisation"&gt;request to join {organisationName}.&lt;/a&gt;</value>
   </data>
   <data name="OrganisationRegistration_CompanyHouseNumberQuestion_ValidationErrorMessage" xml:space="preserve">
@@ -2039,7 +2006,7 @@
     <value>You can only add an immediate child organisation, which is the next level down in your organisation's hierarchy</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Link" xml:space="preserve">
-    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href=&quot;/organisation/{0}/buyer/search&quot; target=&quot;_blank&quot;&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
+    <value>If you do not know the child organisation's PPON, you can find it on the &lt;a class="govuk-link" href="/organisation/{0}/buyer/search" target="_blank"&gt;Search Registry of PPON (opens in new tab)&lt;/a&gt;</value>
   </data>
   <data name="BuyerParentChildRelationship_SearchPage_Error" xml:space="preserve">
     <value>Enter the name or PPON of your child organisation</value>
@@ -2588,12 +2555,10 @@
   <data name="PdfGenerator_BasicInformation_WebsiteAddress" xml:space="preserve">
     <value>Website address</value>
   </data>
-  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities"
-        xml:space="preserve">
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_DirectorOrIndividualSameResponsibilities" xml:space="preserve">
     <value>Director or individual with same responsibilities</value>
   </data>
-  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence"
-        xml:space="preserve">
+  <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_OtherIndividualWithSignificantInfluence" xml:space="preserve">
     <value>Other individual with significant influence or control</value>
   </data>
   <data name="PdfGenerator_ConnectedEntityIndividualAndTrustCategory_PersonWithSignificantControl" xml:space="preserve">
@@ -3110,9 +3075,6 @@
   <data name="Supplier_LegalFormSelectOrganisation_CIC_Hint" xml:space="preserve">
     <value>Registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
   </data>
-  <data name="Supplier_LegalFormSelectOrganisation_CIC_Hint" xml:space="preserve">
-    <value>Registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
-  </data>
   <data name="Supplier_LegalFormSelectOrganisation_CIC_NonUK_Hint" xml:space="preserve">
     <value>In the UK, registered under the Companies (Audit, Investigations and Community Enterprise) Act 2004</value>
   </data>
@@ -3207,7 +3169,7 @@
     <value>Check answers</value>
   </data>
   <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
-    <value>Check your answers</value>
+    <value>Consortium details</value>
   </data>
   <data name="Consortium_CheckAnswer_Name_list" xml:space="preserve">
     <value>Consortium name</value>
@@ -3217,9 +3179,6 @@
   </data>
   <data name="Consortium_CheckAnswer_EmailAddress_list" xml:space="preserve">
     <value>Email address</value>
-  </data>
-  <data name="Consortium_ConsortiumOverview_Heading" xml:space="preserve">
-    <value>Consortium details</value>
   </data>
   <data name="Consortium_ConsortiumOverview_Address_list" xml:space="preserve">
     <value>Address</value>
@@ -3284,8 +3243,7 @@
   <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Heading" xml:space="preserve">
     <value>Registration number</value>
   </data>
-  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage"
-        xml:space="preserve">
+  <data name="OrganisationRegistration_InternationalIdentifier_RegistrationNumber_Required_ErrorMessage" xml:space="preserve">
     <value>Enter the number</value>
   </data>
   <data name="Organisation_OrganisationIdentification_NonUk_Link" xml:space="preserve">
@@ -3442,8 +3400,8 @@
     <value>How to create a consortium for joint bids</value>
   </data>
   <data name="Organisation_CreateConsortiumHowToSummaryDetail" xml:space="preserve">
-    <value>&lt;p class=&quot;govuk-body&quot;&gt;Create a consoritium if you want to join with one or more suppliers to bid on a procurement together.&lt;/p&gt;
-&lt;p class=&quot;govuk-body&quot;&gt;To create a consortium, you&#39;ll need your most recent share code and the most recent share codes for the other suppliers.&lt;/p&gt;</value>
+    <value>&lt;p class="govuk-body"&gt;Create a consoritium if you want to join with one or more suppliers to bid on a procurement together.&lt;/p&gt;
+&lt;p class="govuk-body"&gt;To create a consortium, you'll need your most recent share code and the most recent share codes for the other suppliers.&lt;/p&gt;</value>
   </data>
   <data name="Cookies_ChooseCookiePreferences" xml:space="preserve">
     <value>Choose whether you accept cookies that measure website use</value>
@@ -3769,7 +3727,6 @@
   <data name="Users_SendEmail_Button" xml:space="preserve">
     <value>Send email</value>
   </data>
-
   <data name="Users_ViewAdmins_Title" xml:space="preserve">
     <value>Admins</value>
   </data>
@@ -4265,14 +4222,11 @@
   <data name="Global_Buyer" xml:space="preserve">
     <value>Buyer</value>
   </data>
-  <data name ="Global_Supplier" xml:space="preserve">
+  <data name="Global_Supplier" xml:space="preserve">
     <value>Supplier</value>
   </data>
   <data name="Global_ProcuringEntity" xml:space="preserve">
     <value>Procuring Entity</value>
-  </data>
-  <data name="Global_Supplier" xml:space="preserve">
-    <value>Supplier</value>
   </data>
   <data name="Global_Tenderer" xml:space="preserve">
     <value>Tenderer</value>
@@ -4317,19 +4271,19 @@
     <value>We've found &lt;b&gt;{0}&lt;/b&gt; organisations</value>
   </data>
   <data name="PponSearch_NoResults" xml:space="preserve">
-  <value>
-    &lt;h2 class=&quot;govuk-heading-l&quot;&gt;Search results&lt;/h2&gt;
-    &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;0&lt;/span&gt; organisations found
+    <value>
+    &lt;h2 class="govuk-heading-l"&gt;Search results&lt;/h2&gt;
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;0&lt;/span&gt; organisations found
     &lt;/p&gt;
-    &lt;p class=&quot;govuk-body&quot;&gt;
-      &lt;span class=&quot;govuk-!-font-weight-bold&quot;&gt;There are no matching results.&lt;/span&gt;
+    &lt;p class="govuk-body"&gt;
+      &lt;span class="govuk-!-font-weight-bold"&gt;There are no matching results.&lt;/span&gt;
     &lt;/p&gt;
-    &lt;p class=&quot;govuk-body&quot;&gt;
+    &lt;p class="govuk-body"&gt;
       Double-check your spelling to improve your search results.
     &lt;/p&gt;
   </value>
-</data>
+  </data>
   <data name="PponSearch_Ppon_Desc_Hint_01" xml:space="preserve">
     <value>
       &lt;p class="govuk-body"&gt;
@@ -4341,7 +4295,7 @@
   </data>
   <data name="PponSearch_Ppon_Desc_Hint_02" xml:space="preserve">
     <value>
-      &lt;p class=&quot;govuk-body&quot;&gt;
+      &lt;p class="govuk-body"&gt;
         Your PPON is a combination of 12 letters and numbers, separated by hyphens. For example, EFGH-1234-IJKL.
       &lt;/p&gt;
     </value>
@@ -4351,9 +4305,6 @@
   </data>
   <data name="PponSearch_Tenderer_Details_Content" xml:space="preserve">
     <value>Tenderer means a supplier registered on Find a Tender.</value>
-  </data>
-  <data name="Global_Search" xml:space="preserve">
-    <value>Search</value>
   </data>
   <data name="Global_Sort_Results" xml:space="preserve">
     <value>Sort results</value>
@@ -4385,115 +4336,106 @@
   <data name="Global_EnterSearchTerm" xml:space="preserve">
     <value>Enter a search term</value>
   </data>
-  <data name="BuyerView_Title">
+  <data name="BuyerView_Title" xml:space="preserve">
     <value>Buyer View</value>
   </data>
-  <data name="BuyerView_Heading">
+  <data name="BuyerView_Heading" xml:space="preserve">
     <value>Buyer View</value>
   </data>
-  <data name="BuyerView_Body">
+  <data name="BuyerView_Body" xml:space="preserve">
     <value>Find out more about your organisation details or undertake other actions to facilitate your procurement process.</value>
   </data>
-  <data name="BuyerView_TileOne_Title">
+  <data name="BuyerView_TileOne_Title" xml:space="preserve">
     <value>View your organisation details</value>
   </data>
-  <data name="BuyerView_TileOne_Body">
+  <data name="BuyerView_TileOne_Body" xml:space="preserve">
     <value>View and manage the details of your organisation. Supplier organisations can view and manage supplier information.</value>
   </data>
-  <data name="BuyerView_TileTwo_Title">
+  <data name="BuyerView_TileTwo_Title" xml:space="preserve">
     <value>Public procurement organisation number (PPON) register</value>
   </data>
-  <data name="BuyerView_TileTwo_Body">
+  <data name="BuyerView_TileTwo_Body" xml:space="preserve">
     <value>Search for an organisation’s PPON number.</value>
   </data>
-  <data name="BuyerView_TileThree_Title">
+  <data name="BuyerView_TileThree_Title" xml:space="preserve">
     <value>Statement of Work Assessment tool</value>
   </data>
   <data name="BuyerView_TileThree_Body" xml:space="preserve">
     <value>Review Statements of Work to make sure they meet procurement and commercial quality standards.</value>
   </data>
-  <data name="BuyerView_TileFour_Title">
+  <data name="BuyerView_TileFour_Title" xml:space="preserve">
     <value>Register of Commercial Tools</value>
   </data>
-  <data name="BuyerView_TileFour_Body">
+  <data name="BuyerView_TileFour_Body" xml:space="preserve">
     <value>Search for frameworks and dynamic markets.</value>
   </data>
-  <data name="BuyerView_TileFive_Title">
+  <data name="BuyerView_TileFive_Title" xml:space="preserve">
     <value>Publish and update your payments</value>
   </data>
-  <data name="BuyerView_TileFive_Body">
+  <data name="BuyerView_TileFive_Body" xml:space="preserve">
     <value>For public contracts that start on 1 April 2026.</value>
   </data>
   <data name="Global_Decimal_InvalidError" xml:space="preserve">
     <value>Enter a valid number</value>
   </data>
-  <data name="OrganisationHome_Caption">
+  <data name="OrganisationHome_Caption" xml:space="preserve">
     <value>Organisation home</value>
   </data>
-  <data name="OrganisationHome_Body">
+  <data name="OrganisationHome_Body" xml:space="preserve">
     <value>Information and tools supporting public procurement.</value>
   </data>
-  <data name="OrganisationHome_TileOne_Title">
+  <data name="OrganisationHome_TileOne_Title" xml:space="preserve">
     <value>Registered organisation details</value>
   </data>
-  <data name="OrganisationHome_TileOne_Body">
+  <data name="OrganisationHome_TileOne_Body" xml:space="preserve">
     <value>View or update your organisation's name, address and other basic details, or manage users and API keys.</value>
   </data>
-  <data name="OrganisationHome_TileTwo_Title">
+  <data name="OrganisationHome_TileTwo_Title" xml:space="preserve">
     <value>Public Procurement Organisation Number (PPON) register</value>
   </data>
-  <data name="OrganisationHome_TileTwo_Body">
+  <data name="OrganisationHome_TileTwo_Body" xml:space="preserve">
     <value>Find an organisation's PPON.</value>
   </data>
-  <data name="OrganisationHome_TileThree_Title">
+  <data name="OrganisationHome_TileThree_Title" xml:space="preserve">
     <value>Statement of work assessment tool</value>
   </data>
   <data name="OrganisationHome_TileThree_Body" xml:space="preserve">
     <value>Assess statements of work against quality standards.</value>
   </data>
-  <data name="OrganisationHome_TileFour_Title">
+  <data name="OrganisationHome_TileFour_Title" xml:space="preserve">
     <value>Publish and update your payments</value>
   </data>
-  <data name="OrganisationHome_TileFour_Body">
+  <data name="OrganisationHome_TileFour_Body" xml:space="preserve">
     <value>For public contracts that start on 1 April 2026.</value>
   </data>
-  <data name="OrganisationHome_TileFive_Title">
+  <data name="OrganisationHome_TileFive_Title" xml:space="preserve">
     <value>My notices</value>
   </data>
-  <data name="OrganisationHome_TileFive_Body">
+  <data name="OrganisationHome_TileFive_Body" xml:space="preserve">
     <value>Publish the required notices about tender opportunities, awarded contracts and more.</value>
   </data>
-  <data name="OrganisationHome_TileSix_Title">
+  <data name="OrganisationHome_TileSix_Title" xml:space="preserve">
     <value>Financial Viability Risk Assessment (FVRA) tool</value>
   </data>
-  <data name="OrganisationHome_TileSix_Body">
+  <data name="OrganisationHome_TileSix_Body" xml:space="preserve">
     <value>Set up and share an FVRA with suppliers, assess and quality assure submissions, track progress and assign operational roles.</value>
   </data>
-  <data name="OrganisationHome_TileSeven_Title">
+  <data name="OrganisationHome_TileSeven_Title" xml:space="preserve">
     <value>Supplier information</value>
   </data>
-  <data name="OrganisationHome_TileSeven_Body">
+  <data name="OrganisationHome_TileSeven_Body" xml:space="preserve">
     <value>Share the required information with contracting authorities for above-threshold contracts.</value>
   </data>
-  <data name="OrganisationHome_TileEight_Title">
+  <data name="OrganisationHome_TileEight_Title" xml:space="preserve">
     <value>Financial Viability Risk Assessment (FVRA) tool</value>
   </data>
-  <data name="OrganisationHome_TileEight_Body">
+  <data name="OrganisationHome_TileEight_Body" xml:space="preserve">
     <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
   </data>
-
-  <data name="OrganisationHome_TileEight_Body">
-    <value>Submit assessments, respond to questions from buyers and add guarantors.</value>
-  </data>
-  <data name="OrganisationHome_TileNine_Body">
-    <value>
-      &lt;p class=&quot;govuk-body&quot;&gt;
-        Use this service to find government funding.
-      &lt;/p&gt;
-      &lt;p class=&quot;govuk-body&quot;&gt;
-        You can also use this service to manage grant adverts and applications.
-      &lt;/p&gt;
-    </value>
+  <data name="OrganisationHome_TileNine_Body" xml:space="preserve">
+    <value>&lt;p class="govuk-body"&gt;
+Search for government funding. You can also manage grant adverts and applications.
+&lt;/p&gt;    </value>
   </data>
   <data name="FindAGrant_Title" xml:space="preserve">
     <value>Find a grant</value>
