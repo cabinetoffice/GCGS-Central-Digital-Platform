@@ -7,6 +7,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
     public class UsersQueryService : IUsersQueryService
     {
         private readonly IUserManagementApiAdapter _adapter;
+
         public UsersQueryService(IUserManagementApiAdapter adapter)
         {
             _adapter = adapter;
@@ -26,45 +27,49 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
             var usersTask = _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
             var invitesTask = _adapter.GetInvitesAsync(org.CdpOrganisationGuid, ct);
             var applicationsTask = _adapter.GetApplicationsAsync(org.Id, ct);
-            await Task.WhenAll(usersTask, invitesTask, applicationsTask);
 
-            var users = usersTask.Result ?? new List<OrganisationUserResponse>();
-            var invites = invitesTask.Result ?? new List<PendingOrganisationInviteResponse>();
-            var applications = applicationsTask.Result ?? new List<OrganisationApplicationResponse>();
+            var users = (await usersTask);
+            var invites = (await invitesTask);
+            var applications = (await applicationsTask);
 
             // Apply filters
             IEnumerable<OrganisationUserResponse> filteredUsers = users;
             if (!string.IsNullOrEmpty(role))
             {
-                filteredUsers = filteredUsers.Where(u => string.Equals(u.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase));
-                invites = (invites ?? Enumerable.Empty<PendingOrganisationInviteResponse>())
+                filteredUsers = filteredUsers.Where(u =>
+                    string.Equals(u.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase));
+                invites = (invites)
                     .Where(i => string.Equals(i.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase))
                     .ToList();
             }
+
             if (!string.IsNullOrEmpty(search))
             {
                 var lower = search.ToLowerInvariant();
                 filteredUsers = filteredUsers.Where(u =>
                     ($"{u.FirstName} {u.LastName}".ToLowerInvariant().Contains(lower)) ||
-                    (u.Email?.ToLowerInvariant().Contains(lower) == true));
+                    (u.Email.ToLowerInvariant().Contains(lower) == true));
             }
+
             // Application filter: best-effort match against user's ApplicationRoles (by ApplicationId or ClientId)
             if (!string.IsNullOrEmpty(application))
             {
                 filteredUsers = filteredUsers.Where(u =>
                     (u.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
-                        .Any(ar => string.Equals((ar.ApplicationId ?? ar.OrganisationApplicationId).ToString(), application, StringComparison.OrdinalIgnoreCase)
-                                   || string.Equals(ar.Application?.ClientId, application, StringComparison.OrdinalIgnoreCase)));
+                    .Any(ar => string.Equals((ar.ApplicationId ?? ar.OrganisationApplicationId).ToString(), application,
+                                   StringComparison.OrdinalIgnoreCase)
+                               || string.Equals(ar.Application?.ClientId, application,
+                                   StringComparison.OrdinalIgnoreCase)));
             }
 
             var usersVm = filteredUsers.Select(u => new UserSummaryViewModel(
-                u.CdpPersonId ?? Guid.Empty,
-                null,
-                $"{u.FirstName} {u.LastName}",
-                u.Email,
-                u.OrganisationRole,
-                u.Status,
-                (u.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
+                    u.CdpPersonId ?? Guid.Empty,
+                    null,
+                    $"{u.FirstName} {u.LastName}",
+                    u.Email,
+                    u.OrganisationRole,
+                    u.Status,
+                    (u.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
                     .Select(ar =>
                     {
                         var orgApp = applications.FirstOrDefault(a => a.Id == ar.OrganisationApplicationId);
@@ -76,8 +81,10 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     .ToList()))
                 .ToList();
 
-            var invitesVm = (invites ?? Enumerable.Empty<PendingOrganisationInviteResponse>())
-                .Where(i => string.IsNullOrEmpty(search) || (i.Email.Contains(search, StringComparison.OrdinalIgnoreCase)) || ($"{i.FirstName} {i.LastName}".Contains(search, StringComparison.OrdinalIgnoreCase)))
+            var invitesVm = (invites)
+                .Where(i => string.IsNullOrEmpty(search) ||
+                            (i.Email.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
+                            ($"{i.FirstName} {i.LastName}".Contains(search, StringComparison.OrdinalIgnoreCase)))
                 .Select(i => new UserSummaryViewModel(
                     null,
                     i.CdpPersonInviteGuid,
@@ -86,17 +93,19 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     i.OrganisationRole,
                     i.Status,
                     (i.ApplicationAssignments ?? Enumerable.Empty<InviteApplicationAssignmentResponse>())
-                        .Select(ar =>
-                        {
-                            var orgApp = applications.FirstOrDefault(a => a.Id == ar.OrganisationApplicationId);
-                            var appName = !string.IsNullOrEmpty(ar.ApplicationName) ? ar.ApplicationName : orgApp?.Application?.Name ?? string.Empty;
-                            var appSlug = orgApp?.Application?.ClientId ?? string.Empty;
-                            return new UserApplicationAccessViewModel(appName, appSlug, string.Empty);
-                        })
-                        .ToList()))
+                    .Select(ar =>
+                    {
+                        var orgApp = applications.FirstOrDefault(a => a.Id == ar.OrganisationApplicationId);
+                        var appName = !string.IsNullOrEmpty(ar.ApplicationName)
+                            ? ar.ApplicationName
+                            : orgApp?.Application?.Name ?? string.Empty;
+                        var appSlug = orgApp?.Application?.ClientId ?? string.Empty;
+                        return new UserApplicationAccessViewModel(appName, appSlug, string.Empty);
+                    })
+                    .ToList()))
                 .ToList();
 
-            var appsVm = (applications ?? Enumerable.Empty<OrganisationApplicationResponse>())
+            var appsVm = (applications)
                 .Select(a => new ApplicationViewModel(
                     a.Application?.Id ?? 0,
                     a.Application?.ClientId ?? string.Empty,
@@ -118,7 +127,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 role,
                 application,
                 search,
-                users.Count + (invitesTask.Result?.Count ?? 0)
+                users.Count() + invites.Count()
             );
         }
     }
@@ -126,6 +135,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
     public class UserDetailsQueryService : IUserDetailsQueryService
     {
         private readonly IUserManagementApiAdapter _adapter;
+
         public UserDetailsQueryService(IUserManagementApiAdapter adapter)
         {
             _adapter = adapter;
@@ -142,31 +152,42 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
             if (user == null) return null;
             // Map user to UserDetailsViewModel and include application access details
             var applications = await _adapter.GetApplicationsAsync(org.Id, ct);
-            var appLookup = (applications ?? Enumerable.Empty<OrganisationApplicationResponse>())
+            var appLookup = applications
                 .ToDictionary(a => a.Id, a => a);
 
             var appDetails = (user.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
                 .Select(ar =>
                 {
                     appLookup.TryGetValue(ar.OrganisationApplicationId, out var orgApp);
+                    var appClientId = orgApp?.Application?.ClientId ?? string.Empty;
+                    var permissions = (ar.Roles ?? Enumerable.Empty<RoleResponse>())
+                        .SelectMany(r => r.Permissions ?? Enumerable.Empty<PermissionResponse>())
+                        .Select(p => p.Name)
+                        .Distinct()
+                        .ToList();
+
+                    var assignedByEmail = string.IsNullOrWhiteSpace(ar.AssignedBy) ? "System" : ar.AssignedBy;
+
                     return new UserApplicationAccessDetailViewModel(
                         ar.OrganisationApplicationId,
+                        appClientId,
                         orgApp?.Application?.Name ?? string.Empty,
                         orgApp?.Application?.Description ?? string.Empty,
-                        (IReadOnlyList<string>)(new List<string>()),
+                        permissions,
                         ar.AssignedAt ?? ar.CreatedAt,
-                        ar.AssignedBy ?? string.Empty,
+                        assignedByEmail,
                         ar.Roles?.FirstOrDefault()?.Name ?? string.Empty);
 
-                }).ToList();
+                })
+                .ToList();
 
             return new UserDetailsViewModel(
                 org,
                 user.CdpPersonId ?? Guid.Empty,
-                user.FirstName + " " + user.LastName,
+                $"{user.FirstName} {user.LastName}",
                 user.Email,
                 user.OrganisationRole,
-                user.JoinedAt?.ToString("MMMM dd, yyyy") ?? "Unknown",
+                user.JoinedAt?.ToString("dd MMMM yyyy") ?? "Unknown",
                 appDetails
             );
         }
@@ -191,7 +212,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 OrganisationSlug = organisationSlug,
                 UserDisplayName = $"{user.FirstName} {user.LastName}",
                 Email = user.Email,
-                ApplicationName = app.Application.Name ?? string.Empty,
+                ApplicationName = app.Application.Name,
                 CdpPersonId = cdpPersonId
             };
         }

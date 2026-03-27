@@ -5,7 +5,7 @@
     ViewData["Title"] = "Manage users";
     var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
     string? organisationBackUrl = null;
-    if (Model?.OrganisationGuid.HasValue == true)
+    if (Model.OrganisationGuid.HasValue)
     {
         organisationBackUrl = SirsiUrlService.BuildAuthenticatedUrl("/organisation/" + Model.OrganisationGuid.Value);
     }
@@ -69,7 +69,7 @@
                            id="user-search"
                            name="search"
                            type="text"
-                           value="@Model.SearchTerm"
+                           value="@(Model.SearchTerm ?? string.Empty)"
                            placeholder="e.g. name or email">
 
                     <button type="submit" class="govuk-button search-button govuk-!-width-auto" data-module="govuk-button" id="search-button">
@@ -87,11 +87,11 @@
     </div>
 </form>
 
-@if (Model.TotalCount == 0)
+@if ((Model?.TotalCount ?? 0) == 0)
 {
     <div class="govuk-inset-text">
         <p>No users found.</p>
-        @if (!string.IsNullOrEmpty(Model.SelectedRole) || !string.IsNullOrEmpty(Model.SelectedApplication) || !string.IsNullOrEmpty(Model.SearchTerm))
+        @if (!string.IsNullOrEmpty(Model?.SelectedRole) || !string.IsNullOrEmpty(Model?.SelectedApplication) || !string.IsNullOrEmpty(Model?.SearchTerm))
         {
             <p>Try:</p>
             <ul class="govuk-list govuk-list--bullet">
@@ -108,9 +108,9 @@
 }
 else
 {
-    <p class="govuk-body">Showing @Model.TotalCount @(Model.TotalCount == 1 ? "user" : "users")</p>
+    <p class="govuk-body">Showing @(Model?.TotalCount ?? 0) @((Model?.TotalCount ?? 0) == 1 ? "user" : "users")</p>
 
-    @foreach (var user in Model.Users)
+    @foreach (var user in Model?.Users ?? new List<UserSummaryViewModel>())
     {
         <div class="govuk-summary-card govuk-!-margin-bottom-6">
             <div class="govuk-summary-card__title-wrapper">

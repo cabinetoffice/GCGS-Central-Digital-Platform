@@ -194,7 +194,7 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
                 AllowsMultipleRoleAssignments = app.Application?.AllowsMultipleRoleAssignments ?? false,
                 HasExistingAccess = hasExistingAccess,
                 GiveAccess = hasExistingAccess,
-                SelectedRoleId = existingRoleIds.Count == 1 ? existingRoleIds[0] : (existingRoleIds.Count == 0 && hasExistingAccess && (availableRoles?.Count == 1) ? availableRoles.FirstOrDefault()?.Id : null),
+                SelectedRoleId = existingRoleIds.Count == 1 ? existingRoleIds[0] : (existingRoleIds.Count == 0 && hasExistingAccess && (availableRoles.Count == 1) ? availableRoles.FirstOrDefault()?.Id : null),
                 SelectedRoleIds = existingRoleIds,
                 Roles = availableRoles
                     .Select(r => new ApplicationRoleOptionViewModel { Id = r.Id, Name = r.Name })
@@ -208,7 +208,7 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
             CdpPersonId = cdpPersonId,
             InviteGuid = inviteGuid,
             UserDisplayName = displayName,
-            Email = email,
+            Email = email ?? string.Empty,
             Applications = appViewModels
         };
     }

@@ -1409,8 +1409,13 @@ public class UsersController(
     [HttpGet("user/{cdpPersonId:guid}/remove/success")]
     public async Task<IActionResult> RemoveSuccess(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        //TODO: move service, use vm
-        return View("RemoveSuccess");
+        var viewModel = await userRemovalService.GetRemoveSuccessViewModelAsync(organisationSlug, cdpPersonId, ct);
+        if (viewModel is null)
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        return View("RemoveSuccess", viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}")]

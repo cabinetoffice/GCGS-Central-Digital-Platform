@@ -600,12 +600,24 @@ public class UsersControllerTests
     {
         var applicationAccess = new[]
         {
-            new UserApplicationAccessDetailViewModel(ApplicationId: 1, ApplicationName: "Edit",
-                ApplicationDescription: "Edit application", Permissions: new[] { "Read", "Write" },
-                AssignedDate: DateTimeOffset.UtcNow, AssignedByEmail: "admin@example.com", ApplicationRole: "Admin"),
-            new UserApplicationAccessDetailViewModel(ApplicationId: 2, ApplicationName: "View",
-                ApplicationDescription: "View application", Permissions: new[] { "Read" },
-                AssignedDate: DateTimeOffset.UtcNow.AddDays(-1), AssignedByEmail: "admin@example.com",
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 1,
+                ApplicationClientId: "Test-Application-Edit",
+                ApplicationName: "Edit",
+                ApplicationDescription: "Edit application",
+                Permissions: new[] { "Read", "Write" },
+                AssignedDate: DateTimeOffset.UtcNow,
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Admin"),
+            new UserApplicationAccessDetailViewModel(
+                ApplicationId: 2,
+                ApplicationClientId: "Test-Application-View",
+                ApplicationName: "View",
+                ApplicationDescription: "View application",
+                Permissions: new[] { "Read" },
+                AssignedDate: DateTimeOffset.UtcNow.AddDays(-1),
+                AssignedByEmail: "admin@example.com",
+                ApplicationRole: "Editor"),
             new UserApplicationAccessDetailViewModel(
                 ApplicationId: 1,
                 ApplicationClientId: "Test-Application-Edit",
@@ -1857,7 +1869,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("RemoveApplication");
+        viewResult.ViewName.Should().Be("RemoveApplicationCheck");
         viewResult.Model.Should().Be(viewModel);
         _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -2000,7 +2012,7 @@ public class UsersControllerTests
             MemberSince = "01 March 2023",
             CdpPersonId = cdpPersonId
         };
-        _userService.Setup(s => s.GetRemoveSuccessViewModelAsync(
+        _userRemovalService.Setup(s => s.GetRemoveSuccessViewModelAsync(
                 organisationSlug,
                 cdpPersonId,
                 It.IsAny<CancellationToken>()))

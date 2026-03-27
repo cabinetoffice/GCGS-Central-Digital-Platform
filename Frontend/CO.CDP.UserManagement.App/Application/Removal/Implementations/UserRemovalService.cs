@@ -76,8 +76,8 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 OrganisationSlug: organisationSlug,
                 UserDisplayName: $"{user.FirstName} {user.LastName}",
                 UserEmail: user.Email,
-                ApplicationName: app.Application.Name ?? string.Empty,
-                ApplicationSlug: app.Application.ClientId ?? string.Empty,
+                ApplicationName: app.Application.Name,
+                ApplicationSlug: app.Application.ClientId,
                 AssignmentId: assignment?.Id ?? 0,
                 OrgId: org.Id,
                 UserPrincipalId: cdpPersonId.ToString(),
@@ -86,6 +86,26 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 AssignedByName: assignment?.AssignedBy,
                 CdpPersonId: cdpPersonId,
                 RevokeConfirmed: null);
+        }
+
+        public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return null;
+
+            var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user is null) return null;
+
+            return new RemoveSuccessViewModel
+            {
+                OrganisationSlug = organisationSlug,
+                UserDisplayName = $"{user.FirstName} {user.LastName}",
+                Email = user.Email,
+                OrganisationName = org.Name,
+                MemberSince = user.JoinedAt?.ToString("dd MMMM yyyy") ?? string.Empty,
+                Role = user.OrganisationRole,
+                CdpPersonId = cdpPersonId
+            };
         }
 
         public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)

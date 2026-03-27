@@ -22,6 +22,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal
         Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
             string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
 
+        Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
+            string organisationSlug, Guid cdpPersonId, CancellationToken ct);
+
         Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
             string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
 
