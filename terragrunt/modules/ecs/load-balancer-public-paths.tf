@@ -18,7 +18,7 @@ resource "aws_lb_listener_rule" "public_domain_fts_path_routing" {
 
   condition {
     path_pattern {
-      values = ["/search/opportunities*", "/search/contracts*", "/contracts/*"]
+      values = ["/search/opportunities*", "/search/contracts*", "/contracts/*", "/api/cpv-codes/search*"]
     }
   }
 
