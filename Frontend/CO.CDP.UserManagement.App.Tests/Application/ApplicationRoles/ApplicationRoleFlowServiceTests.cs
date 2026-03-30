@@ -70,16 +70,36 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
             .ReturnsAsync(MakeUser(personId: personId));
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(appId: 1), MakeApplication(appId: 2)]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(1, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10, "Admin")]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(2, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 2, default))
             .ReturnsAsync([MakeRole(20, "Viewer")]);
 
         var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
 
         result!.Applications.Should().HaveCount(2);
-        _adapter.Verify(a => a.GetApplicationRolesAsync(1, default), Times.Once);
-        _adapter.Verify(a => a.GetApplicationRolesAsync(2, default), Times.Once);
+        _adapter.Verify(a => a.GetApplicationRolesAsync(OrgId, 1, default), Times.Once);
+        _adapter.Verify(a => a.GetApplicationRolesAsync(OrgId, 2, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task GetUserViewModelAsync_UsesOrganisationFilteredRolesAndShowsFewerRolesWhenFiltered()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId: personId));
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
+            .ReturnsAsync([MakeApplication(appId: 1)]);
+        // Simulate backend filtering: only one role for this org
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
+            .ReturnsAsync([MakeRole(10, "Admin")]);
+
+        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+
+        result!.Applications.Should().HaveCount(1);
+        result.Applications[0].Roles.Should().HaveCount(1);
+        _adapter.Verify(a => a.GetApplicationRolesAsync(OrgId, 1, default), Times.Once);
     }
 
     [Fact]
@@ -103,7 +123,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
                 ]));
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(orgAppId: 5, appId: 1)]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(1, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10, "Admin")]);
 
         var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
@@ -122,7 +142,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
             .ReturnsAsync(MakeUser(personId: personId));
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(orgAppId: 5, appId: 1)]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(1, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10)]);
 
         var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);

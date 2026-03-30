@@ -20,7 +20,7 @@ public interface IUserManagementApiAdapter
         int organisationId, CancellationToken ct);
 
     Task<ICollection<RoleResponse>> GetApplicationRolesAsync(
-        int applicationId, CancellationToken ct);
+        int organisationId, int applicationId, CancellationToken ct);
 
     Task<ICollection<OrganisationRoleDefinitionResponse>> GetOrganisationRolesAsync(
         CancellationToken ct);

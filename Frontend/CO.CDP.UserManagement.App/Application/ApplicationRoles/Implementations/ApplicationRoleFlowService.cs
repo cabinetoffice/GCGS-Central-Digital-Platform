@@ -166,7 +166,7 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
         var applications = await _adapter.GetApplicationsAsync(org.Id, ct);
 
         var roleTasks = applications
-            .Select(app => _adapter.GetApplicationRolesAsync(app.ApplicationId, ct))
+            .Select(app => _adapter.GetApplicationRolesAsync(org.Id, app.ApplicationId, ct))
             .ToList();
         await Task.WhenAll(roleTasks);
 

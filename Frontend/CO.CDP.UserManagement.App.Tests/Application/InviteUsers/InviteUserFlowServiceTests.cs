@@ -170,9 +170,9 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         SetupOrg();
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(appId: 1), MakeApplication(appId: 2)]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(1, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(id: 10, name: "Viewer")]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(2, default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 2, default))
             .ReturnsAsync([MakeRole(id: 20, name: "Editor")]);
 
         var result = await _sut.GetApplicationRolesStepAsync(
@@ -203,7 +203,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         SetupOrg();
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(orgAppId: 5)]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(It.IsAny<int>(), default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, It.IsAny<int>(), default))
             .ReturnsAsync([MakeRole(id: 10)]);
         var state = MakeState(assignments:
         [
@@ -241,7 +241,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         SetupOrg();
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([MakeApplication(orgAppId: 5, name: "App One")]);
-        _adapter.Setup(a => a.GetApplicationRolesAsync(It.IsAny<int>(), default))
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, It.IsAny<int>(), default))
             .ReturnsAsync([MakeRole(id: 10, name: "Admin")]);
         var state = MakeState(assignments:
         [

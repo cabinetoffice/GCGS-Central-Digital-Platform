@@ -40,9 +40,9 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404) { return new List<OrganisationApplicationResponse>(); }
     }
 
-    public async Task<ICollection<RoleResponse>> GetApplicationRolesAsync(int applicationId, CancellationToken ct)
+    public async Task<ICollection<RoleResponse>> GetApplicationRolesAsync(int organisationId, int applicationId, CancellationToken ct)
     {
-        try { return (await _client.RolesAllAsync(applicationId, ct)) ?? new List<RoleResponse>(); }
+        try { return (await _client.RolesAll2Async(organisationId, applicationId, null, ct)) ?? new List<RoleResponse>(); }
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404) { return new List<RoleResponse>(); }
     }
 
