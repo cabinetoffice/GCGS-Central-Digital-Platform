@@ -192,6 +192,7 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
                 ApplicationId = app.ApplicationId,
                 ApplicationName = app.Application?.Name ?? string.Empty,
                 AllowsMultipleRoleAssignments = app.Application?.AllowsMultipleRoleAssignments ?? false,
+                IsEnabledByDefault = app.Application?.IsEnabledByDefault ?? false,
                 HasExistingAccess = hasExistingAccess,
                 GiveAccess = hasExistingAccess,
                 SelectedRoleId = existingRoleIds.Count == 1 ? existingRoleIds[0] : (existingRoleIds.Count == 0 && hasExistingAccess && (availableRoles.Count == 1) ? availableRoles.FirstOrDefault()?.Id : null),

@@ -68,6 +68,7 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
                     OrganisationApplicationId = app.Id,
                     ApplicationName = app.Application?.Name ?? string.Empty,
                     AllowsMultipleRoleAssignments = app.Application?.AllowsMultipleRoleAssignments ?? false,
+                    IsEnabledByDefault = app.Application?.IsEnabledByDefault ?? false,
                     Roles = roleTasks[i].Result
                         .Select(r => new ApplicationRoleOptionViewModel { Id = r.Id, Name = r.Name }).ToList()
                 })
@@ -78,6 +79,8 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
                 OrganisationSlug = organisationSlug,
                 FirstName = state.FirstName,
                 LastName = state.LastName,
+                Email = state.Email,
+                OrganisationRole = state.OrganisationRole,
                 Applications = appViewModels
             };
         }
