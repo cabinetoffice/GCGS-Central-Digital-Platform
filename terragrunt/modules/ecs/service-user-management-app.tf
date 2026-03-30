@@ -33,7 +33,7 @@ module "ecs_service_user_management_app" {
   allowed_unauthenticated_paths = local.unauthenticated_assets_paths
   cluster_id                    = local.main_cluster_id
   cpu                           = var.service_configs.user_management_app.cpu
-  desired_count                 = var.environment == "development" ? 1 : 0
+  desired_count                 = var.service_configs.user_management_app.desired_count
   ecs_alb_sg_id                 = var.alb_sg_id
   ecs_listener_arn              = local.main_ecs_listener_arn
   ecs_service_base_sg_id        = var.ecs_sg_id
@@ -53,7 +53,7 @@ module "ecs_service_user_management_app" {
   service_port                  = local.service_ports_by_service[var.service_configs.user_management_app.name]
   tags                          = var.tags
   user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
-  user_pool_client_id           = local.cognito_enabled ? var.user_pool_client_id : null
+  user_pool_client_id           = local.cognito_enabled ? var.user_pool_user_management_client_id : null
   user_pool_domain              = local.cognito_enabled ? var.user_pool_domain : null
   vpc_id                        = var.vpc_id
 }

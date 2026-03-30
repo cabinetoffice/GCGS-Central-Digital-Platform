@@ -8,7 +8,6 @@ output "av_scanner_queue_url" {
   value       = module.av_scanner_queue.queue_url
 }
 
-
 output "entity_verification_queue_arn" {
   description = "ARN of the entity-verification SQS queue"
   value       = module.entity_verification_queue.queue_arn
@@ -29,6 +28,15 @@ output "organisation_queue_url" {
   value       = module.organisation_queue.queue_url
 }
 
+output "queue_names" {
+  value = concat(
+    module.av_scanner_queue.queue_names,
+    module.entity_verification_queue.queue_names,
+    module.organisation_queue.queue_names,
+    module.user_management_queue.queue_names,
+  )
+}
+
 output "user_management_queue_arn" {
   description = "ARN of the user-management SQS queue"
   value       = module.user_management_queue.queue_arn
@@ -37,13 +45,4 @@ output "user_management_queue_arn" {
 output "user_management_queue_url" {
   description = "URL of the user-management SQS queue"
   value       = module.user_management_queue.queue_url
-}
-
-output "queue_names" {
-  value = concat(
-    module.av_scanner_queue.queue_names,
-    module.entity_verification_queue.queue_names,
-    module.organisation_queue.queue_names,
-    module.user_management_queue.queue_names,
-  )
 }

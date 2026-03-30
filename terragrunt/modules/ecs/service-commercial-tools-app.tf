@@ -50,6 +50,14 @@ module "ecs_service_commercial_tools_app" {
   internal_listener_arn         = local.internal_ecs_listener_arn
   is_frontend_app               = false
   listener_priority             = var.service_configs.commercial_tools_app.listener_priority
+  path_routing_rules = [
+    {
+      host_headers  = [var.public_domain]
+      path_patterns = ["/search/commercial-tools", "/commercial-tools/*"]
+      priority      = var.service_configs.commercial_tools_app.listener_priority - 5
+    }
+  ]
+  additional_external_target_groups = []
   memory                        = var.service_configs.commercial_tools_app.memory
   name                          = var.service_configs.commercial_tools_app.name
   private_subnet_ids            = var.private_subnet_ids

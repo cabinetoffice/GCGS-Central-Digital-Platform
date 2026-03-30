@@ -31,4 +31,9 @@ public interface IRoleRepository : IRepository<ApplicationRole>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The role if found; otherwise, null.</returns>
     Task<ApplicationRole?> GetByIdWithPermissionsAsync(int id, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets multiple roles by their IDs.
+    /// </summary>
+    Task<IReadOnlyList<ApplicationRole>> GetByIdsAsync(IEnumerable<int> ids, CancellationToken cancellationToken = default);
 }

@@ -39,4 +39,9 @@ public interface IUserApplicationAssignmentRepository : IRepository<UserApplicat
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Collection of assignments with full details for claims generation.</returns>
     Task<IEnumerable<UserApplicationAssignment>> GetAssignmentsForClaimsAsync(string userPrincipalId, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets active, non-deleted assignments for a membership that should be included in Organisation Information scope sync.
+    /// </summary>
+    Task<IEnumerable<UserApplicationAssignment>> GetActiveForSyncAsync(int membershipId, CancellationToken cancellationToken = default);
 }

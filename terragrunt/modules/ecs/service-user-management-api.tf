@@ -33,7 +33,7 @@ module "ecs_service_user_management_api" {
 
   cluster_id             = local.main_cluster_id
   cpu                    = var.service_configs.user_management_api.cpu
-  desired_count          = var.environment == "development" ? 1 : 0
+  desired_count          = var.service_configs.user_management_api.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.main_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id

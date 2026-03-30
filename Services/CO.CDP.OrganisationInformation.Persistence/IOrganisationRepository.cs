@@ -5,9 +5,11 @@ namespace CO.CDP.OrganisationInformation.Persistence;
 public interface IOrganisationRepository : IDisposable
 {
     public void Save(Organisation organisation);
+    public void Track(Organisation organisation);
     public Task SaveAsync(Organisation organisation, Func<Organisation, Task> onSave);
 
     public void SaveOrganisationPerson(OrganisationPerson organisationPerson);
+    public void TrackOrganisationPerson(OrganisationPerson organisationPerson);
 
     public void SaveOrganisationMou(MouSignature mouSignature);
 

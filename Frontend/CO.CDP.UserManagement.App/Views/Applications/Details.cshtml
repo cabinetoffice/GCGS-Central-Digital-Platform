@@ -42,9 +42,9 @@
 <!-- Application Details -->
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        
+
         <h2 class="govuk-heading-l">Application details</h2>
-        
+
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Status</dt>
@@ -59,6 +59,13 @@
                     }
                 </dd>
             </div>
+            @if (Model.IsEnabledByDefault)
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Access model</dt>
+                    <dd class="govuk-summary-list__value">Enabled by default</dd>
+                </div>
+            }
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Client ID</dt>
                 <dd class="govuk-summary-list__value"><code>@Model.ClientId</code></dd>
@@ -94,6 +101,13 @@
                 </div>
             }
         </dl>
+
+        @if (Model.IsEnabledByDefault)
+        {
+            <div class="govuk-inset-text">
+                This application is enabled by default for everyone. You cannot disable it or revoke user access.
+            </div>
+        }
 
         <!-- Available Roles -->
         <h2 class="govuk-heading-l govuk-!-margin-top-8">Available roles</h2>
@@ -131,7 +145,7 @@
 
         <!-- Assigned Users -->
         <h2 class="govuk-heading-l govuk-!-margin-top-8">Assigned users</h2>
-        
+
         <div class="govuk-button-group govuk-!-margin-bottom-4">
             <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
         </div>
@@ -163,7 +177,10 @@
                         </p>
                         <p class="govuk-body">
                             <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
-                            <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/revoke" class="govuk-link">Revoke access</a>
+                            @if (!Model.IsEnabledByDefault)
+                            {
+                                <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/revoke" class="govuk-link">Revoke access</a>
+                            }
                         </p>
                     </div>
                 </div>
@@ -199,7 +216,7 @@
             <li>
                 <a href="/organisation/@Model.OrganisationSlug/assignments?application=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
             </li>
-            @if (Model.IsEnabled)
+            @if (Model is { IsEnabled: true, IsEnabledByDefault: false })
             {
                 <li>
                     <a href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug/disable" class="govuk-link">Disable application</a>

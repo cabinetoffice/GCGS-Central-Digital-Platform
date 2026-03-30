@@ -39,7 +39,10 @@ locals {
       account_id                  = 471112892058
       canary_schedule_expression  = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       cfs_extra_domains           = ["www-development.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -48,11 +51,17 @@ locals {
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
       ]
-      pinned_service_version_cfs    = null
-      pinned_service_version_fts    = null
-      pinned_service_version        = null
-      postgres_instance_type        = "db.t4g.micro"
-      postgres_aurora_instance_type = "db.r5.large"
+      opensearch_availability_zone_count  = 2
+      opensearch_dedicated_master_count   = 3
+      opensearch_dedicated_master_enabled = true
+      opensearch_dedicated_master_type    = "t3.small.search"
+      opensearch_instance_count           = 2
+      opensearch_instance_type            = "t3.small.search"
+      pinned_service_version_cfs          = null
+      pinned_service_version_fts          = null
+      pinned_service_version              = null
+      postgres_instance_type              = "db.t4g.micro"
+      postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_development}.101.0/24",
         "10.${local.cidr_b_development}.102.0/24",
@@ -71,7 +80,10 @@ locals {
       account_id                  = 905418042182
       canary_schedule_expression  = "rate(30 minutes)"
       cfs_extra_domains           = ["www-preview.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       name                        = "staging"
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
@@ -81,11 +93,17 @@ locals {
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.2.4"
-      pinned_service_version        = "1.0.83"
-      postgres_instance_type        = "db.t4g.micro"
-      postgres_aurora_instance_type = "db.r5.large"
+      opensearch_availability_zone_count  = 2
+      opensearch_dedicated_master_count   = 3
+      opensearch_dedicated_master_enabled = true
+      opensearch_dedicated_master_type    = "t3.small.search"
+      opensearch_instance_count           = 2
+      opensearch_instance_type            = "t3.medium.search"
+      pinned_service_version_cfs          = "1.0.7"
+      pinned_service_version_fts          = "1.2.8"
+      pinned_service_version              = "1.0.83"
+      postgres_instance_type              = "db.t4g.micro"
+      postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -104,7 +122,10 @@ locals {
       account_id                  = 767397666448
       canary_schedule_expression  = "rate(30 minutes)"
       cfs_extra_domains           = ["www-integration.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www-tpp.find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -118,11 +139,17 @@ locals {
         "https://www-tpp.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.integration.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      pinned_service_version_cfs    = "1.0.7"
-      pinned_service_version_fts    = "1.2.4"
-      pinned_service_version        = "1.0.82"
-      postgres_instance_type        = "db.t4g.micro"
-      postgres_aurora_instance_type = "db.r5.large"
+      opensearch_availability_zone_count  = 2
+      opensearch_dedicated_master_count   = 3
+      opensearch_dedicated_master_enabled = true
+      opensearch_dedicated_master_type    = "t3.small.search"
+      opensearch_instance_count           = 2
+      opensearch_instance_type            = "t3.medium.search"
+      pinned_service_version_cfs          = "1.0.7"
+      pinned_service_version_fts          = "1.2.4"
+      pinned_service_version              = "1.0.82"
+      postgres_instance_type              = "db.t4g.micro"
+      postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
         "10.${local.cidr_b_integration}.101.0/24",
         "10.${local.cidr_b_integration}.102.0/24",
@@ -141,7 +168,10 @@ locals {
       account_id                  = 471112843276
       canary_schedule_expression  = "rate(15 minutes)"
       cfs_extra_domains           = ["www.contractsfinder.service.gov.uk"]
+      fts_apply_master_password   = false
       fts_extra_domains           = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
+      fts_restore_from_snapshot   = false
+      fts_snapshot_identifier     = null
       mail_from_domains           = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -151,12 +181,18 @@ locals {
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ],
-      pinned_service_version_cfs       = "1.0.7"
-      pinned_service_version_fts       = "1.2.2"
-      pinned_service_version           = "1.0.82"
-      postgres_instance_type           = "db.t4g.micro"
-      postgres_aurora_instance_type    = "db.r5.8xlarge"
-      postgres_aurora_instance_type_ev = "db.r5.4xlarge"
+      opensearch_availability_zone_count  = 3
+      opensearch_dedicated_master_count   = 3
+      opensearch_dedicated_master_enabled = true
+      opensearch_dedicated_master_type    = "m6g.large.search"
+      opensearch_instance_count           = 3
+      opensearch_instance_type            = "m6g.large.search"
+      pinned_service_version_cfs          = "1.0.7"
+      pinned_service_version_fts          = "1.2.2"
+      pinned_service_version              = "1.0.82"
+      postgres_instance_type              = "db.t4g.micro"
+      postgres_aurora_instance_type       = "db.r5.8xlarge"
+      postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
       private_subnets = [
         "10.${local.cidr_b_production}.101.0/24",
         "10.${local.cidr_b_production}.102.0/24",
@@ -171,19 +207,28 @@ locals {
     }
   }
 
-  aurora_mysql_engine_version       = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
-  aurora_mysql_family               = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
-  aurora_mysql_instance_type        = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
-  aurora_postgres_instance_type     = try(local.environments[local.environment].postgres_aurora_instance_type, null)
-  aurora_postgres_instance_type_ev  = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
-  cfs_extra_domains                 = try(local.environments[local.environment].cfs_extra_domains, [])
-  fts_extra_domains                 = try(local.environments[local.environment].fts_extra_domains, [])
-  mail_from_domains                 = try(local.environments[local.environment].mail_from_domains, [])
-  onelogin_logout_notification_urls = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
-  pinned_service_version            = try(local.environments[local.environment].pinned_service_version, null)
-  pinned_service_version_cfs        = try(local.environments[local.environment].pinned_service_version_cfs, null)
-  pinned_service_version_fts        = try(local.environments[local.environment].pinned_service_version_fts, null)
-  redis_node_type                   = try(local.environments[local.environment].redis_node_type, null)
+  aurora_mysql_engine_version         = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
+  aurora_mysql_family                 = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
+  aurora_mysql_instance_type          = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
+  aurora_postgres_instance_type       = try(local.environments[local.environment].postgres_aurora_instance_type, null)
+  aurora_postgres_instance_type_ev    = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
+  cfs_extra_domains                   = try(local.environments[local.environment].cfs_extra_domains, [])
+  fts_apply_master_password           = try(local.environments[local.environment].fts_apply_master_password, false)
+  fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
+  fts_restore_from_snapshot           = try(local.environments[local.environment].fts_restore_from_snapshot, false)
+  fts_snapshot_identifier             = try(local.environments[local.environment].fts_snapshot_identifier, null)
+  mail_from_domains                   = try(local.environments[local.environment].mail_from_domains, [])
+  onelogin_logout_notification_urls   = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
+  opensearch_availability_zone_count  = try(local.environments[local.environment].opensearch_availability_zone_count, 2)
+  opensearch_dedicated_master_count   = try(local.environments[local.environment].opensearch_dedicated_master_count, 3)
+  opensearch_dedicated_master_enabled = try(local.environments[local.environment].opensearch_dedicated_master_enabled, true)
+  opensearch_dedicated_master_type    = try(local.environments[local.environment].opensearch_dedicated_master_type, "t3.small.search")
+  opensearch_instance_count           = try(local.environments[local.environment].opensearch_instance_count, 2)
+  opensearch_instance_type            = try(local.environments[local.environment].opensearch_instance_type, "t3.small.search")
+  pinned_service_version              = try(local.environments[local.environment].pinned_service_version, null)
+  pinned_service_version_cfs          = try(local.environments[local.environment].pinned_service_version_cfs, null)
+  pinned_service_version_fts          = try(local.environments[local.environment].pinned_service_version_fts, null)
+  redis_node_type                     = try(local.environments[local.environment].redis_node_type, null)
 
   top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
@@ -227,8 +272,8 @@ locals {
     person                                        = {}
     scheduled_worker                              = { desired_count = 1 }
     tenant                                        = {}
-    user_management_api                           = {}
-    user_management_app                           = {}
+    user_management_api                           = { desired_count = local.environment == "development" ? 1 : 0 }
+    user_management_app                           = { desired_count = local.environment == "development" ? 1 : 0 }
     user_management_migrations                    = { cpu = 256, memory = 512 }
   }
 
@@ -343,6 +388,10 @@ locals {
       name = "opensearch-gateway"
       port = 5602
     }
+    opensearch_debugtask = {
+      name = "opensearch-debugtask"
+      port = 5603
+    }
     s3_uploader = {
       name = "s3-uploader"
       port = 8000
@@ -391,16 +440,22 @@ generate provider {
 }
 
 inputs = {
-  aurora_postgres_engine_version = local.versions.postgres_engine
-  environment                    = local.environment
-  externals_product              = local.external_product
-  is_production                  = local.is_production
-  postgres_instance_type         = local.environments[local.environment].postgres_instance_type
-  product                        = local.product
-  tags                           = local.tags
-  vpc_cidr                       = local.environments[local.environment].cidr_block
-  vpc_private_subnets            = local.environments[local.environment].private_subnets
-  vpc_public_subnets             = local.environments[local.environment].public_subnets
+  aurora_postgres_engine_version      = local.versions.postgres_engine
+  environment                         = local.environment
+  externals_product                   = local.external_product
+  is_production                       = local.is_production
+  opensearch_availability_zone_count  = local.opensearch_availability_zone_count
+  opensearch_dedicated_master_count   = local.opensearch_dedicated_master_count
+  opensearch_dedicated_master_enabled = local.opensearch_dedicated_master_enabled
+  opensearch_dedicated_master_type    = local.opensearch_dedicated_master_type
+  opensearch_instance_count           = local.opensearch_instance_count
+  opensearch_instance_type            = local.opensearch_instance_type
+  postgres_instance_type              = local.environments[local.environment].postgres_instance_type
+  product                             = local.product
+  tags                                = local.tags
+  vpc_cidr                            = local.environments[local.environment].cidr_block
+  vpc_private_subnets                 = local.environments[local.environment].private_subnets
+  vpc_public_subnets                  = local.environments[local.environment].public_subnets
 }
 
 terraform {

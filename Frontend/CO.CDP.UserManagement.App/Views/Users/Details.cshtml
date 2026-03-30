@@ -1,0 +1,97 @@
+@model CO.CDP.UserManagement.App.Models.UserDetailsViewModel
+@{
+    ViewData["Title"] = "User details";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Organisation?.Slug" class="govuk-back-link">Back</a>
+}
+
+<h1 class="govuk-heading-xl">User details</h1>
+
+<div class="govuk-blue-banner">
+    <div class="govuk-width-container">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">@Model.FullName</h2>
+        <p class="govuk-body">@Model.Email</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.FullName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.Organisation?.Name</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation role</dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag @Model.OrganisationRoleTagClass">@Model.OrganisationRole</strong>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Member since</dt>
+                <dd class="govuk-summary-list__value">@Model.MemberSince</dd>
+            </div>
+        </dl>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Actions</h2>
+        <ul class="govuk-list">
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link">Change application roles</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/organisation-role/change" class="govuk-link">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
+        </ul>
+    </div>
+</div>
+
+<h2 class="govuk-heading-l">Application access</h2>
+
+@if (Model.ApplicationAccess.Count == 0)
+{
+    <p class="govuk-body">@Model.FullName has not been assigned to any applications yet.</p>
+}
+else
+{
+    <p class="govuk-body-m govuk-!-margin-bottom-4">@Model.FullName has access to @Model.ApplicationAccess.Count @(Model.ApplicationAccess.Count == 1 ? "application" : "applications")</p>
+
+    @foreach (var app in Model.ApplicationAccess)
+    {
+        <div class="govuk-summary-card govuk-!-margin-bottom-6">
+            <div class="govuk-summary-card__title-wrapper">
+                <h3 class="govuk-summary-card__title">@app.ApplicationName</h3>
+                <ul class="govuk-summary-card__actions">
+                    <li class="govuk-summary-card__action">
+                        <strong class="govuk-tag govuk-tag--purple">@app.ApplicationRole</strong>
+                    </li>
+                </ul>
+            </div>
+            <div class="govuk-summary-card__content">
+                <p class="govuk-body govuk-!-margin-bottom-3">@app.ApplicationDescription</p>
+
+                <p class="govuk-body-s govuk-!-margin-bottom-2"><strong>Permissions:</strong></p>
+                <div class="govuk-!-margin-bottom-4">
+                    @foreach (var permission in app.Permissions)
+                    {
+                        <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1 govuk-!-margin-bottom-1">@permission</span>
+                    }
+                </div>
+
+                <p class="govuk-body-s govuk-!-margin-bottom-3">Assigned: @app.AssignedDate.ToString("d MMMM yyyy") by @app.AssignedByEmail</p>
+
+                <p class="govuk-body">
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationClientId/remove" class="govuk-link">Revoke access</a>
+                </p>
+            </div>
+        </div>
+    }
+}

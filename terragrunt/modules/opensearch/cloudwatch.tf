@@ -16,6 +16,12 @@ resource "aws_cloudwatch_log_group" "es_application" {
   tags              = var.tags
 }
 
+resource "aws_cloudwatch_log_group" "audit" {
+  name              = "/${local.name_prefix}/opensearch/audit"
+  retention_in_days = var.audit_logs_retention_in_days
+  tags              = var.tags
+}
+
 resource "aws_cloudwatch_log_resource_policy" "opensearch" {
   policy_name     = "${local.name_prefix}-opensearch-log-policy"
   policy_document = data.aws_iam_policy_document.opensearch_logs.json

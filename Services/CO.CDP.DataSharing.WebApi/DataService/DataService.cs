@@ -73,7 +73,12 @@ public class DataService(
                     case FormQuestionType.YesOrNo:
                         {
                             pdfAnswerSet.QuestionAnswers.Add(new Tuple<string, string>($"{title}",
-                                answer.OptionValue ?? (answer.BoolValue == true ? "Yes" : "Not specified")));
+                                answer.OptionValue ?? answer.BoolValue switch
+                                {
+                                    true => "Yes",
+                                    false => "No",
+                                    null => "Not specified"
+                                }));
                             break;
                         }
                     case FormQuestionType.Date:
@@ -166,7 +171,7 @@ public class DataService(
         if (organisation.SupplierInfo == null)
         {
             return new BasicInformation
-            {   
+            {
                 PostalAddress = new Address
                 {
                     StreetAddress = organisation.Addresses.FirstOrDefault()?.StreetAddress ?? string.Empty,
@@ -176,7 +181,7 @@ public class DataService(
                     Country = organisation.Addresses.FirstOrDefault()?.Country ?? string.Empty,
                     Type = AddressType.Postal
                 },
-                EmailAddress = organisation.ContactPoints.FirstOrDefault()?.Email ?? string.Empty,                
+                EmailAddress = organisation.ContactPoints.FirstOrDefault()?.Email ?? string.Empty,
                 OrganisationName = organisation.Name
             };
         }

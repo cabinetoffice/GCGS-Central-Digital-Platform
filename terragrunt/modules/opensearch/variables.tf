@@ -1,7 +1,37 @@
+variable "audit_logs_enabled" {
+  description = "Enable OpenSearch audit logs."
+  type        = bool
+  default     = true
+}
+
+variable "audit_logs_retention_in_days" {
+  description = "Retention days for OpenSearch audit logs."
+  type        = number
+  default     = 30
+}
+
 variable "availability_zone_count" {
   description = "AZ count for zone awareness. Use 2 or 3."
   type        = number
   default     = 2
+}
+
+variable "dedicated_master_count" {
+  description = "Number of dedicated master nodes."
+  type        = number
+  default     = 3
+}
+
+variable "dedicated_master_enabled" {
+  description = "Enable dedicated master nodes."
+  type        = bool
+  default     = false
+}
+
+variable "dedicated_master_type" {
+  description = "Dedicated master node instance type."
+  type        = string
+  default     = "t3.small.search"
 }
 
 variable "ebs_enabled" {
@@ -105,8 +135,13 @@ variable "role_ecs_task_opensearch_admin_name" {
   type        = string
 }
 
-variable "role_opensearch_admin_arn" {
-  description = "ARN the IAM role to be used to administrate OpenSearch"
+variable "role_ecs_task_opensearch_gateway_arn" {
+  description = "OpenSearch Gateway Task IAM role ARN"
+  type        = string
+}
+
+variable "role_ecs_task_opensearch_gateway_name" {
+  description = "OpenSearch Gateway Task IAM role Name"
   type        = string
 }
 

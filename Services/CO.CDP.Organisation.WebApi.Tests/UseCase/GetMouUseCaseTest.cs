@@ -1,12 +1,11 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -38,7 +37,7 @@ public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
 
         _organisationRepository
             .Setup(repo => repo.GetMou(mouId))
-            .ReturnsAsync(mouEntity);    
+            .ReturnsAsync(mouEntity);
 
         var result = await _useCase.Execute(mouId);
 
@@ -63,7 +62,7 @@ public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
         _organisationRepository.Verify(repo => repo.GetMou(mouId), Times.Once);
     }
 
-    public static Person FakePerson(
+    public static Persistence.Person FakePerson(
    Guid? guid = null,
    string? userUrn = null,
    string firstname = "Jon",
@@ -77,7 +76,7 @@ public class GetMouUseCaseTest(AutoMapperFixture mapperFixture)
     {
         scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
-        var person = new Person
+        var person = new Persistence.Person
         {
             Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",

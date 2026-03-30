@@ -28,20 +28,12 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
         _testOutputHelper = testOutputHelper;
     }
 
-    private HttpClient CreateClient(bool featureEnabled = true)
+    private HttpClient CreateClient()
     {
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureFakePolicyEvaluator();
             builder.ConfigureLogging(_testOutputHelper);
-
-            builder.ConfigureAppConfiguration((_, config) =>
-            {
-                config.AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    { Shared.FeatureFlags.FeatureFlags.ClaimsApiEnabled, featureEnabled.ToString() }
-                });
-            });
 
             builder.ConfigureServices((_, services) =>
             {
@@ -66,17 +58,9 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
     }
 
     [Fact]
-    public async Task GetUserClaims_WhenFeatureFlagDisabled_ReturnsNotFound()
+    public async Task GetUserClaims_ReturnsOk()
     {
-        var client = CreateClient(featureEnabled: false);
-        var response = await client.GetAsync("/api/claims/users/user-1");
-        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-    }
-
-    [Fact]
-    public async Task GetUserClaims_WhenFeatureFlagEnabled_ReturnsOk()
-    {
-        var client = CreateClient(featureEnabled: true);
+        var client = CreateClient();
         var userPrincipalId = "user-claims-test";
         var cdpOrgGuid = Guid.NewGuid();
         var appGuid = Guid.NewGuid();
@@ -123,7 +107,9 @@ public class ClaimsIntegrationTests : IClassFixture<UserManagementPostgreSqlFixt
             {
                 UserPrincipalId = userPrincipalId,
                 Organisation = org,
-                OrganisationRole = Shared.Enums.OrganisationRole.Admin,
+                OrganisationRoleId = context.OrganisationRoles
+                    .Single(d => d.Id == (int)Shared.Enums.OrganisationRole.Admin)
+                    .Id,
                 IsActive = true,
                 JoinedAt = DateTimeOffset.UtcNow
             };

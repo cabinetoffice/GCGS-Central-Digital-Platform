@@ -260,4 +260,18 @@ public class UserAssignmentsControllerTests
 
         result.Should().BeOfType<NotFoundObjectResult>();
     }
+
+    [Fact]
+    public async Task RevokeAssignment_WhenInvalidOperation_ReturnsBadRequest()
+    {
+        _userAssignmentService
+            .Setup(service => service.RevokeAssignmentAsync(It.IsAny<string>(), It.IsAny<int>(), 7, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new SystemInvalidOperationException("Cannot revoke access"));
+
+        var result = await _controller.RevokeAssignment(10, "user-1", 7, CancellationToken.None);
+
+        var badRequest = result.Should().BeOfType<BadRequestObjectResult>().Subject;
+        var error = badRequest.Value.Should().BeOfType<ErrorResponse>().Subject;
+        error.Code.Should().Be("INVALID_OPERATION");
+    }
 }

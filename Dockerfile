@@ -119,7 +119,9 @@ COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.R
 COPY --link Libraries/CO.CDP.UserManagement.Core/CO.CDP.UserManagement.Core.csproj Libraries/CO.CDP.UserManagement.Core/
 COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.csproj Libraries/CO.CDP.UserManagement.Shared/
 COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
+COPY --link Libraries/CO.CDP.OrganisationSync/CO.CDP.OrganisationSync.csproj Libraries/CO.CDP.OrganisationSync/
 COPY --link Services/CO.CDP.UserManagement.Infrastructure/CO.CDP.UserManagement.Infrastructure.csproj Services/CO.CDP.UserManagement.Infrastructure/
+COPY --link Services/CO.CDP.UserManagement.CdpInfrastructure/CO.CDP.UserManagement.CdpInfrastructure.csproj Services/CO.CDP.UserManagement.CdpInfrastructure/
 COPY --link Services/CO.CDP.UserManagement.Api/CO.CDP.UserManagement.Api.csproj Services/CO.CDP.UserManagement.Api/
 COPY --link Frontend/CO.CDP.UserManagement.App.Tests/CO.CDP.UserManagement.App.Tests.csproj Frontend/CO.CDP.UserManagement.App.Tests/
 COPY --link Services/CO.CDP.UserManagement.Api.Tests/CO.CDP.UserManagement.Api.Tests.csproj Services/CO.CDP.UserManagement.Api.Tests/

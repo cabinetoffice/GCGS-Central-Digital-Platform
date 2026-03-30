@@ -2,22 +2,28 @@ using AutoMapper;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
+using Microsoft.FeatureManagement;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
+using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class UpdateOrganisationUseCase(
-    IOrganisationRepository organisationRepository,
+    OiOrganisationRepository organisationRepository,
     IPublisher publisher,
     IMapper mapper,
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    ILogger<UpdateOrganisationUseCase> logger
+    ILogger<UpdateOrganisationUseCase> logger,
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
+    IFeatureManager featureManager
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
@@ -26,6 +32,7 @@ public class UpdateOrganisationUseCase(
             ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
+        var isNameUpdate = command.updateOrganisation.Type == OrganisationUpdateType.OrganisationName;
 
         switch (command.updateOrganisation.Type)
         {
@@ -222,10 +229,23 @@ public class UpdateOrganisationUseCase(
 
         await ResetRejectedStatus(command.updateOrganisation.Type, organisation);
 
-        await organisationRepository.SaveAsync(organisation,
-            async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
+        await atomicScope.ExecuteAsync(async ct =>
+        {
+            await organisationRepository.SaveAsync(organisation,
+                async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
 
-        return await Task.FromResult(true);
+            if (isNameUpdate && await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+            {
+                (await membershipSync.SyncOrganisationNameAsync(organisation.Guid, organisation.Name, ct))
+                    .Match(
+                        onLeft: error => logger.LogError("UM name sync failed for org {Guid}: {Error}", organisation.Guid, error.Message),
+                        onRight: _ => { });
+            }
+
+            return true;
+        });
+
+        return true;
     }
 
     private async Task ResetRejectedStatus(OrganisationUpdateType updateType, Persistence.Organisation organisation)

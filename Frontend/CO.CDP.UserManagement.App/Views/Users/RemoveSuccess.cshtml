@@ -1,0 +1,50 @@
+@model CO.CDP.UserManagement.App.Models.RemoveSuccessViewModel
+@{
+    ViewData["Title"] = "User removed";
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation">
+            <h1 class="govuk-panel__title">User removed</h1>
+            <div class="govuk-panel__body">
+                @Model.UserDisplayName has been removed from @Model.OrganisationName
+            </div>
+        </div>
+
+        <h2 class="govuk-heading-m">User details</h2>
+
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.UserDisplayName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.OrganisationName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation role</dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag">@Model.Role</strong>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Member since</dt>
+                <dd class="govuk-summary-list__value">@Model.MemberSince</dd>
+            </div>
+        </dl>
+
+        <h2 class="govuk-heading-m">What happens next?</h2>
+
+        <p class="govuk-body">They no longer have access to services linked to this organisation or permissions associated with their role. If you need to restore access, you'll need to add them to the organisation again and assign a role.</p>
+
+        <p class="govuk-body">
+            <a href="/organisation/@Model.OrganisationSlug" class="govuk-link">Return to dashboard</a>
+        </p>
+    </div>
+</div>

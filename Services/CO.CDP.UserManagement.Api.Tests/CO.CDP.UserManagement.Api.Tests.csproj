@@ -13,6 +13,7 @@
         <PackageReference Include="coverlet.collector" Version="6.0.0" />
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
         <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="Testcontainers.Redis" Version="3.9.0" />
@@ -24,6 +25,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.UserManagement.Core\CO.CDP.UserManagement.Core.csproj" />
         <ProjectReference Include="..\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj" />
         <ProjectReference Include="..\CO.CDP.UserManagement.Api\CO.CDP.UserManagement.Api.csproj" />
+        <ProjectReference Include="..\..\Libraries\CO.CDP.OrganisationSync\CO.CDP.OrganisationSync.csproj" />
         <ProjectReference Include="..\..\TestKit\CO.CDP.Testcontainers.PostgreSql\CO.CDP.Testcontainers.PostgreSql.csproj" />
         <ProjectReference Include="..\..\TestKit\CO.CDP.TestKit.Mvc\CO.CDP.TestKit.Mvc.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence.Tests\CO.CDP.OrganisationInformation.Persistence.Tests.csproj" />

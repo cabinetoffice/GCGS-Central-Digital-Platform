@@ -1,12 +1,11 @@
-using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
+using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using FluentAssertions;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using Person = CO.CDP.OrganisationInformation.Persistence.Person;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -18,7 +17,7 @@ public class GetLatestMouUseCaseTest(AutoMapperFixture mapperFixture)
 
     [Fact]
     public async Task Execute_ShouldReturnMappedMou_WhenLatestMouExists()
-    {   
+    {
         var latestMouEntity = new Persistence.Mou
         {
             Id = 1,
@@ -37,10 +36,10 @@ public class GetLatestMouUseCaseTest(AutoMapperFixture mapperFixture)
 
         _organisationRepository
             .Setup(repo => repo.GetLatestMou())
-            .ReturnsAsync(latestMouEntity);    
+            .ReturnsAsync(latestMouEntity);
 
         var result = await _useCase.Execute();
-        
+
         result.Should().BeEquivalentTo(mappedMou);
 
         _organisationRepository.Verify(repo => repo.GetLatestMou(), Times.Once);
@@ -61,7 +60,7 @@ public class GetLatestMouUseCaseTest(AutoMapperFixture mapperFixture)
         _organisationRepository.Verify(repo => repo.GetLatestMou(), Times.Once);
     }
 
-    public static Person FakePerson(
+    public static Persistence.Person FakePerson(
    Guid? guid = null,
    string? userUrn = null,
    string firstname = "Jon",
@@ -75,7 +74,7 @@ public class GetLatestMouUseCaseTest(AutoMapperFixture mapperFixture)
     {
         scopes = scopes ?? [];
         var personGuid = guid ?? Guid.NewGuid();
-        var person = new Person
+        var person = new Persistence.Person
         {
             Guid = personGuid,
             UserUrn = userUrn ?? $"urn:fdc:gov.uk:2022:{Guid.NewGuid()}",

@@ -1,10 +1,11 @@
+using CO.CDP.UserManagement.App.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
-[Authorize]
+[Authorize(Policy = PolicyNames.OrganisationOwnerOrAdmin)]
 public class HomeController(UserManagementClient apiClient) : Controller
 {
     public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)

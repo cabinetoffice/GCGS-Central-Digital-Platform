@@ -33,15 +33,21 @@ builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection("Fe
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<ServiceAccountTokenHandler>();
 
-var userManagementServiceUrl = builder.Configuration.GetValue<string>("UserManagementService")
-                               ?? throw new InvalidOperationException("Missing configuration key: UserManagementService.");
+var claimsApiEnabled = builder.Configuration.GetValue("Features:ClaimsApiEnabled", false);
+
+var userManagementServiceUrl = claimsApiEnabled
+    ? builder.Configuration.GetValue<string>("UserManagementService")
+      ?? throw new InvalidOperationException("Missing configuration: UserManagementService")
+    : null;
+
 const string userManagementHttpClientName = "UserManagementHttpClient";
 
-builder.Services.AddHttpClient(userManagementHttpClientName, client =>
+if (claimsApiEnabled)
 {
-    client.BaseAddress = new Uri(userManagementServiceUrl);
-})
-    .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+    builder.Services.AddHttpClient(userManagementHttpClientName,
+            client => { client.BaseAddress = new Uri(userManagementServiceUrl!); })
+        .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+}
 
 builder.Services.AddTransient<ApiClient.UserManagementClient>(sp =>
 {
@@ -77,4 +83,5 @@ if (!app.Environment.IsDevelopment())
 app.UseIdentity();
 
 app.Run();
+
 public abstract partial class Program;

@@ -8,56 +8,34 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
 /// Service for managing organisation user memberships.
+/// Cross-DB atomic operations (remove, role change) delegate to <see cref="IAtomicMembershipSync"/>.
 /// </summary>
-public class OrganisationUserService : IOrganisationUserService
+public class OrganisationUserService(
+    IOrganisationRepository organisationRepository,
+    IUserOrganisationMembershipRepository membershipRepository,
+    IUserApplicationAssignmentRepository assignmentRepository,
+    IAtomicMembershipSync atomicMembershipSync,
+    ILogger<OrganisationUserService> logger) : IOrganisationUserService
 {
-    private readonly IOrganisationRepository _organisationRepository;
-    private readonly IUserOrganisationMembershipRepository _membershipRepository;
-    private readonly IUserApplicationAssignmentRepository _assignmentRepository;
-    private readonly ICdpMembershipSyncService _membershipSyncService;
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<OrganisationUserService> _logger;
-
-    public OrganisationUserService(
-        IOrganisationRepository organisationRepository,
-        IUserOrganisationMembershipRepository membershipRepository,
-        IUserApplicationAssignmentRepository assignmentRepository,
-        ICdpMembershipSyncService membershipSyncService,
-        IUnitOfWork unitOfWork,
-        ILogger<OrganisationUserService> logger)
-    {
-        _organisationRepository = organisationRepository;
-        _membershipRepository = membershipRepository;
-        _assignmentRepository = assignmentRepository;
-        _membershipSyncService = membershipSyncService;
-        _unitOfWork = unitOfWork;
-        _logger = logger;
-    }
-
     public async Task<IEnumerable<UserOrganisationMembership>> GetOrganisationUsersAsync(
         Guid cdpOrganisationId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting users for CDP organisation ID: {CdpOrganisationId}", cdpOrganisationId);
+        logger.LogDebug("Getting users for CDP organisation ID: {CdpOrganisationId}", cdpOrganisationId);
 
-        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
-        if (organisation == null)
-        {
-            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
-        }
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        _logger.LogDebug("Resolved organisation {OrganisationId} for CDP organisation ID: {CdpOrganisationId}", organisation.Id, cdpOrganisationId);
-        var memberships = (await _membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken)).ToList();
-        _logger.LogDebug("Retrieved {MembershipCount} memberships for organisation {OrganisationId}", memberships.Count, organisation.Id);
+        logger.LogDebug("Resolved organisation {OrganisationId} for CDP organisation ID: {CdpOrganisationId}", organisation.Id, cdpOrganisationId);
+        var memberships = (await membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken)).ToList();
+        logger.LogDebug("Retrieved {MembershipCount} memberships for organisation {OrganisationId}", memberships.Count, organisation.Id);
 
-        var membershipIds = memberships.Select(membership => membership.Id).ToArray();
-        var assignments = await _assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
+        var membershipIds = memberships.Select(m => m.Id).ToArray();
+        var assignments = await assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
         var assignmentsByMembership = assignments.ToLookup(a => a.UserOrganisationMembershipId);
 
         foreach (var membership in memberships)
-        {
             SetAssignments(membership, assignmentsByMembership[membership.Id]);
-        }
 
         return memberships;
     }
@@ -67,26 +45,17 @@ public class OrganisationUserService : IOrganisationUserService
         string userPrincipalId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting membership for user {UserPrincipalId} in CDP organisation ID: {CdpOrganisationId}",
+        logger.LogDebug("Getting membership for user {UserPrincipalId} in CDP organisation ID: {CdpOrganisationId}",
             userPrincipalId, cdpOrganisationId);
 
-        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
-        if (organisation == null)
-        {
-            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
-        }
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        var membership = await _membershipRepository.GetByUserAndOrganisationAsync(
-            userPrincipalId, organisation.Id, cancellationToken);
+        var membership = await membershipRepository.GetByUserAndOrganisationAsync(userPrincipalId, organisation.Id, cancellationToken);
+        if (membership == null) return null;
 
-        if (membership == null)
-        {
-            return null;
-        }
-
-        var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
+        var assignments = await assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
         SetAssignments(membership, assignments);
-
         return membership;
     }
 
@@ -95,68 +64,39 @@ public class OrganisationUserService : IOrganisationUserService
         Guid cdpPersonId,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogDebug("Getting membership for CDP person {CdpPersonId} in CDP organisation ID: {CdpOrganisationId}",
+        logger.LogDebug("Getting membership for CDP person {CdpPersonId} in CDP organisation ID: {CdpOrganisationId}",
             cdpPersonId, cdpOrganisationId);
 
-        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
-        if (organisation == null)
-        {
-            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
-        }
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
+            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        var membership = await _membershipRepository.GetByPersonIdAndOrganisationAsync(
-            cdpPersonId, organisation.Id, cancellationToken);
+        var membership = await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisation.Id, cancellationToken);
+        if (membership == null) return null;
 
-        if (membership == null)
-        {
-            return null;
-        }
-
-        var assignments = await _assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
+        var assignments = await assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
         SetAssignments(membership, assignments);
-
         return membership;
     }
+
+    public Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        OrganisationRole organisationRole,
+        CancellationToken cancellationToken = default) =>
+        atomicMembershipSync.UpdateMembershipRoleAsync(cdpOrganisationId, cdpPersonId, organisationRole, cancellationToken);
+
+    public Task RemoveUserFromOrganisationAsync(
+        Guid cdpOrganisationId,
+        Guid cdpPersonId,
+        CancellationToken cancellationToken = default) =>
+        atomicMembershipSync.RemoveUserFromOrganisationAsync(cdpOrganisationId, cdpPersonId, cancellationToken);
 
     private static void SetAssignments(
         UserOrganisationMembership membership,
         IEnumerable<UserApplicationAssignment> assignments)
     {
         membership.ApplicationAssignments.Clear();
-
         foreach (var assignment in assignments)
-        {
             membership.ApplicationAssignments.Add(assignment);
-        }
-    }
-
-    public async Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
-        Guid cdpOrganisationId,
-        Guid cdpPersonId,
-        OrganisationRole organisationRole,
-        CancellationToken cancellationToken = default)
-    {
-        var organisation = await _organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken);
-        if (organisation == null)
-        {
-            throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
-        }
-
-        var membership = await _membershipRepository.GetByPersonIdAndOrganisationAsync(
-            cdpPersonId,
-            organisation.Id,
-            cancellationToken);
-        if (membership == null)
-        {
-            throw new EntityNotFoundException(nameof(UserOrganisationMembership), cdpPersonId);
-        }
-
-        membership.OrganisationRole = organisationRole;
-        _membershipRepository.Update(membership);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-
-        await _membershipSyncService.SyncMembershipRoleChangedAsync(membership, cancellationToken);
-
-        return membership;
     }
 }

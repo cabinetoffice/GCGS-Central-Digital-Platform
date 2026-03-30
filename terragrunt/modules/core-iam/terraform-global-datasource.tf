@@ -175,10 +175,12 @@ data "aws_iam_policy_document" "terraform_global" {
       "rds:CreateDBInstanceReadReplica",
       "rds:DescribeDBInstances",
       "rds:RemoveTagsFromResource",
+      "rds:RestoreDBClusterFromSnapshot",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-snapshot:*",
     ]
     sid = "ManageRDS"
   }

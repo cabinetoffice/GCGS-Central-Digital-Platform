@@ -11,6 +11,12 @@ namespace CO.CDP.UserManagement.App.Services;
 public sealed class UserService(
     ApiClient.UserManagementClient apiClient) : IUserService
 {
+    public async Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct)
+    {
+        try { return await apiClient.BySlugAsync(organisationSlug, ct); }
+        catch (ApiClient.ApiException) { return null; }
+    }
+
     public async Task<UsersViewModel?> GetUsersViewModelAsync(
         string organisationSlug,
         string? selectedRole = null,
@@ -21,8 +27,10 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
-            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+
+            var usersResponse = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct)?? new List<OrganisationUserResponse>();
+
+            var invitesResponse = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct) ?? new List<PendingOrganisationInviteResponse>();
 
             var inviteAppIds = invitesResponse
                 .SelectMany(i => i.ApplicationAssignments ?? [])
@@ -40,9 +48,24 @@ public sealed class UserService(
                 }
                 catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                 {
-                    rolesByAppId[appId] = [];
+                    rolesByAppId[appId] = new List<RoleResponse>();
                 }
             }
+
+            var organisationApplicationResponse = await apiClient.ApplicationsAllAsync(org.Id, ct) ?? new List<OrganisationApplicationResponse>();
+            var availableApplications = organisationApplicationResponse
+                .Where(app => app.IsActive && app.Application != null)
+                .Select(enabledApp => new ApplicationViewModel(
+                    enabledApp.Id,
+                    enabledApp.Application?.ClientId ?? string.Empty,
+                    enabledApp.Application?.Name ?? string.Empty,
+                    enabledApp.Application?.Description ?? string.Empty,
+                    enabledApp.Application?.Category ?? string.Empty,
+                    enabledApp.IsActive,
+                    enabledApp.Application?.IsEnabledByDefault ?? false,
+                    0,
+                    0))
+                .ToList();
 
             var users = usersResponse
                 .Select(user => new UserSummaryViewModel(
@@ -102,7 +125,9 @@ public sealed class UserService(
             return new UsersViewModel(
                 OrganisationName: org.Name,
                 OrganisationSlug: org.Slug,
+                OrganisationGuid: org.CdpOrganisationGuid,
                 Users: filteredUsers,
+                AvailableApplications: availableApplications,
                 SelectedRole: selectedRole,
                 SelectedApplication: selectedApplication,
                 SearchTerm: searchTerm,
@@ -179,7 +204,6 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             var enabledApps = (await apiClient.ApplicationsAllAsync(org.Id, ct))
                 .Where(app => app.IsActive && app.Application != null)
                 .ToList();
@@ -190,14 +214,13 @@ public sealed class UserService(
                 ICollection<RoleResponse> roles;
                 try
                 {
-                    roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                    roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, state.OrganisationRole, ct);
                 }
                 catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                 {
                     roles = [];
                 }
 
-                var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                 var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
 
                 applicationSelections.Add(new ApplicationAccessSelectionViewModel
@@ -206,7 +229,8 @@ public sealed class UserService(
                     ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                     ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                     AllowsMultipleRoleAssignments = allowsMultiple,
-                    Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                    IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
+                    Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                     {
                         Id = role.Id,
                         Name = role.Name,
@@ -371,7 +395,6 @@ public sealed class UserService(
         try
         {
             var org = await apiClient.BySlugAsync(organisationSlug, ct);
-            var orgPartyRoles = await GetOrgPartyRolesAsync(org.CdpOrganisationGuid, ct);
             string userDisplayName = string.Empty;
             string userEmail = string.Empty;
             bool isPending = false;
@@ -401,14 +424,13 @@ public sealed class UserService(
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                        roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, invite.OrganisationRole, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
-                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                     var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
                     var assignedGroup = assignedByOrgAppId[enabledApp.Id].ToList();
                     var hasAccess = assignedGroup.Count > 0;
@@ -426,11 +448,12 @@ public sealed class UserService(
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                         AllowsMultipleRoleAssignments = allowsMultiple,
+                        IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
                         SelectedRoleId = assignedRoleIds.Count > 0 ? assignedRoleIds[0] : null,
                         SelectedRoleIds = assignedRoleIds,
-                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,
@@ -441,7 +464,7 @@ public sealed class UserService(
             }
             else if (cdpPersonId.HasValue)
             {
-                var user = await apiClient.Users2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
                 if (user == null) return null;
 
                 userDisplayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
@@ -459,14 +482,13 @@ public sealed class UserService(
                     ICollection<RoleResponse> roles;
                     try
                     {
-                        roles = await apiClient.RolesAllAsync(enabledApp.ApplicationId, ct);
+                        roles = await apiClient.RolesAll2Async(org.Id, enabledApp.ApplicationId, user.OrganisationRole, ct);
                     }
                     catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
                     {
                         roles = [];
                     }
 
-                    var filteredRoles = FilterRolesByPartyRole(roles, orgPartyRoles);
                     var allowsMultiple = enabledApp.Application?.AllowsMultipleRoleAssignments ?? false;
                     var hasAccess = assignedByOrgAppId.TryGetValue(enabledApp.Id, out var assignment);
                     var currentRoleIds = hasAccess
@@ -482,11 +504,12 @@ public sealed class UserService(
                         ApplicationName = enabledApp.Application?.Name ?? string.Empty,
                         ApplicationDescription = enabledApp.Application?.Description ?? string.Empty,
                         AllowsMultipleRoleAssignments = allowsMultiple,
+                        IsEnabledByDefault = enabledApp.Application?.IsEnabledByDefault ?? false,
                         HasExistingAccess = hasAccess,
                         GiveAccess = hasAccess,
                         SelectedRoleId = currentRoleId,
                         SelectedRoleIds = currentRoleIds,
-                        Roles = filteredRoles.Select(role => new ApplicationRoleOptionViewModel
+                        Roles = roles.Select(role => new ApplicationRoleOptionViewModel
                         {
                             Id = role.Id,
                             Name = role.Name,
@@ -600,6 +623,84 @@ public sealed class UserService(
         }
     }
 
+    public async Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
+            var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+
+            if (user == null) return null;
+
+            var allApps = await apiClient.ApplicationsAllAsync(ct);
+            var app = allApps.FirstOrDefault(a => a.ClientId == clientId);
+
+            if (app == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            return new RemoveApplicationSuccessViewModel
+            {
+                OrganisationSlug = organisationSlug,
+                UserDisplayName = displayName,
+                Email = user.Email ?? string.Empty,
+                ApplicationName = app.Name,
+                CdpPersonId = cdpPersonId
+            };
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct);
+            var user = users.FirstOrDefault(u => u.CdpPersonId == cdpPersonId);
+
+            if (user == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            var memberSince = user.JoinedAt.HasValue
+                ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
+                : "Not available";
+
+            return new RemoveSuccessViewModel
+            {
+                OrganisationSlug = organisationSlug,
+                UserDisplayName = displayName,
+                Email = user.Email ?? string.Empty,
+                OrganisationName = org.Name,
+                Role = user.OrganisationRole,
+                MemberSince = memberSince,
+                CdpPersonId = cdpPersonId
+            };
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+
+
     private static IReadOnlyList<UserApplicationAccessViewModel> BuildApplicationAccess(
         IEnumerable<UserAssignmentResponse>? assignments)
     {
@@ -652,5 +753,267 @@ public sealed class UserService(
         if (assignment.SelectedRoleId.HasValue)
             return [assignment.SelectedRoleId.Value];
         return [];
+    }
+
+    public async Task<RemoveUserViewModel?> GetRemoveUserViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+
+            if (pendingInviteId.HasValue)
+            {
+                var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct);
+                var invite = invites.FirstOrDefault(i => i.PendingInviteId == pendingInviteId.Value);
+                if (invite == null) return null;
+
+                var displayName = !string.IsNullOrWhiteSpace(invite.FirstName) && !string.IsNullOrWhiteSpace(invite.LastName)
+                    ? $"{invite.FirstName} {invite.LastName}"
+                    : string.Empty;
+
+                return new RemoveUserViewModel(
+                    OrganisationName: org.Name,
+                    OrganisationSlug: org.Slug,
+                    UserDisplayName: displayName,
+                    Email: invite.Email,
+                    CurrentRole: invite.OrganisationRole,
+                    MemberSinceFormatted: invite.CreatedAt.ToString("d MMMM yyyy"),
+                    CdpPersonId: null,
+                    PendingInviteId: pendingInviteId.Value);
+            }
+
+            if (cdpPersonId.HasValue)
+            {
+                var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId.Value, ct);
+                if (user == null) return null;
+
+                var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                    ? $"{user.FirstName} {user.LastName}"
+                    : string.Empty;
+
+                return new RemoveUserViewModel(
+                    OrganisationName: org.Name,
+                    OrganisationSlug: org.Slug,
+                    UserDisplayName: displayName,
+                    Email: user.Email ?? string.Empty,
+                    CurrentRole: user.OrganisationRole,
+                    MemberSinceFormatted: user.CreatedAt.ToString("d MMMM yyyy"),
+                    CdpPersonId: cdpPersonId.Value,
+                    PendingInviteId: null);
+            }
+
+            return null;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<bool> IsEmailAlreadyInOrganisationAsync(string organisationSlug, string email, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct) ?? new List<OrganisationUserResponse>();
+            var invites = await apiClient.InvitesAllAsync(org.CdpOrganisationGuid, ct) ?? new List<PendingOrganisationInviteResponse>();
+            return users.Any(u => u.Email?.Equals(email, StringComparison.OrdinalIgnoreCase) == true)
+                || invites.Any(i => string.Equals(i.Email, email, StringComparison.OrdinalIgnoreCase));
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsLastOwnerAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var users = await apiClient.UsersAll2Async(org.CdpOrganisationGuid, ct) ?? new List<OrganisationUserResponse>();
+            var owners = users.Where(u => u.OrganisationRole == OrganisationRole.Owner).ToList();
+            return owners.Count == 1 && owners[0].CdpPersonId == cdpPersonId;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsOwnerOrAdminAsync(string organisationSlug, string userUrn, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET3Async(org.CdpOrganisationGuid, userUrn, ct);
+            return user?.OrganisationRole is OrganisationRole.Owner or OrganisationRole.Admin;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> IsCurrentUserAsync(string organisationSlug, Guid cdpPersonId, string userUrn, CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var currentUser = await apiClient.UsersGET3Async(org.CdpOrganisationGuid, userUrn, ct);
+            return currentUser?.CdpPersonId == cdpPersonId;
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return false;
+        }
+    }
+
+    public async Task<bool> RemoveUserAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+
+            if (pendingInviteId.HasValue)
+            {
+                await apiClient.InvitesDELETEAsync(org.CdpOrganisationGuid, pendingInviteId.Value, ct);
+                return true;
+            }
+
+            if (cdpPersonId.HasValue)
+            {
+                // TODO: delete user when endpoint is available. In the meantime, we can only delete pending invites, not existing users.
+                return true;
+            }
+
+            return false;
+        }
+        catch (ApiClient.ApiException)
+        {
+            return false;
+        }
+    }
+
+    public async Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            var fullName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+            var memberSince = user.JoinedAt.HasValue
+                ? user.JoinedAt.Value.ToString("dd MMMM yyyy")
+                : "Not available";
+
+            var applicationAccess = user.ApplicationAssignments?
+                .Where(assignment => assignment.Application != null)
+                .Select(assignment => new UserApplicationAccessDetailViewModel(
+                    ApplicationId: assignment.Application!.Id,
+                    ApplicationClientId: assignment.Application!.ClientId,
+                    ApplicationName: assignment.Application!.Name,
+                    ApplicationDescription: assignment.Application!.Description,
+                    Permissions: assignment.Roles?.FirstOrDefault()?.Permissions?.Select(permission => permission.Name).ToList() ?? [],
+                    AssignedDate: assignment.AssignedAt ?? DateTime.MinValue,
+                    AssignedByEmail: assignment.AssignedBy ?? string.Empty,
+                    ApplicationRole: assignment.Roles!.FirstOrDefault()!.Name))
+                .ToList() ?? [];
+
+            return new UserDetailsViewModel(
+                Organisation: org,
+                CdpPersonId: user.CdpPersonId ?? cdpPersonId,
+                FullName: fullName,
+                Email: user.Email ?? string.Empty,
+                OrganisationRole: user.OrganisationRole,
+                MemberSince: memberSince,
+                ApplicationAccess: applicationAccess);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return null;
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (assignment == null) return null;
+
+            var displayName = !string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName)
+                ? $"{user.FirstName} {user.LastName}"
+                : string.Empty;
+
+            var roleName = string.Join(", ", (assignment.Roles ?? [])
+                .Select(r => r.Name)
+                .Where(n => !string.IsNullOrWhiteSpace(n)));
+
+            return new RemoveApplicationViewModel(
+                OrganisationSlug: org.Slug,
+                UserDisplayName: displayName,
+                UserEmail: user.Email ?? string.Empty,
+                ApplicationName: assignment.Application?.Name ?? string.Empty,
+                ApplicationSlug: assignment.Application?.ClientId ?? string.Empty,
+                AssignmentId: assignment.Id,
+                OrgId: org.Id,
+                UserPrincipalId: assignment.UserPrincipalId ?? string.Empty,
+                RoleName: roleName,
+                AssignedAt: assignment.AssignedAt,
+                AssignedByName: assignment.AssignedBy,
+                CdpPersonId: cdpPersonId);
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return null;
+        }
+    }
+
+    public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default)
+    {
+        try
+        {
+            var org = await apiClient.BySlugAsync(organisationSlug, ct);
+            var user = await apiClient.UsersGET2Async(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var assignment = (user.ApplicationAssignments ?? [])
+                .FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (assignment == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+            var userPrincipalId = assignment.UserPrincipalId ?? cdpPersonId.ToString();
+            await apiClient.AssignmentsDELETEAsync(org.Id, userPrincipalId, assignment.Id, ct);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
+        }
     }
 }

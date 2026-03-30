@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Data;
+using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.UserManagement.Infrastructure.Repositories;
@@ -45,4 +46,22 @@ public class UserOrganisationMembershipRepository(UserManagementDbContext contex
         return await DbSet
             .AnyAsync(m => m.CdpPersonId == cdpPersonId && m.OrganisationId == organisationId && m.IsActive, cancellationToken);
     }
+
+    public async Task<UserOrganisationMembership?> GetWithOrganisationAndRoleAsync(int id, CancellationToken cancellationToken = default) =>
+        await DbSet
+            .Include(m => m.Organisation)
+            .Include(m => m.OrganisationRoleEntity)
+            .FirstOrDefaultAsync(m => m.Id == id, cancellationToken);
+
+    public async Task<OrganisationRoleEntity?> GetOrganisationRoleAsync(OrganisationRole role, CancellationToken cancellationToken = default) =>
+        await Context.Set<OrganisationRoleEntity>()
+            .FirstOrDefaultAsync(d => d.Id == (int)role, cancellationToken);
+
+    public async Task<int> CountActiveOwnersByOrganisationIdAsync(
+        int organisationId, CancellationToken cancellationToken = default) =>
+        await DbSet.CountAsync(
+            m => m.OrganisationId == organisationId
+                 && m.IsActive
+                 && m.OrganisationRoleId == (int)OrganisationRole.Owner,
+            cancellationToken);
 }

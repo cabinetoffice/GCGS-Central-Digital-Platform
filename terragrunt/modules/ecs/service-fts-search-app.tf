@@ -30,13 +30,25 @@ module "ecs_service_fts_app" {
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.fts_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
-  extra_host_headers     = var.fts_extra_host_headers
+  extra_host_headers     = []
   family                 = "app"
   internal_alb_enabled   = local.use_internal_service_urls
   internal_domain        = local.internal_domain
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "dotnet-${var.service_configs.fts_app.name}"
   listener_priority      = var.service_configs.fts_app.listener_priority
+  path_routing_rules = [
+    {
+      host_headers  = var.fts_extra_host_headers
+      path_patterns = ["/search/opportunities", "/search/contracts", "/contracts/*"]
+      priority      = var.service_configs.fts_app.listener_priority - 5
+    }
+  ]
+  additional_external_target_groups = [
+    {
+      name_suffix = "ov1"
+    }
+  ]
   memory                 = var.service_configs.fts_app.memory
   name                   = var.service_configs.fts_app.name
   private_subnet_ids     = var.private_subnet_ids

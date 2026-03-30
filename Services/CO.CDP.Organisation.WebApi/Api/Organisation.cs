@@ -15,7 +15,7 @@ using System.Reflection;
 using Address = CO.CDP.OrganisationInformation.Address;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
-using Person = CO.CDP.Organisation.WebApi.Model.Person;
+using WebApiPerson = CO.CDP.Organisation.WebApi.Model.Person;
 
 namespace CO.CDP.Organisation.WebApi.Api;
 
@@ -785,11 +785,12 @@ public static class EndpointExtensions
     {
         app.MapGet("/{organisationId}/persons",
             [OrganisationAuthorize(
-                [AuthenticationChannel.OneLogin],
+                [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                 [Constants.OrganisationPersonScope.Admin],
                 OrganisationIdLocation.Path,
-                [Constants.PersonScope.SupportAdmin])]
-        async (Guid organisationId, IUseCase<Guid, IEnumerable<Person>> useCase) =>
+                [Constants.PersonScope.SupportAdmin],
+                apiKeyScopes: [Constants.ApiKeyScopes.ReadOrganisationData])]
+        async (Guid organisationId, IUseCase<Guid, IEnumerable<WebApiPerson>> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")
@@ -816,7 +817,7 @@ public static class EndpointExtensions
                 [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor, Constants.OrganisationPersonScope.Viewer],
                 OrganisationIdLocation.Path,
                 [Constants.PersonScope.SupportAdmin])]
-        async (Guid organisationId, string role, IUseCase<(Guid, string), IEnumerable<Person>> useCase) =>
+        async (Guid organisationId, string role, IUseCase<(Guid, string), IEnumerable<WebApiPerson>> useCase) =>
                     await useCase.Execute((organisationId, role))
                         .AndThen(persons => persons != null ? Results.Ok(persons) : Results.NotFound()))
             .Produces<List<Model.Person>>(StatusCodes.Status200OK, "application/json")

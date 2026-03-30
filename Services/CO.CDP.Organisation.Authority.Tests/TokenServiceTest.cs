@@ -59,7 +59,7 @@ public class TokenServiceTest
         claims.FirstOrDefault(c => c.Type == "role")?.Value.Should().Be(string.Empty);
         claims.FirstOrDefault(c => c.Type == "cdp_claims").Should().BeNull();
 
-        _userManagementClientMock.Verify(c => c.UsersAsync(It.IsAny<string>()), Times.Never);
+        _userManagementClientMock.Verify(c => c.UsersGETAsync(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -70,7 +70,7 @@ public class TokenServiceTest
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
         var userClaims = new ApiClient.UserClaims([], "urn:test");
-        _userManagementClientMock.Setup(c => c.UsersAsync(_userUrn))
+        _userManagementClientMock.Setup(c => c.UsersGETAsync(_userUrn))
             .ReturnsAsync(userClaims);
 
         var tokenService = CreateTokenService(claimsApiEnabled: true);
@@ -84,7 +84,7 @@ public class TokenServiceTest
         cdpClaims.Should().NotBeNull();
         cdpClaims!.Value.Should().Contain("urn:test");
 
-        _userManagementClientMock.Verify(c => c.UsersAsync(_userUrn), Times.Once);
+        _userManagementClientMock.Verify(c => c.UsersGETAsync(_userUrn), Times.Once);
     }
 
     [Fact]
@@ -94,7 +94,7 @@ public class TokenServiceTest
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
-        _userManagementClientMock.Setup(c => c.UsersAsync(_userUrn))
+        _userManagementClientMock.Setup(c => c.UsersGETAsync(_userUrn))
             .ThrowsAsync(new Exception("API failure"));
 
         var tokenService = CreateTokenService(claimsApiEnabled: true);

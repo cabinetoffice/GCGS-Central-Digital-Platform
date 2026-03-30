@@ -28,6 +28,12 @@ resource "aws_cloudwatch_log_group" "opensearch_admin" {
   tags              = var.tags
 }
 
+resource "aws_cloudwatch_log_group" "opensearch_debugtask" {
+  name              = "/ecs/${var.tools_configs.opensearch_debugtask.name}"
+  retention_in_days = var.environment == "production" ? 0 : 90
+  tags              = var.tags
+}
+
 resource "aws_cloudwatch_log_group" "opensearch_gateway" {
   name              = "/ecs/${var.tools_configs.opensearch_gateway.name}"
   retention_in_days = var.environment == "production" ? 0 : 90

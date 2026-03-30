@@ -1,6 +1,7 @@
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Services;
 
@@ -59,4 +60,62 @@ public interface IUserService
         Guid? inviteGuid,
         IReadOnlyList<ApplicationRoleAssignmentPostModel> applicationRoleAssignments,
         CancellationToken ct = default);
+
+    Task<RemoveUserViewModel?> GetRemoveUserViewModelAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
+
+    Task<bool> RemoveUserAsync(
+        string organisationSlug,
+        Guid? cdpPersonId,
+        int? pendingInviteId,
+        CancellationToken ct = default);
+
+    Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
+    Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
+    Task<UserDetailsViewModel?> GetUserDetailsViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
+    Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        string clientId,
+        CancellationToken ct = default);
+
+    Task<bool> IsEmailAlreadyInOrganisationAsync(
+        string organisationSlug,
+        string email,
+        CancellationToken ct = default);
+
+    Task<bool> IsLastOwnerAsync(
+        string organisationSlug,
+        Guid cdpPersonId,
+        CancellationToken ct = default);
+
+    Task<bool> IsOwnerOrAdminAsync(
+        string organisationSlug,
+        string userUrn,
+        CancellationToken ct = default);
+
+    Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct);
+
 }

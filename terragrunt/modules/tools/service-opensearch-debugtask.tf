@@ -1,0 +1,42 @@
+module "ecs_service_opensearch_debugtask" {
+  source = "../ecs-service"
+
+  container_definitions = templatefile(
+    "${path.module}/templates/task-definitions/${var.opensearch_debugtask_config.name}.json.tftpl",
+    {
+      account_id          = data.aws_caller_identity.current.account_id
+      cpu                 = var.opensearch_debugtask_config.cpu
+      environment         = title(var.environment)
+      image               = "public.ecr.aws/aws-observability/aws-sigv4-proxy:1.11"
+      lg_name             = aws_cloudwatch_log_group.opensearch_debugtask.name
+      lg_prefix           = "tools"
+      lg_region           = data.aws_region.current.region
+      memory              = var.opensearch_debugtask_config.memory
+      name                = var.opensearch_debugtask_config.name
+      opensearch_endpoint = var.opensearch_endpoint
+      service_port        = var.opensearch_debugtask_config.port
+    }
+  )
+
+  cluster_id             = var.ecs_cluster_id
+  cpu                    = var.opensearch_debugtask_config.cpu
+  desired_count          = 1
+  ecs_alb_sg_id          = var.alb_tools_sg_id
+  ecs_listener_arn       = aws_lb_listener.tools.arn
+  ecs_service_base_sg_id = var.ecs_sg_id
+  family                 = "tools"
+  healthcheck_path       = "/"
+  memory                 = var.opensearch_debugtask_config.memory
+  name                   = var.opensearch_debugtask_config.name
+  private_subnet_ids     = var.private_subnet_ids
+  product                = var.product
+  public_domain          = var.public_domain
+  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = var.opensearch_debugtask_config.port
+  tags                   = var.tags
+  user_pool_arn          = var.user_pool_arn_opensearch_debugtask
+  user_pool_client_id    = var.user_pool_client_id_opensearch_debugtask
+  user_pool_domain       = var.user_pool_domain_opensearch_debugtask
+  vpc_id                 = var.vpc_id
+}

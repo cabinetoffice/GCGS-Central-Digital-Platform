@@ -29,7 +29,7 @@
             <li>@StaticTextResource.FindAndApply_FindAGrant_List_NonProfit</li>
             <li>@StaticTextResource.FindAndApply_FindAGrant_List_LocalAuthorities</li>
         </ul>
-        <a href="https://www.find-government-grants.service.gov.uk/" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+        <a href="@Model.FindAGrantUrl" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
             @StaticTextResource.FindAndApply_FindAGrant_Button
         </a>
 
@@ -41,7 +41,7 @@
             <li>@StaticTextResource.FindAndApply_ManageAGrant_List_BuildForm</li>
             <li>@StaticTextResource.FindAndApply_ManageAGrant_List_ReviewApplications</li>
         </ul>
-        <a href="https://find-government-grants.service.gov.uk/apply/admin/dashboard" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+        <a href="@Model.ManageAGrantUrl" role="button" draggable="false" class="govuk-button govuk-button--secondary" data-module="govuk-button">
             @StaticTextResource.FindAndApply_ManageAGrant_Button
         </a>
 

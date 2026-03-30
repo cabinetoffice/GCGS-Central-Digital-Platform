@@ -58,8 +58,9 @@ data "aws_iam_policy_document" "opensearch_logs" {
       "${aws_cloudwatch_log_group.search_slow.arn}:*",
       aws_cloudwatch_log_group.es_application.arn,
       "${aws_cloudwatch_log_group.es_application.arn}:*",
+      aws_cloudwatch_log_group.audit.arn,
+      "${aws_cloudwatch_log_group.audit.arn}:*",
     ]
   }
 }
-
 

@@ -62,6 +62,15 @@ resource "aws_ecs_service" "this" {
   }
 
   dynamic "load_balancer" {
+    for_each = var.alb_enabled ? aws_lb_target_group.external_extra : {}
+    content {
+      target_group_arn = load_balancer.value.arn
+      container_name   = var.name
+      container_port   = var.service_port
+    }
+  }
+
+  dynamic "load_balancer" {
     for_each = var.internal_alb_enabled ? aws_lb_target_group.internal : []
     content {
       target_group_arn = load_balancer.value.arn

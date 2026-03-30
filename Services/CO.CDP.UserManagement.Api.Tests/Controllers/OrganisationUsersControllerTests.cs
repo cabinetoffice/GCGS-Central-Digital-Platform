@@ -16,17 +16,25 @@ namespace CO.CDP.UserManagement.Api.Tests.Controllers;
 public class OrganisationUsersControllerTests
 {
     private readonly Mock<IOrganisationUserService> _organisationUserService;
-    private readonly Mock<IPersonLookupService> _personLookupService;
+    private readonly Mock<IPersonApiAdapter> _personLookupService;
+    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter;
     private readonly OrganisationUsersController _controller;
 
     public OrganisationUsersControllerTests()
     {
         _organisationUserService = new Mock<IOrganisationUserService>();
-        _personLookupService = new Mock<IPersonLookupService>();
+        _personLookupService = new Mock<IPersonApiAdapter>();
+        _organisationApiAdapter = new Mock<IOrganisationApiAdapter>();
         var logger = new Mock<ILogger<OrganisationUsersController>>();
+
+        _organisationApiAdapter
+            .Setup(a => a.GetOrganisationPersonsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Array.Empty<CO.CDP.UserManagement.Core.Models.OiOrganisationPerson>());
+
         _controller = new OrganisationUsersController(
             _organisationUserService.Object,
             _personLookupService.Object,
+            _organisationApiAdapter.Object,
             logger.Object);
     }
 
@@ -41,24 +49,19 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-1",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 1, 1, 0, 0, 0, TimeSpan.Zero)
         };
-        var personDetails = new PersonDetails
-        {
-            CdpPersonId = personId,
-            FirstName = "Test",
-            LastName = "User",
-            Email = "test@example.com"
-        };
         _organisationUserService.Setup(service => service.GetOrganisationUsersAsync(orgId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new[] { membership });
-        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, PersonDetails> { [personId] = personDetails });
+        _organisationApiAdapter
+            .Setup(a => a.GetOrganisationPersonsAsync(orgId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<OiOrganisationPerson>
+            {
+                new() { Id = personId, FirstName = "Test", LastName = "User", Email = "test@example.com", Scopes = [] }
+            });
 
         var result = await _controller.GetUsers(orgId, CancellationToken.None);
 
@@ -91,7 +94,7 @@ public class OrganisationUsersControllerTests
             Id = 2,
             OrganisationId = 10,
             UserPrincipalId = "user-2",
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 2, 1, 0, 0, 0, TimeSpan.Zero),
@@ -157,25 +160,20 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-3",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Admin,
+            OrganisationRoleId = (int)OrganisationRole.Admin,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero)
         };
         _organisationUserService.Setup(service => service.GetOrganisationUserByPersonIdAsync(orgId, personId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(membership);
-        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, PersonDetails>
+        _personLookupService.Setup(service => service.GetPersonDetailsAsync("user-3", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PersonDetails
             {
-                [personId] = new PersonDetails
-                {
-                    CdpPersonId = personId,
-                    FirstName = "Test",
-                    LastName = "User",
-                    Email = "test@example.com"
-                }
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com"
             });
 
         var result = await _controller.GetUserByPersonId(orgId, personId, CancellationToken.None);
@@ -241,25 +239,20 @@ public class OrganisationUsersControllerTests
             OrganisationId = 10,
             UserPrincipalId = "user-4",
             CdpPersonId = personId,
-            OrganisationRole = OrganisationRole.Member,
+            OrganisationRoleId = (int)OrganisationRole.Member,
             IsActive = true,
             JoinedAt = new DateTimeOffset(2024, 4, 1, 0, 0, 0, TimeSpan.Zero),
             CreatedAt = new DateTimeOffset(2024, 4, 1, 0, 0, 0, TimeSpan.Zero)
         };
         _organisationUserService.Setup(service => service.GetOrganisationUserAsync(orgId, "user-4", It.IsAny<CancellationToken>()))
             .ReturnsAsync(membership);
-        _personLookupService.Setup(service => service.GetPersonDetailsByIdsAsync(
-                It.IsAny<IEnumerable<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Dictionary<Guid, PersonDetails>
+        _personLookupService.Setup(service => service.GetPersonDetailsAsync("user-4", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new PersonDetails
             {
-                [personId] = new PersonDetails
-                {
-                    CdpPersonId = personId,
-                    FirstName = "Test",
-                    LastName = "User",
-                    Email = "test@example.com"
-                }
+                CdpPersonId = personId,
+                FirstName = "Test",
+                LastName = "User",
+                Email = "test@example.com"
             });
 
         var result = await _controller.GetUser(orgId, "user-4", CancellationToken.None);
@@ -268,5 +261,64 @@ public class OrganisationUsersControllerTests
         var okResult = actionResult.Result.Should().BeOfType<OkObjectResult>().Subject;
         var response = okResult.Value.Should().BeOfType<OrganisationUserResponse>().Subject;
         response.Email.Should().Be("test@example.com");
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenValid_ReturnsNoContent()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .Returns(Task.CompletedTask);
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NoContentResult>();
+        _organisationUserService.Verify(
+            s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenOrganisationNotFound_ReturnsNotFound()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EntityNotFoundException("Organisation", orgId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenMembershipNotFound_ReturnsNotFound()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new EntityNotFoundException("UserOrganisationMembership", personId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundObjectResult>();
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenLastOwner_ReturnsConflict()
+    {
+        var orgId = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        _organisationUserService
+            .Setup(s => s.RemoveUserFromOrganisationAsync(orgId, personId, It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new LastOwnerRemovalException(orgId));
+
+        var result = await _controller.RemoveUser(orgId, personId, CancellationToken.None);
+
+        result.Should().BeOfType<ConflictObjectResult>();
     }
 }

@@ -18,6 +18,7 @@ public sealed class ApplicationAccessSelectionViewModel
     public string ApplicationName { get; init; } = string.Empty;
     public string ApplicationDescription { get; init; } = string.Empty;
     public bool AllowsMultipleRoleAssignments { get; init; }
+    public bool IsEnabledByDefault { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }
     public List<int> SelectedRoleIds { get; set; } = [];

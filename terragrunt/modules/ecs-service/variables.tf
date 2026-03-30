@@ -10,6 +10,14 @@ variable "allowed_unauthenticated_paths" {
   default     = []
 }
 
+variable "additional_external_target_groups" {
+  description = "Optional extra target groups to attach to the ECS service."
+  type = list(object({
+    name_suffix = string
+  }))
+  default = []
+}
+
 variable "cluster_id" {
   description = "Cluster ID of which the service will be part of"
   type        = string
@@ -23,18 +31,6 @@ variable "container_definitions" {
 variable "cpu" {
   description = "Number of cpu units used by the task"
   type        = number
-}
-
-variable "force_new_deployment" {
-  description = "Force a new ECS deployment on every apply"
-  type        = bool
-  default     = false
-}
-
-variable "listener_rule_propagation_delay" {
-  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
-  type        = string
-  default     = "10s"
 }
 
 variable "deployment_maximum_percent" {
@@ -96,6 +92,18 @@ variable "family" {
   type        = string
 }
 
+variable "force_new_deployment" {
+  description = "Force a new ECS deployment on every apply"
+  type        = bool
+  default     = false
+}
+
+variable "health_check_grace_period_seconds" {
+  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
+  type        = number
+  default     = 60
+}
+
 variable "healthcheck_healthy_threshold" {
   description = "Health-check threshold"
   default     = 3
@@ -119,12 +127,6 @@ variable "healthcheck_path" {
 variable "healthcheck_timeout" {
   description = "Health-check timeout"
   default     = 6
-}
-
-variable "health_check_grace_period_seconds" {
-  description = "Grace period (in seconds) for ECS to ignore failing load balancer health checks on new tasks"
-  type        = number
-  default     = 60
 }
 
 variable "internal_alb_enabled" {
@@ -169,6 +171,12 @@ variable "listener_priority" {
   default     = null
 }
 
+variable "listener_rule_propagation_delay" {
+  description = "Delay after listener rule updates to allow ALB/TG association to propagate before ECS service update"
+  type        = string
+  default     = "10s"
+}
+
 variable "memory" {
   description = "Amount (in MiB) of memory used by the tas"
   type        = number
@@ -177,6 +185,16 @@ variable "memory" {
 variable "name" {
   description = "The service name"
   type        = string
+}
+
+variable "path_routing_rules" {
+  description = "Optional list of extra listener rules based on path patterns."
+  type = list(object({
+    host_headers  = list(string)
+    path_patterns = list(string)
+    priority      = number
+  }))
+  default = []
 }
 
 variable "private_subnet_ids" {

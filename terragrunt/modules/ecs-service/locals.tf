@@ -12,6 +12,21 @@ locals {
 
   listener_name                  = "cdp-${coalesce(var.listener_name, var.name)}"
   service_listener_rule_priority = var.listener_priority
+  external_listener_actions = var.user_pool_arn != null && var.user_pool_client_id != null && var.user_pool_domain != null ? [
+    {
+      order = 1
+      type  = "authenticate-cognito"
+    },
+    {
+      order = 2
+      type  = "forward"
+    }
+    ] : [
+    {
+      order = 1
+      type  = "forward"
+    }
+  ]
   tg_base_name_raw    = replace(local.listener_name, "cdp-", "")
   tg_base_name_abbrev = replace(
     replace(

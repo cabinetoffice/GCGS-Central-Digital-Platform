@@ -29,9 +29,8 @@ public class InviteRoleMappingConfiguration : IEntityTypeConfiguration<InviteRol
             .HasColumnName("organisation_id")
             .IsRequired();
 
-        builder.Property(i => i.OrganisationRole)
-            .HasColumnName("organisation_role")
-            .HasConversion<string>()
+        builder.Property(i => i.OrganisationRoleId)
+            .HasColumnName("organisation_role_id")
             .IsRequired();
 
         // Soft delete properties
@@ -55,5 +54,10 @@ public class InviteRoleMappingConfiguration : IEntityTypeConfiguration<InviteRol
             .WithOne(a => a.InviteRoleMapping)
             .HasForeignKey(a => a.InviteRoleMappingId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        builder.HasOne(i => i.OrganisationRoleEntity)
+            .WithMany(d => d.InviteRoleMappings)
+            .HasForeignKey(i => i.OrganisationRoleId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
