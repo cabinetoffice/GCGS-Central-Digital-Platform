@@ -1405,10 +1405,11 @@
           &lt;li&gt;to ensure ongoing confidentiality, integrity, availability and resilience of processing systems and services;&lt;/li&gt;
           &lt;li&gt;to comply with the rights of data subjects in respect of receiving privacy information, and access, rectification, deletion and portability of personal data;&lt;/li&gt;
           &lt;li&gt;to ensure that any consent based processing meets standards of active, informed consent, and that such consents are recorded and auditable;&lt;/li&gt;
-          &lt;li&gt;to ensure legal safeguards are in place to legitimise transfers of personal data outside the UK (if such transfers will take place); to maintain records of personal data processing activities; and to regularly test, assess and evaluate the effectiveness of the above measures.&lt;/li&gt;
+          &lt;li&gt;to ensure legal safeguards are in place to legitimise transfers of personal data outside the UK (if such transfers will take place);&lt;/li&gt;
+          &lt;li&gt;to maintain records of personal data processing activities; and to regularly test, assess and evaluate the effectiveness of the above measures.&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/div&gt;
-      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question&lt;/p&gt;
+      &lt;p class="govuk-hint"&gt;If you would like to provide this information in a document format, enter “not applicable” below and continue to the next question.&lt;/p&gt;
     </value>
   </data>
   <data name="DataProtection_05_Title" xml:space="preserve">
