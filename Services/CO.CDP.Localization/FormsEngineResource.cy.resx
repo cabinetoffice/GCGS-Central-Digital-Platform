@@ -1279,9 +1279,11 @@
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;
       Carbon Sero Net yw'r ymrwymiad i gydbwyso allyriadau nwyon tŷ gwydr â symiau cyfatebol a ddilëir erbyn 2050. Efallai y bydd angen i sefydliadau sydd o fewn y cwmpas gyflwyno Cynllun Lleihau Carbon wrth gynnig am gontractau penodol gan y llywodraeth. &lt;/p&gt; &lt;p class="govuk-body"&gt;
-      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso. &lt;/p&gt; &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch &lt;/h2&gt; &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys: &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso. &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch &lt;/h2&gt; &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys: &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li class="govuk-!-margin-top-2"&gt; y dyddiad y daw eich Cynllun Lleihau Carbon i ben&lt;/li&gt;
-        &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;  &lt;li class="govuk-!-margin-top-2"&gt; eich data blwyddyn sylfaen a blwyddyn adrodd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; eich llinell sylfaen a data blwyddyn adrodd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
     </value>
   </data>
 </root>
