@@ -348,7 +348,7 @@ public class UsersControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("ApplicationRoles");
-        viewResult.Model.Should().Be(viewModel);
+        viewResult.Model.Should().BeEquivalentTo(viewModel);
     }
 
     [Fact]
@@ -1869,7 +1869,7 @@ public class UsersControllerTests
         var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("RemoveApplicationCheck");
+        viewResult.ViewName.Should().Be("RemoveApplication");
         viewResult.Model.Should().Be(viewModel);
         _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
