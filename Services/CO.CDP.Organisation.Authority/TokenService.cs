@@ -17,7 +17,7 @@ public class TokenService(
     IConfigurationService configService,
     IPersonRepository personRepository,
     IAuthorityRepository authorityRepository,
-    ApiClient.UserManagementClient userManagementClient,
+    IServiceProvider serviceProvider,
     IOptions<FeaturesOptions> features) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
@@ -145,9 +145,17 @@ public class TokenService(
             logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from UserManagement.", urn);
             try
             {
-                var userClaims = await userManagementClient.UsersGETAsync(urn);
-                claims.Add(new Claim("cdp_claims", JsonSerializer.Serialize(userClaims), JsonClaimValueTypes.Json));
-                logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
+                var userClient = serviceProvider.GetService<ApiClient.UserManagementClient>();
+                if (userClient == null)
+                {
+                    logger.LogWarning("UserManagementClient not registered despite ClaimsApiEnabled; skipping claims enrichment.");
+                }
+                else
+                {
+                    var userClaims = await userClient.UsersGETAsync(urn);
+                    claims.Add(new Claim("cdp_claims", JsonSerializer.Serialize(userClaims), JsonClaimValueTypes.Json));
+                    logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
+                }
             }
             catch (Exception ex)
             {
