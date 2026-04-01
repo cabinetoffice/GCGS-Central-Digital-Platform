@@ -17,7 +17,7 @@ public class TokenService(
     IConfigurationService configService,
     IPersonRepository personRepository,
     IAuthorityRepository authorityRepository,
-    ApiClient.UserManagementClient userManagementClient,
+    ApiClient.UserManagementClient? userManagementClient,
     IOptions<FeaturesOptions> features) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
