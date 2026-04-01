@@ -2253,6 +2253,151 @@ public class UsersControllerTests
     }
 
     [Fact]
+    public async Task RemoveUser_WhenCurrentUserIsAdminAndTargetIsOwner_ReturnsViewWithPermissionError()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        var orgId = Guid.NewGuid();
+        var cdpClaimsJson = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            UserPrincipalId = "urn:fdc:test",
+            Organisations = new[]
+            {
+                new { OrganisationId = orgId, OrganisationName = "Org", OrganisationRole = "Admin", Applications = Array.Empty<object>() }
+            }
+        });
+
+        var viewModel = RemoveUserViewModel.Empty with
+        {
+            OrganisationName = "Org", OrganisationSlug = "org",
+            Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
+            CdpPersonId = cdpPersonId
+        };
+        _userService.Setup(s =>
+                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        _userService.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new CO.CDP.UserManagement.Shared.Responses.OrganisationResponse
+            {
+                Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org",
+                IsActive = true, CreatedAt = DateTimeOffset.UtcNow
+            });
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim("email", "admin@example.com"),
+                    new Claim("cdp_claims", cdpClaimsJson,
+                        Microsoft.IdentityModel.JsonWebTokens.JsonClaimValueTypes.Json)
+                }, "test"))
+            }
+        };
+
+        var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
+        var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be("Remove");
+        _controller.ModelState[string.Empty]!.Errors.Should()
+            .Contain(e => e.ErrorMessage.Contains("permission") || e.ErrorMessage.Contains("Owner"));
+        _userService.Verify(
+            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(),
+                It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenCurrentUserIsOwnerAndTargetIsOwner_ProceedsWithRemoval()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        var orgId = Guid.NewGuid();
+        var cdpClaimsJson = System.Text.Json.JsonSerializer.Serialize(new
+        {
+            UserPrincipalId = "urn:fdc:test",
+            Organisations = new[]
+            {
+                new { OrganisationId = orgId, OrganisationName = "Org", OrganisationRole = "Owner", Applications = Array.Empty<object>() }
+            }
+        });
+
+        var viewModel = RemoveUserViewModel.Empty with
+        {
+            OrganisationName = "Org", OrganisationSlug = "org",
+            Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
+            CdpPersonId = cdpPersonId
+        };
+        _userService.Setup(s =>
+                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        _userService.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new CO.CDP.UserManagement.Shared.Responses.OrganisationResponse
+            {
+                Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org",
+                IsActive = true, CreatedAt = DateTimeOffset.UtcNow
+            });
+        _userService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim("email", "owner@example.com"),
+                    new Claim("cdp_claims", cdpClaimsJson,
+                        Microsoft.IdentityModel.JsonWebTokens.JsonClaimValueTypes.Json)
+                }, "test"))
+            }
+        };
+
+        var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
+        var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>();
+        _userService.Verify(
+            s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveUser_WhenCdpClaimsAbsent_DoesNotBlockRemoval()
+    {
+        var cdpPersonId = Guid.NewGuid();
+        var viewModel = RemoveUserViewModel.Empty with
+        {
+            OrganisationName = "Org", OrganisationSlug = "org",
+            Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
+            CdpPersonId = cdpPersonId
+        };
+        _userService.Setup(s =>
+                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(viewModel);
+        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        _userService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        _controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                // No cdp_claims claim → IsAdminTargetingOwnerAsync returns false
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "someone@example.com") }))
+            }
+        };
+
+        var input = RemoveUserViewModel.Empty with { RemoveConfirmed = true };
+        var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>();
+    }
+
+    [Fact]
     public async Task RemoveSuccess_WhenViewModelIsNull_RedirectsToIndex()
     {
         var organisationSlug = "test-org";
