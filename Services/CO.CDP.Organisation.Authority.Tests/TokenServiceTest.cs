@@ -24,16 +24,20 @@ public class TokenServiceTest
     private readonly Mock<IPersonRepository> _personRepositoryMock = new();
     private readonly Mock<IAuthorityRepository> _authorityRepositoryMock = new();
     private readonly Mock<ApiClient.UserManagementClient> _userManagementClientMock = new("http://localhost", new HttpClient());
+    private readonly Mock<IServiceProvider> _serviceProviderMock = new();
     private readonly TokenService _tokenService;
 
     public TokenServiceTest()
     {
+        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
+            .Returns(_userManagementClientMock.Object);
+
         _tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
-             _personRepositoryMock.Object,
+            _personRepositoryMock.Object,
             _authorityRepositoryMock.Object,
-            _userManagementClientMock.Object,
+            _serviceProviderMock.Object,
             Options.Create(new FeaturesOptions { ClaimsApiEnabled = false }));
     }
 
@@ -260,12 +264,16 @@ public class TokenServiceTest
 
     private TokenService CreateTokenService(bool claimsApiEnabled)
     {
+        // Ensure service provider returns our mock client when requested
+        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
+            .Returns(_userManagementClientMock.Object);
+
         return new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
             _personRepositoryMock.Object,
             _authorityRepositoryMock.Object,
-            _userManagementClientMock.Object,
+            _serviceProviderMock.Object,
             Options.Create(new FeaturesOptions { ClaimsApiEnabled = claimsApiEnabled }));
     }
 }
