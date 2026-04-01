@@ -18,7 +18,7 @@ resource "aws_lb_listener_rule" "public_domain_fts_path_routing" {
 
   condition {
     path_pattern {
-      values = ["/search/opportunities*", "/search/contracts*", "/contracts/*", "/api/cpv-codes/search*"]
+      values = ["/search/opportunities*", "/search/contracts*", "/contracts/*"]
     }
   }
 
@@ -77,6 +77,33 @@ resource "aws_lb_listener_rule" "public_domain_fts_assets_extra_path_routing" {
   }
 
   tags = merge(var.tags, { Name : "public-fts-assets-extra-path-routing" })
+}
+
+resource "aws_lb_listener_rule" "public_domain_fts_cpv_path_routing" {
+  count = var.environment != "orchestrator" ? 1 : 0
+
+  listener_arn = aws_lb_listener.ecs_php.arn
+  priority     = 208
+
+  action {
+    type             = "forward"
+    target_group_arn = module.ecs_service_fts_app.service_extra_target_group_arns["ov1"]
+    order            = 1
+  }
+
+  condition {
+    host_header {
+      values = var.fts_extra_domains
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/api/cpv-codes/search*"]
+    }
+  }
+
+  tags = merge(var.tags, { Name : "public-fts-cpv-path-routing" })
 }
 
 resource "aws_lb_listener_rule" "public_domain_commercial_tools_path_routing" {
