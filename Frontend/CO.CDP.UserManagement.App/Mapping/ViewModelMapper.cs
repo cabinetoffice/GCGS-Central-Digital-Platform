@@ -1,5 +1,4 @@
 using CO.CDP.UserManagement.Shared.Enums;
-using CO.CDP.UserManagement.WebApiClient;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Responses;
 
@@ -7,20 +6,6 @@ namespace CO.CDP.UserManagement.App.Mapping;
 
 public static class ViewModelMapper
 {
-    public static HomeViewModel ToHomeViewModel(
-        OrganisationResponse organisation,
-        IReadOnlyList<OrganisationApplicationResponse> enabledApps,
-        IReadOnlyList<RoleResponse> roles,
-        IReadOnlyList<OrganisationUserResponse> users) =>
-        new(
-            OrganisationName: organisation.Name,
-            Stats: CalculateStats(enabledApps, roles, users),
-            EnabledApplications: enabledApps
-                .Where(a => a.IsActive)
-                .Select(ToEnabledApplicationViewModel)
-                .ToList()
-        );
-
     public static ApplicationsViewModel ToApplicationsViewModel(
         OrganisationResponse organisation,
         IReadOnlyList<ApplicationResponse> allApplications,
@@ -52,10 +37,12 @@ public static class ViewModelMapper
         {
             enabledList = enabledList.Where(a =>
                 a.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                (!string.IsNullOrEmpty(a.Description) && a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
+                (!string.IsNullOrEmpty(a.Description) &&
+                 a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
             availableList = availableList.Where(a =>
                 a.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                (!string.IsNullOrEmpty(a.Description) && a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
+                (!string.IsNullOrEmpty(a.Description) &&
+                 a.Description.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))).ToList();
         }
 
         if (!string.IsNullOrEmpty(selectedCategory))
@@ -87,17 +74,6 @@ public static class ViewModelMapper
         );
     }
 
-    public static EnabledApplicationViewModel ToEnabledApplicationViewModel(
-        OrganisationApplicationResponse orgApp) =>
-        new(
-            Id: orgApp.Application?.Id ?? 0,
-            Slug: orgApp.Application?.ClientId ?? string.Empty,
-            Name: orgApp.Application?.Name ?? string.Empty,
-            Description: orgApp.Application?.Description ?? string.Empty,
-            UsersAssigned: 0, // TODO: Calculate from user assignments
-            RolesAvailable: 0 // TODO: Calculate from roles
-        );
-
     public static ApplicationViewModel ToApplicationViewModel(
         OrganisationApplicationResponse orgApp,
         bool isEnabled) =>
@@ -109,8 +85,8 @@ public static class ViewModelMapper
             Category: orgApp.Application?.Category ?? string.Empty,
             IsEnabled: isEnabled,
             IsEnabledByDefault: orgApp.Application?.IsEnabledByDefault ?? false,
-            UsersAssigned: 0, // TODO: Calculate from user assignments
-            RolesAvailable: 0 // TODO: Calculate from roles
+            UsersAssigned: 0,
+            RolesAvailable: 0
         );
 
     public static ApplicationViewModel ToApplicationViewModel(
@@ -118,7 +94,7 @@ public static class ViewModelMapper
         bool isEnabled) =>
         new(
             Id: app.Id,
-            Slug: app.ClientId, // TODO: Use slug from API when available
+            Slug: app.ClientId,
             Name: app.Name,
             Description: app.Description ?? string.Empty,
             Category: app.Category ?? string.Empty,
@@ -126,35 +102,6 @@ public static class ViewModelMapper
             IsEnabledByDefault: app.IsEnabledByDefault,
             UsersAssigned: 0,
             RolesAvailable: 0
-        );
-
-    public static EnableApplicationViewModel ToEnableApplicationViewModel(
-        OrganisationResponse organisation,
-        ApplicationResponse application,
-        IReadOnlyList<RoleResponse> roles) =>
-        new(
-            OrganisationName: organisation.Name,
-            OrganisationSlug: organisation.Slug,
-            ApplicationId: application.Id,
-            ApplicationSlug: application.ClientId,
-            ApplicationName: application.Name,
-            ApplicationDescription: application.Description,
-            ApplicationCategory: application.Category,
-            SupportContact: null, // TODO: Add support contact when available
-            AvailableRoles: roles.Select(ToRoleViewModel).ToList()
-        );
-
-    public static EnableApplicationSuccessViewModel ToEnableSuccessViewModel(
-        OrganisationResponse organisation,
-        ApplicationResponse application) =>
-        new(
-            OrganisationName: organisation.Name,
-            OrganisationSlug: organisation.Slug,
-            ApplicationName: application.Name,
-            ApplicationSlug: application.ClientId,
-            EnabledBy: "Current User", // TODO: Get current user when available
-            EnabledAt: DateTimeOffset.UtcNow,
-            AvailableRoles: new List<string>() // TODO: Get role names when available
         );
 
     public static ApplicationDetailsViewModel ToApplicationDetailsViewModel(
@@ -165,7 +112,8 @@ public static class ViewModelMapper
     {
         var app = orgApp.Application!;
         var activeAssignments = userAssignments.Where(ua => ua.IsActive).ToList();
-        var totalPermissions = roles.SelectMany(r => r.Permissions ?? Enumerable.Empty<PermissionResponse>()).DistinctBy(p => p.Id).Count();
+        var totalPermissions = roles.SelectMany(r => r.Permissions ?? Enumerable.Empty<PermissionResponse>())
+            .DistinctBy(p => p.Id).Count();
 
         return new(
             OrganisationName: organisation.Name,
@@ -224,8 +172,8 @@ public static class ViewModelMapper
 
         return new(
             AssignmentId: assignment.Id,
-            UserName: assignment.UserPrincipalId ?? "Unknown User", // TODO: Get actual user name when available
-            UserEmail: assignment.UserPrincipalId ?? string.Empty, // TODO: Get actual email when available
+            UserName: assignment.UserPrincipalId ?? "Unknown User",
+            UserEmail: assignment.UserPrincipalId ?? string.Empty,
             RoleName: roleName,
             AssignedAt: assignment.AssignedAt ?? assignment.CreatedAt,
             AssignedBy: assignment.AssignedBy
@@ -239,7 +187,7 @@ public static class ViewModelMapper
         new(
             ApplicationsEnabled: enabledApps.Count(a => a.IsActive),
             TotalUsers: users.Count(user => user.Status == UserStatus.Active),
-            ActiveAssignments: 0, // TODO: Calculate from user assignments
+            ActiveAssignments: 0,
             RolesAssigned: roles.Count
         );
 }
