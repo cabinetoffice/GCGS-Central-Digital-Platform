@@ -198,6 +198,7 @@ builder.Services.AddScoped<IUserRemovalService, UserRemovalService>();
 builder.Services.AddScoped<IInviteUserStateStore, InviteUserSessionStore>();
 builder.Services.AddScoped<IChangeRoleStateStore, ChangeRoleSessionStore>();
 builder.Services.AddScoped<IChangeApplicationRoleStateStore, ChangeApplicationRoleSessionStore>();
+builder.Services.AddScoped<IRemoveInviteStateStore, RemoveInviteSessionStore>();
 builder.Services.AddScoped<IUserManagementApiAdapter, UserManagementApiAdapter>();
 
 var app = builder.Build();

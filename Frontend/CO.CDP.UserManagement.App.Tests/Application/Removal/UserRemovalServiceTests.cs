@@ -67,7 +67,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.GetInviteViewModelAsync("slug", 42, CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync("slug", Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -75,10 +75,12 @@ public class UserRemovalServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetInviteViewModelAsync_InviteNotFound_ReturnsNull()
     {
+        var inviteGuid = Guid.NewGuid();
         SetupOrg();
-        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<PendingOrganisationInviteResponse>());
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync((PendingOrganisationInviteResponse?)null);
 
-        var result = await _sut.GetInviteViewModelAsync("test-org", 999, CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync("test-org", inviteGuid, CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -86,11 +88,12 @@ public class UserRemovalServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetInviteViewModelAsync_ValidInvite_SetsIsPendingTrue()
     {
+        var inviteGuid = Guid.NewGuid();
         SetupOrg();
-        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default))
-            .ReturnsAsync(new[] { MakeInvite(pendingInviteId: 42) });
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(MakeInvite(inviteGuid: inviteGuid, pendingInviteId: 42));
 
-        var result = await _sut.GetInviteViewModelAsync("test-org", 42, CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync("test-org", inviteGuid, CancellationToken.None);
 
         result!.PendingInviteId.Should().Be(42);
     }
@@ -189,7 +192,20 @@ public class UserRemovalServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.RemoveInviteAsync("slug", 42, CancellationToken.None);
+        var result = await _sut.RemoveInviteAsync("slug", Guid.NewGuid(), CancellationToken.None);
+
+        result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.NotFound);
+    }
+
+    [Fact]
+    public async Task RemoveInviteAsync_InviteNotFound_ReturnsNotFound()
+    {
+        var inviteGuid = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync((PendingOrganisationInviteResponse?)null);
+
+        var result = await _sut.RemoveInviteAsync("test-org", inviteGuid, CancellationToken.None);
 
         result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.NotFound);
     }
@@ -197,11 +213,14 @@ public class UserRemovalServiceTests : AdapterTestFixture
     [Fact]
     public async Task RemoveInviteAsync_CallsAdapterWithCorrectIds()
     {
+        var inviteGuid = Guid.NewGuid();
         SetupOrg();
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(MakeInvite(inviteGuid: inviteGuid, pendingInviteId: 42));
         _adapter.Setup(a => a.CancelInviteAsync(OrgGuid, 42, default))
             .ReturnsAsync(SuccessResult());
 
-        var result = await _sut.RemoveInviteAsync("test-org", 42, CancellationToken.None);
+        var result = await _sut.RemoveInviteAsync("test-org", inviteGuid, CancellationToken.None);
 
         result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.Success);
         _adapter.Verify(a => a.CancelInviteAsync(OrgGuid, 42, default), Times.Once);
