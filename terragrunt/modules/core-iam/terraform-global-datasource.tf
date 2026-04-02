@@ -46,6 +46,8 @@ data "aws_iam_policy_document" "terraform_global" {
       "acm:AddTagsToCertificate",
       "acm:DeleteCertificate",
       "acm:DescribeCertificate",
+      "acm:ImportCertificate",
+      "acm:ListCertificates",
       "acm:ListTagsForCertificate",
       "acm:RequestCertificate",
       "iam:PassRole",
