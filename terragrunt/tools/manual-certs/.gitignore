@@ -1,0 +1,5 @@
+# Generated certs and certbot state
+*/certs/
+*/certbot/
+*/state/
+work/
