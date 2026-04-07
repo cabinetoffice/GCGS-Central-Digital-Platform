@@ -35,5 +35,10 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers
             string organisationSlug,
             Guid inviteGuid,
             CancellationToken ct);
+
+        Task<OrganisationRoleStepViewModel> GetOrganisationRoleStepViewModelAsync(
+            InviteUserState state,
+            bool returnToCheckAnswers,
+            CancellationToken ct);
     }
 }

@@ -3,6 +3,7 @@ using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Application.Removal.Implementations;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.App.Tests.TestFixtures;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
@@ -13,10 +14,11 @@ namespace CO.CDP.UserManagement.App.Tests.Application.Removal;
 public class UserRemovalServiceTests : AdapterTestFixture
 {
     private readonly Mock<IUserManagementApiAdapter> _adapter = new();
+    private readonly Mock<ICurrentUserService> _currentUserService = new();
     private readonly UserRemovalService _sut;
 
     public UserRemovalServiceTests()
-        => _sut = new UserRemovalService(_adapter.Object);
+        => _sut = new UserRemovalService(_adapter.Object, _currentUserService.Object);
 
     // ── GetUserViewModelAsync ─────────────────────────────────────────────────
 

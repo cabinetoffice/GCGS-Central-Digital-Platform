@@ -186,6 +186,7 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationOwnerOrAdminHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationOwnerHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
+builder.Services.AddScoped<CO.CDP.UserManagement.Core.Interfaces.ICurrentUserService, AppCurrentUserService>();
 builder.Services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
 builder.Services.AddScoped<IUsersQueryService, UsersQueryService>();
 builder.Services.AddScoped<IUserDetailsQueryService, UserDetailsQueryService>();

@@ -1,3 +1,5 @@
+using CO.CDP.UserManagement.Core.Models;
+
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
 /// <summary>
@@ -28,4 +30,10 @@ public interface ICurrentUserService
     /// </summary>
     /// <returns>The user identifier, or null if not authenticated.</returns>
     string? GetCurrentUserId();
+
+    /// <summary>
+    /// Gets the CDP claims object for the current user.
+    /// </summary>
+    /// <returns>The parsed UserClaims, or null if not available.</returns>
+    UserClaims? GetCdpClaims();
 }

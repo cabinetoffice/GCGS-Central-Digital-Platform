@@ -4,16 +4,21 @@ using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.UserManagement.Core.ApplicationRoles;
 
 namespace CO.CDP.UserManagement.App.Application.ApplicationRoles.Implementations;
 
 public class ApplicationRoleFlowService : IApplicationRoleFlowService
 {
     private readonly IUserManagementApiAdapter _adapter;
+    private readonly IChangeApplicationRoleStateStore _changeApplicationRoleStateStore;
 
-    public ApplicationRoleFlowService(IUserManagementApiAdapter adapter)
+    public ApplicationRoleFlowService(
+        IUserManagementApiAdapter adapter,
+        IChangeApplicationRoleStateStore changeApplicationRoleStateStore)
     {
         _adapter = adapter;
+        _changeApplicationRoleStateStore = changeApplicationRoleStateStore;
     }
 
     public async Task<ChangeUserApplicationRolesViewModel?> GetUserViewModelAsync(string organisationSlug,
@@ -38,7 +43,6 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
         var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
         if (invite is null) return null;
 
-        // Map invite application assignments to the same shape as user assignments
         var inviteAssignments = invite.ApplicationAssignments?.Select(a => new UserAssignmentResponse
         {
             Id = 0,
@@ -65,28 +69,72 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
             $"{invite.FirstName} {invite.LastName}", invite.Email, inviteAssignments, ct);
     }
 
-    public ChangeApplicationRolesCheckViewModel BuildCheckViewModel(ChangeApplicationRoleState state)
+    public async Task<ChangeUserApplicationRolesViewModel?> GetUserViewModelWithStateAsync(
+        string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        BuildAssignments(state);
-        var apps = state.Applications
-            .Where(a => a.GiveAccess)
-            .Select(a => new ChangedApplicationRoleViewModel
-            {
-                ApplicationName = a.ApplicationName,
-                CurrentRoleName = a.CurrentRoleName,
-                NewRoleName = !string.IsNullOrEmpty(a.SelectedRoleName)
-                    ? a.SelectedRoleName
-                    : string.Join(", ", (a.SelectedRoleIds ?? Enumerable.Empty<int>()).Select(id => id.ToString())),
-                IsNewAssignment = a.HasExistingAccess == false
-            })
-            .ToList();
+        var viewModel = await GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
+        if (viewModel is null) return null;
 
-        return new ChangeApplicationRolesCheckViewModel
+        var state = await GetValidatedStateAsync(organisationSlug, cdpPersonId, null, ct);
+        if (state is not null) MergeState(viewModel, state);
+
+        return viewModel;
+    }
+
+    public async Task<ChangeUserApplicationRolesViewModel?> GetInviteViewModelWithStateAsync(
+        string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    {
+        var viewModel = await GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        if (viewModel is null) return null;
+
+        var state = await GetValidatedStateAsync(organisationSlug, null, inviteGuid, ct);
+        if (state is not null) MergeState(viewModel, state);
+
+        return viewModel;
+    }
+
+    public ChangeApplicationRolesCheckViewModel BuildCheckViewModel(ChangeApplicationRoleState state) =>
+        new()
         {
             OrganisationSlug = state.OrganisationSlug,
             UserDisplayName = state.UserDisplayName,
             Email = state.Email,
-            ChangedApplications = apps,
+            IsPending = state.InviteGuid.HasValue,
+            CdpPersonId = state.CdpPersonId,
+            InviteGuid = state.InviteGuid,
+            ChangedApplications = state.Applications
+                .Where(a => (!a.HasExistingAccess && a.GiveAccess) || (a.HasExistingAccess && HasRoleChanged(a)))
+                .Select(a => new ChangedApplicationRoleViewModel
+                {
+                    ApplicationName = a.ApplicationName,
+                    CurrentRoleName = a.CurrentRoleName,
+                    NewRoleName = a.SelectedRoleName,
+                    IsNewAssignment = !a.HasExistingAccess
+                })
+                .ToList()
+        };
+
+    public ChangeApplicationRolesSuccessViewModel? BuildSuccessViewModel(
+        string organisationSlug, ChangeApplicationRoleState state)
+    {
+        var changedApplications = state.Applications
+            .Where(a => (!a.HasExistingAccess && a.GiveAccess) || (a.HasExistingAccess && HasRoleChanged(a)))
+            .Select(a => new ChangedApplicationRoleViewModel
+            {
+                ApplicationName = a.ApplicationName,
+                CurrentRoleName = a.CurrentRoleName,
+                NewRoleName = a.SelectedRoleName,
+                IsNewAssignment = !a.HasExistingAccess
+            })
+            .ToList();
+
+        if (changedApplications.Count == 0) return null;
+
+        return new ChangeApplicationRolesSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            ChangedApplications = changedApplications
         };
     }
 
@@ -101,27 +149,7 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
         var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
         if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
-        var mappedRequests = assignments.Select(a => new ApplicationRoleAssignmentRequest(
-            OrganisationApplicationId: a.OrganisationApplicationId,
-            ApplicationId: a.ApplicationId,
-            GiveAccess: a.GiveAccess,
-            SelectedRoleId: a.SelectedRoleId,
-            SelectedRoleIds: a.SelectedRoleIds
-        )).ToList();
-
-        var assignmentsForApi = mappedRequests.Select(r => new ApplicationRoleAssignment
-        {
-            OrganisationApplicationId = r.OrganisationApplicationId,
-            ApplicationId = r.ApplicationId,
-            RoleIds = r.GiveAccess
-                ? (r.SelectedRoleIds?.AsEnumerable() ?? (r.SelectedRoleId.HasValue
-                    ? new[] { r.SelectedRoleId.Value }
-                    : Enumerable.Empty<int>()))
-                : Enumerable.Empty<int>()
-        }).ToList();
-
-        var request = new UpdateUserAssignmentsRequest { Assignments = assignmentsForApi };
-
+        var request = BuildUpdateRequest(assignments);
         return await _adapter.UpdateUserApplicationRolesAsync(org.Id, cdpPersonId, request, ct);
     }
 
@@ -131,28 +159,104 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
         var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
         if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
-        var mappedRequests = assignments.Select(a => new ApplicationRoleAssignmentRequest(
-            OrganisationApplicationId: a.OrganisationApplicationId,
-            ApplicationId: a.ApplicationId,
-            GiveAccess: a.GiveAccess,
-            SelectedRoleId: a.SelectedRoleId,
-            SelectedRoleIds: a.SelectedRoleIds
-        )).ToList();
+        var request = BuildUpdateRequest(assignments);
+        return await _adapter.UpdateInviteApplicationRolesAsync(org.CdpOrganisationGuid, inviteGuid, request, ct);
+    }
 
-        var assignmentsForApi = mappedRequests.Select(r => new ApplicationRoleAssignment
+    public async Task<ChangeApplicationRoleState?> GetValidatedStateAsync(
+        string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid, CancellationToken ct)
+    {
+        var state = await _changeApplicationRoleStateStore.GetAsync();
+        if (state is null) return null;
+
+        if (!state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase) ||
+            state.CdpPersonId != cdpPersonId ||
+            state.InviteGuid != inviteGuid)
         {
-            OrganisationApplicationId = r.OrganisationApplicationId,
-            ApplicationId = r.ApplicationId,
-            RoleIds = r.GiveAccess
-                ? (r.SelectedRoleIds?.AsEnumerable() ?? (r.SelectedRoleId.HasValue
-                    ? new[] { r.SelectedRoleId.Value }
+            await _changeApplicationRoleStateStore.ClearAsync();
+            return null;
+        }
+
+        return state;
+    }
+
+    public async Task ClearStateAsync(CancellationToken ct = default) =>
+        await _changeApplicationRoleStateStore.ClearAsync();
+
+    public async Task<ApplicationRoleSubmitResult> ProcessSubmitAsync(
+        string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid,
+        ApplicationRoleChangePostModel input, CancellationToken ct)
+    {
+        ChangeUserApplicationRolesViewModel? viewModel = cdpPersonId.HasValue
+            ? await GetUserViewModelAsync(organisationSlug, cdpPersonId.Value, ct)
+            : await GetInviteViewModelAsync(organisationSlug, inviteGuid!.Value, ct);
+
+        if (viewModel is null) return new ApplicationRoleSubmitResult.NotFound();
+
+        var plannerInput = ApplicationRoleChangePlannerMapper.Map(
+            viewModel, input, organisationSlug, cdpPersonId, inviteGuid);
+        var planResult = ApplicationRoleChangePlanner.Plan(plannerInput);
+
+        if (!planResult.IsValid)
+            return new ApplicationRoleSubmitResult.ValidationError(viewModel, planResult.Errors);
+
+        var assignmentStates = planResult.Output!.Assignments
+            .Select(a => new ApplicationRoleAssignmentState(
+                a.OrganisationApplicationId,
+                a.ApplicationId,
+                a.ApplicationName,
+                a.HasExistingAccess,
+                a.GiveAccess,
+                a.CurrentSingleRoleId,
+                a.CurrentRoleName,
+                a.SelectedSingleRoleId,
+                a.SelectedRoleName,
+                SelectedRoleIds: a.SelectedRoleIds.ToList(),
+                CurrentRoleIds: a.CurrentRoleIds?.ToList()))
+            .ToList();
+
+        var state = new ChangeApplicationRoleState(
+            organisationSlug, cdpPersonId, inviteGuid,
+            viewModel.UserDisplayName, viewModel.Email, assignmentStates);
+
+        await _changeApplicationRoleStateStore.SetAsync(state);
+        return new ApplicationRoleSubmitResult.Saved();
+    }
+
+    private static void MergeState(ChangeUserApplicationRolesViewModel viewModel, ChangeApplicationRoleState state)
+    {
+        var stateByOrgAppId = state.Applications.ToDictionary(a => a.OrganisationApplicationId);
+        foreach (var app in viewModel.Applications)
+        {
+            if (stateByOrgAppId.TryGetValue(app.OrganisationApplicationId, out var stateApp))
+            {
+                app.GiveAccess = stateApp.GiveAccess;
+                app.SelectedRoleId = stateApp.SelectedRoleId;
+            }
+        }
+    }
+
+    private static bool HasRoleChanged(ApplicationRoleAssignmentState a)
+    {
+        var selected = (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
+        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : new List<int>())).OrderBy(x => x);
+        return !selected.SequenceEqual(current);
+    }
+
+    private static UpdateUserAssignmentsRequest BuildUpdateRequest(IReadOnlyList<ApplicationRoleAssignmentPostModel> assignments)
+    {
+        var mapped = assignments.Select(a => new ApplicationRoleAssignment
+        {
+            OrganisationApplicationId = a.OrganisationApplicationId,
+            ApplicationId = a.ApplicationId,
+            RoleIds = a.GiveAccess
+                ? (a.SelectedRoleIds?.AsEnumerable() ?? (a.SelectedRoleId.HasValue
+                    ? new[] { a.SelectedRoleId.Value }
                     : Enumerable.Empty<int>()))
                 : Enumerable.Empty<int>()
         }).ToList();
 
-        var request = new UpdateUserAssignmentsRequest { Assignments = assignmentsForApi };
-
-        return await _adapter.UpdateInviteApplicationRolesAsync(org.CdpOrganisationGuid, inviteGuid, request, ct);
+        return new UpdateUserAssignmentsRequest { Assignments = mapped };
     }
 
     private async Task<ChangeUserApplicationRolesViewModel> BuildViewModelAsync(
@@ -170,7 +274,6 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
             .ToList();
         await Task.WhenAll(roleTasks);
 
-        // Build a lookup of existing role IDs per OrganisationApplicationId
         var existingByOrgAppId = (existingRoles ?? Enumerable.Empty<UserAssignmentResponse>())
             .GroupBy(r => r.OrganisationApplicationId)
             .ToDictionary(g => g.Key,
@@ -182,8 +285,6 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
             existingRoleIds ??= new List<int>();
 
             var availableRoles = roleTasks[i].Result;
-
-            // Consider an assignment with no explicit roles as existing access
             var hasExistingAccess = existingRoleIds.Count > 0 || (existingRoles ?? Enumerable.Empty<UserAssignmentResponse>()).Any(r => r.OrganisationApplicationId == app.Id);
 
             return new ApplicationRoleChangeViewModel

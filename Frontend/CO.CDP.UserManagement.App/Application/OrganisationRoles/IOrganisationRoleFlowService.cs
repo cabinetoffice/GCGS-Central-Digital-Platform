@@ -36,9 +36,39 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles
             Guid inviteGuid,
             OrganisationRole role,
             CancellationToken ct);
+
         Task<bool> IsOwnerOrAdminAsync(
             string organisationSlug,
             string userId,
+            CancellationToken ct);
+
+        Task<ChangeRoleState> GetOrCreateStateAsync(
+            string organisationSlug,
+            Guid? cdpPersonId,
+            Guid? inviteGuid,
+            ChangeUserRoleViewModel viewModel,
+            CancellationToken ct);
+
+        Task<ChangeRoleState?> GetValidatedStateAsync(
+            string organisationSlug,
+            Guid? cdpPersonId,
+            Guid? inviteGuid,
+            CancellationToken ct);
+
+        ChangeUserRoleViewModel StateToViewModel(ChangeRoleState state);
+
+        Task<ChangeUserRoleSuccessViewModel?> GetSuccessViewModelAsync(
+            string organisationSlug,
+            Guid? cdpPersonId,
+            Guid? inviteGuid,
+            CancellationToken ct);
+
+        Task<OrganisationRoleChangeResult> ValidateAndSaveRoleChangeAsync(
+            string organisationSlug,
+            Guid? cdpPersonId,
+            Guid? inviteGuid,
+            ChangeUserRoleViewModel viewModel,
+            OrganisationRole? selectedRole,
             CancellationToken ct);
     }
 }

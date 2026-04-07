@@ -1,4 +1,6 @@
+using CO.CDP.UserManagement.Core;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -50,5 +52,11 @@ public class CurrentUserService : ICurrentUserService
     public string? GetCurrentUserId()
     {
         return GetUserPrincipalId();
+    }
+
+    public UserClaims? GetCdpClaims()
+    {
+        var json = _httpContextAccessor.HttpContext?.User.FindFirst("cdp_claims")?.Value;
+        return JsonHelper.TryDeserialize<UserClaims>(json);
     }
 }

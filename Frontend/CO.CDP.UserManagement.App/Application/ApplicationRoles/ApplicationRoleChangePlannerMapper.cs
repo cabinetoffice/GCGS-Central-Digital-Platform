@@ -28,7 +28,7 @@ public static class ApplicationRoleChangePlannerMapper
                     ApplicationId: app.ApplicationId,
                     ApplicationName: app.ApplicationName,
                     HasExistingAccess: app.HasExistingAccess,
-                    GiveAccess: app.HasExistingAccess && (post?.GiveAccess ?? false),
+                    GiveAccess: app.HasExistingAccess || (post?.GiveAccess ?? false),
                     OriginalSingleRoleId: app.SelectedRoleId,
                     OriginalMultiRoleIds: app.SelectedRoleIds.ToList(),
                     SelectedRoleId: post?.SelectedRoleId,

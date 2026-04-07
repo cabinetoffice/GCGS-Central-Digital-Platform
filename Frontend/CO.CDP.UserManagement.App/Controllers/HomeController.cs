@@ -15,7 +15,7 @@ public class HomeController(UserManagementClient apiClient) : Controller
             try
             {
                 var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
-                return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug = org.Slug });
+                return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug = org.Slug });
             }
             catch (ApiException ex) when (ex.StatusCode == 404)
             {
@@ -28,7 +28,7 @@ public class HomeController(UserManagementClient apiClient) : Controller
             return NotFound();
         }
 
-        return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug });
+        return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
     }
 
     public IActionResult Privacy()

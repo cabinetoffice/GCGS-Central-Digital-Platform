@@ -42,5 +42,11 @@ namespace CO.CDP.UserManagement.App.Application.Removal
             string organisationSlug,
             int pendingInviteId,
             CancellationToken ct);
+
+        Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
+            string organisationSlug,
+            Guid cdpPersonId,
+            bool? removeConfirmed,
+            CancellationToken ct);
     }
 }

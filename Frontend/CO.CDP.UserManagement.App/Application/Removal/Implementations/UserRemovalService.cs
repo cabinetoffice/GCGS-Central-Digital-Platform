@@ -3,15 +3,20 @@ using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Removal;
 
 namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 {
     public class UserRemovalService : IUserRemovalService
     {
         private readonly IUserManagementApiAdapter _adapter;
-        public UserRemovalService(IUserManagementApiAdapter adapter)
+        private readonly ICurrentUserService _currentUserService;
+
+        public UserRemovalService(IUserManagementApiAdapter adapter, ICurrentUserService currentUserService)
         {
             _adapter = adapter;
+            _currentUserService = currentUserService;
         }
 
         public async Task<RemoveUserViewModel?> GetUserViewModelAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
@@ -151,6 +156,48 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             return await _adapter.CancelInviteAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+        }
+
+        public async Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
+            string organisationSlug,
+            Guid cdpPersonId,
+            bool? removeConfirmed,
+            CancellationToken ct)
+        {
+            var viewModel = await GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
+            if (viewModel is null) return new UserRemovalSubmitResult.NotFound();
+
+            if (removeConfirmed == false) return new UserRemovalSubmitResult.Cancelled();
+
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return new UserRemovalSubmitResult.NotFound();
+
+            var currentUserEmail = _currentUserService.GetUserEmail();
+            var currentUserOrgRole = ResolveCurrentUserOrgRole(org.CdpOrganisationGuid);
+            var isLastOwner = await IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
+
+            var validation = UserRemovalValidator.Validate(
+                viewModel.Email,
+                currentUserEmail,
+                viewModel.CurrentRole,
+                isLastOwner,
+                currentUserOrgRole);
+
+            if (!validation.IsValid)
+                return new UserRemovalSubmitResult.ValidationError(validation.ErrorMessage!);
+
+            var result = await RemoveUserAsync(organisationSlug, cdpPersonId, ct);
+            var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
+            return success ? new UserRemovalSubmitResult.Removed() : new UserRemovalSubmitResult.NotFound();
+        }
+
+        private OrganisationRole? ResolveCurrentUserOrgRole(Guid orgId)
+        {
+            var orgClaim = _currentUserService.GetCdpClaims()?.Organisations
+                .FirstOrDefault(o => o.OrganisationId == orgId);
+            if (orgClaim is null) return null;
+            return Enum.TryParse<OrganisationRole>(orgClaim.OrganisationRole, ignoreCase: true, out var parsed)
+                ? parsed : null;
         }
     }
 }
