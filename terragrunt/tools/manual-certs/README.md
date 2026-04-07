@@ -40,7 +40,7 @@ Resolves domains + ACM cert ARNs + HTTPS listener ARNs:
 - `ave ./attach-certs.sh staging --dry-run`
 
 ## Validate certs (ACM + live)
-From this folder:
+From this folder (manual before/after checks):
 - `ave ./validate-certs.sh staging`
 - `ave ./validate-certs.sh staging --dry-run`
 
@@ -75,7 +75,6 @@ rotate-certs env overrides:
 - `EMAIL`
 - `VERIFY_CHALLENGE` (default 1)
 - `KEEP_RULE` (set to 1 to retain ALB rule)
-- `ACME_SERVER` (staging CA for non-prod)
 - `ACME_SERVER` (override CA directory URL; see above)
 - `KEY_TYPE` (default rsa)
 - `RSA_KEY_SIZE` (default 2048)
@@ -97,6 +96,8 @@ validate-certs env overrides:
 - `LIVE_WAIT_SECONDS` (default 120)
 - `LIVE_WAIT_INTERVAL` (default 5)
 - `SUMMARY_FILE` (write env summary to file)
+- `PREV_LIVE_SERIAL_FTS` / `PREV_LIVE_SERIAL_CFS` (optional change detection)
+- `PREV_LIVE_NOT_AFTER_FTS` / `PREV_LIVE_NOT_AFTER_CFS` (optional change detection)
 
 
 ## Notes
