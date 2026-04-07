@@ -30,3 +30,25 @@ resource "aws_route53_record" "sirsi_delegations" {
 
   records = each.value
 }
+
+resource "aws_route53_record" "fts_null_mx" {
+  count = var.is_production ? 1 : 0
+
+  name    = aws_route53_zone.fts[0].name
+  type    = "MX"
+  ttl     = 300
+  zone_id = aws_route53_zone.fts[0].id
+
+  records = ["0 ."]
+}
+
+resource "aws_route53_record" "cfs_null_mx" {
+  count = var.is_production ? 1 : 0
+
+  name    = aws_route53_zone.cfs[0].name
+  type    = "MX"
+  ttl     = 300
+  zone_id = aws_route53_zone.cfs[0].id
+
+  records = ["0 ."]
+}
