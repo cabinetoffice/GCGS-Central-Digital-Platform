@@ -100,7 +100,7 @@ locals {
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.3.0"
+      pinned_service_version_fts          = "1.3.1"
       pinned_service_version              = "1.0.83"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
@@ -146,7 +146,7 @@ locals {
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.2.9"
+      pinned_service_version_fts          = "1.3.1"
       pinned_service_version              = "1.0.82"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
@@ -188,7 +188,7 @@ locals {
       opensearch_instance_count           = 3
       opensearch_instance_type            = "m6g.large.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.2.9"
+      pinned_service_version_fts          = "1.3.1"
       pinned_service_version              = "1.0.82"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"

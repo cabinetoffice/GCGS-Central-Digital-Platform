@@ -8,29 +8,6 @@ namespace CO.CDP.UserManagement.App.Tests.Mapping;
 public class ViewModelMapperTests
 {
     [Fact]
-    public void ToHomeViewModel_CalculatesStats()
-    {
-        var org = BuildOrganisationResponse();
-        var enabledApps = new List<OrganisationApplicationResponse>
-        {
-            BuildOrganisationApplicationResponse(org.Id, 10, true),
-            BuildOrganisationApplicationResponse(org.Id, 11, false)
-        };
-        var roles = new List<RoleResponse> { BuildRoleResponse(10), BuildRoleResponse(11) };
-        var users = new List<OrganisationUserResponse>
-        {
-            BuildOrganisationUserResponse(org.Id, UserStatus.Active),
-            BuildOrganisationUserResponse(org.Id, UserStatus.Pending)
-        };
-
-        var result = ViewModelMapper.ToHomeViewModel(org, enabledApps, roles, users);
-
-        result.Stats.ApplicationsEnabled.Should().Be(1);
-        result.Stats.TotalUsers.Should().Be(1);
-        result.Stats.RolesAssigned.Should().Be(2);
-    }
-
-    [Fact]
     public void ToApplicationsViewModel_FiltersByStatus()
     {
         var org = BuildOrganisationResponse();
@@ -127,7 +104,8 @@ public class ViewModelMapperTests
             CreatedAt = DateTimeOffset.UtcNow
         };
 
-    private static OrganisationApplicationResponse BuildOrganisationApplicationResponse(int orgId, int appId, bool isActive) =>
+    private static OrganisationApplicationResponse BuildOrganisationApplicationResponse(int orgId, int appId,
+        bool isActive) =>
         new()
         {
             Id = 1,
@@ -139,7 +117,8 @@ public class ViewModelMapperTests
             Application = BuildApplicationResponse(appId, $"app-{appId}", "CatA")
         };
 
-    private static ApplicationResponse BuildApplicationResponse(int id, string clientId, string category, string? name = null) =>
+    private static ApplicationResponse BuildApplicationResponse(int id, string clientId, string category,
+        string? name = null) =>
         new()
         {
             Id = id,

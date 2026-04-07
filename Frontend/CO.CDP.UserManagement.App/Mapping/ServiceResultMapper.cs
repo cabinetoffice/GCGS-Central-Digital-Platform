@@ -1,7 +1,8 @@
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.WebApiClient;
 
-namespace CO.CDP.UserManagement.App.Services;
+namespace CO.CDP.UserManagement.App.Mapping;
 
 public static class ServiceResultMapper
 {
