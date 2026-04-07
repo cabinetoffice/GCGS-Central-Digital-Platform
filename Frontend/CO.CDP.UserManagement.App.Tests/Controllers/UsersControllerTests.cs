@@ -30,6 +30,7 @@ public class UsersControllerTests
     private readonly Mock<IInviteUserStateStore> _inviteUserStateStore;
     private readonly Mock<IChangeRoleStateStore> _changeRoleStateStore;
     private readonly Mock<IChangeApplicationRoleStateStore> _changeApplicationRoleStateStore;
+    private readonly Mock<IRemoveInviteStateStore> _removeInviteStateStore;
     private readonly Mock<IUserManagementApiAdapter> _adapter;
     private readonly Mock<IInviteDetailsQueryService> _inviteDetailsQueryService;
     private readonly UsersController _controller;
@@ -46,6 +47,7 @@ public class UsersControllerTests
         _inviteUserStateStore = new Mock<IInviteUserStateStore>();
         _changeRoleStateStore = new Mock<IChangeRoleStateStore>();
         _changeApplicationRoleStateStore = new Mock<IChangeApplicationRoleStateStore>();
+        _removeInviteStateStore = new Mock<IRemoveInviteStateStore>();
         _adapter = new Mock<IUserManagementApiAdapter>();
         _inviteDetailsQueryService = new Mock<IInviteDetailsQueryService>();
 
@@ -62,6 +64,9 @@ public class UsersControllerTests
         _changeApplicationRoleStateStore.Setup(s => s.SetAsync(It.IsAny<ChangeApplicationRoleState>()))
             .Returns(Task.CompletedTask);
         _changeApplicationRoleStateStore.Setup(s => s.ClearAsync()).Returns(Task.CompletedTask);
+        _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync((RemoveInviteSuccessState?)null);
+        _removeInviteStateStore.Setup(s => s.SetAsync(It.IsAny<RemoveInviteSuccessState>())).Returns(Task.CompletedTask);
+        _removeInviteStateStore.Setup(s => s.ClearAsync()).Returns(Task.CompletedTask);
 
         _inviteUserFlowService
             .Setup(s => s.IsEmailAlreadyInOrganisationAsync(It.IsAny<string>(), It.IsAny<string>(),
@@ -96,6 +101,7 @@ public class UsersControllerTests
             _inviteUserStateStore.Object,
             _changeRoleStateStore.Object,
             _changeApplicationRoleStateStore.Object,
+            _removeInviteStateStore.Object,
             _adapter.Object);
     }
 
@@ -1757,10 +1763,11 @@ public class UsersControllerTests
     [Fact]
     public async Task RemoveInvite_Get_WhenViewModelNull_ReturnsNotFound()
     {
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveUserViewModel?)null);
 
-        var result = await _controller.RemoveInvite("org", 1, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -1768,11 +1775,12 @@ public class UsersControllerTests
     [Fact]
     public async Task RemoveInvite_Get_WhenViewModelAvailable_ReturnsView()
     {
+        var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org", UserDisplayName = "John Doe" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.RemoveInvite("org", 1, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.Model.Should().Be(viewModel);
@@ -1782,8 +1790,11 @@ public class UsersControllerTests
     [Fact]
     public async Task RemoveInvite_Post_WhenNotConfirmed_RedirectsToIndex()
     {
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty);
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = false };
-        var result = await _controller.RemoveInvite("org", 1, input, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, input, CancellationToken.None);
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(UsersController.Index));
         redirect.RouteValues.Should().Contain("organisationSlug", "org");
@@ -1792,17 +1803,18 @@ public class UsersControllerTests
     [Fact]
     public async Task RemoveInvite_Post_WhenNoOptionSelected_ReturnsViewWithError()
     {
+        var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _controller.ModelState.AddModelError(nameof(RemoveUserViewModel.RemoveConfirmed),
             "Select if you want to remove this user");
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty, CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("Remove");
         _userRemovalService.Verify(
-            s => s.RemoveInviteAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+            s => s.RemoveInviteAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1890,22 +1902,28 @@ public class UsersControllerTests
     }
 
     [Fact]
-    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveSuccess()
+    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveInviteSuccess()
     {
-        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
+        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
-            .Be(nameof(UsersController.RemoveSuccess));
+            .Be(nameof(UsersController.RemoveInviteSuccess));
     }
 
     [Fact]
     public async Task RemoveInvite_Post_WhenConfirmedButFails_ReturnsNotFound()
     {
-        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
+        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
         _controller.ControllerContext = new ControllerContext
         {
@@ -1913,7 +1931,7 @@ public class UsersControllerTests
                 { User = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim("email", "me@example.com") })) }
         };
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();

@@ -16,7 +16,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal
 
         Task<RemoveUserViewModel?> GetInviteViewModelAsync(
             string organisationSlug,
-            int pendingInviteId,
+            Guid inviteGuid,
             CancellationToken ct);
 
         Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
@@ -40,7 +40,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal
 
         Task<Result<ServiceFailure, ServiceOutcome>> RemoveInviteAsync(
             string organisationSlug,
-            int pendingInviteId,
+            Guid inviteGuid,
             CancellationToken ct);
     }
 }

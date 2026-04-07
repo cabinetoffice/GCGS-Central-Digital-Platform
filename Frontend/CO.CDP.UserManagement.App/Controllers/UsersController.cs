@@ -32,6 +32,7 @@ public class UsersController(
     IInviteUserStateStore inviteUserStateStore,
     IChangeRoleStateStore changeRoleStateStore,
     IChangeApplicationRoleStateStore changeApplicationRoleStateStore,
+    IRemoveInviteStateStore removeInviteStateStore,
     IUserManagementApiAdapter adapter) : Controller
 {
     [HttpGet("")]
@@ -1442,21 +1443,24 @@ public class UsersController(
         return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("invites/{pendingInviteId:int}/remove")]
-    public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
+    [HttpGet("invites/{inviteGuid:guid}/remove")]
+    public async Task<IActionResult> RemoveInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         return viewModel is null ? NotFound() : View("Remove", viewModel);
     }
 
-    [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [HttpPost("invites/{inviteGuid:guid}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveInvite(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         RemoveUserViewModel input,
         CancellationToken ct)
     {
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        if (viewModel is null) return NotFound();
+
         if (input.RemoveConfirmed == false)
         {
             return RedirectToAction(nameof(Index), new { organisationSlug });
@@ -1464,13 +1468,49 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
-            return viewModel is null ? NotFound() : View("Remove", viewModel);
+            return View("Remove", viewModel);
         }
 
-        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, pendingInviteId, ct);
+        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, inviteGuid, ct);
         var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
-        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+        if (!success) return NotFound();
+
+        await removeInviteStateStore.SetAsync(new RemoveInviteSuccessState
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = viewModel.UserDisplayName,
+            Email = viewModel.Email,
+            OrganisationName = viewModel.OrganisationName,
+            MemberSince = viewModel.MemberSinceFormatted,
+            Role = viewModel.CurrentRole
+        });
+
+        return RedirectToAction(nameof(RemoveInviteSuccess), new { organisationSlug, inviteGuid });
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/remove/success")]
+    public async Task<IActionResult> RemoveInviteSuccess(string organisationSlug, Guid inviteGuid)
+    {
+        var state = await removeInviteStateStore.GetAsync();
+        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        await removeInviteStateStore.ClearAsync();
+
+        var viewModel = new RemoveSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            Email = state.Email,
+            OrganisationName = state.OrganisationName,
+            MemberSince = state.MemberSince,
+            Role = state.Role,
+            CdpPersonId = Guid.Empty
+        };
+
+        return View("RemoveSuccess", viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/remove/success")]
