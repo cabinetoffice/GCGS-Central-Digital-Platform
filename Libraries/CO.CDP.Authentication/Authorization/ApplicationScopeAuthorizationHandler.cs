@@ -75,6 +75,12 @@ public class ApplicationScopeAuthorizationHandler(
             return Task.CompletedTask;
         }
 
+        if (requirement.ApplicationRoles.Length == 0 && requirement.ApplicationPermissions.Length == 0)
+        {
+            context.Succeed(requirement);
+            return Task.CompletedTask;
+        }
+
         if (requirement.ApplicationRoles.Length > 0 &&
             requirement.ApplicationRoles.Intersect(appClaim.Roles).Any())
         {
