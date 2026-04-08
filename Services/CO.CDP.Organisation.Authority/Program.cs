@@ -34,6 +34,7 @@ builder.Services.AddTransient<ServiceAccountTokenHandler>();
 
 
 const string organisationApiHttpClientName = "OrganisationApiHttpClient";
+var claimsApiEnabled = builder.Configuration.GetValue<bool>("Features:ClaimsApiEnabled");
 
 if (claimsApiEnabled)
 {
