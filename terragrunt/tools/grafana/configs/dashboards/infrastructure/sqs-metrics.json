@@ -50,7 +50,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -59,8 +59,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
                 "lineWidth": 1,
-                "pointSize": 5,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -94,7 +101,7 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 0,
             "y": 1
@@ -107,7 +114,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -139,7 +146,7 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
           "title": "Number Of Empty Receives",
@@ -165,7 +172,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -174,8 +181,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
                 "lineWidth": 1,
-                "pointSize": 5,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -190,6 +204,7 @@
                   "mode": "off"
                 }
               },
+              "decimals": 0,
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -209,7 +224,7 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 12,
             "y": 1
@@ -222,7 +237,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -254,7 +269,7 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
           "title": "Number Of Messages Deleted",
@@ -265,7 +280,7 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "description": "The number of messages returned by calls to the <code>ReceiveMessage</code> action. Reporting criteria: A non-negative value is reported <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/monitoring-using-cloudwatch.html\">if the queue is active</a>.",
+          "description": "The number of ReceiveMessage API calls that did not return a message. Reporting criteria: A non-negative value is reported if the queue is active.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -280,7 +295,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -289,8 +304,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
                 "lineWidth": 1,
-                "pointSize": 5,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -324,12 +346,12 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 0,
-            "y": 9
+            "y": 25
           },
-          "id": 5,
+          "id": 9,
           "options": {
             "legend": {
               "calcs": [
@@ -337,7 +359,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -361,7 +383,7 @@
               "logGroups": [],
               "matchExact": false,
               "metricEditorMode": 0,
-              "metricName": "NumberOfMessagesReceived",
+              "metricName": "NumberOfEmptyReceives",
               "metricQueryType": 0,
               "namespace": "AWS/SQS",
               "period": "",
@@ -369,10 +391,10 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
-          "title": "Number Of Messages Received",
+          "title": "Number Of Empty Receives",
           "type": "timeseries"
         },
         {
@@ -395,7 +417,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -404,8 +426,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
                 "lineWidth": 1,
-                "pointSize": 5,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -420,6 +449,7 @@
                   "mode": "off"
                 }
               },
+              "decimals": 0,
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -439,10 +469,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 12,
-            "y": 9
+            "y": 25
           },
           "id": 6,
           "options": {
@@ -452,7 +482,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -484,7 +514,7 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
           "title": "Number Of Messages Sent",
@@ -495,7 +525,7 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "description": "The size of messages added to a queue. Reporting criteria: A non-negative value is reported <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/monitoring-using-cloudwatch.html\">if the queue is active</a>. Note: <code>SentMessageSize</code> does not display as an available metric in the CloudWatch console until at least one message is sent to the corresponding queue.",
+          "description": "The number of messages returned by calls to the <code>ReceiveMessage</code> action. Reporting criteria: A non-negative value is reported <a href=\"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/monitoring-using-cloudwatch.html\">if the queue is active</a>.",
           "fieldConfig": {
             "defaults": {
               "color": {
@@ -509,8 +539,8 @@
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
-                "drawStyle": "points",
-                "fillOpacity": 13,
+                "drawStyle": "line",
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -519,8 +549,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 3,
-                "pointSize": 5,
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
+                "lineWidth": 1,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -535,6 +572,7 @@
                   "mode": "off"
                 }
               },
+              "decimals": 0,
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -549,17 +587,17 @@
                   }
                 ]
               },
-              "unit": "bytes"
+              "unit": "count"
             },
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 0,
-            "y": 17
+            "y": 31
           },
-          "id": 7,
+          "id": 5,
           "options": {
             "legend": {
               "calcs": [
@@ -567,7 +605,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -591,7 +629,7 @@
               "logGroups": [],
               "matchExact": false,
               "metricEditorMode": 0,
-              "metricName": "SentMessageSize",
+              "metricName": "NumberOfMessagesReceived",
               "metricQueryType": 0,
               "namespace": "AWS/SQS",
               "period": "",
@@ -599,10 +637,10 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
-          "title": "Sent Message Size",
+          "title": "Number Of Messages Received",
           "type": "timeseries"
         },
         {
@@ -625,7 +663,7 @@
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
                 "drawStyle": "line",
-                "fillOpacity": 0,
+                "fillOpacity": 1,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -634,8 +672,15 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
+                "lineStyle": {
+                  "dash": [
+                    0,
+                    10
+                  ],
+                  "fill": "dot"
+                },
                 "lineWidth": 1,
-                "pointSize": 5,
+                "pointSize": 6,
                 "scaleDistribution": {
                   "type": "linear"
                 },
@@ -650,6 +695,7 @@
                   "mode": "off"
                 }
               },
+              "decimals": 0,
               "mappings": [],
               "thresholds": {
                 "mode": "absolute",
@@ -669,10 +715,10 @@
             "overrides": []
           },
           "gridPos": {
-            "h": 8,
+            "h": 6,
             "w": 12,
             "x": 12,
-            "y": 17
+            "y": 31
           },
           "id": 8,
           "options": {
@@ -682,7 +728,7 @@
               ],
               "displayMode": "list",
               "placement": "bottom",
-              "showLegend": true
+              "showLegend": false
             },
             "tooltip": {
               "hideZeros": false,
@@ -714,7 +760,7 @@
               "refId": "A",
               "region": "default",
               "sqlExpression": "",
-              "statistic": "Average"
+              "statistic": "Sum"
             }
           ],
           "title": "Number Of Deduplicated Sent Messages ",
@@ -735,12 +781,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "cloudwatch",
@@ -749,7 +791,6 @@
         "definition": "",
         "includeAll": true,
         "label": "Queue",
-        "multi": true,
         "name": "queue",
         "options": [],
         "query": {
@@ -762,14 +803,14 @@
           "region": "eu-west-2"
         },
         "refresh": 1,
-        "regex": "",
+        "regex": "cdp-sirsi-(?:development|staging|integration|production)-.*",
         "regexApplyTo": "text",
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
