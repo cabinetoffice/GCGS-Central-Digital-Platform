@@ -327,7 +327,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 57
+            "y": 9
           },
           "id": 5,
           "options": {
@@ -442,7 +442,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 57
+            "y": 9
           },
           "id": 6,
           "options": {
@@ -509,8 +509,8 @@
                 "axisPlacement": "auto",
                 "barAlignment": 0,
                 "barWidthFactor": 0.6,
-                "drawStyle": "line",
-                "fillOpacity": 0,
+                "drawStyle": "points",
+                "fillOpacity": 13,
                 "gradientMode": "none",
                 "hideFrom": {
                   "legend": false,
@@ -519,7 +519,7 @@
                 },
                 "insertNulls": false,
                 "lineInterpolation": "linear",
-                "lineWidth": 1,
+                "lineWidth": 3,
                 "pointSize": 5,
                 "scaleDistribution": {
                   "type": "linear"
@@ -549,7 +549,7 @@
                   }
                 ]
               },
-              "unit": "count"
+              "unit": "bytes"
             },
             "overrides": []
           },
@@ -557,7 +557,7 @@
             "h": 8,
             "w": 12,
             "x": 0,
-            "y": 65
+            "y": 17
           },
           "id": 7,
           "options": {
@@ -672,7 +672,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 65
+            "y": 17
           },
           "id": 8,
           "options": {
@@ -769,7 +769,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {},
