@@ -262,6 +262,64 @@ public class TokenServiceTest
         return jsonToken.Claims;
     }
 
+    [Fact]
+    public async Task CreateToken_WhenClaimsFlagOn_AndUserManagementClientNotRegistered_ReturnsTokenWithoutCdpClaims_AndLogsWarning()
+    {
+        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
+
+        // Simulate IServiceProvider returning null (client not registered despite flag being on)
+        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
+            .Returns(null!);
+
+        var tokenService = new TokenService(
+            _loggerMock.Object,
+            _configServiceMock.Object,
+            _personRepositoryMock.Object,
+            _authorityRepositoryMock.Object,
+            _serviceProviderMock.Object,
+            Options.Create(new FeaturesOptions { ClaimsApiEnabled = true }));
+
+        var result = await tokenService.CreateToken(_userUrn);
+
+        result.Should().NotBeNull();
+        var claims = GetClaims(result.AccessToken);
+        claims.FirstOrDefault(c => c.Type == "cdp_claims").Should().BeNull();
+
+        _loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Warning,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains("ClaimsApiEnabled") || v.ToString()!.Contains("UserManagementClient")),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task CreateToken_WhenClaimsFlagOff_NeverCallsServiceProvider()
+    {
+        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
+
+        var spMock = new Mock<IServiceProvider>();
+
+        var tokenService = new TokenService(
+            _loggerMock.Object,
+            _configServiceMock.Object,
+            _personRepositoryMock.Object,
+            _authorityRepositoryMock.Object,
+            spMock.Object,
+            Options.Create(new FeaturesOptions { ClaimsApiEnabled = false }));
+
+        var result = await tokenService.CreateToken(_userUrn);
+
+        result.Should().NotBeNull();
+        spMock.Verify(sp => sp.GetService(typeof(ApiClient.UserManagementClient)), Times.Never);
+    }
+
     private TokenService CreateTokenService(bool claimsApiEnabled)
     {
         // Ensure service provider returns our mock client when requested

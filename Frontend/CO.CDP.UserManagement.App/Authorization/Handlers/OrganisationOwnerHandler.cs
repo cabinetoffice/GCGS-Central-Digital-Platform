@@ -1,4 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authorization;
 using CO.CDP.Authentication;
 using CO.CDP.UserManagement.App.Authorization.Requirements;
@@ -24,7 +23,7 @@ public sealed class OrganisationOwnerHandler(
         if (string.IsNullOrWhiteSpace(organisationSlug))
             return;
 
-        var cdpClaimsJson = await ResolveCdpClaimsJsonAsync(context, httpContext);
+        var cdpClaimsJson = await CdpClaimsResolver.ResolveAsync(context, httpContext, sessionManager, logger);
 
         if (string.IsNullOrWhiteSpace(cdpClaimsJson))
             return;
@@ -48,32 +47,6 @@ public sealed class OrganisationOwnerHandler(
         catch (ApiClient.ApiException ex)
         {
             logger.LogWarning(ex, "OrganisationOwnerHandler: API error for slug {Slug}", organisationSlug);
-        }
-    }
-
-    private async Task<string?> ResolveCdpClaimsJsonAsync(
-        AuthorizationHandlerContext context,
-        HttpContext? httpContext)
-    {
-        var fromPrincipal = context.User.FindFirst("cdp_claims")?.Value;
-        if (!string.IsNullOrWhiteSpace(fromPrincipal))
-            return fromPrincipal;
-
-        var tokenSet = await sessionManager.GetTokensAsync(httpContext!);
-        var authorityToken = tokenSet?.AccessToken;
-
-        if (string.IsNullOrWhiteSpace(authorityToken))
-            return null;
-
-        try
-        {
-            var token = new JwtSecurityTokenHandler().ReadJwtToken(authorityToken);
-            return token.Claims.FirstOrDefault(c => c.Type == "cdp_claims")?.Value;
-        }
-        catch (Exception ex)
-        {
-            logger.LogDebug(ex, "OrganisationOwnerHandler: failed to read JWT or extract cdp_claims");
-            return null;
         }
     }
 }

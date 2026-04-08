@@ -59,6 +59,13 @@ public class OidcEventsService : OpenIdConnectEvents
                 new("authority:expires_at", authorityTokens.AccessTokenExpiry.ToString("O"))
             };
 
+            var cdpJwt = new JwtSecurityTokenHandler().ReadJwtToken(authorityTokens.AccessToken);
+            var cdpClaimsClaim = cdpJwt.Claims.FirstOrDefault(c => c.Type == "cdp_claims");
+            if (cdpClaimsClaim != null)
+            {
+                claims.Add(new Claim("cdp_claims", cdpClaimsClaim.Value, JsonClaimValueTypes.Json));
+            }
+
             var identity = (ClaimsIdentity)context.Principal!.Identity!;
             identity.AddClaims(claims);
         }
