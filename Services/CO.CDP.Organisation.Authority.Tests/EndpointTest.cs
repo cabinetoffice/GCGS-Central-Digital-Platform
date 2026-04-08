@@ -50,7 +50,7 @@ public class EndpointTest
             GrantTypesSupported = ["client_credentials", "refresh_token"],
             SubjectTypesSupported = ["public"],
             ClaimTypesSupported = ["normal"],
-            ClaimsSupported = ["sub", "channel", "roles"]
+            ClaimsSupported = ["sub", "channel", "roles", "cdp_claims"]
         };
 
         var returnedConfig = await _client.GetFromJsonAsync<OpenIdConfiguration>("/.well-known/openid-configuration");

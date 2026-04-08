@@ -33,6 +33,18 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<ServiceAccountTokenHandler>();
 
 
+const string organisationApiHttpClientName = "OrganisationApiHttpClient";
+
+if (claimsApiEnabled)
+{
+    var organisationApiUrl = builder.Configuration.GetValue<string>("OrganisationApiService")
+        ?? throw new InvalidOperationException("Missing configuration: OrganisationApiService");
+
+    builder.Services.AddHttpClient(organisationApiHttpClientName,
+            client => { client.BaseAddress = new Uri(organisationApiUrl); })
+        .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+}
+
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
 {
     builder.Services
@@ -61,4 +73,5 @@ if (!app.Environment.IsDevelopment())
 app.UseIdentity();
 
 app.Run();
+
 public abstract partial class Program;

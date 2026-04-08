@@ -61,6 +61,30 @@ public static class EndpointExtensions
             });
     }
 
+    public static void UseClaimsEndpoints(this WebApplication app)
+    {
+        app.MapGet("/organisations/claims/users/{userUrn}",
+            [OrganisationAuthorize([AuthenticationChannel.ServiceKey])]
+            async (string userUrn, IUseCase<string, UserClaimsResponse?> useCase) =>
+                await useCase.Execute(userUrn)
+                    .AndThen(claims => claims != null ? Results.Ok(claims) : Results.NotFound()))
+            .Produces<UserClaimsResponse>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status404NotFound)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "GetUserClaims";
+                operation.Description = "Get application role claims for a user. Called by Authority service during token creation.";
+                operation.Summary = "Get user application role claims for JWT enrichment.";
+                operation.Responses["200"].Description = "User claims retrieved.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing.";
+                operation.Responses["404"].Description = "User not found.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
+    }
+
     public static void UseOrganisationEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations",

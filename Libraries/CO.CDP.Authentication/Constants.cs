@@ -9,6 +9,7 @@ public static class Constants
         public const string Roles = "roles";
         public const string OrganisationId = "org";
         public const string ApiKeyScope = "scope";
+        public const string CdpClaims = "cdp_claims";
     }
 
     public static class Channel

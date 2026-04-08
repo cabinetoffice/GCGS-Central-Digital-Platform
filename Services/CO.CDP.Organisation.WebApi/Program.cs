@@ -107,6 +107,8 @@ builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, Create
 builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
 builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetParentOrganisationsResponse>, GetParentOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<string, UserClaimsResponse?>, GetUserClaimsUseCase>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
@@ -163,6 +165,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseOrganisationEndpoints();
 app.UseGlobalEndpoints();
+app.UseClaimsEndpoints();
 
 
 app.MapGroup("/support")

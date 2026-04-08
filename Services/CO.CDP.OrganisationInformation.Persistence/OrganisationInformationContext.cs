@@ -42,6 +42,14 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
     public DbSet<OrganisationSnapshot> OrganisationSnapshot { get; set; } = null!;
     public DbSet<OrganisationHierarchy> OrganisationHierarchies { get; set; } = null!;
 
+    // Application Registry
+    public DbSet<Application> Applications { get; set; } = null!;
+    public DbSet<ApplicationPermission> ApplicationPermissions { get; set; } = null!;
+    public DbSet<ApplicationRole> ApplicationRoles { get; set; } = null!;
+    public DbSet<OrganisationApplication> OrganisationApplications { get; set; } = null!;
+    public DbSet<UserApplicationAssignment> UserApplicationAssignments { get; set; } = null!;
+    public DbSet<AuditLog> AuditLogs { get; set; } = null!;
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<ControlCondition>();
@@ -166,10 +174,73 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
         }
 
         OnFormModelCreating(modelBuilder);
+        OnApplicationRegistryModelCreating(modelBuilder);
 
         modelBuilder.OnOutboxMessageCreating();
 
         base.OnModelCreating(modelBuilder);
+    }
+
+    private static void OnApplicationRegistryModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Application>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasMany(e => e.Roles)
+                .WithOne(r => r.Application)
+                .HasForeignKey(r => r.ApplicationId);
+            entity.HasMany(e => e.Permissions)
+                .WithOne(p => p.Application)
+                .HasForeignKey(p => p.ApplicationId);
+        });
+
+        // ApplicationRole <-> ApplicationPermission many-to-many via role_permissions
+        modelBuilder.Entity<ApplicationRole>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasMany(e => e.Permissions)
+                .WithMany(p => p.Roles)
+                .UsingEntity("RolePermission",
+                    l => l.HasOne(typeof(ApplicationPermission)).WithMany().HasForeignKey("ApplicationPermissionId"),
+                    r => r.HasOne(typeof(ApplicationRole)).WithMany().HasForeignKey("ApplicationRoleId"),
+                    j => j.ToTable("role_permissions"));
+        });
+
+        modelBuilder.Entity<OrganisationApplication>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Organisation)
+                .WithMany()
+                .HasForeignKey(e => e.OrganisationId);
+            entity.HasOne(e => e.Application)
+                .WithMany()
+                .HasForeignKey(e => e.ApplicationId);
+        });
+
+        modelBuilder.Entity<UserApplicationAssignment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Person)
+                .WithMany()
+                .HasForeignKey(e => e.PersonId);
+            entity.HasOne(e => e.OrganisationApplication)
+                .WithMany()
+                .HasForeignKey(e => e.OrganisationApplicationId);
+            entity.HasMany(e => e.Roles)
+                .WithMany()
+                .UsingEntity("UserApplicationAssignmentRole",
+                    l => l.HasOne(typeof(ApplicationRole)).WithMany().HasForeignKey("ApplicationRoleId"),
+                    r => r.HasOne(typeof(UserApplicationAssignment)).WithMany().HasForeignKey("UserApplicationAssignmentId"),
+                    j => j.ToTable("user_application_assignment_roles"));
+        });
+
+        modelBuilder.Entity<AuditLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => new { e.EntityType, e.EntityId });
+            entity.HasIndex(e => e.UserId);
+            entity.HasIndex(e => e.Timestamp);
+        });
     }
 
     private static void OnFormModelCreating(ModelBuilder modelBuilder)

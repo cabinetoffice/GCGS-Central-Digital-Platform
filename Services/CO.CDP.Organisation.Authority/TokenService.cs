@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,6 +17,7 @@ public class TokenService(
     IConfigurationService configService,
     IPersonRepository personRepository,
     IAuthorityRepository authorityRepository,
+    IHttpClientFactory httpClientFactory,
     IOptions<FeaturesOptions> features) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
@@ -138,8 +140,32 @@ public class TokenService(
         var person = await personRepository.FindByUrn(urn);
         claims.Add(new Claim(JwtClaimTypes.Roles, string.Join(",", person?.Scopes ?? [])));
 
-        // TODO: Claims enrichment will be re-integrated via the Organisation API
-        // once Application Registry is merged into the existing Organisation model.
+        if (features.Value.ClaimsApiEnabled)
+        {
+            logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from Organisation API.", urn);
+            try
+            {
+                var httpClient = httpClientFactory.CreateClient("OrganisationApiHttpClient");
+                var encodedUrn = Uri.EscapeDataString(urn);
+                var response = await httpClient.GetAsync($"/organisations/claims/users/{encodedUrn}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var claimsJson = await response.Content.ReadAsStringAsync();
+                    claims.Add(new Claim("cdp_claims", claimsJson, JsonClaimValueTypes.Json));
+                    logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
+                }
+                else
+                {
+                    logger.LogWarning("Organisation API returned {StatusCode} for claims request for {UserUrn}.",
+                        response.StatusCode, urn);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to fetch user claims from Organisation API.");
+            }
+        }
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

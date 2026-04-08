@@ -1,5 +1,7 @@
+using CO.CDP.Authentication.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 using static CO.CDP.Authentication.Constants;
 
 namespace CO.CDP.Authentication;
@@ -49,5 +51,45 @@ public class ClaimService(
     public string? GetChannel()
     {
         return httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.Channel)?.Value;
+    }
+
+    public UserClaims? GetApplicationClaims()
+    {
+        var cdpClaimsJson = httpContextAccessor.HttpContext?.User?.FindFirst(ClaimType.CdpClaims)?.Value;
+        if (string.IsNullOrWhiteSpace(cdpClaimsJson)) return null;
+        try
+        {
+            return JsonSerializer.Deserialize<UserClaims>(cdpClaimsJson);
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    public bool HasApplicationRole(Guid organisationId, string clientId, string roleName)
+    {
+        var claims = GetApplicationClaims();
+        if (claims == null) return false;
+
+        return claims.Organisations
+            .Where(o => o.OrganisationId == organisationId)
+            .SelectMany(o => o.Applications)
+            .Where(a => a.ClientId == clientId)
+            .SelectMany(a => a.Roles)
+            .Any(r => r == roleName);
+    }
+
+    public bool HasApplicationPermission(Guid organisationId, string clientId, string permissionName)
+    {
+        var claims = GetApplicationClaims();
+        if (claims == null) return false;
+
+        return claims.Organisations
+            .Where(o => o.OrganisationId == organisationId)
+            .SelectMany(o => o.Applications)
+            .Where(a => a.ClientId == clientId)
+            .SelectMany(a => a.Permissions)
+            .Any(p => p == permissionName);
     }
 }
