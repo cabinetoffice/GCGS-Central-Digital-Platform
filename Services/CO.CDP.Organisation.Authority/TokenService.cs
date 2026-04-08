@@ -147,7 +147,7 @@ public class TokenService(
             {
                 var httpClient = httpClientFactory.CreateClient("OrganisationApiHttpClient");
                 var encodedUrn = Uri.EscapeDataString(urn);
-                var response = await httpClient.GetAsync($"/organisations/claims/users/{encodedUrn}");
+                using var response = await httpClient.GetAsync($"/organisations/claims/users/{encodedUrn}");
 
                 if (response.IsSuccessStatusCode)
                 {
