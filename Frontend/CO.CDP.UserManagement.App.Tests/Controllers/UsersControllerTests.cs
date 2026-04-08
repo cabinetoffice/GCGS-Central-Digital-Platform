@@ -1998,12 +1998,12 @@ public class UsersControllerTests
             Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
             CdpPersonId = cdpPersonId
         };
-        _userService.Setup(s =>
-                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
-        _userService.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
+        _adapter.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CO.CDP.UserManagement.Shared.Responses.OrganisationResponse
             {
                 Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org",
@@ -2030,8 +2030,8 @@ public class UsersControllerTests
         viewResult.ViewName.Should().Be("Remove");
         _controller.ModelState[string.Empty]!.Errors.Should()
             .Contain(e => e.ErrorMessage.Contains("permission") || e.ErrorMessage.Contains("Owner"));
-        _userService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<int?>(),
+        _userRemovalService.Verify(
+            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(),
                 It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -2055,19 +2055,19 @@ public class UsersControllerTests
             Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
             CdpPersonId = cdpPersonId
         };
-        _userService.Setup(s =>
-                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
-        _userService.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
+        _adapter.Setup(s => s.GetOrganisationBySlugAsync("org", It.IsAny<CancellationToken>()))
             .ReturnsAsync(new CO.CDP.UserManagement.Shared.Responses.OrganisationResponse
             {
                 Id = 1, CdpOrganisationGuid = orgId, Name = "Org", Slug = "org",
                 IsActive = true, CreatedAt = DateTimeOffset.UtcNow
             });
-        _userService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _userRemovalService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         _controller.ControllerContext = new ControllerContext
         {
@@ -2086,8 +2086,8 @@ public class UsersControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId, input, CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>();
-        _userService.Verify(
-            s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()), Times.Once);
+        _userRemovalService.Verify(
+            s => s.RemoveUserAsync("org", cdpPersonId, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -2100,13 +2100,13 @@ public class UsersControllerTests
             Email = "target@example.com", CurrentRole = OrganisationRole.Owner,
             CdpPersonId = cdpPersonId
         };
-        _userService.Setup(s =>
-                s.GetRemoveUserViewModelAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
-        _userService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, null, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _userRemovalService.Setup(s => s.RemoveUserAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         _controller.ControllerContext = new ControllerContext
         {
