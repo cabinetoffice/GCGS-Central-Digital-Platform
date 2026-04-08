@@ -44,6 +44,10 @@ if (claimsApiEnabled)
             client => { client.BaseAddress = new Uri(organisationApiUrl); })
         .AddHttpMessageHandler<ServiceAccountTokenHandler>();
 }
+else
+{
+    builder.Services.AddHttpClient();
+}
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))
 {

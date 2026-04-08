@@ -204,6 +204,7 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Issuer: *organisation-authority
+      OrganisationApiService: 'http://organisation:8080'
 
   tenant:
     container_name: co-cdp-tenant
