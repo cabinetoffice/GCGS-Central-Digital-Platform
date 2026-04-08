@@ -26,8 +26,6 @@ services:
       - scheduled-worker
       - commercial-tools-app
       - commercial-tools-api
-      - user-management-app
-      - user-management-api
     volumes:
       - './docker/gateway/nginx.conf:/etc/nginx/nginx.conf:ro'
       - './docker/gateway/templates:/etc/nginx/templates:ro'
@@ -42,8 +40,6 @@ services:
       CDP_ENTITY_VERIFICATION_HOST: 'http://entity-verification:8080'
       CDP_COMMERCIAL_TOOLS_APP_HOST: 'http://commercial-tools-app:8080'
       CDP_COMMERCIAL_TOOLS_API_HOST: 'http://commercial-tools-api:8080'
-      CDP_USER_MANAGEMENT_APP_HOST: 'http://user-management-app:8080'
-      CDP_USER_MANAGEMENT_API_HOST: 'http://user-management-api:8080'
   db:
     container_name: co-cdp-db
     image: postgres:16.3
@@ -80,7 +76,7 @@ services:
       # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
       SERVICES: sqs,s3,logs,ssm
       DEBUG: 0
-      SQS_QUEUES: entity-verification.fifo,organisation.fifo,av-scanner.fifo,user-management.fifo
+      SQS_QUEUES: entity-verification.fifo,organisation.fifo,av-scanner.fifo
       S3_BUCKETS: cdp-staging-bucket.s3,cdp-permanent-bucket.s3
       LOG_GROUP_NAME: localstack
       LOG_STREAM_NAME: serilog
@@ -147,23 +143,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
 
-  user-management-migrations:
-    container_name: co-cdp-user-management-migrations
-    restart: no
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: user-management-migrations
-    image: 'cabinetoffice/cdp-user-management-migrations:${IMAGE_VERSION:-latest}'
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      UserManagementDatabase__Server: 'db'
-      UserManagementDatabase__Database: 'cdp'
-      UserManagementDatabase__Username: 'cdp_user'
-      UserManagementDatabase__Password: 'cdp123'
 
   organisation-app:
     container_name: co-cdp-organisation-app
@@ -225,7 +204,6 @@ services:
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
       Issuer: *organisation-authority
-      UserManagementService: 'http://user-management-api:8080'
 
   tenant:
     container_name: co-cdp-tenant
@@ -277,10 +255,8 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
-      Aws__OutboxQueues__0__MessageGroupId: "Organisation"
-      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
-      Aws__OutboxQueues__1__MessageGroupId: "UserManagement"
-      Aws__OutboxQueues__1__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__OutboxQueues__0__MessageGroupId: "EntityVerification"
+      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
@@ -348,80 +324,6 @@ services:
       ODataApi__BaseUrl: ""
       ODataApi__ApiKey: ""
 
-  user-management-api:
-    container_name: co-cdp-user-management-api
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-user-management-api
-    image: 'cabinetoffice/cdp-user-management-api:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_healthy
-      localstack:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      UserManagementDatabase__Server: 'db'
-      UserManagementDatabase__Database: 'cdp'
-      UserManagementDatabase__Username: 'cdp_user'
-      UserManagementDatabase__Password: 'cdp123'
-      OrganisationInformationDatabase__Host: 'db'
-      OrganisationInformationDatabase__Server: 'db'
-      OrganisationInformationDatabase__Database: 'cdp'
-      OrganisationInformationDatabase__Username: 'cdp_user'
-      OrganisationInformationDatabase__Password: 'cdp123'
-      Organisation__Authority: *organisation-authority
-      PersonService: '${PersonService:-http://gateway:${CDP_PERSON_PORT:-8084}}'
-      OrganisationService: '${OrganisationService:-http://gateway:${CDP_ORGANISATION_PORT:-8082}}'
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
-      Aws__ElastiCache__Hostname: "redis"
-      Aws__ElastiCache__Port: "6379"
-      CloudWatch__LogGroup: "/ecs/user-management-api"
-
-  user-management-app:
-    container_name: co-cdp-user-management-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: final-user-management-app
-    image: 'cabinetoffice/cdp-user-management-app:${IMAGE_VERSION:-latest}'
-    healthcheck:
-      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
-      start_period: 10s
-      interval: 10s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      redis:
-        condition: service_healthy
-    environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      Aws__Credentials__AccessKeyId: test
-      Aws__Credentials__SecretAccessKey: test
-      Aws__ServiceURL: "http://localstack:4566"
-      Aws__ElastiCache__Hostname: "redis"
-      Aws__SystemManager__DataProtectionPrefix: "/CDP/DataProtection"
-      Aws__CloudWatch__LogGroup: "/ecs/user-management-app"
-      Aws__CloudWatch__LogStream: "serilog"
-      UserManagementApi__BaseUrl: '${UserManagementApi:-http://gateway:${CDP_USER_MANAGEMENT_API_PORT:-8066}}'
-      SirsiService__ServiceBaseUrl: '${SirsiService:-http://gateway:${CDP_ORGANISATION_APP_PORT:-8090}}'
-      Organisation__Authority: *organisation-authority
-      OneLogin__Authority: "test"
-      OneLogin__ClientId: "test"
-      OneLogin__PrivateKey: "test"
-      OneLogin__AccountUrl: "test"
 
   person:
     container_name: co-cdp-person
@@ -448,13 +350,8 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__OutboxQueues__0__MessageGroupId: "Organisation"
-      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
-      Aws__OutboxQueues__1__MessageGroupId: "UserManagement"
-      Aws__OutboxQueues__1__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
-      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
-      Aws__SqsPublisher__MessageGroupId: "UserManagement"
-      Features__OrganisationSyncEnabled: false
+      Aws__OutboxQueues__0__MessageGroupId: "EntityVerification"
+      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
 
   forms:
     container_name: co-cdp-forms

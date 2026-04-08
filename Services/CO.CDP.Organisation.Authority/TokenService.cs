@@ -8,7 +8,6 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.Organisation.Authority;
 
@@ -17,7 +16,6 @@ public class TokenService(
     IConfigurationService configService,
     IPersonRepository personRepository,
     IAuthorityRepository authorityRepository,
-    IServiceProvider serviceProvider,
     IOptions<FeaturesOptions> features) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
@@ -140,28 +138,8 @@ public class TokenService(
         var person = await personRepository.FindByUrn(urn);
         claims.Add(new Claim(JwtClaimTypes.Roles, string.Join(",", person?.Scopes ?? [])));
 
-        if (features.Value.ClaimsApiEnabled)
-        {
-            logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from UserManagement.", urn);
-            try
-            {
-                var userClient = serviceProvider.GetService<ApiClient.UserManagementClient>();
-                if (userClient == null)
-                {
-                    logger.LogWarning("UserManagementClient not registered despite ClaimsApiEnabled; skipping claims enrichment.");
-                }
-                else
-                {
-                    var userClaims = await userClient.UsersGETAsync(urn);
-                    claims.Add(new Claim("cdp_claims", JsonSerializer.Serialize(userClaims), JsonClaimValueTypes.Json));
-                    logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Failed to fetch user claims from UserManagement service.");
-            }
-        }
+        // TODO: Claims enrichment will be re-integrated via the Organisation API
+        // once Application Registry is merged into the existing Organisation model.
 
         var tokenDescriptor = new SecurityTokenDescriptor
         {

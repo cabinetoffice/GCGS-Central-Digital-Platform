@@ -62,7 +62,6 @@ COPY --link Libraries/CO.CDP.Swashbuckle/CO.CDP.Swashbuckle.csproj Libraries/CO.
 COPY --link Libraries/CO.CDP.Swashbuckle.Tests/CO.CDP.Swashbuckle.Tests.csproj Libraries/CO.CDP.Swashbuckle.Tests/
 COPY --link Frontend/CO.CDP.OrganisationApp/CO.CDP.OrganisationApp.csproj Frontend/CO.CDP.OrganisationApp/
 COPY --link Frontend/CO.CDP.OrganisationApp.Tests/CO.CDP.OrganisationApp.Tests.csproj Frontend/CO.CDP.OrganisationApp.Tests/
-COPY --link Frontend/CO.CDP.UserManagement.App/CO.CDP.UserManagement.App.csproj Frontend/CO.CDP.UserManagement.App/
 COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App/CO.CDP.RegisterOfCommercialTools.App.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App/
 COPY --link Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/CO.CDP.RegisterOfCommercialTools.App.Tests.csproj Frontend/CO.CDP.RegisterOfCommercialTools.App.Tests/
 COPY --link Libraries/CO.CDP.Tenant.WebApiClient/CO.CDP.Tenant.WebApiClient.csproj Libraries/CO.CDP.Tenant.WebApiClient/
@@ -116,15 +115,6 @@ COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi/CO.CDP.RegisterOfCo
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/CO.CDP.RegisterOfCommercialTools.WebApi.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.WebApi.Tests/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence/CO.CDP.RegisterOfCommercialTools.Persistence.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence/
 COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.RegisterOfCommercialTools.Persistence.Tests.csproj Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/
-COPY --link Libraries/CO.CDP.UserManagement.Core/CO.CDP.UserManagement.Core.csproj Libraries/CO.CDP.UserManagement.Core/
-COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.csproj Libraries/CO.CDP.UserManagement.Shared/
-COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
-COPY --link Libraries/CO.CDP.OrganisationSync/CO.CDP.OrganisationSync.csproj Libraries/CO.CDP.OrganisationSync/
-COPY --link Services/CO.CDP.UserManagement.Infrastructure/CO.CDP.UserManagement.Infrastructure.csproj Services/CO.CDP.UserManagement.Infrastructure/
-COPY --link Services/CO.CDP.UserManagement.CdpInfrastructure/CO.CDP.UserManagement.CdpInfrastructure.csproj Services/CO.CDP.UserManagement.CdpInfrastructure/
-COPY --link Services/CO.CDP.UserManagement.Api/CO.CDP.UserManagement.Api.csproj Services/CO.CDP.UserManagement.Api/
-COPY --link Frontend/CO.CDP.UserManagement.App.Tests/CO.CDP.UserManagement.App.Tests.csproj Frontend/CO.CDP.UserManagement.App.Tests/
-COPY --link Services/CO.CDP.UserManagement.Api.Tests/CO.CDP.UserManagement.Api.Tests.csproj Services/CO.CDP.UserManagement.Api.Tests/
 
 COPY --link GCGS-Central-Digital-Platform.sln .
 RUN dotnet restore "GCGS-Central-Digital-Platform.sln"
@@ -205,21 +195,7 @@ ARG BUILD_CONFIGURATION
 WORKDIR /src/Services/CO.CDP.RegisterOfCommercialTools.WebApi
 RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-user-management-api
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Services/CO.CDP.UserManagement.Api
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
 
-FROM build AS build-user-management-app
-ARG BUILD_CONFIGURATION
-WORKDIR /src/Frontend/CO.CDP.UserManagement.App
-RUN dotnet build -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS build-user-management-migrations
-WORKDIR /src
-COPY .config/dotnet-tools.json .config/
-RUN dotnet tool restore
-RUN dotnet ef migrations bundle -p /src/Services/CO.CDP.UserManagement.Infrastructure -s /src/Services/CO.CDP.UserManagement.Infrastructure --context UserManagementDbContext --self-contained -o /app/migrations/efbundle
 
 FROM build-authority AS publish-authority
 ARG BUILD_CONFIGURATION
@@ -261,13 +237,6 @@ FROM build-commercial-tools-api AS publish-commercial-tools-api
 ARG BUILD_CONFIGURATION
 RUN dotnet publish "CO.CDP.RegisterOfCommercialTools.WebApi.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-FROM build-user-management-api AS publish-user-management-api
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.UserManagement.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM build-user-management-app AS publish-user-management-app
-ARG BUILD_CONFIGURATION
-RUN dotnet publish "CO.CDP.UserManagement.App.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM build-antivirus-app AS publish-antivirus-app
 ARG BUILD_CONFIGURATION
@@ -429,25 +398,4 @@ WORKDIR /app
 COPY --from=publish-scheduled-worker /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.ScheduledWorker.dll"]
 
-FROM base AS user-management-migrations
-COPY --from=busybox:uclibc /bin/busybox /bin/busybox
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=build-user-management-migrations /src/Services/CO.CDP.UserManagement.Infrastructure/UserManagementDatabaseMigrationConfig /app/UserManagementDatabaseMigrationConfig
-COPY --from=build-user-management-migrations /app/migrations/efbundle .
-ENTRYPOINT ["/bin/busybox", "sh", "-c", "/app/efbundle --connection \"Host=$UserManagementDatabase__Server;Database=$UserManagementDatabase__Database;Username=$UserManagementDatabase__Username;Password=$UserManagementDatabase__Password;\""]
 
-FROM base AS final-user-management-api
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-user-management-api /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.Api.dll"]
-
-FROM base AS final-user-management-app
-ARG VERSION
-ENV VERSION=${VERSION}
-WORKDIR /app
-COPY --from=publish-user-management-app /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.UserManagement.App.dll"]

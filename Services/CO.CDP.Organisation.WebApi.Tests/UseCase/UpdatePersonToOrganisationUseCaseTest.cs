@@ -1,12 +1,8 @@
-using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationSync;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.FeatureManagement;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
@@ -15,25 +11,14 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
     private readonly Mock<IOrganisationRepository> _organisationRepositoryMock = new();
-    private readonly Mock<IAtomicScope> _atomicScopeMock = new();
-    private readonly Mock<IOrganisationMembershipSync> _membershipSyncMock = new();
-    private readonly Mock<IFeatureManager> _featureManagerMock = new();
     private readonly UpdatePersonToOrganisationUseCase _useCase;
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Guid _personId = Guid.NewGuid();
 
     public UpdatePersonToOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
     {
-        _atomicScopeMock
-            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<bool>>>(), It.IsAny<CancellationToken>()))
-            .Returns<Func<CancellationToken, Task<bool>>, CancellationToken>((action, ct) => action(ct));
-
         _useCase = new UpdatePersonToOrganisationUseCase(
-            _organisationRepositoryMock.Object,
-            _atomicScopeMock.Object,
-            _membershipSyncMock.Object,
-            _featureManagerMock.Object,
-            NullLogger<UpdatePersonToOrganisationUseCase>.Instance);
+            _organisationRepositoryMock.Object);
     }
 
     [Fact]
@@ -42,58 +27,11 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
         var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = ["ADMIN", "EDITOR"] };
         var orgPerson = organisationPerson;
         _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId)).ReturnsAsync(orgPerson);
-        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(false);
 
         var result = await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
 
         result.Should().Be(true);
         _organisationRepositoryMock.Verify(repo => repo.TrackOrganisationPerson(orgPerson!), Times.Once);
-    }
-
-    [Fact]
-    public async Task Execute_ShouldSyncToUm_WhenFeatureFlagEnabled()
-    {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = ["ADMIN"] };
-        var orgPerson = organisationPerson;
-        _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId)).ReturnsAsync(orgPerson);
-        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(true);
-        _membershipSyncMock
-            .Setup(s => s.UpdateMembershipScopesAsync(It.IsAny<UpdateMembershipScopesCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<SyncError, Unit>.Success(Unit.Value));
-
-        var result = await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
-
-        result.Should().Be(true);
-        _membershipSyncMock.Verify(s => s.UpdateMembershipScopesAsync(
-            It.Is<UpdateMembershipScopesCommand>(c => c.OrganisationGuid == _organisationId && c.PersonGuid == _personId),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task Execute_ShouldNotSyncToUm_WhenFeatureFlagDisabled()
-    {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = ["ADMIN"] };
-        _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId)).ReturnsAsync(organisationPerson);
-        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(false);
-
-        await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
-
-        _membershipSyncMock.Verify(s => s.UpdateMembershipScopesAsync(It.IsAny<UpdateMembershipScopesCommand>(), It.IsAny<CancellationToken>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task Execute_ShouldSucceed_WhenSyncFails()
-    {
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = ["ADMIN"] };
-        _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId)).ReturnsAsync(organisationPerson);
-        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(true);
-        _membershipSyncMock
-            .Setup(s => s.UpdateMembershipScopesAsync(It.IsAny<UpdateMembershipScopesCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<SyncError, Unit>.Failure(new SyncFailureError("UM unavailable")));
-
-        var result = await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
-
-        result.Should().Be(true);
     }
 
     [Fact]

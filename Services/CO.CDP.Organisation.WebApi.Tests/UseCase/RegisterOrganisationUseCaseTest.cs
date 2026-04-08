@@ -9,14 +9,11 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationSync;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.FeatureManagement;
 using Moq;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
@@ -30,9 +27,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     private readonly IConfiguration _mockConfiguration;
     private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Mock<IClaimService> _claimService = new();
-    private readonly Mock<IAtomicScope> _atomicScope = new();
-    private readonly Mock<IOrganisationMembershipSync> _membershipSync = new();
-    private readonly Mock<IFeatureManager> _featureManager = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
     private readonly AutoMapperFixture _mapperFixture;
 
@@ -46,9 +40,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mockConfiguration,
         _logger.Object,
         _claimService.Object,
-        _atomicScope.Object,
-        _membershipSync.Object,
-        _featureManager.Object,
         () => _generatedGuid);
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
@@ -66,10 +57,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        // Make ExecuteAsync run the action immediately (no real transaction in tests)
-        _atomicScope
-            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<Model.Organisation>>>(), It.IsAny<CancellationToken>()))
-            .Returns<Func<CancellationToken, Task<Model.Organisation>>, CancellationToken>((action, ct) => action(ct));
     }
 
     [Fact]
@@ -101,9 +88,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                             configurationMock,
                             _logger.Object,
                             _claimService.Object,
-                            _atomicScope.Object,
-                            _membershipSync.Object,
-                            _featureManager.Object,
                             () => _generatedGuid
                         );
 
@@ -348,40 +332,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         )), Times.Once);
     }
 
-    [Fact]
-    public async Task ItShouldSyncToUserManagementWhenOrganisationSyncEnabled()
-    {
-        var person = GivenPersonExists("test_urn");
-        _featureManager.Setup(f => f.IsEnabledAsync(CO.CDP.Organisation.WebApi.Features.FeatureFlags.OrganisationSyncEnabled))
-            .ReturnsAsync(true);
-        _membershipSync
-            .Setup(s => s.CreateFounderMembershipAsync(It.IsAny<CreateFounderCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<SyncError, FounderSynced>.Success(
-                new FounderSynced(_generatedGuid, person.Guid)));
-
-        await UseCase.Execute(GivenRegisterOrganisationCommand());
-
-        _membershipSync.Verify(s => s.CreateFounderMembershipAsync(
-            It.Is<CreateFounderCommand>(c =>
-                c.OrganisationGuid == _generatedGuid &&
-                c.PersonGuid == person.Guid &&
-                c.UserPrincipalId == "test_urn" &&
-                c.OrganisationPartyRoles.Contains(UmPartyRole.Tenderer)),
-            It.IsAny<CancellationToken>()), Times.Once);
-    }
-
-    [Fact]
-    public async Task ItShouldNotSyncToUserManagementWhenOrganisationSyncDisabled()
-    {
-        var person = GivenPersonExists("test_urn");
-        _featureManager.Setup(f => f.IsEnabledAsync(CO.CDP.Organisation.WebApi.Features.FeatureFlags.OrganisationSyncEnabled))
-            .ReturnsAsync(false);
-
-        await UseCase.Execute(GivenRegisterOrganisationCommand());
-
-        _membershipSync.Verify(s => s.CreateFounderMembershipAsync(
-            It.IsAny<CreateFounderCommand>(), It.IsAny<CancellationToken>()), Times.Never);
-    }
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",

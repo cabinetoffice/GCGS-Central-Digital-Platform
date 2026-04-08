@@ -156,8 +156,6 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           CommercialToolsApp: http://commercial-tools-app:8080
           CommercialToolsApi: http://commercial-tools-api:8080
-          UserManagementApi: http://user-management-api:8080
-          UserManagementApp: http://user-management-app:8080
           SirsiService: http://organisation-app:8080
       - name: Verify services
         run: make verify-up
@@ -185,8 +183,6 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           CommercialToolsApp: http://commercial-tools-app:8080
           CommercialToolsApi: http://commercial-tools-api:8080
-          UserManagementApi: http://user-management-api:8080
-          UserManagementApp: http://user-management-app:8080
           SirsiService: http://organisation-app:8080
       - name: Grab Docker logs
         if: failure()

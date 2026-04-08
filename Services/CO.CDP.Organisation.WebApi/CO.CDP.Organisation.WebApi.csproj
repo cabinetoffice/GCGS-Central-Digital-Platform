@@ -30,8 +30,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
-        <ProjectReference Include="..\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj" />
-        <ProjectReference Include="..\..\Libraries\CO.CDP.OrganisationSync\CO.CDP.OrganisationSync.csproj" />
+
     </ItemGroup>
 
 </Project>

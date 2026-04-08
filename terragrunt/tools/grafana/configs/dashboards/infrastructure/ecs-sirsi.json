@@ -1260,16 +1260,6 @@
           },
           {
             "selected": false,
-            "text": "user-management-api",
-            "value": "user-management-api"
-          },
-          {
-            "selected": false,
-            "text": "user-management-app",
-            "value": "user-management-app"
-          },
-          {
-            "selected": false,
             "text": "outbox-processor-entity-verification",
             "value": "outbox-processor-entity-verification"
           },

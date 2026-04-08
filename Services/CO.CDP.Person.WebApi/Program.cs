@@ -4,7 +4,6 @@ using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationSync;
 using CO.CDP.Person.WebApi;
 using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
@@ -24,7 +23,6 @@ builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(builder.Co
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
