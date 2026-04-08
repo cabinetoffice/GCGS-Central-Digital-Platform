@@ -210,13 +210,4 @@ public class TokenServiceTest
         return jsonToken.Claims;
     }
 
-    private TokenService CreateTokenService(bool claimsApiEnabled)
-    {
-        return new TokenService(
-            _loggerMock.Object,
-            _configServiceMock.Object,
-            _personRepositoryMock.Object,
-            _authorityRepositoryMock.Object,
-            Options.Create(new FeaturesOptions { ClaimsApiEnabled = claimsApiEnabled }));
-    }
 }
