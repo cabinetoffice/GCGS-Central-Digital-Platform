@@ -29,7 +29,10 @@ public class ChannelAuthorizationHandler
         var hasServiceKeyChannelClaim = requirement.Channels.Contains(AuthenticationChannel.ServiceKey)
                                         && requestChannel == Channel.ServiceKey;
 
-        if (hasOneLoginChannelClaim || hasOrganisationKeyChannelClaim || hasServiceKeyChannelClaim)
+        var hasServiceAccountChannelClaim = requirement.Channels.Contains(AuthenticationChannel.ServiceAccount)
+                                        && requestChannel == Channel.ServiceAccount;
+
+        if (hasOneLoginChannelClaim || hasOrganisationKeyChannelClaim || hasServiceKeyChannelClaim || hasServiceAccountChannelClaim)
         {
             context.Succeed(requirement);
         }

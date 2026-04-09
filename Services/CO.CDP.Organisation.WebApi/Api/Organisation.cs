@@ -64,7 +64,7 @@ public static class EndpointExtensions
     public static void UseClaimsEndpoints(this WebApplication app)
     {
         app.MapGet("/organisations/claims/users/{userUrn}",
-            [OrganisationAuthorize([AuthenticationChannel.ServiceKey])]
+            [OrganisationAuthorize([AuthenticationChannel.ServiceAccount])]
             async (string userUrn, IUseCase<string, UserClaimsResponse?> useCase) =>
                 await useCase.Execute(userUrn)
                     .AndThen(claims => claims != null ? Results.Ok(claims) : Results.NotFound()))

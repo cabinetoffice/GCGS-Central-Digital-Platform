@@ -17,6 +17,7 @@ public static class Constants
         public const string OneLogin = "one-login";
         public const string OrganisationKey = "organisation-key";
         public const string ServiceKey = "service-key";
+        public const string ServiceAccount = "service-account";
     }
 
     public static class OrganisationPersonScope

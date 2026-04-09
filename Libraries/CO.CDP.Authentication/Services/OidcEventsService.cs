@@ -59,11 +59,18 @@ public class OidcEventsService : OpenIdConnectEvents
                 new("authority:expires_at", authorityTokens.AccessTokenExpiry.ToString("O"))
             };
 
-            var cdpJwt = new JwtSecurityTokenHandler().ReadJwtToken(authorityTokens.AccessToken);
-            var cdpClaimsClaim = cdpJwt.Claims.FirstOrDefault(c => c.Type == "cdp_claims");
-            if (cdpClaimsClaim != null)
+            try
             {
-                claims.Add(new Claim("cdp_claims", cdpClaimsClaim.Value, JsonClaimValueTypes.Json));
+                var cdpJwt = new JwtSecurityTokenHandler().ReadJwtToken(authorityTokens.AccessToken);
+                var cdpClaimsClaim = cdpJwt.Claims.FirstOrDefault(c => c.Type == "cdp_claims");
+                if (cdpClaimsClaim != null)
+                {
+                    claims.Add(new Claim("cdp_claims", cdpClaimsClaim.Value, JsonClaimValueTypes.Json));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to extract cdp_claims from authority JWT; continuing without them");
             }
 
             var identity = (ClaimsIdentity)context.Principal!.Identity!;
