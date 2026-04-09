@@ -25,14 +25,7 @@ locals {
     AWSManagedRulesAnonymousIpList : 8
   }
 
-  waf_php_notice_block_path_regex_pdf = join(
-    "|",
-    [
-      "^/notice/.+\\.pdf$",
-    ]
-  )
-
-  waf_php_notice_block_path_regex_all = join(
+  waf_php_notice_paths_all = join(
     "|",
     [
       "^/notice$",
@@ -40,11 +33,22 @@ locals {
     ]
   )
 
-  waf_php_rate_limit_path_regex = join(
+  waf_php_rate_limit_paths = join(
     "|",
     [
       "^/search/results$",
-      "^/notice(/.*)?$",
+      "^/notice$",
+      "^/notice/.*",
+    ]
+  )
+
+  waf_php_bot_block_paths = join(
+    "|",
+    [
+      "^/notice$",
+      "^/notice/.*",
+      "^/search/results$",
+      "^/procurement/.*",
     ]
   )
 
