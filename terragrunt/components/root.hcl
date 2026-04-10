@@ -56,7 +56,7 @@ locals {
       opensearch_dedicated_master_enabled = true
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
-      opensearch_instance_type            = "t3.small.search"
+      opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = null
       pinned_service_version_fts          = null
       pinned_service_version              = null
