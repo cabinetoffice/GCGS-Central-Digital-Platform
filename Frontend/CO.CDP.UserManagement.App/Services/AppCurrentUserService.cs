@@ -1,7 +1,7 @@
 using CO.CDP.UserManagement.Core;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
-using Microsoft.AspNetCore.Http;
+using CO.CDP.UserManagement.Shared.Enums;
 
 namespace CO.CDP.UserManagement.App.Services;
 
@@ -25,4 +25,7 @@ public sealed class AppCurrentUserService(IHttpContextAccessor httpContextAccess
         var json = httpContextAccessor.HttpContext?.User.FindFirst("cdp_claims")?.Value;
         return JsonHelper.TryDeserialize<UserClaims>(json);
     }
+
+    public OrganisationRole? GetOrganisationRole(Guid organisationId) =>
+        GetCdpClaims()?.GetOrganisationRole(organisationId);
 }

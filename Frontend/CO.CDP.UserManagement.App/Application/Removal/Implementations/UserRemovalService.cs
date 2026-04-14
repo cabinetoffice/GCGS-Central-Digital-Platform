@@ -5,6 +5,7 @@ using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Removal;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 {
@@ -37,7 +38,6 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CdpPersonId: cdpPersonId,
                 PendingInviteId: null,
                 RemoveConfirmed: null);
-
         }
 
         public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
@@ -59,7 +59,6 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CdpPersonId: null,
                 PendingInviteId: pendingInviteId,
                 RemoveConfirmed: null);
-
         }
 
         public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
@@ -113,49 +112,27 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             };
         }
 
-        public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
-        {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            var apps = await _adapter.GetApplicationsAsync(org.Id, ct);
-            var app = apps.FirstOrDefault(a => a.Application?.ClientId == clientId);
-            if (app is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            var assignments = await _adapter.GetUserAssignmentsAsync(org.Id, cdpPersonId, ct);
-            var assignment = assignments.FirstOrDefault(a => a.IsActive && a.OrganisationApplicationId == app.Id);
-            if (assignment is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            return await _adapter.DeleteUserAssignmentAsync(org.Id, cdpPersonId, assignment.Id, ct);
-        }
-
-        public async Task<bool> IsLastOwnerAsync(
+        public async Task<RemovalValidationResult> ValidateRemovalAsync(
             string organisationSlug, Guid cdpPersonId, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return false;
+            if (org is null) return RemovalValidationResult.Fail("Organisation not found.");
+
+            var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user is null) return RemovalValidationResult.Fail("User not found.");
+
+            var currentUserEmail = _currentUserService.GetUserEmail();
+            var currentUserOrgRole = _currentUserService.GetOrganisationRole(org.CdpOrganisationGuid);
 
             var users = await _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
-            var owners = users.Where(u => u.OrganisationRole == OrganisationRole.Owner).ToList();
+            var isLastOwner = IsLastOwner(users, cdpPersonId);
 
-            return owners.Count == 1 &&
-                   owners[0].CdpPersonId == cdpPersonId;
-        }
-
-        public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
-        {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            return await _adapter.RemoveUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
-        }
-
-        public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveInviteAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
-        {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
-
-            return await _adapter.CancelInviteAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+            return UserRemovalValidator.Validate(
+                user.Email,
+                currentUserEmail,
+                user.OrganisationRole,
+                isLastOwner,
+                currentUserOrgRole);
         }
 
         public async Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
@@ -169,35 +146,55 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 
             if (removeConfirmed == false) return new UserRemovalSubmitResult.Cancelled();
 
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return new UserRemovalSubmitResult.NotFound();
-
-            var currentUserEmail = _currentUserService.GetUserEmail();
-            var currentUserOrgRole = ResolveCurrentUserOrgRole(org.CdpOrganisationGuid);
-            var isLastOwner = await IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
-
-            var validation = UserRemovalValidator.Validate(
-                viewModel.Email,
-                currentUserEmail,
-                viewModel.CurrentRole,
-                isLastOwner,
-                currentUserOrgRole);
-
+            var validation = await ValidateRemovalAsync(organisationSlug, cdpPersonId, ct);
             if (!validation.IsValid)
                 return new UserRemovalSubmitResult.ValidationError(validation.ErrorMessage!);
 
-            var result = await RemoveUserAsync(organisationSlug, cdpPersonId, ct);
+            return await RemoveUserAsync(organisationSlug, cdpPersonId, ct);
+        }
+
+        public async Task<UserRemovalSubmitResult> RemoveUserAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return new UserRemovalSubmitResult.NotFound();
+
+            var result = await _adapter.RemoveUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
             var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
             return success ? new UserRemovalSubmitResult.Removed() : new UserRemovalSubmitResult.NotFound();
         }
 
-        private OrganisationRole? ResolveCurrentUserOrgRole(Guid orgId)
+        public async Task<InviteRemovalSubmitResult> RemoveInviteAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
         {
-            var orgClaim = _currentUserService.GetCdpClaims()?.Organisations
-                .FirstOrDefault(o => o.OrganisationId == orgId);
-            if (orgClaim is null) return null;
-            return Enum.TryParse<OrganisationRole>(orgClaim.OrganisationRole, ignoreCase: true, out var parsed)
-                ? parsed : null;
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return new InviteRemovalSubmitResult.NotFound();
+
+            var result = await _adapter.CancelInviteAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+            var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
+            return success ? new InviteRemovalSubmitResult.Removed() : new InviteRemovalSubmitResult.NotFound();
+        }
+
+        public async Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        {
+            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (org is null) return new ApplicationRemovalSubmitResult.NotFound();
+
+            var apps = await _adapter.GetApplicationsAsync(org.Id, ct);
+            var app = apps.FirstOrDefault(a => a.Application?.ClientId == clientId);
+            if (app is null) return new ApplicationRemovalSubmitResult.NotFound();
+
+            var assignments = await _adapter.GetUserAssignmentsAsync(org.Id, cdpPersonId, ct);
+            var assignment = assignments.FirstOrDefault(a => a.IsActive && a.OrganisationApplicationId == app.Id);
+            if (assignment is null) return new ApplicationRemovalSubmitResult.NotFound();
+
+            var result = await _adapter.DeleteUserAssignmentAsync(org.Id, cdpPersonId, assignment.Id, ct);
+            var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
+            return success ? new ApplicationRemovalSubmitResult.Removed() : new ApplicationRemovalSubmitResult.NotFound();
+        }
+
+        private static bool IsLastOwner(ICollection<OrganisationUserResponse> users, Guid cdpPersonId)
+        {
+            var owners = users.Where(u => u.OrganisationRole == OrganisationRole.Owner).ToList();
+            return owners.Count == 1 && owners[0].CdpPersonId == cdpPersonId;
         }
     }
 }

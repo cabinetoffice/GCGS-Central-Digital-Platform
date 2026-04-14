@@ -1,8 +1,6 @@
-using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Application.Removal;
 using CO.CDP.UserManagement.App.Application.Users;
 using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.UserManagement.App.Controllers;
@@ -17,8 +15,9 @@ public class RemovalController(
         var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null) return NotFound();
 
-        if (await userRemovalService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct))
-            ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
+        var validation = await userRemovalService.ValidateRemovalAsync(organisationSlug, cdpPersonId, ct);
+        if (!validation.IsValid)
+            ModelState.AddModelError(string.Empty, validation.ErrorMessage!);
 
         return View("~/Views/Users/Remove.cshtml", viewModel);
     }
@@ -79,10 +78,9 @@ public class RemovalController(
         }
 
         var result = await userRemovalService.RemoveInviteAsync(organisationSlug, pendingInviteId, ct);
-        var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
-        return success
-            ? RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug })
-            : NotFound();
+
+        if (result is InviteRemovalSubmitResult.NotFound) return NotFound();
+        return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove")]
@@ -114,16 +112,9 @@ public class RemovalController(
         }
 
         var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
-        return result.Match<IActionResult>(
-            _ => Redirect("/error"),
-            outcome => outcome == ServiceOutcome.NotFound
-                ? NotFound()
-                : RedirectToAction(nameof(RemoveApplicationSuccess), new
-                {
-                    organisationSlug,
-                    cdpPersonId,
-                    clientId
-                }));
+
+        if (result is ApplicationRemovalSubmitResult.NotFound) return NotFound();
+        return RedirectToAction(nameof(RemoveApplicationSuccess), new { organisationSlug, cdpPersonId, clientId });
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/success")]

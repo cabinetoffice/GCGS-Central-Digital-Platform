@@ -9,6 +9,7 @@ using CO.CDP.UserManagement.App.Application.InviteUsers;
 using CO.CDP.UserManagement.App.Application.OrganisationRoles;
 using CO.CDP.UserManagement.App.Application.ApplicationRoles;
 using CO.CDP.UserManagement.App.Application.Removal;
+using CO.CDP.UserManagement.Core.Removal;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -1578,8 +1579,8 @@ public class RemovalControllerTests
     public RemovalControllerTests()
     {
         _userRemovalService
-            .Setup(s => s.IsLastOwnerAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false);
+            .Setup(s => s.ValidateRemovalAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemovalValidationResult.Success());
 
         _controller = new RemovalController(
             _userRemovalService.Object,
@@ -1614,7 +1615,7 @@ public class RemovalControllerTests
     }
 
     [Fact]
-    public async Task RemoveUser_Get_WhenSelfRemoval_ReturnsView()
+    public async Task RemoveUser_Get_WhenSelfRemoval_ReturnsViewWithError()
     {
         var cdpPersonId = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with
@@ -1623,12 +1624,14 @@ public class RemovalControllerTests
         };
         _userRemovalService.Setup(s => s.GetUserViewModelAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+        _userRemovalService.Setup(s => s.ValidateRemovalAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemovalValidationResult.Fail("You cannot remove yourself from the organisation."));
 
         var result = await _controller.RemoveUser("org", cdpPersonId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
-        _controller.ModelState.ContainsKey(string.Empty).Should().BeFalse();
+        _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
         _userRemovalService.Verify(
             s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -1643,8 +1646,8 @@ public class RemovalControllerTests
         };
         _userRemovalService.Setup(s => s.GetUserViewModelAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userRemovalService.Setup(s => s.IsLastOwnerAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true);
+        _userRemovalService.Setup(s => s.ValidateRemovalAsync("org", cdpPersonId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemovalValidationResult.Fail("You cannot remove the last owner of the organisation."));
 
         var result = await _controller.RemoveUser("org", cdpPersonId, CancellationToken.None);
 
@@ -1837,7 +1840,7 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToIndex()
     {
         _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
+            .ReturnsAsync(new InviteRemovalSubmitResult.Removed());
 
         var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
@@ -1850,7 +1853,7 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Post_WhenConfirmedButFails_ReturnsNotFound()
     {
         _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
+            .ReturnsAsync(new InviteRemovalSubmitResult.NotFound());
 
         var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);

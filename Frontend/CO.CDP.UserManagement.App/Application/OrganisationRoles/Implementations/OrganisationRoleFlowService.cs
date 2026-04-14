@@ -173,7 +173,7 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             if (org is null) return new OrganisationRoleChangeResult.NotFound();
 
             var currentUserEmail = _currentUserService.GetUserEmail();
-            var currentUserOrgRole = ResolveCurrentUserOrgRole(org.CdpOrganisationGuid);
+            var currentUserOrgRole = _currentUserService.GetOrganisationRole(org.CdpOrganisationGuid);
 
             var validation = OrganisationRoleChangeValidator.Validate(
                 selectedRole,
@@ -189,15 +189,6 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             await _changeRoleStateStore.SetAsync(state);
 
             return new OrganisationRoleChangeResult.Saved();
-        }
-
-        private OrganisationRole? ResolveCurrentUserOrgRole(Guid orgId)
-        {
-            var orgClaim = _currentUserService.GetCdpClaims()?.Organisations
-                .FirstOrDefault(o => o.OrganisationId == orgId);
-            if (orgClaim is null) return null;
-            return Enum.TryParse<OrganisationRole>(orgClaim.OrganisationRole, ignoreCase: true, out var parsed)
-                ? parsed : null;
         }
 
         private static ChangeRoleState ToChangeRoleState(ChangeUserRoleViewModel viewModel, OrganisationRole selectedRole) =>

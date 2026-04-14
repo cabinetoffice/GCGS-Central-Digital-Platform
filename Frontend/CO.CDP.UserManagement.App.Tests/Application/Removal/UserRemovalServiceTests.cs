@@ -1,9 +1,9 @@
 using CO.CDP.UserManagement.App.Adapters;
-using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Application.Removal.Implementations;
-using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Tests.TestFixtures;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Removal;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
@@ -97,63 +97,102 @@ public class UserRemovalServiceTests : AdapterTestFixture
         result!.PendingInviteId.Should().Be(42);
     }
 
-    // ── IsLastOwnerAsync ──────────────────────────────────────────────────────
+    // ── ValidateRemovalAsync ──────────────────────────────────────────────────
 
     [Fact]
-    public async Task IsLastOwnerAsync_OrgNotFound_ReturnsFalse()
+    public async Task ValidateRemovalAsync_OrgNotFound_ReturnsFail()
     {
         _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.IsLastOwnerAsync("slug", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.ValidateRemovalAsync("slug", Guid.NewGuid(), CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().NotBeNullOrEmpty();
     }
 
     [Fact]
-    public async Task IsLastOwnerAsync_MultipleOwners_ReturnsFalse()
+    public async Task ValidateRemovalAsync_UserNotFound_ReturnsFail()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, It.IsAny<Guid>(), default))
+            .ReturnsAsync((OrganisationUserResponse?)null);
+
+        var result = await _sut.ValidateRemovalAsync("test-org", Guid.NewGuid(), CancellationToken.None);
+
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().NotBeNullOrEmpty();
+    }
+
+    [Fact]
+    public async Task ValidateRemovalAsync_SelfRemoval_ReturnsFail()
     {
         var personId = Guid.NewGuid();
         SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId, OrganisationRole.Admin, email: "me@example.com"));
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[] {
-                MakeUser(personId, OrganisationRole.Owner),
-                MakeUser(Guid.NewGuid(), OrganisationRole.Owner)
-            });
+            .ReturnsAsync(new[] { MakeUser(personId, OrganisationRole.Admin), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
+        _currentUserService.Setup(s => s.GetUserEmail()).Returns("me@example.com");
+        _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Admin);
 
-        var result = await _sut.IsLastOwnerAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.ValidateRemovalAsync("test-org", personId, CancellationToken.None);
 
-        result.Should().BeFalse();
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("cannot remove yourself");
     }
 
     [Fact]
-    public async Task IsLastOwnerAsync_OneOwnerButNotThisUser_ReturnsFalse()
-    {
-        var personId   = Guid.NewGuid();
-        var differentId = Guid.NewGuid();
-        SetupOrg();
-        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[] { MakeUser(differentId, OrganisationRole.Owner) });
-
-        var result = await _sut.IsLastOwnerAsync("test-org", personId, CancellationToken.None);
-
-        result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task IsLastOwnerAsync_ExactlyOneOwnerAndIsThisUser_ReturnsTrue()
+    public async Task ValidateRemovalAsync_AdminRemovingOwner_ReturnsFail()
     {
         var personId = Guid.NewGuid();
         SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId, OrganisationRole.Owner, email: "owner@example.com"));
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[] {
-                MakeUser(personId, OrganisationRole.Owner),
-                MakeUser(Guid.NewGuid(), OrganisationRole.Admin)
-            });
+            .ReturnsAsync(new[] { MakeUser(personId, OrganisationRole.Owner), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
+        _currentUserService.Setup(s => s.GetUserEmail()).Returns("admin@example.com");
+        _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Admin);
 
-        var result = await _sut.IsLastOwnerAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.ValidateRemovalAsync("test-org", personId, CancellationToken.None);
 
-        result.Should().BeTrue();
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("permission");
+    }
+
+    [Fact]
+    public async Task ValidateRemovalAsync_LastOwner_ReturnsFail()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId, OrganisationRole.Owner, email: "owner@example.com"));
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
+            .ReturnsAsync(new[] { MakeUser(personId, OrganisationRole.Owner) });
+        _currentUserService.Setup(s => s.GetUserEmail()).Returns("other@example.com");
+        _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Owner);
+
+        var result = await _sut.ValidateRemovalAsync("test-org", personId, CancellationToken.None);
+
+        result.IsValid.Should().BeFalse();
+        result.ErrorMessage.Should().Contain("last owner");
+    }
+
+    [Fact]
+    public async Task ValidateRemovalAsync_ValidRemoval_ReturnsSuccess()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId, OrganisationRole.Member, email: "member@example.com"));
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
+            .ReturnsAsync(new[] { MakeUser(Guid.NewGuid(), OrganisationRole.Owner), MakeUser(personId, OrganisationRole.Member) });
+        _currentUserService.Setup(s => s.GetUserEmail()).Returns("admin@example.com");
+        _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Owner);
+
+        var result = await _sut.ValidateRemovalAsync("test-org", personId, CancellationToken.None);
+
+        result.IsValid.Should().BeTrue();
     }
 
     // ── RemoveUserAsync ───────────────────────────────────────────────────────
@@ -166,7 +205,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
 
         var result = await _sut.RemoveUserAsync("slug", Guid.NewGuid(), CancellationToken.None);
 
-        result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.NotFound);
+        result.Should().BeOfType<UserRemovalSubmitResult.NotFound>();
     }
 
     [Fact]
@@ -179,8 +218,21 @@ public class UserRemovalServiceTests : AdapterTestFixture
 
         var result = await _sut.RemoveUserAsync("test-org", personId, CancellationToken.None);
 
-        result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.Success);
+        result.Should().BeOfType<UserRemovalSubmitResult.Removed>();
         _adapter.Verify(a => a.RemoveUserAsync(OrgGuid, personId, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveUserAsync_AdapterReturnsFailure_ReturnsNotFound()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.RemoveUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(NotFoundResult());
+
+        var result = await _sut.RemoveUserAsync("test-org", personId, CancellationToken.None);
+
+        result.Should().BeOfType<UserRemovalSubmitResult.NotFound>();
     }
 
     // ── RemoveInviteAsync ─────────────────────────────────────────────────────
@@ -193,7 +245,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
 
         var result = await _sut.RemoveInviteAsync("slug", 42, CancellationToken.None);
 
-        result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.NotFound);
+        result.Should().BeOfType<InviteRemovalSubmitResult.NotFound>();
     }
 
     [Fact]
@@ -205,7 +257,19 @@ public class UserRemovalServiceTests : AdapterTestFixture
 
         var result = await _sut.RemoveInviteAsync("test-org", 42, CancellationToken.None);
 
-        result.GetOrElse(ServiceOutcome.NotFound).Should().Be(ServiceOutcome.Success);
+        result.Should().BeOfType<InviteRemovalSubmitResult.Removed>();
         _adapter.Verify(a => a.CancelInviteAsync(OrgGuid, 42, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveInviteAsync_AdapterReturnsFailure_ReturnsNotFound()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.CancelInviteAsync(OrgGuid, 42, default))
+            .ReturnsAsync(NotFoundResult());
+
+        var result = await _sut.RemoveInviteAsync("test-org", 42, CancellationToken.None);
+
+        result.Should().BeOfType<InviteRemovalSubmitResult.NotFound>();
     }
 }
