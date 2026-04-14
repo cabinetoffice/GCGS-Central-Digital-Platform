@@ -1,7 +1,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Application.Users;
 using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.App.Application.InviteUsers;
+using CO.CDP.UserManagement.App.Application.OrganisationRoles;
+using CO.CDP.UserManagement.App.Application.ApplicationRoles;
+using CO.CDP.UserManagement.App.Application.Removal;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.App.Attributes;
@@ -15,11 +21,19 @@ namespace CO.CDP.UserManagement.App.Controllers;
 [Route("organisation/{organisationSlug}")]
 [OrganisationOwnerOrAdmin]
 public class UsersController(
-    IUserService userService,
+    IUsersQueryService usersQueryService,
+    IUserDetailsQueryService userDetailsQueryService,
+    IInviteDetailsQueryService inviteDetailsQueryService,
+    IInviteUserFlowService inviteUserFlowService,
+    IOrganisationRoleFlowService organisationRoleFlowService,
+    IApplicationRoleFlowService applicationRoleFlowService,
+    IUserRemovalService userRemovalService,
     IOrganisationRoleService organisationRoleService,
     IInviteUserStateStore inviteUserStateStore,
     IChangeRoleStateStore changeRoleStateStore,
-    IChangeApplicationRoleStateStore changeApplicationRoleStateStore) : Controller
+    IChangeApplicationRoleStateStore changeApplicationRoleStateStore,
+    IRemoveInviteStateStore removeInviteStateStore,
+    IUserManagementApiAdapter adapter) : Controller
 {
     [HttpGet("")]
     public async Task<IActionResult> Index(
@@ -34,7 +48,7 @@ public class UsersController(
             return BadRequest(ModelState);
         }
 
-        var viewModel = await userService.GetUsersViewModelAsync(organisationSlug, role, application, search, ct);
+        var viewModel = await usersQueryService.GetViewModelAsync(organisationSlug, role, application, search, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
@@ -61,7 +75,7 @@ public class UsersController(
                 OrganisationRole = existingState.OrganisationRole
             };
         ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-        var viewModel = await userService.GetInviteUserViewModelAsync(organisationSlug, input, ct);
+        var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
@@ -76,16 +90,16 @@ public class UsersController(
         if (!ModelState.IsValid)
         {
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-            var viewModel = await userService.GetInviteUserViewModelAsync(organisationSlug, input, ct);
+            var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
-        if (await userService.IsEmailAlreadyInOrganisationAsync(organisationSlug, input.Email!, ct))
+        if (await inviteUserFlowService.IsEmailAlreadyInOrganisationAsync(organisationSlug, input.Email!, ct))
         {
             ModelState.AddModelError(nameof(input.Email),
                 "A user with this email address is already in this organisation");
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-            var viewModel = await userService.GetInviteUserViewModelAsync(organisationSlug, input, ct);
+            var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
@@ -136,13 +150,7 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        if (organisationRole.HasValue && state.OrganisationRole != organisationRole.Value)
-        {
-            state = state with { OrganisationRole = organisationRole.Value };
-            await inviteUserStateStore.SetAsync(state);
-        }
-
-        var viewModel = await userService.GetApplicationRolesStepViewModelAsync(organisationSlug, state, ct);
+        var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -150,16 +158,52 @@ public class UsersController(
 
         var selectedAssignments = (state.ApplicationAssignments ?? [])
             .ToDictionary(a => a.OrganisationApplicationId, a => a.ApplicationRoleId);
-        viewModel.Applications
-            .Where(application => selectedAssignments.ContainsKey(application.OrganisationApplicationId))
-            .ToList()
-            .ForEach(application =>
-            {
-                application.GiveAccess = true;
-                application.SelectedRoleId = selectedAssignments[application.OrganisationApplicationId];
-            });
 
-        return View("ApplicationRoles", viewModel);
+        var updatedApplications = viewModel.Applications
+            .Select(application =>
+            {
+                if (selectedAssignments.TryGetValue(application.OrganisationApplicationId, out var roleId))
+                {
+                    return new ApplicationAccessSelectionViewModel
+                    {
+                        OrganisationApplicationId = application.OrganisationApplicationId,
+                        ApplicationName = application.ApplicationName,
+                        ApplicationDescription = application.ApplicationDescription,
+                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                        IsEnabledByDefault = application.IsEnabledByDefault,
+                        GiveAccess = true,
+                        SelectedRoleId = roleId,
+                        SelectedRoleIds = application.SelectedRoleIds,
+                        Roles = application.Roles
+                    };
+                }
+
+                return new ApplicationAccessSelectionViewModel
+                {
+                    OrganisationApplicationId = application.OrganisationApplicationId,
+                    ApplicationName = application.ApplicationName,
+                    ApplicationDescription = application.ApplicationDescription,
+                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                    IsEnabledByDefault = application.IsEnabledByDefault,
+                    GiveAccess = application.GiveAccess,
+                    SelectedRoleId = application.SelectedRoleId,
+                    SelectedRoleIds = application.SelectedRoleIds,
+                    Roles = application.Roles
+                };
+            })
+            .ToList();
+
+        var viewModelUpdated = new ApplicationRolesStepViewModel
+        {
+            OrganisationSlug = viewModel.OrganisationSlug,
+            FirstName = viewModel.FirstName,
+            LastName = viewModel.LastName,
+            Email = viewModel.Email,
+            OrganisationRole = viewModel.OrganisationRole,
+            Applications = updatedApplications
+        };
+
+        return View("ApplicationRoles", viewModelUpdated);
     }
 
     [HttpPost("add-user/application-roles")]
@@ -175,40 +219,83 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        var viewModel = await userService.GetApplicationRolesStepViewModelAsync(organisationSlug, state, ct);
+        var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (viewModel is null)
         {
             return NotFound();
         }
 
         var postedSelections = input.Applications.ToDictionary(a => a.OrganisationApplicationId);
-        viewModel.Applications
-            .Where(application => postedSelections.ContainsKey(application.OrganisationApplicationId))
-            .ToList()
-            .ForEach(application =>
-            {
-                var postedSelection = postedSelections[application.OrganisationApplicationId];
-                application.GiveAccess = postedSelection.GiveAccess;
-                if (application.AllowsMultipleRoleAssignments)
-                {
-                    application.SelectedRoleIds = postedSelection.SelectedRoleIds;
-                    application.SelectedRoleId = postedSelection.SelectedRoleIds.Count > 0
-                        ? postedSelection.SelectedRoleIds[0]
-                        : null;
-                }
-                else
-                {
-                    application.SelectedRoleId = postedSelection.SelectedRoleId;
-                }
-            });
 
-        var selectedApplications = viewModel.Applications.Where(a => a.GiveAccess).ToList();
+        var updatedApplications = viewModel.Applications
+            .Select(application =>
+            {
+                if (postedSelections.TryGetValue(application.OrganisationApplicationId, out var postedSelection))
+                {
+                    var giveAccess = postedSelection.GiveAccess || application.IsEnabledByDefault;
+                    if (application.AllowsMultipleRoleAssignments)
+                    {
+                        var selectedRoleIds = postedSelection.SelectedRoleIds ?? new List<int>();
+                        return new ApplicationAccessSelectionViewModel
+                        {
+                            OrganisationApplicationId = application.OrganisationApplicationId,
+                            ApplicationName = application.ApplicationName,
+                            ApplicationDescription = application.ApplicationDescription,
+                            AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                            IsEnabledByDefault = application.IsEnabledByDefault,
+                            GiveAccess = giveAccess,
+                            SelectedRoleId = selectedRoleIds.Count > 0 ? selectedRoleIds[0] : (int?)null,
+                            SelectedRoleIds = selectedRoleIds,
+                            Roles = application.Roles
+                        };
+                    }
+
+                    return new ApplicationAccessSelectionViewModel
+                    {
+                        OrganisationApplicationId = application.OrganisationApplicationId,
+                        ApplicationName = application.ApplicationName,
+                        ApplicationDescription = application.ApplicationDescription,
+                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                        IsEnabledByDefault = application.IsEnabledByDefault,
+                        GiveAccess = giveAccess,
+                        SelectedRoleId = postedSelection.SelectedRoleId,
+                        SelectedRoleIds = application.SelectedRoleIds,
+                        Roles = application.Roles
+                    };
+                }
+
+                return new ApplicationAccessSelectionViewModel
+                {
+                    OrganisationApplicationId = application.OrganisationApplicationId,
+                    ApplicationName = application.ApplicationName,
+                    ApplicationDescription = application.ApplicationDescription,
+                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
+                    IsEnabledByDefault = application.IsEnabledByDefault,
+                    GiveAccess = application.GiveAccess || application.IsEnabledByDefault,
+                    SelectedRoleId = application.SelectedRoleId,
+                    SelectedRoleIds = application.SelectedRoleIds,
+                    Roles = application.Roles
+                };
+            })
+            .ToList();
+
+        var viewModelUpdated = new ApplicationRolesStepViewModel
+        {
+            OrganisationSlug = viewModel.OrganisationSlug,
+            FirstName = viewModel.FirstName,
+            LastName = viewModel.LastName,
+            Email = viewModel.Email,
+            OrganisationRole = viewModel.OrganisationRole,
+            Applications = updatedApplications
+        };
+
+        var selectedApplications = viewModelUpdated.Applications.Where(a => a.GiveAccess).ToList();
         if (selectedApplications.Count == 0)
         {
             ModelState.AddModelError("applicationSelections", "You must select at least one application and role");
         }
 
-        viewModel.Applications
+        viewModelUpdated.Applications
             .Select((application, index) => new { application, index })
             .Where(item => item.application.GiveAccess && !HasRoleSelected(item.application))
             .ToList()
@@ -219,7 +306,7 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            return View("ApplicationRoles", viewModel);
+            return View("ApplicationRoles", viewModelUpdated);
         }
 
         var assignments = selectedApplications
@@ -251,19 +338,13 @@ public class UsersController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        if (organisationRole.HasValue && state.OrganisationRole != organisationRole.Value)
-        {
-            state = state with { OrganisationRole = organisationRole.Value };
-            await inviteUserStateStore.SetAsync(state);
-        }
-
         var selectedAssignments = state.ApplicationAssignments ?? [];
         if (selectedAssignments.Count == 0)
         {
             return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
         }
 
-        var rolesViewModel = await userService.GetApplicationRolesStepViewModelAsync(organisationSlug, state, ct);
+        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (rolesViewModel is null)
         {
             return NotFound();
@@ -321,7 +402,7 @@ public class UsersController(
             return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
         }
 
-        var rolesViewModel = await userService.GetApplicationRolesStepViewModelAsync(organisationSlug, state, ct);
+        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (rolesViewModel is null)
         {
             return NotFound();
@@ -350,7 +431,7 @@ public class UsersController(
             return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
         }
 
-        var invitePageModel = await userService.GetInviteUserViewModelAsync(organisationSlug, ct: ct);
+        var invitePageModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, null, ct);
         if (invitePageModel is null)
         {
             return NotFound();
@@ -364,11 +445,10 @@ public class UsersController(
             LastName = state.LastName,
             OrganisationRole = state.OrganisationRole
         };
-        var success = await userService.InviteUserAsync(
+        var success = await inviteUserFlowService.InviteAsync(
             organisationSlug,
-            inviteInput,
-            ct,
-            assignments);
+            state,
+            ct);
         if (success.IsLeft())
         {
             return Redirect("/error");
@@ -423,12 +503,19 @@ public class UsersController(
     [HttpGet("invites/{inviteGuid:guid}/resend-invite")]
     public async Task<IActionResult> ResendInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
-        var success = await userService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
+        var success = await inviteUserFlowService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
         return success.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == ServiceOutcome.NotFound
                 ? NotFound()
                 : RedirectToAction(nameof(Index), new { organisationSlug })!);
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}")]
+    public async Task<IActionResult> InviteDetails(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    {
+        var viewModel = await inviteDetailsQueryService.GetViewModelAsync(organisationSlug, inviteGuid, ct);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -437,7 +524,7 @@ public class UsersController(
         Guid cdpPersonId,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        var viewModel = await organisationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -462,14 +549,14 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            var viewModel = await organisationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
             return viewModel is null
                 ? NotFound()
                 : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist =
-            await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            await organisationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModelToPersist is null)
         {
             return NotFound();
@@ -524,16 +611,15 @@ public class UsersController(
 
         // Idempotency: if the role has already been applied, treat as success
         var currentViewModel =
-            await userService.GetChangeUserRoleViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            await organisationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (currentViewModel is not null && currentViewModel.CurrentRole == state.SelectedRole)
         {
             return RedirectToAction(nameof(ChangeRoleSuccess), new { organisationSlug, cdpPersonId });
         }
 
-        var success = await userService.UpdateUserRoleAsync(
+        var success = await organisationRoleFlowService.UpdateUserRoleAsync(
             organisationSlug,
             cdpPersonId,
-            null,
             state.SelectedRole,
             ct);
         return success.Match<IActionResult>(
@@ -572,7 +658,7 @@ public class UsersController(
         Guid inviteGuid,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
+        var viewModel = await organisationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -597,14 +683,14 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
+            var viewModel = await organisationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
             return viewModel is null
                 ? NotFound()
                 : View("ChangeRole", await BuildChangeUserRolePageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         var viewModelToPersist =
-            await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
+            await organisationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         if (viewModelToPersist is null)
         {
             return NotFound();
@@ -659,15 +745,14 @@ public class UsersController(
 
         // Idempotency: if the role has already been applied to the invite, treat as success
         var currentViewModel =
-            await userService.GetChangeUserRoleViewModelAsync(organisationSlug, null, inviteGuid, ct);
+            await organisationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         if (currentViewModel is not null && currentViewModel.CurrentRole == state.SelectedRole)
         {
             return RedirectToAction(nameof(ChangeInviteRoleSuccess), new { organisationSlug, inviteGuid });
         }
 
-        var success = await userService.UpdateUserRoleAsync(
+        var success = await organisationRoleFlowService.UpdateInviteRoleAsync(
             organisationSlug,
-            null,
             inviteGuid,
             state.SelectedRole,
             ct);
@@ -708,7 +793,7 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel =
-            await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            await applicationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -740,7 +825,7 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel =
-            await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+            await applicationRoleFlowService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -781,7 +866,7 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success =
-            await userService.UpdateUserApplicationRolesAsync(organisationSlug, cdpPersonId, null, assignments, ct);
+            await applicationRoleFlowService.UpdateUserRolesAsync(organisationSlug, cdpPersonId, assignments, ct);
         return success.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == ServiceOutcome.NotFound
@@ -834,7 +919,7 @@ public class UsersController(
         string clientId,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveApplicationSuccessViewModelAsync(
+        var viewModel = await userDetailsQueryService.GetRemoveApplicationSuccessViewModelAsync(
             organisationSlug,
             cdpPersonId,
             clientId,
@@ -855,7 +940,7 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel =
-            await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, null, inviteGuid, ct);
+            await applicationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -887,7 +972,7 @@ public class UsersController(
         CancellationToken ct)
     {
         var viewModel =
-            await userService.GetChangeUserApplicationRolesViewModelAsync(organisationSlug, null, inviteGuid, ct);
+            await applicationRoleFlowService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -928,7 +1013,7 @@ public class UsersController(
 
         var assignments = BuildAssignmentPostModels(state);
         var success =
-            await userService.UpdateUserApplicationRolesAsync(organisationSlug, null, inviteGuid, assignments, ct);
+            await applicationRoleFlowService.UpdateInviteRolesAsync(organisationSlug, inviteGuid, assignments, ct);
         return success.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == ServiceOutcome.NotFound
@@ -1251,7 +1336,8 @@ public class UsersController(
     {
         var selected =
             (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
-        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : [])).OrderBy(x => x);
+        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : new List<int>()))
+            .OrderBy(x => x);
         return !selected.SequenceEqual(current);
     }
 
@@ -1283,13 +1369,13 @@ public class UsersController(
     [HttpGet("user/{cdpPersonId:guid}/remove")]
     public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return NotFound();
         }
 
-        if (await userService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct))
+        if (await userRemovalService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct))
         {
             ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
             return View("Remove", viewModel);
@@ -1311,7 +1397,7 @@ public class UsersController(
         RemoveUserViewModel input,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, cdpPersonId, null, ct);
+        var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return NotFound();
@@ -1344,7 +1430,7 @@ public class UsersController(
         // Re-check last-owner status immediately before performing the removal to avoid race conditions
         if (cdpPersonId != Guid.Empty)
         {
-            var isLastOwnerNow = await userService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
+            var isLastOwnerNow = await userRemovalService.IsLastOwnerAsync(organisationSlug, cdpPersonId, ct);
             if (isLastOwnerNow)
             {
                 ModelState.AddModelError(string.Empty, "You cannot remove the last owner of the organisation.");
@@ -1352,26 +1438,29 @@ public class UsersController(
             }
         }
 
-        var success = await userService.RemoveUserAsync(organisationSlug, cdpPersonId, null, ct);
-
-        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug, cdpPersonId }) : NotFound();
+        var result = await userRemovalService.RemoveUserAsync(organisationSlug, cdpPersonId, ct);
+        var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
+        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
     }
 
-    [HttpGet("invites/{pendingInviteId:int}/remove")]
-    public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
+    [HttpGet("invites/{inviteGuid:guid}/remove")]
+    public async Task<IActionResult> RemoveInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         return viewModel is null ? NotFound() : View("Remove", viewModel);
     }
 
-    [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [HttpPost("invites/{inviteGuid:guid}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveInvite(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         RemoveUserViewModel input,
         CancellationToken ct)
     {
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        if (viewModel is null) return NotFound();
+
         if (input.RemoveConfirmed == false)
         {
             return RedirectToAction(nameof(Index), new { organisationSlug });
@@ -1379,20 +1468,55 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetRemoveUserViewModelAsync(organisationSlug, null, pendingInviteId, ct);
-            return viewModel is null ? NotFound() : View("Remove", viewModel);
+            return View("Remove", viewModel);
         }
 
-        var success = await userService.RemoveUserAsync(organisationSlug, null, pendingInviteId, ct);
+        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, inviteGuid, ct);
+        var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
+        if (!success) return NotFound();
 
-        return success ? RedirectToAction(nameof(RemoveSuccess), new { organisationSlug }) : NotFound();
+        await removeInviteStateStore.SetAsync(new RemoveInviteSuccessState
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = viewModel.UserDisplayName,
+            Email = viewModel.Email,
+            OrganisationName = viewModel.OrganisationName,
+            MemberSince = viewModel.MemberSinceFormatted,
+            Role = viewModel.CurrentRole
+        });
+
+        return RedirectToAction(nameof(RemoveInviteSuccess), new { organisationSlug, inviteGuid });
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/remove/success")]
+    public async Task<IActionResult> RemoveInviteSuccess(string organisationSlug, Guid inviteGuid)
+    {
+        var state = await removeInviteStateStore.GetAsync();
+        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToAction(nameof(Index), new { organisationSlug });
+        }
+
+        await removeInviteStateStore.ClearAsync();
+
+        var viewModel = new RemoveSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            Email = state.Email,
+            OrganisationName = state.OrganisationName,
+            MemberSince = state.MemberSince,
+            Role = state.Role,
+            CdpPersonId = Guid.Empty
+        };
+
+        return View("RemoveSuccess", viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/remove/success")]
     public async Task<IActionResult> RemoveSuccess(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveSuccessViewModelAsync(organisationSlug, cdpPersonId, ct);
-
+        var viewModel = await userRemovalService.GetRemoveSuccessViewModelAsync(organisationSlug, cdpPersonId, ct);
         if (viewModel is null)
         {
             return RedirectToAction(nameof(Index), new { organisationSlug });
@@ -1404,7 +1528,7 @@ public class UsersController(
     [HttpGet("user/{cdpPersonId:guid}")]
     public async Task<IActionResult> Details(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userService.GetUserDetailsViewModelAsync(organisationSlug, cdpPersonId, ct);
+        var viewModel = await userDetailsQueryService.GetViewModelAsync(organisationSlug, cdpPersonId, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
@@ -1415,7 +1539,7 @@ public class UsersController(
         string clientId,
         CancellationToken ct)
     {
-        var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+        var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
         return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
     }
 
@@ -1435,11 +1559,11 @@ public class UsersController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
+            var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(organisationSlug, cdpPersonId, clientId, ct);
             return viewModel is null ? NotFound() : View("RemoveApplication", viewModel);
         }
 
-        var result = await userService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
+        var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
         return result.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == ServiceOutcome.NotFound
@@ -1462,11 +1586,11 @@ public class UsersController(
         var userClaims = JsonHelper.TryDeserialize<UserClaims>(cdpClaimsJson);
         if (userClaims is null) return false;
 
-        var org = await userService.GetOrganisationBySlugAsync(organisationSlug, ct);
-        if (org is null) return false;
+        var orgId = await adapter.ResolveOrganisationIdAsync(organisationSlug, ct);
+        if (orgId is null) return false;
 
         var currentRole = userClaims.Organisations
-            .FirstOrDefault(o => o.OrganisationId == org.CdpOrganisationGuid)
+            .FirstOrDefault(o => o.OrganisationId == orgId.Value)
             ?.OrganisationRole;
 
         return string.Equals(currentRole, "Admin", StringComparison.OrdinalIgnoreCase);

@@ -25,17 +25,17 @@ public record OrganisationUserResponse
     /// <summary>
     /// Gets or sets the user's first name (if available from person lookup).
     /// </summary>
-    public string? FirstName { get; init; }
+    public required string FirstName { get; init; }
 
     /// <summary>
     /// Gets or sets the user's last name (if available from person lookup).
     /// </summary>
-    public string? LastName { get; init; }
+    public required string LastName { get; init; }
 
     /// <summary>
     /// Gets or sets the user's email address (if available from person lookup).
     /// </summary>
-    public string? Email { get; init; }
+    public required string Email { get; init; }
 
     /// <summary>
     /// Gets or sets the organisation role for the user.

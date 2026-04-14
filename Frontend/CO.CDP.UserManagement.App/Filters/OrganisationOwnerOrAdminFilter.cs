@@ -1,10 +1,10 @@
-using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.App.Application.OrganisationRoles;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CO.CDP.UserManagement.App.Filters;
 
-public class OrganisationOwnerOrAdminFilter(IUserService userService) : IAsyncActionFilter
+public class OrganisationOwnerOrAdminFilter(IOrganisationRoleFlowService organisationRoleFlowService) : IAsyncActionFilter
 {
     public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
     {
@@ -18,7 +18,7 @@ public class OrganisationOwnerOrAdminFilter(IUserService userService) : IAsyncAc
         }
 
         var cancellationToken = context.HttpContext.RequestAborted;
-        var isAuthorised = await userService.IsOwnerOrAdminAsync(organisationSlug, sub, cancellationToken);
+        var isAuthorised = await organisationRoleFlowService.IsOwnerOrAdminAsync(organisationSlug, sub, cancellationToken);
         if (!isAuthorised)
         {
             context.Result = new ForbidResult();

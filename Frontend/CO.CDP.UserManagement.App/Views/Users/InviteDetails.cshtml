@@ -1,0 +1,75 @@
+@model CO.CDP.UserManagement.App.Models.InviteDetailsViewModel
+@{
+    ViewData["Title"] = "Invite details";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Organisation?.Slug" class="govuk-back-link">Back</a>
+}
+
+<h1 class="govuk-heading-xl">Invite details</h1>
+
+<div class="govuk-blue-banner">
+    <div class="govuk-width-container">
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-2">@Model.FullName</h2>
+        <p class="govuk-body">@Model.Email</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.FullName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation</dt>
+                <dd class="govuk-summary-list__value">@Model.Organisation?.Name</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Organisation role</dt>
+                <dd class="govuk-summary-list__value">
+                    <strong class="govuk-tag @Model.OrganisationRoleTagClass">@Model.OrganisationRole</strong>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Invited on</dt>
+                <dd class="govuk-summary-list__value">@Model.InvitedAt.ToString("d MMMM yyyy")</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Status</dt>
+                <dd class="govuk-summary-list__value"><strong class="govuk-tag govuk-tag--yellow">Pending</strong></dd>
+            </div>
+        </dl>
+    </div>
+    <div class="govuk-grid-column-one-third">
+        <h2 class="govuk-heading-m">Actions</h2>
+        <ul class="govuk-list">
+            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-bottom-2">Resend invite</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-bottom-2">Change application access</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/organisation-role/change" class="govuk-link govuk-!-margin-bottom-2">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/remove" class="govuk-link">Remove from organisation</a></li>
+        </ul>
+    </div>
+</div>
+
+<h2 class="govuk-heading-l">Application access</h2>
+
+@if (Model.ApplicationNames.Count == 0)
+{
+    <p class="govuk-body">No applications assigned yet</p>
+}
+else
+{
+    <ul class="govuk-list govuk-list--bullet">
+        @foreach (var app in Model.ApplicationNames)
+        {
+            <li>@app</li>
+        }
+    </ul>
+}

@@ -46,6 +46,8 @@ data "aws_iam_policy_document" "terraform_global" {
       "acm:AddTagsToCertificate",
       "acm:DeleteCertificate",
       "acm:DescribeCertificate",
+      "acm:ImportCertificate",
+      "acm:ListCertificates",
       "acm:ListTagsForCertificate",
       "acm:RequestCertificate",
       "iam:PassRole",
@@ -92,14 +94,25 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "cloudfront:CreateDistribution",
+      "cloudfront:CreateOriginAccessControl",
+      "cloudfront:CreateResponseHeadersPolicy",
       "cloudfront:DeleteDistribution",
+      "cloudfront:DeleteOriginAccessControl",
+      "cloudfront:DeleteResponseHeadersPolicy",
       "cloudfront:GetDistribution",
       "cloudfront:GetDistributionConfig",
+      "cloudfront:GetOriginAccessControl",
+      "cloudfront:GetResponseHeadersPolicy",
+      "cloudfront:GetResponseHeadersPolicyConfig",
       "cloudfront:ListDistributions",
+      "cloudfront:ListOriginAccessControls",
+      "cloudfront:ListResponseHeadersPolicies",
       "cloudfront:ListTagsForResource",
       "cloudfront:TagResource",
       "cloudfront:UntagResource",
       "cloudfront:UpdateDistribution",
+      "cloudfront:UpdateOriginAccessControl",
+      "cloudfront:UpdateResponseHeadersPolicy",
     ]
     effect = "Allow"
     resources = [

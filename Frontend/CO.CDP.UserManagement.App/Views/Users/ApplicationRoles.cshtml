@@ -53,9 +53,13 @@
                         @if (application.IsEnabledByDefault)
                         {
                             <input type="hidden" name="Applications[@index].GiveAccess" value="true" />
-                            <p class="govuk-body-s govuk-!-margin-top-2 govuk-!-margin-bottom-0">
-                                This application is enabled by default for everyone.
-                            </p>
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="applications-@index-access" name="Applications[@index].GiveAccess-visual" type="checkbox" value="true" checked disabled aria-describedby="applications-@index-enabled-desc" />
+                                    <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">Give access to @application.ApplicationName</label>
+                                    <p id="applications-@index-enabled-desc" class="govuk-body-s govuk-!-margin-top-2 govuk-!-margin-bottom-0">This application is enabled by default for everyone and cannot be deselected.</p>
+                                </div>
+                            </div>
                         }
                         else
                         {
