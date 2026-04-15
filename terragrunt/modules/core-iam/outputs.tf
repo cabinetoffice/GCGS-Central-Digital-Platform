@@ -46,6 +46,14 @@ output "cloudwatch_events_name" {
   value = aws_iam_role.cloudwatch_events.name
 }
 
+output "cloudfront_realtime_logs_role_arn" {
+  value = aws_iam_role.cloudfront_realtime_logs.arn
+}
+
+output "cloudfront_realtime_logs_role_name" {
+  value = aws_iam_role.cloudfront_realtime_logs.name
+}
+
 output "db_import_arn" {
   value = aws_iam_role.db_import.arn
 }

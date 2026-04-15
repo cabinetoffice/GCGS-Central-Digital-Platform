@@ -40,13 +40,12 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 RemoveConfirmed: null);
         }
 
-        public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
+        public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(string organisationSlug, Guid inviteGuid, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
             if (org is null) return null;
 
-            var invites = await _adapter.GetInvitesAsync(org.CdpOrganisationGuid, ct);
-            var invite = invites.FirstOrDefault(i => i.PendingInviteId == pendingInviteId);
+            var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
             if (invite is null) return null;
 
             return new RemoveUserViewModel(
@@ -57,7 +56,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CurrentRole: invite.OrganisationRole,
                 MemberSinceFormatted: invite.CreatedAt.ToString("d MMMM yyyy"),
                 CdpPersonId: null,
-                PendingInviteId: pendingInviteId,
+                PendingInviteId: invite.PendingInviteId,
                 RemoveConfirmed: null);
         }
 
@@ -167,12 +166,15 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             return success ? new UserRemovalSubmitResult.Removed() : new UserRemovalSubmitResult.NotFound();
         }
 
-        public async Task<InviteRemovalSubmitResult> RemoveInviteAsync(string organisationSlug, int pendingInviteId, CancellationToken ct)
+        public async Task<InviteRemovalSubmitResult> RemoveInviteAsync(string organisationSlug, Guid inviteGuid, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
             if (org is null) return new InviteRemovalSubmitResult.NotFound();
 
-            var result = await _adapter.CancelInviteAsync(org.CdpOrganisationGuid, pendingInviteId, ct);
+            var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            if (invite is null) return new InviteRemovalSubmitResult.NotFound();
+
+            var result = await _adapter.CancelInviteAsync(org.CdpOrganisationGuid, invite.PendingInviteId, ct);
             var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
             return success ? new InviteRemovalSubmitResult.Removed() : new InviteRemovalSubmitResult.NotFound();
         }

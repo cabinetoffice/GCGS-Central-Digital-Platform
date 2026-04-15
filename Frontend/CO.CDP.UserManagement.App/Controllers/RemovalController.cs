@@ -1,13 +1,15 @@
 using CO.CDP.UserManagement.App.Application.Removal;
 using CO.CDP.UserManagement.App.Application.Users;
 using CO.CDP.UserManagement.App.Models;
+using CO.CDP.UserManagement.App.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
 public class RemovalController(
     IUserRemovalService userRemovalService,
-    IUserDetailsQueryService userDetailsQueryService) : UsersBaseController
+    IUserDetailsQueryService userDetailsQueryService,
+    IRemoveInviteStateStore removeInviteStateStore) : UsersBaseController
 {
     [HttpGet("user/{cdpPersonId:guid}/remove")]
     public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
@@ -54,18 +56,21 @@ public class RemovalController(
         return View(viewModel);
     }
 
-    [HttpGet("invites/{pendingInviteId:int}/remove")]
-    public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
+    [HttpGet("invites/{inviteGuid:guid}/remove")]
+    public async Task<IActionResult> RemoveInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
         return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
     }
 
-    [HttpPost("invites/{pendingInviteId:int}/remove")]
+    [HttpPost("invites/{inviteGuid:guid}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveInvite(
-        string organisationSlug, int pendingInviteId, RemoveUserViewModel input, CancellationToken ct)
+        string organisationSlug, Guid inviteGuid, RemoveUserViewModel input, CancellationToken ct)
     {
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        if (viewModel is null) return NotFound();
+
         if (input.RemoveConfirmed == false)
         {
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
@@ -73,14 +78,49 @@ public class RemovalController(
 
         if (!ModelState.IsValid)
         {
-            var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
-            return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
+            return View(nameof(RemoveUser), viewModel);
         }
 
-        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, pendingInviteId, ct);
+        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, inviteGuid, ct);
 
         if (result is InviteRemovalSubmitResult.NotFound) return NotFound();
-        return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+
+        await removeInviteStateStore.SetAsync(new RemoveInviteSuccessState
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = viewModel.UserDisplayName,
+            Email = viewModel.Email,
+            OrganisationName = viewModel.OrganisationName,
+            MemberSince = viewModel.MemberSinceFormatted,
+            Role = viewModel.CurrentRole
+        });
+
+        return RedirectToAction(nameof(RemoveInviteSuccess), new { organisationSlug, inviteGuid });
+    }
+
+    [HttpGet("invites/{inviteGuid:guid}/remove/success")]
+    public async Task<IActionResult> RemoveInviteSuccess(string organisationSlug, Guid inviteGuid)
+    {
+        var state = await removeInviteStateStore.GetAsync();
+        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        {
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+        }
+
+        await removeInviteStateStore.ClearAsync();
+
+        var viewModel = new RemoveSuccessViewModel
+        {
+            OrganisationSlug = organisationSlug,
+            UserDisplayName = state.UserDisplayName,
+            Email = state.Email,
+            OrganisationName = state.OrganisationName,
+            MemberSince = state.MemberSince,
+            Role = state.Role,
+            CdpPersonId = Guid.Empty
+        };
+
+        return View(nameof(RemoveSuccess), viewModel);
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove")]

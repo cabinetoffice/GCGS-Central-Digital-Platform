@@ -12,7 +12,7 @@ public interface IUserRemovalService
 
     Task<RemoveUserViewModel?> GetInviteViewModelAsync(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         CancellationToken ct);
 
     Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
@@ -34,7 +34,7 @@ public interface IUserRemovalService
 
     Task<InviteRemovalSubmitResult> RemoveInviteAsync(
         string organisationSlug,
-        int pendingInviteId,
+        Guid inviteGuid,
         CancellationToken ct);
 
     Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(

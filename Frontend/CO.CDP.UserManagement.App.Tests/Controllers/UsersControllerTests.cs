@@ -1576,6 +1576,7 @@ public class RemovalControllerTests
 {
     private readonly Mock<IUserRemovalService> _userRemovalService = new();
     private readonly Mock<IUserDetailsQueryService> _userDetailsQueryService = new();
+    private readonly Mock<IRemoveInviteStateStore> _removeInviteStateStore = new();
     private readonly RemovalController _controller;
 
     public RemovalControllerTests()
@@ -1583,10 +1584,14 @@ public class RemovalControllerTests
         _userRemovalService
             .Setup(s => s.ValidateRemovalAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemovalValidationResult.Success());
+        _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync((RemoveInviteSuccessState?)null);
+        _removeInviteStateStore.Setup(s => s.SetAsync(It.IsAny<RemoveInviteSuccessState>())).Returns(Task.CompletedTask);
+        _removeInviteStateStore.Setup(s => s.ClearAsync()).Returns(Task.CompletedTask);
 
         _controller = new RemovalController(
             _userRemovalService.Object,
-            _userDetailsQueryService.Object);
+            _userDetailsQueryService.Object,
+            _removeInviteStateStore.Object);
     }
 
     [Fact]
@@ -1613,7 +1618,7 @@ public class RemovalControllerTests
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.Model.Should().Be(viewModel);
-        viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        viewResult.ViewName.Should().Be("RemoveUser");
     }
 
     [Fact]
@@ -1632,7 +1637,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        viewResult.ViewName.Should().Be("RemoveUser");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
     }
 
@@ -1652,7 +1657,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        viewResult.ViewName.Should().Be("RemoveUser");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
     }
 
@@ -1686,7 +1691,7 @@ public class RemovalControllerTests
         var result =
             await _controller.RemoveUser("org", cdpPersonId, RemoveUserViewModel.Empty, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
     }
 
     [Fact]
@@ -1706,7 +1711,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId,
             RemoveUserViewModel.Empty with { RemoveConfirmed = true }, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
     }
 
@@ -1727,7 +1732,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId,
             RemoveUserViewModel.Empty with { RemoveConfirmed = true }, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
     }
 
@@ -1744,7 +1749,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveUser("org", cdpPersonId,
             RemoveUserViewModel.Empty with { RemoveConfirmed = true }, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
     }
 
@@ -1780,10 +1785,11 @@ public class RemovalControllerTests
     [Fact]
     public async Task RemoveInvite_Get_WhenViewModelNull_ReturnsNotFound()
     {
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveUserViewModel?)null);
 
-        var result = await _controller.RemoveInvite("org", 1, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -1791,22 +1797,26 @@ public class RemovalControllerTests
     [Fact]
     public async Task RemoveInvite_Get_WhenViewModelAvailable_ReturnsView()
     {
+        var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org", UserDisplayName = "John Doe" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.RemoveInvite("org", 1, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.Model.Should().Be(viewModel);
-        viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        viewResult.ViewName.Should().Be("RemoveUser");
     }
 
     [Fact]
     public async Task RemoveInvite_Post_WhenNotConfirmed_RedirectsToIndex()
     {
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty);
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = false };
-        var result = await _controller.RemoveInvite("org", 1, input, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, input, CancellationToken.None);
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(UsersListController.Index));
         redirect.RouteValues.Should().Contain("organisationSlug", "org");
@@ -1815,42 +1825,88 @@ public class RemovalControllerTests
     [Fact]
     public async Task RemoveInvite_Post_WhenNoOptionSelected_ReturnsViewWithError()
     {
+        var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", 1, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _controller.ModelState.AddModelError(nameof(RemoveUserViewModel.RemoveConfirmed),
             "Select if you want to remove this user");
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty, CancellationToken.None);
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
         _userRemovalService.Verify(
-            s => s.RemoveInviteAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
+            s => s.RemoveInviteAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
-    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToIndex()
+    public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveInviteSuccess()
     {
-        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
+        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new InviteRemovalSubmitResult.Removed());
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(RemovalController.RemoveInviteSuccess));
+    }
+
+    [Fact]
+    public async Task RemoveInvite_Post_WhenConfirmedButFails_ReturnsNotFound()
+    {
+        var inviteGuid = Guid.NewGuid();
+        _userRemovalService.Setup(s => s.GetInviteViewModelAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
+        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new InviteRemovalSubmitResult.NotFound());
+
+        var result = await _controller.RemoveInvite("org", inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+            CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task RemoveInviteSuccess_WhenStateAvailableForOrg_ReturnsView()
+    {
+        var inviteGuid = Guid.NewGuid();
+        var state = new RemoveInviteSuccessState { OrganisationSlug = "org", UserDisplayName = "John Doe" };
+        _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.RemoveInviteSuccess("org", inviteGuid);
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+        viewResult.ViewName.Should().Be(nameof(RemovalController.RemoveSuccess));
+        _removeInviteStateStore.Verify(s => s.ClearAsync(), Times.Once);
+    }
+
+    [Fact]
+    public async Task RemoveInviteSuccess_WhenNoState_RedirectsToIndex()
+    {
+        var inviteGuid = Guid.NewGuid();
+        _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync((RemoveInviteSuccessState?)null);
+
+        var result = await _controller.RemoveInviteSuccess("org", inviteGuid);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(UsersListController.Index));
     }
 
     [Fact]
-    public async Task RemoveInvite_Post_WhenConfirmedButFails_ReturnsNotFound()
+    public async Task RemoveInviteSuccess_WhenStateIsForDifferentOrg_RedirectsToIndex()
     {
-        _userRemovalService.Setup(s => s.RemoveInviteAsync("org", 1, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new InviteRemovalSubmitResult.NotFound());
+        var inviteGuid = Guid.NewGuid();
+        var state = new RemoveInviteSuccessState { OrganisationSlug = "other-org", UserDisplayName = "John Doe" };
+        _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
 
-        var result = await _controller.RemoveInvite("org", 1, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
-            CancellationToken.None);
+        var result = await _controller.RemoveInviteSuccess("org", inviteGuid);
 
-        result.Should().BeOfType<NotFoundResult>();
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(UsersListController.Index));
     }
 
     [Fact]
@@ -1936,6 +1992,8 @@ public class RemovalControllerTests
         result.Should().BeOfType<NotFoundResult>();
         _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+
+    // ── RemoveApplicationSuccess ──────────────────────────────────────────────
 
     [Fact]
     public async Task RemoveApplicationSuccess_Get_WhenViewModelNull_RedirectsToIndex()

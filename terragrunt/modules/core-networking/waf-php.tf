@@ -43,7 +43,7 @@ resource "aws_wafv2_web_acl" "php" {
   }
 
   rule {
-    name     = "${local.name_prefix_php}-block-notice-bots"
+    name     = "${local.name_prefix_php}-block-bots-ua"
     priority = 3
 
     action {
@@ -54,7 +54,7 @@ resource "aws_wafv2_web_acl" "php" {
       and_statement {
         statement {
           regex_match_statement {
-            regex_string = local.waf_php_notice_block_path_regex_pdf
+            regex_string = local.waf_php_bot_block_paths
 
             field_to_match {
               uri_path {}
@@ -69,7 +69,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         statement {
           regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor).*"
+            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|supabase).*"
 
             field_to_match {
               single_header {
@@ -88,7 +88,7 @@ resource "aws_wafv2_web_acl" "php" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_php}-block-notice-bots"
+      metric_name                = "${local.name_prefix_php}-block-bots-ua"
       sampled_requests_enabled   = true
     }
   }
@@ -193,7 +193,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         scope_down_statement {
           regex_match_statement {
-            regex_string = local.waf_php_notice_block_path_regex_all
+            regex_string = local.waf_php_notice_paths_all
 
             field_to_match {
               uri_path {}
@@ -227,7 +227,7 @@ resource "aws_wafv2_web_acl" "php" {
       and_statement {
         statement {
           regex_match_statement {
-            regex_string = local.waf_php_notice_block_path_regex_all
+            regex_string = local.waf_php_notice_paths_all
 
             field_to_match {
               uri_path {}
@@ -380,7 +380,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         scope_down_statement {
           regex_match_statement {
-            regex_string = local.waf_php_rate_limit_path_regex
+            regex_string = local.waf_php_rate_limit_paths
 
             field_to_match {
               uri_path {}
