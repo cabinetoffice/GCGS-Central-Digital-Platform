@@ -13,6 +13,11 @@ public sealed record UsersViewModel(
     string? SearchTerm,
     int TotalCount)
 {
+    public bool HasActiveFilters =>
+        !string.IsNullOrEmpty(SelectedRole) ||
+        !string.IsNullOrEmpty(SelectedApplication) ||
+        !string.IsNullOrEmpty(SearchTerm);
+
     public static UsersViewModel Empty => new(
         OrganisationName: string.Empty,
         OrganisationSlug: string.Empty,

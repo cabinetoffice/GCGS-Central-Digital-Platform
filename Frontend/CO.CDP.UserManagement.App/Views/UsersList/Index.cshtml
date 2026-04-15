@@ -39,9 +39,9 @@
                 </label>
                 <select class="govuk-select" id="role-filter" name="role">
                     <option value="">All roles</option>
-                    <option value="@OrganisationRole.Owner.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Owner.ToString().ToLower())">@OrganisationRole.Owner</option>
-                    <option value="@OrganisationRole.Admin.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Admin.ToString().ToLower())">@OrganisationRole.Admin</option>
-                    <option value="@OrganisationRole.Member.ToString().ToLower()" selected="@(Model.SelectedRole == OrganisationRole.Member.ToString().ToLower())">@OrganisationRole.Member</option>
+                    <option value="@nameof(OrganisationRole.Owner).ToLower()" selected="@(Model.SelectedRole == nameof(OrganisationRole.Owner).ToLower() ? "selected" : null)">@OrganisationRole.Owner</option>
+                    <option value="@nameof(OrganisationRole.Admin).ToLower()" selected="@(Model.SelectedRole == nameof(OrganisationRole.Admin).ToLower() ? "selected" : null)">@OrganisationRole.Admin</option>
+                    <option value="@nameof(OrganisationRole.Member).ToLower()" selected="@(Model.SelectedRole == nameof(OrganisationRole.Member).ToLower() ? "selected" : null)">@OrganisationRole.Member</option>
                 </select>
             </div>
         </div>
@@ -54,7 +54,7 @@
                     <option value="">All applications</option>
                     @foreach (var app in Model.AvailableApplications)
                     {
-                        <option value="@app.Slug" selected="@(string.Equals(Model.SelectedApplication, app.Slug, StringComparison.OrdinalIgnoreCase))">@app.Name</option>
+                        <option value="@app.Slug" selected="@(string.Equals(Model.SelectedApplication, app.Slug, StringComparison.OrdinalIgnoreCase) ? "selected" : null)">@app.Name</option>
                     }
                 </select>
             </div>
@@ -91,7 +91,7 @@
 {
     <div class="govuk-inset-text">
         <p>No users found.</p>
-        @if (!string.IsNullOrEmpty(Model?.SelectedRole) || !string.IsNullOrEmpty(Model?.SelectedApplication) || !string.IsNullOrEmpty(Model?.SearchTerm))
+        @if (Model?.HasActiveFilters == true)
         {
             <p>Try:</p>
             <ul class="govuk-list govuk-list--bullet">
@@ -108,7 +108,13 @@
 }
 else
 {
-    <p class="govuk-body">Showing @(Model?.TotalCount ?? 0) @((Model?.TotalCount ?? 0) == 1 ? "user" : "users")</p>
+    <p class="govuk-body">
+        Showing @(Model?.TotalCount ?? 0) @((Model?.TotalCount ?? 0) == 1 ? "user" : "users")
+        @if (Model?.HasActiveFilters == true)
+        {
+            <span>&nbsp;(filtered) &mdash; <a href="/organisation/@organisationSlug/users" class="govuk-link">Clear all filters</a></span>
+        }
+    </p>
 
     @foreach (var user in Model?.Users ?? new List<UserSummaryViewModel>())
     {

@@ -221,7 +221,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
     }
 
     [Fact]
-    public async Task GetViewModelAsync_TotalCount_IncludesInvites()
+    public async Task GetViewModelAsync_TotalCount_IncludesUsersAndInvitesWhenNoFilter()
     {
         SetupOrg();
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeUser() });
@@ -232,5 +232,99 @@ public class UsersQueryServiceTests : AdapterTestFixture
 
         result.Should().NotBeNull();
         result!.TotalCount.Should().Be(2);
+    }
+
+    [Theory]
+    [InlineData("admin", null, null, true)]
+    [InlineData(null, "app-1", null, true)]
+    [InlineData(null, null, "alice", true)]
+    [InlineData(null, null, null, false)]
+    public async Task GetViewModelAsync_HasActiveFilters_ReflectsActiveFilters(
+        string? role, string? app, string? search, bool expected)
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<OrganisationUserResponse>());
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<PendingOrganisationInviteResponse>());
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
+
+        var result = await _sut.GetViewModelAsync("test-org", role, app, search, CancellationToken.None);
+
+        result!.HasActiveFilters.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task GetViewModelAsync_InviteRoleFilter_IsApplied()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<OrganisationUserResponse>());
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[]
+        {
+            MakeInvite(role: OrganisationRole.Admin),
+            MakeInvite(inviteGuid: Guid.NewGuid(), pendingInviteId: 2, role: OrganisationRole.Member)
+        });
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
+
+        var result = await _sut.GetViewModelAsync("test-org", "admin", null, null, CancellationToken.None);
+
+        result!.TotalCount.Should().Be(1);
+        result.Users.Should().HaveCount(1);
+        result.Users[0].OrganisationRole.Should().Be(OrganisationRole.Admin);
+    }
+
+    [Fact]
+    public async Task GetViewModelAsync_InviteSearchFilter_IsApplied()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<OrganisationUserResponse>());
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[]
+        {
+            MakeInvite(email: "alice@example.com", firstName: "Alice", lastName: "Smith"),
+            MakeInvite(inviteGuid: Guid.NewGuid(), pendingInviteId: 2, email: "bob@example.com", firstName: "Bob", lastName: "Jones")
+        });
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
+
+        var result = await _sut.GetViewModelAsync("test-org", null, null, "alice", CancellationToken.None);
+
+        result!.TotalCount.Should().Be(1);
+        result.Users[0].Email.Should().Be("alice@example.com");
+    }
+
+    [Fact]
+    public async Task GetViewModelAsync_InviteApplicationFilter_IsApplied()
+    {
+        SetupOrg();
+        var app = MakeApplication(orgAppId: 55, appId: 3, name: "CoolApp");
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(new[] { app });
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<OrganisationUserResponse>());
+
+        var inviteWithApp = MakeInvite() with
+        {
+            ApplicationAssignments = new[]
+            {
+                new InviteApplicationAssignmentResponse { OrganisationApplicationId = 55, ApplicationRoleId = 1 }
+            }
+        };
+        var inviteWithout = MakeInvite(inviteGuid: Guid.NewGuid(), pendingInviteId: 2);
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { inviteWithApp, inviteWithout });
+
+        var result = await _sut.GetViewModelAsync("test-org", null, "app-3", null, CancellationToken.None);
+
+        result!.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
+    public async Task GetViewModelAsync_TotalCount_ReflectsFilteredResults()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeUser(), MakeUser(personId: Guid.NewGuid()) });
+        _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeInvite() });
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
+
+        // Filter to admin — no admin users exist, so count should be 0
+        var result = await _sut.GetViewModelAsync("test-org", "admin", null, null, CancellationToken.None);
+
+        result.Should().NotBeNull();
+        result!.TotalCount.Should().Be(0);
+        result.Users.Should().BeEmpty();
     }
 }
