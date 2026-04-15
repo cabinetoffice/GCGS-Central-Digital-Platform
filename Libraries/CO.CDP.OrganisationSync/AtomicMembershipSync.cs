@@ -1,5 +1,4 @@
 using CO.CDP.Functional;
-using CO.CDP.UserManagement.Core.Common;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
@@ -16,6 +15,11 @@ namespace CO.CDP.OrganisationSync;
 /// Every cross-DB write is wrapped in <see cref="IAtomicScope.ExecuteAsync"/> so both
 /// <c>OrganisationInformationContext</c> and <c>UserManagementDbContext</c> commit
 /// or roll back together.
+///
+/// Authorization (self-service, role hierarchy) is intentionally NOT performed here.
+/// Callers must run <c>IMembershipAuthorizationGuard</c> before invoking these methods.
+/// The last-owner invariant is enforced here because it must be checked transactionally
+/// on live data.
 /// </summary>
 public sealed class AtomicMembershipSync(
     IAtomicScope atomicScope,
@@ -28,7 +32,6 @@ public sealed class AtomicMembershipSync(
     IRoleMappingService roleMappingService,
     IOrganisationPersonSyncRepository organisationPersonSyncRepository,
     IOrganisationApiAdapter organisationApiAdapter,
-    ICurrentUserService currentUserService,
     IUnitOfWork unitOfWork,
     ILogger<AtomicMembershipSync> logger) : IAtomicMembershipSync
 {
@@ -37,12 +40,12 @@ public sealed class AtomicMembershipSync(
     // ───────────────────────────── public entry points ─────────────────────────────
 
     public Task RemoveUserFromOrganisationAsync(
-        Guid cdpOrganisationId, Guid cdpPersonId, CancellationToken ct = default) =>
-        atomicScope.ExecuteAsync(token => RemoveAsync(cdpOrganisationId, cdpPersonId, token), ct);
+        Guid cdpOrganisationId, Guid cdpPersonId, string actingUserId, CancellationToken ct = default) =>
+        atomicScope.ExecuteAsync(token => RemoveAsync(cdpOrganisationId, cdpPersonId, actingUserId, token), ct);
 
     public Task<UserOrganisationMembership> UpdateMembershipRoleAsync(
-        Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole, CancellationToken ct = default) =>
-        atomicScope.ExecuteAsync(token => UpdateRoleAsync(cdpOrganisationId, cdpPersonId, newRole, token), ct);
+        Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole, string actingUserId, CancellationToken ct = default) =>
+        atomicScope.ExecuteAsync(token => UpdateRoleAsync(cdpOrganisationId, cdpPersonId, newRole, actingUserId, token), ct);
 
     public Task<UserApplicationAssignment> AssignUserToApplicationAsync(
         string userId, int organisationId, int applicationId,
@@ -74,7 +77,7 @@ public sealed class AtomicMembershipSync(
     // ───────────────────────────── Remove user ─────────────────────────────
 
     private async Task<Unit> RemoveAsync(
-        Guid cdpOrganisationId, Guid cdpPersonId, CancellationToken ct)
+        Guid cdpOrganisationId, Guid cdpPersonId, string actingUser, CancellationToken ct)
     {
         var organisation = await GetOrganisationAsync(cdpOrganisationId, ct);
         var membership = await GetMembershipByPersonIdAsync(cdpPersonId, organisation.Id, ct);
@@ -82,18 +85,9 @@ public sealed class AtomicMembershipSync(
         if (!membership.IsActive)
             return Unit.Value;
 
-        var currentUserId = currentUserService.GetUserPrincipalId();
-        if (SelfServicePolicy.IsSelf(currentUserId, membership.UserPrincipalId))
-            throw new MembershipOperationForbiddenException("You cannot remove yourself from the organisation.");
-
-        var currentUserOrgRole = currentUserService.GetOrganisationRole(organisation.CdpOrganisationGuid);
-        if (currentUserOrgRole == OrganisationRole.Admin && membership.OrganisationRole == OrganisationRole.Owner)
-            throw new MembershipOperationForbiddenException("You do not have permission to remove an Owner.");
-
         await GuardLastOwnerAsync(membership, organisation.Id, cdpOrganisationId, ct);
 
         var now = DateTimeOffset.UtcNow;
-        var actingUser = currentUserService.GetUserPrincipalId() ?? "unknown";
 
         membershipRepository.Update(MarkDeleted(membership, now, actingUser));
 
@@ -117,18 +111,10 @@ public sealed class AtomicMembershipSync(
     // ───────────────────────────── Update role ─────────────────────────────
 
     private async Task<UserOrganisationMembership> UpdateRoleAsync(
-        Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole, CancellationToken ct)
+        Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole, string actingUser, CancellationToken ct)
     {
         var organisation = await GetOrganisationAsync(cdpOrganisationId, ct);
         var membership = await GetMembershipByPersonIdAsync(cdpPersonId, organisation.Id, ct);
-
-        var currentUserId = currentUserService.GetUserPrincipalId();
-        if (SelfServicePolicy.IsSelf(currentUserId, membership.UserPrincipalId))
-            throw new MembershipOperationForbiddenException("You cannot change your own organisation role.");
-
-        var currentUserOrgRole = currentUserService.GetOrganisationRole(organisation.CdpOrganisationGuid);
-        if (currentUserOrgRole == OrganisationRole.Admin && membership.OrganisationRole == OrganisationRole.Owner)
-            throw new MembershipOperationForbiddenException("You do not have permission to change an Owner's role.");
 
         await roleMappingService.ApplyRoleDefinitionAsync(membership, newRole, ct);
         membershipRepository.Update(membership);
@@ -136,8 +122,8 @@ public sealed class AtomicMembershipSync(
         await unitOfWork.SaveChangesAsync(ct);
 
         logger.LogInformation(
-            "Role for user {CdpPersonId} in organisation {CdpOrganisationId} updated to {NewRole}",
-            cdpPersonId, cdpOrganisationId, newRole);
+            "Role for user {CdpPersonId} in organisation {CdpOrganisationId} updated to {NewRole} by {ActingUser}",
+            cdpPersonId, cdpOrganisationId, newRole, actingUser);
 
         return membership;
     }

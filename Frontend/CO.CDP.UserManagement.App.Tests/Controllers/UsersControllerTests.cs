@@ -194,6 +194,7 @@ public class InviteUserControllerTests
 {
     private readonly Mock<IInviteUserFlowService> _inviteUserFlowService = new();
     private readonly Mock<IInviteUserStateStore> _inviteUserStateStore = new();
+    private readonly Mock<IApplicationRoleSelectionMapper> _roleSelectionMapper = new();
     private readonly InviteUserController _controller;
 
     public InviteUserControllerTests()
@@ -211,7 +212,8 @@ public class InviteUserControllerTests
 
         _controller = new InviteUserController(
             _inviteUserFlowService.Object,
-            _inviteUserStateStore.Object);
+            _inviteUserStateStore.Object,
+            _roleSelectionMapper.Object);
     }
 
     [Fact]

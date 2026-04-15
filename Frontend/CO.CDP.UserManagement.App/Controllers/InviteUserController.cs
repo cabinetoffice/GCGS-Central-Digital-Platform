@@ -1,8 +1,6 @@
 using CO.CDP.UserManagement.App.Application.InviteUsers;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
-using CO.CDP.UserManagement.Core.Common;
-using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +8,8 @@ namespace CO.CDP.UserManagement.App.Controllers;
 
 public class InviteUserController(
     IInviteUserFlowService inviteUserFlowService,
-    IInviteUserStateStore inviteUserStateStore) : UsersBaseController
+    IInviteUserStateStore inviteUserStateStore,
+    IApplicationRoleSelectionMapper roleSelectionMapper) : UsersBaseController
 {
     [HttpGet("add-user")]
     public async Task<IActionResult> Add(string organisationSlug, bool returnToCheckAnswers = false,
@@ -107,59 +106,12 @@ public class InviteUserController(
     {
         var state = await inviteUserStateStore.GetAsync();
         if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
-        {
             return RedirectToAction(nameof(Add), new { organisationSlug });
-        }
 
         var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (viewModel is null) return NotFound();
 
-        var selectedAssignments = (state.ApplicationAssignments ?? [])
-            .ToDictionary(a => a.OrganisationApplicationId, a => a.ApplicationRoleId);
-
-        var updatedApplications = viewModel.Applications
-            .Select(application =>
-            {
-                if (selectedAssignments.TryGetValue(application.OrganisationApplicationId, out var roleId))
-                {
-                    return new ApplicationAccessSelectionViewModel
-                    {
-                        OrganisationApplicationId = application.OrganisationApplicationId,
-                        ApplicationName = application.ApplicationName,
-                        ApplicationDescription = application.ApplicationDescription,
-                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
-                        IsEnabledByDefault = application.IsEnabledByDefault,
-                        GiveAccess = true,
-                        SelectedRoleId = roleId,
-                        SelectedRoleIds = application.SelectedRoleIds,
-                        Roles = application.Roles
-                    };
-                }
-
-                return new ApplicationAccessSelectionViewModel
-                {
-                    OrganisationApplicationId = application.OrganisationApplicationId,
-                    ApplicationName = application.ApplicationName,
-                    ApplicationDescription = application.ApplicationDescription,
-                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
-                    IsEnabledByDefault = application.IsEnabledByDefault,
-                    GiveAccess = application.GiveAccess,
-                    SelectedRoleId = application.SelectedRoleId,
-                    SelectedRoleIds = application.SelectedRoleIds,
-                    Roles = application.Roles
-                };
-            })
-            .ToList();
-
-        return View(new ApplicationRolesStepViewModel
-        {
-            OrganisationSlug = viewModel.OrganisationSlug,
-            FirstName = viewModel.FirstName,
-            LastName = viewModel.LastName,
-            Email = viewModel.Email,
-            OrganisationRole = viewModel.OrganisationRole,
-            Applications = updatedApplications
-        });
+        return View(roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
     }
 
     [HttpPost("add-user/application-roles")]
@@ -171,108 +123,18 @@ public class InviteUserController(
     {
         var state = await inviteUserStateStore.GetAsync();
         if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
-        {
             return RedirectToAction(nameof(Add), new { organisationSlug });
-        }
 
-        var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
-        if (viewModel is null) return NotFound();
+        var serverViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
+        if (serverViewModel is null) return NotFound();
 
-        var postedSelections = input.Applications.ToDictionary(a => a.OrganisationApplicationId);
+        var merged = roleSelectionMapper.MergePostedSelections(serverViewModel, input);
 
-        var updatedApplications = viewModel.Applications
-            .Select(application =>
-            {
-                if (postedSelections.TryGetValue(application.OrganisationApplicationId, out var postedSelection))
-                {
-                    var giveAccess = postedSelection.GiveAccess || application.IsEnabledByDefault;
-                    if (application.AllowsMultipleRoleAssignments)
-                    {
-                        var selectedRoleIds = postedSelection.SelectedRoleIds ?? new List<int>();
-                        return new ApplicationAccessSelectionViewModel
-                        {
-                            OrganisationApplicationId = application.OrganisationApplicationId,
-                            ApplicationName = application.ApplicationName,
-                            ApplicationDescription = application.ApplicationDescription,
-                            AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
-                            IsEnabledByDefault = application.IsEnabledByDefault,
-                            GiveAccess = giveAccess,
-                            SelectedRoleId = selectedRoleIds.Count > 0 ? selectedRoleIds[0] : (int?)null,
-                            SelectedRoleIds = selectedRoleIds,
-                            Roles = application.Roles
-                        };
-                    }
+        if (!roleSelectionMapper.ValidateSelections(merged, ModelState))
+            return View(merged);
 
-                    return new ApplicationAccessSelectionViewModel
-                    {
-                        OrganisationApplicationId = application.OrganisationApplicationId,
-                        ApplicationName = application.ApplicationName,
-                        ApplicationDescription = application.ApplicationDescription,
-                        AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
-                        IsEnabledByDefault = application.IsEnabledByDefault,
-                        GiveAccess = giveAccess,
-                        SelectedRoleId = postedSelection.SelectedRoleId,
-                        SelectedRoleIds = application.SelectedRoleIds,
-                        Roles = application.Roles
-                    };
-                }
-
-                return new ApplicationAccessSelectionViewModel
-                {
-                    OrganisationApplicationId = application.OrganisationApplicationId,
-                    ApplicationName = application.ApplicationName,
-                    ApplicationDescription = application.ApplicationDescription,
-                    AllowsMultipleRoleAssignments = application.AllowsMultipleRoleAssignments,
-                    IsEnabledByDefault = application.IsEnabledByDefault,
-                    GiveAccess = application.GiveAccess || application.IsEnabledByDefault,
-                    SelectedRoleId = application.SelectedRoleId,
-                    SelectedRoleIds = application.SelectedRoleIds,
-                    Roles = application.Roles
-                };
-            })
-            .ToList();
-
-        var viewModelUpdated = new ApplicationRolesStepViewModel
-        {
-            OrganisationSlug = viewModel.OrganisationSlug,
-            FirstName = viewModel.FirstName,
-            LastName = viewModel.LastName,
-            Email = viewModel.Email,
-            OrganisationRole = viewModel.OrganisationRole,
-            Applications = updatedApplications
-        };
-
-        var selectedApplications = viewModelUpdated.Applications.Where(a => a.GiveAccess).ToList();
-        if (selectedApplications.Count == 0)
-        {
-            ModelState.AddModelError("applicationSelections", "You must select at least one application and role");
-        }
-
-        viewModelUpdated.Applications
-            .Select((application, index) => new { application, index })
-            .Where(item => item.application.GiveAccess && !HasRoleSelected(item.application))
-            .ToList()
-            .ForEach(item =>
-                ModelState.AddModelError(
-                    $"Applications[{item.index}].SelectedRoleId",
-                    $"Select a role for {item.application.ApplicationName}"));
-
-        if (!ModelState.IsValid)
-        {
-            return View(viewModelUpdated);
-        }
-
-        var assignments = selectedApplications
-            .Where(HasRoleSelected)
-            .Select(a => new InviteApplicationAssignment
-            {
-                OrganisationApplicationId = a.OrganisationApplicationId,
-                ApplicationRoleId = a.AllowsMultipleRoleAssignments
-                    ? (a.SelectedRoleIds.Count > 0 ? a.SelectedRoleIds[0] : 0)
-                    : a.SelectedRoleId.GetValueOrDefault(),
-                ApplicationRoleIds = a.AllowsMultipleRoleAssignments ? a.SelectedRoleIds : null
-            })
-            .ToList();
+        var assignments = roleSelectionMapper.MapToAssignments(
+            merged.Applications.Where(a => a.GiveAccess).ToList());
 
         state = state with { ApplicationAssignments = assignments };
         await inviteUserStateStore.SetAsync(state);
@@ -434,8 +296,4 @@ public class InviteUserController(
                 : RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug })!);
     }
 
-    private static bool HasRoleSelected(ApplicationAccessSelectionViewModel app) =>
-        app.AllowsMultipleRoleAssignments
-            ? app.SelectedRoleIds.Count > 0
-            : app.SelectedRoleId.HasValue && app.Roles.Any(r => r.Id == app.SelectedRoleId.Value);
 }
