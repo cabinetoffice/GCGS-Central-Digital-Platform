@@ -93,15 +93,6 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             return await _adapter.UpdateInviteOrganisationRoleAsync(org.CdpOrganisationGuid, inviteGuid, new ChangeOrganisationRoleRequest { OrganisationRole = role }, ct);
         }
 
-        public async Task<bool> IsOwnerOrAdminAsync(string organisationSlug, string userId, CancellationToken ct)
-        {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return false;
-
-            var users = await _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
-            return users.Any(u => u.CdpPersonId?.ToString() == userId && (u.OrganisationRole == OrganisationRole.Owner || u.OrganisationRole == OrganisationRole.Admin));
-        }
-
         public async Task<ChangeRoleState> GetOrCreateStateAsync(
             string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid,
             ChangeUserRoleViewModel viewModel, CancellationToken ct)

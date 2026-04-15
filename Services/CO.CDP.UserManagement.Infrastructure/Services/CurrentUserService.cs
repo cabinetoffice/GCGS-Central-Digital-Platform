@@ -55,12 +55,9 @@ public class CurrentUserService : ICurrentUserService
         return GetUserPrincipalId();
     }
 
-    public UserClaims? GetCdpClaims()
-    {
-        var json = _httpContextAccessor.HttpContext?.User.FindFirst("cdp_claims")?.Value;
-        return JsonHelper.TryDeserialize<UserClaims>(json);
-    }
+    public UserClaims? GetCdpClaims() =>
+        _httpContextAccessor.HttpContext?.User.GetCdpClaims();
 
     public OrganisationRole? GetOrganisationRole(Guid organisationId) =>
-        GetCdpClaims()?.GetOrganisationRole(organisationId);
+        _httpContextAccessor.HttpContext?.User.GetOrganisationRole(organisationId);
 }

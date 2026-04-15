@@ -141,22 +141,26 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             bool? removeConfirmed,
             CancellationToken ct)
         {
-            var viewModel = await GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
-            if (viewModel is null) return new UserRemovalSubmitResult.NotFound();
-
             if (removeConfirmed == false) return new UserRemovalSubmitResult.Cancelled();
 
-            var validation = await ValidateRemovalAsync(organisationSlug, cdpPersonId, ct);
-            if (!validation.IsValid)
-                return new UserRemovalSubmitResult.ValidationError(validation.ErrorMessage!);
-
-            return await RemoveUserAsync(organisationSlug, cdpPersonId, ct);
-        }
-
-        public async Task<UserRemovalSubmitResult> RemoveUserAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
-        {
             var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
             if (org is null) return new UserRemovalSubmitResult.NotFound();
+
+            var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
+            if (user is null) return new UserRemovalSubmitResult.NotFound();
+
+            var currentUserEmail = _currentUserService.GetUserEmail();
+            var currentUserOrgRole = _currentUserService.GetOrganisationRole(org.CdpOrganisationGuid);
+            var users = await _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
+            var validation = UserRemovalValidator.Validate(
+                user.Email,
+                currentUserEmail,
+                user.OrganisationRole,
+                IsLastOwner(users, cdpPersonId),
+                currentUserOrgRole);
+
+            if (!validation.IsValid)
+                return new UserRemovalSubmitResult.ValidationError(validation.ErrorMessage!);
 
             var result = await _adapter.RemoveUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
             var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);

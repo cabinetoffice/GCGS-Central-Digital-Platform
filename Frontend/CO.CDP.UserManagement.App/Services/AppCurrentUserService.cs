@@ -20,12 +20,9 @@ public sealed class AppCurrentUserService(IHttpContextAccessor httpContextAccess
 
     public string? GetCurrentUserId() => GetUserPrincipalId();
 
-    public UserClaims? GetCdpClaims()
-    {
-        var json = httpContextAccessor.HttpContext?.User.FindFirst("cdp_claims")?.Value;
-        return JsonHelper.TryDeserialize<UserClaims>(json);
-    }
+    public UserClaims? GetCdpClaims() =>
+        httpContextAccessor.HttpContext?.User.GetCdpClaims();
 
     public OrganisationRole? GetOrganisationRole(Guid organisationId) =>
-        GetCdpClaims()?.GetOrganisationRole(organisationId);
+        httpContextAccessor.HttpContext?.User.GetOrganisationRole(organisationId);
 }

@@ -1632,8 +1632,6 @@ public class RemovalControllerTests
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
-        _userRemovalService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1654,8 +1652,6 @@ public class RemovalControllerTests
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
-        _userRemovalService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1710,8 +1706,6 @@ public class RemovalControllerTests
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
-        _userRemovalService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1733,8 +1727,6 @@ public class RemovalControllerTests
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
-        _userRemovalService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1752,8 +1744,6 @@ public class RemovalControllerTests
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/Remove.cshtml");
         _controller.ModelState.ContainsKey(string.Empty).Should().BeTrue();
-        _userRemovalService.Verify(
-            s => s.RemoveUserAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]

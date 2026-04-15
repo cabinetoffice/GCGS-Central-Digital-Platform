@@ -1,4 +1,5 @@
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.Core.Common;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
@@ -81,6 +82,14 @@ public sealed class AtomicMembershipSync(
         if (!membership.IsActive)
             return Unit.Value;
 
+        var currentUserId = currentUserService.GetUserPrincipalId();
+        if (SelfServicePolicy.IsSelf(currentUserId, membership.UserPrincipalId))
+            throw new MembershipOperationForbiddenException("You cannot remove yourself from the organisation.");
+
+        var currentUserOrgRole = currentUserService.GetOrganisationRole(organisation.CdpOrganisationGuid);
+        if (currentUserOrgRole == OrganisationRole.Admin && membership.OrganisationRole == OrganisationRole.Owner)
+            throw new MembershipOperationForbiddenException("You do not have permission to remove an Owner.");
+
         await GuardLastOwnerAsync(membership, organisation.Id, cdpOrganisationId, ct);
 
         var now = DateTimeOffset.UtcNow;
@@ -112,6 +121,14 @@ public sealed class AtomicMembershipSync(
     {
         var organisation = await GetOrganisationAsync(cdpOrganisationId, ct);
         var membership = await GetMembershipByPersonIdAsync(cdpPersonId, organisation.Id, ct);
+
+        var currentUserId = currentUserService.GetUserPrincipalId();
+        if (SelfServicePolicy.IsSelf(currentUserId, membership.UserPrincipalId))
+            throw new MembershipOperationForbiddenException("You cannot change your own organisation role.");
+
+        var currentUserOrgRole = currentUserService.GetOrganisationRole(organisation.CdpOrganisationGuid);
+        if (currentUserOrgRole == OrganisationRole.Admin && membership.OrganisationRole == OrganisationRole.Owner)
+            throw new MembershipOperationForbiddenException("You do not have permission to change an Owner's role.");
 
         await roleMappingService.ApplyRoleDefinitionAsync(membership, newRole, ct);
         membershipRepository.Update(membership);

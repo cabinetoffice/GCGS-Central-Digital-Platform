@@ -195,46 +195,6 @@ public class UserRemovalServiceTests : AdapterTestFixture
         result.IsValid.Should().BeTrue();
     }
 
-    // ── RemoveUserAsync ───────────────────────────────────────────────────────
-
-    [Fact]
-    public async Task RemoveUserAsync_OrgNotFound_ReturnsNotFound()
-    {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
-            .ReturnsAsync((OrganisationResponse?)null);
-
-        var result = await _sut.RemoveUserAsync("slug", Guid.NewGuid(), CancellationToken.None);
-
-        result.Should().BeOfType<UserRemovalSubmitResult.NotFound>();
-    }
-
-    [Fact]
-    public async Task RemoveUserAsync_CallsAdapterWithCorrectIds()
-    {
-        var personId = Guid.NewGuid();
-        SetupOrg();
-        _adapter.Setup(a => a.RemoveUserAsync(OrgGuid, personId, default))
-            .ReturnsAsync(SuccessResult());
-
-        var result = await _sut.RemoveUserAsync("test-org", personId, CancellationToken.None);
-
-        result.Should().BeOfType<UserRemovalSubmitResult.Removed>();
-        _adapter.Verify(a => a.RemoveUserAsync(OrgGuid, personId, default), Times.Once);
-    }
-
-    [Fact]
-    public async Task RemoveUserAsync_AdapterReturnsFailure_ReturnsNotFound()
-    {
-        var personId = Guid.NewGuid();
-        SetupOrg();
-        _adapter.Setup(a => a.RemoveUserAsync(OrgGuid, personId, default))
-            .ReturnsAsync(NotFoundResult());
-
-        var result = await _sut.RemoveUserAsync("test-org", personId, CancellationToken.None);
-
-        result.Should().BeOfType<UserRemovalSubmitResult.NotFound>();
-    }
-
     // ── RemoveInviteAsync ─────────────────────────────────────────────────────
 
     [Fact]

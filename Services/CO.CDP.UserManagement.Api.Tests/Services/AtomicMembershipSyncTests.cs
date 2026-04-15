@@ -476,4 +476,80 @@ public class AtomicMembershipSyncTests
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*InviteRoleMapping*");
     }
+
+    // ── Forbidden: self-removal ────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Remove_WhenCurrentUserRemovesSelf_ThrowsMembershipOperationForbiddenException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var membership = GivenMembership(personId, org.Id);
+
+        _currentUserService.Setup(s => s.GetUserPrincipalId()).Returns(membership.UserPrincipalId);
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+
+        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+
+        await act.Should().ThrowAsync<MembershipOperationForbiddenException>()
+            .WithMessage("*remove yourself*");
+    }
+
+    [Fact]
+    public async Task Remove_WhenAdminRemovesOwner_ThrowsMembershipOperationForbiddenException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var membership = GivenMembership(personId, org.Id, role: OrganisationRole.Owner);
+
+        _currentUserService.Setup(s => s.GetOrganisationRole(orgGuid)).Returns(OrganisationRole.Admin);
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+
+        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+
+        await act.Should().ThrowAsync<MembershipOperationForbiddenException>()
+            .WithMessage("*permission to remove an Owner*");
+    }
+
+    // ── Forbidden: role change ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task UpdateRole_WhenCurrentUserChangesOwnRole_ThrowsMembershipOperationForbiddenException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var membership = GivenMembership(personId, org.Id, role: OrganisationRole.Admin);
+
+        _currentUserService.Setup(s => s.GetUserPrincipalId()).Returns(membership.UserPrincipalId);
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+
+        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Member);
+
+        await act.Should().ThrowAsync<MembershipOperationForbiddenException>()
+            .WithMessage("*change your own*");
+    }
+
+    [Fact]
+    public async Task UpdateRole_WhenAdminChangesOwnerRole_ThrowsMembershipOperationForbiddenException()
+    {
+        var orgGuid = Guid.NewGuid();
+        var personId = Guid.NewGuid();
+        var org = GivenOrganisation(orgGuid);
+        var membership = GivenMembership(personId, org.Id, role: OrganisationRole.Owner);
+
+        _currentUserService.Setup(s => s.GetOrganisationRole(orgGuid)).Returns(OrganisationRole.Admin);
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
+
+        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Member);
+
+        await act.Should().ThrowAsync<MembershipOperationForbiddenException>()
+            .WithMessage("*permission to change an Owner*");
+    }
 }

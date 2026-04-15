@@ -1,9 +1,4 @@
 using CO.CDP.UserManagement.App.Application.Users;
-using CO.CDP.UserManagement.App.Application.InviteUsers;
-using CO.CDP.UserManagement.App.Application.Users.Implementations;
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Services;
-using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CO.CDP.UserManagement.App.Controllers;

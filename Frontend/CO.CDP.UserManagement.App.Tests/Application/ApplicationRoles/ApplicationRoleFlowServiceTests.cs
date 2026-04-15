@@ -227,7 +227,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
                 ApplicationId = 1,
                 GiveAccess = true,
                 SelectedRoleId = 10,
-                SelectedRoleIds = null
+                SelectedRoleIds = null!
             }
         };
 
