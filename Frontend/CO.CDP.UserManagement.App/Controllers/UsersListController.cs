@@ -19,6 +19,6 @@ public class UsersListController(IUsersQueryService usersQueryService) : UsersBa
         }
 
         var viewModel = await usersQueryService.GetViewModelAsync(organisationSlug, role, application, search, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/Index.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 }

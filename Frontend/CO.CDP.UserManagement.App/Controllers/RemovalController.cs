@@ -19,7 +19,7 @@ public class RemovalController(
         if (!validation.IsValid)
             ModelState.AddModelError(string.Empty, validation.ErrorMessage!);
 
-        return View("~/Views/Users/Remove.cshtml", viewModel);
+        return View(viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/remove")]
@@ -36,7 +36,7 @@ public class RemovalController(
         {
             ModelState.AddModelError(string.Empty, ve.Message);
             var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
-            return viewModel is null ? NotFound() : View("~/Views/Users/Remove.cshtml", viewModel);
+            return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
         }
 
         return RedirectToAction(nameof(RemoveSuccess), new { organisationSlug, cdpPersonId });
@@ -51,14 +51,14 @@ public class RemovalController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View("~/Views/Users/RemoveSuccess.cshtml", viewModel);
+        return View(viewModel);
     }
 
     [HttpGet("invites/{pendingInviteId:int}/remove")]
     public async Task<IActionResult> RemoveInvite(string organisationSlug, int pendingInviteId, CancellationToken ct)
     {
         var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/Remove.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
     }
 
     [HttpPost("invites/{pendingInviteId:int}/remove")]
@@ -74,7 +74,7 @@ public class RemovalController(
         if (!ModelState.IsValid)
         {
             var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, pendingInviteId, ct);
-            return viewModel is null ? NotFound() : View("~/Views/Users/Remove.cshtml", viewModel);
+            return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
         }
 
         var result = await userRemovalService.RemoveInviteAsync(organisationSlug, pendingInviteId, ct);
@@ -89,7 +89,7 @@ public class RemovalController(
     {
         var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
             organisationSlug, cdpPersonId, clientId, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/RemoveApplication.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
@@ -108,7 +108,7 @@ public class RemovalController(
         {
             var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
                 organisationSlug, cdpPersonId, clientId, ct);
-            return viewModel is null ? NotFound() : View("~/Views/Users/RemoveApplication.cshtml", viewModel);
+            return viewModel is null ? NotFound() : View(viewModel);
         }
 
         var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
@@ -129,6 +129,6 @@ public class RemovalController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View("~/Views/Users/RemoveApplicationSuccess.cshtml", viewModel);
+        return View(viewModel);
     }
 }

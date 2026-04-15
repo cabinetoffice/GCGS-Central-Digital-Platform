@@ -13,7 +13,7 @@ public class ChangeApplicationRolesController(
         string organisationSlug, Guid cdpPersonId, CancellationToken ct)
     {
         var viewModel = await applicationRoleFlowService.GetUserViewModelWithStateAsync(organisationSlug, cdpPersonId, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/ChangeApplicationRoles.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application-roles/change")]
@@ -27,7 +27,7 @@ public class ChangeApplicationRolesController(
         if (result is ApplicationRoleSubmitResult.ValidationError ve)
         {
             foreach (var (key, msg) in ve.Errors) ModelState.AddModelError(key, msg);
-            return View("~/Views/Users/ChangeApplicationRoles.cshtml", ve.ViewModel);
+            return View(nameof(ChangeApplicationRoles), ve.ViewModel);
         }
         return RedirectToAction(nameof(ChangeApplicationRolesCheck), new { organisationSlug, cdpPersonId });
     }
@@ -39,7 +39,7 @@ public class ChangeApplicationRolesController(
         var state = await applicationRoleFlowService.GetValidatedStateAsync(organisationSlug, cdpPersonId, null, ct);
         if (state is null) return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
 
-        return View("~/Views/Users/CheckApplicationRoles.cshtml", applicationRoleFlowService.BuildCheckViewModel(state));
+        return View(applicationRoleFlowService.BuildCheckViewModel(state));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application-roles/change/check")]
@@ -71,7 +71,7 @@ public class ChangeApplicationRolesController(
         var successVm = applicationRoleFlowService.BuildSuccessViewModel(organisationSlug, state);
         if (successVm is null) return RedirectToAction(nameof(ChangeApplicationRoles), new { organisationSlug, cdpPersonId });
 
-        return View("~/Views/Users/ChangeApplicationRolesSuccess.cshtml", successVm);
+        return View(successVm);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/application-roles/change")]
@@ -79,7 +79,7 @@ public class ChangeApplicationRolesController(
         string organisationSlug, Guid inviteGuid, CancellationToken ct)
     {
         var viewModel = await applicationRoleFlowService.GetInviteViewModelWithStateAsync(organisationSlug, inviteGuid, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/ChangeApplicationRoles.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(nameof(ChangeApplicationRoles), viewModel);
     }
 
     [HttpPost("invites/{inviteGuid:guid}/application-roles/change")]
@@ -93,7 +93,7 @@ public class ChangeApplicationRolesController(
         if (result is ApplicationRoleSubmitResult.ValidationError ve)
         {
             foreach (var (key, msg) in ve.Errors) ModelState.AddModelError(key, msg);
-            return View("~/Views/Users/ChangeApplicationRoles.cshtml", ve.ViewModel);
+            return View(nameof(ChangeApplicationRoles), ve.ViewModel);
         }
         return RedirectToAction(nameof(ChangeInviteApplicationRolesCheck), new { organisationSlug, inviteGuid });
     }
@@ -105,7 +105,7 @@ public class ChangeApplicationRolesController(
         var state = await applicationRoleFlowService.GetValidatedStateAsync(organisationSlug, null, inviteGuid, ct);
         if (state is null) return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
 
-        return View("~/Views/Users/CheckApplicationRoles.cshtml", applicationRoleFlowService.BuildCheckViewModel(state));
+        return View(nameof(ChangeApplicationRolesCheck), applicationRoleFlowService.BuildCheckViewModel(state));
     }
 
     [HttpPost("invites/{inviteGuid:guid}/application-roles/change/check")]
@@ -137,6 +137,6 @@ public class ChangeApplicationRolesController(
         var successVm = applicationRoleFlowService.BuildSuccessViewModel(organisationSlug, state);
         if (successVm is null) return RedirectToAction(nameof(ChangeInviteApplicationRoles), new { organisationSlug, inviteGuid });
 
-        return View("~/Views/Users/ChangeApplicationRolesSuccess.cshtml", successVm);
+        return View(nameof(ChangeApplicationRolesSuccess), successVm);
     }
 }

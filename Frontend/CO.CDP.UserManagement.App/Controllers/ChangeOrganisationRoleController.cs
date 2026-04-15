@@ -18,7 +18,7 @@ public class ChangeOrganisationRoleController(
         if (viewModel is null) return NotFound();
 
         var state = await organisationRoleFlowService.GetOrCreateStateAsync(organisationSlug, cdpPersonId, null, viewModel, ct);
-        return View("~/Views/Users/ChangeRole.cshtml", await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
+        return View(await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -36,7 +36,7 @@ public class ChangeOrganisationRoleController(
         if (result is OrganisationRoleChangeResult.ValidationError e)
         {
             ModelState.AddModelError(e.ModelKey, e.Message);
-            return View("~/Views/Users/ChangeRole.cshtml", await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, organisationRole, ct));
+            return View(nameof(ChangeRole), await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         return RedirectToAction(nameof(ChangeRoleCheck), new { organisationSlug, cdpPersonId });
@@ -49,7 +49,7 @@ public class ChangeOrganisationRoleController(
         var state = await organisationRoleFlowService.GetValidatedStateAsync(organisationSlug, cdpPersonId, null, ct);
         if (state is null) return RedirectToAction(nameof(ChangeRole), new { organisationSlug, cdpPersonId });
 
-        return View("~/Views/Users/ChangeRoleCheck.cshtml", organisationRoleFlowService.StateToViewModel(state));
+        return View(organisationRoleFlowService.StateToViewModel(state));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/organisation-role/change/check")]
@@ -83,7 +83,7 @@ public class ChangeOrganisationRoleController(
             organisationSlug, cdpPersonId, null, ct);
         if (viewModel is null) return RedirectToAction(nameof(ChangeRole), new { organisationSlug, cdpPersonId });
 
-        return View("~/Views/Users/ChangeRoleSuccess.cshtml", viewModel);
+        return View(viewModel);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/organisation-role/change")]
@@ -94,7 +94,7 @@ public class ChangeOrganisationRoleController(
         if (viewModel is null) return NotFound();
 
         var state = await organisationRoleFlowService.GetOrCreateStateAsync(organisationSlug, null, inviteGuid, viewModel, ct);
-        return View("~/Views/Users/ChangeRole.cshtml", await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
+        return View(nameof(ChangeRole), await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
     [HttpPost("invites/{inviteGuid:guid}/organisation-role/change")]
@@ -112,7 +112,7 @@ public class ChangeOrganisationRoleController(
         if (result is OrganisationRoleChangeResult.ValidationError e)
         {
             ModelState.AddModelError(e.ModelKey, e.Message);
-            return View("~/Views/Users/ChangeRole.cshtml", await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, organisationRole, ct));
+            return View(nameof(ChangeRole), await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, organisationRole, ct));
         }
 
         return RedirectToAction(nameof(ChangeInviteRoleCheck), new { organisationSlug, inviteGuid });
@@ -125,7 +125,7 @@ public class ChangeOrganisationRoleController(
         var state = await organisationRoleFlowService.GetValidatedStateAsync(organisationSlug, null, inviteGuid, ct);
         if (state is null) return RedirectToAction(nameof(ChangeInviteRole), new { organisationSlug, inviteGuid });
 
-        return View("~/Views/Users/ChangeRoleCheck.cshtml", organisationRoleFlowService.StateToViewModel(state));
+        return View(nameof(ChangeRoleCheck), organisationRoleFlowService.StateToViewModel(state));
     }
 
     [HttpPost("invites/{inviteGuid:guid}/organisation-role/change/check")]
@@ -159,6 +159,6 @@ public class ChangeOrganisationRoleController(
             organisationSlug, null, inviteGuid, ct);
         if (viewModel is null) return RedirectToAction(nameof(ChangeInviteRole), new { organisationSlug, inviteGuid });
 
-        return View("~/Views/Users/ChangeRoleSuccess.cshtml", viewModel);
+        return View(nameof(ChangeRoleSuccess), viewModel);
     }
 }

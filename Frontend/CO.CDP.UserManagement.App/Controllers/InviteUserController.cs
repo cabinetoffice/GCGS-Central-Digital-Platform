@@ -36,7 +36,7 @@ public class InviteUserController(
             };
         ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
         var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
-        return viewModel is null ? NotFound() : View("~/Views/Users/Add.cshtml", viewModel);
+        return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost("add-user")]
@@ -51,7 +51,7 @@ public class InviteUserController(
         {
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
             var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
-            return viewModel is null ? NotFound() : View("~/Views/Users/Add.cshtml", viewModel);
+            return viewModel is null ? NotFound() : View(viewModel);
         }
 
         if (await inviteUserFlowService.IsEmailAlreadyInOrganisationAsync(organisationSlug, input.Email!, ct))
@@ -60,7 +60,7 @@ public class InviteUserController(
                 "A user with this email address is already in this organisation");
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
             var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
-            return viewModel is null ? NotFound() : View("~/Views/Users/Add.cshtml", viewModel);
+            return viewModel is null ? NotFound() : View(viewModel);
         }
 
         var existingState = await inviteUserStateStore.GetAsync();
@@ -97,7 +97,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        return View("~/Views/Users/OrganisationRole.cshtml",
+        return View(
             await inviteUserFlowService.GetOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
     }
 
@@ -151,7 +151,7 @@ public class InviteUserController(
             })
             .ToList();
 
-        return View("~/Views/Users/ApplicationRoles.cshtml", new ApplicationRolesStepViewModel
+        return View(new ApplicationRolesStepViewModel
         {
             OrganisationSlug = viewModel.OrganisationSlug,
             FirstName = viewModel.FirstName,
@@ -259,7 +259,7 @@ public class InviteUserController(
 
         if (!ModelState.IsValid)
         {
-            return View("~/Views/Users/ApplicationRoles.cshtml", viewModelUpdated);
+            return View(viewModelUpdated);
         }
 
         var assignments = selectedApplications
@@ -323,7 +323,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
         }
 
-        return View("~/Views/Users/CheckAnswers.cshtml", new InviteCheckAnswersViewModel
+        return View(new InviteCheckAnswersViewModel
         {
             OrganisationSlug = state.OrganisationSlug,
             FirstName = state.FirstName,
@@ -410,7 +410,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View("~/Views/Users/InviteSuccess.cshtml", new InviteSuccessViewModel
+        return View(new InviteSuccessViewModel
         {
             OrganisationSlug = successState.OrganisationSlug,
             OrganisationName = successState.OrganisationName,
