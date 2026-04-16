@@ -72,8 +72,8 @@ public class HomeControllerTests
         var result = await _controller.Index("org", null, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
-        redirect.ActionName.Should().Be(nameof(UsersController.Index));
-        redirect.ControllerName.Should().Be("Users");
+        redirect.ActionName.Should().Be(nameof(UsersListController.Index));
+        redirect.ControllerName.Should().Be("UsersList");
     }
 
     [Fact]

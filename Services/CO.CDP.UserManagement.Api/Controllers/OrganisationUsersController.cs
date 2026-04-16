@@ -148,6 +148,7 @@ public class OrganisationUsersController : ControllerBase
     /// </summary>
     [HttpPut("{cdpPersonId:guid}/role")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     public async Task<ActionResult> UpdateRole(
         Guid cdpOrganisationId,
@@ -164,6 +165,10 @@ public class OrganisationUsersController : ControllerBase
                 cancellationToken);
             return NoContent();
         }
+        catch (MembershipOperationForbiddenException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse { Message = ex.Message });
+        }
         catch (EntityNotFoundException ex)
         {
             return NotFound(new ErrorResponse { Message = ex.Message });
@@ -176,6 +181,7 @@ public class OrganisationUsersController : ControllerBase
     [HttpDelete("{cdpPersonId:guid}")]
     [Authorize(Policy = PolicyNames.OrganisationAdmin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status403Forbidden)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status409Conflict)]
     public async Task<ActionResult> RemoveUser(
@@ -188,6 +194,10 @@ public class OrganisationUsersController : ControllerBase
             await _organisationUserService.RemoveUserFromOrganisationAsync(
                 cdpOrganisationId, cdpPersonId, cancellationToken);
             return NoContent();
+        }
+        catch (MembershipOperationForbiddenException ex)
+        {
+            return StatusCode(StatusCodes.Status403Forbidden, new ErrorResponse { Message = ex.Message });
         }
         catch (EntityNotFoundException ex)
         {

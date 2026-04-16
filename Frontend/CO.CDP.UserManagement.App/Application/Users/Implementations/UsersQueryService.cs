@@ -23,44 +23,21 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
             if (string.IsNullOrEmpty(organisationSlug)) return null;
             var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
             if (org == null) return null;
-            // Fetch users, invites and applications in parallel
+
             var usersTask = _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
             var invitesTask = _adapter.GetInvitesAsync(org.CdpOrganisationGuid, ct);
             var applicationsTask = _adapter.GetApplicationsAsync(org.Id, ct);
 
-            var users = (await usersTask);
-            var invites = (await invitesTask);
-            var applications = (await applicationsTask);
+            await Task.WhenAll(usersTask, invitesTask, applicationsTask);
 
-            // Apply filters
-            IEnumerable<OrganisationUserResponse> filteredUsers = users;
-            if (!string.IsNullOrEmpty(role))
-            {
-                filteredUsers = filteredUsers.Where(u =>
-                    string.Equals(u.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase));
-                invites = (invites)
-                    .Where(i => string.Equals(i.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
+            var users = await usersTask;
+            var invites = await invitesTask;
+            var applications = (await applicationsTask).ToList();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                var lower = search.ToLowerInvariant();
-                filteredUsers = filteredUsers.Where(u =>
-                    ($"{u.FirstName} {u.LastName}".ToLowerInvariant().Contains(lower)) ||
-                    (u.Email.ToLowerInvariant().Contains(lower) == true));
-            }
+            var filter = new UsersFilter(role, application, search);
 
-            // Application filter: best-effort match against user's ApplicationRoles (by ApplicationId or ClientId)
-            if (!string.IsNullOrEmpty(application))
-            {
-                filteredUsers = filteredUsers.Where(u =>
-                    (u.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
-                    .Any(ar => string.Equals((ar.ApplicationId ?? ar.OrganisationApplicationId).ToString(), application,
-                                   StringComparison.OrdinalIgnoreCase)
-                               || string.Equals(ar.Application?.ClientId, application,
-                                   StringComparison.OrdinalIgnoreCase)));
-            }
+            var filteredUsers = UserFilterPipeline.ApplyTo(users, filter);
+            var filteredInvites = UserFilterPipeline.ApplyTo(invites, filter, applications);
 
             var usersVm = filteredUsers.Select(u => new UserSummaryViewModel(
                     u.CdpPersonId ?? Guid.Empty,
@@ -81,10 +58,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     .ToList()))
                 .ToList();
 
-            var invitesVm = (invites)
-                .Where(i => string.IsNullOrEmpty(search) ||
-                            (i.Email.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                            ($"{i.FirstName} {i.LastName}".Contains(search, StringComparison.OrdinalIgnoreCase)))
+            var invitesVm = filteredInvites
                 .Select(i => new UserSummaryViewModel(
                     null,
                     i.CdpPersonInviteGuid,
@@ -105,7 +79,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     .ToList()))
                 .ToList();
 
-            var appsVm = (applications)
+            var appsVm = applications
                 .Select(a => new ApplicationViewModel(
                     a.Application?.Id ?? 0,
                     a.Application?.ClientId ?? string.Empty,
@@ -127,7 +101,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 role,
                 application,
                 search,
-                users.Count() + invites.Count()
+                filteredUsers.Count + filteredInvites.Count
             );
         }
     }

@@ -9,10 +9,12 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
     public class InviteUserFlowService : IInviteUserFlowService
     {
         private readonly IUserManagementApiAdapter _adapter;
+        private readonly IOrganisationRoleService _organisationRoleService;
 
-        public InviteUserFlowService(IUserManagementApiAdapter adapter)
+        public InviteUserFlowService(IUserManagementApiAdapter adapter, IOrganisationRoleService organisationRoleService)
         {
             _adapter = adapter;
+            _organisationRoleService = organisationRoleService;
         }
 
         public async Task<InviteUserViewModel?> GetViewModelAsync(string organisationSlug,
@@ -157,6 +159,19 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
             if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             return await _adapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+        }
+
+        public async Task<OrganisationRoleStepViewModel> GetOrganisationRoleStepViewModelAsync(
+            InviteUserState state, bool returnToCheckAnswers, CancellationToken ct)
+        {
+            return new OrganisationRoleStepViewModel(
+                state.OrganisationSlug,
+                state.FirstName,
+                state.LastName,
+                state.Email,
+                state.OrganisationRole,
+                returnToCheckAnswers,
+                (await _organisationRoleService.GetRolesAsync(ct)).ToOptions());
         }
     }
 }

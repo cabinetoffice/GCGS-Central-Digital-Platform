@@ -14,10 +14,11 @@ namespace CO.CDP.UserManagement.App.Tests.Application.InviteUsers;
 public class InviteUserFlowServiceTests : AdapterTestFixture
 {
     private readonly Mock<IUserManagementApiAdapter> _adapter = new();
+    private readonly Mock<IOrganisationRoleService> _orgRoleService = new();
     private readonly InviteUserFlowService _sut;
 
     public InviteUserFlowServiceTests()
-        => _sut = new InviteUserFlowService(_adapter.Object);
+        => _sut = new InviteUserFlowService(_adapter.Object, _orgRoleService.Object);
 
     private void SetupOrg(string name = "Test Org") => base.SetupOrg(_adapter, name);
 

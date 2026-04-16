@@ -3,7 +3,9 @@ using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementations;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
+using AppOrgRoleService = CO.CDP.UserManagement.App.Services.IOrganisationRoleService;
 using CO.CDP.UserManagement.App.Tests.TestFixtures;
+using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
@@ -15,11 +17,13 @@ namespace CO.CDP.UserManagement.App.Tests.Application.OrganisationRoles;
 public class OrganisationRoleFlowServiceTests : AdapterTestFixture
 {
     private readonly Mock<IUserManagementApiAdapter> _adapter = new();
-    private readonly Mock<IOrganisationRoleService> _orgRoleService = new();
+    private readonly Mock<AppOrgRoleService> _orgRoleService = new();
+    private readonly Mock<IChangeRoleStateStore> _changeRoleStateStore = new();
+    private readonly Mock<ICurrentUserService> _currentUserService = new();
     private readonly OrganisationRoleFlowService _sut;
 
     public OrganisationRoleFlowServiceTests()
-        => _sut = new OrganisationRoleFlowService(_adapter.Object, _orgRoleService.Object);
+        => _sut = new OrganisationRoleFlowService(_adapter.Object, _orgRoleService.Object, _changeRoleStateStore.Object, _currentUserService.Object);
 
     // ── GetUserViewModelAsync ─────────────────────────────────────────────────
 

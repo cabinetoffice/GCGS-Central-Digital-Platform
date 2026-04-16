@@ -24,7 +24,6 @@ public class AtomicMembershipSyncTests
     private readonly Mock<IRoleMappingService> _roleMappingService = new();
     private readonly Mock<IOrganisationPersonSyncRepository> _organisationPersonSyncRepository = new();
     private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter = new();
-    private readonly Mock<ICurrentUserService> _currentUserService = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
     public AtomicMembershipSyncTests()
@@ -40,9 +39,9 @@ public class AtomicMembershipSyncTests
         _atomicScope
             .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<UserApplicationAssignment>>>(), It.IsAny<CancellationToken>()))
             .Returns<Func<CancellationToken, Task<UserApplicationAssignment>>, CancellationToken>((action, ct) => action(ct));
-
-        _currentUserService.Setup(s => s.GetUserPrincipalId()).Returns("urn:fdc:gov.uk:2022:test-actor");
     }
+
+    private const string ActingUser = "urn:fdc:gov.uk:2022:test-actor";
 
     private AtomicMembershipSync CreateSut() => new(
         _atomicScope.Object,
@@ -55,7 +54,6 @@ public class AtomicMembershipSyncTests
         _roleMappingService.Object,
         _organisationPersonSyncRepository.Object,
         _organisationApiAdapter.Object,
-        _currentUserService.Object,
         _unitOfWork.Object,
         NullLogger<AtomicMembershipSync>.Instance);
 
@@ -97,7 +95,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
-        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         membership.IsActive.Should().BeFalse();
         membership.IsDeleted.Should().BeTrue();
@@ -119,7 +117,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([assignment]);
 
-        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         assignment.IsActive.Should().BeFalse();
         assignment.RevokedBy.Should().Be("urn:fdc:gov.uk:2022:test-actor");
@@ -139,7 +137,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
-        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         _organisationPersonSyncRepository.Verify(
             r => r.RemoveAsync(org.CdpOrganisationGuid, personId, It.IsAny<CancellationToken>()),
@@ -152,7 +150,7 @@ public class AtomicMembershipSyncTests
         var orgGuid = Guid.NewGuid();
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync((CoreOrganisation?)null);
 
-        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, Guid.NewGuid());
+        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, Guid.NewGuid(), ActingUser);
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*Organisation*");
     }
@@ -167,7 +165,7 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserOrganisationMembership?)null);
 
-        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*UserOrganisationMembership*");
     }
@@ -183,7 +181,7 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
 
-        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         _membershipRepository.Verify(r => r.Update(It.IsAny<UserOrganisationMembership>()), Times.Never);
         _organisationPersonSyncRepository.Verify(r => r.RemoveAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
@@ -201,7 +199,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _membershipRepository.Setup(r => r.CountActiveOwnersByOrganisationIdAsync(org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(1);
 
-        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        var act = () => CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         await act.Should().ThrowAsync<LastOwnerRemovalException>().WithMessage("*last Owner*");
     }
@@ -219,7 +217,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.CountActiveOwnersByOrganisationIdAsync(org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(2);
         _assignmentRepository.Setup(r => r.GetByMembershipIdAsync(membership.Id, It.IsAny<CancellationToken>())).ReturnsAsync([]);
 
-        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId);
+        await CreateSut().RemoveUserFromOrganisationAsync(orgGuid, personId, ActingUser);
 
         _membershipRepository.Verify(r => r.Update(membership), Times.Once);
     }
@@ -238,7 +236,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Admin, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-        var result = await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin);
+        var result = await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin, ActingUser);
 
         result.Should().Be(membership);
         _membershipRepository.Verify(r => r.Update(membership), Times.Once);
@@ -259,7 +257,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Member, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-        await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Member);
+        await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Member, ActingUser);
 
         _organisationPersonSyncRepository.Verify(
             r => r.UpsertAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<IReadOnlyList<string>>(), It.IsAny<CancellationToken>()),
@@ -272,7 +270,7 @@ public class AtomicMembershipSyncTests
         var orgGuid = Guid.NewGuid();
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync((CoreOrganisation?)null);
 
-        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, Guid.NewGuid(), OrganisationRole.Admin);
+        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, Guid.NewGuid(), OrganisationRole.Admin, ActingUser);
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*Organisation*");
     }
@@ -287,7 +285,7 @@ public class AtomicMembershipSyncTests
         _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, It.IsAny<CancellationToken>())).ReturnsAsync(org);
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync((UserOrganisationMembership?)null);
 
-        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin);
+        var act = () => CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin, ActingUser);
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*UserOrganisationMembership*");
     }
@@ -304,7 +302,7 @@ public class AtomicMembershipSyncTests
         _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(personId, org.Id, It.IsAny<CancellationToken>())).ReturnsAsync(membership);
         _roleMappingService.Setup(r => r.ApplyRoleDefinitionAsync(membership, OrganisationRole.Admin, It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-        await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin);
+        await CreateSut().UpdateMembershipRoleAsync(orgGuid, personId, OrganisationRole.Admin, ActingUser);
 
         _atomicScope.Verify(
             s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<UserOrganisationMembership>>>(), It.IsAny<CancellationToken>()),
@@ -476,4 +474,8 @@ public class AtomicMembershipSyncTests
 
         await act.Should().ThrowAsync<EntityNotFoundException>().WithMessage("*InviteRoleMapping*");
     }
+
+    // ── Forbidden path tests moved to MembershipAuthorizationGuardTests ──────
+    // Self-removal, admin-removes-owner, self-role-change, and admin-changes-owner-role
+    // are now enforced by MembershipAuthorizationGuard, tested in MembershipAuthorizationGuardTests.
 }

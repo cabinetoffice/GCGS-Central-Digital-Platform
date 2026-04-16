@@ -13,10 +13,11 @@ namespace CO.CDP.UserManagement.App.Tests.Application.ApplicationRoles;
 public class ApplicationRoleFlowServiceTests : AdapterTestFixture
 {
     private readonly Mock<IUserManagementApiAdapter> _adapter = new();
+    private readonly Mock<IChangeApplicationRoleStateStore> _changeApplicationRoleStateStore = new();
     private readonly ApplicationRoleFlowService _sut;
 
     public ApplicationRoleFlowServiceTests()
-        => _sut = new ApplicationRoleFlowService(_adapter.Object);
+        => _sut = new ApplicationRoleFlowService(_adapter.Object, _changeApplicationRoleStateStore.Object);
 
     private void SetupOrg(string name = "Test Org") => base.SetupOrg(_adapter, name);
 
@@ -226,7 +227,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
                 ApplicationId = 1,
                 GiveAccess = true,
                 SelectedRoleId = 10,
-                SelectedRoleIds = null
+                SelectedRoleIds = null!
             }
         };
 

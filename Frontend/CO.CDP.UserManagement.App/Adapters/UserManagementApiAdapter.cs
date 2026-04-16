@@ -245,9 +245,17 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
         }
     }
 
-    public Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(Guid organisationId, Guid cdpPersonId, CancellationToken ct)
+    public async Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(Guid organisationId, Guid cdpPersonId, CancellationToken ct)
     {
-        return Task.FromResult(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
+        try
+        {
+            await _client.UsersDELETEAsync(organisationId, cdpPersonId, ct);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
+        }
     }
 
     public async Task<Result<ServiceFailure, ServiceOutcome>> CancelInviteAsync(Guid organisationId, int pendingInviteId, CancellationToken ct)
