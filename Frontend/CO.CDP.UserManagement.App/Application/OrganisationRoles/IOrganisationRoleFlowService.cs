@@ -8,12 +8,12 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles;
 public interface IOrganisationRoleFlowService
 {
     Task<ChangeUserRoleViewModel?> GetUserViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         CancellationToken ct);
 
     Task<ChangeUserRoleViewModel?> GetInviteViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 
@@ -23,26 +23,26 @@ public interface IOrganisationRoleFlowService
         CancellationToken ct);
 
     Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserRoleAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         OrganisationRole role,
         CancellationToken ct);
 
     Task<Result<ServiceFailure, ServiceOutcome>> UpdateInviteRoleAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         OrganisationRole role,
         CancellationToken ct);
 
     Task<ChangeRoleState> GetOrCreateStateAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         ChangeUserRoleViewModel viewModel,
         CancellationToken ct);
 
     Task<ChangeRoleState?> GetValidatedStateAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         CancellationToken ct);
@@ -50,13 +50,13 @@ public interface IOrganisationRoleFlowService
     ChangeUserRoleViewModel StateToViewModel(ChangeRoleState state);
 
     Task<ChangeUserRoleSuccessViewModel?> GetSuccessViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         CancellationToken ct);
 
     Task<OrganisationRoleChangeResult> ValidateAndSaveRoleChangeAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         ChangeUserRoleViewModel viewModel,

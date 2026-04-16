@@ -58,7 +58,7 @@ public static class ApplicationRoleChangePlanner
             .ToList();
 
         return ApplicationRolePlanResult.Success(new ApplicationRolePlanOutput(
-            OrganisationSlug: input.OrganisationSlug,
+            OrganisationId: input.OrganisationId,
             CdpPersonId: input.CdpPersonId,
             InviteGuid: input.InviteGuid,
             UserDisplayName: input.UserDisplayName,

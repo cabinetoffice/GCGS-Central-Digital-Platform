@@ -90,41 +90,6 @@ public class OrganisationsControllerTests
     }
 
     [Fact]
-    public async Task GetBySlug_WhenNotFound_ReturnsNotFound()
-    {
-        _organisationService.Setup(service => service.GetBySlugAsync("missing", It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CoreOrganisation?)null);
-
-        var result = await _controller.GetBySlug("missing", CancellationToken.None);
-
-        var actionResult = result.Should().BeOfType<ActionResult<OrganisationResponse>>().Subject;
-        actionResult.Result.Should().BeOfType<NotFoundObjectResult>();
-    }
-
-    [Fact]
-    public async Task GetBySlug_WhenFound_ReturnsOk()
-    {
-        var organisation = new CoreOrganisation
-        {
-            Id = 3,
-            CdpOrganisationGuid = Guid.NewGuid(),
-            Name = "Org Three",
-            Slug = "org-three",
-            IsActive = true,
-            CreatedAt = new DateTimeOffset(2024, 3, 1, 0, 0, 0, TimeSpan.Zero)
-        };
-        _organisationService.Setup(service => service.GetBySlugAsync("org-three", It.IsAny<CancellationToken>()))
-            .ReturnsAsync(organisation);
-
-        var result = await _controller.GetBySlug("org-three", CancellationToken.None);
-
-        var actionResult = result.Should().BeOfType<ActionResult<OrganisationResponse>>().Subject;
-        var okResult = actionResult.Result.Should().BeOfType<OkObjectResult>().Subject;
-        var response = okResult.Value.Should().BeOfType<OrganisationResponse>().Subject;
-        response.Slug.Should().Be("org-three");
-    }
-
-    [Fact]
     public async Task GetByCdpGuid_WhenNotFound_ReturnsNotFound()
     {
         var guid = Guid.NewGuid();

@@ -16,7 +16,7 @@ public static class OrganisationRoleOptionMapper
 }
 
 public sealed record OrganisationRoleStepViewModel(
-    string OrganisationSlug,
+    Guid OrganisationId,
     string FirstName,
     string LastName,
     string Email,
@@ -26,7 +26,7 @@ public sealed record OrganisationRoleStepViewModel(
 
 public sealed record ChangeUserRolePageViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     string UserDisplayName,
     string Email,
     OrganisationRole CurrentRole,
@@ -42,7 +42,7 @@ public sealed record ChangeUserRolePageViewModel(
         OrganisationRole? selectedRole = null) =>
         new(
             model.OrganisationName,
-            model.OrganisationSlug,
+            model.OrganisationId,
             model.UserDisplayName,
             model.Email,
             model.CurrentRole,

@@ -2,7 +2,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed class ChangeUserApplicationRolesViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public bool IsPending { get; init; }
@@ -43,7 +43,7 @@ public sealed class ApplicationRoleAssignmentPostModel
 
 public sealed class ChangeApplicationRolesCheckViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public bool IsPending { get; init; }
@@ -62,7 +62,7 @@ public sealed class ChangedApplicationRoleViewModel
 
 public sealed class ChangeApplicationRolesSuccessViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
     public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = new List<ChangedApplicationRoleViewModel>();
 }

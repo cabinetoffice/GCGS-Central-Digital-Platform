@@ -7,32 +7,32 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers;
 public interface IInviteUserFlowService
 {
     Task<InviteUserViewModel?> GetViewModelAsync(
-        string organisationSlug,
+        Guid id,
         InviteUserViewModel? input,
         CancellationToken ct);
 
     Task<bool> IsEmailAlreadyInOrganisationAsync(
-        string organisationSlug,
+        Guid id,
         string email,
         CancellationToken ct);
 
     Task<ApplicationRolesStepViewModel?> GetApplicationRolesStepAsync(
-        string organisationSlug,
+        Guid id,
         InviteUserState state,
         CancellationToken ct);
 
     Task<InviteCheckAnswersViewModel?> GetCheckAnswersViewModelAsync(
-        string organisationSlug,
+        Guid id,
         InviteUserState state,
         CancellationToken ct);
 
     Task<Result<ServiceFailure, ServiceOutcome>> InviteAsync(
-        string organisationSlug,
+        Guid id,
         InviteUserState state,
         CancellationToken ct);
 
     Task<Result<ServiceFailure, ServiceOutcome>> ResendInviteAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 

@@ -1,3 +1,4 @@
+using System;
 using CO.CDP.UserManagement.App.Application.InviteUsers.Implementations;
 using CO.CDP.UserManagement.App.Models;
 using FluentAssertions;
@@ -13,7 +14,7 @@ public class ApplicationRoleSelectionMapperTests
         params ApplicationAccessSelectionViewModel[] apps) =>
         new()
         {
-            OrganisationSlug = "test-org",
+            OrganisationId = Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"),
             FirstName = "Jane",
             LastName = "Smith",
             Email = "jane@example.com",
@@ -44,7 +45,7 @@ public class ApplicationRoleSelectionMapperTests
 
         var result = Sut.MergePostedSelections(serverVm, post);
 
-        result.OrganisationSlug.Should().Be("test-org");
+        result.OrganisationId.Should().Be(Guid.Parse("aaaaaaaa-0000-0000-0000-000000000000"));
         result.FirstName.Should().Be("Jane");
         result.Applications.Should().HaveCount(1);
     }

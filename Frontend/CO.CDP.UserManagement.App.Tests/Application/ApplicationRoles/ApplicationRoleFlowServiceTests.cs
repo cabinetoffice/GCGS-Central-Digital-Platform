@@ -26,10 +26,10 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetUserViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.GetUserViewModelAsync("slug", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -41,7 +41,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetUserAsync(OrgGuid, It.IsAny<Guid>(), default))
             .ReturnsAsync((OrganisationUserResponse?)null);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -56,7 +56,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([]);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.CdpPersonId.Should().Be(personId);
         result.InviteGuid.Should().BeNull();
@@ -76,7 +76,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 2, default))
             .ReturnsAsync([MakeRole(20, "Viewer")]);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.Applications.Should().HaveCount(2);
         _adapter.Verify(a => a.GetApplicationRolesAsync(OrgId, 1, default), Times.Once);
@@ -96,7 +96,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10, "Admin")]);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.Applications.Should().HaveCount(1);
         result.Applications[0].Roles.Should().HaveCount(1);
@@ -127,7 +127,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10, "Admin")]);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.Applications[0].HasExistingAccess.Should().BeTrue();
         result.Applications[0].GiveAccess.Should().BeTrue();
@@ -146,7 +146,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default))
             .ReturnsAsync([MakeRole(10)]);
 
-        var result = await _sut.GetUserViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.Applications[0].HasExistingAccess.Should().BeFalse();
         result.Applications[0].GiveAccess.Should().BeFalse();
@@ -158,10 +158,10 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetInviteViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.GetInviteViewModelAsync("slug", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -173,7 +173,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInviteAsync(OrgGuid, It.IsAny<Guid>(), default))
             .ReturnsAsync((PendingOrganisationInviteResponse?)null);
 
-        var result = await _sut.GetInviteViewModelAsync("test-org", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -188,7 +188,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync([]);
 
-        var result = await _sut.GetInviteViewModelAsync("test-org", inviteGuid, CancellationToken.None);
+        var result = await _sut.GetInviteViewModelAsync(OrgGuid, inviteGuid, CancellationToken.None);
 
         result!.InviteGuid.Should().Be(inviteGuid);
         result.CdpPersonId.Should().BeNull();
@@ -199,10 +199,10 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task UpdateUserRolesAsync_OrgNotFound_ReturnsNotFound()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.UpdateUserRolesAsync("slug", Guid.NewGuid(), [], CancellationToken.None);
+        var result = await _sut.UpdateUserRolesAsync(OrgGuid, Guid.NewGuid(), [], CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Match(_ => false, o => o == ServiceOutcome.NotFound).Should().BeTrue();
@@ -231,7 +231,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
             }
         };
 
-        await _sut.UpdateUserRolesAsync("test-org", personId, assignments, CancellationToken.None);
+        await _sut.UpdateUserRolesAsync(OrgGuid, personId, assignments, CancellationToken.None);
 
         captured.Should().NotBeNull();
         captured!.Assignments.Should().HaveCount(1);
@@ -249,7 +249,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
                 OrgId, personId, It.IsAny<UpdateUserAssignmentsRequest>(), default))
             .ReturnsAsync(SuccessResult());
 
-        await _sut.UpdateUserRolesAsync("test-org", personId, [], CancellationToken.None);
+        await _sut.UpdateUserRolesAsync(OrgGuid, personId, [], CancellationToken.None);
 
         _adapter.Verify(a => a.UpdateUserApplicationRolesAsync(
             OrgId, personId, It.IsAny<UpdateUserAssignmentsRequest>(), default), Times.Once);
@@ -269,7 +269,7 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
                 OrgGuid, inviteGuid, It.IsAny<UpdateUserAssignmentsRequest>(), default))
             .ReturnsAsync(SuccessResult());
 
-        await _sut.UpdateInviteRolesAsync("test-org", inviteGuid, [], CancellationToken.None);
+        await _sut.UpdateInviteRolesAsync(OrgGuid, inviteGuid, [], CancellationToken.None);
 
         _adapter.Verify(a => a.UpdateInviteApplicationRolesAsync(
             OrgGuid, inviteGuid, It.IsAny<UpdateUserAssignmentsRequest>(), default), Times.Once);

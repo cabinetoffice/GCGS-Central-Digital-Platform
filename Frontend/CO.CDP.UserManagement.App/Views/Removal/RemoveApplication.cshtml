@@ -1,8 +1,8 @@
 @model CO.CDP.UserManagement.App.Models.RemoveApplicationViewModel
 @{
     ViewData["Title"] = "Revoke access to " + Model.ApplicationName;
-    var userDetailsUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}";
-    var changeRoleUrl = $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application-roles/change";
+    var userDetailsUrl = $"/organisation/{Model.OrganisationId}/user/{Model.CdpPersonId}";
+    var changeRoleUrl = $"/organisation/{Model.OrganisationId}/user/{Model.CdpPersonId}/application-roles/change";
 }
 
 @section BeforeContent {

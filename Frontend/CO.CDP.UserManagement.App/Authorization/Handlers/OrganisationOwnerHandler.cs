@@ -3,12 +3,10 @@ using CO.CDP.Authentication;
 using CO.CDP.UserManagement.App.Authorization.Requirements;
 using CO.CDP.UserManagement.Core;
 using CO.CDP.UserManagement.Core.Models;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Authorization.Handlers;
 
 public sealed class OrganisationOwnerHandler(
-    ApiClient.UserManagementClient apiClient,
     ISessionManager sessionManager,
     ILogger<OrganisationOwnerHandler> logger)
     : AuthorizationHandler<OrganisationOwnerRequirement>
@@ -18,9 +16,8 @@ public sealed class OrganisationOwnerHandler(
         OrganisationOwnerRequirement requirement)
     {
         var httpContext = context.Resource as HttpContext;
-        var organisationSlug = httpContext?.GetRouteData().Values["organisationSlug"] as string;
 
-        if (string.IsNullOrWhiteSpace(organisationSlug))
+        if (!Guid.TryParse(httpContext?.GetRouteData().Values["id"]?.ToString(), out var orgId))
             return;
 
         var cdpClaimsJson = await CdpClaimsResolver.ResolveAsync(context, httpContext, sessionManager, logger);
@@ -28,25 +25,12 @@ public sealed class OrganisationOwnerHandler(
         if (string.IsNullOrWhiteSpace(cdpClaimsJson))
             return;
 
-        try
-        {
-            var org = await apiClient.BySlugAsync(organisationSlug);
-            var orgId = org?.CdpOrganisationGuid ?? Guid.Empty;
+        var userClaims = JsonHelper.TryDeserialize<UserClaims>(cdpClaimsJson);
+        var isOwner = userClaims?.Organisations.Any(o =>
+            o.OrganisationId == orgId &&
+            string.Equals(o.OrganisationRole, "Owner", StringComparison.OrdinalIgnoreCase)) ?? false;
 
-            if (orgId == Guid.Empty)
-                return;
-
-            var userClaims = JsonHelper.TryDeserialize<UserClaims>(cdpClaimsJson);
-            var isOwner = userClaims?.Organisations.Any(o =>
-                o.OrganisationId == orgId &&
-                string.Equals(o.OrganisationRole, "Owner", StringComparison.OrdinalIgnoreCase)) ?? false;
-
-            if (isOwner)
-                context.Succeed(requirement);
-        }
-        catch (ApiClient.ApiException ex)
-        {
-            logger.LogWarning(ex, "OrganisationOwnerHandler: API error for slug {Slug}", organisationSlug);
-        }
+        if (isOwner)
+            context.Succeed(requirement);
     }
 }

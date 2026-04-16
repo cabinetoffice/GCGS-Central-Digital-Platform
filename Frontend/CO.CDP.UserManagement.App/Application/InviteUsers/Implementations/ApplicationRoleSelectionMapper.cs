@@ -67,7 +67,7 @@ public sealed class ApplicationRoleSelectionMapper : IApplicationRoleSelectionMa
 
         return new ApplicationRolesStepViewModel
         {
-            OrganisationSlug = serverViewModel.OrganisationSlug,
+            OrganisationId = serverViewModel.OrganisationId,
             FirstName = serverViewModel.FirstName,
             LastName = serverViewModel.LastName,
             Email = serverViewModel.Email,
@@ -114,7 +114,7 @@ public sealed class ApplicationRoleSelectionMapper : IApplicationRoleSelectionMa
 
         return new ApplicationRolesStepViewModel
         {
-            OrganisationSlug = serverViewModel.OrganisationSlug,
+            OrganisationId = serverViewModel.OrganisationId,
             FirstName = serverViewModel.FirstName,
             LastName = serverViewModel.LastName,
             Email = serverViewModel.Email,

@@ -8,14 +8,14 @@ public static class ApplicationRoleChangePlannerMapper
     public static ApplicationRoleChangeInput Map(
         ChangeUserApplicationRolesViewModel vm,
         ApplicationRoleChangePostModel posted,
-        string organisationSlug,
+        Guid organisationId,
         Guid? cdpPersonId,
         Guid? inviteGuid)
     {
         var postedMap = posted.Applications.ToDictionary(a => a.OrganisationApplicationId);
 
         return new ApplicationRoleChangeInput(
-            OrganisationSlug: organisationSlug,
+            OrganisationId: organisationId,
             CdpPersonId: cdpPersonId,
             InviteGuid: inviteGuid,
             UserDisplayName: vm.UserDisplayName,

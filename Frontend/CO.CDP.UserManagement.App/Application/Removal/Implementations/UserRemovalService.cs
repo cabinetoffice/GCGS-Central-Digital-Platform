@@ -20,9 +20,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             _currentUserService = currentUserService;
         }
 
-        public async Task<RemoveUserViewModel?> GetUserViewModelAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+        public async Task<RemoveUserViewModel?> GetUserViewModelAsync(Guid id, Guid cdpPersonId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -30,7 +30,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 
             return new RemoveUserViewModel(
                 OrganisationName: org.Name,
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: $"{user.FirstName} {user.LastName}",
                 Email: user.Email,
                 CurrentRole: user.OrganisationRole,
@@ -40,9 +40,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 RemoveConfirmed: null);
         }
 
-        public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+        public async Task<RemoveUserViewModel?> GetInviteViewModelAsync(Guid id, Guid inviteGuid, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
@@ -50,7 +50,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 
             return new RemoveUserViewModel(
                 OrganisationName: org.Name,
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: $"{invite.FirstName} {invite.LastName}",
                 Email: invite.Email,
                 CurrentRole: invite.OrganisationRole,
@@ -60,9 +60,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 RemoveConfirmed: null);
         }
 
-        public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -76,7 +76,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             var assignment = assignments.FirstOrDefault(a => a.IsActive && a.OrganisationApplicationId == app.Id);
 
             return new RemoveApplicationViewModel(
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: $"{user.FirstName} {user.LastName}",
                 UserEmail: user.Email,
                 ApplicationName: app.Application.Name,
@@ -91,9 +91,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 RevokeConfirmed: null);
         }
 
-        public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+        public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(Guid id, Guid cdpPersonId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -101,7 +101,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 
             return new RemoveSuccessViewModel
             {
-                OrganisationSlug = organisationSlug,
+                OrganisationId = id,
                 UserDisplayName = $"{user.FirstName} {user.LastName}",
                 Email = user.Email,
                 OrganisationName = org.Name,
@@ -112,9 +112,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
         }
 
         public async Task<RemovalValidationResult> ValidateRemovalAsync(
-            string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+            Guid id, Guid cdpPersonId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return RemovalValidationResult.Fail("Organisation not found.");
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -135,14 +135,14 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
         }
 
         public async Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
-            string organisationSlug,
+            Guid id,
             Guid cdpPersonId,
             bool? removeConfirmed,
             CancellationToken ct)
         {
             if (removeConfirmed == false) return new UserRemovalSubmitResult.Cancelled();
 
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return new UserRemovalSubmitResult.NotFound();
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -166,9 +166,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             return success ? new UserRemovalSubmitResult.Removed() : new UserRemovalSubmitResult.NotFound();
         }
 
-        public async Task<InviteRemovalSubmitResult> RemoveInviteAsync(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+        public async Task<InviteRemovalSubmitResult> RemoveInviteAsync(Guid id, Guid inviteGuid, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return new InviteRemovalSubmitResult.NotFound();
 
             var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
@@ -179,9 +179,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             return success ? new InviteRemovalSubmitResult.Removed() : new InviteRemovalSubmitResult.NotFound();
         }
 
-        public async Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        public async Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return new ApplicationRemovalSubmitResult.NotFound();
 
             var apps = await _adapter.GetApplicationsAsync(org.Id, ct);

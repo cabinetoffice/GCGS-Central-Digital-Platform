@@ -2,7 +2,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record EnableApplicationViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     int ApplicationId,
     string ApplicationSlug,
     string ApplicationName,
@@ -13,7 +13,7 @@ public sealed record EnableApplicationViewModel(
 {
     public static EnableApplicationViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         ApplicationId: 0,
         ApplicationSlug: string.Empty,
         ApplicationName: string.Empty,

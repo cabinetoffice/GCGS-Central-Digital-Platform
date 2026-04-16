@@ -2,7 +2,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed class RemoveApplicationSuccessViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
 
     public string UserDisplayName { get; init; } = string.Empty;
 
