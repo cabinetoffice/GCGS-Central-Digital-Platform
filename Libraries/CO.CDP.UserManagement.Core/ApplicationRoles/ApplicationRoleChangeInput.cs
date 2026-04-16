@@ -1,7 +1,7 @@
 namespace CO.CDP.UserManagement.Core.ApplicationRoles;
 
 public sealed record ApplicationRoleChangeInput(
-    string OrganisationSlug,
+    Guid OrganisationId,
     Guid? CdpPersonId,
     Guid? InviteGuid,
     string UserDisplayName,

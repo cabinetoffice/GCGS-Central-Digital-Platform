@@ -27,10 +27,10 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetAddViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.GetViewModelAsync("slug", null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -40,7 +40,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     {
         SetupOrg();
 
-        var result = await _sut.GetViewModelAsync("test-org", null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.OrganisationName.Should().Be("Test Org");
@@ -55,7 +55,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         var input = new InviteUserViewModel
             { Email = "test@example.com", FirstName = "Jane", LastName = "Doe" };
 
-        var result = await _sut.GetViewModelAsync("test-org", input, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, input, CancellationToken.None);
 
         result!.Email.Should().Be("test@example.com");
         result.FirstName.Should().Be("Jane");
@@ -67,11 +67,11 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task IsEmailAlreadyInOrganisation_OrgNotFound_ReturnsFalse()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
         var result = await _sut.IsEmailAlreadyInOrganisationAsync(
-            "slug", "test@example.com", CancellationToken.None);
+            OrgGuid, "test@example.com", CancellationToken.None);
 
         result.Should().BeFalse();
     }
@@ -86,7 +86,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([]);
 
         var result = await _sut.IsEmailAlreadyInOrganisationAsync(
-            "test-org", "test@example.com", CancellationToken.None);
+            OrgGuid, "test@example.com", CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -101,7 +101,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([MakeInvite(email: "test@example.com")]);
 
         var result = await _sut.IsEmailAlreadyInOrganisationAsync(
-            "test-org", "test@example.com", CancellationToken.None);
+            OrgGuid, "test@example.com", CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -116,7 +116,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([]);
 
         var result = await _sut.IsEmailAlreadyInOrganisationAsync(
-            "test-org", "test@example.com", CancellationToken.None);
+            OrgGuid, "test@example.com", CancellationToken.None);
 
         result.Should().BeTrue();
     }
@@ -131,7 +131,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([]);
 
         var result = await _sut.IsEmailAlreadyInOrganisationAsync(
-            "test-org", "test@example.com", CancellationToken.None);
+            OrgGuid, "test@example.com", CancellationToken.None);
 
         result.Should().BeFalse();
     }
@@ -145,7 +145,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default))
             .ReturnsAsync([]);
 
-        await _sut.IsEmailAlreadyInOrganisationAsync("test-org", "x@x.com", CancellationToken.None);
+        await _sut.IsEmailAlreadyInOrganisationAsync(OrgGuid, "x@x.com", CancellationToken.None);
 
         _adapter.Verify(a => a.GetUsersAsync(OrgGuid, default), Times.Once);
         _adapter.Verify(a => a.GetInvitesAsync(OrgGuid, default), Times.Once);
@@ -156,11 +156,11 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetApplicationRolesStepAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
         var result = await _sut.GetApplicationRolesStepAsync(
-            "slug", MakeState(), CancellationToken.None);
+            OrgGuid, MakeState(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -177,7 +177,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([MakeRole(id: 20, name: "Editor")]);
 
         var result = await _sut.GetApplicationRolesStepAsync(
-            "test-org", MakeState(), CancellationToken.None);
+            OrgGuid, MakeState(), CancellationToken.None);
 
         result!.Applications.Should().HaveCount(2);
         result.Applications[0].Roles.Should().ContainSingle(r => r.Name == "Viewer");
@@ -192,7 +192,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             .ReturnsAsync([]);
         var state = MakeState(firstName: "Jane", lastName: "Doe");
 
-        var result = await _sut.GetApplicationRolesStepAsync("test-org", state, CancellationToken.None);
+        var result = await _sut.GetApplicationRolesStepAsync(OrgGuid, state, CancellationToken.None);
 
         result!.FirstName.Should().Be("Jane");
         result.LastName.Should().Be("Doe");
@@ -216,7 +216,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             }
         ]);
 
-        var result = await _sut.GetApplicationRolesStepAsync("test-org", state, CancellationToken.None);
+        var result = await _sut.GetApplicationRolesStepAsync(OrgGuid, state, CancellationToken.None);
 
         result!.Applications[0].GiveAccess.Should().BeFalse();
         result.Applications[0].SelectedRoleId.Should().BeNull();
@@ -227,11 +227,11 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetCheckAnswersViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
         var result = await _sut.GetCheckAnswersViewModelAsync(
-            "slug", MakeState(), CancellationToken.None);
+            OrgGuid, MakeState(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -254,7 +254,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             }
         ]);
 
-        var result = await _sut.GetCheckAnswersViewModelAsync("test-org", state, CancellationToken.None);
+        var result = await _sut.GetCheckAnswersViewModelAsync(OrgGuid, state, CancellationToken.None);
 
         result!.Applications.Should().HaveCount(1);
         result.Applications[0].ApplicationName.Should().Be("App One");
@@ -277,7 +277,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
             }
         ]);
 
-        var result = await _sut.GetCheckAnswersViewModelAsync("test-org", state, CancellationToken.None);
+        var result = await _sut.GetCheckAnswersViewModelAsync(OrgGuid, state, CancellationToken.None);
 
         result!.Applications.Should().BeEmpty();
     }
@@ -287,10 +287,10 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task InviteAsync_OrgNotFound_ReturnsNotFound()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.InviteAsync("slug", MakeState(), CancellationToken.None);
+        var result = await _sut.InviteAsync(OrgGuid, MakeState(), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Match(_ => false, o => o == ServiceOutcome.NotFound).Should().BeTrue();
@@ -320,7 +320,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
                 }
             ]);
 
-        await _sut.InviteAsync("test-org", state, CancellationToken.None);
+        await _sut.InviteAsync(OrgGuid, state, CancellationToken.None);
 
         captured.Should().NotBeNull();
         captured!.Email.Should().Be("jane@example.com");
@@ -339,7 +339,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.InviteUserAsync(OrgGuid, It.IsAny<InviteUserRequest>(), default))
             .ReturnsAsync(SuccessResult());
 
-        var result = await _sut.InviteAsync("test-org", MakeState(), CancellationToken.None);
+        var result = await _sut.InviteAsync(OrgGuid, MakeState(), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Match(_ => false, o => o == ServiceOutcome.Success).Should().BeTrue();
@@ -350,10 +350,10 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     [Fact]
     public async Task ResendInviteAsync_OrgNotFound_ReturnsNotFound()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.ResendInviteAsync("slug", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.ResendInviteAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         result.Match(_ => false, o => o == ServiceOutcome.NotFound).Should().BeTrue();
@@ -367,7 +367,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default))
             .ReturnsAsync(SuccessResult());
 
-        var result = await _sut.ResendInviteAsync("test-org", inviteGuid, CancellationToken.None);
+        var result = await _sut.ResendInviteAsync(OrgGuid, inviteGuid, CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
         _adapter.Verify(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default), Times.Once);

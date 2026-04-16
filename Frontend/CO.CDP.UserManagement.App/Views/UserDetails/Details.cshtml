@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Organisation?.Slug" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Organisation?.CdpOrganisationGuid" class="govuk-back-link">Back</a>
 }
 
 <h1 class="govuk-heading-xl">User details</h1>
@@ -46,9 +46,9 @@
     <div class="govuk-grid-column-one-third">
         <h2 class="govuk-heading-m">Actions</h2>
         <ul class="govuk-list">
-            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link">Change application roles</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/organisation-role/change" class="govuk-link">Change organisation role</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/user/@Model.Id/application-roles/change" class="govuk-link">Change application roles</a></li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/user/@Model.Id/organisation-role/change" class="govuk-link">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/user/@Model.Id/remove" class="govuk-link">Remove from organisation</a></li>
         </ul>
     </div>
 </div>
@@ -88,8 +88,8 @@ else
                 <p class="govuk-body-s govuk-!-margin-bottom-3">Assigned: @app.AssignedDate.ToString("d MMMM yyyy") by @app.AssignedByEmail</p>
 
                 <p class="govuk-body">
-                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Change role</a>
-                    <a href="/organisation/@Model.Organisation?.Slug/user/@Model.Id/application/@app.ApplicationClientId/remove" class="govuk-link">Revoke access</a>
+                    <a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/user/@Model.Id/application-roles/change" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                    <a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/user/@Model.Id/application/@app.ApplicationClientId/remove" class="govuk-link">Revoke access</a>
                 </p>
             </div>
         </div>

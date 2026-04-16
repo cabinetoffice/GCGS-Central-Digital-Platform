@@ -4,7 +4,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed class ApplicationRolesStepViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
@@ -54,7 +54,7 @@ public sealed class InviteApplicationAssignment
 
 public sealed class InviteCheckAnswersViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
@@ -70,7 +70,7 @@ public sealed class InviteCheckAnswersApplicationViewModel
 
 public sealed class InviteSuccessState
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string OrganisationName { get; init; } = string.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
@@ -82,7 +82,7 @@ public sealed class InviteSuccessState
 
 public sealed class InviteSuccessViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string OrganisationName { get; init; } = string.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;

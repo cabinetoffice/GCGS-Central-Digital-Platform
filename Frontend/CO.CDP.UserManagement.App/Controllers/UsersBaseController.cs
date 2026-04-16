@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CO.CDP.UserManagement.App.Controllers;
 
 [Authorize(Policy = PolicyNames.OrganisationOwnerOrAdmin)]
-[Route("organisation/{organisationSlug}")]
+[Route("organisation/{id:guid}")]
 [OrganisationOwnerOrAdmin]
 public abstract class UsersBaseController : Controller
 {

@@ -4,7 +4,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record UsersViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     Guid? OrganisationGuid,
     IReadOnlyList<UserSummaryViewModel> Users,
     IReadOnlyList<ApplicationViewModel> AvailableApplications,
@@ -20,7 +20,7 @@ public sealed record UsersViewModel(
 
     public static UsersViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         OrganisationGuid: null,
         Users: [],
         AvailableApplications: [],

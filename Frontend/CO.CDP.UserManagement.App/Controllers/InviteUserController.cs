@@ -12,12 +12,11 @@ public class InviteUserController(
     IApplicationRoleSelectionMapper roleSelectionMapper) : UsersBaseController
 {
     [HttpGet("add-user")]
-    public async Task<IActionResult> Add(string organisationSlug, bool returnToCheckAnswers = false,
+    public async Task<IActionResult> Add(Guid id, bool returnToCheckAnswers = false,
         CancellationToken ct = default)
     {
         var existingState = await inviteUserStateStore.GetAsync();
-        if (existingState is not null &&
-            !existingState.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (existingState is not null && existingState.OrganisationId != id)
         {
             await inviteUserStateStore.ClearAsync();
             existingState = null;
@@ -27,21 +26,21 @@ public class InviteUserController(
             ? null
             : new InviteUserViewModel
             {
-                OrganisationSlug = existingState.OrganisationSlug,
+                OrganisationId = existingState.OrganisationId,
                 Email = existingState.Email,
                 FirstName = existingState.FirstName,
                 LastName = existingState.LastName,
                 OrganisationRole = existingState.OrganisationRole
             };
         ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-        var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
+        var viewModel = await inviteUserFlowService.GetViewModelAsync(id, input, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpPost("add-user")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Add(
-        string organisationSlug,
+        Guid id,
         InviteUserViewModel input,
         bool returnToCheckAnswers = false,
         CancellationToken ct = default)
@@ -49,26 +48,24 @@ public class InviteUserController(
         if (!ModelState.IsValid)
         {
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-            var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
+            var viewModel = await inviteUserFlowService.GetViewModelAsync(id, input, ct);
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
-        if (await inviteUserFlowService.IsEmailAlreadyInOrganisationAsync(organisationSlug, input.Email!, ct))
+        if (await inviteUserFlowService.IsEmailAlreadyInOrganisationAsync(id, input.Email!, ct))
         {
             ModelState.AddModelError(nameof(input.Email),
                 "A user with this email address is already in this organisation");
             ViewData["ReturnToCheckAnswers"] = returnToCheckAnswers;
-            var viewModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, input, ct);
+            var viewModel = await inviteUserFlowService.GetViewModelAsync(id, input, ct);
             return viewModel is null ? NotFound() : View(viewModel);
         }
 
         var existingState = await inviteUserStateStore.GetAsync();
-        var canPreserveSelections = existingState is not null &&
-                                    existingState.OrganisationSlug.Equals(organisationSlug,
-                                        StringComparison.OrdinalIgnoreCase);
+        var canPreserveSelections = existingState is not null && existingState.OrganisationId == id;
         var preservedState = canPreserveSelections ? existingState : null;
         var state = new InviteUserState(
-            organisationSlug,
+            id,
             input.Email ?? string.Empty,
             input.FirstName ?? string.Empty,
             input.LastName ?? string.Empty,
@@ -78,22 +75,22 @@ public class InviteUserController(
 
         if (returnToCheckAnswers)
         {
-            return RedirectToAction(nameof(CheckAnswersStep), new { organisationSlug });
+            return RedirectToAction(nameof(CheckAnswersStep), new { id });
         }
 
-        return RedirectToAction(nameof(OrganisationRoleStep), new { organisationSlug });
+        return RedirectToAction(nameof(OrganisationRoleStep), new { id });
     }
 
     [HttpGet("add-user/organisation-role")]
     public async Task<IActionResult> OrganisationRoleStep(
-        string organisationSlug,
+        Guid id,
         bool returnToCheckAnswers = false,
         CancellationToken ct = default)
     {
         var state = await inviteUserStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (state is null || state.OrganisationId != id)
         {
-            return RedirectToAction(nameof(Add), new { organisationSlug });
+            return RedirectToAction(nameof(Add), new { id });
         }
 
         return View(nameof(OrganisationRoleStep),
@@ -101,14 +98,14 @@ public class InviteUserController(
     }
 
     [HttpGet("add-user/application-roles")]
-    public async Task<IActionResult> ApplicationRolesStep(string organisationSlug, OrganisationRole? organisationRole,
+    public async Task<IActionResult> ApplicationRolesStep(Guid id, OrganisationRole? organisationRole,
         CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
-            return RedirectToAction(nameof(Add), new { organisationSlug });
+        if (state is null || state.OrganisationId != id)
+            return RedirectToAction(nameof(Add), new { id });
 
-        var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
+        var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(id, state, ct);
         if (viewModel is null) return NotFound();
 
         return View(nameof(ApplicationRolesStep), roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
@@ -117,15 +114,15 @@ public class InviteUserController(
     [HttpPost("add-user/application-roles")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ApplicationRolesStepSubmit(
-        string organisationSlug,
+        Guid id,
         ApplicationRolesStepPostModel input,
         CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
-            return RedirectToAction(nameof(Add), new { organisationSlug });
+        if (state is null || state.OrganisationId != id)
+            return RedirectToAction(nameof(Add), new { id });
 
-        var serverViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
+        var serverViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(id, state, ct);
         if (serverViewModel is null) return NotFound();
 
         var merged = roleSelectionMapper.MergePostedSelections(serverViewModel, input);
@@ -138,28 +135,28 @@ public class InviteUserController(
 
         state = state with { ApplicationAssignments = assignments };
         await inviteUserStateStore.SetAsync(state);
-        return RedirectToAction(nameof(CheckAnswersStep), new { organisationSlug });
+        return RedirectToAction(nameof(CheckAnswersStep), new { id });
     }
 
     [HttpGet("add-user/check-answers")]
     public async Task<IActionResult> CheckAnswersStep(
-        string organisationSlug,
+        Guid id,
         OrganisationRole? organisationRole,
         CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (state is null || state.OrganisationId != id)
         {
-            return RedirectToAction(nameof(Add), new { organisationSlug });
+            return RedirectToAction(nameof(Add), new { id });
         }
 
         var selectedAssignments = state.ApplicationAssignments ?? [];
         if (selectedAssignments.Count == 0)
         {
-            return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
+            return RedirectToAction(nameof(ApplicationRolesStep), new { id });
         }
 
-        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
+        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(id, state, ct);
         if (rolesViewModel is null) return NotFound();
 
         var applications = selectedAssignments
@@ -182,12 +179,12 @@ public class InviteUserController(
 
         if (applications.Count == 0)
         {
-            return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
+            return RedirectToAction(nameof(ApplicationRolesStep), new { id });
         }
 
         return View(nameof(CheckAnswersStep), new InviteCheckAnswersViewModel
         {
-            OrganisationSlug = state.OrganisationSlug,
+            OrganisationId = state.OrganisationId,
             FirstName = state.FirstName,
             LastName = state.LastName,
             Email = state.Email,
@@ -198,21 +195,21 @@ public class InviteUserController(
 
     [HttpPost("add-user/check-answers")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CheckAnswersStepSubmit(string organisationSlug, CancellationToken ct)
+    public async Task<IActionResult> CheckAnswersStepSubmit(Guid id, CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (state is null || state.OrganisationId != id)
         {
-            return RedirectToAction(nameof(Add), new { organisationSlug });
+            return RedirectToAction(nameof(Add), new { id });
         }
 
         var assignments = state.ApplicationAssignments ?? [];
         if (assignments.Count == 0)
         {
-            return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
+            return RedirectToAction(nameof(ApplicationRolesStep), new { id });
         }
 
-        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
+        var rolesViewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(id, state, ct);
         if (rolesViewModel is null) return NotFound();
 
         var applicationRoles = assignments
@@ -235,20 +232,20 @@ public class InviteUserController(
 
         if (applicationRoles.Count == 0)
         {
-            return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
+            return RedirectToAction(nameof(ApplicationRolesStep), new { id });
         }
 
-        var invitePageModel = await inviteUserFlowService.GetViewModelAsync(organisationSlug, null, ct);
+        var invitePageModel = await inviteUserFlowService.GetViewModelAsync(id, null, ct);
         if (invitePageModel is null) return NotFound();
 
-        var success = await inviteUserFlowService.InviteAsync(organisationSlug, state, ct);
+        var success = await inviteUserFlowService.InviteAsync(id, state, ct);
         if (success.IsFailure) return Redirect("/error");
         if (success.Match(_ => false, outcome => outcome == CO.CDP.UserManagement.App.Services.ServiceOutcome.NotFound))
             return NotFound();
 
         await inviteUserStateStore.SetSuccessAsync(new InviteSuccessState
         {
-            OrganisationSlug = state.OrganisationSlug,
+            OrganisationId = state.OrganisationId,
             OrganisationName = invitePageModel.OrganisationName,
             FirstName = state.FirstName,
             LastName = state.LastName,
@@ -259,22 +256,21 @@ public class InviteUserController(
         });
 
         await inviteUserStateStore.ClearAsync();
-        return RedirectToAction(nameof(InviteSuccessStep), new { organisationSlug });
+        return RedirectToAction(nameof(InviteSuccessStep), new { id });
     }
 
     [HttpGet("add-user/success")]
-    public async Task<IActionResult> InviteSuccessStep(string organisationSlug)
+    public async Task<IActionResult> InviteSuccessStep(Guid id)
     {
         var successState = await inviteUserStateStore.GetSuccessAsync();
-        if (successState is null ||
-            !successState.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (successState is null || successState.OrganisationId != id)
         {
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         }
 
         return View(nameof(InviteSuccessStep), new InviteSuccessViewModel
         {
-            OrganisationSlug = successState.OrganisationSlug,
+            OrganisationId = successState.OrganisationId,
             OrganisationName = successState.OrganisationName,
             FirstName = successState.FirstName,
             LastName = successState.LastName,
@@ -286,14 +282,14 @@ public class InviteUserController(
     }
 
     [HttpGet("invites/{inviteGuid:guid}/resend-invite")]
-    public async Task<IActionResult> ResendInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    public async Task<IActionResult> ResendInvite(Guid id, Guid inviteGuid, CancellationToken ct)
     {
-        var success = await inviteUserFlowService.ResendInviteAsync(organisationSlug, inviteGuid, ct);
+        var success = await inviteUserFlowService.ResendInviteAsync(id, inviteGuid, ct);
         return success.Match<IActionResult>(
             _ => Redirect("/error"),
             outcome => outcome == CO.CDP.UserManagement.App.Services.ServiceOutcome.NotFound
                 ? NotFound()
-                : RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug })!);
+                : RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id })!);
     }
 
 }

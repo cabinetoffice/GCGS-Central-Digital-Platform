@@ -16,9 +16,9 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
         _client = client ?? throw new ArgumentNullException(nameof(client));
     }
 
-    public async Task<OrganisationResponse?> GetOrganisationBySlugAsync(string organisationSlug, CancellationToken ct)
+    public async Task<OrganisationResponse?> GetOrganisationByGuidAsync(Guid cdpOrganisationId, CancellationToken ct)
     {
-        try { return await _client.BySlugAsync(organisationSlug, ct); }
+        try { return await _client.ByCdpGuidAsync(cdpOrganisationId, ct); }
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404) { return null; }
     }
 

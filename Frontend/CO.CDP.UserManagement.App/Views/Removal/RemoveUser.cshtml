@@ -5,7 +5,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -46,13 +46,13 @@
                 <dd class="govuk-summary-list__actions">
                     @if (Model.CdpPersonId.HasValue)
                     {
-                        <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/user/@Model.CdpPersonId/organisation-role/change">
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/user/@Model.CdpPersonId/organisation-role/change">
                             Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
                         </a>
                     }
                     else if (Model.PendingInviteId.HasValue)
                     {
-                        <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/invites/@Model.PendingInviteId/organisation-role/change">
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/invites/@Model.PendingInviteId/organisation-role/change">
                             Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
                         </a>
                     }
@@ -108,7 +108,7 @@
 
             <div class="govuk-button-group">
                 <button class="govuk-button govuk-button--warning" data-module="govuk-button">Confirm</button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
             </div>
         </form>
     </div>

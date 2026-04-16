@@ -8,16 +8,16 @@ public class UserDetailsController(
     IInviteDetailsQueryService inviteDetailsQueryService) : UsersBaseController
 {
     [HttpGet("user/{cdpPersonId:guid}")]
-    public async Task<IActionResult> Details(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    public async Task<IActionResult> Details(Guid id, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userDetailsQueryService.GetViewModelAsync(organisationSlug, cdpPersonId, ct);
+        var viewModel = await userDetailsQueryService.GetViewModelAsync(id, cdpPersonId, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 
     [HttpGet("invites/{inviteGuid:guid}")]
-    public async Task<IActionResult> InviteDetails(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    public async Task<IActionResult> InviteDetails(Guid id, Guid inviteGuid, CancellationToken ct)
     {
-        var viewModel = await inviteDetailsQueryService.GetViewModelAsync(organisationSlug, inviteGuid, ct);
+        var viewModel = await inviteDetailsQueryService.GetViewModelAsync(id, inviteGuid, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 }

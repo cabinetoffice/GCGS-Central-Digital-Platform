@@ -2,12 +2,12 @@
 @{
     ViewData["Title"] = "What is their role in your organisation?";
     var continueUrl = Model.ReturnToCheckAnswers
-        ? $"/organisation/{Model.OrganisationSlug}/add-user/check-answers"
-        : $"/organisation/{Model.OrganisationSlug}/add-user/application-roles";
+        ? $"/organisation/{Model.OrganisationId}/add-user/check-answers"
+        : $"/organisation/{Model.OrganisationId}/add-user/application-roles";
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug/add-user" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId/add-user" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -59,7 +59,7 @@
 
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button">Continue</button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
             </div>
         </form>
     </div>

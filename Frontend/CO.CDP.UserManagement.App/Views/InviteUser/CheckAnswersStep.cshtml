@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug/add-user/application-roles" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId/add-user/application-roles" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -16,7 +16,7 @@
                 <dt class="govuk-summary-list__key">First name</dt>
                 <dd class="govuk-summary-list__value">@Model.FirstName</dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/add-user?returnToCheckAnswers=true">
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId/add-user?returnToCheckAnswers=true">
                         Change<span class="govuk-visually-hidden"> first name</span>
                     </a>
                 </dd>
@@ -25,7 +25,7 @@
                 <dt class="govuk-summary-list__key">Last name</dt>
                 <dd class="govuk-summary-list__value">@Model.LastName</dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/add-user?returnToCheckAnswers=true">
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId/add-user?returnToCheckAnswers=true">
                         Change<span class="govuk-visually-hidden"> last name</span>
                     </a>
                 </dd>
@@ -34,7 +34,7 @@
                 <dt class="govuk-summary-list__key">Email address</dt>
                 <dd class="govuk-summary-list__value">@Model.Email</dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/add-user?returnToCheckAnswers=true">
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId/add-user?returnToCheckAnswers=true">
                         Change<span class="govuk-visually-hidden"> email address</span>
                     </a>
                 </dd>
@@ -43,7 +43,7 @@
                 <dt class="govuk-summary-list__key">Organisation role</dt>
                 <dd class="govuk-summary-list__value">@Model.OrganisationRole</dd>
                 <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/add-user/organisation-role?returnToCheckAnswers=true">
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId/add-user/organisation-role?returnToCheckAnswers=true">
                         Change<span class="govuk-visually-hidden"> organisation role</span>
                     </a>
                 </dd>
@@ -54,7 +54,7 @@
                     <dt class="govuk-summary-list__key">@application.ApplicationName</dt>
                     <dd class="govuk-summary-list__value">@application.RoleName</dd>
                     <dd class="govuk-summary-list__actions">
-                        <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/add-user/application-roles">
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/add-user/application-roles">
                             Change<span class="govuk-visually-hidden"> role for @application.ApplicationName</span>
                         </a>
                     </dd>
@@ -66,7 +66,7 @@
             @Html.AntiForgeryToken()
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button">Send invitation</button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
             </div>
         </form>
     </div>

@@ -7,22 +7,22 @@ namespace CO.CDP.UserManagement.App.Application.ApplicationRoles;
 public interface IApplicationRoleFlowService
 {
     Task<ChangeUserApplicationRolesViewModel?> GetUserViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         CancellationToken ct);
 
     Task<ChangeUserApplicationRolesViewModel?> GetInviteViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 
     Task<ChangeUserApplicationRolesViewModel?> GetUserViewModelWithStateAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         CancellationToken ct);
 
     Task<ChangeUserApplicationRolesViewModel?> GetInviteViewModelWithStateAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 
@@ -30,26 +30,26 @@ public interface IApplicationRoleFlowService
         ChangeApplicationRoleState state);
 
     ChangeApplicationRolesSuccessViewModel? BuildSuccessViewModel(
-        string organisationSlug,
+        Guid id,
         ChangeApplicationRoleState state);
 
     IReadOnlyList<ApplicationRoleAssignmentPostModel> BuildAssignments(
         ChangeApplicationRoleState state);
 
     Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserRolesAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         IReadOnlyList<ApplicationRoleAssignmentPostModel> assignments,
         CancellationToken ct);
 
     Task<Result<ServiceFailure, ServiceOutcome>> UpdateInviteRolesAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         IReadOnlyList<ApplicationRoleAssignmentPostModel> assignments,
         CancellationToken ct);
 
     Task<ChangeApplicationRoleState?> GetValidatedStateAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         CancellationToken ct);
@@ -57,7 +57,7 @@ public interface IApplicationRoleFlowService
     Task ClearStateAsync(CancellationToken ct = default);
 
     Task<ApplicationRoleSubmitResult> ProcessSubmitAsync(
-        string organisationSlug,
+        Guid id,
         Guid? cdpPersonId,
         Guid? inviteGuid,
         ApplicationRoleChangePostModel input,

@@ -7,8 +7,8 @@ namespace CO.CDP.UserManagement.App.Adapters;
 
 public interface IUserManagementApiAdapter
 {
-    Task<OrganisationResponse?> GetOrganisationBySlugAsync(
-        string organisationSlug, CancellationToken ct);
+    Task<OrganisationResponse?> GetOrganisationByGuidAsync(
+        Guid cdpOrganisationId, CancellationToken ct);
 
     Task<ICollection<OrganisationUserResponse>> GetUsersAsync(
         Guid organisationId, CancellationToken ct);

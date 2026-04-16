@@ -28,11 +28,6 @@ public class OrganisationService : IOrganisationService
         return await _repository.GetByIdAsync(id, cancellationToken);
     }
 
-    public async Task<CoreEntities.Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
-    {
-        return await _repository.GetBySlugAsync(slug, cancellationToken);
-    }
-
     public async Task<CoreEntities.Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
     {
         return await _repository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);

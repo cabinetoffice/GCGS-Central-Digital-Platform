@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Tests.Authorization;
 
@@ -19,11 +18,7 @@ namespace CO.CDP.UserManagement.App.Tests.Authorization;
 /// </summary>
 public abstract class AuthorizationHandlerTestBase
 {
-    protected const string TestSlug = "test-org";
     protected static readonly Guid TestOrgId = Guid.NewGuid();
-
-    protected readonly Mock<ApiClient.UserManagementClient> ApiClient =
-        new("http://localhost", new HttpClient());
 
     protected readonly Mock<ISessionManager> SessionManager = new();
 
@@ -33,7 +28,7 @@ public abstract class AuthorizationHandlerTestBase
             Id = 1,
             CdpOrganisationGuid = orgId ?? TestOrgId,
             Name = "Test Organisation",
-            Slug = TestSlug,
+            Slug = "test-org",
             IsActive = true,
             CreatedAt = DateTimeOffset.UtcNow
         };
@@ -70,11 +65,11 @@ public abstract class AuthorizationHandlerTestBase
         return handler.WriteToken(handler.CreateToken(descriptor));
     }
 
-    /// <summary>Create an HttpContext with route data for the given slug.</summary>
-    protected static HttpContext BuildHttpContext(string slug = TestSlug)
+    /// <summary>Create an HttpContext with route data for the given organisation id.</summary>
+    protected static HttpContext BuildHttpContext(Guid? organisationId = null)
     {
         var ctx = new DefaultHttpContext();
-        ctx.Request.RouteValues = new RouteValueDictionary { ["organisationSlug"] = slug };
+        ctx.Request.RouteValues = new RouteValueDictionary { ["id"] = organisationId ?? TestOrgId };
         return ctx;
     }
 

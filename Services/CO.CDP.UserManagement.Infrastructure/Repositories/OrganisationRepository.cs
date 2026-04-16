@@ -14,11 +14,6 @@ public class OrganisationRepository : Repository<CoreEntities.Organisation>, IOr
     {
     }
 
-    public async Task<CoreEntities.Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default)
-    {
-        return await DbSet.FirstOrDefaultAsync(o => o.Slug == slug, cancellationToken);
-    }
-
     public async Task<CoreEntities.Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
     {
         return await DbSet.FirstOrDefaultAsync(o => o.CdpOrganisationGuid == cdpOrganisationGuid, cancellationToken);

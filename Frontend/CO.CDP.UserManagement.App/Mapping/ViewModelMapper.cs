@@ -117,7 +117,7 @@ public static class ViewModelMapper
 
         return new(
             OrganisationName: organisation.Name,
-            OrganisationSlug: organisation.Slug,
+            OrganisationId: organisation.CdpOrganisationGuid,
             ApplicationId: app.Id,
             ApplicationSlug: app.ClientId,
             ApplicationName: app.Name,
@@ -147,7 +147,7 @@ public static class ViewModelMapper
 
         return new(
             OrganisationName: organisation.Name,
-            OrganisationSlug: organisation.Slug,
+            OrganisationId: organisation.CdpOrganisationGuid,
             ApplicationId: app.Id,
             ApplicationSlug: app.ClientId,
             ApplicationName: app.Name,

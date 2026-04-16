@@ -2,7 +2,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record EnableApplicationSuccessViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     string ApplicationName,
     string ApplicationSlug,
     string EnabledBy,
@@ -11,7 +11,7 @@ public sealed record EnableApplicationSuccessViewModel(
 {
     public static EnableApplicationSuccessViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         ApplicationName: string.Empty,
         ApplicationSlug: string.Empty,
         EnabledBy: string.Empty,

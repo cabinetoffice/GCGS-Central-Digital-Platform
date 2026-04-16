@@ -1,7 +1,7 @@
 namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record ChangeApplicationRoleState(
-    string OrganisationSlug,
+    Guid OrganisationId,
     Guid? CdpPersonId,
     Guid? InviteGuid,
     string UserDisplayName,
