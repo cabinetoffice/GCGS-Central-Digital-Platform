@@ -49,7 +49,12 @@ resource "aws_lb_listener_rule" "public_domain_fts_login_path_routing" {
 
   condition {
     path_pattern {
-      values = ["/one-login/*", "/signin-oidc*", "/signout-callback-oidc*"]
+      values = [
+        "/one-login/*",
+        "/session-timeout-keep-alive*",
+        "/signin-oidc*",
+        "/signout-callback-oidc*"
+      ]
     }
   }
 
