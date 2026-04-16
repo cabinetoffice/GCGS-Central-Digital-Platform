@@ -21,7 +21,7 @@ public class RemovalController(
         if (!validation.IsValid)
             ModelState.AddModelError(string.Empty, validation.ErrorMessage!);
 
-        return View(viewModel);
+        return View(nameof(RemoveUser), viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/remove")]
@@ -29,7 +29,9 @@ public class RemovalController(
     public async Task<IActionResult> RemoveUser(
         string organisationSlug, Guid cdpPersonId, RemoveUserViewModel input, CancellationToken ct)
     {
-        var result = await userRemovalService.ValidateAndRemoveUserAsync(organisationSlug, cdpPersonId, input.RemoveConfirmed, ct);
+        var result =
+            await userRemovalService.ValidateAndRemoveUserAsync(organisationSlug, cdpPersonId, input.RemoveConfirmed,
+                ct);
 
         if (result is UserRemovalSubmitResult.NotFound) return NotFound();
         if (result is UserRemovalSubmitResult.Cancelled)
@@ -53,7 +55,7 @@ public class RemovalController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View(viewModel);
+        return View(nameof(RemoveSuccess), viewModel);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/remove")]
@@ -129,7 +131,7 @@ public class RemovalController(
     {
         var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
             organisationSlug, cdpPersonId, clientId, ct);
-        return viewModel is null ? NotFound() : View(viewModel);
+        return viewModel is null ? NotFound() : View(nameof(RemoveApplication), viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
@@ -148,7 +150,7 @@ public class RemovalController(
         {
             var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
                 organisationSlug, cdpPersonId, clientId, ct);
-            return viewModel is null ? NotFound() : View(viewModel);
+            return viewModel is null ? NotFound() : View(nameof(RemoveApplication), viewModel);
         }
 
         var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
@@ -169,6 +171,6 @@ public class RemovalController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View(viewModel);
+        return View(nameof(RemoveApplicationSuccess), viewModel);
     }
 }

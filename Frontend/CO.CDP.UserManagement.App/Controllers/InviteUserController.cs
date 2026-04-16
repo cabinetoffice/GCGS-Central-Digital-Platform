@@ -96,7 +96,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(Add), new { organisationSlug });
         }
 
-        return View(
+        return View(nameof(OrganisationRoleStep),
             await inviteUserFlowService.GetOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
     }
 
@@ -111,7 +111,7 @@ public class InviteUserController(
         var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(organisationSlug, state, ct);
         if (viewModel is null) return NotFound();
 
-        return View(roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
+        return View(nameof(ApplicationRolesStep), roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
     }
 
     [HttpPost("add-user/application-roles")]
@@ -131,7 +131,7 @@ public class InviteUserController(
         var merged = roleSelectionMapper.MergePostedSelections(serverViewModel, input);
 
         if (!roleSelectionMapper.ValidateSelections(merged, ModelState))
-            return View(merged);
+            return View(nameof(ApplicationRolesStep), merged);
 
         var assignments = roleSelectionMapper.MapToAssignments(
             merged.Applications.Where(a => a.GiveAccess).ToList());
@@ -185,7 +185,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(ApplicationRolesStep), new { organisationSlug });
         }
 
-        return View(new InviteCheckAnswersViewModel
+        return View(nameof(CheckAnswersStep), new InviteCheckAnswersViewModel
         {
             OrganisationSlug = state.OrganisationSlug,
             FirstName = state.FirstName,
@@ -272,7 +272,7 @@ public class InviteUserController(
             return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
         }
 
-        return View(new InviteSuccessViewModel
+        return View(nameof(InviteSuccessStep), new InviteSuccessViewModel
         {
             OrganisationSlug = successState.OrganisationSlug,
             OrganisationName = successState.OrganisationName,

@@ -12,6 +12,7 @@ using CO.CDP.UserManagement.App.Application.Removal;
 using CO.CDP.UserManagement.Core.Removal;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Moq;
 
 namespace CO.CDP.UserManagement.App.Tests.Controllers;
@@ -373,7 +374,7 @@ public class InviteUserControllerTests
         var result = await _controller.OrganisationRoleStep("org");
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/OrganisationRole.cshtml");
+        viewResult.ViewName.Should().Be(nameof(InviteUserController.OrganisationRoleStep));
         viewResult.Model.Should().BeOfType<OrganisationRoleStepViewModel>()
             .Which.OrganisationSlug.Should().Be("org");
     }
@@ -417,11 +418,13 @@ public class InviteUserControllerTests
         _inviteUserFlowService.Setup(s =>
                 s.GetApplicationRolesStepAsync("org", state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+        _roleSelectionMapper.Setup(m => m.ApplyExistingSelections(viewModel, It.IsAny<IReadOnlyList<InviteApplicationAssignment>?>()))
+            .Returns(viewModel);
 
         var result = await _controller.ApplicationRolesStep("org", organisationRole: null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ApplicationRoles.cshtml");
+        viewResult.ViewName.Should().Be(nameof(InviteUserController.ApplicationRolesStep));
         viewResult.Model.Should().BeEquivalentTo(viewModel);
     }
 
@@ -445,6 +448,14 @@ public class InviteUserControllerTests
         _inviteUserFlowService.Setup(s =>
                 s.GetApplicationRolesStepAsync("org", state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+        _roleSelectionMapper.Setup(m => m.MergePostedSelections(viewModel, It.IsAny<ApplicationRolesStepPostModel>()))
+            .Returns(viewModel);
+        _roleSelectionMapper.Setup(m => m.ValidateSelections(viewModel, It.IsAny<ModelStateDictionary>()))
+            .Returns((ApplicationRolesStepViewModel _, ModelStateDictionary ms) =>
+            {
+                ms.AddModelError("applicationSelections", "Please select at least one role.");
+                return false;
+            });
 
         var result = await _controller.ApplicationRolesStepSubmit(
             "org",
@@ -453,7 +464,7 @@ public class InviteUserControllerTests
             CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ApplicationRoles.cshtml");
+        viewResult.ViewName.Should().Be(nameof(InviteUserController.ApplicationRolesStep));
         _controller.ModelState.ContainsKey("applicationSelections").Should().BeTrue();
     }
 
@@ -477,6 +488,12 @@ public class InviteUserControllerTests
         _inviteUserFlowService.Setup(s =>
                 s.GetApplicationRolesStepAsync("org", state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
+        _roleSelectionMapper.Setup(m => m.MergePostedSelections(viewModel, It.IsAny<ApplicationRolesStepPostModel>()))
+            .Returns(viewModel);
+        _roleSelectionMapper.Setup(m => m.ValidateSelections(viewModel, It.IsAny<ModelStateDictionary>()))
+            .Returns(true);
+        _roleSelectionMapper.Setup(m => m.MapToAssignments(It.IsAny<IReadOnlyList<ApplicationAccessSelectionViewModel>>()))
+            .Returns([]);
 
         var result = await _controller.ApplicationRolesStepSubmit(
             "org",
@@ -526,7 +543,7 @@ public class InviteUserControllerTests
 
         var result = await _controller.CheckAnswersStep("org", null, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/CheckAnswers.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(InviteUserController.CheckAnswersStep));
     }
 
     [Fact]
@@ -585,7 +602,7 @@ public class InviteUserControllerTests
         var result = await _controller.InviteSuccessStep("org");
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/InviteSuccess.cshtml");
+        viewResult.ViewName.Should().Be(nameof(InviteUserController.InviteSuccessStep));
         viewResult.Model.Should().BeOfType<InviteSuccessViewModel>();
     }
 
@@ -672,7 +689,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeRole("org", userId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         viewResult.Model.Should().BeOfType<ChangeUserRolePageViewModel>()
             .Which.SelectedRole.Should().Be(OrganisationRole.Admin);
     }
@@ -698,7 +715,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeRoleSubmit("org", Guid.NewGuid(), null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         viewResult.Model.Should().Be(pageVm);
     }
 
@@ -726,7 +743,7 @@ public class ChangeOrganisationRoleControllerTests
 
         var result = await _controller.ChangeRoleSubmit("org", userId, OrganisationRole.Member, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey(nameof(OrganisationRole)).Should().BeTrue();
         _organisationRoleFlowService.Verify(s => s.UpdateUserRoleAsync(
                 It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()),
@@ -756,7 +773,7 @@ public class ChangeOrganisationRoleControllerTests
 
         var result = await _controller.ChangeRoleSubmit("org", userId, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey("organisationRole").Should().BeTrue();
     }
 
@@ -875,7 +892,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeRoleSuccess("org", userId, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRoleSuccess.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRoleSuccess));
         viewResult.Model.Should().BeOfType<ChangeUserRoleSuccessViewModel>().Which.NewRole.Should()
             .Be(OrganisationRole.Owner);
     }
@@ -924,7 +941,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeInviteRole("org", inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         viewResult.Model.Should().BeOfType<ChangeUserRolePageViewModel>()
             .Which.SelectedRole.Should().Be(OrganisationRole.Member);
     }
@@ -951,7 +968,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeInviteRoleSubmit("org", inviteGuid, null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         viewResult.Model.Should().Be(pageVm);
     }
 
@@ -982,7 +999,7 @@ public class ChangeOrganisationRoleControllerTests
             await _controller.ChangeInviteRoleSubmit("org", inviteGuid, OrganisationRole.Member,
                 CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey(nameof(OrganisationRole)).Should().BeTrue();
         _organisationRoleFlowService.Verify(s => s.UpdateInviteRoleAsync(
                 It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()),
@@ -1014,7 +1031,7 @@ public class ChangeOrganisationRoleControllerTests
         var result =
             await _controller.ChangeInviteRoleSubmit("org", inviteGuid, OrganisationRole.Admin, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeRole.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey("organisationRole").Should().BeTrue();
     }
 
@@ -1100,7 +1117,7 @@ public class ChangeOrganisationRoleControllerTests
         var result = await _controller.ChangeInviteRoleSuccess("org", inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/ChangeRoleSuccess.cshtml");
+        viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRoleSuccess));
         viewResult.Model.Should().BeOfType<ChangeUserRoleSuccessViewModel>().Which.NewRole.Should()
             .Be(OrganisationRole.Member);
     }
@@ -1143,7 +1160,7 @@ public class ChangeApplicationRolesControllerTests
         var result = await _controller.ChangeApplicationRoles("org", userId, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
-        view.ViewName.Should().Be("~/Views/Users/ChangeApplicationRoles.cshtml");
+        view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         view.Model.Should().Be(viewModel);
     }
 
@@ -1208,7 +1225,7 @@ public class ChangeApplicationRolesControllerTests
         var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
-        view.ViewName.Should().Be("~/Views/Users/ChangeApplicationRoles.cshtml");
+        view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         _controller.ModelState.ContainsKey("Applications").Should().BeTrue();
     }
 
@@ -1287,7 +1304,7 @@ public class ChangeApplicationRolesControllerTests
 
         var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeApplicationRoles.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         _controller.ModelState.ContainsKey("Applications[0].SelectedRoleId").Should().BeTrue();
     }
 
@@ -1319,7 +1336,7 @@ public class ChangeApplicationRolesControllerTests
 
         var result = await _controller.ChangeApplicationRolesSubmit("org", userId, input, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("~/Views/Users/ChangeApplicationRoles.cshtml");
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         _controller.ModelState.ContainsKey("Applications").Should().BeTrue();
     }
 
@@ -1353,7 +1370,7 @@ public class ChangeApplicationRolesControllerTests
         var result = await _controller.ChangeApplicationRolesCheck("org", userId, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
-        view.ViewName.Should().Be("~/Views/Users/CheckApplicationRoles.cshtml");
+        view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesCheck));
         view.Model.Should().BeOfType<ChangeApplicationRolesCheckViewModel>()
             .Which.ChangedApplications.Should().ContainSingle(a =>
                 a.ApplicationName == "App1" && a.CurrentRoleName == "Reader" && a.NewRoleName == "Admin");
@@ -1453,7 +1470,7 @@ public class ChangeApplicationRolesControllerTests
         var result = await _controller.ChangeApplicationRolesSuccess("org", userId, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
-        view.ViewName.Should().Be("~/Views/Users/ChangeApplicationRolesSuccess.cshtml");
+        view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesSuccess));
         view.Model.Should().BeOfType<ChangeApplicationRolesSuccessViewModel>()
             .Which.UserDisplayName.Should().Be("Jane Doe");
         _applicationRoleFlowService.Verify(s => s.ClearStateAsync(It.IsAny<CancellationToken>()), Times.Once);
@@ -1973,7 +1990,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveApplication("org", cdpPersonId, "test-app", input, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
-        viewResult.ViewName.Should().Be("~/Views/Users/RemoveApplication.cshtml");
+        viewResult.ViewName.Should().Be(nameof(RemovalController.RemoveApplication));
         viewResult.Model.Should().Be(viewModel);
         _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<string>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -2026,7 +2043,7 @@ public class RemovalControllerTests
         var result = await _controller.RemoveApplicationSuccess("org", userId, "app-slug-2", CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
-        view.ViewName.Should().Be("~/Views/Users/RemoveApplicationSuccess.cshtml");
+        view.ViewName.Should().Be(nameof(RemovalController.RemoveApplicationSuccess));
         view.Model.Should().BeOfType<RemoveApplicationSuccessViewModel>()
             .Which.UserDisplayName.Should().Be("John Doe");
     }

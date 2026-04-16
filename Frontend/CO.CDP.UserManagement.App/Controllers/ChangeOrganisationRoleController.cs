@@ -18,7 +18,7 @@ public class ChangeOrganisationRoleController(
         if (viewModel is null) return NotFound();
 
         var state = await organisationRoleFlowService.GetOrCreateStateAsync(organisationSlug, cdpPersonId, null, viewModel, ct);
-        return View(await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
+        return View(nameof(ChangeRole), await organisationRoleFlowService.BuildPageViewModelAsync(viewModel, state.SelectedRole, ct));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/organisation-role/change")]
@@ -49,7 +49,7 @@ public class ChangeOrganisationRoleController(
         var state = await organisationRoleFlowService.GetValidatedStateAsync(organisationSlug, cdpPersonId, null, ct);
         if (state is null) return RedirectToAction(nameof(ChangeRole), new { organisationSlug, cdpPersonId });
 
-        return View(organisationRoleFlowService.StateToViewModel(state));
+        return View(nameof(ChangeRoleCheck), organisationRoleFlowService.StateToViewModel(state));
     }
 
     [HttpPost("user/{cdpPersonId:guid}/organisation-role/change/check")]
@@ -83,7 +83,7 @@ public class ChangeOrganisationRoleController(
             organisationSlug, cdpPersonId, null, ct);
         if (viewModel is null) return RedirectToAction(nameof(ChangeRole), new { organisationSlug, cdpPersonId });
 
-        return View(viewModel);
+        return View(nameof(ChangeRoleSuccess), viewModel);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/organisation-role/change")]
