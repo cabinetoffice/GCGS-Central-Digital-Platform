@@ -1,4 +1,5 @@
 using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Models;
 
@@ -11,7 +12,8 @@ public sealed record UsersViewModel(
     string? SelectedRole,
     string? SelectedApplication,
     string? SearchTerm,
-    int TotalCount)
+    int TotalCount,
+    IReadOnlyList<JoinRequestResponse>? PendingJoinRequests = null)
 {
     public bool HasActiveFilters =>
         !string.IsNullOrEmpty(SelectedRole) ||
@@ -27,7 +29,8 @@ public sealed record UsersViewModel(
         SelectedRole: null,
         SelectedApplication: null,
         SearchTerm: null,
-        TotalCount: 0);
+        TotalCount: 0,
+        PendingJoinRequests: null);
 }
 
 public sealed record UserSummaryViewModel(

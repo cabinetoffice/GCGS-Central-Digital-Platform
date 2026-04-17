@@ -61,6 +61,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IRoleMappingService, RoleMappingService>();
         services.AddScoped<IOrganisationPersonSyncRepository, OrganisationPersonSyncRepository>();
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
+        services.AddScoped<IJoinRequestOrchestrationService, JoinRequestOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IMembershipAuthorizationGuard, MembershipAuthorizationGuard>();
