@@ -349,17 +349,7 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
     {
         try
         {
-            var results = await _client.JoinRequestsAllAsync(organisationId, ct);
-            return results?
-                .Select(r => new JoinRequestResponse
-                {
-                    Id = r.Id,
-                    PersonId = r.PersonId,
-                    FirstName = r.FirstName,
-                    LastName = r.LastName,
-                    Email = r.Email
-                })
-                .ToList() ?? new List<JoinRequestResponse>();
+            return (await _client.JoinRequestsAllAsync(organisationId, ct)) ?? new List<JoinRequestResponse>();
         }
         catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
         {
@@ -372,10 +362,7 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
     {
         try
         {
-            var apiRequest = new ApiClient.ReviewJoinRequestRequest(
-                (ApiClient.JoinRequestDecision)(int)request.Decision,
-                request.RequestingPersonId);
-            await _client.JoinRequestsAsync(organisationId, joinRequestId, apiRequest, ct);
+            await _client.JoinRequestsAsync(organisationId, joinRequestId, request, ct);
             return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
         catch (ApiClient.ApiException ex)
