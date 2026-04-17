@@ -37,6 +37,7 @@ locals {
     "|",
     [
       "^/search/results$",
+      "^/search/.*",
       "^/notice$",
       "^/notice/.*",
     ]
@@ -48,6 +49,7 @@ locals {
       "^/notice$",
       "^/notice/.*",
       "^/search/results$",
+      "^/search/.*",
       "^/procurement/.*",
     ]
   )
