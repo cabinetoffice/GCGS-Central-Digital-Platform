@@ -23,12 +23,13 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
+    cloudfront_realtime_logs_role_arn   = "mock"
     cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
     ecs_task_arn                        = "mock"
-    ecs_task_name                       = "mock"
     ecs_task_exec_arn                   = "mock"
     ecs_task_exec_name                  = "mock"
+    ecs_task_name                       = "mock"
     service_deployer_step_function_arn  = "mock"
     service_deployer_step_function_name = "mock"
     terraform_arn                       = "mock"
@@ -159,6 +160,8 @@ inputs = {
   account_ids                       = local.global_vars.locals.account_ids
   cfs_extra_domains                 = local.global_vars.locals.cfs_extra_domains
   cfs_extra_host_headers            = local.global_vars.locals.cfs_extra_domains
+  cloudfront_downloads_enabled      = true
+  cloudfront_realtime_logs_role_arn = dependency.core_iam.outputs.cloudfront_realtime_logs_role_arn
   fts_extra_domains                 = local.global_vars.locals.fts_extra_domains
   fts_extra_host_headers            = local.global_vars.locals.fts_extra_domains
   onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
