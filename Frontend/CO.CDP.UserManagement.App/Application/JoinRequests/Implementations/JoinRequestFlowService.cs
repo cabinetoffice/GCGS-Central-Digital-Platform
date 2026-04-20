@@ -41,6 +41,10 @@ public class JoinRequestFlowService(IUserManagementApiAdapter adapter) : IJoinRe
         var org = await adapter.GetOrganisationByGuidAsync(organisationId, ct);
         if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
+        var joinRequests = await adapter.GetJoinRequestsAsync(org.CdpOrganisationGuid, ct);
+        var request = joinRequests.FirstOrDefault(r => r.Id == joinRequestId && r.PersonId == personId);
+        if (request is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
         return await adapter.ReviewJoinRequestAsync(
             org.CdpOrganisationGuid,
             joinRequestId,
@@ -56,6 +60,10 @@ public class JoinRequestFlowService(IUserManagementApiAdapter adapter) : IJoinRe
     {
         var org = await adapter.GetOrganisationByGuidAsync(organisationId, ct);
         if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+
+        var joinRequests = await adapter.GetJoinRequestsAsync(org.CdpOrganisationGuid, ct);
+        var request = joinRequests.FirstOrDefault(r => r.Id == joinRequestId && r.PersonId == personId);
+        if (request is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
         return await adapter.ReviewJoinRequestAsync(
             org.CdpOrganisationGuid,
