@@ -1,6 +1,6 @@
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Requests;
 
@@ -11,7 +11,8 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
         private readonly IUserManagementApiAdapter _adapter;
         private readonly IOrganisationRoleService _organisationRoleService;
 
-        public InviteUserFlowService(IUserManagementApiAdapter adapter, IOrganisationRoleService organisationRoleService)
+        public InviteUserFlowService(IUserManagementApiAdapter adapter,
+            IOrganisationRoleService organisationRoleService)
         {
             _adapter = adapter;
             _organisationRoleService = organisationRoleService;
@@ -152,13 +153,22 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
         }
 
 
-        public async Task<Result<ServiceFailure, ServiceOutcome>> ResendInviteAsync(Guid id,
+        public async Task<Result<ServiceFailure, ResendInviteResult>> ResendInviteAsync(Guid id,
             Guid inviteGuid, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
-            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+            if (org is null)
+                return Result<ServiceFailure, ResendInviteResult>.Success(
+                    new ResendInviteResult(ServiceOutcome.NotFound));
 
-            return await _adapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            var inviteeName = invite is null ? null : $"{invite.FirstName} {invite.LastName}".Trim();
+
+            var result = await _adapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            return result.Match<Result<ServiceFailure, ResendInviteResult>>(
+                Result<ServiceFailure, ResendInviteResult>.Failure,
+                outcome =>
+                    Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(outcome, inviteeName)));
         }
 
         public async Task<OrganisationRoleStepViewModel> GetOrganisationRoleStepViewModelAsync(

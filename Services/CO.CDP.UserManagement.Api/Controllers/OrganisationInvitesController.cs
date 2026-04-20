@@ -19,11 +19,11 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [Authorize(Policy = PolicyNames.OrganisationAdmin)]
 public class OrganisationInvitesController : ControllerBase
 {
-    private readonly IUmOrganisationRepository _organisationRepository;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IInviteOrchestrationService _inviteOrchestrationService;
     private readonly IInviteRoleMappingRepository _inviteRoleMappingRepository;
     private readonly IOrganisationApiAdapter _organisationApiAdapter;
-    private readonly IInviteOrchestrationService _inviteOrchestrationService;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly IUmOrganisationRepository _organisationRepository;
 
     public OrganisationInvitesController(
         IUmOrganisationRepository organisationRepository,
@@ -71,29 +71,30 @@ public class OrganisationInvitesController : ControllerBase
             var oiInviteById = oiInvites.ToDictionary(i => i.Id);
 
             var responses = from mapping in mappings
-                            where oiInviteById.ContainsKey(mapping.CdpPersonInviteGuid)
-                            let oiInvite = oiInviteById[mapping.CdpPersonInviteGuid]
-                            select new PendingOrganisationInviteResponse
-                            {
-                                PendingInviteId = mapping.Id,
-                                OrganisationId = mapping.OrganisationId,
-                                CdpPersonInviteGuid = oiInvite.Id,
-                                Email = oiInvite.Email,
-                                FirstName = oiInvite.FirstName,
-                                LastName = oiInvite.LastName,
-                                OrganisationRole = mapping.OrganisationRole,
-                                Status = UserStatus.Pending,
-                                InvitedBy = mapping.CreatedBy,
-                                ExpiresOn = oiInvite.ExpiresOn,
-                                CreatedAt = oiInvite.CreatedOn ?? mapping.CreatedAt,
-                                ApplicationAssignments = mapping.ApplicationAssignments.Select(a => new InviteApplicationAssignmentResponse
-                                {
-                                    OrganisationApplicationId = a.OrganisationApplicationId,
-                                    ApplicationId = a.OrganisationApplication?.ApplicationId,
-                                    ApplicationName = a.OrganisationApplication?.Application?.Name ?? string.Empty,
-                                    ApplicationRoleId = a.ApplicationRoleId
-                                })
-                            };
+                where oiInviteById.ContainsKey(mapping.CdpPersonInviteGuid)
+                let oiInvite = oiInviteById[mapping.CdpPersonInviteGuid]
+                select new PendingOrganisationInviteResponse
+                {
+                    PendingInviteId = mapping.Id,
+                    OrganisationId = mapping.OrganisationId,
+                    CdpPersonInviteGuid = oiInvite.Id,
+                    Email = oiInvite.Email,
+                    FirstName = oiInvite.FirstName,
+                    LastName = oiInvite.LastName,
+                    OrganisationRole = mapping.OrganisationRole,
+                    Status = UserStatus.Pending,
+                    InvitedBy = mapping.CreatedBy,
+                    ExpiresOn = oiInvite.ExpiresOn,
+                    CreatedAt = oiInvite.CreatedOn ?? mapping.CreatedAt,
+                    ApplicationAssignments = mapping.ApplicationAssignments.Select(a =>
+                        new InviteApplicationAssignmentResponse
+                        {
+                            OrganisationApplicationId = a.OrganisationApplicationId,
+                            ApplicationId = a.OrganisationApplication?.ApplicationId,
+                            ApplicationName = a.OrganisationApplication?.Application?.Name ?? string.Empty,
+                            ApplicationRoleId = a.ApplicationRoleId
+                        })
+                };
 
             return Ok(responses.ToList());
         }
@@ -202,5 +203,26 @@ public class OrganisationInvitesController : ControllerBase
             return NotFound(new ErrorResponse { Message = ex.Message });
         }
     }
-}
 
+    /// <summary>
+    /// Resends a pending invite, extending its lifespan and re-sending the notification email.
+    /// </summary>
+    [HttpPost("{inviteId:int}/resend")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> ResendInvite(
+        Guid cdpOrganisationId,
+        int inviteId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _inviteOrchestrationService.ResendInviteAsync(cdpOrganisationId, inviteId, cancellationToken);
+            return NoContent();
+        }
+        catch (EntityNotFoundException ex)
+        {
+            return NotFound(new ErrorResponse { Message = ex.Message });
+        }
+    }
+}

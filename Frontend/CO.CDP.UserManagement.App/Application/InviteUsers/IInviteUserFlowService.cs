@@ -31,7 +31,7 @@ public interface IInviteUserFlowService
         InviteUserState state,
         CancellationToken ct);
 
-    Task<Result<ServiceFailure, ServiceOutcome>> ResendInviteAsync(
+    Task<Result<ServiceFailure, ResendInviteResult>> ResendInviteAsync(
         Guid id,
         Guid inviteGuid,
         CancellationToken ct);
