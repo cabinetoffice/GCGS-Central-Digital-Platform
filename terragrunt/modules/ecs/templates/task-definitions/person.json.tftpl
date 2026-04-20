@@ -30,7 +30,11 @@
         { "name" : "OrganisationInformationDatabase__Server", "value" : "${db_address}"},
         { "name" : "Organisation__Authority", "value" : "${use_internal_service_urls ? internal_service_urls["authority"] : public_service_urls["authority"]}"},
         { "name" : "UserManagementDatabase__Database", "value" : "${db_name}"},
-        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"}
+        { "name" : "UserManagementDatabase__Server", "value" : "${db_address}"},
+        { "name" : "Aws__OutboxQueues__0__QueueUrl", "value" : "${queue_organisation_url}"},
+        { "name" : "Aws__OutboxQueues__0__MessageGroupId", "value" : "Organisation"},
+        { "name" : "Aws__OutboxQueues__1__QueueUrl", "value" : "${queue_user_management_url}"},
+        { "name" : "Aws__OutboxQueues__1__MessageGroupId", "value" : "UserManagement"}
     ],
     "secrets": [
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
