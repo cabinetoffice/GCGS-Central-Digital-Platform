@@ -9,7 +9,8 @@ namespace CO.CDP.UserManagement.App.Controllers;
 public class InviteUserController(
     IInviteUserFlowService inviteUserFlowService,
     IInviteUserStateStore inviteUserStateStore,
-    IApplicationRoleSelectionMapper roleSelectionMapper) : UsersBaseController
+    IApplicationRoleSelectionMapper roleSelectionMapper,
+    ILogger<InviteUserController> logger) : UsersBaseController
 {
     [HttpGet("add-user")]
     public async Task<IActionResult> Add(Guid id, bool returnToCheckAnswers = false,
@@ -108,7 +109,8 @@ public class InviteUserController(
         var viewModel = await inviteUserFlowService.GetApplicationRolesStepAsync(id, state, ct);
         if (viewModel is null) return NotFound();
 
-        return View(nameof(ApplicationRolesStep), roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
+        return View(nameof(ApplicationRolesStep),
+            roleSelectionMapper.ApplyExistingSelections(viewModel, state.ApplicationAssignments));
     }
 
     [HttpPost("add-user/application-roles")]
@@ -240,7 +242,7 @@ public class InviteUserController(
 
         var success = await inviteUserFlowService.InviteAsync(id, state, ct);
         if (success.IsFailure) return Redirect("/error");
-        if (success.Match(_ => false, outcome => outcome == CO.CDP.UserManagement.App.Services.ServiceOutcome.NotFound))
+        if (success.Match(_ => false, outcome => outcome == ServiceOutcome.NotFound))
             return NotFound();
 
         await inviteUserStateStore.SetSuccessAsync(new InviteSuccessState
@@ -281,15 +283,38 @@ public class InviteUserController(
         });
     }
 
-    [HttpGet("invites/{inviteGuid:guid}/resend-invite")]
+    [HttpPost("invites/{inviteGuid:guid}/resend-invite")]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResendInvite(Guid id, Guid inviteGuid, CancellationToken ct)
     {
-        var success = await inviteUserFlowService.ResendInviteAsync(id, inviteGuid, ct);
-        return success.Match<IActionResult>(
-            _ => Redirect("/error"),
-            outcome => outcome == CO.CDP.UserManagement.App.Services.ServiceOutcome.NotFound
-                ? NotFound()
-                : RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id })!);
-    }
+        var cooldown = TimeSpan.FromMinutes(1);
 
+        if (!ResendCooldown.IsAllowed(HttpContext.Session, inviteGuid, cooldown))
+        {
+            logger.LogInformation(
+                "Invite resend blocked by cooldown. OrganisationId={OrganisationId} InviteGuid={InviteGuid}", id,
+                inviteGuid);
+            TempData["InfoBanner"] = "Invite already resent. Please wait a minute before resending again.";
+            return RedirectToAction(nameof(UserDetailsController.InviteDetails), "UserDetails", new { id, inviteGuid });
+        }
+
+        var result = await inviteUserFlowService.ResendInviteAsync(id, inviteGuid, ct);
+        return await result.MatchAsync<IActionResult>(
+            _ => Task.FromResult<IActionResult>(Redirect("/error")),
+            async outcome =>
+            {
+                if (outcome.Outcome == ServiceOutcome.NotFound)
+                    return NotFound();
+
+                ResendCooldown.Record(HttpContext.Session, inviteGuid);
+                logger.LogInformation(
+                    "Invite resent successfully. OrganisationId={OrganisationId} InviteGuid={InviteGuid}", id,
+                    inviteGuid);
+
+                var name = string.IsNullOrWhiteSpace(outcome.InviteeName) ? "the user" : outcome.InviteeName;
+                TempData["SuccessBanner"] = $"Invite resent to {name}.";
+                return await Task.FromResult<IActionResult>(
+                    RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id }));
+            });
+    }
 }

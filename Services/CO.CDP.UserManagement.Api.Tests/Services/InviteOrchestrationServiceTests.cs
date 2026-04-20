@@ -9,20 +9,21 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
+using InvalidOperationException = CO.CDP.UserManagement.Core.Exceptions.InvalidOperationException;
 
 namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class InviteOrchestrationServiceTests
 {
-    private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
+    private readonly Mock<IAtomicMembershipSync> _atomicMembershipSyncMock;
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapterMock;
+    private readonly Mock<IOrganisationRepository> _organisationRepositoryMock;
     private readonly Mock<IPersonApiAdapter> _personLookupServiceMock;
-    private readonly Mock<IAtomicMembershipSync> _atomicMembershipSyncMock;
-    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
     private readonly Mock<IRoleMappingService> _roleMappingServiceMock;
     private readonly InviteOrchestrationService _service;
+    private readonly Mock<IUnitOfWork> _unitOfWorkMock;
 
     public InviteOrchestrationServiceTests()
     {
@@ -37,7 +38,8 @@ public class InviteOrchestrationServiceTests
         var loggerMock = new Mock<ILogger<InviteOrchestrationService>>();
 
         _membershipRepositoryMock
-            .Setup(r => r.ExistsByPersonIdAndOrganisationAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.ExistsByPersonIdAndOrganisationAsync(It.IsAny<Guid>(), It.IsAny<int>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
         _personLookupServiceMock
@@ -45,7 +47,8 @@ public class InviteOrchestrationServiceTests
             .ReturnsAsync((PersonDetails?)null);
 
         _atomicMembershipSyncMock
-            .Setup(s => s.AcceptInviteAsync(It.IsAny<Guid>(), It.IsAny<int>(), It.IsAny<AcceptOrganisationInviteRequest>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.AcceptInviteAsync(It.IsAny<Guid>(), It.IsAny<int>(),
+                It.IsAny<AcceptOrganisationInviteRequest>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         _roleMappingServiceMock
@@ -53,7 +56,8 @@ public class InviteOrchestrationServiceTests
             .ReturnsAsync(new List<string>());
 
         _roleMappingServiceMock
-            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<InviteRoleMapping>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<InviteRoleMapping>(), It.IsAny<OrganisationRole>(),
+                It.IsAny<CancellationToken>()))
             .Returns<InviteRoleMapping, OrganisationRole, CancellationToken>((m, role, _) =>
             {
                 m.OrganisationRoleId = (int)role;
@@ -61,7 +65,8 @@ public class InviteOrchestrationServiceTests
             });
 
         _roleMappingServiceMock
-            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()))
+            .Setup(r => r.ApplyRoleDefinitionAsync(It.IsAny<UserOrganisationMembership>(), It.IsAny<OrganisationRole>(),
+                It.IsAny<CancellationToken>()))
             .Returns<UserOrganisationMembership, OrganisationRole, CancellationToken>((m, role, _) =>
             {
                 m.OrganisationRoleId = (int)role;
@@ -198,7 +203,7 @@ public class InviteOrchestrationServiceTests
 
         var act = () => _service.InviteUserAsync(cdpOrgGuid, request, "test-user");
 
-        var exception = await act.Should().ThrowAsync<CO.CDP.UserManagement.Core.Exceptions.InvalidOperationException>();
+        var exception = await act.Should().ThrowAsync<InvalidOperationException>();
         exception.WithMessage($"*{organisation.Id}*{organisation.CdpOrganisationGuid}*");
         exception.And.InnerException.Should().BeOfType<HttpRequestException>();
 
@@ -478,5 +483,94 @@ public class InviteOrchestrationServiceTests
         var act = () => _service.AcceptInviteAsync(cdpOrgGuid, 1, request);
 
         await act.Should().ThrowAsync<DuplicateEntityException>();
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WithValidMapping_CallsAdapterWithPreservedGuid()
+    {
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpInviteGuid = Guid.NewGuid();
+        var organisation = new CoreOrganisation
+        {
+            Id = 1,
+            CdpOrganisationGuid = cdpOrgGuid,
+            Name = "Test Org",
+            Slug = "test-org"
+        };
+        var mapping = new InviteRoleMapping
+        {
+            Id = 5,
+            OrganisationId = organisation.Id,
+            CdpPersonInviteGuid = cdpInviteGuid,
+            CreatedBy = "inviter"
+        };
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
+            .ReturnsAsync(organisation);
+        _inviteRoleMappingRepositoryMock
+            .Setup(r => r.GetByIdAsync(5, default))
+            .ReturnsAsync(mapping);
+
+        await _service.ResendInviteAsync(cdpOrgGuid, 5);
+
+        _organisationApiAdapterMock.Verify(
+            a => a.ResendPersonInviteAsync(cdpOrgGuid, cdpInviteGuid, It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WhenMappingNotFound_ThrowsEntityNotFoundException()
+    {
+        var cdpOrgGuid = Guid.NewGuid();
+        var organisation = new CoreOrganisation
+        {
+            Id = 1,
+            CdpOrganisationGuid = cdpOrgGuid,
+            Name = "Test Org",
+            Slug = "test-org"
+        };
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
+            .ReturnsAsync(organisation);
+        _inviteRoleMappingRepositoryMock
+            .Setup(r => r.GetByIdAsync(99, default))
+            .ReturnsAsync((InviteRoleMapping?)null);
+
+        var act = () => _service.ResendInviteAsync(cdpOrgGuid, 99);
+
+        await act.Should().ThrowAsync<EntityNotFoundException>();
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WhenMappingBelongsToDifferentOrg_ThrowsEntityNotFoundException()
+    {
+        var cdpOrgGuid = Guid.NewGuid();
+        var organisation = new CoreOrganisation
+        {
+            Id = 1,
+            CdpOrganisationGuid = cdpOrgGuid,
+            Name = "Test Org",
+            Slug = "test-org"
+        };
+        var mapping = new InviteRoleMapping
+        {
+            Id = 5,
+            OrganisationId = 999,
+            CdpPersonInviteGuid = Guid.NewGuid(),
+            CreatedBy = "inviter"
+        };
+
+        _organisationRepositoryMock
+            .Setup(r => r.GetByCdpGuidAsync(cdpOrgGuid, default))
+            .ReturnsAsync(organisation);
+        _inviteRoleMappingRepositoryMock
+            .Setup(r => r.GetByIdAsync(5, default))
+            .ReturnsAsync(mapping);
+
+        var act = () => _service.ResendInviteAsync(cdpOrgGuid, 5);
+
+        await act.Should().ThrowAsync<EntityNotFoundException>();
     }
 }
