@@ -1,4 +1,7 @@
+using CO.CDP.UserManagement.Core;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Models;
+using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
@@ -51,4 +54,10 @@ public class CurrentUserService : ICurrentUserService
     {
         return GetUserPrincipalId();
     }
+
+    public UserClaims? GetCdpClaims() =>
+        _httpContextAccessor.HttpContext?.User.GetCdpClaims();
+
+    public OrganisationRole? GetOrganisationRole(Guid organisationId) =>
+        _httpContextAccessor.HttpContext?.User.GetOrganisationRole(organisationId);
 }

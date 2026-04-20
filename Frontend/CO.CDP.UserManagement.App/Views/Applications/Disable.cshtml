@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug" class="govuk-back-link">Back to application</a>
+    <a href="/organisation/@Model.OrganisationId/applications/@Model.ApplicationSlug" class="govuk-back-link">Back to application</a>
 }
 
 <div class="govuk-grid-row">
@@ -20,7 +20,7 @@
                 This application is enabled for everyone and cannot be disabled.
             </div>
             <p class="govuk-body">
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug">Back to application details</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId/applications/@Model.ApplicationSlug">Back to application details</a>
             </p>
         }
         else
@@ -102,7 +102,7 @@
             <div class="govuk-button-group">
                 <button class="govuk-button govuk-button--warning" data-module="govuk-button">Disable application
                 </button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug">Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId/applications/@Model.ApplicationSlug">Cancel</a>
             </div>
         </form>
         }

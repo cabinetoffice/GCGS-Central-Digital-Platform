@@ -65,26 +65,6 @@ public class OrganisationsController : ControllerBase
     }
 
     /// <summary>
-    /// Gets an organisation by slug.
-    /// </summary>
-    /// <param name="slug">The organisation slug.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The organisation if found.</returns>
-    [HttpGet("by-slug/{slug}")]
-    [ProducesResponseType(typeof(OrganisationResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrganisationResponse>> GetBySlug(string slug, CancellationToken cancellationToken)
-    {
-        var organisation = await _organisationService.GetBySlugAsync(slug, cancellationToken);
-        if (organisation == null)
-        {
-            return NotFound(new ErrorResponse { Message = $"Organisation with slug '{slug}' not found." });
-        }
-
-        return Ok(organisation.ToResponse());
-    }
-
-    /// <summary>
     /// Gets an organisation by CDP organisation GUID.
     /// </summary>
     /// <param name="cdpGuid">The CDP organisation GUID.</param>

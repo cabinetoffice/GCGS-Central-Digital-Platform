@@ -19,17 +19,41 @@ locals {
   }
 
   payments_records = {
-    oechestrator = null
-    development = null
+    oechestrator = {}
+    development = {}
     staging     = {
-      name              = "payments"
-      records           = ["cdp-payments-alb-staging-1243004017.eu-west-2.elb.amazonaws.com"]
-      lb_zone_id        = "ZHURV8PSTC4K8"
-      validator_name    = "_52736daa2f84679208a08c42f427e677.payments.staging.supplier-information.find-tender.service.gov.uk."
-      validator_records = ["_aa597b611a8bfdf011f6b2328f946e8f.jkddzztszm.acm-validations.aws."]
+      payments = {
+        name              = "payments"
+        records           = ["cdp-payments-alb-staging-1243004017.eu-west-2.elb.amazonaws.com"]
+        lb_zone_id        = "ZHURV8PSTC4K8"
+        validator_name    = "_52736daa2f84679208a08c42f427e677.payments.staging.supplier-information.find-tender.service.gov.uk."
+        validator_records = ["_aa597b611a8bfdf011f6b2328f946e8f.jkddzztszm.acm-validations.aws."]
+      }
     }
-    integration = null
-    production = null
+    integration = {}
+    production = {
+      publish_payments = {
+        name              = "publish-payments"
+        records           = ["cdp-payments-alb-prod-764539923.eu-west-2.elb.amazonaws.com"]
+        lb_zone_id        = "ZHURV8PSTC4K8"
+        validator_name    = "_b31383e3f63455a38308c3fd1b5ae823.publish-payments.supplier-information.find-tender.service.gov.uk."
+        validator_records = ["_0689d01b5b6e22864b5a788204e3a81c.jkddzztszm.acm-validations.aws."]
+      }
+      payments_api = {
+        name              = "payments-api"
+        records           = ["cdp-payments-alb-prod-764539923.eu-west-2.elb.amazonaws.com"]
+        lb_zone_id        = "ZHURV8PSTC4K8"
+        validator_name    = "_6ddecfa4d447c2cb8e93f33a3f5accad.payments-api.supplier-information.find-tender.service.gov.uk."
+        validator_records = ["_7628fb71a53e0f4a2b4cd2e81a106250.jkddzztszm.acm-validations.aws."]
+      }
+      payments_transparency_register = {
+        name              = "payments-transparency-register"
+        records           = ["cdp-payments-alb-prod-764539923.eu-west-2.elb.amazonaws.com"]
+        lb_zone_id        = "ZHURV8PSTC4K8"
+        validator_name    = "_5b06e0b6511ee7d227fd18c99fcd851a.payments-transparency-register.supplier-information.find-tender.service.gov.uk."
+        validator_records = ["_20c8d7ccf1b9c7ed45bcc82a1c74ebca.jkddzztszm.acm-validations.aws."]
+      }
+    }
   }
 
   docs_records = {

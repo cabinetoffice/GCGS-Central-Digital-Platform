@@ -1,3 +1,5 @@
+using CO.CDP.UserManagement.Shared.Enums;
+
 namespace CO.CDP.UserManagement.Core.Models;
 
 /// <summary>
@@ -14,6 +16,18 @@ public record UserClaims
     /// Gets the collection of organisations for the user.
     /// </summary>
     public ICollection<OrganisationMembershipClaim> Organisations { get; init; } = new List<OrganisationMembershipClaim>();
+
+    /// <summary>
+    /// Resolves the user's role in the specified organisation from the claims.
+    /// </summary>
+    /// <returns>The parsed OrganisationRole, or null if the user is not a member of the organisation or the role is unrecognised.</returns>
+    public OrganisationRole? GetOrganisationRole(Guid organisationId)
+    {
+        var org = Organisations.FirstOrDefault(o => o.OrganisationId == organisationId);
+        if (org is null) return null;
+        return Enum.TryParse<OrganisationRole>(org.OrganisationRole, ignoreCase: true, out var parsed)
+            ? parsed : null;
+    }
 }
 
 /// <summary>

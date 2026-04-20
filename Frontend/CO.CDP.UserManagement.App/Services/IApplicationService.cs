@@ -5,42 +5,42 @@ namespace CO.CDP.UserManagement.App.Services;
 
 public interface IApplicationService
 {
-    Task<HomeViewModel?> GetHomeViewModelAsync(string organisationSlug, CancellationToken ct = default);
+    Task<HomeViewModel?> GetHomeViewModelAsync(Guid id, CancellationToken ct = default);
 
     Task<ApplicationsViewModel?> GetApplicationsViewModelAsync(
-        string organisationSlug,
+        Guid id,
         string? selectedCategory = null,
         string? selectedStatus = null,
         string? searchTerm = null,
         CancellationToken ct = default);
 
     Task<EnableApplicationViewModel?> GetEnableApplicationViewModelAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 
     Task<Result<ServiceFailure, ServiceOutcome>> EnableApplicationAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 
     Task<EnableApplicationSuccessViewModel?> GetEnableSuccessViewModelAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 
     Task<ApplicationDetailsViewModel?> GetApplicationDetailsViewModelAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 
     Task<DisableApplicationViewModel?> GetDisableApplicationViewModelAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 
     Task<Result<ServiceFailure, ServiceOutcome>> DisableApplicationAsync(
-        string organisationSlug,
+        Guid id,
         string applicationSlug,
         CancellationToken ct = default);
 }

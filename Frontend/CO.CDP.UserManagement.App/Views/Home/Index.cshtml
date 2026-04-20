@@ -70,7 +70,7 @@
 <h2 class="govuk-heading-l govuk-!-margin-top-8">Enabled applications</h2>
 
 @{
-    var organisationSlug = ViewContext.RouteData.Values["organisationSlug"]?.ToString() ?? "";
+    var organisationId = ViewContext.RouteData.Values["id"]?.ToString() ?? "";
 }
 
 @if (Model.EnabledApplications.Count == 0)
@@ -78,7 +78,7 @@
     <div class="govuk-inset-text">
         <p>No applications are currently enabled for your organisation.</p>
         <p>
-            <a href="/organisation/@organisationSlug/applications" class="govuk-link">Browse and enable applications</a>
+            <a href="/organisation/@organisationId/applications" class="govuk-link">Browse and enable applications</a>
         </p>
     </div>
 }
@@ -89,7 +89,7 @@ else
         <div class="govuk-summary-card govuk-!-margin-bottom-6">
             <div class="govuk-summary-card__title-wrapper">
                 <h3 class="govuk-summary-card__title">
-                    <a href="/organisation/@organisationSlug/applications/@app.Slug" class="govuk-link">@app.Name</a>
+                    <a href="/organisation/@organisationId/applications/@app.Slug" class="govuk-link">@app.Name</a>
                 </h3>
                 <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
@@ -113,13 +113,13 @@ else
                     </div>
                 </dl>
                 <p class="govuk-body">
-                    <a href="/organisation/@organisationSlug/applications/@app.Slug/users" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
-                    <a href="/organisation/@organisationSlug/applications/@app.Slug" class="govuk-link">View details</a>
+                    <a href="/organisation/@organisationId/applications/@app.Slug/users" class="govuk-link govuk-!-margin-right-4">Manage user access</a>
+                    <a href="/organisation/@organisationId/applications/@app.Slug" class="govuk-link">View details</a>
                 </p>
             </div>
         </div>
     }
     <p class="govuk-body govuk-!-margin-top-6">
-        <a href="/organisation/@organisationSlug/applications" class="govuk-link">View all available applications</a>
+        <a href="/organisation/@organisationId/applications" class="govuk-link">View all available applications</a>
     </p>
 }

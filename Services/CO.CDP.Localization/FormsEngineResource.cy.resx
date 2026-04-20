@@ -1279,9 +1279,44 @@
   <data name="CarbonNetZero_01_Description" xml:space="preserve">
     <value>&lt;p class="govuk-body"&gt;
       Carbon Sero Net yw'r ymrwymiad i gydbwyso allyriadau nwyon tŷ gwydr â symiau cyfatebol a ddilëir erbyn 2050. Efallai y bydd angen i sefydliadau sydd o fewn y cwmpas gyflwyno Cynllun Lleihau Carbon wrth gynnig am gontractau penodol gan y llywodraeth. &lt;/p&gt; &lt;p class="govuk-body"&gt;
-      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso. &lt;/p&gt; &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch &lt;/h2&gt; &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys: &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol wedi'i gymhwyso. &lt;/p&gt;
+      &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch &lt;/h2&gt; &lt;div class="govuk-body"&gt;Bydd angen i chi ddarparu gwybodaeth am eich Cynllun Lleihau Carbon. Gall hyn gynnwys: &lt;ul class="govuk-list govuk-list--bullet"&gt;
         &lt;li class="govuk-!-margin-top-2"&gt; y dyddiad y daw eich Cynllun Lleihau Carbon i ben&lt;/li&gt;
-        &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;  &lt;li class="govuk-!-margin-top-2"&gt; eich data blwyddyn sylfaen a blwyddyn adrodd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; eich Datganiad Allyriadau&lt;/li&gt;
+        &lt;li class="govuk-!-margin-top-2"&gt; eich llinell sylfaen a data blwyddyn adrodd&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;
+    </value>
+  </data>
+  <data name="DataProtection_01_Description" xml:space="preserve">
+    <value>
+    &lt;p class="govuk-body"&gt;
+      Mae diogelu data yn ymwneud â diogelu data personol rhag cael eu camddefnyddio, eu colli neu fynediad anawdurdodedig. Mae'r modiwl hwn yn canolbwyntio ar gydymffurfio â chyfreithiau diogelu data (fel GDPR) a sut mae cyflenwr yn rheoli, yn storio ac yn prosesu gwybodaeth bersonol.
+    &lt;/p&gt;
+    &lt;p class="govuk-body"&gt;
+      Dim ond os bydd yr awdurdod contractio rydych yn gwneud cynnig iddo yn gofyn i chi wneud hynny y bydd angen i chi gwblhau'r modiwl hwn. Gall methu â chwblhau'r modiwl hwn arwain at ystyried bod eich tendrau yn annigonol lle mae polisi cyfredol yn gymwys.
+    &lt;/p&gt;
+    &lt;h2 class="govuk-heading-m"&gt;Y wybodaeth y bydd ei hangen arnoch&lt;/h2&gt;
+    &lt;div class="govuk-body"&gt;
+      Bydd angen i chi ddarparu gwybodaeth am ddiogelu data o fewn eich sefydliad. Gall hyn gynnwys eich:
+    &lt;/div&gt;
+    &lt;ul class="govuk-list govuk-list--bullet"&gt;
+      &lt;li&gt;cadarnhad adnoddau&lt;/li&gt;
+      &lt;li&gt;cyfleusterau  a'r mesurau sydd ar waith i sicrhau cydymffurfedd â chyfreithiau diogelu data. &lt;/li&gt;
+    &lt;/ul&gt;
+    </value>
+  </data>
+  <data name="DataProtection_04_Description" xml:space="preserve">
+    <value>
+      &lt;div class=&quot;govuk-body govuk-!-margin-top-2&quot;&gt;Rhowch fanylion am y cyfleusterau a'r mesurau technegol (gan gynnwys systemau a phrosesau) sydd ar waith gennych, neu a fydd ar waith erbyn i'r contract gael ei ddyfarnu, er mwyn sicrhau cydymffurfedd â chyfreithiau diogelu data'r DU ac i sicrhau y caiff hawliau testunau data eu diogelu.  Dylai eich ymateb gynnwys cyfleusterau a mesurau ar gyfer gwneud y canlynol, ymhlith pethau eraill:&lt;/div&gt;
+      &lt;div class=&quot;govuk-body&quot;&gt;
+        &lt;ul class=&quot;govuk-list govuk-list--bullet&quot;&gt;
+          &lt;li&gt;sicrhau cyfrinachedd, uniondeb, argaeledd a gwydnwch parhaus systemau a gwasanaethau prosesu;&lt;/li&gt;
+          &lt;li&gt;cydymffurfio â hawliau testunau data mewn perthynas â chael gwybodaeth am breifatrwydd ac i gael gafael ar ddata personol, eu cywiro, eu dileu a'u trosglwyddo;&lt;/li&gt;
+          &lt;li&gt;sicrhau bod unrhyw waith prosesu yn seiliedig ar gydsyniad yn cyrraedd safonau cydsyniad gweithredol ar sail gwybodaeth, a bod cydsyniadau o'r fath yn cael eu cofnodi ac yn archwiliadwy; &lt;/li&gt;
+          &lt;li&gt;sicrhau bod mesurau diogelu cyfreithiol ar waith i gyfreithloni prosesau i drosglwyddo data personol y tu allan i'r DU (os bydd trosglwyddiadau o'r fath yn mynd rhagddynt);&lt;/li&gt;
+          &lt;li&gt;cadw cofnodion o weithgareddau prosesu data personol; a phrofi, asesu a gwerthuso effeithiolrwydd y mesurau uchod yn rheolaidd.&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/div&gt;
+      &lt;p class="govuk-hint"&gt;Os hoffech ddarparu'r wybodaeth hon ar ffurf dogfen, rhowch “ddim yn gymwys” isod ac ewch ymlaen i'r cwestiwn nesaf.&lt;/p&gt;
     </value>
   </data>
 </root>

@@ -46,6 +46,8 @@ data "aws_iam_policy_document" "terraform_global" {
       "acm:AddTagsToCertificate",
       "acm:DeleteCertificate",
       "acm:DescribeCertificate",
+      "acm:ImportCertificate",
+      "acm:ListCertificates",
       "acm:ListTagsForCertificate",
       "acm:RequestCertificate",
       "iam:PassRole",
@@ -87,25 +89,6 @@ data "aws_iam_policy_document" "terraform_global" {
       "*"
     ]
     sid = "ManageKms"
-  }
-
-  statement {
-    actions = [
-      "cloudfront:CreateDistribution",
-      "cloudfront:DeleteDistribution",
-      "cloudfront:GetDistribution",
-      "cloudfront:GetDistributionConfig",
-      "cloudfront:ListDistributions",
-      "cloudfront:ListTagsForResource",
-      "cloudfront:TagResource",
-      "cloudfront:UntagResource",
-      "cloudfront:UpdateDistribution",
-    ]
-    effect = "Allow"
-    resources = [
-      "*"
-    ]
-    sid = "ManageCloudfront"
   }
 
   statement {
@@ -297,47 +280,6 @@ data "aws_iam_policy_document" "terraform_global" {
       "arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
     ]
     sid = "ManageStateMachines"
-  }
-
-  statement {
-    actions = [
-      "wafv2:CreateWebACL",
-      "wafv2:GetWebACLForResource",
-      "wafv2:UpdateWebACL",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
-      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/*/*",
-    ]
-    sid = "ManageWAF"
-  }
-
-  statement {
-    actions = [
-      "wafv2:DeleteLoggingConfiguration",
-      "wafv2:PutLoggingConfiguration",
-    ]
-    effect = "Allow"
-    resources = [
-      "*",
-    ]
-    sid = "ManageWAFLoggingConfigurationAPI"
-  }
-
-  statement {
-    actions = [
-      "logs:CreateLogDelivery",
-      "logs:DeleteLogDelivery",
-      "logs:PutResourcePolicy",
-      "logs:DescribeResourcePolicies",
-      "logs:DescribeLogGroups"
-    ]
-    effect = "Allow"
-    resources = [
-      "*",
-    ]
-    sid = "ManageWAFWebACLLoggingCWL"
   }
 
 }

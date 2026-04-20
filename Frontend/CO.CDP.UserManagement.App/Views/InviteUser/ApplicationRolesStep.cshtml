@@ -1,0 +1,140 @@
+@model CO.CDP.UserManagement.App.Models.ApplicationRolesStepViewModel
+@{
+    ViewData["Title"] = "Assign applications and roles";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationId/add-user/organisation-role" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <partial name="/Pages/Shared/_ErrorSummary.cshtml" model="ViewData.ModelState" />
+
+        <div class="app-filter-container govuk-!-margin-bottom-6">
+            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-bottom-2">Adding user:</p>
+            <h2 class="govuk-heading-m govuk-!-margin-bottom-2">@Model.FirstName @Model.LastName</h2>
+            <p class="govuk-body govuk-!-margin-bottom-0">@Model.Email</p>
+        </div>
+
+        <h1 class="govuk-heading-xl">Select the applications and roles the user should have access to</h1>
+        <p class="govuk-body">Select which applications this user should have access to, and choose an appropriate role for each.</p>
+
+        @{
+            var hasSelectionError = ViewData.ModelState.ContainsKey("applicationSelections") &&
+                                    ViewData.ModelState["applicationSelections"]?.Errors.Count > 0;
+        }
+
+        <form method="post">
+            @Html.AntiForgeryToken()
+            <div class="govuk-form-group @(hasSelectionError ? "govuk-form-group--error" : "")">
+                @if (hasSelectionError)
+                {
+                    <p class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState["applicationSelections"]?.Errors.FirstOrDefault()?.ErrorMessage
+                    </p>
+                }
+
+                @foreach (var item in Model.Applications.Select((application, index) => new { application, index }))
+                {
+                    var application = item.application;
+                    var index = item.index;
+                    var roleErrorKey = $"Applications[{index}].SelectedRoleId";
+                    var hasRoleError = ViewData.ModelState.ContainsKey(roleErrorKey) &&
+                                       ViewData.ModelState[roleErrorKey]?.Errors.Count > 0;
+
+                    <div class="app-application-role-card govuk-!-margin-bottom-6">
+                        <h2 class="govuk-heading-m">@application.ApplicationName</h2>
+                        <p class="govuk-body">@application.ApplicationDescription</p>
+
+                        <input type="hidden" name="Applications[@index].OrganisationApplicationId" value="@application.OrganisationApplicationId" />
+
+                        @if (application.IsEnabledByDefault)
+                        {
+                            <input type="hidden" name="Applications[@index].GiveAccess" value="true" />
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="applications-@index-access" name="Applications[@index].GiveAccess-visual" type="checkbox" value="true" checked disabled aria-describedby="applications-@index-enabled-desc" />
+                                    <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">Give access to @application.ApplicationName</label>
+                                    <p id="applications-@index-enabled-desc" class="govuk-body-s govuk-!-margin-top-2 govuk-!-margin-bottom-0">This application is enabled by default for everyone and cannot be deselected.</p>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input" id="applications-@index-access" name="Applications[@index].GiveAccess" type="checkbox" value="true" @(application.GiveAccess ? "checked=\"checked\"" : "")>
+                                    <label class="govuk-label govuk-checkboxes__label" for="applications-@index-access">Give access to @application.ApplicationName</label>
+                                </div>
+                            </div>
+                        }
+
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                        <div class="govuk-form-group @(hasRoleError ? "govuk-form-group--error" : "")">
+                            <h3 class="govuk-heading-s govuk-!-margin-bottom-2">Select a role</h3>
+                            @if (hasRoleError)
+                            {
+                                <p class="govuk-error-message">
+                                    <span class="govuk-visually-hidden">Error:</span> @ViewData.ModelState[roleErrorKey]?.Errors.FirstOrDefault()?.ErrorMessage
+                                </p>
+                            }
+
+                            <details class="govuk-details govuk-!-margin-bottom-3" data-module="govuk-details">
+                                <summary class="govuk-details__summary">
+                                    <span class="govuk-details__summary-text">What can each role do?</span>
+                                </summary>
+                                <div class="govuk-details__text">
+                                    <ul class="govuk-list govuk-list--bullet">
+                                        @foreach (var role in application.Roles)
+                                        {
+                                            <li><strong>@role.Name:</strong> @(string.IsNullOrWhiteSpace(role.Description) ? "No description available." : role.Description)</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </details>
+
+                            @if (application.AllowsMultipleRoleAssignments)
+                            {
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    @foreach (var role in application.Roles)
+                                    {
+                                        var isRoleChecked = application.SelectedRoleIds.Contains(role.Id);
+                                        <div class="govuk-checkboxes__item">
+                                            <input class="govuk-checkboxes__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleIds" type="checkbox" value="@role.Id" @(isRoleChecked ? "checked=\"checked\"" : "")>
+                                            <label class="govuk-label govuk-checkboxes__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="govuk-radios" data-module="govuk-radios">
+                                    @foreach (var role in application.Roles)
+                                    {
+                                        var isRoleSelected = application.SelectedRoleId == role.Id;
+                                        <div class="govuk-radios__item">
+                                            <input class="govuk-radios__input" id="applications-@index-role-@role.Id" name="Applications[@index].SelectedRoleId" type="radio" value="@role.Id" checked="@isRoleSelected">
+                                            <label class="govuk-label govuk-radios__label" for="applications-@index-role-@role.Id">@role.Name</label>
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="govuk-button-group">
+                <button class="govuk-button" data-module="govuk-button">Continue</button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
+            </div>
+
+            <div class="govuk-inset-text">
+                You must select at least one application and role. The user will receive an email notification when access is granted.
+            </div>
+        </form>
+    </div>
+</div>

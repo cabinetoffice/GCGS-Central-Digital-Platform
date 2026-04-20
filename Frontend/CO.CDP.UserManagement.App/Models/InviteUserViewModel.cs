@@ -13,7 +13,7 @@ public sealed record InviteUserViewModel
 
     [BindNever]
     [ValidateNever]
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
 
     [Required(ErrorMessage = "Enter a first name")]
     public string? FirstName { get; init; }

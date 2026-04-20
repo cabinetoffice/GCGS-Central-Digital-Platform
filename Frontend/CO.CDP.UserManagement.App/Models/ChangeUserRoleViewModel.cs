@@ -4,7 +4,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record ChangeUserRoleViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     string UserDisplayName,
     string Email,
     OrganisationRole CurrentRole,
@@ -15,7 +15,7 @@ public sealed record ChangeUserRoleViewModel(
 {
     public static ChangeUserRoleViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         UserDisplayName: string.Empty,
         Email: string.Empty,
         CurrentRole: OrganisationRole.Member,
@@ -26,7 +26,7 @@ public sealed record ChangeUserRoleViewModel(
 }
 
 public sealed record ChangeUserRoleSuccessViewModel(
-    string OrganisationSlug,
+    Guid OrganisationId,
     string UserDisplayName,
     OrganisationRole NewRole,
     string RoleDescription);

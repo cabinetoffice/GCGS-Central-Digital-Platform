@@ -2,13 +2,13 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed class ChangeUserApplicationRolesViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public bool IsPending { get; init; }
     public Guid? CdpPersonId { get; init; }
     public Guid? InviteGuid { get; init; }
-    public List<ApplicationRoleChangeViewModel> Applications { get; init; } = [];
+    public List<ApplicationRoleChangeViewModel> Applications { get; init; } = new List<ApplicationRoleChangeViewModel>();
 }
 
 public sealed class ApplicationRoleChangeViewModel
@@ -23,13 +23,13 @@ public sealed class ApplicationRoleChangeViewModel
     public bool HasExistingAccess { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }
-    public List<int> SelectedRoleIds { get; set; } = [];
-    public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = [];
+    public List<int> SelectedRoleIds { get; set; } = new List<int>();
+    public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = new List<ApplicationRoleOptionViewModel>();
 }
 
 public sealed class ApplicationRoleChangePostModel
 {
-    public List<ApplicationRoleAssignmentPostModel> Applications { get; init; } = [];
+    public List<ApplicationRoleAssignmentPostModel> Applications { get; init; } = new List<ApplicationRoleAssignmentPostModel>();
 }
 
 public sealed class ApplicationRoleAssignmentPostModel
@@ -38,18 +38,18 @@ public sealed class ApplicationRoleAssignmentPostModel
     public int ApplicationId { get; init; }
     public bool GiveAccess { get; init; }
     public int? SelectedRoleId { get; init; }
-    public List<int> SelectedRoleIds { get; init; } = [];
+    public List<int> SelectedRoleIds { get; init; } = new List<int>();
 }
 
 public sealed class ChangeApplicationRolesCheckViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public bool IsPending { get; init; }
     public Guid? CdpPersonId { get; init; }
     public Guid? InviteGuid { get; init; }
-    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = [];
+    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = new List<ChangedApplicationRoleViewModel>();
 }
 
 public sealed class ChangedApplicationRoleViewModel
@@ -62,7 +62,7 @@ public sealed class ChangedApplicationRoleViewModel
 
 public sealed class ChangeApplicationRolesSuccessViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string UserDisplayName { get; init; } = string.Empty;
-    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = [];
+    public IReadOnlyList<ChangedApplicationRoleViewModel> ChangedApplications { get; init; } = new List<ChangedApplicationRoleViewModel>();
 }

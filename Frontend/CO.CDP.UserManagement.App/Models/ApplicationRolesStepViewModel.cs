@@ -4,12 +4,12 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed class ApplicationRolesStepViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public OrganisationRole OrganisationRole { get; init; } = OrganisationRole.Member;
-    public List<ApplicationAccessSelectionViewModel> Applications { get; init; } = [];
+    public List<ApplicationAccessSelectionViewModel> Applications { get; init; } = new List<ApplicationAccessSelectionViewModel>();
 }
 
 public sealed class ApplicationAccessSelectionViewModel
@@ -21,8 +21,8 @@ public sealed class ApplicationAccessSelectionViewModel
     public bool IsEnabledByDefault { get; init; }
     public bool GiveAccess { get; set; }
     public int? SelectedRoleId { get; set; }
-    public List<int> SelectedRoleIds { get; set; } = [];
-    public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = [];
+    public List<int> SelectedRoleIds { get; set; } = new List<int>();
+    public IReadOnlyList<ApplicationRoleOptionViewModel> Roles { get; init; } = new List<ApplicationRoleOptionViewModel>();
 }
 
 public sealed class ApplicationRoleOptionViewModel
@@ -34,7 +34,7 @@ public sealed class ApplicationRoleOptionViewModel
 
 public sealed class ApplicationRolesStepPostModel
 {
-    public List<ApplicationSelectionPostModel> Applications { get; init; } = [];
+    public List<ApplicationSelectionPostModel> Applications { get; init; } = new List<ApplicationSelectionPostModel>();
 }
 
 public sealed class ApplicationSelectionPostModel
@@ -42,7 +42,7 @@ public sealed class ApplicationSelectionPostModel
     public int OrganisationApplicationId { get; init; }
     public bool GiveAccess { get; init; }
     public int? SelectedRoleId { get; init; }
-    public List<int> SelectedRoleIds { get; init; } = [];
+    public List<int> SelectedRoleIds { get; init; } = new List<int>();
 }
 
 public sealed class InviteApplicationAssignment
@@ -54,12 +54,12 @@ public sealed class InviteApplicationAssignment
 
 public sealed class InviteCheckAnswersViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public OrganisationRole OrganisationRole { get; init; } = OrganisationRole.Member;
-    public IReadOnlyList<InviteCheckAnswersApplicationViewModel> Applications { get; init; } = [];
+    public IReadOnlyList<InviteCheckAnswersApplicationViewModel> Applications { get; init; } = new List<InviteCheckAnswersApplicationViewModel>();
 }
 
 public sealed class InviteCheckAnswersApplicationViewModel
@@ -70,7 +70,7 @@ public sealed class InviteCheckAnswersApplicationViewModel
 
 public sealed class InviteSuccessState
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string OrganisationName { get; init; } = string.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;
@@ -82,7 +82,7 @@ public sealed class InviteSuccessState
 
 public sealed class InviteSuccessViewModel
 {
-    public string OrganisationSlug { get; init; } = string.Empty;
+    public Guid OrganisationId { get; init; } = Guid.Empty;
     public string OrganisationName { get; init; } = string.Empty;
     public string FirstName { get; init; } = string.Empty;
     public string LastName { get; init; } = string.Empty;

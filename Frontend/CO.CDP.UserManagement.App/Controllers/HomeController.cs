@@ -1,34 +1,18 @@
 using CO.CDP.UserManagement.App.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.UserManagement.App.Controllers;
 
 [Authorize(Policy = PolicyNames.OrganisationOwnerOrAdmin)]
-public class HomeController(UserManagementClient apiClient) : Controller
+public class HomeController : Controller
 {
-    public async Task<IActionResult> Index(string? organisationSlug, Guid? cdpOrganisationId, CancellationToken ct)
+    public IActionResult Index(Guid? id)
     {
-        if (cdpOrganisationId.HasValue)
-        {
-            try
-            {
-                var org = await apiClient.ByCdpGuidAsync(cdpOrganisationId.Value, ct);
-                return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug = org.Slug });
-            }
-            catch (ApiException ex) when (ex.StatusCode == 404)
-            {
-                return NotFound();
-            }
-        }
-
-        if (string.IsNullOrEmpty(organisationSlug))
-        {
+        if (!id.HasValue)
             return NotFound();
-        }
 
-        return RedirectToAction(nameof(UsersController.Index), "Users", new { organisationSlug });
+        return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id = id.Value });
     }
 
     public IActionResult Privacy()

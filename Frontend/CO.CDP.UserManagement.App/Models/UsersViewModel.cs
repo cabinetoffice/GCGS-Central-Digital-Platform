@@ -4,7 +4,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record UsersViewModel(
     string OrganisationName,
-    string OrganisationSlug,
+    Guid OrganisationId,
     Guid? OrganisationGuid,
     IReadOnlyList<UserSummaryViewModel> Users,
     IReadOnlyList<ApplicationViewModel> AvailableApplications,
@@ -13,9 +13,14 @@ public sealed record UsersViewModel(
     string? SearchTerm,
     int TotalCount)
 {
+    public bool HasActiveFilters =>
+        !string.IsNullOrEmpty(SelectedRole) ||
+        !string.IsNullOrEmpty(SelectedApplication) ||
+        !string.IsNullOrEmpty(SearchTerm);
+
     public static UsersViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         OrganisationGuid: null,
         Users: [],
         AvailableApplications: [],

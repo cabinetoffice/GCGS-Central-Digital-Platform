@@ -21,9 +21,14 @@ public interface IAtomicMembershipSync
     /// OI: removes UM-managed scopes from OrganisationPerson.
     /// Idempotent — returns successfully if membership is already inactive.
     /// </summary>
+    /// <param name="actingUserId">
+    /// Principal ID of the user performing the removal, used for audit trail.
+    /// Callers should resolve this from <c>ICurrentUserService</c> before entering the transaction.
+    /// </param>
     Task RemoveUserFromOrganisationAsync(
         Guid cdpOrganisationId,
         Guid cdpPersonId,
+        string actingUserId,
         CancellationToken ct = default);
 
     /// <summary>
@@ -31,10 +36,15 @@ public interface IAtomicMembershipSync
     /// UM: sets the new OrganisationRoleId on the membership.
     /// OI: upserts the OrganisationPerson scopes derived from the new role.
     /// </summary>
+    /// <param name="actingUserId">
+    /// Principal ID of the user performing the role change, used for audit trail.
+    /// Callers should resolve this from <c>ICurrentUserService</c> before entering the transaction.
+    /// </param>
     Task<UserOrganisationMembership> UpdateMembershipRoleAsync(
         Guid cdpOrganisationId,
         Guid cdpPersonId,
         OrganisationRole newRole,
+        string actingUserId,
         CancellationToken ct = default);
 
     /// <summary>

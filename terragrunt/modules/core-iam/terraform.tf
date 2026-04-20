@@ -36,6 +36,13 @@ resource "aws_iam_policy" "terraform_global" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_global_cloudfront" {
+  name        = "${local.name_prefix}-terraform-global-cloudfront"
+  description = "Global CloudFront/Kinesis/WAF policy"
+  policy      = data.aws_iam_policy_document.terraform_global_cloudfront.json
+  tags        = var.tags
+}
+
 
 resource "aws_iam_policy" "terraform_global_ec2" {
   name        = "${local.name_prefix}-terraform-global-ec2"
@@ -103,6 +110,11 @@ resource "aws_iam_role_policy_attachment" "terraform" {
 
 resource "aws_iam_role_policy_attachment" "terraform_global" {
   policy_arn = aws_iam_policy.terraform_global.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_global_cloudfront" {
+  policy_arn = aws_iam_policy.terraform_global_cloudfront.arn
   role       = aws_iam_role.terraform.name
 }
 

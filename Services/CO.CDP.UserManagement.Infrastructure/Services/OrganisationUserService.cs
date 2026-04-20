@@ -8,13 +8,16 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
 /// Service for managing organisation user memberships.
-/// Cross-DB atomic operations (remove, role change) delegate to <see cref="IAtomicMembershipSync"/>.
+/// Authorization is enforced by <see cref="IMembershipAuthorizationGuard"/> before
+/// cross-DB atomic operations delegate to <see cref="IAtomicMembershipSync"/>.
 /// </summary>
 public class OrganisationUserService(
     IOrganisationRepository organisationRepository,
     IUserOrganisationMembershipRepository membershipRepository,
     IUserApplicationAssignmentRepository assignmentRepository,
     IAtomicMembershipSync atomicMembershipSync,
+    IMembershipAuthorizationGuard authorizationGuard,
+    ICurrentUserService currentUserService,
     ILogger<OrganisationUserService> logger) : IOrganisationUserService
 {
     public async Task<IEnumerable<UserOrganisationMembership>> GetOrganisationUsersAsync(
@@ -78,18 +81,28 @@ public class OrganisationUserService(
         return membership;
     }
 
-    public Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
+    public async Task<UserOrganisationMembership> UpdateOrganisationRoleAsync(
         Guid cdpOrganisationId,
         Guid cdpPersonId,
         OrganisationRole organisationRole,
-        CancellationToken cancellationToken = default) =>
-        atomicMembershipSync.UpdateMembershipRoleAsync(cdpOrganisationId, cdpPersonId, organisationRole, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        await authorizationGuard.ValidateRoleChangeAsync(cdpOrganisationId, cdpPersonId, organisationRole, cancellationToken);
+        var actingUserId = currentUserService.GetUserPrincipalId() ?? "unknown";
+        return await atomicMembershipSync.UpdateMembershipRoleAsync(
+            cdpOrganisationId, cdpPersonId, organisationRole, actingUserId, cancellationToken);
+    }
 
-    public Task RemoveUserFromOrganisationAsync(
+    public async Task RemoveUserFromOrganisationAsync(
         Guid cdpOrganisationId,
         Guid cdpPersonId,
-        CancellationToken cancellationToken = default) =>
-        atomicMembershipSync.RemoveUserFromOrganisationAsync(cdpOrganisationId, cdpPersonId, cancellationToken);
+        CancellationToken cancellationToken = default)
+    {
+        await authorizationGuard.ValidateRemovalAsync(cdpOrganisationId, cdpPersonId, cancellationToken);
+        var actingUserId = currentUserService.GetUserPrincipalId() ?? "unknown";
+        await atomicMembershipSync.RemoveUserFromOrganisationAsync(
+            cdpOrganisationId, cdpPersonId, actingUserId, cancellationToken);
+    }
 
     private static void SetAssignments(
         UserOrganisationMembership membership,

@@ -1,3 +1,6 @@
+using CO.CDP.UserManagement.Core.Models;
+using CO.CDP.UserManagement.Shared.Enums;
+
 namespace CO.CDP.UserManagement.Core.Interfaces;
 
 /// <summary>
@@ -28,4 +31,16 @@ public interface ICurrentUserService
     /// </summary>
     /// <returns>The user identifier, or null if not authenticated.</returns>
     string? GetCurrentUserId();
+
+    /// <summary>
+    /// Gets the CDP claims object for the current user.
+    /// </summary>
+    /// <returns>The parsed UserClaims, or null if not available.</returns>
+    UserClaims? GetCdpClaims();
+
+    /// <summary>
+    /// Resolves the current user's organisation role from their CDP claims.
+    /// </summary>
+    /// <returns>The parsed OrganisationRole, or null if not available.</returns>
+    OrganisationRole? GetOrganisationRole(Guid organisationId);
 }
