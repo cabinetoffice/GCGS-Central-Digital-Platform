@@ -28,11 +28,6 @@ public static class ConfigUtility
         return _settings?.ApiUrl ?? throw new Exception("ApiUrl is not configured.");
     }
 
-    public static string GetUserManagementAppBaseUrl()
-    {
-        return _settings?.UserManagementAppBaseUrl ?? throw new Exception("UserManagementAppBaseUrl is not configured.");
-    }
-
     public static string GetTestEmail()
     {
         return _settings?.Email ?? throw new Exception("Email is not configured.");
