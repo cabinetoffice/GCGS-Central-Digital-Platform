@@ -23,11 +23,6 @@ public static class ConfigUtility
         return _settings?.BaseUrl ?? throw new Exception("BaseUrl is not configured.");
     }
 
-    public static string GetUserManagementAppBaseUrl()
-    {
-        return _settings?.UserManagementAppBaseUrl ?? throw new Exception("UserManagementAppBaseUrl is not configured.");
-    }
-
     public static string GetOrganisationApiBaseUrl()
     {
         return _settings?.ApiUrl ?? throw new Exception("ApiUrl is not configured.");
