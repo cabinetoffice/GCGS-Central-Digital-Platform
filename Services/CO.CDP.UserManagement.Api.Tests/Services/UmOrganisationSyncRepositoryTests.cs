@@ -612,4 +612,117 @@ public class UmOrganisationSyncRepositoryTests
 
         _userApplicationAssignmentRepository.Verify(r => r.Update(It.IsAny<UserApplicationAssignment>()), Times.Never);
     }
+
+    [Fact]
+    public async Task EnsureMemberScopesAndAppRolesUpdatedAsync_UpdatesRoleAndRecalculatesAppRoles_WhenMembershipExists()
+    {
+        var organisationGuid = Guid.NewGuid();
+        var personGuid = Guid.NewGuid();
+        var organisation = new UmOrganisation
+        {
+            Id = 42,
+            CdpOrganisationGuid = organisationGuid,
+            Name = "Acme",
+            Slug = "acme",
+            IsActive = true,
+            CreatedBy = "seed"
+        };
+        var membership = new UserOrganisationMembership
+        {
+            Id = 73,
+            OrganisationId = organisation.Id,
+            CdpPersonId = personGuid,
+            UserPrincipalId = "urn:example:user",
+            OrganisationRoleId = (int)OrganisationRole.Member
+        };
+        var defaultOrganisationApplication = new OrganisationApplication
+        {
+            Id = 17,
+            OrganisationId = organisation.Id,
+            ApplicationId = 1,
+            IsActive = true,
+            Application = new Application
+            {
+                Id = 1,
+                ClientId = "find-a-tender",
+                IsActive = true,
+                IsDeleted = false,
+                IsEnabledByDefault = true
+            }
+        };
+
+        _organisationRepository
+            .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(organisation);
+        _membershipRepository
+            .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(membership);
+        _organisationApplicationRepository
+            .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([defaultOrganisationApplication]);
+        _roleRepository
+            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([
+                new ApplicationRole
+                {
+                    Id = 6,
+                    ApplicationId = defaultOrganisationApplication.ApplicationId,
+                    Name = "Editor (buyer)",
+                    IsActive = true,
+                    SyncToOrganisationInformation = true,
+                    RequiredPartyRoles = [CorePartyRole.Buyer],
+                    OrganisationInformationScopes = ["ADMIN", "RESPONDER"]
+                }
+            ]);
+        _userApplicationAssignmentRepository
+            .Setup(r => r.GetByMembershipAndApplicationAsync(membership.Id, defaultOrganisationApplication.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync((UserApplicationAssignment?)null);
+
+        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
+            organisationGuid, personGuid, ["ADMIN"], [CorePartyRole.Buyer]);
+
+        result.IsSuccess.Should().BeTrue();
+        _membershipRepository.Verify(r => r.Update(It.Is<UserOrganisationMembership>(m =>
+            m.OrganisationRoleId == (int)OrganisationRole.Admin &&
+            m.ModifiedBy == "system:org-sync")), Times.Once);
+        _userApplicationAssignmentRepository.Verify(r => r.Add(It.Is<UserApplicationAssignment>(a =>
+            a.UserOrganisationMembershipId == membership.Id &&
+            a.OrganisationApplicationId == defaultOrganisationApplication.Id &&
+            a.Roles.Select(role => role.Id).OrderBy(id => id).SequenceEqual(new[] { 6 }))), Times.Once);
+    }
+
+    [Fact]
+    public async Task EnsureMemberScopesAndAppRolesUpdatedAsync_ReturnsSuccess_WhenOrgNotFound()
+    {
+        var orgGuid = Guid.NewGuid();
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, default))
+            .ReturnsAsync((UmOrganisation?)null);
+
+        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
+            orgGuid, Guid.NewGuid(), ["ADMIN"], []);
+
+        result.IsSuccess.Should().BeTrue();
+        _membershipRepository.Verify(r => r.GetByPersonIdAndOrganisationAsync(
+            It.IsAny<Guid>(), It.IsAny<int>(), default), Times.Never);
+    }
+
+    [Fact]
+    public async Task EnsureMemberScopesAndAppRolesUpdatedAsync_ReturnsSuccess_WhenMembershipNotFound()
+    {
+        var orgGuid = Guid.NewGuid();
+        var org = new UmOrganisation
+        {
+            Id = 1, CdpOrganisationGuid = orgGuid, Name = "Test", Slug = "test", IsActive = true, CreatedBy = "seed"
+        };
+        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, default)).ReturnsAsync(org);
+        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(
+            It.IsAny<Guid>(), org.Id, default))
+            .ReturnsAsync((UserOrganisationMembership?)null);
+
+        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
+            orgGuid, Guid.NewGuid(), ["ADMIN"], []);
+
+        result.IsSuccess.Should().BeTrue();
+        _membershipRepository.Verify(r => r.Update(It.IsAny<UserOrganisationMembership>()), Times.Never);
+    }
 }
