@@ -51,7 +51,6 @@ resource "aws_lb_listener_rule" "public_domain_fts_login_path_routing" {
     path_pattern {
       values = [
         "/one-login/*",
-        "/session-timeout-keep-alive*",
         "/signin-oidc*",
         "/signout-callback-oidc*"
       ]
@@ -59,6 +58,33 @@ resource "aws_lb_listener_rule" "public_domain_fts_login_path_routing" {
   }
 
   tags = merge(var.tags, { Name : "public-fts-login-path-routing" })
+}
+
+resource "aws_lb_listener_rule" "public_domain_fts_login_path_routing_keep_alive" {
+  count = var.environment != "orchestrator" ? 1 : 0
+
+  listener_arn = aws_lb_listener.ecs_php.arn
+  priority     = 210
+
+  action {
+    type             = "forward"
+    target_group_arn = module.ecs_service_fts_app.service_extra_target_group_arns["ov1"]
+    order            = 1
+  }
+
+  condition {
+    host_header {
+      values = var.fts_extra_domains
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/session-timeout-keep-alive*"]
+    }
+  }
+
+  tags = merge(var.tags, { Name : "public-fts-login-path-routing-keep-alive" })
 }
 
 resource "aws_lb_listener_rule" "public_domain_fts_assets_path_routing" {
