@@ -90,6 +90,7 @@ public class JoinRequestFlowServiceTests
     public async Task ApproveAsync_WhenSuccess_ReturnsSuccess()
     {
         _adapter.Setup(a => a.GetOrganisationByGuidAsync(_organisationId, default)).ReturnsAsync(MakeOrg());
+        _adapter.Setup(a => a.GetJoinRequestsAsync(_cdpOrgId, default)).ReturnsAsync(MakeJoinRequests());
         _adapter.Setup(a => a.ReviewJoinRequestAsync(
                 _cdpOrgId, _joinRequestId,
                 It.Is<ReviewJoinRequestRequest>(r => r.Decision == JoinRequestDecision.Accepted
@@ -119,6 +120,7 @@ public class JoinRequestFlowServiceTests
     public async Task ApproveAsync_WhenAdapterFails_ReturnsFailure()
     {
         _adapter.Setup(a => a.GetOrganisationByGuidAsync(_organisationId, default)).ReturnsAsync(MakeOrg());
+        _adapter.Setup(a => a.GetJoinRequestsAsync(_cdpOrgId, default)).ReturnsAsync(MakeJoinRequests());
         _adapter.Setup(a => a.ReviewJoinRequestAsync(
                 It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<ReviewJoinRequestRequest>(), default))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Failure(ServiceFailure.Unexpected));
@@ -134,6 +136,7 @@ public class JoinRequestFlowServiceTests
     public async Task RejectAsync_WhenSuccess_ReturnsSuccess()
     {
         _adapter.Setup(a => a.GetOrganisationByGuidAsync(_organisationId, default)).ReturnsAsync(MakeOrg());
+        _adapter.Setup(a => a.GetJoinRequestsAsync(_cdpOrgId, default)).ReturnsAsync(MakeJoinRequests());
         _adapter.Setup(a => a.ReviewJoinRequestAsync(
                 _cdpOrgId, _joinRequestId,
                 It.Is<ReviewJoinRequestRequest>(r => r.Decision == JoinRequestDecision.Rejected
