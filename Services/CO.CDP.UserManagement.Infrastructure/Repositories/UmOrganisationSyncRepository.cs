@@ -352,6 +352,31 @@ public class UmOrganisationSyncRepository(
         return Result<string, Unit>.Success(Unit.Value);
     }
 
+    public async Task<Result<string, Unit>> EnsureMemberScopesAndAppRolesUpdatedAsync(
+        Guid cdpOrganisationGuid,
+        Guid cdpPersonGuid,
+        IReadOnlyList<string> newScopes,
+        IReadOnlyCollection<CO.CDP.UserManagement.Core.Constants.PartyRole> organisationPartyRoles,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        if (organisation is null)
+            return Result<string, Unit>.Success(Unit.Value);
+
+        var membership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
+            cdpPersonGuid, organisation.Id, cancellationToken);
+        if (membership is null)
+            return Result<string, Unit>.Success(Unit.Value);
+
+        membership.OrganisationRoleId = (int)ResolveOrganisationRole(newScopes);
+        membership.ModifiedBy = SystemUser;
+        membershipRepository.Update(membership);
+
+        await TrackDefaultApplicationAssignmentsAsync(membership, organisationPartyRoles, newScopes, cancellationToken);
+
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
     public async Task<Result<string, Unit>> EnsureMemberRemovedAsync(
         Guid cdpOrganisationGuid,
         Guid cdpPersonGuid,
