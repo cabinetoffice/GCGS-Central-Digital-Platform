@@ -61,7 +61,8 @@ public class UpdateApplicationAssignmentUseCase(
     private async Task<(UserOrganisationMembership, UserApplicationAssignment)> GetAssignmentForUserAsync(
         string userId, int organisationId, int assignmentId, CancellationToken ct)
     {
-        var membership = (Guid.TryParse(userId, out var cdpPersonId)
+        bool isCdpGuid = Guid.TryParse(userId, out var cdpPersonId);
+        var membership = (isCdpGuid
                              ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId,
                                  ct)
                              : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
