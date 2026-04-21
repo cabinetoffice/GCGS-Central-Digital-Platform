@@ -3,6 +3,18 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "allow_github_pull_requests" {
+  default     = false
+  description = "Whether to allow GitHub pull request workflows to assume the OIDC role."
+  type        = bool
+}
+
+variable "allowed_github_branches" {
+  default     = ["main"]
+  description = "Allowed GitHub branches for OIDC role assumption (e.g. main, sandbox, previews/*)."
+  type        = list(string)
+}
+
 variable "ci_build_role_arn" {
   description = "CodeBuild IAM role ARN to be assigned to the CodeBuild job"
   type        = string
@@ -17,7 +29,6 @@ variable "ci_pipeline_role_arn" {
   description = "IAM role ARN to be assigned to the CodePipeline job"
   type        = string
 }
-
 
 variable "ci_pipeline_role_name" {
   description = "IAM role Name to be assigned to the CodePipeline job"
@@ -41,6 +52,18 @@ variable "ci_sg_id" {
 
 variable "environment" {
   description = "The environment we are provisioning, i.e. test, do not mistake this with the AWS account"
+  type        = string
+}
+
+variable "fts_github_repo" {
+  default     = "gcgs-cdp-fts-service"
+  description = "GitHub repository for OIDC role trust."
+  type        = string
+}
+
+variable "github_org" {
+  default     = "cabinetoffice"
+  description = "GitHub organization for OIDC role trust."
   type        = string
 }
 

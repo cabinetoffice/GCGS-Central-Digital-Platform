@@ -26,13 +26,13 @@ data "aws_iam_policy_document" "private" {
   }
 
   dynamic "statement" {
-    for_each = length(local.all_roles) > 0 ? [local.all_roles] : []
+    for_each = length(var.write_roles) > 0 ? [var.write_roles] : []
     content {
-      sid    = "ApplicationAccess"
+      sid    = "WriteAccess"
       effect = "Allow"
       principals {
         type        = "AWS"
-        identifiers = local.all_roles
+        identifiers = statement.value
       }
       actions = [
         "s3:DeleteObject",
@@ -51,27 +51,33 @@ data "aws_iam_policy_document" "private" {
   }
 
   dynamic "statement" {
-    for_each = length(var.read_roles) > 0 ? var.read_roles : []
+    for_each = length(var.read_roles) > 0 ? [var.read_roles] : []
     content {
-      sid    = "OptionalReadAccess"
+      sid    = "ReadAccess"
       effect = "Allow"
       principals {
         type        = "AWS"
-        identifiers = [statement.value]
+        identifiers = statement.value
       }
-      actions   = ["s3:GetObject"]
-      resources = ["${aws_s3_bucket.this.arn}/*"]
+      actions = [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ]
+      resources = [
+        aws_s3_bucket.this.arn,
+        "${aws_s3_bucket.this.arn}/*"
+      ]
     }
   }
 
   dynamic "statement" {
-    for_each = length(var.write_roles) > 0 ? var.write_roles : []
+    for_each = length(var.write_roles) > 0 ? [var.write_roles] : []
     content {
-      sid    = "OptionalWriteAccess"
+      sid    = "WriteObjectOnly"
       effect = "Allow"
       principals {
         type        = "AWS"
-        identifiers = [statement.value]
+        identifiers = statement.value
       }
       actions   = ["s3:PutObject"]
       resources = ["${aws_s3_bucket.this.arn}/*"]
@@ -93,7 +99,7 @@ data "aws_iam_policy_document" "public" {
   dynamic "statement" {
     for_each = length(var.write_roles) > 0 ? [var.write_roles] : []
     content {
-      sid    = "EcsAccess"
+      sid    = "WriteAccess"
       effect = "Allow"
       actions = [
         "s3:PutObjectAcl",

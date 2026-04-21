@@ -2,20 +2,20 @@ output "certificate_arn" {
   value = aws_acm_certificate.this.arn
 }
 
-output "ecs_alb_arn_suffix" {
-  value = aws_lb.ecs.arn_suffix
-}
-
-output "ecs_alb_dns_name" {
-  value = aws_lb.ecs.dns_name
+output "cloudfront_cfs_downloads_domain_name" {
+  value = var.cloudfront_downloads_enabled ? module.cloudfront_cfs_downloads.cloudfront_domain_name : null
 }
 
 output "cloudfront_fts_downloads_domain_name" {
   value = var.cloudfront_downloads_enabled ? module.cloudfront_fts_downloads.cloudfront_domain_name : null
 }
 
-output "cloudfront_cfs_downloads_domain_name" {
-  value = var.cloudfront_downloads_enabled ? module.cloudfront_cfs_downloads.cloudfront_domain_name : null
+output "ecs_alb_arn_suffix" {
+  value = aws_lb.ecs.arn_suffix
+}
+
+output "ecs_alb_dns_name" {
+  value = aws_lb.ecs.dns_name
 }
 
 output "ecs_cluster_id" {
