@@ -1,6 +1,9 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.UseCase;
+using CO.CDP.UserManagement.Infrastructure.UseCase.RemovePersonFromOrganisation;
+using CO.CDP.UserManagement.Infrastructure.UseCase.UpdateOrganisationRole;
 using CO.CDP.UserManagement.Shared.Enums;
 using Microsoft.Extensions.Logging;
 
@@ -9,13 +12,14 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 /// <summary>
 /// Service for managing organisation user memberships.
 /// Authorization is enforced by <see cref="IMembershipAuthorizationGuard"/> before
-/// cross-DB atomic operations delegate to <see cref="IAtomicMembershipSync"/>.
+/// write operations delegate to the relevant use case.
 /// </summary>
 public class OrganisationUserService(
     IOrganisationRepository organisationRepository,
     IUserOrganisationMembershipRepository membershipRepository,
     IUserApplicationAssignmentRepository assignmentRepository,
-    IAtomicMembershipSync atomicMembershipSync,
+    IUseCase<RemovePersonFromOrganisationCommand> removePersonUseCase,
+    IUseCase<UpdateOrganisationRoleCommand, UserOrganisationMembership> updateRoleUseCase,
     IMembershipAuthorizationGuard authorizationGuard,
     ICurrentUserService currentUserService,
     ILogger<OrganisationUserService> logger) : IOrganisationUserService
@@ -27,11 +31,14 @@ public class OrganisationUserService(
         logger.LogDebug("Getting users for CDP organisation ID: {CdpOrganisationId}", cdpOrganisationId);
 
         var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
-            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+                           ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        logger.LogDebug("Resolved organisation {OrganisationId} for CDP organisation ID: {CdpOrganisationId}", organisation.Id, cdpOrganisationId);
-        var memberships = (await membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken)).ToList();
-        logger.LogDebug("Retrieved {MembershipCount} memberships for organisation {OrganisationId}", memberships.Count, organisation.Id);
+        logger.LogDebug("Resolved organisation {OrganisationId} for CDP organisation ID: {CdpOrganisationId}",
+            organisation.Id, cdpOrganisationId);
+        var memberships = (await membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken))
+            .ToList();
+        logger.LogDebug("Retrieved {MembershipCount} memberships for organisation {OrganisationId}", memberships.Count,
+            organisation.Id);
 
         var membershipIds = memberships.Select(m => m.Id).ToArray();
         var assignments = await assignmentRepository.GetByMembershipIdsAsync(membershipIds, cancellationToken);
@@ -52,9 +59,11 @@ public class OrganisationUserService(
             userPrincipalId, cdpOrganisationId);
 
         var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
-            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+                           ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        var membership = await membershipRepository.GetByUserAndOrganisationAsync(userPrincipalId, organisation.Id, cancellationToken);
+        var membership =
+            await membershipRepository.GetByUserAndOrganisationAsync(userPrincipalId, organisation.Id,
+                cancellationToken);
         if (membership == null) return null;
 
         var assignments = await assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
@@ -71,9 +80,11 @@ public class OrganisationUserService(
             cdpPersonId, cdpOrganisationId);
 
         var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
-            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+                           ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
-        var membership = await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisation.Id, cancellationToken);
+        var membership =
+            await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisation.Id,
+                cancellationToken);
         if (membership == null) return null;
 
         var assignments = await assignmentRepository.GetByMembershipIdAsync(membership.Id, cancellationToken);
@@ -87,10 +98,12 @@ public class OrganisationUserService(
         OrganisationRole organisationRole,
         CancellationToken cancellationToken = default)
     {
-        await authorizationGuard.ValidateRoleChangeAsync(cdpOrganisationId, cdpPersonId, organisationRole, cancellationToken);
+        await authorizationGuard.ValidateRoleChangeAsync(cdpOrganisationId, cdpPersonId, organisationRole,
+            cancellationToken);
         var actingUserId = currentUserService.GetUserPrincipalId() ?? "unknown";
-        return await atomicMembershipSync.UpdateMembershipRoleAsync(
-            cdpOrganisationId, cdpPersonId, organisationRole, actingUserId, cancellationToken);
+        return await updateRoleUseCase.Execute(
+            new UpdateOrganisationRoleCommand(cdpOrganisationId, cdpPersonId, organisationRole, actingUserId),
+            cancellationToken);
     }
 
     public async Task RemoveUserFromOrganisationAsync(
@@ -98,10 +111,20 @@ public class OrganisationUserService(
         Guid cdpPersonId,
         CancellationToken cancellationToken = default)
     {
-        await authorizationGuard.ValidateRemovalAsync(cdpOrganisationId, cdpPersonId, cancellationToken);
+        try
+        {
+            await authorizationGuard.ValidateRemovalAsync(cdpOrganisationId, cdpPersonId, cancellationToken);
+        }
+        catch (EntityNotFoundException ex) when (ex.EntityName == nameof(UserOrganisationMembership))
+        {
+            // Membership already removed — operation is idempotent.
+            return;
+        }
+
         var actingUserId = currentUserService.GetUserPrincipalId() ?? "unknown";
-        await atomicMembershipSync.RemoveUserFromOrganisationAsync(
-            cdpOrganisationId, cdpPersonId, actingUserId, cancellationToken);
+        await removePersonUseCase.Execute(
+            new RemovePersonFromOrganisationCommand(cdpOrganisationId, cdpPersonId, actingUserId),
+            cancellationToken);
     }
 
     private static void SetAssignments(

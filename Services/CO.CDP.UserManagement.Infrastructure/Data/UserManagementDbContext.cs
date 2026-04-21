@@ -1,3 +1,4 @@
+using CO.CDP.MQ.Outbox;
 using CO.CDP.UserManagement.Infrastructure.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
 using CoreEntities = CO.CDP.UserManagement.Core.Entities;
@@ -7,7 +8,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Data;
 /// <summary>
 /// Database context for User Management.
 /// </summary>
-public class UserManagementDbContext : DbContext
+public class UserManagementDbContext : DbContext, IOutboxMessageDbContext
 {
     public UserManagementDbContext(DbContextOptions<UserManagementDbContext> options)
         : base(options)
@@ -16,14 +17,28 @@ public class UserManagementDbContext : DbContext
 
     public DbSet<CoreEntities.Organisation> Organisations => Set<CoreEntities.Organisation>();
     public DbSet<CoreEntities.Application> Applications => Set<CoreEntities.Application>();
-    public DbSet<CoreEntities.ApplicationPermission> ApplicationPermissions => Set<CoreEntities.ApplicationPermission>();
+
+    public DbSet<CoreEntities.ApplicationPermission> ApplicationPermissions =>
+        Set<CoreEntities.ApplicationPermission>();
+
     public DbSet<CoreEntities.ApplicationRole> ApplicationRoles => Set<CoreEntities.ApplicationRole>();
-    public DbSet<CoreEntities.UserOrganisationMembership> UserOrganisationMemberships => Set<CoreEntities.UserOrganisationMembership>();
-    public DbSet<CoreEntities.OrganisationApplication> OrganisationApplications => Set<CoreEntities.OrganisationApplication>();
-    public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments => Set<CoreEntities.UserApplicationAssignment>();
+
+    public DbSet<CoreEntities.UserOrganisationMembership> UserOrganisationMemberships =>
+        Set<CoreEntities.UserOrganisationMembership>();
+
+    public DbSet<CoreEntities.OrganisationApplication> OrganisationApplications =>
+        Set<CoreEntities.OrganisationApplication>();
+
+    public DbSet<CoreEntities.UserApplicationAssignment> UserApplicationAssignments =>
+        Set<CoreEntities.UserApplicationAssignment>();
+
     public DbSet<CoreEntities.InviteRoleMapping> InviteRoleMappings => Set<CoreEntities.InviteRoleMapping>();
-    public DbSet<CoreEntities.InviteRoleApplicationAssignment> InviteRoleApplicationAssignments => Set<CoreEntities.InviteRoleApplicationAssignment>();
+
+    public DbSet<CoreEntities.InviteRoleApplicationAssignment> InviteRoleApplicationAssignments =>
+        Set<CoreEntities.InviteRoleApplicationAssignment>();
+
     public DbSet<CoreEntities.OrganisationRoleEntity> OrganisationRoles => Set<CoreEntities.OrganisationRoleEntity>();
+    public DbSet<OutboxMessage> OutboxMessages { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -42,6 +57,8 @@ public class UserManagementDbContext : DbContext
         modelBuilder.ApplyConfiguration(new InviteRoleMappingConfiguration());
         modelBuilder.ApplyConfiguration(new InviteRoleApplicationAssignmentConfiguration());
         modelBuilder.ApplyConfiguration(new OrganisationRoleConfiguration());
+
+        modelBuilder.OnOutboxMessageCreating();
 
         // Global query filters for soft delete
         modelBuilder.Entity<CoreEntities.Organisation>().HasQueryFilter(e => !e.IsDeleted);
