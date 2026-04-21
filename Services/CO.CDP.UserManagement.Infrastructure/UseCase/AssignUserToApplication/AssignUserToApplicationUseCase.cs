@@ -82,13 +82,16 @@ public class AssignUserToApplicationUseCase(
     }
 
     private async Task<UserOrganisationMembership> ResolveMembershipOrThrowAsync(
-        string userId, int organisationId, CancellationToken ct) =>
-        (Guid.TryParse(userId, out var cdpPersonId)
-            ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, ct)
-            : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
-        ?? throw new EntityNotFoundException(
-            nameof(UserOrganisationMembership),
-            $"User {userId} in Organisation {organisationId}");
+        string userId, int organisationId, CancellationToken ct)
+    {
+        bool isCdpGuid = Guid.TryParse(userId, out var cdpPersonId);
+        return (isCdpGuid
+                   ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, ct)
+                   : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
+               ?? throw new EntityNotFoundException(
+                   nameof(UserOrganisationMembership),
+                   $"User {userId} in Organisation {organisationId}");
+    }
 
     private async Task<OrganisationApplication> GetActiveOrganisationAppAsync(
         int organisationId, int applicationId, CancellationToken ct)

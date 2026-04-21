@@ -31,10 +31,13 @@ public class InvitePersonToOrganisationWithResponseUseCase(
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        var isEmailUnique = await organisationRepository.IsEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
+        var isEmailUnique =
+            await organisationRepository.IsEmailUniqueWithinOrganisation(command.organisationId,
+                command.invitePersonData.Email);
         if (!isEmailUnique)
         {
-            throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
+            throw new DuplicateEmailWithinOrganisationException(
+                $"A user with this email address already exists for your organisation.");
         }
 
         var existingInvites = await ExpireExistingPersonInvites(command.organisationId, command.invitePersonData.Email);
@@ -43,10 +46,11 @@ public class InvitePersonToOrganisationWithResponseUseCase(
         await personInviteRepository.SaveNewInvite(newInvite, existingInvites);
 
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
-                            ?? throw new InvalidOperationException("Missing configuration key: OrganisationAppUrl");
+                         ?? throw new InvalidOperationException("Missing configuration key: OrganisationAppUrl");
 
         var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
-                            ?? throw new InvalidOperationException("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
+                         ?? throw new InvalidOperationException(
+                             "Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
 
         Uri baseUri = new Uri(baseAppUrl);
         Uri inviteLink = new Uri(baseUri, $"organisation-invite/{newInvite.Guid}");
@@ -55,11 +59,13 @@ public class InvitePersonToOrganisationWithResponseUseCase(
         {
             EmailAddress = newInvite.Email,
             TemplateId = templateId,
-            Personalisation = new Dictionary<string, string> {
-                                        { "org_name", organisation.Name},
-                                        { "first_name", newInvite.FirstName},
-                                        { "last_name", newInvite.LastName},
-                                        { "invite_link", inviteLink.ToString()} }
+            Personalisation = new Dictionary<string, string>
+            {
+                { "org_name", organisation.Name },
+                { "first_name", newInvite.FirstName },
+                { "last_name", newInvite.LastName },
+                { "invite_link", inviteLink.ToString() }
+            }
         };
 
         await govUkNotifyApiClient.SendEmail(emailRequest);
@@ -77,11 +83,7 @@ public class InvitePersonToOrganisationWithResponseUseCase(
 
     private static PersonInvite ExpireInvite(PersonInvite personInvite, DateTimeOffset now)
     {
-        if (personInvite.ExpiresOn == null)
-        {
-            personInvite.ExpiresOn = now;
-        }
-
+        personInvite.ExpiresOn ??= now;
         return personInvite;
     }
 

@@ -141,9 +141,11 @@ public class RegisterOrganisationUseCase(
         {
             await govUKNotifyApiClient.SendEmail(emailRequest);
         }
-        catch
+        catch (Exception ex)
         {
-            /* swallow — email failure must not abort org registration */
+            logger.LogError(ex,
+                "Failed to send approval-request email to support admin for organisation {OrganisationId}.",
+                organisation.Guid);
         }
     }
 

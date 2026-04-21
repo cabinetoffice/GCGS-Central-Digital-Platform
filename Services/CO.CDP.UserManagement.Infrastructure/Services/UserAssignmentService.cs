@@ -67,9 +67,12 @@ public class UserAssignmentService(
     }
 
     private async Task<UserOrganisationMembership?> ResolveMembershipAsync(
-        string userId, int organisationId, CancellationToken cancellationToken) =>
-        Guid.TryParse(userId, out var cdpPersonId)
+        string userId, int organisationId, CancellationToken cancellationToken)
+    {
+        bool isCdpGuid = Guid.TryParse(userId, out var cdpPersonId);
+        return isCdpGuid
             ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId,
                 cancellationToken)
             : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, cancellationToken);
+    }
 }
