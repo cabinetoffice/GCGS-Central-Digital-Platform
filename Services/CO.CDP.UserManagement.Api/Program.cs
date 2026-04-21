@@ -1,23 +1,30 @@
-using CO.CDP.UserManagement.Api.Api;
-using CO.CDP.UserManagement.Api.Authorization;
-using CO.CDP.UserManagement.Api;
-using CO.CDP.UserManagement.Infrastructure;
-using CO.CDP.Logging;
+using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Http;
 using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
-using CO.CDP.UserManagement.Api.Validation;
-using CO.CDP.Person.WebApiClient;
 using CO.CDP.Configuration.Helpers;
+using CO.CDP.Logging;
+using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationSync;
+using CO.CDP.Person.WebApiClient;
+using CO.CDP.UserManagement.Api;
+using CO.CDP.UserManagement.Api.Api;
+using CO.CDP.UserManagement.Api.Authorization;
+using CO.CDP.UserManagement.Api.Events;
+using CO.CDP.UserManagement.Api.Events.Handlers;
+using CO.CDP.UserManagement.Api.Validation;
+using CO.CDP.UserManagement.CdpInfrastructure;
+using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Infrastructure;
+using CO.CDP.UserManagement.Infrastructure.Events;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
 
@@ -35,20 +42,16 @@ builder.Services.AddSwaggerGen(options => { options.DocumentUserManagementApi(bu
 builder.Services.AddHttpContextAccessor();
 
 // Application Registry Infrastructure and Core Services
-var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+var umConnectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "UserManagementDatabase");
+var oiConnectionString =
+    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 var awsConfiguration = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 
-// Shared NpgsqlDataSource + scoped connection — both OI and UM contexts use this so
-// IAtomicScope can enlist them in a single PostgreSQL transaction.
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-builder.Services.AddScoped(sp => sp.GetRequiredService<NpgsqlDataSource>().CreateConnection());
+builder.Services.AddUserManagementInfrastructure(umConnectionString);
 
-builder.Services.AddUserManagementInfrastructure(connectionString, useSharedConnection: true);
-
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-    options.UseNpgsql(sp.GetRequiredService<NpgsqlConnection>()));
-
-builder.Services.AddAtomicMembershipSync();
+// OrganisationInformationContext is needed for API key authentication
+builder.Services.AddDbContext<OrganisationInformationContext>(options =>
+    options.UseNpgsql(oiConnectionString));
 
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
@@ -62,12 +65,34 @@ builder.Services.AddCdpAuthentication(builder.Configuration);
 
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
-if (System.Reflection.Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api") ||
-    System.Reflection.Assembly.GetEntryAssembly().IsRunAs("testhost"))
+var isRunningAsService = Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api");
+
+if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
 {
     builder.Services
         .AddAmazonCloudWatchLogsService()
-        .AddCloudWatchSerilog(builder.Configuration);
+        .AddCloudWatchSerilog(builder.Configuration)
+        .AddAwsSqsService()
+        .AddUserManagementOutboxPublisher(builder.Configuration, enableBackgroundServices: isRunningAsService)
+        .AddSqsDispatcher(
+            EventDeserializer.Deserializer,
+            enableBackgroundServices: isRunningAsService,
+            services =>
+            {
+                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredHandler>();
+                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedHandler>();
+                services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedHandler>();
+                services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
+                services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedHandler>();
+            },
+            (services, dispatcher) =>
+            {
+                dispatcher.Subscribe<OrganisationRegistered>(services);
+                dispatcher.Subscribe<OrganisationUpdated>(services);
+                dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
+                dispatcher.Subscribe<PersonScopesUpdated>(services);
+                dispatcher.Subscribe<PersonInviteClaimed>(services);
+            });
 }
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
@@ -82,17 +107,17 @@ const string organisationHttpClientName = "OrganisationClient";
 builder.Services.AddHttpClient(organisationHttpClientName)
     .AddHttpMessageHandler<ServiceKeyBearerTokenHandler>();
 builder.Services
-    .AddTransient<CO.CDP.Organisation.WebApiClient.IOrganisationClient,
-        CO.CDP.Organisation.WebApiClient.OrganisationClient>(sc =>
-        new CO.CDP.Organisation.WebApiClient.OrganisationClient(
+    .AddTransient<IOrganisationClient,
+        OrganisationClient>(sc =>
+        new OrganisationClient(
             organisationServiceUrl ?? string.Empty,
             sc.GetRequiredService<IHttpClientFactory>().CreateClient(organisationHttpClientName)));
 builder.Services
-    .AddTransient<CO.CDP.UserManagement.Core.Interfaces.IOrganisationApiAdapter,
-        CO.CDP.UserManagement.CdpInfrastructure.OrganisationApiAdapter>();
+    .AddTransient<IOrganisationApiAdapter,
+        OrganisationApiAdapter>();
 builder.Services
-    .AddScoped<CO.CDP.UserManagement.Core.Interfaces.IPersonApiAdapter,
-        CO.CDP.UserManagement.CdpInfrastructure.PersonApiAdapter>();
+    .AddScoped<IPersonApiAdapter,
+        PersonApiAdapter>();
 
 // Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -131,7 +156,7 @@ builder.Services.AddScoped<IAuthorizationHandler, OrganisationAdminHandler>();
 
 // Health checks
 builder.Services.AddHealthChecks()
-    .AddNpgSql(connectionString);
+    .AddNpgSql(umConnectionString);
 
 var app = builder.Build();
 app.UseForwardedHeaders();
@@ -154,7 +179,7 @@ app.MapControllers();
 
 try
 {
-    using var conn = new NpgsqlConnection(connectionString);
+    using var conn = new NpgsqlConnection(umConnectionString);
     conn.Open();
     using var cmd = conn.CreateCommand();
     cmd.CommandText = "SELECT 1";

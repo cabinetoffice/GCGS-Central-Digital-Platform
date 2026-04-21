@@ -2,14 +2,9 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.Functional;
 using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationSync;
-using Microsoft.FeatureManagement;
-
 using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using OiPartyRole = CO.CDP.OrganisationInformation.PartyRole;
@@ -17,7 +12,6 @@ using OiPersistenceOrganisation = CO.CDP.OrganisationInformation.Persistence.Org
 using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
 using OiPersonRepository = CO.CDP.OrganisationInformation.Persistence.IPersonRepository;
 using OiTenant = CO.CDP.OrganisationInformation.Persistence.Tenant;
-using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -31,9 +25,6 @@ public class RegisterOrganisationUseCase(
     IConfiguration configuration,
     ILogger<RegisterOrganisationUseCase> logger,
     IClaimService claimService,
-    IAtomicScope atomicScope,
-    IOrganisationMembershipSync membershipSync,
-    IFeatureManager featureManager,
     Func<Guid> guidFactory)
     : IUseCase<RegisterOrganisation, Model.Organisation>
 {
@@ -48,23 +39,17 @@ public class RegisterOrganisationUseCase(
         IMapper mapper,
         IConfiguration configuration,
         ILogger<RegisterOrganisationUseCase> logger,
-        IClaimService claimService,
-        IAtomicScope atomicScope,
-        IOrganisationMembershipSync membershipSync,
-        IFeatureManager featureManager)
+        IClaimService claimService)
         : this(identifierService,
-              organisationRepository,
-              personRepository,
-              govUKNotifyApiClient,
-              publisher,
-              mapper,
-              configuration,
-              logger,
-              claimService,
-              atomicScope,
-              membershipSync,
-              featureManager,
-              Guid.NewGuid)
+            organisationRepository,
+            personRepository,
+            govUKNotifyApiClient,
+            publisher,
+            mapper,
+            configuration,
+            logger,
+            claimService,
+            Guid.NewGuid)
     {
     }
 
@@ -73,46 +58,28 @@ public class RegisterOrganisationUseCase(
         var person = await FindPerson();
         var organisation = CreateOrganisation(command, person);
 
-        var result = await atomicScope.ExecuteAsync(async ct =>
-        {
-            await organisationRepository.SaveAsync(
-                organisation,
-                async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
-
-            var syncEnabled = await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled);
-            return syncEnabled
-                ? (await membershipSync.CreateFounderMembershipAsync(
-                        new CreateFounderCommand(
-                            organisation.Guid,
-                            organisation.Name,
-                            person.Guid,
-                            person.UserUrn,
-                            MapPartyRoles(command.Roles)), ct))
-                    .Match(
-                        onLeft: error => LogAndContinue(error, organisation.Guid),
-                        onRight: _ => mapper.Map<Model.Organisation>(organisation))
-                : mapper.Map<Model.Organisation>(organisation);
-        });
+        await organisationRepository.SaveAsync(
+            organisation,
+            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation) with
+            {
+                FounderPersonId = person.Guid,
+                FounderUserUrn = person.UserUrn
+            }));
 
         if (organisation.PendingRoles.Contains(OiPartyRole.Buyer))
             await NotifyAdminOfApprovalRequest(organisation);
 
-        return result;
-    }
-
-    private Model.Organisation LogAndContinue(SyncError error, Guid orgGuid)
-    {
-        logger.LogError("UM founder sync failed for org {OrgGuid}: {Error}", orgGuid, error.Message);
-        return mapper.Map<Model.Organisation>(
-            organisationRepository.Find(orgGuid).GetAwaiter().GetResult()!);
+        return mapper.Map<Model.Organisation>(organisation);
     }
 
     private async Task<OiPerson> FindPerson()
     {
         var userUrn = claimService.GetUserUrn()
-            ?? throw new UnknownPersonException("Ensure the token is valid and contains the necessary claims.");
+                      ?? throw new UnknownPersonException(
+                          "Ensure the token is valid and contains the necessary claims.");
 
-        return await personRepository.FindByUrn(userUrn) ?? throw new UnknownPersonException($"Unknown person {userUrn}.");
+        return await personRepository.FindByUrn(userUrn) ??
+               throw new UnknownPersonException($"Unknown person {userUrn}.");
     }
 
     private OiPersistenceOrganisation CreateOrganisation(RegisterOrganisation command, OiPerson person)
@@ -127,7 +94,9 @@ public class RegisterOrganisationUseCase(
 
         organisation.Identifiers
             .Where(i => i.Uri == null)
-            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id, organisation.Guid))
+            .Select(i =>
+                i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id,
+                    organisation.Guid))
             .ToList();
 
         organisation.UpdateBuyerInformation();
@@ -154,7 +123,8 @@ public class RegisterOrganisationUseCase(
             return;
         }
 
-        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+        var requestLink =
+            new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
 
         var emailRequest = new EmailNotificationRequest
         {
@@ -167,8 +137,14 @@ public class RegisterOrganisationUseCase(
             }
         };
 
-        try { await govUKNotifyApiClient.SendEmail(emailRequest); }
-        catch { /* swallow — email failure must not abort org registration */ }
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch
+        {
+            /* swallow — email failure must not abort org registration */
+        }
     }
 
     private OiPersistenceOrganisation MapRequestToOrganisation(RegisterOrganisation command, OiPerson person) =>
@@ -182,21 +158,4 @@ public class RegisterOrganisationUseCase(
                 Persons = { person }
             };
         });
-
-    private static IReadOnlyCollection<UmPartyRole> MapPartyRoles(IEnumerable<OiPartyRole> roles) =>
-        roles.Select(role => role switch
-            {
-                OiPartyRole.Buyer => UmPartyRole.Buyer,
-                OiPartyRole.ProcuringEntity => UmPartyRole.ProcuringEntity,
-                OiPartyRole.Supplier => UmPartyRole.Supplier,
-                OiPartyRole.Tenderer => UmPartyRole.Tenderer,
-                OiPartyRole.Funder => UmPartyRole.Funder,
-                OiPartyRole.Enquirer => UmPartyRole.Enquirer,
-                OiPartyRole.Payer => UmPartyRole.Payer,
-                OiPartyRole.Payee => UmPartyRole.Payee,
-                OiPartyRole.ReviewBody => UmPartyRole.ReviewBody,
-                OiPartyRole.InterestedParty => UmPartyRole.InterestedParty,
-                _ => throw new ArgumentOutOfRangeException(nameof(role), role, $"Unknown party role: {role}")
-            })
-            .ToHashSet();
 }

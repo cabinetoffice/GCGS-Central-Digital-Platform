@@ -2,7 +2,9 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Models;
+using CO.CDP.UserManagement.Core.UseCase;
 using CO.CDP.UserManagement.Infrastructure.Services;
+using CO.CDP.UserManagement.Infrastructure.UseCase.AcceptInvite;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using FluentAssertions;
@@ -15,7 +17,7 @@ namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class InviteOrchestrationServiceTests
 {
-    private readonly Mock<IAtomicMembershipSync> _atomicMembershipSyncMock;
+    private readonly Mock<IUseCase<AcceptInviteCommand>> _acceptInviteUseCaseMock;
     private readonly Mock<IInviteRoleMappingRepository> _inviteRoleMappingRepositoryMock;
     private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepositoryMock;
     private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapterMock;
@@ -32,7 +34,7 @@ public class InviteOrchestrationServiceTests
         _membershipRepositoryMock = new Mock<IUserOrganisationMembershipRepository>();
         _organisationApiAdapterMock = new Mock<IOrganisationApiAdapter>();
         _personLookupServiceMock = new Mock<IPersonApiAdapter>();
-        _atomicMembershipSyncMock = new Mock<IAtomicMembershipSync>();
+        _acceptInviteUseCaseMock = new Mock<IUseCase<AcceptInviteCommand>>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
         _roleMappingServiceMock = new Mock<IRoleMappingService>();
         var loggerMock = new Mock<ILogger<InviteOrchestrationService>>();
@@ -46,9 +48,8 @@ public class InviteOrchestrationServiceTests
             .Setup(s => s.GetPersonDetailsByEmailAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((PersonDetails?)null);
 
-        _atomicMembershipSyncMock
-            .Setup(s => s.AcceptInviteAsync(It.IsAny<Guid>(), It.IsAny<int>(),
-                It.IsAny<AcceptOrganisationInviteRequest>(), It.IsAny<CancellationToken>()))
+        _acceptInviteUseCaseMock
+            .Setup(s => s.Execute(It.IsAny<AcceptInviteCommand>(), It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
 
         _roleMappingServiceMock
@@ -80,7 +81,7 @@ public class InviteOrchestrationServiceTests
             _organisationApiAdapterMock.Object,
             _personLookupServiceMock.Object,
             _roleMappingServiceMock.Object,
-            _atomicMembershipSyncMock.Object,
+            _acceptInviteUseCaseMock.Object,
             _unitOfWorkMock.Object,
             loggerMock.Object);
     }
@@ -450,7 +451,7 @@ public class InviteOrchestrationServiceTests
     }
 
     [Fact]
-    public async Task AcceptInviteAsync_WithValidInvite_CreatesUserMembership()
+    public async Task AcceptInviteAsync_WithValidInvite_DelegatesToUseCase()
     {
         var cdpOrgGuid = Guid.NewGuid();
         var request = new AcceptOrganisationInviteRequest
@@ -461,13 +462,16 @@ public class InviteOrchestrationServiceTests
 
         await _service.AcceptInviteAsync(cdpOrgGuid, 1, request);
 
-        _atomicMembershipSyncMock.Verify(
-            s => s.AcceptInviteAsync(cdpOrgGuid, 1, request, It.IsAny<CancellationToken>()),
+        _acceptInviteUseCaseMock.Verify(
+            s => s.Execute(
+                It.Is<AcceptInviteCommand>(c =>
+                    c.CdpOrganisationId == cdpOrgGuid && c.InviteRoleMappingId == 1 && c.Request == request),
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 
     [Fact]
-    public async Task AcceptInviteAsync_WhenAtomicSyncThrows_PropagatesException()
+    public async Task AcceptInviteAsync_WhenUseCaseThrows_PropagatesException()
     {
         var cdpOrgGuid = Guid.NewGuid();
         var request = new AcceptOrganisationInviteRequest
@@ -476,8 +480,8 @@ public class InviteOrchestrationServiceTests
             CdpPersonId = Guid.NewGuid()
         };
 
-        _atomicMembershipSyncMock
-            .Setup(s => s.AcceptInviteAsync(cdpOrgGuid, 1, request, It.IsAny<CancellationToken>()))
+        _acceptInviteUseCaseMock
+            .Setup(s => s.Execute(It.IsAny<AcceptInviteCommand>(), It.IsAny<CancellationToken>()))
             .ThrowsAsync(new DuplicateEntityException("UserOrganisationMembership", "UserPrincipalId", "user-123"));
 
         var act = () => _service.AcceptInviteAsync(cdpOrgGuid, 1, request);

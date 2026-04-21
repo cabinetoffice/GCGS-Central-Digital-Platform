@@ -1,6 +1,5 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
@@ -8,11 +7,9 @@ using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.Tests.UseCase.Extensions;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
-using CO.CDP.OrganisationSync;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.FeatureManagement;
 using Moq;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -21,17 +18,14 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
+    private readonly Guid _anotherOrganisationId = Guid.NewGuid();
+    private readonly IConfiguration _configuration;
+    private readonly Mock<ILogger<UpdateOrganisationUseCase>> _logger = new();
+    private readonly AutoMapperFixture _mapperFixture;
+    private readonly Mock<IGovUKNotifyApiClient> _notifyClient = new();
+    private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepositoryMock = new();
     private readonly Mock<IPublisher> _publisher = new();
-    private readonly IConfiguration _configuration;
-    private readonly Mock<IGovUKNotifyApiClient> _notifyClient = new();
-    private readonly Mock<ILogger<UpdateOrganisationUseCase>> _logger = new();
-    private readonly Mock<IAtomicScope> _atomicScope = new();
-    private readonly Mock<IOrganisationMembershipSync> _membershipSync = new();
-    private readonly Mock<IFeatureManager> _featureManager = new();
-    private readonly Guid _organisationId = Guid.NewGuid();
-    private readonly Guid _anotherOrganisationId = Guid.NewGuid();
-    private readonly AutoMapperFixture _mapperFixture;
     private readonly UpdateOrganisationUseCase _useCase;
 
     public UpdateOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
@@ -49,12 +43,112 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        _atomicScope
-            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<bool>>>(), It.IsAny<CancellationToken>()))
-            .Returns<Func<CancellationToken, Task<bool>>, CancellationToken>((action, ct) => action(ct));
 
-        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration, _notifyClient.Object, _logger.Object, _atomicScope.Object, _membershipSync.Object, _featureManager.Object);
+        _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration,
+            _notifyClient.Object, _logger.Object);
     }
+
+    private Persistence.Organisation OrganisationWithOtherIdentifier =>
+        new()
+        {
+            Guid = _organisationId,
+            Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
+            Tenant = It.IsAny<Persistence.Tenant>(),
+            Identifiers =
+            [
+                new Persistence.Identifier
+                {
+                    Scheme = "Other",
+                    LegalName = "Acme Ltd",
+                    Primary = true
+                }
+            ],
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
+        };
+
+    private Persistence.Organisation OrganisationWithPponIdentifier =>
+        new()
+        {
+            Guid = _organisationId,
+            Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
+            Tenant = It.IsAny<Persistence.Tenant>(),
+            Identifiers =
+            [
+                new Persistence.Identifier
+                {
+                    Scheme = "GB-PPON",
+                    LegalName = "Acme Ltd",
+                    Primary = true,
+                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
+                }
+            ],
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
+        };
+
+    private Persistence.Organisation AnotherOrganisation =>
+        new()
+        {
+            Guid = _organisationId,
+            Name = "Tcme Ltd",
+            Type = OrganisationType.Organisation,
+            Tenant = It.IsAny<Persistence.Tenant>(),
+            Identifiers =
+            [
+                new Persistence.Identifier
+                {
+                    Scheme = "GB-MPR",
+                    IdentifierId = "5656",
+                    LegalName = "Unilever Ltd",
+                    Primary = true
+                }
+            ],
+            ContactPoints = [new Persistence.ContactPoint { Email = "test2@test.com" }],
+            Addresses =
+            {
+                new Persistence.OrganisationAddress
+                {
+                    Type = AddressType.Registered,
+                    Address = new Address
+                    {
+                        StreetAddress = "1234 Port St",
+                        Locality = "Port City",
+                        PostalCode = "178345",
+                        CountryName = "Test Land",
+                        Country = "AB"
+                    }
+                }
+            },
+            Roles = [PartyRole.Buyer]
+        };
+
+    private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
+        new()
+        {
+            Guid = _organisationId,
+            Name = "Acme Ltd",
+            Type = OrganisationType.Organisation,
+            Tenant = It.IsAny<Persistence.Tenant>(),
+            Identifiers =
+            [
+                new Persistence.Identifier
+                {
+                    Scheme = "VAT",
+                    IdentifierId = "93294342",
+                    LegalName = "Acme Ltd",
+                    Primary = true
+                },
+                new Persistence.Identifier
+                {
+                    Scheme = "GB-PPON",
+                    LegalName = "Acme Ltd",
+                    Primary = false,
+                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
+                }
+            ],
+            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
+        };
 
     [Fact]
     public async Task Execute_ShouldUpdateOrganisation_WhenOrganisationExists()
@@ -64,12 +158,15 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "FakeId",
-                    LegalName = "Illegal",
-                    Scheme = "FakeScheme"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "FakeId",
+                        LegalName = "Illegal",
+                        Scheme = "FakeScheme"
+                    }
+                ]
             }
         };
 
@@ -90,12 +187,15 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "0123456789",
-                    LegalName = "Acme Ltd",
-                    Scheme = "VAT"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "0123456789",
+                        LegalName = "Acme Ltd",
+                        Scheme = "VAT"
+                    }
+                ]
             }
         };
         var organisation = OrganisationWithOtherIdentifier;
@@ -118,12 +218,15 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "0123456789",
-                    LegalName = "Acme Ltd",
-                    Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "0123456789",
+                        LegalName = "Acme Ltd",
+                        Scheme = AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse
+                    }
+                ]
             }
         };
         var organisation = OrganisationWithPponIdentifier;
@@ -135,7 +238,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.First(i => i.Scheme == "GB-PPON").Primary.Should().BeFalse();
-        organisation.Identifiers.First(i => i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse).Primary.Should().BeTrue();
+        organisation.Identifiers.First(i => i.Scheme == AssignIdentifierUseCase.IdentifierSchemes.CompaniesHouse)
+            .Primary.Should().BeTrue();
     }
 
     [Fact]
@@ -146,7 +250,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new()
         };
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync((Persistence.Organisation?)null);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync((Persistence.Organisation?)null);
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -164,7 +269,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -181,7 +287,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -197,26 +304,31 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "13294342",
-                    LegalName = "Tcme",
-                    Scheme = "GB-COH"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "13294342",
+                        LegalName = "Tcme",
+                        Scheme = "GB-COH"
+                    }
+                ]
             }
         };
 
         var existingOrganisationWithSameIdentifier = GivenOrganisation([PartyRole.Buyer]);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId))
+            .ReturnsAsync(AnotherOrganisation);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("GB-COH", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("GB-COH", "13294342"))
+            .ReturnsAsync(existingOrganisationWithSameIdentifier);
 
 
         Func<Task> act = async () => await _useCase.Execute((_anotherOrganisationId, command));
 
         await act.Should()
-          .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
+            .ThrowAsync<InvalidUpdateOrganisationCommand.IdentiferNumberAlreadyExists>();
     }
 
     [Fact]
@@ -227,20 +339,25 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "13294342",
-                    LegalName = "Tcme",
-                    Scheme = "VAT"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "13294342",
+                        LegalName = "Tcme",
+                        Scheme = "VAT"
+                    }
+                ]
             }
         };
 
         var existingOrganisationWithSameIdentifier = GivenOrganisation([PartyRole.Buyer]);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(AnotherOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId))
+            .ReturnsAsync(AnotherOrganisation);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync(existingOrganisationWithSameIdentifier);
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342"))
+            .ReturnsAsync(existingOrganisationWithSameIdentifier);
 
         var result = await _useCase.Execute((_anotherOrganisationId, command));
 
@@ -255,20 +372,25 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "342",
-                    LegalName = "Tcme",
-                    Scheme = "VAT"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "342",
+                        LegalName = "Tcme",
+                        Scheme = "VAT"
+                    }
+                ]
             }
         };
 
         var anotherOrganisation = AnotherOrganisation;
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId)).ReturnsAsync(anotherOrganisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_anotherOrganisationId))
+            .ReturnsAsync(anotherOrganisation);
 
-        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342")).ReturnsAsync((Persistence.Organisation?)null);
+        _organisationRepositoryMock.Setup(repo => repo.FindByIdentifier("VAT", "13294342"))
+            .ReturnsAsync((Persistence.Organisation?)null);
 
         var result = await _useCase.Execute((_anotherOrganisationId, command));
 
@@ -291,7 +413,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -307,12 +430,15 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "999888",
-                    LegalName = "Acme",
-                    Scheme = "GB-COH"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "999888",
+                        LegalName = "Acme",
+                        Scheme = "GB-COH"
+                    }
+                ]
             }
         };
 
@@ -344,12 +470,15 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.AdditionalIdentifiers,
             Organisation = new OrganisationInfo
             {
-                AdditionalIdentifiers = [new OrganisationIdentifier
-                {
-                    Id = "999999",
-                    LegalName = "Acme",
-                    Scheme = "VAT"
-                }]
+                AdditionalIdentifiers =
+                [
+                    new OrganisationIdentifier
+                    {
+                        Id = "999999",
+                        LegalName = "Acme",
+                        Scheme = "VAT"
+                    }
+                ]
             }
         };
 
@@ -366,7 +495,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowExceptionNoPrimaryIdentifier_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
+    public async Task
+        Execute_ShouldThrowExceptionNoPrimaryIdentifier_WhenVatIdentifierIsOnlyIdentifierAndVatNumberIsRemoved()
     {
         var command = new UpdateOrganisation
         {
@@ -388,7 +518,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         Func<Task> act = async () => await _useCase.Execute((_organisationId, command));
 
         await act.Should()
-         .ThrowAsync<InvalidUpdateOrganisationCommand.NoPrimaryIdentifier>();
+            .ThrowAsync<InvalidUpdateOrganisationCommand.NoPrimaryIdentifier>();
     }
 
     [Fact]
@@ -416,7 +546,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
         organisation.Identifiers.FirstOrDefault(i =>
-            i is { Scheme: "GB-PPON", IdentifierId: "c0777aeb968b4113a27d94e55b10c1b4", Primary: true })
+                i is { Scheme: "GB-PPON", IdentifierId: "c0777aeb968b4113a27d94e55b10c1b4", Primary: true })
             .Should().NotBeNull();
         organisation.Identifiers.Should().ContainSingle();
     }
@@ -430,7 +560,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -474,7 +605,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -516,7 +648,7 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new OrganisationInfo
             {
                 ContactPoint = new OrganisationContactPoint()
-                { Email = "updatedemail@test.com" }
+                    { Email = "updatedemail@test.com" }
             }
         };
 
@@ -540,7 +672,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Organisation = new()
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -549,29 +682,32 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     }
 
     [Fact]
-    public async Task Execute_ShouldThrowMissingOrganisationRegisteredAddress_WhenOrganisationRegisteredAddressIsMissing()
+    public async Task
+        Execute_ShouldThrowMissingOrganisationRegisteredAddress_WhenOrganisationRegisteredAddressIsMissing()
     {
         var updateOrganisation = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new OrganisationInfo()
             {
-                Addresses = [
+                Addresses =
+                [
                     new OrganisationAddress
                     {
-                        Type=OrganisationInformation.AddressType.Postal,
+                        Type = AddressType.Postal,
                         StreetAddress = "1234 Test St",
                         Locality = "Test City",
                         PostalCode = "12345",
                         CountryName = "Test Land",
                         Country = "AB",
-                        Region="Test Region"
-                     }
+                        Region = "Test Region"
+                    }
                 ]
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId)).ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(_organisationId))
+            .ReturnsAsync(GivenOrganisation([PartyRole.Buyer]));
 
         Func<Task> act = async () => await _useCase.Execute((_organisationId, updateOrganisation));
 
@@ -587,17 +723,18 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new OrganisationInfo
             {
-                Addresses = [
+                Addresses =
+                [
                     new OrganisationAddress
                     {
-                        Type=OrganisationInformation.AddressType.Registered,
+                        Type = AddressType.Registered,
                         StreetAddress = "1234 Test St",
                         Locality = "Test City",
                         PostalCode = "12345",
                         CountryName = "Test Land updated",
                         Country = "AB",
-                        Region="Test Region"
-                     }
+                        Region = "Test Region"
+                    }
                 ]
             }
         };
@@ -610,7 +747,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         result.Should().BeTrue();
         _organisationRepositoryMock.Verify(repo => repo.SaveAsync(organisation, AnyOnSave()), Times.Once);
 
-        organisation.Addresses.FirstOrDefault(x => x.Type == OrganisationInformation.AddressType.Registered)!.Address.CountryName.Should().Be("Test Land updated");
+        organisation.Addresses.FirstOrDefault(x => x.Type == AddressType.Registered)!.Address.CountryName.Should()
+            .Be("Test Land updated");
     }
 
     [Fact]
@@ -711,7 +849,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldResetRejectedStatus_WhenRejectedBuyerChangesName()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
@@ -722,8 +861,10 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -737,7 +878,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldResetRejectedStatus_WhenRejectedBuyerChangesEmail()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
@@ -748,8 +890,10 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -763,18 +907,27 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldNotResetRejectedStatus_WhenRejectedBuyerChangesSomethingOtherThanNameOrEmail()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new OrganisationInfo
             {
-                Addresses = [new OrganisationAddress { Country = "UK", CountryName = "UK", Locality = "Devon", PostalCode = "PL1 1LP", StreetAddress = "1 streety street", Type = AddressType.Registered }]
+                Addresses =
+                [
+                    new OrganisationAddress
+                    {
+                        Country = "UK", CountryName = "UK", Locality = "Devon", PostalCode = "PL1 1LP",
+                        StreetAddress = "1 streety street", Type = AddressType.Registered
+                    }
+                ]
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -788,7 +941,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldSendEmail_WhenRejectedBuyerChangesName()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
@@ -799,8 +953,10 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -818,7 +974,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldSendEmail_WhenRejectedBuyerChangesEmail()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
@@ -829,8 +986,10 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingReviewedBy(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -848,18 +1007,27 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
     [Fact]
     public async Task Execute_ShouldNotSendEmail_WhenRejectedBuyerChangesSomethingOtherThanNameOrEmail()
     {
-        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(), reviewComment: "Terrible");
+        var organisation = GivenOrganisation(pendingRoles: [PartyRole.Buyer], reviewedBy: GivenPerson(),
+            reviewComment: "Terrible");
 
         var updateOrganisation = new UpdateOrganisation
         {
             Type = OrganisationUpdateType.RegisteredAddress,
             Organisation = new OrganisationInfo
             {
-                Addresses = [new OrganisationAddress { Country = "UK", CountryName = "UK", Locality = "Devon", PostalCode = "PL1 1LP", StreetAddress = "1 streety street", Type = AddressType.Registered }]
+                Addresses =
+                [
+                    new OrganisationAddress
+                    {
+                        Country = "UK", CountryName = "UK", Locality = "Devon", PostalCode = "PL1 1LP",
+                        StreetAddress = "1 streety street", Type = AddressType.Registered
+                    }
+                ]
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -882,7 +1050,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -905,7 +1074,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             }
         };
 
-        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>())).ReturnsAsync(organisation);
+        _organisationRepositoryMock.Setup(repo => repo.FindIncludingTenant(It.IsAny<Guid>()))
+            .ReturnsAsync(organisation);
 
         var result = await _useCase.Execute((Guid.NewGuid(), updateOrganisation));
 
@@ -914,44 +1084,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _notifyClient.Verify(n => n.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
 
-    private Persistence.Organisation OrganisationWithOtherIdentifier =>
-        new()
-        {
-            Guid = _organisationId,
-            Name = "Acme Ltd",
-            Type = OrganisationInformation.OrganisationType.Organisation,
-            Tenant = It.IsAny<Persistence.Tenant>(),
-            Identifiers = [
-                new Persistence.Identifier
-                {
-                    Scheme = "Other",
-                    LegalName = "Acme Ltd",
-                    Primary = true
-                }
-            ],
-            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
-        };
-
-    private Persistence.Organisation OrganisationWithPponIdentifier =>
-        new()
-        {
-            Guid = _organisationId,
-            Name = "Acme Ltd",
-            Type = OrganisationType.Organisation,
-            Tenant = It.IsAny<Persistence.Tenant>(),
-            Identifiers = [
-                new Persistence.Identifier
-                {
-                    Scheme = "GB-PPON",
-                    LegalName = "Acme Ltd",
-                    Primary = true,
-                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
-                }
-            ],
-            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
-        };
-
-    private Persistence.Organisation GivenOrganisation(List<PartyRole>? roles = null, List<PartyRole>? pendingRoles = null, Persistence.Person? reviewedBy = null, string? reviewComment = null)
+    private Persistence.Organisation GivenOrganisation(List<PartyRole>? roles = null,
+        List<PartyRole>? pendingRoles = null, Persistence.Person? reviewedBy = null, string? reviewComment = null)
     {
         return new()
         {
@@ -963,7 +1097,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                 Guid = Guid.NewGuid(),
                 Name = "Test1"
             },
-            Identifiers = [
+            Identifiers =
+            [
                 new Persistence.Identifier
                 {
                     Scheme = "VAT",
@@ -973,82 +1108,27 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
                 }
             ],
             ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }],
-            Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
+            Addresses =
             {
-                Type  = OrganisationInformation.AddressType.Registered,
-                Address = new Address
+                new Persistence.OrganisationAddress
                 {
-                    StreetAddress = "1234 Test St",
-                    Locality = "Test City",
-                    PostalCode = "12345",
-                    CountryName = "Test Land",
-                    Country = "AB"
+                    Type = AddressType.Registered,
+                    Address = new Address
+                    {
+                        StreetAddress = "1234 Test St",
+                        Locality = "Test City",
+                        PostalCode = "12345",
+                        CountryName = "Test Land",
+                        Country = "AB"
+                    }
                 }
-            }},
+            },
             Roles = roles ?? [],
             PendingRoles = pendingRoles ?? [],
             ReviewedBy = reviewedBy ?? null,
             ReviewComment = reviewComment ?? null
         };
     }
-
-    private Persistence.Organisation AnotherOrganisation =>
-     new()
-     {
-         Guid = _organisationId,
-         Name = "Tcme Ltd",
-         Type = OrganisationType.Organisation,
-         Tenant = It.IsAny<Persistence.Tenant>(),
-         Identifiers = [
-                  new Persistence.Identifier
-                {
-                    Scheme = "GB-MPR",
-                    IdentifierId = "5656",
-                    LegalName = "Unilever Ltd",
-                    Primary = true
-                }
-         ],
-         ContactPoints = [new Persistence.ContactPoint { Email = "test2@test.com" }],
-         Addresses = {new OrganisationInformation.Persistence.OrganisationAddress
-            {
-                Type  = OrganisationInformation.AddressType.Registered,
-                Address = new Address
-                {
-                    StreetAddress = "1234 Port St",
-                    Locality = "Port City",
-                    PostalCode = "178345",
-                    CountryName = "Test Land",
-                    Country = "AB"
-                }
-            }},
-         Roles = [PartyRole.Buyer]
-     };
-
-    private Persistence.Organisation OrganisationWithVatPrimaryAndPpon =>
-        new()
-        {
-            Guid = _organisationId,
-            Name = "Acme Ltd",
-            Type = OrganisationType.Organisation,
-            Tenant = It.IsAny<Persistence.Tenant>(),
-            Identifiers = [
-                new Persistence.Identifier
-                    {
-                        Scheme = "VAT",
-                        IdentifierId = "93294342",
-                        LegalName = "Acme Ltd",
-                        Primary = true
-                    },
-                new Persistence.Identifier
-                {
-                    Scheme = "GB-PPON",
-                    LegalName = "Acme Ltd",
-                    Primary = false,
-                    IdentifierId = "c0777aeb968b4113a27d94e55b10c1b4"
-                }
-            ],
-            ContactPoints = [new Persistence.ContactPoint { Email = "test@test.com" }]
-        };
 
     private static Func<Persistence.Organisation, Task> AnyOnSave()
     {
@@ -1062,7 +1142,8 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
     private static Persistence.Person GivenPerson()
     {
-        return new Persistence.Person {
+        return new Persistence.Person
+        {
             Guid = new Guid(),
             FirstName = "First",
             LastName = "Last",

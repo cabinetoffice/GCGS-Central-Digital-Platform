@@ -1,6 +1,6 @@
-using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using CoreEntities = CO.CDP.UserManagement.Core.Entities;
 
 namespace CO.CDP.UserManagement.Infrastructure.Data.Configurations;
 
@@ -53,7 +53,6 @@ public class OrganisationConfiguration : IEntityTypeConfiguration<CoreEntities.O
         builder.Property(o => o.ModifiedAt).HasColumnName("modified_at");
         builder.Property(o => o.ModifiedBy).HasColumnName("modified_by").HasMaxLength(255);
 
-        // Relationships
         builder.HasMany(o => o.UserMemberships)
             .WithOne(m => m.Organisation)
             .HasForeignKey(m => m.OrganisationId)
