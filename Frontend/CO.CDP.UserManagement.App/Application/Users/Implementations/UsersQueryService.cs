@@ -1,5 +1,5 @@
-using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Application.Users.Implementations
@@ -27,12 +27,14 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
             var usersTask = _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
             var invitesTask = _adapter.GetInvitesAsync(org.CdpOrganisationGuid, ct);
             var applicationsTask = _adapter.GetApplicationsAsync(org.Id, ct);
+            var joinRequestsTask = _adapter.GetJoinRequestsAsync(org.CdpOrganisationGuid, ct);
 
-            await Task.WhenAll(usersTask, invitesTask, applicationsTask);
+            await Task.WhenAll(usersTask, invitesTask, applicationsTask, joinRequestsTask);
 
             var users = await usersTask;
             var invites = await invitesTask;
             var applications = (await applicationsTask).ToList();
+            var joinRequests = (await joinRequestsTask).ToList();
 
             var filter = new UsersFilter(role, application, search);
 
@@ -101,7 +103,8 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 role,
                 application,
                 search,
-                filteredUsers.Count + filteredInvites.Count
+                filteredUsers.Count + filteredInvites.Count,
+                joinRequests.Count > 0 ? joinRequests : null
             );
         }
     }
@@ -151,7 +154,6 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                         ar.AssignedAt ?? ar.CreatedAt,
                         assignedByEmail,
                         ar.Roles?.FirstOrDefault()?.Name ?? string.Empty);
-
                 })
                 .ToList();
 

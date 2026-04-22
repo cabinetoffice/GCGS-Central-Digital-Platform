@@ -1,0 +1,54 @@
+@using CO.CDP.UserManagement.Shared.Enums
+@model JoinRequestConfirmViewModel
+@{
+    var isApprove = Model.Action == JoinRequestAction.Approve;
+    ViewData["Title"] = isApprove ? "Approve join request" : "Reject join request";
+    var formAction = isApprove
+            ? $"/organisation/{Model.OrganisationId}/join-requests/{Model.JoinRequestId}/approve?personId={Model.PersonId}"
+            : $"/organisation/{Model.OrganisationId}/join-requests/{Model.JoinRequestId}/reject?personId={Model.PersonId}";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.OrganisationId/users" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">@(isApprove ? "Approve" : "Reject") request to join organisation</h1>
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Name</dt>
+                <dd class="govuk-summary-list__value">@Model.FullName</dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Email address</dt>
+                <dd class="govuk-summary-list__value">@Model.Email</dd>
+            </div>
+        </dl>
+
+        @if (isApprove)
+        {
+            <p class="govuk-body">Approving this request will add @Model.FullName to your organisation as a member. You
+                can change their role afterwards.</p>
+        }
+        else
+        {
+            <p class="govuk-body">Rejecting this request will notify @Model.FullName that they have not been added to
+                your organisation.</p>
+        }
+
+        <form method="post" action="@formAction">
+            @Html.AntiForgeryToken()
+            <div class="govuk-button-group">
+                <button type="submit" class="govuk-button @(isApprove ? "" : "govuk-button--warning")"
+                        data-module="govuk-button">
+                    @(isApprove ? "Approve request" : "Reject request")
+                </button>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId/users">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</div>
