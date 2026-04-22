@@ -1,5 +1,5 @@
 resource "aws_route53_record" "payments_cert" {
-  for_each = local.payments_records[var.environment] != null ? local.payments_records[var.environment] : {}
+  for_each = local.payments_records[var.environment]
 
   name    = each.value.validator_name
   records = each.value.validator_records
@@ -9,7 +9,7 @@ resource "aws_route53_record" "payments_cert" {
 }
 
 resource "aws_route53_record" "payments_alias" {
-  for_each = local.payments_records[var.environment] != null ? local.payments_records[var.environment] : {}
+  for_each = local.payments_records[var.environment]
 
   name    = each.value.name
   type    = "A"

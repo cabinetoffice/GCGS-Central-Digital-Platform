@@ -43,4 +43,13 @@ public interface IInviteOrchestrationService
         int inviteRoleMappingId,
         AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Resends an existing invite, extending its lifespan and re-sending the notification email.
+    /// The invite GUID is preserved.
+    /// </summary>
+    Task ResendInviteAsync(
+        Guid cdpOrganisationId,
+        int inviteRoleMappingId,
+        CancellationToken cancellationToken = default);
 }

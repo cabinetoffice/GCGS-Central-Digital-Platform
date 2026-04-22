@@ -19,8 +19,8 @@ locals {
   }
 
   payments_records = {
-    oechestrator = null
-    development = null
+    oechestrator = {}
+    development = {}
     staging     = {
       payments = {
         name              = "payments"
@@ -30,7 +30,7 @@ locals {
         validator_records = ["_aa597b611a8bfdf011f6b2328f946e8f.jkddzztszm.acm-validations.aws."]
       }
     }
-    integration = null
+    integration = {}
     production = {
       publish_payments = {
         name              = "publish-payments"

@@ -1,18 +1,22 @@
-using CO.CDP.UserManagement.App.Controllers;
+using System.Text;
 using CO.CDP.Functional;
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Services;
-using CO.CDP.UserManagement.Shared.Enums;
-using CO.CDP.UserManagement.Shared.Responses;
-using CO.CDP.UserManagement.App.Application.Users;
+using CO.CDP.UserManagement.App.Application.ApplicationRoles;
 using CO.CDP.UserManagement.App.Application.InviteUsers;
 using CO.CDP.UserManagement.App.Application.OrganisationRoles;
-using CO.CDP.UserManagement.App.Application.ApplicationRoles;
 using CO.CDP.UserManagement.App.Application.Removal;
+using CO.CDP.UserManagement.App.Application.Users;
+using CO.CDP.UserManagement.App.Controllers;
+using CO.CDP.UserManagement.App.Models;
+using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Core.Removal;
+using CO.CDP.UserManagement.Shared.Enums;
+using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 
 namespace CO.CDP.UserManagement.App.Tests.Controllers;
@@ -27,8 +31,8 @@ internal static class TestOrganisationData
 
 public class UsersListControllerTests
 {
-    private readonly Mock<IUsersQueryService> _usersQueryService = new();
     private readonly UsersListController _controller;
+    private readonly Mock<IUsersQueryService> _usersQueryService = new();
 
     public UsersListControllerTests()
     {
@@ -53,7 +57,8 @@ public class UsersListControllerTests
     [Fact]
     public async Task Index_WhenViewModelNull_ReturnsNotFound()
     {
-        _usersQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, null, null, It.IsAny<CancellationToken>()))
+        _usersQueryService.Setup(s =>
+                s.GetViewModelAsync(TestOrganisationData.Id, null, null, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UsersViewModel?)null);
 
         var result = await _controller.Index(TestOrganisationData.Id, null, null, null, CancellationToken.None);
@@ -65,7 +70,8 @@ public class UsersListControllerTests
     public async Task Index_WhenViewModelAvailable_ReturnsView()
     {
         var viewModel = UsersViewModel.Empty with { OrganisationName = "Org" };
-        _usersQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, null, null, It.IsAny<CancellationToken>()))
+        _usersQueryService.Setup(s =>
+                s.GetViewModelAsync(TestOrganisationData.Id, null, null, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.Index(TestOrganisationData.Id, null, null, null, CancellationToken.None);
@@ -78,9 +84,9 @@ public class UsersListControllerTests
 
 public class UserDetailsControllerTests
 {
-    private readonly Mock<IUserDetailsQueryService> _userDetailsQueryService = new();
-    private readonly Mock<IInviteDetailsQueryService> _inviteDetailsQueryService = new();
     private readonly UserDetailsController _controller;
+    private readonly Mock<IInviteDetailsQueryService> _inviteDetailsQueryService = new();
+    private readonly Mock<IUserDetailsQueryService> _userDetailsQueryService = new();
 
     public UserDetailsControllerTests()
     {
@@ -92,7 +98,8 @@ public class UserDetailsControllerTests
     [Fact]
     public async Task Details_WhenViewModelNull_ReturnsNotFound()
     {
-        _userDetailsQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        _userDetailsQueryService.Setup(s =>
+                s.GetViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserDetailsViewModel?)null);
 
         var result = await _controller.Details(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
@@ -151,7 +158,8 @@ public class UserDetailsControllerTests
             Organisation: organisation, CdpPersonId: Guid.NewGuid(), FullName: "Test User",
             Email: "test@example.com", OrganisationRole: OrganisationRole.Admin,
             MemberSince: "19 February 2026", ApplicationAccess: applicationAccess);
-        _userDetailsQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+        _userDetailsQueryService.Setup(s =>
+                s.GetViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.Details(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
@@ -163,7 +171,8 @@ public class UserDetailsControllerTests
     public async Task InviteDetails_WhenViewModelNull_ReturnsNotFound()
     {
         var guid = Guid.NewGuid();
-        _inviteDetailsQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, guid, It.IsAny<CancellationToken>()))
+        _inviteDetailsQueryService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, guid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((InviteDetailsViewModel?)null);
 
         var result = await _controller.InviteDetails(TestOrganisationData.Id, guid, CancellationToken.None);
@@ -185,8 +194,10 @@ public class UserDetailsControllerTests
             CreatedAt = DateTimeOffset.UtcNow
         };
 
-        var vm = new InviteDetailsViewModel(org, guid, 123, "Test Invite", "invite@example.com", OrganisationRole.Member, DateTimeOffset.UtcNow, new List<string> { "AppA" });
-        _inviteDetailsQueryService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, guid, It.IsAny<CancellationToken>()))
+        var vm = new InviteDetailsViewModel(org, guid, 123, "Test Invite", "invite@example.com",
+            OrganisationRole.Member, DateTimeOffset.UtcNow, new List<string> { "AppA" });
+        _inviteDetailsQueryService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, guid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(vm);
 
         var result = await _controller.InviteDetails(TestOrganisationData.Id, guid, CancellationToken.None);
@@ -199,10 +210,11 @@ public class UserDetailsControllerTests
 
 public class InviteUserControllerTests
 {
+    private readonly InviteUserController _controller;
     private readonly Mock<IInviteUserFlowService> _inviteUserFlowService = new();
     private readonly Mock<IInviteUserStateStore> _inviteUserStateStore = new();
     private readonly Mock<IApplicationRoleSelectionMapper> _roleSelectionMapper = new();
-    private readonly InviteUserController _controller;
+    private readonly Mock<ISession> _session = new();
 
     public InviteUserControllerTests()
     {
@@ -217,16 +229,30 @@ public class InviteUserControllerTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(false);
 
+        // Default: no cooldown session entry present
+        var emptyBytes = Array.Empty<byte>();
+        _session.Setup(s => s.TryGetValue(It.IsAny<string>(), out emptyBytes)).Returns(false);
+        _session.Setup(s => s.Set(It.IsAny<string>(), It.IsAny<byte[]>()));
+
+        var httpContext = new DefaultHttpContext { Session = _session.Object };
+        var tempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+
         _controller = new InviteUserController(
             _inviteUserFlowService.Object,
             _inviteUserStateStore.Object,
-            _roleSelectionMapper.Object);
+            _roleSelectionMapper.Object,
+            NullLogger<InviteUserController>.Instance)
+        {
+            ControllerContext = new ControllerContext { HttpContext = httpContext },
+            TempData = tempData
+        };
     }
 
     [Fact]
     public async Task Add_Get_WhenViewModelNull_ReturnsNotFound()
     {
-        _inviteUserFlowService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
+        _inviteUserFlowService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync((InviteUserViewModel?)null);
 
         var result = await _controller.Add(TestOrganisationData.Id, ct: CancellationToken.None);
@@ -238,7 +264,8 @@ public class InviteUserControllerTests
     public async Task Add_Get_WhenViewModelAvailable_ReturnsView()
     {
         var viewModel = InviteUserViewModel.Empty with { OrganisationName = "Org" };
-        _inviteUserFlowService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
+        _inviteUserFlowService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.Add(TestOrganisationData.Id, ct: CancellationToken.None);
@@ -249,7 +276,8 @@ public class InviteUserControllerTests
     [Fact]
     public async Task Add_Get_WhenSessionStateExists_PrefillsFromState()
     {
-        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last", OrganisationRole.Admin);
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last",
+            OrganisationRole.Admin);
         var viewModel = InviteUserViewModel.Empty with
         {
             OrganisationName = "Org",
@@ -280,7 +308,8 @@ public class InviteUserControllerTests
         var input = InviteUserViewModel.Empty;
         var viewModel = InviteUserViewModel.Empty with { OrganisationName = "Org" };
         _controller.ModelState.AddModelError("error", "invalid");
-        _inviteUserFlowService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, input, It.IsAny<CancellationToken>()))
+        _inviteUserFlowService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, input, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.Add(TestOrganisationData.Id, input, ct: CancellationToken.None);
@@ -307,7 +336,8 @@ public class InviteUserControllerTests
         {
             Email = "user@example.com", FirstName = "First", LastName = "Last"
         };
-        var result = await _controller.Add(TestOrganisationData.Id, input, returnToCheckAnswers: true, ct: CancellationToken.None);
+        var result = await _controller.Add(TestOrganisationData.Id, input, returnToCheckAnswers: true,
+            ct: CancellationToken.None);
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(InviteUserController.CheckAnswersStep));
     }
@@ -345,9 +375,11 @@ public class InviteUserControllerTests
         };
         var viewModel = InviteUserViewModel.Empty with { OrganisationName = "Org" };
         _inviteUserFlowService.Setup(s =>
-                s.IsEmailAlreadyInOrganisationAsync(TestOrganisationData.Id, input.Email, It.IsAny<CancellationToken>()))
+                s.IsEmailAlreadyInOrganisationAsync(TestOrganisationData.Id, input.Email,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(true);
-        _inviteUserFlowService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, input, It.IsAny<CancellationToken>()))
+        _inviteUserFlowService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, input, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.Add(TestOrganisationData.Id, input, ct: CancellationToken.None);
@@ -355,7 +387,8 @@ public class InviteUserControllerTests
         result.Should().BeOfType<ViewResult>().Which.Model.Should().Be(viewModel);
         _controller.ModelState.ContainsKey(nameof(input.Email)).Should().BeTrue();
         _inviteUserFlowService.Verify(
-            s => s.InviteAsync(It.IsAny<Guid>(), It.IsAny<InviteUserState>(), It.IsAny<CancellationToken>()), Times.Never);
+            s => s.InviteAsync(It.IsAny<Guid>(), It.IsAny<InviteUserState>(), It.IsAny<CancellationToken>()),
+            Times.Never);
     }
 
     [Fact]
@@ -363,7 +396,8 @@ public class InviteUserControllerTests
     {
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
         var result = await _controller.OrganisationRoleStep(TestOrganisationData.Id);
-        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be(nameof(InviteUserController.Add));
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.Add));
     }
 
     [Fact]
@@ -407,8 +441,10 @@ public class InviteUserControllerTests
     public async Task ApplicationRoles_WhenStateMissing_RedirectsToAdd()
     {
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
-        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null, CancellationToken.None);
-        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be(nameof(InviteUserController.Add));
+        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null,
+            CancellationToken.None);
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.Add));
     }
 
     [Fact]
@@ -417,17 +453,20 @@ public class InviteUserControllerTests
         var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
         var viewModel = new ApplicationRolesStepViewModel
         {
-            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last", Email = "user@example.com",
+            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last",
+            Email = "user@example.com",
             Applications = []
         };
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
         _inviteUserFlowService.Setup(s =>
                 s.GetApplicationRolesStepAsync(TestOrganisationData.Id, state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _roleSelectionMapper.Setup(m => m.ApplyExistingSelections(viewModel, It.IsAny<IReadOnlyList<InviteApplicationAssignment>?>()))
+        _roleSelectionMapper.Setup(m =>
+                m.ApplyExistingSelections(viewModel, It.IsAny<IReadOnlyList<InviteApplicationAssignment>?>()))
             .Returns(viewModel);
 
-        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null, CancellationToken.None);
+        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null,
+            CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be(nameof(InviteUserController.ApplicationRolesStep));
@@ -440,7 +479,8 @@ public class InviteUserControllerTests
         var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
         var viewModel = new ApplicationRolesStepViewModel
         {
-            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last", Email = "user@example.com",
+            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last",
+            Email = "user@example.com",
             Applications =
             [
                 new()
@@ -480,7 +520,8 @@ public class InviteUserControllerTests
         var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
         var viewModel = new ApplicationRolesStepViewModel
         {
-            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last", Email = "user@example.com",
+            OrganisationId = TestOrganisationData.Id, FirstName = "First", LastName = "Last",
+            Email = "user@example.com",
             Applications =
             [
                 new()
@@ -498,7 +539,8 @@ public class InviteUserControllerTests
             .Returns(viewModel);
         _roleSelectionMapper.Setup(m => m.ValidateSelections(viewModel, It.IsAny<ModelStateDictionary>()))
             .Returns(true);
-        _roleSelectionMapper.Setup(m => m.MapToAssignments(It.IsAny<IReadOnlyList<ApplicationAccessSelectionViewModel>>()))
+        _roleSelectionMapper
+            .Setup(m => m.MapToAssignments(It.IsAny<IReadOnlyList<ApplicationAccessSelectionViewModel>>()))
             .Returns([]);
 
         var result = await _controller.ApplicationRolesStepSubmit(
@@ -522,13 +564,15 @@ public class InviteUserControllerTests
     {
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
         var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, null, CancellationToken.None);
-        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be(nameof(InviteUserController.Add));
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.Add));
     }
 
     [Fact]
     public async Task CheckAnswers_WhenValidState_ReturnsView()
     {
-        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last", OrganisationRole.Admin,
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last",
+            OrganisationRole.Admin,
             [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 5 }]);
         var rolesViewModel = new ApplicationRolesStepViewModel
         {
@@ -549,13 +593,15 @@ public class InviteUserControllerTests
 
         var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, null, CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(InviteUserController.CheckAnswersStep));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(InviteUserController.CheckAnswersStep));
     }
 
     [Fact]
     public async Task CheckAnswers_Post_WhenValid_InvitesAndRedirectsToSuccess()
     {
-        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last", OrganisationRole.Admin,
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last",
+            OrganisationRole.Admin,
             [new InviteApplicationAssignment { OrganisationApplicationId = 10, ApplicationRoleId = 5 }]);
         var rolesViewModel = new ApplicationRolesStepViewModel
         {
@@ -574,9 +620,11 @@ public class InviteUserControllerTests
         _inviteUserFlowService.Setup(s =>
                 s.GetApplicationRolesStepAsync(TestOrganisationData.Id, state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(rolesViewModel);
-        _inviteUserFlowService.Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
+        _inviteUserFlowService
+            .Setup(s => s.GetViewModelAsync(TestOrganisationData.Id, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(invitePageViewModel);
-        _inviteUserFlowService.Setup(s => s.InviteAsync(TestOrganisationData.Id, It.IsAny<InviteUserState>(), It.IsAny<CancellationToken>()))
+        _inviteUserFlowService.Setup(s =>
+                s.InviteAsync(TestOrganisationData.Id, It.IsAny<InviteUserState>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.CheckAnswersStepSubmit(TestOrganisationData.Id, CancellationToken.None);
@@ -590,7 +638,8 @@ public class InviteUserControllerTests
     {
         _inviteUserStateStore.Setup(s => s.GetSuccessAsync()).ReturnsAsync((InviteSuccessState?)null);
         var result = await _controller.InviteSuccessStep(TestOrganisationData.Id);
-        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be(nameof(UsersListController.Index));
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(UsersListController.Index));
     }
 
     [Fact]
@@ -616,24 +665,93 @@ public class InviteUserControllerTests
     public async Task ResendInvite_WhenSuccess_RedirectsToIndex()
     {
         var inviteGuid = Guid.NewGuid();
-        _inviteUserFlowService.Setup(s => s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
+        _inviteUserFlowService.Setup(s =>
+                s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(ServiceOutcome.Success,
+                    "Alice Smith")));
 
         var result = await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
-        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should().Be(nameof(UsersListController.Index));
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(UsersListController.Index));
+    }
+
+    [Fact]
+    public async Task ResendInvite_WhenSuccess_SetsTempDataSuccessBanner()
+    {
+        var inviteGuid = Guid.NewGuid();
+        _inviteUserFlowService.Setup(s =>
+                s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(ServiceOutcome.Success,
+                    "Alice Smith")));
+
+        await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+
+        _controller.TempData["SuccessBanner"].Should().Be("Invite resent to Alice Smith.");
+    }
+
+    [Fact]
+    public async Task ResendInvite_WhenSuccessWithNoName_UsesFallback()
+    {
+        var inviteGuid = Guid.NewGuid();
+        _inviteUserFlowService.Setup(s =>
+                s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(ServiceOutcome.Success)));
+
+        await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+
+        _controller.TempData["SuccessBanner"].Should().Be("Invite resent to the user.");
     }
 
     [Fact]
     public async Task ResendInvite_WhenFails_ReturnsNotFound()
     {
         var inviteGuid = Guid.NewGuid();
-        _inviteUserFlowService.Setup(s => s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
+        _inviteUserFlowService.Setup(s =>
+                s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(ServiceOutcome.NotFound)));
 
         var result = await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task ResendInvite_WhenCooldownActive_RedirectsToInviteDetailsWithInfoBanner()
+    {
+        var inviteGuid = Guid.NewGuid();
+        var recentTimestamp = Encoding.UTF8.GetBytes(DateTimeOffset.UtcNow.AddSeconds(-10).ToString("O"));
+        _session.Setup(s => s.TryGetValue($"ResendCooldown:{inviteGuid}", out recentTimestamp)).Returns(true);
+
+        var result = await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>()
+            .Which.ActionName.Should().Be(nameof(UserDetailsController.InviteDetails));
+        _controller.TempData["InfoBanner"].Should().BeOfType<string>().Which.Should().NotBeNullOrEmpty();
+        _inviteUserFlowService.Verify(
+            s => s.ResendInviteAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task ResendInvite_WhenCooldownExpired_AllowsResend()
+    {
+        var inviteGuid = Guid.NewGuid();
+        var expiredTimestamp = Encoding.UTF8.GetBytes(DateTimeOffset.UtcNow.AddMinutes(-2).ToString("O"));
+        _session.Setup(s => s.TryGetValue($"ResendCooldown:{inviteGuid}", out expiredTimestamp)).Returns(true);
+        _inviteUserFlowService.Setup(s =>
+                s.ResendInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(ServiceOutcome.Success,
+                    "Bob Jones")));
+
+        var result = await _controller.ResendInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(UsersListController.Index));
     }
 }
 
@@ -641,8 +759,8 @@ public class InviteUserControllerTests
 
 public class ChangeOrganisationRoleControllerTests
 {
-    private readonly Mock<IOrganisationRoleFlowService> _organisationRoleFlowService = new();
     private readonly ChangeOrganisationRoleController _controller;
+    private readonly Mock<IOrganisationRoleFlowService> _organisationRoleFlowService = new();
 
     public ChangeOrganisationRoleControllerTests()
     {
@@ -653,7 +771,8 @@ public class ChangeOrganisationRoleControllerTests
     public async Task ChangeRole_Get_WhenViewModelNull_ReturnsNotFound()
     {
         _organisationRoleFlowService
-            .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((ChangeUserRoleViewModel?)null);
 
         var result = await _controller.ChangeRole(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
@@ -686,7 +805,8 @@ public class ChangeOrganisationRoleControllerTests
             .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.GetOrCreateStateAsync(TestOrganisationData.Id, userId, null, viewModel, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetOrCreateStateAsync(TestOrganisationData.Id, userId, null, viewModel,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
@@ -708,17 +828,20 @@ public class ChangeOrganisationRoleControllerTests
             "Org", TestOrganisationData.Id, "", "", OrganisationRole.Member, null, false, null, null,
             Array.Empty<OrganisationRoleOption>());
         _organisationRoleFlowService
-            .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, It.IsAny<Guid?>(), null, viewModel, null,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, It.IsAny<Guid?>(), null, viewModel,
+                null,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError("organisationRole", "Select a role"));
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pageVm);
 
-        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, Guid.NewGuid(), null, CancellationToken.None);
+        var result =
+            await _controller.ChangeRoleSubmit(TestOrganisationData.Id, Guid.NewGuid(), null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
@@ -735,21 +858,27 @@ public class ChangeOrganisationRoleControllerTests
             CurrentRole = OrganisationRole.Admin
         };
         var pageVm = new ChangeUserRolePageViewModel(
-            "Org", TestOrganisationData.Id, "", "me@example.com", OrganisationRole.Admin, OrganisationRole.Member, false, userId, null,
+            "Org", TestOrganisationData.Id, "", "me@example.com", OrganisationRole.Admin, OrganisationRole.Member,
+            false, userId, null,
             Array.Empty<OrganisationRoleOption>());
-        _organisationRoleFlowService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+        _organisationRoleFlowService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel, OrganisationRole.Member,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel,
+                OrganisationRole.Member,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError(nameof(OrganisationRole), "Cannot change your own role"));
+            .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError(nameof(OrganisationRole),
+                "Cannot change your own role"));
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, OrganisationRole.Member, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pageVm);
 
-        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Member, CancellationToken.None);
+        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Member,
+            CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey(nameof(OrganisationRole)).Should().BeTrue();
         _organisationRoleFlowService.Verify(s => s.UpdateUserRoleAsync(
                 It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()),
@@ -767,19 +896,23 @@ public class ChangeOrganisationRoleControllerTests
         var pageVm = new ChangeUserRolePageViewModel(
             "", TestOrganisationData.Id, "", "", OrganisationRole.Admin, OrganisationRole.Admin, false, userId, null,
             Array.Empty<OrganisationRoleOption>());
-        _organisationRoleFlowService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+        _organisationRoleFlowService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel, OrganisationRole.Admin,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel,
+                OrganisationRole.Admin,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError("organisationRole", "Same role selected"));
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pageVm);
 
-        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Admin,
+            CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey("organisationRole").Should().BeTrue();
     }
 
@@ -791,14 +924,17 @@ public class ChangeOrganisationRoleControllerTests
         {
             OrganisationId = TestOrganisationData.Id, CdpPersonId = userId, SelectedRole = OrganisationRole.Member
         };
-        _organisationRoleFlowService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+        _organisationRoleFlowService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel, OrganisationRole.Admin,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, (Guid?)userId, null, viewModel,
+                OrganisationRole.Admin,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationRoleChangeResult.Saved());
 
-        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Admin, CancellationToken.None);
+        var result = await _controller.ChangeRoleSubmit(TestOrganisationData.Id, userId, OrganisationRole.Admin,
+            CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRoleCheck));
@@ -830,7 +966,8 @@ public class ChangeOrganisationRoleControllerTests
             .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(ChangeUserRoleViewModel.Empty with { CurrentRole = OrganisationRole.Member });
         _organisationRoleFlowService.Setup(s =>
-                s.UpdateUserRoleAsync(TestOrganisationData.Id, userId, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+                s.UpdateUserRoleAsync(TestOrganisationData.Id, userId, OrganisationRole.Admin,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result = await _controller.ChangeRoleCheckSubmit(TestOrganisationData.Id, userId, CancellationToken.None);
@@ -853,7 +990,8 @@ public class ChangeOrganisationRoleControllerTests
             .Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(ChangeUserRoleViewModel.Empty with { CurrentRole = OrganisationRole.Member });
         _organisationRoleFlowService.Setup(s =>
-                s.UpdateUserRoleAsync(TestOrganisationData.Id, userId, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+                s.UpdateUserRoleAsync(TestOrganisationData.Id, userId, OrganisationRole.Admin,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
         var result = await _controller.ChangeRoleCheckSubmit(TestOrganisationData.Id, userId, CancellationToken.None);
@@ -870,7 +1008,8 @@ public class ChangeOrganisationRoleControllerTests
         _organisationRoleFlowService
             .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, userId, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
-        _organisationRoleFlowService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+        _organisationRoleFlowService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(ChangeUserRoleViewModel.Empty with
             {
                 OrganisationId = TestOrganisationData.Id, CdpPersonId = userId, CurrentRole = OrganisationRole.Admin
@@ -890,9 +1029,11 @@ public class ChangeOrganisationRoleControllerTests
     public async Task ChangeRoleSuccess_Get_WhenValid_ReturnsView()
     {
         var userId = Guid.NewGuid();
-        var successVm = new ChangeUserRoleSuccessViewModel(TestOrganisationData.Id, "Jane Doe", OrganisationRole.Owner, "Owner description");
+        var successVm = new ChangeUserRoleSuccessViewModel(TestOrganisationData.Id, "Jane Doe", OrganisationRole.Owner,
+            "Owner description");
         _organisationRoleFlowService
-            .Setup(s => s.GetSuccessViewModelAsync(TestOrganisationData.Id, userId, null, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetSuccessViewModelAsync(TestOrganisationData.Id, userId, null,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(successVm);
 
         var result = await _controller.ChangeRoleSuccess(TestOrganisationData.Id, userId, CancellationToken.None);
@@ -938,7 +1079,8 @@ public class ChangeOrganisationRoleControllerTests
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.GetOrCreateStateAsync(TestOrganisationData.Id, null, inviteGuid, viewModel, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetOrCreateStateAsync(TestOrganisationData.Id, null, inviteGuid, viewModel,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, OrganisationRole.Member, It.IsAny<CancellationToken>()))
@@ -971,7 +1113,8 @@ public class ChangeOrganisationRoleControllerTests
             .Setup(s => s.BuildPageViewModelAsync(viewModel, null, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pageVm);
 
-        var result = await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, null, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, null, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
@@ -988,15 +1131,18 @@ public class ChangeOrganisationRoleControllerTests
             CurrentRole = OrganisationRole.Admin
         };
         var pageVm = new ChangeUserRolePageViewModel(
-            "", TestOrganisationData.Id, "", "me@example.com", OrganisationRole.Admin, OrganisationRole.Member, true, null, inviteGuid,
+            "", TestOrganisationData.Id, "", "me@example.com", OrganisationRole.Admin, OrganisationRole.Member, true,
+            null, inviteGuid,
             Array.Empty<OrganisationRoleOption>());
         _organisationRoleFlowService
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel, OrganisationRole.Member,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel,
+                OrganisationRole.Member,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError(nameof(OrganisationRole), "Cannot change your own role"));
+            .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError(nameof(OrganisationRole),
+                "Cannot change your own role"));
         _organisationRoleFlowService
             .Setup(s => s.BuildPageViewModelAsync(viewModel, OrganisationRole.Member, It.IsAny<CancellationToken>()))
             .ReturnsAsync(pageVm);
@@ -1005,7 +1151,8 @@ public class ChangeOrganisationRoleControllerTests
             await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, OrganisationRole.Member,
                 CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey(nameof(OrganisationRole)).Should().BeTrue();
         _organisationRoleFlowService.Verify(s => s.UpdateInviteRoleAsync(
                 It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<OrganisationRole>(), It.IsAny<CancellationToken>()),
@@ -1021,13 +1168,15 @@ public class ChangeOrganisationRoleControllerTests
             OrganisationName = "Org", InviteGuid = inviteGuid, CurrentRole = OrganisationRole.Admin
         };
         var pageVm = new ChangeUserRolePageViewModel(
-            "Org", TestOrganisationData.Id, "", "", OrganisationRole.Admin, OrganisationRole.Admin, true, null, inviteGuid,
+            "Org", TestOrganisationData.Id, "", "", OrganisationRole.Admin, OrganisationRole.Admin, true, null,
+            inviteGuid,
             Array.Empty<OrganisationRoleOption>());
         _organisationRoleFlowService
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel, OrganisationRole.Admin,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel,
+                OrganisationRole.Admin,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationRoleChangeResult.ValidationError("organisationRole", "Same role selected"));
         _organisationRoleFlowService
@@ -1035,9 +1184,11 @@ public class ChangeOrganisationRoleControllerTests
             .ReturnsAsync(pageVm);
 
         var result =
-            await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
+            await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin,
+                CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRole));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeOrganisationRoleController.ChangeRole));
         _controller.ModelState.ContainsKey("organisationRole").Should().BeTrue();
     }
 
@@ -1045,17 +1196,22 @@ public class ChangeOrganisationRoleControllerTests
     public async Task ChangeInviteRole_Post_WhenRoleProvided_RedirectsToCheck()
     {
         var inviteGuid = Guid.NewGuid();
-        var viewModel = ChangeUserRoleViewModel.Empty with { OrganisationId = TestOrganisationData.Id, InviteGuid = inviteGuid };
+        var viewModel = ChangeUserRoleViewModel.Empty with
+        {
+            OrganisationId = TestOrganisationData.Id, InviteGuid = inviteGuid
+        };
         _organisationRoleFlowService
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _organisationRoleFlowService
-            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel, OrganisationRole.Admin,
+            .Setup(s => s.ValidateAndSaveRoleChangeAsync(TestOrganisationData.Id, null, inviteGuid, viewModel,
+                OrganisationRole.Admin,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationRoleChangeResult.Saved());
 
         var result =
-            await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin, CancellationToken.None);
+            await _controller.ChangeInviteRoleSubmit(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin,
+                CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeInviteRoleCheck));
@@ -1069,16 +1225,19 @@ public class ChangeOrganisationRoleControllerTests
         var state = new ChangeRoleState(TestOrganisationData.Id, null, inviteGuid, "Jane Invite", "jane@example.com",
             OrganisationRole.Member, OrganisationRole.Admin);
         _organisationRoleFlowService
-            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
         _organisationRoleFlowService
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(ChangeUserRoleViewModel.Empty with { CurrentRole = OrganisationRole.Member });
         _organisationRoleFlowService.Setup(s =>
-                s.UpdateInviteRoleAsync(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin, It.IsAny<CancellationToken>()))
+                s.UpdateInviteRoleAsync(TestOrganisationData.Id, inviteGuid, OrganisationRole.Admin,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
-        var result = await _controller.ChangeInviteRoleCheckSubmit(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteRoleCheckSubmit(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeInviteRoleSuccess));
@@ -1092,7 +1251,8 @@ public class ChangeOrganisationRoleControllerTests
         var state = new ChangeRoleState(TestOrganisationData.Id, null, inviteGuid, "Jane Invite", "jane@example.com",
             OrganisationRole.Member, OrganisationRole.Admin);
         _organisationRoleFlowService
-            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
         _organisationRoleFlowService
             .Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
@@ -1101,7 +1261,8 @@ public class ChangeOrganisationRoleControllerTests
                 OrganisationId = TestOrganisationData.Id, InviteGuid = inviteGuid, CurrentRole = OrganisationRole.Admin
             });
 
-        var result = await _controller.ChangeInviteRoleCheckSubmit(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteRoleCheckSubmit(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeInviteRoleSuccess));
@@ -1115,12 +1276,15 @@ public class ChangeOrganisationRoleControllerTests
     public async Task ChangeInviteRoleSuccess_Get_WhenValid_ReturnsView()
     {
         var inviteGuid = Guid.NewGuid();
-        var successVm = new ChangeUserRoleSuccessViewModel(TestOrganisationData.Id, "Jane Invite", OrganisationRole.Member, "Member description");
+        var successVm = new ChangeUserRoleSuccessViewModel(TestOrganisationData.Id, "Jane Invite",
+            OrganisationRole.Member, "Member description");
         _organisationRoleFlowService
-            .Setup(s => s.GetSuccessViewModelAsync(TestOrganisationData.Id, null, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetSuccessViewModelAsync(TestOrganisationData.Id, null, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(successVm);
 
-        var result = await _controller.ChangeInviteRoleSuccess(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteRoleSuccess(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be(nameof(ChangeOrganisationRoleController.ChangeRoleSuccess));
@@ -1145,10 +1309,12 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeApplicationRoles_Get_WhenViewModelNull_ReturnsNotFound()
     {
         _applicationRoleFlowService
-            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, It.IsAny<Guid>(),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((ChangeUserApplicationRolesViewModel?)null);
 
-        var result = await _controller.ChangeApplicationRoles(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRoles(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -1160,7 +1326,8 @@ public class ChangeApplicationRolesControllerTests
         var viewModel = new ChangeUserApplicationRolesViewModel
             { OrganisationId = TestOrganisationData.Id, UserDisplayName = "Jane Doe", Email = "jane@example.com" };
         _applicationRoleFlowService
-            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, userId,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.ChangeApplicationRoles(TestOrganisationData.Id, userId, CancellationToken.None);
@@ -1190,7 +1357,8 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, userId, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetUserViewModelWithStateAsync(TestOrganisationData.Id, userId,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.ChangeApplicationRoles(TestOrganisationData.Id, userId, CancellationToken.None);
@@ -1225,10 +1393,14 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ApplicationRoleSubmitResult.ValidationError(viewModel, [("Applications", "No changes detected")]));
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(
+                new ApplicationRoleSubmitResult.ValidationError(viewModel, [("Applications", "No changes detected")]));
 
-        var result = await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input,
+                CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
         view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
@@ -1248,10 +1420,13 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ApplicationRoleSubmitResult.Saved());
 
-        var result = await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input,
+                CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesCheck));
@@ -1270,10 +1445,13 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ApplicationRoleSubmitResult.Saved());
 
-        var result = await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input,
+                CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesCheck));
@@ -1304,13 +1482,17 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ApplicationRoleSubmitResult.ValidationError(viewModel,
                 [("Applications[0].SelectedRoleId", "Select a role")]));
 
-        var result = await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input,
+                CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         _controller.ModelState.ContainsKey("Applications[0].SelectedRoleId").Should().BeTrue();
     }
 
@@ -1336,20 +1518,26 @@ public class ChangeApplicationRolesControllerTests
                 [new ApplicationRoleAssignmentPostModel { OrganisationApplicationId = 1, GiveAccess = false }]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, userId, null, input,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ApplicationRoleSubmitResult.ValidationError(viewModel,
                 [("Applications", "No changes detected")]));
 
-        var result = await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSubmit(TestOrganisationData.Id, userId, input,
+                CancellationToken.None);
 
-        result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
         _controller.ModelState.ContainsKey("Applications").Should().BeTrue();
     }
 
     [Fact]
     public async Task ChangeApplicationRolesCheck_Get_WhenNoState_RedirectsToSelection()
     {
-        var result = await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, Guid.NewGuid(),
+                CancellationToken.None);
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
     }
@@ -1358,7 +1546,8 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeApplicationRolesCheck_Get_WhenStateValid_ReturnsCheckView()
     {
         var userId = Guid.NewGuid();
-        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe", "jane@example.com",
+        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe",
+            "jane@example.com",
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         var checkVm = new ChangeApplicationRolesCheckViewModel
         {
@@ -1373,7 +1562,8 @@ public class ChangeApplicationRolesControllerTests
             .ReturnsAsync(state);
         _applicationRoleFlowService.Setup(s => s.BuildCheckViewModel(state)).Returns(checkVm);
 
-        var result = await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, userId, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
         view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesCheck));
@@ -1386,7 +1576,8 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeApplicationRolesCheck_Get_NewAssignment_ShowsInCheckView()
     {
         var userId = Guid.NewGuid();
-        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe", "jane@example.com",
+        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe",
+            "jane@example.com",
             [new ApplicationRoleAssignmentState(1, 10, "App1", false, true, null, string.Empty, 5, "Reader")]);
         var checkVm = new ChangeApplicationRolesCheckViewModel
         {
@@ -1401,7 +1592,8 @@ public class ChangeApplicationRolesControllerTests
             .ReturnsAsync(state);
         _applicationRoleFlowService.Setup(s => s.BuildCheckViewModel(state)).Returns(checkVm);
 
-        var result = await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheck(TestOrganisationData.Id, userId, CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.Model
             .Should().BeOfType<ChangeApplicationRolesCheckViewModel>()
@@ -1412,7 +1604,9 @@ public class ChangeApplicationRolesControllerTests
     [Fact]
     public async Task ChangeApplicationRolesCheck_Post_WhenNoState_RedirectsToSelection()
     {
-        var result = await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, Guid.NewGuid(), CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, Guid.NewGuid(),
+                CancellationToken.None);
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
     }
@@ -1432,7 +1626,9 @@ public class ChangeApplicationRolesControllerTests
                 It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound));
 
-        var result = await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, userId,
+                CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -1452,7 +1648,9 @@ public class ChangeApplicationRolesControllerTests
                 It.IsAny<IReadOnlyList<ApplicationRoleAssignmentPostModel>>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
-        var result = await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesCheckSubmit(TestOrganisationData.Id, userId,
+                CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesSuccess));
@@ -1463,7 +1661,8 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeApplicationRolesSuccess_Get_WhenStateValid_ReturnsSuccessViewAndClearsState()
     {
         var userId = Guid.NewGuid();
-        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe", "jane@example.com",
+        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe",
+            "jane@example.com",
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         var successVm = new ChangeApplicationRolesSuccessViewModel { UserDisplayName = "Jane Doe" };
         _applicationRoleFlowService
@@ -1471,9 +1670,11 @@ public class ChangeApplicationRolesControllerTests
             .ReturnsAsync(state);
         _applicationRoleFlowService.Setup(s => s.ClearStateAsync(It.IsAny<CancellationToken>()))
             .Returns(Task.CompletedTask);
-        _applicationRoleFlowService.Setup(s => s.BuildSuccessViewModel(TestOrganisationData.Id, state)).Returns(successVm);
+        _applicationRoleFlowService.Setup(s => s.BuildSuccessViewModel(TestOrganisationData.Id, state))
+            .Returns(successVm);
 
-        var result = await _controller.ChangeApplicationRolesSuccess(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSuccess(TestOrganisationData.Id, userId, CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
         view.ViewName.Should().Be(nameof(ChangeApplicationRolesController.ChangeApplicationRolesSuccess));
@@ -1486,7 +1687,8 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeApplicationRolesSuccess_Get_WhenChangedApplicationsEmpty_RedirectsBackToChange()
     {
         var userId = Guid.NewGuid();
-        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe", "jane@example.com",
+        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, userId, null, "Jane Doe",
+            "jane@example.com",
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 5, "Reader")]);
         _applicationRoleFlowService
             .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, userId, null, It.IsAny<CancellationToken>()))
@@ -1496,7 +1698,8 @@ public class ChangeApplicationRolesControllerTests
         _applicationRoleFlowService.Setup(s => s.BuildSuccessViewModel(TestOrganisationData.Id, state))
             .Returns((ChangeApplicationRolesSuccessViewModel?)null);
 
-        var result = await _controller.ChangeApplicationRolesSuccess(TestOrganisationData.Id, userId, CancellationToken.None);
+        var result =
+            await _controller.ChangeApplicationRolesSuccess(TestOrganisationData.Id, userId, CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(ChangeApplicationRolesController.ChangeApplicationRoles));
@@ -1507,10 +1710,12 @@ public class ChangeApplicationRolesControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         _applicationRoleFlowService
-            .Setup(s => s.GetInviteViewModelWithStateAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetInviteViewModelWithStateAsync(TestOrganisationData.Id, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync((ChangeUserApplicationRolesViewModel?)null);
 
-        var result = await _controller.ChangeInviteApplicationRoles(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteApplicationRoles(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
     }
@@ -1533,10 +1738,12 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.GetInviteViewModelWithStateAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetInviteViewModelWithStateAsync(TestOrganisationData.Id, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.ChangeInviteApplicationRoles(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+        var result =
+            await _controller.ChangeInviteApplicationRoles(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.Model
             .Should().BeOfType<ChangeUserApplicationRolesViewModel>()
@@ -1558,11 +1765,13 @@ public class ChangeApplicationRolesControllerTests
             ]
         };
         _applicationRoleFlowService
-            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, null, inviteGuid, input, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ProcessSubmitAsync(TestOrganisationData.Id, null, inviteGuid, input,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ApplicationRoleSubmitResult.Saved());
 
         var result =
-            await _controller.ChangeInviteApplicationRolesSubmit(TestOrganisationData.Id, inviteGuid, input, CancellationToken.None);
+            await _controller.ChangeInviteApplicationRolesSubmit(TestOrganisationData.Id, inviteGuid, input,
+                CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeApplicationRolesController.ChangeInviteApplicationRolesCheck));
@@ -1573,10 +1782,12 @@ public class ChangeApplicationRolesControllerTests
     public async Task ChangeInviteApplicationRolesCheck_Post_WhenUpdateSucceeds_RedirectsToSuccess()
     {
         var inviteGuid = Guid.NewGuid();
-        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, null, inviteGuid, "Jane Invite", "jane@example.com",
+        var state = new ChangeApplicationRoleState(TestOrganisationData.Id, null, inviteGuid, "Jane Invite",
+            "jane@example.com",
             [new ApplicationRoleAssignmentState(1, 0, "App1", true, true, 5, "Reader", 6, "Admin")]);
         _applicationRoleFlowService
-            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid, It.IsAny<CancellationToken>()))
+            .Setup(s => s.GetValidatedStateAsync(TestOrganisationData.Id, null, inviteGuid,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(state);
         _applicationRoleFlowService.Setup(s => s.BuildAssignments(state))
             .Returns(new List<ApplicationRoleAssignmentPostModel>());
@@ -1585,7 +1796,8 @@ public class ChangeApplicationRolesControllerTests
             .ReturnsAsync(Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success));
 
         var result =
-            await _controller.ChangeInviteApplicationRolesCheckSubmit(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
+            await _controller.ChangeInviteApplicationRolesCheckSubmit(TestOrganisationData.Id, inviteGuid,
+                CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(ChangeApplicationRolesController.ChangeInviteApplicationRolesSuccess));
@@ -1597,10 +1809,10 @@ public class ChangeApplicationRolesControllerTests
 
 public class RemovalControllerTests
 {
-    private readonly Mock<IUserRemovalService> _userRemovalService = new();
-    private readonly Mock<IUserDetailsQueryService> _userDetailsQueryService = new();
-    private readonly Mock<IRemoveInviteStateStore> _removeInviteStateStore = new();
     private readonly RemovalController _controller;
+    private readonly Mock<IRemoveInviteStateStore> _removeInviteStateStore = new();
+    private readonly Mock<IUserDetailsQueryService> _userDetailsQueryService = new();
+    private readonly Mock<IUserRemovalService> _userRemovalService = new();
 
     public RemovalControllerTests()
     {
@@ -1608,7 +1820,8 @@ public class RemovalControllerTests
             .Setup(s => s.ValidateRemovalAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemovalValidationResult.Success());
         _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync((RemoveInviteSuccessState?)null);
-        _removeInviteStateStore.Setup(s => s.SetAsync(It.IsAny<RemoveInviteSuccessState>())).Returns(Task.CompletedTask);
+        _removeInviteStateStore.Setup(s => s.SetAsync(It.IsAny<RemoveInviteSuccessState>()))
+            .Returns(Task.CompletedTask);
         _removeInviteStateStore.Setup(s => s.ClearAsync()).Returns(Task.CompletedTask);
 
         _controller = new RemovalController(
@@ -1621,7 +1834,8 @@ public class RemovalControllerTests
     public async Task RemoveUser_Get_WhenViewModelNull_ReturnsNotFound()
     {
         var cdpPersonId = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveUserViewModel?)null);
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, CancellationToken.None);
@@ -1634,7 +1848,8 @@ public class RemovalControllerTests
     {
         var cdpPersonId = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org", UserDisplayName = "John Doe" };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, CancellationToken.None);
@@ -1652,9 +1867,11 @@ public class RemovalControllerTests
         {
             OrganisationName = "Org", Email = "me@example.com", CdpPersonId = cdpPersonId
         };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userRemovalService.Setup(s => s.ValidateRemovalAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.ValidateRemovalAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemovalValidationResult.Fail("You cannot remove yourself from the organisation."));
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, CancellationToken.None);
@@ -1672,9 +1889,11 @@ public class RemovalControllerTests
         {
             OrganisationName = "Org", Email = "owner@example.com", CdpPersonId = cdpPersonId
         };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _userRemovalService.Setup(s => s.ValidateRemovalAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.ValidateRemovalAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemovalValidationResult.Fail("You cannot remove the last owner of the organisation."));
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, CancellationToken.None);
@@ -1690,7 +1909,8 @@ public class RemovalControllerTests
         var cdpPersonId = Guid.NewGuid();
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = false };
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, false, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, false,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.Cancelled());
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, input, CancellationToken.None);
@@ -1705,14 +1925,17 @@ public class RemovalControllerTests
     {
         var cdpPersonId = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org" };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, null, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, null,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.ValidationError("Select yes or no"));
 
         var result =
-            await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, RemoveUserViewModel.Empty, CancellationToken.None);
+            await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId, RemoveUserViewModel.Empty,
+                CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
     }
@@ -1725,10 +1948,12 @@ public class RemovalControllerTests
         {
             OrganisationName = "Org", Email = "me@example.com", CdpPersonId = cdpPersonId
         };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.ValidationError("Cannot remove yourself"));
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId,
@@ -1746,10 +1971,12 @@ public class RemovalControllerTests
         {
             OrganisationName = "Org", Email = "owner@example.com", CdpPersonId = cdpPersonId
         };
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.ValidationError("Cannot remove last owner"));
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId,
@@ -1763,10 +1990,12 @@ public class RemovalControllerTests
     public async Task RemoveUser_Post_ReturnsView_WhenLastOwnerCheckFails()
     {
         var cdpPersonId = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetUserViewModelAsync(TestOrganisationData.Id, cdpPersonId, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.ValidationError("error"));
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId,
@@ -1781,7 +2010,8 @@ public class RemovalControllerTests
     {
         var cdpPersonId = Guid.NewGuid();
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.Removed());
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId,
@@ -1796,7 +2026,8 @@ public class RemovalControllerTests
     {
         var cdpPersonId = Guid.NewGuid();
         _userRemovalService
-            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true, It.IsAny<CancellationToken>()))
+            .Setup(s => s.ValidateAndRemoveUserAsync(TestOrganisationData.Id, cdpPersonId, true,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserRemovalSubmitResult.NotFound());
 
         var result = await _controller.RemoveUser(TestOrganisationData.Id, cdpPersonId,
@@ -1809,7 +2040,8 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Get_WhenViewModelNull_ReturnsNotFound()
     {
         var inviteGuid = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveUserViewModel?)null);
 
         var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
@@ -1822,7 +2054,8 @@ public class RemovalControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org", UserDisplayName = "John Doe" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, CancellationToken.None);
@@ -1836,7 +2069,8 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Post_WhenNotConfirmed_RedirectsToIndex()
     {
         var inviteGuid = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty);
         var input = RemoveUserViewModel.Empty with { RemoveConfirmed = false };
         var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, input, CancellationToken.None);
@@ -1850,12 +2084,14 @@ public class RemovalControllerTests
     {
         var inviteGuid = Guid.NewGuid();
         var viewModel = RemoveUserViewModel.Empty with { OrganisationName = "Org" };
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
         _controller.ModelState.AddModelError(nameof(RemoveUserViewModel.RemoveConfirmed),
             "Select if you want to remove this user");
 
-        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, RemoveUserViewModel.Empty, CancellationToken.None);
+        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, RemoveUserViewModel.Empty,
+            CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should().Be("RemoveUser");
         _userRemovalService.Verify(
@@ -1866,12 +2102,15 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Post_WhenConfirmedAndSucceeds_RedirectsToRemoveInviteSuccess()
     {
         var inviteGuid = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
-        _userRemovalService.Setup(s => s.RemoveInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.RemoveInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new InviteRemovalSubmitResult.Removed());
 
-        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid,
+            RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
 
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
@@ -1882,12 +2121,15 @@ public class RemovalControllerTests
     public async Task RemoveInvite_Post_WhenConfirmedButFails_ReturnsNotFound()
     {
         var inviteGuid = Guid.NewGuid();
-        _userRemovalService.Setup(s => s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.GetInviteViewModelAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(RemoveUserViewModel.Empty with { OrganisationName = "Org" });
-        _userRemovalService.Setup(s => s.RemoveInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(s =>
+                s.RemoveInviteAsync(TestOrganisationData.Id, inviteGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new InviteRemovalSubmitResult.NotFound());
 
-        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid, RemoveUserViewModel.Empty with { RemoveConfirmed = true },
+        var result = await _controller.RemoveInvite(TestOrganisationData.Id, inviteGuid,
+            RemoveUserViewModel.Empty with { RemoveConfirmed = true },
             CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
@@ -1897,7 +2139,8 @@ public class RemovalControllerTests
     public async Task RemoveInviteSuccess_WhenStateAvailableForOrg_ReturnsView()
     {
         var inviteGuid = Guid.NewGuid();
-        var state = new RemoveInviteSuccessState { OrganisationId = TestOrganisationData.Id, UserDisplayName = "John Doe" };
+        var state = new RemoveInviteSuccessState
+            { OrganisationId = TestOrganisationData.Id, UserDisplayName = "John Doe" };
         _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
 
         var result = await _controller.RemoveInviteSuccess(TestOrganisationData.Id, inviteGuid);
@@ -1923,7 +2166,8 @@ public class RemovalControllerTests
     public async Task RemoveInviteSuccess_WhenStateIsForDifferentOrg_RedirectsToIndex()
     {
         var inviteGuid = Guid.NewGuid();
-        var state = new RemoveInviteSuccessState { OrganisationId = TestOrganisationData.OtherId, UserDisplayName = "John Doe" };
+        var state = new RemoveInviteSuccessState
+            { OrganisationId = TestOrganisationData.OtherId, UserDisplayName = "John Doe" };
         _removeInviteStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
 
         var result = await _controller.RemoveInviteSuccess(TestOrganisationData.Id, inviteGuid);
@@ -1949,12 +2193,16 @@ public class RemovalControllerTests
             RoleName: "Editor",
             CdpPersonId: cdpPersonId);
 
-        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, clientId, It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(service =>
+                service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, clientId,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, clientId, CancellationToken.None);
 
-        _userRemovalService.Verify(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, clientId, It.IsAny<CancellationToken>()), Times.Once);
+        _userRemovalService.Verify(
+            service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, clientId,
+                It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -1963,13 +2211,16 @@ public class RemovalControllerTests
         var cdpPersonId = Guid.NewGuid();
         var input = new RemoveApplicationViewModel(RevokeConfirmed: false);
 
-        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input, CancellationToken.None);
+        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input,
+            CancellationToken.None);
 
         var redirectResult = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirectResult.ActionName.Should().Be(nameof(UserDetailsController.Details));
         redirectResult.RouteValues.Should().Contain("id", TestOrganisationData.Id);
         redirectResult.RouteValues.Should().Contain("cdpPersonId", cdpPersonId);
-        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        _userRemovalService.Verify(
+            service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -1988,32 +2239,42 @@ public class RemovalControllerTests
             RoleName: "Admin",
             CdpPersonId: cdpPersonId);
 
-        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id,
+                cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
-        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed), "Select if you want to revoke access");
+        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed),
+            "Select if you want to revoke access");
 
         var input = new RemoveApplicationViewModel(RevokeConfirmed: true);
-        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input, CancellationToken.None);
+        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input,
+            CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
         viewResult.ViewName.Should().Be(nameof(RemovalController.RemoveApplication));
         viewResult.Model.Should().Be(viewModel);
-        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        _userRemovalService.Verify(
+            service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
     public async Task RemoveApplication_Post_WhenModelStateInvalidAndViewModelMissing_ReturnsNotFound()
     {
         var cdpPersonId = Guid.NewGuid();
-        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id, cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
+        _userRemovalService.Setup(service => service.GetRemoveApplicationViewModelAsync(TestOrganisationData.Id,
+                cdpPersonId, "test-app", It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveApplicationViewModel?)null);
-        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed), "Select if you want to revoke access");
+        _controller.ModelState.AddModelError(nameof(RemoveApplicationViewModel.RevokeConfirmed),
+            "Select if you want to revoke access");
 
         var input = new RemoveApplicationViewModel(RevokeConfirmed: true);
-        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input, CancellationToken.None);
+        var result = await _controller.RemoveApplication(TestOrganisationData.Id, cdpPersonId, "test-app", input,
+            CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
-        _userRemovalService.Verify(service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Never);
+        _userRemovalService.Verify(
+            service => service.RemoveApplicationAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string>(),
+                It.IsAny<CancellationToken>()), Times.Never);
     }
 
     // ── RemoveApplicationSuccess ──────────────────────────────────────────────
@@ -2023,10 +2284,13 @@ public class RemovalControllerTests
     {
         var userId = Guid.NewGuid();
         _userDetailsQueryService.Setup(s =>
-                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, "app-slug-1", It.IsAny<CancellationToken>()))
+                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, "app-slug-1",
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync((RemoveApplicationSuccessViewModel?)null);
 
-        var result = await _controller.RemoveApplicationSuccess(TestOrganisationData.Id, userId, "app-slug-1", CancellationToken.None);
+        var result =
+            await _controller.RemoveApplicationSuccess(TestOrganisationData.Id, userId, "app-slug-1",
+                CancellationToken.None);
 
         var redirect = result.Should().BeOfType<RedirectToActionResult>().Subject;
         redirect.ActionName.Should().Be(nameof(UsersListController.Index));
@@ -2043,10 +2307,13 @@ public class RemovalControllerTests
             Email = "john@example.com", ApplicationName = "Test App", CdpPersonId = userId
         };
         _userDetailsQueryService.Setup(s =>
-                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, "app-slug-2", It.IsAny<CancellationToken>()))
+                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, "app-slug-2",
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
-        var result = await _controller.RemoveApplicationSuccess(TestOrganisationData.Id, userId, "app-slug-2", CancellationToken.None);
+        var result =
+            await _controller.RemoveApplicationSuccess(TestOrganisationData.Id, userId, "app-slug-2",
+                CancellationToken.None);
 
         var view = result.Should().BeOfType<ViewResult>().Subject;
         view.ViewName.Should().Be(nameof(RemovalController.RemoveApplicationSuccess));
@@ -2065,13 +2332,15 @@ public class RemovalControllerTests
             Email = "jane@example.com", ApplicationName = "Finance App", CdpPersonId = userId
         };
         _userDetailsQueryService.Setup(s =>
-                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, appId, It.IsAny<CancellationToken>()))
+                s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, appId,
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync(viewModel);
 
         await _controller.RemoveApplicationSuccess(TestOrganisationData.Id, userId, appId, CancellationToken.None);
 
         _userDetailsQueryService.Verify(
-            s => s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, appId, It.IsAny<CancellationToken>()),
+            s => s.GetRemoveApplicationSuccessViewModelAsync(TestOrganisationData.Id, userId, appId,
+                It.IsAny<CancellationToken>()),
             Times.Once);
     }
 

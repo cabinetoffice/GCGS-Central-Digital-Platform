@@ -356,7 +356,7 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         var result = await _sut.ResendInviteAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.IsSuccess.Should().BeTrue();
-        result.Match(_ => false, o => o == ServiceOutcome.NotFound).Should().BeTrue();
+        result.Match(_ => false, o => o.Outcome == ServiceOutcome.NotFound).Should().BeTrue();
     }
 
     [Fact]
@@ -364,6 +364,8 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
     {
         var inviteGuid = Guid.NewGuid();
         SetupOrg();
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(MakeInvite(inviteGuid, firstName: "Alice", lastName: "Smith"));
         _adapter.Setup(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default))
             .ReturnsAsync(SuccessResult());
 
@@ -371,5 +373,37 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
 
         result.IsSuccess.Should().BeTrue();
         _adapter.Verify(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default), Times.Once);
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WhenInviteFound_ReturnsInviteeName()
+    {
+        var inviteGuid = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(MakeInvite(inviteGuid, firstName: "Alice", lastName: "Smith"));
+        _adapter.Setup(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(SuccessResult());
+
+        var result = await _sut.ResendInviteAsync(OrgGuid, inviteGuid, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Match(_ => null!, o => o.InviteeName).Should().Be("Alice Smith");
+    }
+
+    [Fact]
+    public async Task ResendInviteAsync_WhenInviteNotFound_ReturnsNullInviteeName()
+    {
+        var inviteGuid = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync((PendingOrganisationInviteResponse?)null);
+        _adapter.Setup(a => a.ResendInviteAsync(OrgGuid, inviteGuid, default))
+            .ReturnsAsync(SuccessResult());
+
+        var result = await _sut.ResendInviteAsync(OrgGuid, inviteGuid, CancellationToken.None);
+
+        result.IsSuccess.Should().BeTrue();
+        result.Match(_ => "unexpected", o => o.InviteeName ?? "null").Should().Be("null");
     }
 }

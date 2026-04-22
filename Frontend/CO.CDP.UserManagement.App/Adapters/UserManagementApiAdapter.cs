@@ -149,22 +149,7 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
             var invite = invites?.FirstOrDefault(i => i.CdpPersonInviteGuid == inviteGuid);
             if (invite == null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
-            var sharedRequest = new InviteUserRequest
-            {
-                FirstName = invite.FirstName ?? string.Empty,
-                LastName = invite.LastName ?? string.Empty,
-                Email = invite.Email,
-                OrganisationRole = invite.OrganisationRole,
-                ApplicationAssignments = new List<ApplicationAssignment>()
-            };
-
-            var inviteResult = await InviteUserAsync(organisationId, sharedRequest, ct).ConfigureAwait(false);
-            if (inviteResult.IsLeft())
-            {
-                return inviteResult; // propagate failure
-            }
-
-            await _client.InvitesDELETEAsync(organisationId, invite.PendingInviteId, ct);
+            await _client.ResendAsync(organisationId, invite.PendingInviteId, ct);
             return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
         }
         catch (ApiClient.ApiException ex)

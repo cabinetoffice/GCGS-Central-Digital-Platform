@@ -45,6 +45,15 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
         return invite.Id;
     }
 
+    public async Task ResendPersonInviteAsync(
+        Guid cdpOrganisationGuid,
+        Guid personInviteGuid,
+        CancellationToken cancellationToken = default)
+    {
+        await organisationClient.ResendPersonInviteForServiceAsync(cdpOrganisationGuid, personInviteGuid,
+            cancellationToken);
+    }
+
     public async Task<IReadOnlyList<OiOrganisationPerson>> GetOrganisationPersonsAsync(
         Guid cdpOrganisationGuid,
         CancellationToken cancellationToken = default)

@@ -88,6 +88,12 @@ db-dump:
 	@docker compose exec -T db sh -c 'PGPASSWORD=$$POSTGRES_PASSWORD pg_dump -a -U $$POSTGRES_USER -d $$POSTGRES_DB'
 .PHONY: db-dump
 
+db-restore: ## Restore a SQL backup file into the database. Usage: make db-restore FILE=backup.sql
+	@test -n "$(FILE)" || (echo "Error: FILE is required. Usage: make db-restore FILE=backup.sql" && exit 1)
+	@docker compose up -d db
+	@cat $(FILE) | docker compose exec -T db sh -c 'PGPASSWORD=$$POSTGRES_PASSWORD psql -U $$POSTGRES_USER -d $$POSTGRES_DB'
+.PHONY: db-restore
+
 localstack: render-compose-override ## Start the localstack service for AWS services available locally
 	@docker compose up -d localstack
 .PHONY: localstack

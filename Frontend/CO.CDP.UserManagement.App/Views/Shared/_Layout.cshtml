@@ -4,6 +4,9 @@
     Layout = "/Pages/Shared/_GovUkLayout.cshtml";
 }
 
+@await Html.PartialAsync("_SuccessBanner")
+@await Html.PartialAsync("_InfoBanner")
+
 @RenderBody()
 
 @section BeforeContent {

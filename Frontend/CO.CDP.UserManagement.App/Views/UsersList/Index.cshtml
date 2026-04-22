@@ -129,7 +129,7 @@
             <ul class="govuk-list govuk-list--bullet">
                 <li>checking your spelling</li>
                 <li>using different search terms</li>
-                <li><a href="/organisation/@organisationId/users" class="govuk-link">clearing the filters</a></li>
+                <li><a href="/organisation/@organisationId" class="govuk-link">clearing the filters</a></li>
             </ul>
         }
         else
@@ -144,7 +144,8 @@ else
         Showing @(Model?.TotalCount ?? 0) @((Model?.TotalCount ?? 0) == 1 ? "user" : "users")
         @if (Model?.HasActiveFilters == true)
         {
-            <span>&nbsp;(filtered) &mdash; <a href="/organisation/@organisationId/users" class="govuk-link">Clear all filters</a></span>
+            <span>&nbsp;(filtered) &mdash; <a href="/organisation/@organisationId"
+                                              class="govuk-link">Clear all filters</a></span>
         }
     </p>
 

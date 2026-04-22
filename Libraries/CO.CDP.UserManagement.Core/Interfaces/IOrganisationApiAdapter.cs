@@ -21,6 +21,12 @@ public interface IOrganisationApiAdapter
         IReadOnlyList<string> scopes,
         CancellationToken cancellationToken = default);
 
+    /// <summary>Resends an existing person invite, extending its lifespan and re-sending the notification email.</summary>
+    Task ResendPersonInviteAsync(
+        Guid cdpOrganisationGuid,
+        Guid personInviteGuid,
+        CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Returns all persons in the given organisation with their Organisation Information scopes.
     /// Returns an empty list if the organisation is not found.
