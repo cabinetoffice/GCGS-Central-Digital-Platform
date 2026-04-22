@@ -45,6 +45,15 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
         return invite.Id;
     }
 
+    public async Task ResendPersonInviteAsync(
+        Guid cdpOrganisationGuid,
+        Guid personInviteGuid,
+        CancellationToken cancellationToken = default)
+    {
+        await organisationClient.ResendPersonInviteForServiceAsync(cdpOrganisationGuid, personInviteGuid,
+            cancellationToken);
+    }
+
     public async Task<IReadOnlyList<OiOrganisationPerson>> GetOrganisationPersonsAsync(
         Guid cdpOrganisationGuid,
         CancellationToken cancellationToken = default)
@@ -75,7 +84,8 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
     {
         try
         {
-            var invites = await organisationClient.GetOrganisationPersonInvitesAsync(cdpOrganisationGuid, cancellationToken);
+            var invites =
+                await organisationClient.GetOrganisationPersonInvitesAsync(cdpOrganisationGuid, cancellationToken);
             return invites
                 .Select(i => new OiPersonInvite
                 {
@@ -95,15 +105,15 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
 
     private static CorePartyRole ToUmPartyRole(OiPartyRole role) => role switch
     {
-        OiPartyRole.Buyer          => CorePartyRole.Buyer,
+        OiPartyRole.Buyer => CorePartyRole.Buyer,
         OiPartyRole.ProcuringEntity => CorePartyRole.ProcuringEntity,
-        OiPartyRole.Supplier       => CorePartyRole.Supplier,
-        OiPartyRole.Tenderer       => CorePartyRole.Tenderer,
-        OiPartyRole.Funder         => CorePartyRole.Funder,
-        OiPartyRole.Enquirer       => CorePartyRole.Enquirer,
-        OiPartyRole.Payer          => CorePartyRole.Payer,
-        OiPartyRole.Payee          => CorePartyRole.Payee,
-        OiPartyRole.ReviewBody     => CorePartyRole.ReviewBody,
+        OiPartyRole.Supplier => CorePartyRole.Supplier,
+        OiPartyRole.Tenderer => CorePartyRole.Tenderer,
+        OiPartyRole.Funder => CorePartyRole.Funder,
+        OiPartyRole.Enquirer => CorePartyRole.Enquirer,
+        OiPartyRole.Payer => CorePartyRole.Payer,
+        OiPartyRole.Payee => CorePartyRole.Payee,
+        OiPartyRole.ReviewBody => CorePartyRole.ReviewBody,
         OiPartyRole.InterestedParty => CorePartyRole.InterestedParty,
         _ => throw new ArgumentOutOfRangeException(nameof(role), role, $"Unknown OI party role: {role}")
     };

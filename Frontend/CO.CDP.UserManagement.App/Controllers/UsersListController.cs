@@ -7,7 +7,7 @@ public class UsersListController(IUsersQueryService usersQueryService) : UsersBa
 {
     [HttpGet("")]
     public async Task<IActionResult> Index(
-        string? organisationSlug,
+        Guid id,
         string? role,
         string? application,
         string? search,
@@ -18,7 +18,7 @@ public class UsersListController(IUsersQueryService usersQueryService) : UsersBa
             return BadRequest(ModelState);
         }
 
-        var viewModel = await usersQueryService.GetViewModelAsync(organisationSlug, role, application, search, ct);
+        var viewModel = await usersQueryService.GetViewModelAsync(id, role, application, search, ct);
         return viewModel is null ? NotFound() : View(viewModel);
     }
 }

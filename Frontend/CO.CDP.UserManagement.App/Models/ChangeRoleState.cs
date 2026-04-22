@@ -3,7 +3,7 @@ using CO.CDP.UserManagement.Shared.Enums;
 namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record ChangeRoleState(
-    string OrganisationSlug,
+    Guid OrganisationId,
     Guid? CdpPersonId,
     Guid? InviteGuid,
     string UserDisplayName,

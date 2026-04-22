@@ -19,12 +19,15 @@ using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
 using CO.CDP.OrganisationSync;
 using CO.CDP.WebApi.Foundation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.FeatureManagement;
 using Npgsql;
-using Microsoft.AspNetCore.Authorization;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
+using AuthenticationKey = CO.CDP.Organisation.WebApi.Model.AuthenticationKey;
+using BuyerInformation = CO.CDP.Organisation.WebApi.Model.BuyerInformation;
 using ConnectedEntity = CO.CDP.Organisation.WebApi.Model.ConnectedEntity;
 using ConnectedEntityLookup = CO.CDP.Organisation.WebApi.Model.ConnectedEntityLookup;
+using Mou = CO.CDP.Organisation.WebApi.Model.Mou;
 using MouSignature = CO.CDP.Organisation.WebApi.Model.MouSignature;
 using Organisation = CO.CDP.Organisation.WebApi.Model.Organisation;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
@@ -40,7 +43,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(builder.Configuration); });
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+var connectionString =
+    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
 builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
@@ -61,11 +65,20 @@ builder.Services.AddScoped<IUseCase<Guid, Organisation?>, GetOrganisationUseCase
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<Review>>, GetReviewsUseCase>();
 builder.Services.AddScoped<IUseCase<Organisation?>, GetMyOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<OrganisationQuery, Organisation?>, LookupOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult> Results, int TotalCount)>, SearchOrganisationByPponUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByOrganisationEmailUseCase>();
-builder.Services.AddScoped<IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<OrganisationSearchResult>>, FindOrganisationByAdminEmailUseCase>();
-builder.Services.AddScoped<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>, GetOrganisationsUseCase>();
+builder.Services
+    .AddScoped<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>, SearchOrganisationUseCase>();
+builder.Services
+    .AddScoped<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult> Results, int
+        TotalCount)>, SearchOrganisationByPponUseCase>();
+builder.Services
+    .AddScoped<IUseCase<OrganisationsByOrganisationEmailQuery, IEnumerable<OrganisationSearchResult>>,
+        FindOrganisationByOrganisationEmailUseCase>();
+builder.Services
+    .AddScoped<IUseCase<OrganisationsByAdminEmailQuery, IEnumerable<OrganisationSearchResult>>,
+        FindOrganisationByAdminEmailUseCase>();
+builder.Services
+    .AddScoped<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>,
+        GetOrganisationsUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, SupplierInformation?>, GetSupplierInformationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), ConnectedEntity?>, GetConnectedEntityUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<ConnectedEntityLookup>>, GetConnectedEntitiesUseCase>();
@@ -78,21 +91,31 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), DeleteConnectedEntityResult>, 
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<WebApiPerson>>, GetPersonsUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemovePersonFromOrganisation), bool>, RemovePersonFromOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), bool>, InvitePersonToOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), CO.CDP.OrganisationInformation.Persistence.PersonInvite>, InvitePersonToOrganisationWithResponseUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool>, UpdateInvitedPersonToOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid, InvitePersonToOrganisation), PersonInvite>,
+        InvitePersonToOrganisationWithResponseUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid, Guid, UpdateInvitedPersonToOrganisation), bool>,
+        UpdateInvitedPersonToOrganisationUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid, Guid, UpdatePersonToOrganisation), bool>, UpdatePersonToOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<PersonInviteModel>>, GetPersonInvitesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid), bool>, RemovePersonInviteFromOrganisationUseCase>();
+builder.Services.AddScoped<ResendPersonInviteUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SupportUpdateOrganisation), bool>, SupportUpdateOrganisationUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, IEnumerable<CO.CDP.Organisation.WebApi.Model.AuthenticationKey>>, GetAuthenticationKeyUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<AuthenticationKey>>, GetAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RegisterAuthenticationKey), bool>, RegisterAuthenticationKeyUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, string), bool>, RevokeAuthenticationKeyUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>, CreateOrganisationJoinRequestUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>, GetOrganisationJoinRequestUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid, CreateOrganisationJoinRequest), OrganisationJoinRequest>,
+        CreateOrganisationJoinRequestUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>,
+        GetOrganisationJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>, UpdateJoinRequestUseCase>();
 builder.Services.AddScoped<IUseCase<ProvideFeedbackAndContact, bool>, ProvideFeedbackAndContactUseCase>();
 builder.Services.AddScoped<IUseCase<ContactUs, bool>, ContactUsUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.BuyerInformation?>, GetBuyerInformationUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, BuyerInformation?>, GetBuyerInformationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, OrganisationParties?>, GetOrganisationPartiesUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, RemoveOrganisationParty), bool>, RemoveOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, IEnumerable<MouSignature>>, GetOrganisationMouSignaturesUseCase>();
@@ -100,12 +123,15 @@ builder.Services.AddScoped<IUseCase<(Guid, Guid), MouSignature>, GetOrganisation
 builder.Services.AddScoped<IUseCase<Guid, MouSignatureLatest>, GetOrganisationMouSignatureLatestUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, SignMouRequest), bool>, SignOrganisationMouUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, AddOrganisationParty), bool>, AddOrganisationPartyUseCase>();
-builder.Services.AddScoped<IUseCase<CO.CDP.Organisation.WebApi.Model.Mou>, GetLatestMouUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Organisation.WebApi.Model.Mou>, GetMouUseCase>();
+builder.Services.AddScoped<IUseCase<Mou>, GetLatestMouUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, Mou>, GetMouUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdateOrganisationParty), bool>, UpdateOrganisationPartyUseCase>();
 builder.Services.AddScoped<IUseCase<GetAnnouncementQuery, IEnumerable<Announcement>>, GetAnnouncementsUseCase>();
-builder.Services.AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<WebApiPerson>>, GetPersonsInRoleUseCase>();
-builder.Services.AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>, CreateParentChildRelationshipUseCase>();
+builder.Services
+    .AddScoped<IUseCase<(Guid organisationId, string role), IEnumerable<WebApiPerson>>, GetPersonsInRoleUseCase>();
+builder.Services
+    .AddScoped<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>,
+        CreateParentChildRelationshipUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
 builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetParentOrganisationsResponse>, GetParentOrganisationsUseCase>();
@@ -226,4 +252,5 @@ app.MapGroup("/mou")
     .WithTags("Mou");
 
 app.Run();
+
 public abstract partial class Program;

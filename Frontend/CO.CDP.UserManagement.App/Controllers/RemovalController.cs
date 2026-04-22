@@ -12,12 +12,12 @@ public class RemovalController(
     IRemoveInviteStateStore removeInviteStateStore) : UsersBaseController
 {
     [HttpGet("user/{cdpPersonId:guid}/remove")]
-    public async Task<IActionResult> RemoveUser(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    public async Task<IActionResult> RemoveUser(Guid id, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
+        var viewModel = await userRemovalService.GetUserViewModelAsync(id, cdpPersonId, ct);
         if (viewModel is null) return NotFound();
 
-        var validation = await userRemovalService.ValidateRemovalAsync(organisationSlug, cdpPersonId, ct);
+        var validation = await userRemovalService.ValidateRemovalAsync(id, cdpPersonId, ct);
         if (!validation.IsValid)
             ModelState.AddModelError(string.Empty, validation.ErrorMessage!);
 
@@ -27,55 +27,55 @@ public class RemovalController(
     [HttpPost("user/{cdpPersonId:guid}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveUser(
-        string organisationSlug, Guid cdpPersonId, RemoveUserViewModel input, CancellationToken ct)
+        Guid id, Guid cdpPersonId, RemoveUserViewModel input, CancellationToken ct)
     {
         var result =
-            await userRemovalService.ValidateAndRemoveUserAsync(organisationSlug, cdpPersonId, input.RemoveConfirmed,
+            await userRemovalService.ValidateAndRemoveUserAsync(id, cdpPersonId, input.RemoveConfirmed,
                 ct);
 
         if (result is UserRemovalSubmitResult.NotFound) return NotFound();
         if (result is UserRemovalSubmitResult.Cancelled)
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         if (result is UserRemovalSubmitResult.ValidationError ve)
         {
             ModelState.AddModelError(string.Empty, ve.Message);
-            var viewModel = await userRemovalService.GetUserViewModelAsync(organisationSlug, cdpPersonId, ct);
+            var viewModel = await userRemovalService.GetUserViewModelAsync(id, cdpPersonId, ct);
             return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
         }
 
-        return RedirectToAction(nameof(RemoveSuccess), new { organisationSlug, cdpPersonId });
+        return RedirectToAction(nameof(RemoveSuccess), new { id, cdpPersonId });
     }
 
     [HttpGet("user/{cdpPersonId:guid}/remove/success")]
-    public async Task<IActionResult> RemoveSuccess(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+    public async Task<IActionResult> RemoveSuccess(Guid id, Guid cdpPersonId, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetRemoveSuccessViewModelAsync(organisationSlug, cdpPersonId, ct);
+        var viewModel = await userRemovalService.GetRemoveSuccessViewModelAsync(id, cdpPersonId, ct);
         if (viewModel is null)
         {
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         }
 
         return View(nameof(RemoveSuccess), viewModel);
     }
 
     [HttpGet("invites/{inviteGuid:guid}/remove")]
-    public async Task<IActionResult> RemoveInvite(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+    public async Task<IActionResult> RemoveInvite(Guid id, Guid inviteGuid, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(id, inviteGuid, ct);
         return viewModel is null ? NotFound() : View(nameof(RemoveUser), viewModel);
     }
 
     [HttpPost("invites/{inviteGuid:guid}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveInvite(
-        string organisationSlug, Guid inviteGuid, RemoveUserViewModel input, CancellationToken ct)
+        Guid id, Guid inviteGuid, RemoveUserViewModel input, CancellationToken ct)
     {
-        var viewModel = await userRemovalService.GetInviteViewModelAsync(organisationSlug, inviteGuid, ct);
+        var viewModel = await userRemovalService.GetInviteViewModelAsync(id, inviteGuid, ct);
         if (viewModel is null) return NotFound();
 
         if (input.RemoveConfirmed == false)
         {
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         }
 
         if (!ModelState.IsValid)
@@ -83,13 +83,13 @@ public class RemovalController(
             return View(nameof(RemoveUser), viewModel);
         }
 
-        var result = await userRemovalService.RemoveInviteAsync(organisationSlug, inviteGuid, ct);
+        var result = await userRemovalService.RemoveInviteAsync(id, inviteGuid, ct);
 
         if (result is InviteRemovalSubmitResult.NotFound) return NotFound();
 
         await removeInviteStateStore.SetAsync(new RemoveInviteSuccessState
         {
-            OrganisationSlug = organisationSlug,
+            OrganisationId = id,
             UserDisplayName = viewModel.UserDisplayName,
             Email = viewModel.Email,
             OrganisationName = viewModel.OrganisationName,
@@ -97,23 +97,23 @@ public class RemovalController(
             Role = viewModel.CurrentRole
         });
 
-        return RedirectToAction(nameof(RemoveInviteSuccess), new { organisationSlug, inviteGuid });
+        return RedirectToAction(nameof(RemoveInviteSuccess), new { id, inviteGuid });
     }
 
     [HttpGet("invites/{inviteGuid:guid}/remove/success")]
-    public async Task<IActionResult> RemoveInviteSuccess(string organisationSlug, Guid inviteGuid)
+    public async Task<IActionResult> RemoveInviteSuccess(Guid id, Guid inviteGuid)
     {
         var state = await removeInviteStateStore.GetAsync();
-        if (state is null || !state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase))
+        if (state is null || state.OrganisationId != id)
         {
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         }
 
         await removeInviteStateStore.ClearAsync();
 
         var viewModel = new RemoveSuccessViewModel
         {
-            OrganisationSlug = organisationSlug,
+            OrganisationId = id,
             UserDisplayName = state.UserDisplayName,
             Email = state.Email,
             OrganisationName = state.OrganisationName,
@@ -127,48 +127,48 @@ public class RemovalController(
 
     [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     public async Task<IActionResult> RemoveApplication(
-        string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
     {
         var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
-            organisationSlug, cdpPersonId, clientId, ct);
+            id, cdpPersonId, clientId, ct);
         return viewModel is null ? NotFound() : View(nameof(RemoveApplication), viewModel);
     }
 
     [HttpPost("user/{cdpPersonId:guid}/application/{clientId}/remove")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveApplication(
-        string organisationSlug, Guid cdpPersonId, string clientId,
+        Guid id, Guid cdpPersonId, string clientId,
         RemoveApplicationViewModel input, CancellationToken ct)
     {
         if (input.RevokeConfirmed == false)
         {
             return RedirectToAction(nameof(UserDetailsController.Details), "UserDetails",
-                new { organisationSlug, cdpPersonId });
+                new { id, cdpPersonId });
         }
 
         if (!ModelState.IsValid)
         {
             var viewModel = await userRemovalService.GetRemoveApplicationViewModelAsync(
-                organisationSlug, cdpPersonId, clientId, ct);
+                id, cdpPersonId, clientId, ct);
             return viewModel is null ? NotFound() : View(nameof(RemoveApplication), viewModel);
         }
 
-        var result = await userRemovalService.RemoveApplicationAsync(organisationSlug, cdpPersonId, clientId, ct);
+        var result = await userRemovalService.RemoveApplicationAsync(id, cdpPersonId, clientId, ct);
 
         if (result is ApplicationRemovalSubmitResult.NotFound) return NotFound();
-        return RedirectToAction(nameof(RemoveApplicationSuccess), new { organisationSlug, cdpPersonId, clientId });
+        return RedirectToAction(nameof(RemoveApplicationSuccess), new { id, cdpPersonId, clientId });
     }
 
     [HttpGet("user/{cdpPersonId:guid}/application/{clientId}/remove/success")]
     public async Task<IActionResult> RemoveApplicationSuccess(
-        string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct)
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
     {
         var viewModel = await userDetailsQueryService.GetRemoveApplicationSuccessViewModelAsync(
-            organisationSlug, cdpPersonId, clientId, ct);
+            id, cdpPersonId, clientId, ct);
 
         if (viewModel is null)
         {
-            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { organisationSlug });
+            return RedirectToAction(nameof(UsersListController.Index), "UsersList", new { id });
         }
 
         return View(nameof(RemoveApplicationSuccess), viewModel);

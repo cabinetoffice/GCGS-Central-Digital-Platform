@@ -2,8 +2,8 @@
 @{
     ViewData["Title"] = "Check application role changes";
     var changeUrl = Model.IsPending
-        ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/application-roles/change"
-        : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application-roles/change";
+        ? $"/organisation/{Model.OrganisationId}/invites/{Model.InviteGuid}/application-roles/change"
+        : $"/organisation/{Model.OrganisationId}/user/{Model.CdpPersonId}/application-roles/change";
 }
 
 @section BeforeContent {
@@ -65,7 +65,7 @@
             @Html.AntiForgeryToken()
             <div class="govuk-button-group">
                 <button class="govuk-button" data-module="govuk-button">Save changes</button>
-                <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+                <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
             </div>
         </form>
     </div>

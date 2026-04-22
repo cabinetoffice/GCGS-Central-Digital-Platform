@@ -4,6 +4,7 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using Microsoft.Extensions.Logging;
+using InvalidOperationException = CO.CDP.UserManagement.Core.Exceptions.InvalidOperationException;
 
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
@@ -49,7 +50,8 @@ public class InviteOrchestrationService(
             OrganisationId = organisation.Id,
             CreatedBy = inviterPrincipalId ?? "system"
         };
-        await roleMappingService.ApplyRoleDefinitionAsync(inviteRoleMapping, request.OrganisationRole, cancellationToken);
+        await roleMappingService.ApplyRoleDefinitionAsync(inviteRoleMapping, request.OrganisationRole,
+            cancellationToken);
 
         if (request.ApplicationAssignments != null && request.ApplicationAssignments.Any())
         {
@@ -116,6 +118,25 @@ public class InviteOrchestrationService(
         CancellationToken cancellationToken = default) =>
         atomicMembershipSync.AcceptInviteAsync(cdpOrganisationId, inviteRoleMappingId, request, cancellationToken);
 
+    public async Task ResendInviteAsync(
+        Guid cdpOrganisationId,
+        int inviteRoleMappingId,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await GetOrganisationAsync(cdpOrganisationId, cancellationToken);
+        var mapping = await inviteRoleMappingRepository.GetByIdAsync(inviteRoleMappingId, cancellationToken);
+
+        if (mapping == null || mapping.OrganisationId != organisation.Id)
+            throw new EntityNotFoundException(nameof(InviteRoleMapping), inviteRoleMappingId);
+
+        await organisationApiAdapter.ResendPersonInviteAsync(organisation.CdpOrganisationGuid,
+            mapping.CdpPersonInviteGuid, cancellationToken);
+
+        logger.LogInformation(
+            "Resent invite for InviteRoleMapping {MappingId} (CDP invite {CdpInviteGuid}) in organisation {OrganisationId}",
+            inviteRoleMappingId, mapping.CdpPersonInviteGuid, organisation.Id);
+    }
+
     private async Task EnsureMemberDoesNotAlreadyExistAsync(
         Organisation organisation,
         InviteUserRequest request,
@@ -144,7 +165,7 @@ public class InviteOrchestrationService(
     private async Task<Organisation> GetOrganisationAsync(Guid cdpOrganisationId,
         CancellationToken cancellationToken) =>
         await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, cancellationToken)
-            ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
+        ?? throw new EntityNotFoundException(nameof(Organisation), cdpOrganisationId);
 
     private async Task<InviteRoleMapping> GetInviteRoleMappingAsync(
         Guid cdpOrganisationId,
@@ -191,7 +212,7 @@ public class InviteOrchestrationService(
             logger.LogError(ex,
                 "Failed to create CDP invite in organisation {OrganisationId}, aborting",
                 organisation.Id);
-            throw new Core.Exceptions.InvalidOperationException(
+            throw new InvalidOperationException(
                 $"Failed to create CDP invite for organisation {organisation.Id} (CDP {organisation.CdpOrganisationGuid}).",
                 ex);
         }

@@ -6,37 +6,37 @@ namespace CO.CDP.UserManagement.App.Application.Removal;
 public interface IUserRemovalService
 {
     Task<RemoveUserViewModel?> GetUserViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         CancellationToken ct);
 
     Task<RemoveUserViewModel?> GetInviteViewModelAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 
     Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
-        string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct);
 
     Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
-        string organisationSlug, Guid cdpPersonId, CancellationToken ct);
+        Guid id, Guid cdpPersonId, CancellationToken ct);
 
     Task<RemovalValidationResult> ValidateRemovalAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         CancellationToken ct);
 
     Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
-        string organisationSlug,
+        Guid id,
         Guid cdpPersonId,
         bool? removeConfirmed,
         CancellationToken ct);
 
     Task<InviteRemovalSubmitResult> RemoveInviteAsync(
-        string organisationSlug,
+        Guid id,
         Guid inviteGuid,
         CancellationToken ct);
 
     Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(
-        string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct);
 }

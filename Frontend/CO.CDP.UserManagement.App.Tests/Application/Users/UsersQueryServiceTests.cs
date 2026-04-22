@@ -19,19 +19,20 @@ public class UsersQueryServiceTests : AdapterTestFixture
     // ── Null / NotFound guards ────────────────────────────────────────────────
 
     [Fact]
-    public async Task GetViewModelAsync_NullSlug_ReturnsNull()
+    public async Task GetViewModelAsync_EmptyOrganisationId_ReturnsNull()
     {
-        var result = await _sut.GetViewModelAsync(null, null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(Guid.Empty, null, null, null, CancellationToken.None);
         result.Should().BeNull();
-        _adapter.Verify(a => a.GetOrganisationBySlugAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()),
+        _adapter.Verify(a => a.GetOrganisationByGuidAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
             Times.Never);
     }
 
     [Fact]
     public async Task GetViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("unknown", default)).ReturnsAsync((OrganisationResponse?)null);
-        var result = await _sut.GetViewModelAsync("unknown", null, null, null, CancellationToken.None);
+        var organisationId = Guid.NewGuid();
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(organisationId, default)).ReturnsAsync((OrganisationResponse?)null);
+        var result = await _sut.GetViewModelAsync(organisationId, null, null, null, CancellationToken.None);
         result.Should().BeNull();
     }
 
@@ -47,10 +48,10 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(new List<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, null, CancellationToken.None);
 
         result.Should().NotBeNull();
-        result!.OrganisationSlug.Should().Be("test-org");
+        result!.OrganisationId.Should().Be(OrgGuid);
         result.Users.Should().HaveCount(1);
     }
 
@@ -64,7 +65,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(new List<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, null, CancellationToken.None);
 
         _adapter.Verify(a => a.GetUsersAsync(OrgGuid, default), Times.Once);
         _adapter.Verify(a => a.GetInvitesAsync(OrgGuid, default), Times.Once);
@@ -88,7 +89,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", role, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, role, null, null, CancellationToken.None);
 
         // Count only actual users (exclude invites) for the first assertion
         result!.Users.Count(u => u.InviteGuid == null).Should().Be(expectedUsers);
@@ -109,7 +110,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, "alice", CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, "alice", CancellationToken.None);
 
         result!.Users.Should().HaveCount(1);
         result.Users[0].Name.Should().Contain("Alice");
@@ -126,7 +127,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, "ALICE", CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, "ALICE", CancellationToken.None);
 
         result!.Users.Should().HaveCount(1);
     }
@@ -161,7 +162,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default))
             .ReturnsAsync(new List<PendingOrganisationInviteResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, "42", null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, "42", null, CancellationToken.None);
 
         result!.Users.Should().HaveCount(1);
     }
@@ -178,7 +179,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, null, CancellationToken.None);
 
         result!.OrganisationName.Should().Be("My Organisation");
     }
@@ -208,7 +209,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { invite });
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(new[] { app });
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, null, CancellationToken.None);
 
         result.Should().NotBeNull();
         var user = result!.Users.Single();
@@ -228,7 +229,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { MakeInvite() });
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, null, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.TotalCount.Should().Be(2);
@@ -247,7 +248,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(Array.Empty<PendingOrganisationInviteResponse>());
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", role, app, search, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, role, app, search, CancellationToken.None);
 
         result!.HasActiveFilters.Should().Be(expected);
     }
@@ -264,7 +265,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         });
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", "admin", null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, "admin", null, null, CancellationToken.None);
 
         result!.TotalCount.Should().Be(1);
         result.Users.Should().HaveCount(1);
@@ -283,7 +284,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         });
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", null, null, "alice", CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, null, "alice", CancellationToken.None);
 
         result!.TotalCount.Should().Be(1);
         result.Users[0].Email.Should().Be("alice@example.com");
@@ -307,7 +308,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         var inviteWithout = MakeInvite(inviteGuid: Guid.NewGuid(), pendingInviteId: 2);
         _adapter.Setup(a => a.GetInvitesAsync(OrgGuid, default)).ReturnsAsync(new[] { inviteWithApp, inviteWithout });
 
-        var result = await _sut.GetViewModelAsync("test-org", null, "app-3", null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, null, "app-3", null, CancellationToken.None);
 
         result!.TotalCount.Should().Be(1);
     }
@@ -321,7 +322,7 @@ public class UsersQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default)).ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
         // Filter to admin — no admin users exist, so count should be 0
-        var result = await _sut.GetViewModelAsync("test-org", "admin", null, null, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, "admin", null, null, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.TotalCount.Should().Be(0);

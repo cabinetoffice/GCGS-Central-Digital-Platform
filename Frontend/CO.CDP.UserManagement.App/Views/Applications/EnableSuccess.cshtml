@@ -19,7 +19,7 @@
 
         <h3 class="govuk-heading-s govuk-!-margin-top-5">Next steps</h3>
         <ol class="govuk-list govuk-list--number">
-            <li>Go to <a href="/organisation/@Model.OrganisationSlug/assignments" class="govuk-link">user assignments</a> to give users access</li>
+            <li>Go to <a href="/organisation/@Model.OrganisationId/assignments" class="govuk-link">user assignments</a> to give users access</li>
             <li>Select the users you want to assign</li>
             <li>Choose the appropriate role for each user</li>
         </ol>
@@ -56,8 +56,8 @@
         </dl>
 
         <div class="govuk-button-group govuk-!-margin-top-6">
-            <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign users to this application</a>
-            <a href="/organisation/@Model.OrganisationSlug/applications" class="govuk-link">Return to applications</a>
+            <a href="/organisation/@Model.OrganisationId/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign users to this application</a>
+            <a href="/organisation/@Model.OrganisationId/applications" class="govuk-link">Return to applications</a>
         </div>
 
     </div>

@@ -113,6 +113,7 @@ data "aws_iam_policy_document" "terraform_product" {
       "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/vendedlogs/${local.name_prefix}*",
       "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:/ecs*",
       "arn:aws:logs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-*",
+      "arn:aws:logs:us-east-1:${data.aws_caller_identity.current.account_id}:log-group:aws-waf-logs-*",
     ]
     sid = "ManageProductLogs"
   }
@@ -237,9 +238,11 @@ data "aws_iam_policy_document" "terraform_product" {
     ]
     effect = "Allow"
     resources = [
+      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
       "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*",
       "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/${local.name_prefix}-*/*",
-      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/ipset/${local.name_prefix}-*/*",
+      "arn:aws:wafv2:us-east-1:${data.aws_caller_identity.current.account_id}:global/ipset/${local.name_prefix}-*/*",
+      "arn:aws:wafv2:us-east-1:${data.aws_caller_identity.current.account_id}:global/webacl/${local.name_prefix}-*/*",
     ]
     sid = "ManageProductWAF"
   }

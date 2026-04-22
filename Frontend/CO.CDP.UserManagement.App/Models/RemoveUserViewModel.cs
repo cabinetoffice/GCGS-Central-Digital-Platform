@@ -5,7 +5,7 @@ namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record RemoveUserViewModel(
     string OrganisationName = "",
-    string OrganisationSlug = "",
+    Guid OrganisationId = default,
     string UserDisplayName = "",
     string Email = "",
     OrganisationRole CurrentRole = OrganisationRole.Member,
@@ -17,7 +17,7 @@ public sealed record RemoveUserViewModel(
 {
     public static RemoveUserViewModel Empty => new(
         OrganisationName: string.Empty,
-        OrganisationSlug: string.Empty,
+        OrganisationId: Guid.Empty,
         UserDisplayName: string.Empty,
         Email: string.Empty,
         CurrentRole: OrganisationRole.Member,

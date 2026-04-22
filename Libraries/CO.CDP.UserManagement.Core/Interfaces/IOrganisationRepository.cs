@@ -8,14 +8,6 @@ namespace CO.CDP.UserManagement.Core.Interfaces;
 public interface IOrganisationRepository : IRepository<Organisation>
 {
     /// <summary>
-    /// Gets an organisation by its slug.
-    /// </summary>
-    /// <param name="slug">The organisation slug.</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <returns>The organisation if found; otherwise, null.</returns>
-    Task<Organisation?> GetBySlugAsync(string slug, CancellationToken cancellationToken = default);
-
-    /// <summary>
     /// Gets an organisation by its CDP organisation GUID.
     /// </summary>
     /// <param name="cdpOrganisationGuid">The CDP organisation GUID.</param>

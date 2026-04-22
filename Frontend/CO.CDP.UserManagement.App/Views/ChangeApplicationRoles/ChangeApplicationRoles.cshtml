@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.OrganisationId" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -91,8 +91,8 @@
                                     else
                                     {
                                         var removeUrl = Model.IsPending
-                                            ? $"/organisation/{Model.OrganisationSlug}/invites/{Model.InviteGuid}/application/{application.ApplicationClientId}/remove"
-                                            : $"/organisation/{Model.OrganisationSlug}/user/{Model.CdpPersonId}/application/{application.ApplicationClientId}/remove";
+                                            ? $"/organisation/{Model.OrganisationId}/invites/{Model.InviteGuid}/application/{application.ApplicationClientId}/remove"
+                                            : $"/organisation/{Model.OrganisationId}/user/{Model.CdpPersonId}/application/{application.ApplicationClientId}/remove";
                                         <p class="govuk-body govuk-!-margin-bottom-0">
                                             <a href="@removeUrl" class="govuk-link">To remove access, click here.</a>
                                         </p>
@@ -188,7 +188,7 @@
             {
                 <div class="govuk-button-group">
                     <button class="govuk-button" data-module="govuk-button">Continue</button>
-                    <a class="govuk-link" href="/organisation/@Model.OrganisationSlug">Cancel</a>
+                    <a class="govuk-link" href="/organisation/@Model.OrganisationId">Cancel</a>
                 </div>
             }
         </form>

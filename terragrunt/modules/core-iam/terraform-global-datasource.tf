@@ -93,36 +93,6 @@ data "aws_iam_policy_document" "terraform_global" {
 
   statement {
     actions = [
-      "cloudfront:CreateDistribution",
-      "cloudfront:CreateOriginAccessControl",
-      "cloudfront:CreateResponseHeadersPolicy",
-      "cloudfront:DeleteDistribution",
-      "cloudfront:DeleteOriginAccessControl",
-      "cloudfront:DeleteResponseHeadersPolicy",
-      "cloudfront:GetDistribution",
-      "cloudfront:GetDistributionConfig",
-      "cloudfront:GetOriginAccessControl",
-      "cloudfront:GetResponseHeadersPolicy",
-      "cloudfront:GetResponseHeadersPolicyConfig",
-      "cloudfront:ListDistributions",
-      "cloudfront:ListOriginAccessControls",
-      "cloudfront:ListResponseHeadersPolicies",
-      "cloudfront:ListTagsForResource",
-      "cloudfront:TagResource",
-      "cloudfront:UntagResource",
-      "cloudfront:UpdateDistribution",
-      "cloudfront:UpdateOriginAccessControl",
-      "cloudfront:UpdateResponseHeadersPolicy",
-    ]
-    effect = "Allow"
-    resources = [
-      "*"
-    ]
-    sid = "ManageCloudfront"
-  }
-
-  statement {
-    actions = [
       "kms:*",
       "kms:Decrypt",
       "kms:ReEncrypt*",
@@ -310,47 +280,6 @@ data "aws_iam_policy_document" "terraform_global" {
       "arn:aws:states:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:stateMachine:*"
     ]
     sid = "ManageStateMachines"
-  }
-
-  statement {
-    actions = [
-      "wafv2:CreateWebACL",
-      "wafv2:GetWebACLForResource",
-      "wafv2:UpdateWebACL",
-    ]
-    effect = "Allow"
-    resources = [
-      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/managedruleset/*/*",
-      "arn:aws:wafv2:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:regional/webacl/*/*",
-    ]
-    sid = "ManageWAF"
-  }
-
-  statement {
-    actions = [
-      "wafv2:DeleteLoggingConfiguration",
-      "wafv2:PutLoggingConfiguration",
-    ]
-    effect = "Allow"
-    resources = [
-      "*",
-    ]
-    sid = "ManageWAFLoggingConfigurationAPI"
-  }
-
-  statement {
-    actions = [
-      "logs:CreateLogDelivery",
-      "logs:DeleteLogDelivery",
-      "logs:PutResourcePolicy",
-      "logs:DescribeResourcePolicies",
-      "logs:DescribeLogGroups"
-    ]
-    effect = "Allow"
-    resources = [
-      "*",
-    ]
-    sid = "ManageWAFWebACLLoggingCWL"
   }
 
 }

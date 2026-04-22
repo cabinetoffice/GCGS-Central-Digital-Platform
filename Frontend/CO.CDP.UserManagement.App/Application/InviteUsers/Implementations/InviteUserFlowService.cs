@@ -1,6 +1,6 @@
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
 using CO.CDP.UserManagement.Shared.Requests;
 
@@ -11,21 +11,22 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
         private readonly IUserManagementApiAdapter _adapter;
         private readonly IOrganisationRoleService _organisationRoleService;
 
-        public InviteUserFlowService(IUserManagementApiAdapter adapter, IOrganisationRoleService organisationRoleService)
+        public InviteUserFlowService(IUserManagementApiAdapter adapter,
+            IOrganisationRoleService organisationRoleService)
         {
             _adapter = adapter;
             _organisationRoleService = organisationRoleService;
         }
 
-        public async Task<InviteUserViewModel?> GetViewModelAsync(string organisationSlug,
+        public async Task<InviteUserViewModel?> GetViewModelAsync(Guid id,
             InviteUserViewModel? input, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             return new InviteUserViewModel
             {
-                OrganisationSlug = organisationSlug,
+                OrganisationId = id,
                 OrganisationName = org.Name,
                 Email = input?.Email,
                 FirstName = input?.FirstName,
@@ -34,10 +35,10 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
             };
         }
 
-        public async Task<bool> IsEmailAlreadyInOrganisationAsync(string organisationSlug, string email,
+        public async Task<bool> IsEmailAlreadyInOrganisationAsync(Guid id, string email,
             CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return false;
 
             var usersTask = _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
@@ -51,10 +52,10 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
                    || invites.Any(i => string.Equals(i.Email, email, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task<ApplicationRolesStepViewModel?> GetApplicationRolesStepAsync(string organisationSlug,
+        public async Task<ApplicationRolesStepViewModel?> GetApplicationRolesStepAsync(Guid id,
             InviteUserState state, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var applications = await _adapter.GetApplicationsAsync(org.Id, ct);
@@ -78,7 +79,7 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
 
             return new ApplicationRolesStepViewModel
             {
-                OrganisationSlug = organisationSlug,
+                OrganisationId = id,
                 FirstName = state.FirstName,
                 LastName = state.LastName,
                 Email = state.Email,
@@ -87,10 +88,10 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
             };
         }
 
-        public async Task<InviteCheckAnswersViewModel?> GetCheckAnswersViewModelAsync(string organisationSlug,
+        public async Task<InviteCheckAnswersViewModel?> GetCheckAnswersViewModelAsync(Guid id,
             InviteUserState state, CancellationToken ct)
         {
-            var rolesVm = await GetApplicationRolesStepAsync(organisationSlug, state, ct);
+            var rolesVm = await GetApplicationRolesStepAsync(id, state, ct);
             if (rolesVm is null) return null;
 
             var applications = (state.ApplicationAssignments ?? Enumerable.Empty<InviteApplicationAssignment>())
@@ -113,7 +114,7 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
 
             return new InviteCheckAnswersViewModel
             {
-                OrganisationSlug = state.OrganisationSlug,
+                OrganisationId = state.OrganisationId,
                 FirstName = state.FirstName,
                 LastName = state.LastName,
                 Email = state.Email,
@@ -123,9 +124,9 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
         }
 
         public async Task<Result<ServiceFailure, ServiceOutcome>> InviteAsync(
-            string organisationSlug, InviteUserState state, CancellationToken ct)
+            Guid id, InviteUserState state, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null)
                 return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
@@ -152,20 +153,29 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
         }
 
 
-        public async Task<Result<ServiceFailure, ServiceOutcome>> ResendInviteAsync(string organisationSlug,
+        public async Task<Result<ServiceFailure, ResendInviteResult>> ResendInviteAsync(Guid id,
             Guid inviteGuid, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
-            if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
+            if (org is null)
+                return Result<ServiceFailure, ResendInviteResult>.Success(
+                    new ResendInviteResult(ServiceOutcome.NotFound));
 
-            return await _adapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            var inviteeName = invite is null ? null : $"{invite.FirstName} {invite.LastName}".Trim();
+
+            var result = await _adapter.ResendInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
+            return result.Match<Result<ServiceFailure, ResendInviteResult>>(
+                Result<ServiceFailure, ResendInviteResult>.Failure,
+                outcome =>
+                    Result<ServiceFailure, ResendInviteResult>.Success(new ResendInviteResult(outcome, inviteeName)));
         }
 
         public async Task<OrganisationRoleStepViewModel> GetOrganisationRoleStepViewModelAsync(
             InviteUserState state, bool returnToCheckAnswers, CancellationToken ct)
         {
             return new OrganisationRoleStepViewModel(
-                state.OrganisationSlug,
+                state.OrganisationId,
                 state.FirstName,
                 state.LastName,
                 state.Email,

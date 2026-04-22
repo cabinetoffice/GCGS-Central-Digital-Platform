@@ -18,10 +18,10 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
     [Fact]
     public async Task GetViewModelAsync_OrgNotFound_ReturnsNull()
     {
-        _adapter.Setup(a => a.GetOrganisationBySlugAsync("slug", default))
+        _adapter.Setup(a => a.GetOrganisationByGuidAsync(OrgGuid, default))
             .ReturnsAsync((OrganisationResponse?)null);
 
-        var result = await _sut.GetViewModelAsync("slug", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -33,7 +33,7 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetUserAsync(OrgGuid, It.IsAny<Guid>(), default))
             .ReturnsAsync((OrganisationUserResponse?)null);
 
-        var result = await _sut.GetViewModelAsync("test-org", Guid.NewGuid(), CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, Guid.NewGuid(), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -48,7 +48,7 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(Array.Empty<OrganisationApplicationResponse>());
 
-        var result = await _sut.GetViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.CdpPersonId.Should().Be(personId);
@@ -79,7 +79,7 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(new[] { MakeApplication(orgAppId: 10, name: "App One") });
 
-        var result = await _sut.GetViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.ApplicationAccess.Should().HaveCount(1);
         result.ApplicationAccess[0].ApplicationName.Should().Be("App One");
@@ -95,7 +95,7 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
             .ReturnsAsync(new[] { MakeApplication(orgAppId: 10, name: "App One") });
 
-        var result = await _sut.GetViewModelAsync("test-org", personId, CancellationToken.None);
+        var result = await _sut.GetViewModelAsync(OrgGuid, personId, CancellationToken.None);
 
         result!.ApplicationAccess.Should().BeEmpty();
     }

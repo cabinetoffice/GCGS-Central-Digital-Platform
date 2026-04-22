@@ -1,10 +1,10 @@
-@model CO.CDP.UserManagement.App.Models.InviteDetailsViewModel
+@model InviteDetailsViewModel
 @{
     ViewData["Title"] = "Invite details";
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.Organisation?.Slug" class="govuk-back-link">Back</a>
+    <a href="/organisation/@Model.Organisation?.CdpOrganisationGuid" class="govuk-back-link">Back</a>
 }
 
 <h1 class="govuk-heading-xl">Invite details</h1>
@@ -50,10 +50,16 @@
     <div class="govuk-grid-column-one-third">
         <h2 class="govuk-heading-m">Actions</h2>
         <ul class="govuk-list">
-            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/resend-invite" class="govuk-link govuk-!-margin-bottom-2">Resend invite</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-bottom-2">Change application access</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/organisation-role/change" class="govuk-link govuk-!-margin-bottom-2">Change organisation role</a></li>
-            <li><a href="/organisation/@Model.Organisation?.Slug/invites/@Model.InviteGuid/remove" class="govuk-link">Remove from organisation</a></li>
+            <li>
+                <form method="post"
+                      action="/organisation/@Model.Organisation?.CdpOrganisationGuid/invites/@Model.InviteGuid/resend-invite">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="govuk-button">Resend invite</button>
+                </form>
+            </li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/invites/@Model.InviteGuid/application-roles/change" class="govuk-link govuk-!-margin-bottom-2">Change application access</a></li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/invites/@Model.InviteGuid/organisation-role/change" class="govuk-link govuk-!-margin-bottom-2">Change organisation role</a></li>
+            <li><a href="/organisation/@Model.Organisation?.CdpOrganisationGuid/invites/@Model.InviteGuid/remove" class="govuk-link">Remove from organisation</a></li>
         </ul>
     </div>
 </div>

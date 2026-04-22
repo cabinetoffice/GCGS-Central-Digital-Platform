@@ -4,7 +4,7 @@
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationSlug/applications" class="govuk-back-link">Back to applications</a>
+    <a href="/organisation/@Model.OrganisationId/applications" class="govuk-back-link">Back to applications</a>
 }
 
 <div class="govuk-blue-banner">
@@ -147,7 +147,7 @@
         <h2 class="govuk-heading-l govuk-!-margin-top-8">Assigned users</h2>
 
         <div class="govuk-button-group govuk-!-margin-bottom-4">
-            <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
+            <a href="/organisation/@Model.OrganisationId/assignments/create?application=@Model.ApplicationSlug" class="govuk-button" data-module="govuk-button">Assign a user</a>
         </div>
 
         @if (Model.AssignedUsers.Count == 0)
@@ -155,7 +155,7 @@
             <div class="govuk-inset-text">
                 <p>No users are currently assigned to this application.</p>
                 <p>
-                    <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign users to this application</a>
+                    <a href="/organisation/@Model.OrganisationId/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign users to this application</a>
                 </p>
             </div>
         }
@@ -166,7 +166,7 @@
                 <div class="govuk-summary-card">
                     <div class="govuk-summary-card__title-wrapper">
                         <h3 class="govuk-summary-card__title">
-                            <a href="/organisation/@Model.OrganisationSlug/user/@user.UserEmail" class="govuk-link">@user.UserName</a>
+                            <a href="/organisation/@Model.OrganisationId/user/@user.UserEmail" class="govuk-link">@user.UserName</a>
                         </h3>
                     </div>
                     <div class="govuk-summary-card__content">
@@ -176,10 +176,10 @@
                             <span class="govuk-!-margin-left-2">Assigned @user.AssignedAt.ToString("d MMM yyyy")</span>
                         </p>
                         <p class="govuk-body">
-                            <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
+                            <a href="/organisation/@Model.OrganisationId/assignments/@user.AssignmentId/change-role" class="govuk-link govuk-!-margin-right-4">Change role</a>
                             @if (!Model.IsEnabledByDefault)
                             {
-                                <a href="/organisation/@Model.OrganisationSlug/assignments/@user.AssignmentId/revoke" class="govuk-link">Revoke access</a>
+                                <a href="/organisation/@Model.OrganisationId/assignments/@user.AssignmentId/revoke" class="govuk-link">Revoke access</a>
                             }
                         </p>
                     </div>
@@ -211,15 +211,15 @@
         <h3 class="govuk-heading-s">Actions</h3>
         <ul class="govuk-list">
             <li>
-                <a href="/organisation/@Model.OrganisationSlug/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign a user</a>
+                <a href="/organisation/@Model.OrganisationId/assignments/create?application=@Model.ApplicationSlug" class="govuk-link">Assign a user</a>
             </li>
             <li>
-                <a href="/organisation/@Model.OrganisationSlug/assignments?application=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
+                <a href="/organisation/@Model.OrganisationId/assignments?application=@Model.ApplicationSlug" class="govuk-link">View all assignments</a>
             </li>
             @if (Model is { IsEnabled: true, IsEnabledByDefault: false })
             {
                 <li>
-                    <a href="/organisation/@Model.OrganisationSlug/applications/@Model.ApplicationSlug/disable" class="govuk-link">Disable application</a>
+                    <a href="/organisation/@Model.OrganisationId/applications/@Model.ApplicationSlug/disable" class="govuk-link">Disable application</a>
                 </li>
             }
         </ul>

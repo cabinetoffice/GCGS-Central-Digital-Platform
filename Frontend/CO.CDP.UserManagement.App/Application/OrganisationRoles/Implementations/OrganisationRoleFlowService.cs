@@ -29,9 +29,9 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             _currentUserService = currentUserService;
         }
 
-        public async Task<ChangeUserRoleViewModel?> GetUserViewModelAsync(string organisationSlug, Guid cdpPersonId, CancellationToken ct)
+        public async Task<ChangeUserRoleViewModel?> GetUserViewModelAsync(Guid id, Guid cdpPersonId, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
@@ -39,7 +39,7 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
 
             return new ChangeUserRoleViewModel(
                 OrganisationName: org.Name,
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: $"{user.FirstName} {user.LastName}",
                 Email: user.Email,
                 CurrentRole: user.OrganisationRole,
@@ -50,9 +50,9 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             );
         }
 
-        public async Task<ChangeUserRoleViewModel?> GetInviteViewModelAsync(string organisationSlug, Guid inviteGuid, CancellationToken ct)
+        public async Task<ChangeUserRoleViewModel?> GetInviteViewModelAsync(Guid id, Guid inviteGuid, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
 
             var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
@@ -60,7 +60,7 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
 
             return new ChangeUserRoleViewModel(
                 OrganisationName: org.Name,
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: $"{invite.FirstName} {invite.LastName}",
                 Email: invite.Email,
                 CurrentRole: invite.OrganisationRole,
@@ -77,27 +77,27 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             return ChangeUserRolePageViewModel.From(viewModel, roles.ToOptions(), selectedRole);
         }
 
-        public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserRoleAsync(string organisationSlug, Guid cdpPersonId, OrganisationRole role, CancellationToken ct)
+        public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateUserRoleAsync(Guid id, Guid cdpPersonId, OrganisationRole role, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             return await _adapter.UpdateUserOrganisationRoleAsync(org.CdpOrganisationGuid, cdpPersonId, new ChangeOrganisationRoleRequest { OrganisationRole = role }, ct);
         }
 
-        public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateInviteRoleAsync(string organisationSlug, Guid inviteGuid, OrganisationRole role, CancellationToken ct)
+        public async Task<Result<ServiceFailure, ServiceOutcome>> UpdateInviteRoleAsync(Guid id, Guid inviteGuid, OrganisationRole role, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.NotFound);
 
             return await _adapter.UpdateInviteOrganisationRoleAsync(org.CdpOrganisationGuid, inviteGuid, new ChangeOrganisationRoleRequest { OrganisationRole = role }, ct);
         }
 
         public async Task<ChangeRoleState> GetOrCreateStateAsync(
-            string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid,
+            Guid id, Guid? cdpPersonId, Guid? inviteGuid,
             ChangeUserRoleViewModel viewModel, CancellationToken ct)
         {
-            var existing = await GetValidatedStateAsync(organisationSlug, cdpPersonId, inviteGuid, ct);
+            var existing = await GetValidatedStateAsync(id, cdpPersonId, inviteGuid, ct);
             if (existing is not null) return existing;
 
             var selectedRole = viewModel.SelectedRole ?? viewModel.CurrentRole;
@@ -107,12 +107,12 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
         }
 
         public async Task<ChangeRoleState?> GetValidatedStateAsync(
-            string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid, CancellationToken ct)
+            Guid id, Guid? cdpPersonId, Guid? inviteGuid, CancellationToken ct)
         {
             var state = await _changeRoleStateStore.GetAsync();
             if (state is null) return null;
 
-            if (!state.OrganisationSlug.Equals(organisationSlug, StringComparison.OrdinalIgnoreCase) ||
+            if (state.OrganisationId != id ||
                 state.CdpPersonId != cdpPersonId ||
                 state.InviteGuid != inviteGuid)
             {
@@ -126,7 +126,7 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
         public ChangeUserRoleViewModel StateToViewModel(ChangeRoleState state) =>
             new(
                 OrganisationName: string.Empty,
-                OrganisationSlug: state.OrganisationSlug,
+                OrganisationId: state.OrganisationId,
                 UserDisplayName: state.UserDisplayName,
                 Email: state.Email,
                 CurrentRole: state.CurrentRole,
@@ -136,9 +136,9 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
                 InviteGuid: state.InviteGuid);
 
         public async Task<ChangeUserRoleSuccessViewModel?> GetSuccessViewModelAsync(
-            string organisationSlug, Guid? cdpPersonId, Guid? inviteGuid, CancellationToken ct)
+            Guid id, Guid? cdpPersonId, Guid? inviteGuid, CancellationToken ct)
         {
-            var state = await GetValidatedStateAsync(organisationSlug, cdpPersonId, inviteGuid, ct);
+            var state = await GetValidatedStateAsync(id, cdpPersonId, inviteGuid, ct);
             if (state is null) return null;
 
             await _changeRoleStateStore.ClearAsync();
@@ -146,21 +146,21 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
             var roleDescription = (await _organisationRoleService.GetRoleAsync(state.SelectedRole, ct))?.Description
                                   ?? string.Empty;
             return new ChangeUserRoleSuccessViewModel(
-                OrganisationSlug: organisationSlug,
+                OrganisationId: id,
                 UserDisplayName: state.UserDisplayName,
                 NewRole: state.SelectedRole,
                 RoleDescription: roleDescription);
         }
 
         public async Task<OrganisationRoleChangeResult> ValidateAndSaveRoleChangeAsync(
-            string organisationSlug,
+            Guid id,
             Guid? cdpPersonId,
             Guid? inviteGuid,
             ChangeUserRoleViewModel viewModel,
             OrganisationRole? selectedRole,
             CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return new OrganisationRoleChangeResult.NotFound();
 
             var currentUserEmail = _currentUserService.GetUserEmail();
@@ -184,7 +184,7 @@ namespace CO.CDP.UserManagement.App.Application.OrganisationRoles.Implementation
 
         private static ChangeRoleState ToChangeRoleState(ChangeUserRoleViewModel viewModel, OrganisationRole selectedRole) =>
             new(
-                viewModel.OrganisationSlug,
+                viewModel.OrganisationId,
                 viewModel.CdpPersonId,
                 viewModel.InviteGuid,
                 viewModel.UserDisplayName,
