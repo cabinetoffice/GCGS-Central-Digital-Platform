@@ -1,3 +1,11 @@
+variable "additional_external_target_groups" {
+  description = "Optional extra target groups to attach to the ECS service."
+  type = list(object({
+    name_suffix = string
+  }))
+  default = []
+}
+
 variable "alb_enabled" {
   description = "Whether to create ALB target group and listener rule"
   type        = bool
@@ -8,14 +16,6 @@ variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
   default     = []
-}
-
-variable "additional_external_target_groups" {
-  description = "Optional extra target groups to attach to the ECS service."
-  type = list(object({
-    name_suffix = string
-  }))
-  default = []
 }
 
 variable "cluster_id" {
