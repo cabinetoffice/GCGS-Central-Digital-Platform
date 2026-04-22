@@ -1,7 +1,9 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
+using OrganisationJoinRequest = CO.CDP.OrganisationInformation.Persistence.OrganisationJoinRequest;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -14,25 +16,27 @@ public class UpdateJoinRequestUseCase(
     ILogger<UpdateJoinRequestUseCase> logger)
     : IUseCase<(Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest), bool>
 {
-    public async Task<bool> Execute((Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest) command)
+    public async Task<bool> Execute(
+        (Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest) command)
     {
         var organisation = await organisationRepository.FindIncludingTenant(command.organisationId)
-            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+                           ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var joinRequest = await requestRepository.Find(command.joinRequestId, command.organisationId)
-            ?? throw new UnknownOrganisationJoinRequestException($"Unknown organisation join request for org id {command.organisationId} or request id {command.joinRequestId}.");
+                          ?? throw new UnknownOrganisationJoinRequestException(
+                              $"Unknown organisation join request for org id {command.organisationId} or request id {command.joinRequestId}.");
 
         if (joinRequest.Person == null)
             throw new UnknownPersonException($"Person details not found for join request {joinRequest.Guid}.");
-        
+
         var person = await personRepository.Find(command.updateJoinRequest.ReviewedBy)
-            ?? throw new UnknownPersonException($"Unknown person {command.updateJoinRequest.ReviewedBy}.");
+                     ?? throw new UnknownPersonException($"Unknown person {command.updateJoinRequest.ReviewedBy}.");
 
         joinRequest.ReviewedById = person.Id;
         joinRequest.Status = command.updateJoinRequest.status;
         joinRequest.ReviewedOn = DateTimeOffset.UtcNow;
 
-        if (command.updateJoinRequest.status == OrganisationInformation.OrganisationJoinRequestStatus.Accepted)
+        if (command.updateJoinRequest.status == OrganisationJoinRequestStatus.Accepted)
         {
             organisation.OrganisationPersons.Add(new OrganisationPerson
             {
@@ -55,19 +59,22 @@ public class UpdateJoinRequestUseCase(
         return await Task.FromResult(true);
     }
 
-    private async Task NotifyAdminOfApprovalRequest(OrganisationInformation.Persistence.OrganisationJoinRequest organisationJoinRequest)
+    private async Task NotifyAdminOfApprovalRequest(OrganisationJoinRequest organisationJoinRequest)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
-        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId") ?? "";
+        var templateId = configuration.GetValue<string>("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId") ??
+                         "";
 
         var missingConfigs = new List<string>();
 
         if (string.IsNullOrEmpty(baseAppUrl)) missingConfigs.Add("OrganisationAppUrl");
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId");
+        if (string.IsNullOrEmpty(templateId))
+            missingConfigs.Add("GOVUKNotify:RequestToJoinOrganisationDecisionTemplateId");
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send an email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send an email.");
+            logger.LogError(new Exception("Unable to send an email"),
+                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send an email.");
             return;
         }
 
@@ -78,8 +85,8 @@ public class UpdateJoinRequestUseCase(
             Personalisation = new Dictionary<string, string>
             {
                 { "org_name", organisationJoinRequest.Organisation!.Name },
-                { "decision",  organisationJoinRequest.Status.ToString().ToLower()},
-                { "first_name", organisationJoinRequest.Person.FirstName},
+                { "decision", organisationJoinRequest.Status.ToString().ToLower() },
+                { "first_name", organisationJoinRequest.Person.FirstName },
                 { "last_name", organisationJoinRequest.Person.LastName },
             }
         };
@@ -88,9 +95,10 @@ public class UpdateJoinRequestUseCase(
         {
             await govUKNotifyApiClient.SendEmail(emailRequest);
         }
-        catch
+        catch (Exception ex)
         {
-            return;
+            logger.LogError(ex, "Failed to send join-request decision email for join request {JoinRequestId}.",
+                organisationJoinRequest.Guid);
         }
     }
 }

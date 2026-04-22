@@ -23,6 +23,49 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("CO.CDP.MQ.Outbox.OutboxMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedOn")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("MessageGroupId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Published")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("QueueUrl")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTimeOffset>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedOn");
+
+                    b.HasIndex("Published");
+
+                    b.ToTable("OutboxMessages", "user_management");
+                });
+
             modelBuilder.Entity("CO.CDP.UserManagement.Core.Entities.Application", b =>
                 {
                     b.Property<int>("Id")
@@ -257,7 +300,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnName("organisation_information_scopes")
                         .HasDefaultValueSql("'[]'");
 
-                    b.Property<IEnumerable<int>>("RequiredPartyRoles")
+                    b.Property<int[]>("RequiredPartyRoles")
                         .IsRequired()
                         .HasColumnType("integer[]")
                         .HasColumnName("required_party_roles");

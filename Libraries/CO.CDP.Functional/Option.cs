@@ -50,6 +50,18 @@ public readonly struct Option<T>
         _hasValue ? some(_value) : none();
 
     /// <summary>
+    /// Asynchronously pattern matches on the Option, returning a Task.
+    /// </summary>
+    public Task MatchAsync(Func<T, Task> some, Func<Task> none) =>
+        _hasValue ? some(_value) : none();
+
+    /// <summary>
+    /// Asynchronously pattern matches on the Option, returning a Task of TResult.
+    /// </summary>
+    public Task<TResult> MatchAsync<TResult>(Func<T, Task<TResult>> some, Func<Task<TResult>> none) =>
+        _hasValue ? some(_value) : none();
+
+    /// <summary>
     /// Gets the value if it exists, otherwise returns the default
     /// </summary>
     public T GetValueOrDefault(T defaultValue = default!) =>

@@ -1,9 +1,9 @@
-using CO.CDP.UserManagement.Shared.Requests;
-using CO.CDP.UserManagement.Shared.Responses;
+using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.UserManagement.Api.Models;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
-using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.UserManagement.Shared.Requests;
+using CO.CDP.UserManagement.Shared.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using UmPartyRole = CO.CDP.UserManagement.Shared.Enums.PartyRole;
@@ -18,9 +18,9 @@ namespace CO.CDP.UserManagement.Api.Controllers;
 [Authorize]
 public class OrganisationsController : ControllerBase
 {
-    private readonly IOrganisationService _organisationService;
     private readonly ILogger<OrganisationsController> _logger;
     private readonly IOrganisationClient _organisationClient;
+    private readonly IOrganisationService _organisationService;
 
     public OrganisationsController(
         IOrganisationService organisationService,
@@ -73,7 +73,8 @@ public class OrganisationsController : ControllerBase
     [HttpGet("by-cdp-guid/{cdpGuid:guid}")]
     [ProducesResponseType(typeof(OrganisationResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<OrganisationResponse>> GetByCdpGuid(Guid cdpGuid, CancellationToken cancellationToken)
+    public async Task<ActionResult<OrganisationResponse>> GetByCdpGuid(Guid cdpGuid,
+        CancellationToken cancellationToken)
     {
         var organisation = await _organisationService.GetByCdpGuidAsync(cdpGuid, cancellationToken);
         if (organisation == null)
@@ -188,22 +189,25 @@ public class OrganisationsController : ControllerBase
             var organisation = await _organisationClient.GetOrganisationAsync(cdpOrganisationGuid);
             if (organisation == null)
             {
-                return NotFound(new ErrorResponse { Message = $"Organisation with CDP GUID {cdpOrganisationGuid} not found." });
+                return NotFound(new ErrorResponse
+                    { Message = $"Organisation with CDP GUID {cdpOrganisationGuid} not found." });
             }
 
             var partyRoles = organisation.Roles
-                .Select(r => (UmPartyRole)(int)r)
-                .Where(r => Enum.IsDefined(r));
+                .Select(r => Enum.TryParse<UmPartyRole>(r.ToString(), out var um) ? (UmPartyRole?)um : null)
+                .OfType<UmPartyRole>();
 
             return Ok(partyRoles);
         }
         catch (ApiException ex) when (ex.StatusCode == 404)
         {
-            return NotFound(new ErrorResponse { Message = $"Organisation with CDP GUID {cdpOrganisationGuid} not found." });
+            return NotFound(new ErrorResponse
+                { Message = $"Organisation with CDP GUID {cdpOrganisationGuid} not found." });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to get party roles for organisation {CdpOrganisationGuid}.", cdpOrganisationGuid);
+            _logger.LogError(ex, "Failed to get party roles for organisation {CdpOrganisationGuid}.",
+                cdpOrganisationGuid);
             return StatusCode(StatusCodes.Status500InternalServerError,
                 new ErrorResponse { Message = "An error occurred retrieving party roles." });
         }
