@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
@@ -47,38 +48,43 @@ public class AcceptInviteUseCase(
                 nameof(UserOrganisationMembership.UserPrincipalId),
                 command.Request.UserPrincipalId);
 
-        var membership = new UserOrganisationMembership
+        await unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
-            UserPrincipalId = command.Request.UserPrincipalId,
-            CdpPersonId = command.Request.CdpPersonId,
-            OrganisationId = mapping.OrganisationId,
-            IsActive = true,
-            JoinedAt = DateTimeOffset.UtcNow,
-            InvitedBy = mapping.CreatedBy
-        };
-        await roleMappingService.ApplyRoleDefinitionAsync(membership, mapping.OrganisationRole, ct);
-
-        membershipRepository.Add(membership);
-        inviteRoleMappingRepository.Remove(mapping);
-
-        await unitOfWork.SaveChangesAsync(ct);
-
-        await AssignDefaultApplicationsAsync(membership, organisation, ct);
-
-        if (membership.CdpPersonId.HasValue)
-        {
-            var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
-            await publisher.Publish(new PersonScopesUpdated
+            var membership = new UserOrganisationMembership
             {
-                OrganisationId = organisation.CdpOrganisationGuid.ToString(),
-                PersonId = membership.CdpPersonId.Value.ToString(),
-                Scopes = scopes.ToList()
-            });
-        }
+                UserPrincipalId = command.Request.UserPrincipalId,
+                CdpPersonId = command.Request.CdpPersonId,
+                OrganisationId = mapping.OrganisationId,
+                IsActive = true,
+                JoinedAt = DateTimeOffset.UtcNow,
+                InvitedBy = mapping.CreatedBy
+            };
+            await roleMappingService.ApplyRoleDefinitionAsync(membership, mapping.OrganisationRole, ct);
 
-        logger.LogInformation(
-            "Accepted invite {MappingId}, created membership {MembershipId} in organisation {CdpOrganisationId}",
-            command.InviteRoleMappingId, membership.Id, command.CdpOrganisationId);
+            membershipRepository.Add(membership);
+            inviteRoleMappingRepository.Remove(mapping);
+
+            // Flush membership to DB so its generated Id is available for default app assignments.
+            await unitOfWork.SaveChangesAsync(ct);
+
+            await AssignDefaultApplicationsAsync(membership, organisation, ct);
+            await unitOfWork.SaveChangesAsync(ct);
+
+            await Option.From(membership.CdpPersonId).TapAsync(async personId =>
+            {
+                var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
+                await publisher.Publish(new PersonScopesUpdated
+                {
+                    OrganisationId = organisation.CdpOrganisationGuid.ToString(),
+                    PersonId = personId.ToString(),
+                    Scopes = scopes.ToList()
+                });
+            });
+
+            logger.LogInformation(
+                "Accepted invite {MappingId}, created membership {MembershipId} in organisation {CdpOrganisationId}",
+                command.InviteRoleMappingId, membership.Id, command.CdpOrganisationId);
+        }, ct);
     }
 
     private async Task AssignDefaultApplicationsAsync(
@@ -93,21 +99,13 @@ public class AcceptInviteUseCase(
         if (defaultOrgApps.Count == 0)
             return;
 
-        var partyRoles = await organisationApiAdapter.GetPartyRolesAsync(
-            organisation.CdpOrganisationGuid, ct);
+        var partyRoles = await organisationApiAdapter.GetPartyRolesAsync(organisation.CdpOrganisationGuid, ct);
 
-        var changed = false;
         foreach (var orgApp in defaultOrgApps)
-        {
-            var wasChanged = await EnsureDefaultAssignedAsync(membership, partyRoles, orgApp, ct);
-            changed = changed || wasChanged;
-        }
-
-        if (changed)
-            await unitOfWork.SaveChangesAsync(ct);
+            await EnsureDefaultAssignedAsync(membership, partyRoles, orgApp, ct);
     }
 
-    private async Task<bool> EnsureDefaultAssignedAsync(
+    private async Task EnsureDefaultAssignedAsync(
         UserOrganisationMembership membership,
         ISet<CorePartyRole> partyRoles,
         OrganisationApplication orgApp,
@@ -122,16 +120,13 @@ public class AcceptInviteUseCase(
             partyRoles,
             await roleMappingService.GetInviteScopesAsync(membership.OrganisationRole, ct));
 
-        return existingAssignment switch
-        {
-            null => AddDefaultAssignment(membership.Id, orgApp.Id, defaultRoles),
-            _ when AssignmentMatchesDesired(existingAssignment, defaultRoles) => false,
-            _ => UpdateDefaultAssignment(existingAssignment, defaultRoles)
-        };
+        if (existingAssignment is null)
+            AddDefaultAssignment(membership.Id, orgApp.Id, defaultRoles);
+        else if (!AssignmentMatchesDesired(existingAssignment, defaultRoles))
+            UpdateDefaultAssignment(existingAssignment, defaultRoles);
     }
 
-    private bool AddDefaultAssignment(int membershipId, int orgAppId, IReadOnlyList<ApplicationRole> roles)
-    {
+    private void AddDefaultAssignment(int membershipId, int orgAppId, IReadOnlyList<ApplicationRole> roles) =>
         assignmentRepository.Add(new UserApplicationAssignment
         {
             UserOrganisationMembershipId = membershipId,
@@ -142,10 +137,8 @@ public class AcceptInviteUseCase(
             CreatedBy = SystemAssignedBy,
             Roles = roles.ToList()
         });
-        return true;
-    }
 
-    private bool UpdateDefaultAssignment(UserApplicationAssignment existing, IReadOnlyList<ApplicationRole> roles)
+    private void UpdateDefaultAssignment(UserApplicationAssignment existing, IReadOnlyList<ApplicationRole> roles)
     {
         existing.IsActive = true;
         existing.IsDeleted = false;
@@ -158,7 +151,6 @@ public class AcceptInviteUseCase(
         foreach (var role in roles)
             existing.Roles.Add(role);
         assignmentRepository.Update(existing);
-        return true;
     }
 
     private static bool AssignmentMatchesDesired(

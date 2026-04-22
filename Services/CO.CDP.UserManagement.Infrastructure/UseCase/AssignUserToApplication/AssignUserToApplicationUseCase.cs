@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
@@ -46,52 +47,34 @@ public class AssignUserToApplicationUseCase(
         var roles = await GetValidatedRolesAsync(command.OrganisationId, membership.OrganisationRole,
             command.ApplicationId, command.RoleIds, ct);
 
-        UserApplicationAssignment assignment;
-        if (existingAssignment != null)
+        return await unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
-            existingAssignment.IsActive = true;
-            existingAssignment.AssignedAt = DateTimeOffset.UtcNow;
-            existingAssignment.RevokedAt = null;
-            existingAssignment.RevokedBy = null;
-            WithRoles(existingAssignment, roles);
-            assignmentRepository.Update(existingAssignment);
-            assignment = existingAssignment;
-        }
-        else
-        {
-            assignment = new UserApplicationAssignment
+            var assignment = existingAssignment switch
             {
-                UserOrganisationMembershipId = membership.Id,
-                OrganisationApplicationId = orgApp.Id,
-                IsActive = true,
-                AssignedAt = DateTimeOffset.UtcNow,
-                Roles = roles.ToList()
+                not null => ReactiveExistingAssignment(existingAssignment, roles),
+                _ => CreateNewAssignment(membership.Id, orgApp.Id, roles)
             };
-            assignmentRepository.Add(assignment);
-        }
 
-        await unitOfWork.SaveChangesAsync(ct);
+            await unitOfWork.SaveChangesAsync(ct);
 
-        await PublishScopesAsync(membership, command.OrganisationId, ct);
+            await PublishScopesAsync(membership, command.OrganisationId, ct);
 
-        logger.LogInformation(
-            "User {UserId} assigned to application {ApplicationId} in organisation {OrganisationId}",
-            command.UserId, command.ApplicationId, command.OrganisationId);
+            logger.LogInformation(
+                "User {UserId} assigned to application {ApplicationId} in organisation {OrganisationId}",
+                command.UserId, command.ApplicationId, command.OrganisationId);
 
-        return assignment;
+            return assignment;
+        }, ct);
     }
 
     private async Task<UserOrganisationMembership> ResolveMembershipOrThrowAsync(
-        string userId, int organisationId, CancellationToken ct)
-    {
-        bool isCdpGuid = Guid.TryParse(userId, out var cdpPersonId);
-        return (isCdpGuid
-                   ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, ct)
-                   : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
-               ?? throw new EntityNotFoundException(
-                   nameof(UserOrganisationMembership),
-                   $"User {userId} in Organisation {organisationId}");
-    }
+        string userId, int organisationId, CancellationToken ct) =>
+        (Guid.TryParse(userId, out var cdpPersonId)
+            ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId, ct)
+            : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
+        ?? throw new EntityNotFoundException(
+            nameof(UserOrganisationMembership),
+            $"User {userId} in Organisation {organisationId}");
 
     private async Task<OrganisationApplication> GetActiveOrganisationAppAsync(
         int organisationId, int applicationId, CancellationToken ct)
@@ -127,28 +110,48 @@ public class AssignUserToApplicationUseCase(
         return roles;
     }
 
-    private static void WithRoles(UserApplicationAssignment assignment, IEnumerable<ApplicationRole> roles)
+    private UserApplicationAssignment ReactiveExistingAssignment(
+        UserApplicationAssignment existing, IReadOnlyList<ApplicationRole> roles)
     {
-        assignment.Roles.Clear();
+        existing.IsActive = true;
+        existing.AssignedAt = DateTimeOffset.UtcNow;
+        existing.RevokedAt = null;
+        existing.RevokedBy = null;
+        existing.Roles.Clear();
         foreach (var role in roles)
-            assignment.Roles.Add(role);
+            existing.Roles.Add(role);
+        assignmentRepository.Update(existing);
+        return existing;
+    }
+
+    private UserApplicationAssignment CreateNewAssignment(
+        int membershipId, int orgAppId, IReadOnlyList<ApplicationRole> roles)
+    {
+        var assignment = new UserApplicationAssignment
+        {
+            UserOrganisationMembershipId = membershipId,
+            OrganisationApplicationId = orgAppId,
+            IsActive = true,
+            AssignedAt = DateTimeOffset.UtcNow,
+            Roles = roles.ToList()
+        };
+        assignmentRepository.Add(assignment);
+        return assignment;
     }
 
     private async Task PublishScopesAsync(
-        UserOrganisationMembership membership, int organisationId, CancellationToken ct)
-    {
-        if (!membership.CdpPersonId.HasValue)
-            return;
-
-        var organisation = await organisationRepository.GetByIdAsync(organisationId, ct)
-                           ?? throw new EntityNotFoundException(nameof(Organisation), organisationId);
-
-        var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
-        await publisher.Publish(new PersonScopesUpdated
+        UserOrganisationMembership membership, int organisationId, CancellationToken ct) =>
+        await Option.From(membership.CdpPersonId).TapAsync(async personId =>
         {
-            OrganisationId = organisation.CdpOrganisationGuid.ToString(),
-            PersonId = membership.CdpPersonId.Value.ToString(),
-            Scopes = scopes.ToList()
+            var organisation = await organisationRepository.GetByIdAsync(organisationId, ct)
+                               ?? throw new EntityNotFoundException(nameof(Organisation), organisationId);
+
+            var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
+            await publisher.Publish(new PersonScopesUpdated
+            {
+                OrganisationId = organisation.CdpOrganisationGuid.ToString(),
+                PersonId = personId.ToString(),
+                Scopes = scopes.ToList()
+            });
         });
-    }
 }

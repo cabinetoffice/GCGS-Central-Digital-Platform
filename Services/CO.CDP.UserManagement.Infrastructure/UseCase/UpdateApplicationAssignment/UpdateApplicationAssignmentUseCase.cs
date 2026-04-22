@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
@@ -42,27 +43,29 @@ public class UpdateApplicationAssignmentUseCase(
             command.RoleIds,
             ct);
 
-        assignment.Roles.Clear();
-        foreach (var role in roles)
-            assignment.Roles.Add(role);
+        return await unitOfWork.ExecuteInTransactionAsync(async ct =>
+        {
+            assignment.Roles.Clear();
+            foreach (var role in roles)
+                assignment.Roles.Add(role);
 
-        assignmentRepository.Update(assignment);
-        await unitOfWork.SaveChangesAsync(ct);
+            assignmentRepository.Update(assignment);
+            await unitOfWork.SaveChangesAsync(ct);
 
-        await PublishScopesAsync(membership, command.OrganisationId, ct);
+            await PublishScopesAsync(membership, command.OrganisationId, ct);
 
-        logger.LogInformation(
-            "Assignment {AssignmentId} updated for user {UserId} in organisation {OrganisationId}",
-            command.AssignmentId, command.UserId, command.OrganisationId);
+            logger.LogInformation(
+                "Assignment {AssignmentId} updated for user {UserId} in organisation {OrganisationId}",
+                command.AssignmentId, command.UserId, command.OrganisationId);
 
-        return assignment;
+            return assignment;
+        }, ct);
     }
 
     private async Task<(UserOrganisationMembership, UserApplicationAssignment)> GetAssignmentForUserAsync(
         string userId, int organisationId, int assignmentId, CancellationToken ct)
     {
-        bool isCdpGuid = Guid.TryParse(userId, out var cdpPersonId);
-        var membership = (isCdpGuid
+        var membership = (Guid.TryParse(userId, out var cdpPersonId)
                              ? await membershipRepository.GetByPersonIdAndOrganisationAsync(cdpPersonId, organisationId,
                                  ct)
                              : await membershipRepository.GetByUserAndOrganisationAsync(userId, organisationId, ct))
@@ -97,20 +100,18 @@ public class UpdateApplicationAssignmentUseCase(
     }
 
     private async Task PublishScopesAsync(
-        UserOrganisationMembership membership, int organisationId, CancellationToken ct)
-    {
-        if (!membership.CdpPersonId.HasValue)
-            return;
-
-        var organisation = await organisationRepository.GetByIdAsync(organisationId, ct)
-                           ?? throw new EntityNotFoundException(nameof(Organisation), organisationId);
-
-        var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
-        await publisher.Publish(new PersonScopesUpdated
+        UserOrganisationMembership membership, int organisationId, CancellationToken ct) =>
+        await Option.From(membership.CdpPersonId).TapAsync(async personId =>
         {
-            OrganisationId = organisation.CdpOrganisationGuid.ToString(),
-            PersonId = membership.CdpPersonId.Value.ToString(),
-            Scopes = scopes.ToList()
+            var organisation = await organisationRepository.GetByIdAsync(organisationId, ct)
+                               ?? throw new EntityNotFoundException(nameof(Organisation), organisationId);
+
+            var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
+            await publisher.Publish(new PersonScopesUpdated
+            {
+                OrganisationId = organisation.CdpOrganisationGuid.ToString(),
+                PersonId = personId.ToString(),
+                Scopes = scopes.ToList()
+            });
         });
-    }
 }

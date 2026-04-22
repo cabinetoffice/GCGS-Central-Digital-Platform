@@ -1,3 +1,4 @@
+using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
@@ -40,16 +41,16 @@ public class UpdateOrganisationRoleUseCase(
             "Role for user {CdpPersonId} in organisation {CdpOrganisationId} updated to {NewRole} by {ActingUser}",
             command.CdpPersonId, command.CdpOrganisationId, command.NewRole, command.ActingUserId);
 
-        if (membership.CdpPersonId.HasValue)
+        await Option.From(membership.CdpPersonId).TapAsync(async personId =>
         {
             var scopes = await roleMappingService.GetOrganisationInformationScopesAsync(membership.Id, ct);
             await publisher.Publish(new PersonScopesUpdated
             {
                 OrganisationId = organisation.CdpOrganisationGuid.ToString(),
-                PersonId = membership.CdpPersonId.Value.ToString(),
+                PersonId = personId.ToString(),
                 Scopes = scopes.ToList()
             });
-        }
+        });
 
         await unitOfWork.SaveChangesAsync(ct);
 

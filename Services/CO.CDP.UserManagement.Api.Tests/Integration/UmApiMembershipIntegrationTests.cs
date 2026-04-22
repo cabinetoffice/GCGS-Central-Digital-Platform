@@ -45,20 +45,22 @@ public class UmApiMembershipIntegrationTests
     private readonly Mock<IOrganisationApiAdapter> _mockOrgAdapter;
     private readonly string _umConnectionString;
     private readonly UserManagementDbContext _umContext;
+    private readonly UserManagementPostgreSqlFixture _umPostgreSql;
 
     public UmApiMembershipIntegrationTests(
         ITestOutputHelper testOutputHelper,
         UserManagementPostgreSqlFixture umPostgreSql)
     {
+        _umPostgreSql = umPostgreSql;
         _umConnectionString = umPostgreSql.ConnectionString;
 
         _mockOrgAdapter = new Mock<IOrganisationApiAdapter>();
         _mockOrgAdapter
             .Setup(a => a.GetPartyRolesAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole>());
+            .ReturnsAsync(new HashSet<CorePartyRole>());
         _mockOrgAdapter
             .Setup(a => a.GetOrganisationPersonsAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((IReadOnlyList<OiOrganisationPerson>)Array.Empty<OiOrganisationPerson>());
+            .ReturnsAsync(Array.Empty<OiOrganisationPerson>());
 
         var mockPersonAdapter = new Mock<IPersonApiAdapter>();
 
@@ -517,7 +519,7 @@ public class UmApiMembershipIntegrationTests
         var cdpOrgGuid = Guid.NewGuid();
 
         var umOrg = CreateUmOrganisation(cdpOrgGuid, $"GetUsers Test Org {cdpOrgGuid:N}");
-        CreateUmMembership(umOrg, Guid.NewGuid(), OrganisationRole.Member);
+        CreateUmMembership(umOrg, Guid.NewGuid());
         CreateUmMembership(umOrg, Guid.NewGuid(), OrganisationRole.Admin);
 
         var response = await _httpClient.GetAsync($"/api/organisations/{cdpOrgGuid}/users");
@@ -813,7 +815,7 @@ public class UmApiMembershipIntegrationTests
 
         _mockOrgAdapter
             .Setup(a => a.GetPartyRolesAsync(cdpOrgGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole>(Enum.GetValues<CorePartyRole>()));
+            .ReturnsAsync(new HashSet<CorePartyRole>(Enum.GetValues<CorePartyRole>()));
 
         var umOrg = CreateUmOrganisation(cdpOrgGuid, $"FTS Test Org {cdpOrgGuid:N}");
         var membership = CreateUmMembership(umOrg, cdpPersonGuid);
@@ -888,6 +890,331 @@ public class UmApiMembershipIntegrationTests
     public Task UpdateFtsAssignment_ToEditorSupplier_PublishesEditorAndResponderScopes() =>
         AssertFtsRoleUpdatePublishesScopes("Editor (supplier)", ["EDITOR", "RESPONDER"]);
 
+    // ─────────────────────── outbox atomicity tests ───────────────────────
+
+    /// <summary>
+    /// Verifies that soft-deleting a user membership and writing its <c>PersonRemovedFromOrganisation</c>
+    /// outbox row are atomic. When the outbox write fails, the soft-delete must also be rolled back.
+    ///
+    /// <c>RemovePersonFromOrganisationUseCase</c> follows the correct outbox convention: entity changes
+    /// are tracked first and then saved atomically alongside the outbox row via a single
+    /// <c>SaveChangesAsync</c> call inside <c>publisher.Publish()</c>.
+    /// </summary>
+    [Fact]
+    public async Task RemoveUser_RollsBackSoftDelete_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity Remove Org {cdpOrgGuid:N}");
+        CreateUmMembership(umOrg, cdpPersonGuid);
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var response = await client.DeleteAsync(
+            $"/api/organisations/{cdpOrgGuid}/users/{cdpPersonGuid}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var membership = await umAssert.UserOrganisationMemberships
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.CdpPersonId == cdpPersonGuid);
+
+        membership.Should().NotBeNull();
+        membership!.IsActive.Should().BeTrue(
+            "the soft-delete must be rolled back when the outbox write fails — they must be atomic");
+        membership.IsDeleted.Should().BeFalse(
+            "the membership must not be soft-deleted when the outbox write fails — they must be atomic");
+    }
+
+    /// <summary>
+    /// Verifies that updating a membership role and writing its <c>PersonScopesUpdated</c>
+    /// outbox row are atomic. When the outbox write fails, the role change must also be rolled back.
+    ///
+    /// <c>UpdateOrganisationRoleUseCase</c> follows the correct outbox convention: entity changes
+    /// are tracked first and then saved atomically alongside the outbox row via a single
+    /// <c>SaveChangesAsync</c> call inside <c>publisher.Publish()</c>.
+    /// </summary>
+    [Fact]
+    public async Task UpdateRole_RollsBackRoleChange_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity UpdateRole Org {cdpOrgGuid:N}");
+        CreateUmMembership(umOrg, cdpPersonGuid);
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var request = new ChangeOrganisationRoleRequest { OrganisationRole = OrganisationRole.Admin };
+        var response = await client.PutAsJsonAsync(
+            $"/api/organisations/{cdpOrgGuid}/users/{cdpPersonGuid}/role",
+            request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var membership = await umAssert.UserOrganisationMemberships
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.CdpPersonId == cdpPersonGuid);
+
+        membership.Should().NotBeNull();
+        membership!.OrganisationRole.Should().Be(OrganisationRole.Member,
+            "the role change must be rolled back when the outbox write fails — they must be atomic");
+    }
+
+    /// <summary>
+    /// Verifies that assigning a user to an application and writing its <c>PersonScopesUpdated</c>
+    /// outbox row are atomic. When the outbox write fails, the assignment must also be rolled back.
+    ///
+    /// All three steps — entity save, scope DB query, outbox write — run inside a single explicit
+    /// DB transaction via <c>ExecuteInTransactionAsync</c>. If the outbox write throws, the
+    /// whole transaction rolls back.
+    /// </summary>
+    [Fact]
+    public async Task AssignApplication_RollsBackAssignment_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+
+        var paymentsApp = await _umContext.Applications.AsNoTracking()
+            .FirstAsync(a => a.ClientId == "payments");
+        var paymentsRole = await _umContext.ApplicationRoles.AsNoTracking()
+            .FirstAsync(r => r.ApplicationId == paymentsApp.Id && r.IsActive);
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity Assign Org {cdpOrgGuid:N}");
+        var membership = CreateUmMembership(umOrg, cdpPersonGuid);
+        CreateOrganisationApplication(umOrg, paymentsApp.Id);
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var request = new AssignUserToApplicationRequest
+        {
+            ApplicationId = paymentsApp.Id,
+            RoleIds = [paymentsRole.Id]
+        };
+        var response = await client.PostAsJsonAsync(
+            $"/api/organisations/{umOrg.Id}/users/{membership.UserPrincipalId}/assignments",
+            request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var assignment = await umAssert.UserApplicationAssignments
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.UserOrganisationMembershipId == membership.Id);
+
+        assignment.Should().BeNull(
+            "the assignment must be rolled back when the outbox write fails — they must be atomic");
+    }
+
+    /// <summary>
+    /// Verifies that revoking an application assignment and writing its <c>PersonScopesUpdated</c>
+    /// outbox row are atomic. When the outbox write fails, the revocation must also be rolled back.
+    /// </summary>
+    [Fact]
+    public async Task RevokeApplication_RollsBackRevocation_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+
+        var paymentsApp = await _umContext.Applications.AsNoTracking()
+            .FirstAsync(a => a.ClientId == "payments");
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity Revoke Org {cdpOrgGuid:N}");
+        var membership = CreateUmMembership(umOrg, cdpPersonGuid);
+        var orgApp = CreateOrganisationApplication(umOrg, paymentsApp.Id);
+
+        var assignment = new UserApplicationAssignment
+        {
+            UserOrganisationMembershipId = membership.Id,
+            OrganisationApplicationId = orgApp.Id,
+            IsActive = true,
+            AssignedAt = DateTimeOffset.UtcNow,
+            AssignedBy = "test",
+            CreatedAt = DateTimeOffset.UtcNow,
+            ModifiedAt = DateTimeOffset.UtcNow,
+            CreatedBy = "test"
+        };
+        _umContext.UserApplicationAssignments.Add(assignment);
+        _umContext.SaveChanges();
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var response = await client.DeleteAsync(
+            $"/api/organisations/{umOrg.Id}/users/{membership.UserPrincipalId}/assignments/{assignment.Id}");
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var notRevoked = await umAssert.UserApplicationAssignments
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == assignment.Id);
+
+        notRevoked.Should().NotBeNull();
+        notRevoked!.IsActive.Should().BeTrue(
+            "the revocation must be rolled back when the outbox write fails — they must be atomic");
+    }
+
+    /// <summary>
+    /// Verifies that updating an assignment's roles and writing its <c>PersonScopesUpdated</c>
+    /// outbox row are atomic. When the outbox write fails, the role update must also be rolled back.
+    /// </summary>
+    [Fact]
+    public async Task UpdateAssignment_RollsBackRoleUpdate_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+
+        var paymentsApp = await _umContext.Applications.AsNoTracking()
+            .FirstAsync(a => a.ClientId == "payments");
+        var paymentsRoles = await _umContext.ApplicationRoles
+            .Where(r => r.ApplicationId == paymentsApp.Id && r.IsActive)
+            .ToListAsync();
+
+        paymentsRoles.Should().HaveCountGreaterThan(1,
+            "payments must have at least two roles for the update test to be meaningful");
+
+        var initialRole = paymentsRoles[0];
+        var updatedRole = paymentsRoles[1];
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity UpdateAssign Org {cdpOrgGuid:N}");
+        var membership = CreateUmMembership(umOrg, cdpPersonGuid);
+        var orgApp = CreateOrganisationApplication(umOrg, paymentsApp.Id);
+
+        var assignment = new UserApplicationAssignment
+        {
+            UserOrganisationMembershipId = membership.Id,
+            OrganisationApplicationId = orgApp.Id,
+            IsActive = true,
+            AssignedAt = DateTimeOffset.UtcNow,
+            AssignedBy = "test",
+            CreatedAt = DateTimeOffset.UtcNow,
+            ModifiedAt = DateTimeOffset.UtcNow,
+            CreatedBy = "test",
+            Roles = [initialRole]
+        };
+        _umContext.UserApplicationAssignments.Add(assignment);
+        _umContext.SaveChanges();
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var request = new UpdateAssignmentRolesRequest { RoleIds = [updatedRole.Id] };
+        var response = await client.PutAsJsonAsync(
+            $"/api/organisations/{umOrg.Id}/users/{membership.UserPrincipalId}/assignments/{assignment.Id}",
+            request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var notUpdated = await umAssert.UserApplicationAssignments
+            .Include(a => a.Roles)
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(a => a.Id == assignment.Id);
+
+        notUpdated.Should().NotBeNull();
+        notUpdated!.Roles.Should().ContainSingle(r => r.Id == initialRole.Id,
+            "the role update must be rolled back when the outbox write fails — they must be atomic");
+        notUpdated.Roles.Should().NotContain(r => r.Id == updatedRole.Id,
+            "the new role must not be persisted when the outbox write fails");
+    }
+
+    /// <summary>
+    /// Verifies that accepting an invite (creating a membership + removing the mapping) and writing
+    /// its <c>PersonScopesUpdated</c> outbox row are atomic. When the outbox write fails, all
+    /// entity changes must also be rolled back.
+    ///
+    /// The entire <c>AcceptInviteUseCase.Execute</c> runs inside a single explicit DB transaction
+    /// via <c>ExecuteInTransactionAsync</c>, so membership creation, mapping deletion, and the
+    /// outbox write either all commit or all roll back together.
+    /// </summary>
+    [Fact]
+    public async Task AcceptInvite_RollsBackMembership_WhenOutboxWriteFails()
+    {
+        ClearDatabase();
+        var cdpOrgGuid = Guid.NewGuid();
+        var cdpPersonGuid = Guid.NewGuid();
+        var userPrincipalId = $"urn:fdc:test:{Guid.NewGuid():N}";
+
+        var umOrg = CreateUmOrganisation(cdpOrgGuid, $"Atomicity AcceptInvite Org {cdpOrgGuid:N}");
+        var mapping = CreateInviteRoleMapping(umOrg, OrganisationRole.Member);
+
+        var factory = new UmMembershipAtomicityWebFactory(_umPostgreSql, _mockOrgAdapter);
+        var client = factory.CreateClient();
+
+        var request = new AcceptOrganisationInviteRequest
+        {
+            UserPrincipalId = userPrincipalId,
+            CdpPersonId = cdpPersonGuid
+        };
+        var response = await client.PostAsJsonAsync(
+            $"/api/organisations/{cdpOrgGuid}/invites/{mapping.Id}/accept",
+            request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.InternalServerError,
+            "the endpoint should fail when the outbox write throws");
+
+        await using var umAssert = new UserManagementDbContext(
+            new DbContextOptionsBuilder<UserManagementDbContext>()
+                .UseNpgsql(_umConnectionString)
+                .Options);
+
+        var membership = await umAssert.UserOrganisationMemberships
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.CdpPersonId == cdpPersonGuid);
+
+        membership.Should().BeNull(
+            "the membership creation must be rolled back when the outbox write fails — they must be atomic");
+
+        var unconsumedMapping = await umAssert.InviteRoleMappings
+            .IgnoreQueryFilters()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == mapping.Id);
+
+        unconsumedMapping!.IsDeleted.Should().BeFalse(
+            "the invite mapping soft-delete must be rolled back when the outbox write fails — they must be atomic");
+    }
+
     /// <summary>
     /// A <see cref="WebApplicationFactory{TProgram}"/> that wires the test-container
     /// databases and mocks the external HTTP adapters, but deliberately does NOT mock
@@ -949,6 +1276,78 @@ public class UmApiMembershipIntegrationTests
                 services.RemoveAll<IOrganisationApiAdapter>();
                 services.AddScoped(_ => mockOrgAdapter.Object);
 
+                services.RemoveAll<IPersonApiAdapter>();
+                services.AddScoped(_ => mockPersonAdapter.Object);
+            });
+
+            return base.CreateHost(builder);
+        }
+    }
+
+    /// <summary>
+    /// A <see cref="WebApplicationFactory{TProgram}"/> used for outbox atomicity tests.
+    /// Replaces <see cref="IOutboxMessageRepository"/> with a mock that always throws, so that
+    /// any use case calling <c>publisher.Publish()</c> will fail. The test then asserts that the
+    /// associated entity change was also rolled back — proving entity writes and outbox writes are
+    /// atomic.
+    /// </summary>
+    private sealed class UmMembershipAtomicityWebFactory(
+        UserManagementPostgreSqlFixture umPostgreSql,
+        Mock<IOrganisationApiAdapter> mockOrgAdapter)
+        : WebApplicationFactory<Program>
+    {
+        protected override IHost CreateHost(IHostBuilder builder)
+        {
+            builder.ConfigureFakePolicyEvaluator();
+
+            builder.ConfigureServices((_, services) =>
+            {
+                services.PostConfigure<RedisCacheOptions>(options =>
+                {
+                    options.Configuration = $"{umPostgreSql.RedisHost}:{umPostgreSql.RedisPort}";
+                    options.InstanceName = "UserManagement_";
+                });
+
+                // Redirect UM DbContext to the test container
+                services.RemoveAll<UserManagementDbContext>();
+                services.RemoveAll<DbContextOptions<UserManagementDbContext>>();
+                services.AddDbContext<UserManagementDbContext>((sp, options) =>
+                    options.UseNpgsql(
+                            umPostgreSql.ConnectionString,
+                            npgsqlOptions => npgsqlOptions
+                                .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                                .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
+                        .AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>()));
+
+                // Replace the outbox repository with one that always throws.
+                // This simulates a failure in the outbox write to assert that entity changes are
+                // also rolled back (i.e., both succeed or both fail together).
+                var failingRepository = new Mock<IOutboxMessageRepository>();
+                failingRepository
+                    .Setup(r => r.SaveAsync(It.IsAny<OutboxMessage>()))
+                    .ThrowsAsync(new Exception("Simulated outbox write failure"));
+
+                services.RemoveAll<IPublisher>();
+                services.RemoveAll<IOutboxMessageRepository>();
+                services.RemoveAll<MultiQueueOutboxMessagePublisherConfiguration>();
+                services.AddScoped(_ => failingRepository.Object);
+                services.AddSingleton(new MultiQueueOutboxMessagePublisherConfiguration
+                {
+                    Destinations =
+                    [
+                        new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
+                        {
+                            QueueUrl = "http://test-queue",
+                            MessageGroupId = "test"
+                        }
+                    ]
+                });
+                services.AddScoped<IPublisher, MultiQueueOutboxMessagePublisher>();
+
+                services.RemoveAll<IOrganisationApiAdapter>();
+                services.AddScoped(_ => mockOrgAdapter.Object);
+
+                var mockPersonAdapter = new Mock<IPersonApiAdapter>();
                 services.RemoveAll<IPersonApiAdapter>();
                 services.AddScoped(_ => mockPersonAdapter.Object);
             });
