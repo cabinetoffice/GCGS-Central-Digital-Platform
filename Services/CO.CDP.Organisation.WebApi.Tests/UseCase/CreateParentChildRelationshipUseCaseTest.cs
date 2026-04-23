@@ -1,6 +1,6 @@
+using CO.CDP.Authentication;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
@@ -10,12 +10,14 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class CreateParentChildRelationshipUseCaseTest
 {
+    private readonly Mock<IClaimService> _claimService = new();
     private readonly Mock<ILogger<CreateParentChildRelationshipUseCase>> _logger = new();
     private readonly Mock<IOrganisationHierarchyRepository> _repository = new();
 
     private CreateParentChildRelationshipUseCase UseCase => new(
         _logger.Object,
-        _repository.Object);
+        _repository.Object,
+        _claimService.Object);
 
     [Fact]
     public async Task Execute_WithValidParameters_ShouldCreateRelationship()
@@ -23,11 +25,14 @@ public class CreateParentChildRelationshipUseCaseTest
         var parentId = Guid.NewGuid();
         var childId = Guid.NewGuid();
         var relationshipId = Guid.NewGuid();
+        var userUrn = "urn:fdc:gov.uk:2022:test-user";
 
+        _claimService.Setup(c => c.GetUserUrn()).Returns(userUrn);
         _repository
             .Setup(r => r.CreateRelationshipAsync(
                 It.IsAny<Guid>(),
-                It.IsAny<Guid>()))
+                It.IsAny<Guid>(),
+                It.IsAny<string?>()))
             .ReturnsAsync(relationshipId);
         var request = new CreateParentChildRelationshipRequest
         {
@@ -42,8 +47,33 @@ public class CreateParentChildRelationshipUseCaseTest
         result.RelationshipId.Should().Be(relationshipId);
 
         _repository.Verify(r => r.CreateRelationshipAsync(
-            parentId,
-            childId),
+                parentId,
+                childId,
+                userUrn),
+            Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_WithValidParameters_ShouldPassUserUrnAsCreatedBy()
+    {
+        var userUrn = "urn:fdc:gov.uk:2022:audited-user";
+        _claimService.Setup(c => c.GetUserUrn()).Returns(userUrn);
+        _repository
+            .Setup(r => r.CreateRelationshipAsync(It.IsAny<Guid>(), It.IsAny<Guid>(), It.IsAny<string?>()))
+            .ReturnsAsync(Guid.NewGuid());
+
+        var request = new CreateParentChildRelationshipRequest
+        {
+            ParentId = Guid.NewGuid(),
+            ChildId = Guid.NewGuid()
+        };
+
+        await UseCase.Execute(request);
+
+        _repository.Verify(r => r.CreateRelationshipAsync(
+                It.IsAny<Guid>(),
+                It.IsAny<Guid>(),
+                userUrn),
             Times.Once);
     }
 
@@ -138,10 +168,13 @@ public class CreateParentChildRelationshipUseCaseTest
         ).Throws(new Exception("Simulated exception"));
 
         var mockRepository = new Mock<IOrganisationHierarchyRepository>();
+        var mockClaimService = new Mock<IClaimService>();
+        mockClaimService.Setup(c => c.GetUserUrn()).Returns("urn:fdc:gov.uk:2022:test-user");
 
         var useCase = new CreateParentChildRelationshipUseCase(
             mockLogger.Object,
-            mockRepository.Object);
+            mockRepository.Object,
+            mockClaimService.Object);
 
         var request = new CreateParentChildRelationshipRequest
         {

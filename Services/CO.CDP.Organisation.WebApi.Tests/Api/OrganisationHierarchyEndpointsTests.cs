@@ -13,12 +13,15 @@ namespace CO.CDP.Organisation.WebApi.Tests.Api;
 
 public class OrganisationHierarchyEndpointsTests
 {
-    private readonly Mock<ISupersedeChildOrganisationUseCase> _mockSupersedeChildOrganisationUseCase = new();
-    private readonly Mock<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>> _mockCreateParentChildRelationshipUseCase = new();
+    private readonly Mock<IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult>>
+        _mockCreateParentChildRelationshipUseCase = new();
+
     private readonly Mock<IUseCase<Guid, GetChildOrganisationsResponse>> _mockGetChildOrganisationsUseCase = new();
     private readonly Mock<IUseCase<Guid, GetParentOrganisationsResponse>> _mockGetParentOrganisationsUseCase = new();
+    private readonly Mock<ISupersedeChildOrganisationUseCase> _mockSupersedeChildOrganisationUseCase = new();
 
-    private WebApplicationFactory<Program> CreateTestFactory(string authChannel, Guid organisationId, string? organisationPersonScope = null)
+    private WebApplicationFactory<Program> CreateTestFactory(string authChannel, Guid organisationId,
+        string? organisationPersonScope = null)
     {
         return new TestAuthorizationWebApplicationFactory<Program>(
             authChannel,
@@ -31,6 +34,44 @@ public class OrganisationHierarchyEndpointsTests
                 services.AddSingleton(_mockSupersedeChildOrganisationUseCase.Object);
                 services.AddSingleton(_mockGetParentOrganisationsUseCase.Object);
             });
+    }
+
+    private WebApplicationFactory<Program> CreateTestFactoryWithPersonScope(string authChannel, Guid organisationId,
+        string personScope)
+    {
+        return new TestAuthorizationWebApplicationFactory<Program>(
+            authChannel,
+            organisationId,
+            assignedOrganisationScopes: null,
+            services =>
+            {
+                services.AddSingleton(_mockCreateParentChildRelationshipUseCase.Object);
+                services.AddSingleton(_mockGetChildOrganisationsUseCase.Object);
+                services.AddSingleton(_mockSupersedeChildOrganisationUseCase.Object);
+                services.AddSingleton(_mockGetParentOrganisationsUseCase.Object);
+            },
+            assignedPersonScopes: personScope);
+    }
+
+    /// <summary>
+    /// Creates a factory where the authenticated user's token is scoped to a <em>different</em>
+    /// organisation than the one being targeted — simulating a support admin who is not a member
+    /// of the organisation they are administering.
+    /// </summary>
+    private WebApplicationFactory<Program> CreateTestFactoryWithPersonScopeForUnrelatedOrg(string personScope)
+    {
+        return new TestAuthorizationWebApplicationFactory<Program>(
+            Constants.Channel.OneLogin,
+            organisationId: Guid.NewGuid(), // user's own org — deliberately unrelated to the target
+            assignedOrganisationScopes: null,
+            services =>
+            {
+                services.AddSingleton(_mockCreateParentChildRelationshipUseCase.Object);
+                services.AddSingleton(_mockGetChildOrganisationsUseCase.Object);
+                services.AddSingleton(_mockSupersedeChildOrganisationUseCase.Object);
+                services.AddSingleton(_mockGetParentOrganisationsUseCase.Object);
+            },
+            assignedPersonScopes: personScope);
     }
 
     #region Create Parent-Child Relationship Tests
@@ -51,7 +92,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(ValidCreateParentChildRelationshipData))]
-    public async Task CreateParentChildRelationship_WithValidRoles_ReturnsCreated(string authChannel, string organisationPersonScope)
+    public async Task CreateParentChildRelationship_WithValidRoles_ReturnsCreated(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -83,7 +125,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(InvalidCreateParentChildRelationshipData))]
-    public async Task CreateParentChildRelationship_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
+    public async Task CreateParentChildRelationship_WithInvalidRoles_ReturnsForbidden(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -103,10 +146,34 @@ public class OrganisationHierarchyEndpointsTests
     }
 
     [Fact]
+    public async Task CreateParentChildRelationship_WithSupportAdminPersonScope_ReturnsCreated()
+    {
+        var organisationId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScope(Constants.Channel.OneLogin, organisationId,
+            Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        var request = new CreateParentChildRelationshipRequest
+        {
+            ParentId = organisationId,
+            ChildId = Guid.NewGuid()
+        };
+
+        _mockCreateParentChildRelationshipUseCase
+            .Setup(x => x.Execute(It.IsAny<CreateParentChildRelationshipRequest>()))
+            .ReturnsAsync(new CreateParentChildRelationshipResult { Success = true, RelationshipId = Guid.NewGuid() });
+
+        var response = await client.PostAsJsonAsync($"/organisations/{organisationId}/hierarchy/child", request);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
+    [Fact]
     public async Task CreateParentChildRelationship_WhenUseCaseFails_ReturnsBadRequest()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId,
+            Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         var childOrganisationId = Guid.NewGuid();
@@ -181,7 +248,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(InvalidGetChildOrganisationsData))]
-    public async Task GetChildOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
+    public async Task GetChildOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -193,10 +261,28 @@ public class OrganisationHierarchyEndpointsTests
     }
 
     [Fact]
+    public async Task GetChildOrganisations_WithSupportAdminPersonScope_ReturnsOk()
+    {
+        var organisationId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScope(Constants.Channel.OneLogin, organisationId,
+            Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockGetChildOrganisationsUseCase
+            .Setup(x => x.Execute(It.IsAny<Guid>()))
+            .ReturnsAsync(new GetChildOrganisationsResponse { Success = true, ChildOrganisations = [] });
+
+        var response = await client.GetAsync($"/organisations/{organisationId}/hierarchy/children");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task GetChildOrganisations_WhenUseCaseFails_ReturnsInternalServerError()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId,
+            Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         _mockGetChildOrganisationsUseCase
@@ -231,7 +317,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(ValidSupersedeChildOrganisationData))]
-    public async Task SupersedeChildOrganisation_WithValidRoles_ReturnsNoContent(string authChannel, string organisationPersonScope)
+    public async Task SupersedeChildOrganisation_WithValidRoles_ReturnsNoContent(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -249,14 +336,16 @@ public class OrganisationHierarchyEndpointsTests
             .Setup(x => x.Execute(It.IsAny<SupersedeChildOrganisationRequest>()))
             .ReturnsAsync(expectedResult);
 
-        var response = await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
+        var response =
+            await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
 
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Theory]
     [MemberData(nameof(InvalidSupersedeChildOrganisationData))]
-    public async Task SupersedeChildOrganisation_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
+    public async Task SupersedeChildOrganisation_WithInvalidRoles_ReturnsForbidden(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -267,24 +356,48 @@ public class OrganisationHierarchyEndpointsTests
             .Setup(x => x.Execute(It.IsAny<SupersedeChildOrganisationRequest>()))
             .ReturnsAsync(new SupersedeChildOrganisationResult { Success = true });
 
-        var response = await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
+        var response =
+            await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SupersedeChildOrganisation_WithSupportAdminPersonScope_ReturnsNoContent()
+    {
+        var organisationId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScope(Constants.Channel.OneLogin, organisationId,
+            Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        var childOrganisationId = Guid.NewGuid();
+
+        _mockSupersedeChildOrganisationUseCase
+            .Setup(x => x.Execute(It.IsAny<SupersedeChildOrganisationRequest>()))
+            .ReturnsAsync(new SupersedeChildOrganisationResult { Success = true, NotFound = false });
+
+        var response =
+            await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
     public async Task SupersedeChildOrganisation_WhenRelationshipNotFound_ReturnsNotFound()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId,
+            Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
         var childOrganisationId = Guid.NewGuid();
 
         _mockSupersedeChildOrganisationUseCase
-            .Setup(x => x.Execute(It.Is<SupersedeChildOrganisationRequest>(c => c.ParentOrganisationId == organisationId && c.ChildOrganisationId == childOrganisationId)))
+            .Setup(x => x.Execute(It.Is<SupersedeChildOrganisationRequest>(c =>
+                c.ParentOrganisationId == organisationId && c.ChildOrganisationId == childOrganisationId)))
             .ReturnsAsync(new SupersedeChildOrganisationResult { Success = false, NotFound = true });
 
-        var response = await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
+        var response =
+            await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
@@ -296,21 +409,25 @@ public class OrganisationHierarchyEndpointsTests
     public async Task SupersedeChildOrganisation_WhenUseCaseFails_ReturnsBadRequest()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId,
+            Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
         var childOrganisationId = Guid.NewGuid();
 
         _mockSupersedeChildOrganisationUseCase
-            .Setup(x => x.Execute(It.Is<SupersedeChildOrganisationRequest>(c => c.ParentOrganisationId == organisationId && c.ChildOrganisationId == childOrganisationId)))
+            .Setup(x => x.Execute(It.Is<SupersedeChildOrganisationRequest>(c =>
+                c.ParentOrganisationId == organisationId && c.ChildOrganisationId == childOrganisationId)))
             .ReturnsAsync(new SupersedeChildOrganisationResult { Success = false, NotFound = false });
 
-        var response = await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
+        var response =
+            await client.DeleteAsync($"/organisations/{organisationId}/hierarchy/child/{childOrganisationId}");
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         Assert.NotNull(problemDetails);
         Assert.Equal("Bad Request", problemDetails.Title);
     }
+
     #endregion
 
     #region Get Parent Organisations Tests
@@ -333,7 +450,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(ValidGetParentOrganisationsData))]
-    public async Task GetParentOrganisations_WithValidRoles_ReturnsOk(string authChannel, string organisationPersonScope)
+    public async Task GetParentOrganisations_WithValidRoles_ReturnsOk(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -362,7 +480,8 @@ public class OrganisationHierarchyEndpointsTests
 
     [Theory]
     [MemberData(nameof(InvalidGetParentOrganisationsData))]
-    public async Task GetParentOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
+    public async Task GetParentOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel,
+        string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
         var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
@@ -374,10 +493,28 @@ public class OrganisationHierarchyEndpointsTests
     }
 
     [Fact]
+    public async Task GetParentOrganisations_WithSupportAdminPersonScope_ReturnsOk()
+    {
+        var organisationId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScope(Constants.Channel.OneLogin, organisationId,
+            Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockGetParentOrganisationsUseCase
+            .Setup(x => x.Execute(It.IsAny<Guid>()))
+            .ReturnsAsync(new GetParentOrganisationsResponse { Success = true, ParentOrganisations = [] });
+
+        var response = await client.GetAsync($"/organisations/{organisationId}/hierarchy/parent");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
     public async Task GetParentOrganisations_WhenUseCaseFails_ReturnsInternalServerError()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId,
+            Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         _mockGetParentOrganisationsUseCase
@@ -390,6 +527,76 @@ public class OrganisationHierarchyEndpointsTests
         var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
         Assert.NotNull(problemDetails);
         Assert.Equal("An error occurred while processing your request.", problemDetails.Title);
+    }
+
+    #endregion
+
+    #region SupportAdmin Access For Non-Member Organisation Tests
+
+    [Fact]
+    public async Task CreateParentChildRelationship_WithSupportAdminPersonScope_ForNonMemberOrg_ReturnsCreated()
+    {
+        var targetOrgId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScopeForUnrelatedOrg(Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockCreateParentChildRelationshipUseCase
+            .Setup(x => x.Execute(It.IsAny<CreateParentChildRelationshipRequest>()))
+            .ReturnsAsync(new CreateParentChildRelationshipResult { Success = true, RelationshipId = Guid.NewGuid() });
+
+        var response = await client.PostAsJsonAsync($"/organisations/{targetOrgId}/hierarchy/child",
+            new CreateParentChildRelationshipRequest { ParentId = targetOrgId, ChildId = Guid.NewGuid() });
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetChildOrganisations_WithSupportAdminPersonScope_ForNonMemberOrg_ReturnsOk()
+    {
+        var targetOrgId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScopeForUnrelatedOrg(Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockGetChildOrganisationsUseCase
+            .Setup(x => x.Execute(It.IsAny<Guid>()))
+            .ReturnsAsync(new GetChildOrganisationsResponse { Success = true, ChildOrganisations = [] });
+
+        var response = await client.GetAsync($"/organisations/{targetOrgId}/hierarchy/children");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task SupersedeChildOrganisation_WithSupportAdminPersonScope_ForNonMemberOrg_ReturnsNoContent()
+    {
+        var targetOrgId = Guid.NewGuid();
+        var childOrgId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScopeForUnrelatedOrg(Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockSupersedeChildOrganisationUseCase
+            .Setup(x => x.Execute(It.IsAny<SupersedeChildOrganisationRequest>()))
+            .ReturnsAsync(new SupersedeChildOrganisationResult { Success = true, NotFound = false });
+
+        var response = await client.DeleteAsync($"/organisations/{targetOrgId}/hierarchy/child/{childOrgId}");
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task GetParentOrganisations_WithSupportAdminPersonScope_ForNonMemberOrg_ReturnsOk()
+    {
+        var targetOrgId = Guid.NewGuid();
+        var factory = CreateTestFactoryWithPersonScopeForUnrelatedOrg(Constants.PersonScope.SupportAdmin);
+        var client = factory.CreateClient();
+
+        _mockGetParentOrganisationsUseCase
+            .Setup(x => x.Execute(It.IsAny<Guid>()))
+            .ReturnsAsync(new GetParentOrganisationsResponse { Success = true, ParentOrganisations = [] });
+
+        var response = await client.GetAsync($"/organisations/{targetOrgId}/hierarchy/parent");
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     #endregion
