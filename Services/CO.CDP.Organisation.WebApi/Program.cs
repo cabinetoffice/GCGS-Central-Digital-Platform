@@ -17,9 +17,9 @@ using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
+using CO.CDP.OrganisationSync;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -45,9 +45,7 @@ builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString =
     ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-    options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
@@ -165,18 +163,8 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
         .AddSqsDispatcher(
             EventDeserializer.Deserializer,
             enableBackgroundServices: Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi"),
-            (services) =>
-            {
-                services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>();
-                services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedFromOrganisationHandler>();
-                services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
-            },
-            (services, dispatcher) =>
-            {
-                dispatcher.Subscribe<PponGenerated>(services);
-                dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
-                dispatcher.Subscribe<PersonScopesUpdated>(services);
-            }
+            (services) => { services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>(); },
+            (services, dispatcher) => { dispatcher.Subscribe<PponGenerated>(services); }
         );
 }
 

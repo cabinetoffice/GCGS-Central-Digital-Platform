@@ -1,28 +1,37 @@
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Events;
+using CO.CDP.Functional;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
-using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.FeatureManagement;
 using Moq;
-using OiOrganisation = CO.CDP.OrganisationInformation.Persistence.Organisation;
-using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
-using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
-using OiTenant = CO.CDP.OrganisationInformation.Persistence.Tenant;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class RemovePersonFromOrganisationUseCaseTest
 {
-    private readonly Mock<OiOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IPublisher> _publisherMock = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IAtomicScope> _atomicScopeMock = new();
+    private readonly Mock<IOrganisationMembershipSync> _membershipSyncMock = new();
+    private readonly Mock<IFeatureManager> _featureManagerMock = new();
 
     private RemovePersonFromOrganisationUseCase UseCase => new(
         _organisationRepository.Object,
-        _publisherMock.Object,
+        _atomicScopeMock.Object,
+        _membershipSyncMock.Object,
+        _featureManagerMock.Object,
         NullLogger<RemovePersonFromOrganisationUseCase>.Instance);
+
+    public RemovePersonFromOrganisationUseCaseTest()
+    {
+        _atomicScopeMock
+            .Setup(s => s.ExecuteAsync(It.IsAny<Func<CancellationToken, Task<bool>>>(), It.IsAny<CancellationToken>()))
+            .Returns<Func<CancellationToken, Task<bool>>, CancellationToken>((action, ct) => action(ct));
+        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(false);
+    }
 
     [Fact]
     public async Task Execute_OrganisationPersonAndPersonWithTenant_BothLinksAreRemoved()
@@ -32,14 +41,13 @@ public class RemovePersonFromOrganisationUseCaseTest
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
         _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
-        _organisationRepository.Setup(r =>
-            r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()));
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        organisation.OrganisationPersons.Should().BeEmpty();
-        organisation.Tenant.Persons.Should().BeEmpty();
+        _organisationRepository.Verify(
+            r => r.Track(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.OrganisationPersons.Count == 0 && o.Tenant.Persons.Count == 0)), Times.Once);
     }
 
     [Fact]
@@ -50,13 +58,13 @@ public class RemovePersonFromOrganisationUseCaseTest
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
         _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
-        _organisationRepository.Setup(r =>
-            r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()));
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        organisation.Tenant.Persons.Should().BeEmpty();
+        _organisationRepository.Verify(
+            r => r.Track(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.Tenant.Persons.Count == 0)), Times.Once);
     }
 
     [Fact]
@@ -67,13 +75,13 @@ public class RemovePersonFromOrganisationUseCaseTest
 
         var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
         _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
-        _organisationRepository.Setup(r =>
-            r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()));
 
         var result = await UseCase.Execute(command);
 
         result.Should().BeTrue();
-        organisation.OrganisationPersons.Should().BeEmpty();
+        _organisationRepository.Verify(
+            r => r.Track(It.Is<OrganisationInformation.Persistence.Organisation>(o =>
+                o.OrganisationPersons.Count == 0)), Times.Once);
     }
 
     [Fact]
@@ -88,71 +96,73 @@ public class RemovePersonFromOrganisationUseCaseTest
         var result = await UseCase.Execute(command);
 
         result.Should().BeFalse();
-        _organisationRepository.Verify(
-            r => r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()), Times.Never);
+        _organisationRepository.Verify(r => r.Track(organisation), Times.Never);
     }
 
     [Fact]
-    public async Task Execute_ThrowsUnknownOrganisationException_WhenOrganisationNotFound()
+    public async Task Execute_ShouldSyncToUm_WhenFeatureFlagEnabled()
     {
-        var orgId = Guid.NewGuid();
-        _organisationRepository.Setup(r => r.FindIncludingPersons(orgId)).ReturnsAsync((OiOrganisation?)null);
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(organisationPerson: person);
+        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(true);
+        _membershipSyncMock
+            .Setup(s => s.RemoveMembershipAsync(It.IsAny<RemoveMembershipCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<SyncError, Unit>.Success(Unit.Value));
 
-        var command = (orgId, new RemovePersonFromOrganisation { PersonId = Guid.NewGuid() });
+        var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
 
-        await UseCase.Invoking(u => u.Execute(command))
-            .Should().ThrowAsync<UnknownOrganisationException>();
+        var result = await UseCase.Execute(command);
+
+        result.Should().BeTrue();
+        _membershipSyncMock.Verify(s => s.RemoveMembershipAsync(
+            It.Is<RemoveMembershipCommand>(c => c.OrganisationGuid == organisation.Guid && c.PersonGuid == person.Guid),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
-    public async Task Execute_PublishesPersonRemovedFromOrganisation_WhenPersonFound()
+    public async Task Execute_ShouldSucceed_WhenSyncFails()
     {
-        var orgId = Guid.NewGuid();
-        var personId = Guid.NewGuid();
-        var person = GivenPerson(personId);
-        var organisation = GivenOrganisation(organisationPerson: person, guid: orgId);
+        var person = GivenPerson();
+        var organisation = GivenOrganisation(organisationPerson: person);
+        _featureManagerMock.Setup(f => f.IsEnabledAsync(It.IsAny<string>())).ReturnsAsync(true);
+        _membershipSyncMock
+            .Setup(s => s.RemoveMembershipAsync(It.IsAny<RemoveMembershipCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result<SyncError, Unit>.Failure(new SyncFailureError("UM unavailable")));
 
-        var command = (orgId, new RemovePersonFromOrganisation { PersonId = personId });
-        _organisationRepository.Setup(r => r.FindIncludingPersons(orgId)).ReturnsAsync(organisation);
-        _organisationRepository
-            .Setup(r => r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()))
-            .Returns<OiOrganisation, Func<OiOrganisation, Task>>(async (o, onSave) => await onSave(o));
-        _publisherMock
-            .Setup(p => p.Publish(It.IsAny<PersonRemovedFromOrganisation>()))
-            .Returns(Task.CompletedTask);
+        var command = (organisation.Guid, new RemovePersonFromOrganisation { PersonId = person.Guid });
+        _organisationRepository.Setup(r => r.FindIncludingPersons(command.Item1)).ReturnsAsync(organisation);
 
-        await UseCase.Execute(command);
+        var result = await UseCase.Execute(command);
 
-        _publisherMock.Verify(p => p.Publish(It.Is<PersonRemovedFromOrganisation>(e =>
-            e.OrganisationId == orgId.ToString() && e.PersonId == personId.ToString())), Times.Once);
+        result.Should().BeTrue();
     }
 
-    private static OiPerson GivenPerson(Guid? guid = null) => new()
+    private static OiPerson GivenPerson() => new()
     {
         Id = 1,
-        Guid = guid ?? Guid.NewGuid(),
+        Guid = Guid.NewGuid(),
         FirstName = "Tom",
         LastName = "Smith",
         Email = "js@biz.com",
         UserUrn = "urn:1234"
     };
 
-    private static OiOrganisation GivenOrganisation(
+    private static OrganisationInformation.Persistence.Organisation GivenOrganisation(
         OiPerson? organisationPerson = null,
-        OiPerson? tenantPerson = null,
-        Guid? guid = null)
+        OiPerson? tenantPerson = null)
     {
-        var organisation = new OiOrganisation
+        var organisation = new OrganisationInformation.Persistence.Organisation
         {
             Id = 1,
-            Guid = guid ?? Guid.NewGuid(),
+            Guid = Guid.NewGuid(),
             Name = "Acme",
-            Type = OrganisationType.Organisation,
+            Type = OrganisationInformation.OrganisationType.Organisation,
             OrganisationPersons = [],
-            Tenant = new OiTenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
+            Tenant = new Tenant { Guid = Guid.NewGuid(), Name = "A Tenant" }
         };
         if (organisationPerson != null)
-            organisation.OrganisationPersons.Add(new OiOrganisationPerson
+            organisation.OrganisationPersons.Add(new OrganisationPerson
                 { PersonId = organisationPerson.Id, Person = organisationPerson, Organisation = organisation });
         if (tenantPerson != null)
             organisation.Tenant.Persons.Add(tenantPerson);

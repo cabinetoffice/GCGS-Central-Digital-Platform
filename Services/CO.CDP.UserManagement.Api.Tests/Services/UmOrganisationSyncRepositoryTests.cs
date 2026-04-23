@@ -1,11 +1,11 @@
 using System.Linq.Expressions;
+using CO.CDP.Functional;
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
 using Moq;
-using Xunit.Sdk;
 using CorePartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
@@ -13,21 +13,13 @@ namespace CO.CDP.UserManagement.Api.Tests.Services;
 
 public class UmOrganisationSyncRepositoryTests
 {
-    private readonly Mock<IApplicationRepository> _applicationRepository = new();
-    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository = new();
-    private readonly Mock<IOrganisationApiAdapter> _organisationApiAdapter = new();
-    private readonly Mock<IOrganisationApplicationRepository> _organisationApplicationRepository = new();
     private readonly Mock<IOrganisationRepository> _organisationRepository = new();
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository = new();
+    private readonly Mock<IApplicationRepository> _applicationRepository = new();
+    private readonly Mock<IOrganisationApplicationRepository> _organisationApplicationRepository = new();
+    private readonly Mock<IUserApplicationAssignmentRepository> _userApplicationAssignmentRepository = new();
     private readonly Mock<IRoleRepository> _roleRepository = new();
     private readonly Mock<ISlugGeneratorService> _slugGeneratorService = new();
-    private readonly Mock<IUserApplicationAssignmentRepository> _userApplicationAssignmentRepository = new();
-
-    public UmOrganisationSyncRepositoryTests()
-    {
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole>());
-    }
 
     private UmOrganisationSyncRepository CreateSut() => new(
         _organisationRepository.Object,
@@ -36,8 +28,7 @@ public class UmOrganisationSyncRepositoryTests
         _organisationApplicationRepository.Object,
         _userApplicationAssignmentRepository.Object,
         _roleRepository.Object,
-        _slugGeneratorService.Object,
-        _organisationApiAdapter.Object);
+        _slugGeneratorService.Object);
 
     [Fact]
     public async Task EnsureFounderOwnerCreatedAsync_AddsOwnerMembership_WhenFounderDoesNotExist()
@@ -61,14 +52,13 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
         _membershipRepository
-            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
         _organisationApplicationRepository
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user");
+        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         _membershipRepository.Verify(r => r.Add(It.Is<UserOrganisationMembership>(m =>
             m.UserPrincipalId == "urn:example:user" &&
@@ -99,13 +89,12 @@ public class UmOrganisationSyncRepositoryTests
             .ReturnsAsync(organisation);
         _membershipRepository
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UserOrganisationMembership
-                { Id = 7, OrganisationId = organisation.Id, UserPrincipalId = "urn:example:user" });
+            .ReturnsAsync(new UserOrganisationMembership { Id = 7, OrganisationId = organisation.Id, UserPrincipalId = "urn:example:user" });
         _organisationApplicationRepository
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user");
+        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         _membershipRepository.Verify(r => r.Add(It.IsAny<UserOrganisationMembership>()), Times.Never);
     }
@@ -132,15 +121,13 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
         _membershipRepository
-            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UserOrganisationMembership
-                { Id = 7, OrganisationId = organisation.Id, UserPrincipalId = "urn:example:user" });
+            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new UserOrganisationMembership { Id = 7, OrganisationId = organisation.Id, UserPrincipalId = "urn:example:user" });
         _organisationApplicationRepository
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([]);
 
-        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user");
+        await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         _membershipRepository.Verify(r => r.Add(It.IsAny<UserOrganisationMembership>()), Times.Never);
     }
@@ -155,15 +142,11 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UmOrganisation?)null);
 
-        var result = await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user");
+        var result = await CreateSut().EnsureFounderOwnerCreatedAsync(organisationGuid, personGuid, "urn:example:user", []);
 
         result.Match(
-            onLeft: e =>
-            {
-                e.Should().Contain(organisationGuid.ToString());
-                return true;
-            },
-            onRight: _ => throw new XunitException("Expected failure but got success"));
+            onLeft: e => { e.Should().Contain(organisationGuid.ToString()); return true; },
+            onRight: _ => throw new Xunit.Sdk.XunitException("Expected failure but got success"));
     }
 
     [Fact]
@@ -206,10 +189,8 @@ public class UmOrganisationSyncRepositoryTests
             !oa.IsDeleted &&
             oa.EnabledBy == "system:org-sync" &&
             oa.CreatedBy == "system:org-sync")), Times.Once);
-        _organisationApplicationRepository.Verify(
-            r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 2)), Times.Never);
-        _organisationApplicationRepository.Verify(
-            r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 3)), Times.Never);
+        _organisationApplicationRepository.Verify(r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 2)), Times.Never);
+        _organisationApplicationRepository.Verify(r => r.Add(It.Is<OrganisationApplication>(oa => oa.ApplicationId == 3)), Times.Never);
     }
 
     [Fact]
@@ -246,8 +227,7 @@ public class UmOrganisationSyncRepositoryTests
             .ReturnsAsync((Expression<Func<Application, bool>> predicate, CancellationToken _) =>
                 new[] { application }.Where(predicate.Compile()).ToList());
         _organisationApplicationRepository
-            .Setup(r => r.GetByOrganisationAndApplicationAsync(organisation.Id, application.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByOrganisationAndApplicationAsync(organisation.Id, application.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingRelationship);
 
         await CreateSut().EnsureActiveApplicationsEnabledAsync(organisationGuid);
@@ -297,15 +277,11 @@ public class UmOrganisationSyncRepositoryTests
         _organisationRepository
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisation);
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole> { CorePartyRole.Buyer });
         _membershipRepository
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
         _membershipRepository
-            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByUserAndOrganisationAsync("urn:example:user", organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserOrganisationMembership?)null);
         _membershipRepository
             .Setup(r => r.Add(It.IsAny<UserOrganisationMembership>()))
@@ -318,8 +294,7 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([defaultOrganisationApplication]);
         _roleRepository
-            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([
                 new ApplicationRole
                 {
@@ -353,18 +328,18 @@ public class UmOrganisationSyncRepositoryTests
                 }
             ]);
         _userApplicationAssignmentRepository
-            .Setup(r => r.GetByMembershipAndApplicationAsync(73, defaultOrganisationApplication.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByMembershipAndApplicationAsync(73, defaultOrganisationApplication.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserApplicationAssignment?)null);
 
         await CreateSut().EnsureFounderOwnerCreatedAsync(
             organisationGuid,
             personGuid,
-            "urn:example:user");
+            "urn:example:user",
+            [CorePartyRole.Buyer]);
 
         createdMembership.Should().NotBeNull();
         _userApplicationAssignmentRepository.Verify(r => r.Add(It.Is<UserApplicationAssignment>(assignment =>
-            assignment.UserOrganisationMembership == createdMembership &&
+            assignment.UserOrganisationMembershipId == 73 &&
             assignment.OrganisationApplicationId == defaultOrganisationApplication.Id &&
             assignment.IsActive &&
             !assignment.IsDeleted &&
@@ -423,9 +398,6 @@ public class UmOrganisationSyncRepositoryTests
         _organisationRepository
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisation);
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole> { CorePartyRole.Tenderer });
         _membershipRepository
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingMembership);
@@ -433,13 +405,11 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([defaultOrganisationApplication]);
         _userApplicationAssignmentRepository
-            .Setup(r => r.GetByMembershipAndApplicationAsync(existingMembership.Id, defaultOrganisationApplication.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByMembershipAndApplicationAsync(existingMembership.Id, defaultOrganisationApplication.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingAssignment);
 
         _roleRepository
-            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([
                 new ApplicationRole
                 {
@@ -456,7 +426,8 @@ public class UmOrganisationSyncRepositoryTests
         await CreateSut().EnsureFounderOwnerCreatedAsync(
             organisationGuid,
             personGuid,
-            "urn:example:user");
+            "urn:example:user",
+            [CorePartyRole.Tenderer]);
 
         _membershipRepository.Verify(r => r.Add(It.IsAny<UserOrganisationMembership>()), Times.Never);
         _userApplicationAssignmentRepository.Verify(r => r.Update(It.Is<UserApplicationAssignment>(assignment =>
@@ -472,8 +443,7 @@ public class UmOrganisationSyncRepositoryTests
     }
 
     [Fact]
-    public async Task
-        EnsureFounderOwnerCreatedAsync_AssignsBuyerAndSupplierFindATenderRoles_WhenOrganisationHasBothPartyRoles()
+    public async Task EnsureFounderOwnerCreatedAsync_AssignsBuyerAndSupplierFindATenderRoles_WhenOrganisationHasBothPartyRoles()
     {
         var organisationGuid = Guid.NewGuid();
         var personGuid = Guid.NewGuid();
@@ -505,10 +475,6 @@ public class UmOrganisationSyncRepositoryTests
         _organisationRepository
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisation);
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole>
-                { CorePartyRole.Buyer, CorePartyRole.Tenderer });
         _membershipRepository
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(new UserOrganisationMembership
@@ -521,8 +487,7 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([defaultOrganisationApplication]);
         _roleRepository
-            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([
                 new ApplicationRole
                 {
@@ -556,14 +521,14 @@ public class UmOrganisationSyncRepositoryTests
                 }
             ]);
         _userApplicationAssignmentRepository
-            .Setup(r => r.GetByMembershipAndApplicationAsync(73, defaultOrganisationApplication.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByMembershipAndApplicationAsync(73, defaultOrganisationApplication.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync((UserApplicationAssignment?)null);
 
         await CreateSut().EnsureFounderOwnerCreatedAsync(
             organisationGuid,
             personGuid,
-            "urn:example:user");
+            "urn:example:user",
+            [CorePartyRole.Buyer, CorePartyRole.Tenderer]);
 
         _userApplicationAssignmentRepository.Verify(r => r.Add(It.Is<UserApplicationAssignment>(assignment =>
             assignment.Roles.Select(role => role.Id).OrderBy(id => id).SequenceEqual(new[] { 6, 7 }))), Times.Once);
@@ -626,9 +591,6 @@ public class UmOrganisationSyncRepositoryTests
         _organisationRepository
             .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
             .ReturnsAsync(organisation);
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole> { CorePartyRole.Tenderer });
         _membershipRepository
             .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingMembership);
@@ -636,138 +598,18 @@ public class UmOrganisationSyncRepositoryTests
             .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync([defaultOrganisationApplication]);
         _roleRepository
-            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([existingRole]);
         _userApplicationAssignmentRepository
-            .Setup(r => r.GetByMembershipAndApplicationAsync(existingMembership.Id, defaultOrganisationApplication.Id,
-                It.IsAny<CancellationToken>()))
+            .Setup(r => r.GetByMembershipAndApplicationAsync(existingMembership.Id, defaultOrganisationApplication.Id, It.IsAny<CancellationToken>()))
             .ReturnsAsync(existingAssignment);
 
         await CreateSut().EnsureFounderOwnerCreatedAsync(
             organisationGuid,
             personGuid,
-            "urn:example:user");
+            "urn:example:user",
+            [CorePartyRole.Tenderer]);
 
         _userApplicationAssignmentRepository.Verify(r => r.Update(It.IsAny<UserApplicationAssignment>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task
-        EnsureMemberScopesAndAppRolesUpdatedAsync_UpdatesRoleAndRecalculatesAppRoles_WhenMembershipExists()
-    {
-        var organisationGuid = Guid.NewGuid();
-        var personGuid = Guid.NewGuid();
-        var organisation = new UmOrganisation
-        {
-            Id = 42,
-            CdpOrganisationGuid = organisationGuid,
-            Name = "Acme",
-            Slug = "acme",
-            IsActive = true,
-            CreatedBy = "seed"
-        };
-        var membership = new UserOrganisationMembership
-        {
-            Id = 73,
-            OrganisationId = organisation.Id,
-            CdpPersonId = personGuid,
-            UserPrincipalId = "urn:example:user",
-            OrganisationRoleId = (int)OrganisationRole.Member
-        };
-        var defaultOrganisationApplication = new OrganisationApplication
-        {
-            Id = 17,
-            OrganisationId = organisation.Id,
-            ApplicationId = 1,
-            IsActive = true,
-            Application = new Application
-            {
-                Id = 1,
-                ClientId = "find-a-tender",
-                IsActive = true,
-                IsDeleted = false,
-                IsEnabledByDefault = true
-            }
-        };
-
-        _organisationRepository
-            .Setup(r => r.GetByCdpGuidAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(organisation);
-        _organisationApiAdapter
-            .Setup(a => a.GetPartyRolesAsync(organisationGuid, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((ISet<CorePartyRole>)new HashSet<CorePartyRole> { CorePartyRole.Buyer });
-        _membershipRepository
-            .Setup(r => r.GetByPersonIdAndOrganisationAsync(personGuid, organisation.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync(membership);
-        _organisationApplicationRepository
-            .Setup(r => r.GetDefaultEnabledByOrganisationIdAsync(organisation.Id, It.IsAny<CancellationToken>()))
-            .ReturnsAsync([defaultOrganisationApplication]);
-        _roleRepository
-            .Setup(r => r.GetByApplicationIdAsync(defaultOrganisationApplication.ApplicationId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync([
-                new ApplicationRole
-                {
-                    Id = 6,
-                    ApplicationId = defaultOrganisationApplication.ApplicationId,
-                    Name = "Editor (buyer)",
-                    IsActive = true,
-                    SyncToOrganisationInformation = true,
-                    RequiredPartyRoles = [CorePartyRole.Buyer],
-                    OrganisationInformationScopes = ["ADMIN", "RESPONDER"]
-                }
-            ]);
-        _userApplicationAssignmentRepository
-            .Setup(r => r.GetByMembershipAndApplicationAsync(membership.Id, defaultOrganisationApplication.Id,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((UserApplicationAssignment?)null);
-
-        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
-            organisationGuid, personGuid, ["ADMIN"]);
-
-        result.IsSuccess.Should().BeTrue();
-        _membershipRepository.Verify(r => r.Update(It.Is<UserOrganisationMembership>(m =>
-            m.OrganisationRoleId == (int)OrganisationRole.Admin &&
-            m.ModifiedBy == "system:org-sync")), Times.Once);
-        _userApplicationAssignmentRepository.Verify(r => r.Add(It.Is<UserApplicationAssignment>(a =>
-            a.UserOrganisationMembership == membership &&
-            a.OrganisationApplicationId == defaultOrganisationApplication.Id &&
-            a.Roles.Select(role => role.Id).OrderBy(id => id).SequenceEqual(new[] { 6 }))), Times.Once);
-    }
-
-    [Fact]
-    public async Task EnsureMemberScopesAndAppRolesUpdatedAsync_ReturnsSuccess_WhenOrgNotFound()
-    {
-        var orgGuid = Guid.NewGuid();
-        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, default))
-            .ReturnsAsync((UmOrganisation?)null);
-
-        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
-            orgGuid, Guid.NewGuid(), ["ADMIN"]);
-
-        result.IsSuccess.Should().BeTrue();
-        _membershipRepository.Verify(r => r.GetByPersonIdAndOrganisationAsync(
-            It.IsAny<Guid>(), It.IsAny<int>(), default), Times.Never);
-    }
-
-    [Fact]
-    public async Task EnsureMemberScopesAndAppRolesUpdatedAsync_ReturnsSuccess_WhenMembershipNotFound()
-    {
-        var orgGuid = Guid.NewGuid();
-        var org = new UmOrganisation
-        {
-            Id = 1, CdpOrganisationGuid = orgGuid, Name = "Test", Slug = "test", IsActive = true, CreatedBy = "seed"
-        };
-        _organisationRepository.Setup(r => r.GetByCdpGuidAsync(orgGuid, default)).ReturnsAsync(org);
-        _membershipRepository.Setup(r => r.GetByPersonIdAndOrganisationAsync(
-                It.IsAny<Guid>(), org.Id, default))
-            .ReturnsAsync((UserOrganisationMembership?)null);
-
-        var result = await CreateSut().EnsureMemberScopesAndAppRolesUpdatedAsync(
-            orgGuid, Guid.NewGuid(), ["ADMIN"]);
-
-        result.IsSuccess.Should().BeTrue();
-        _membershipRepository.Verify(r => r.Update(It.IsAny<UserOrganisationMembership>()), Times.Never);
     }
 }
