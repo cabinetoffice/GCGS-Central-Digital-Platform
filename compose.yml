@@ -386,6 +386,8 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
+      Aws__SqsPublisher__MessageGroupId: "UserManagement"
       Aws__ElastiCache__Hostname: "redis"
       Aws__ElastiCache__Port: "6379"
       CloudWatch__LogGroup: "/ecs/user-management-api"
@@ -452,6 +454,8 @@ services:
       Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       Aws__OutboxQueues__1__MessageGroupId: "UserManagement"
       Aws__OutboxQueues__1__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
+      Aws__OutboxQueues__2__MessageGroupId: "UserManagement"
+      Aws__OutboxQueues__2__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/user-management.fifo"
       Aws__SqsPublisher__MessageGroupId: "UserManagement"
       Features__OrganisationSyncEnabled: false

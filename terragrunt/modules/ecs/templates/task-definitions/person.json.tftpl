@@ -34,7 +34,9 @@
         { "name" : "Aws__OutboxQueues__0__QueueUrl", "value" : "${queue_organisation_url}"},
         { "name" : "Aws__OutboxQueues__0__MessageGroupId", "value" : "Organisation"},
         { "name" : "Aws__OutboxQueues__1__QueueUrl", "value" : "${queue_user_management_url}"},
-        { "name" : "Aws__OutboxQueues__1__MessageGroupId", "value" : "UserManagement"}
+        { "name" : "Aws__OutboxQueues__1__MessageGroupId", "value" : "UserManagement"},
+        { "name" : "Aws__OutboxQueues__2__QueueUrl", "value" : "${queue_entity_verification_url}"},
+        { "name" : "Aws__OutboxQueues__2__MessageGroupId", "value" : "UserManagement"}
     ],
     "secrets": [
         { "name" : "OrganisationInformationDatabase__Password", "valueFrom" : "${db_password}"},
