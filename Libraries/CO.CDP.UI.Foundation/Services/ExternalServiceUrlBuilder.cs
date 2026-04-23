@@ -9,6 +9,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     private readonly IAiToolUrlService _aiToolUrlService;
     private readonly IPaymentsUrlService _paymentsUrlService;
     private readonly IFvraUrlService _fvraUrlService;
+    private readonly IUserManagementUrlService _userManagementUrlService;
 
     /// <summary>
     /// Initialises a new instance of the ExternalServiceUrlBuilder
@@ -17,16 +18,19 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
     /// <param name="aiToolUrlService">AI Tool URL service</param>
     /// <param name="paymentsUrlService">Payments URL service</param>
     /// <param name="fvraUrlService">FVRA Tool URL service</param>
+    /// <param name="userManagementUrlService">User Management URL service</param>
     public ExternalServiceUrlBuilder(
         ICommercialToolsUrlService commercialToolsUrlService,
         IAiToolUrlService aiToolUrlService,
         IPaymentsUrlService paymentsUrlService,
-        IFvraUrlService fvraUrlService)
+        IFvraUrlService fvraUrlService,
+        IUserManagementUrlService userManagementUrlService)
     {
         _commercialToolsUrlService = commercialToolsUrlService;
         _aiToolUrlService = aiToolUrlService;
         _paymentsUrlService = paymentsUrlService;
         _fvraUrlService = fvraUrlService;
+        _userManagementUrlService = userManagementUrlService;
     }
 
     /// <summary>
@@ -49,6 +53,7 @@ public class ExternalServiceUrlBuilder : IExternalServiceUrlBuilder
             ExternalService.AiTool => _aiToolUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.Payments => _paymentsUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
             ExternalService.FvraTool => _fvraUrlService.BuildUrl(endpoint, organisationId, redirectUri, cookieAcceptance, additionalParams),
+            ExternalService.UserManagement when organisationId.HasValue => _userManagementUrlService.BuildOrganisationUrl(organisationId.Value),
             _ => throw new ArgumentOutOfRangeException(nameof(service), service, $@"Unsupported external service: {service}")
         };
     }
