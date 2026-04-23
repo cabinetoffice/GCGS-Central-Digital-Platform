@@ -1,19 +1,11 @@
 using CO.CDP.AwsServices;
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
-using CO.CDP.UserManagement.Core.UseCase;
 using CO.CDP.UserManagement.Infrastructure.Data;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
 using CO.CDP.UserManagement.Infrastructure.Services;
-using CO.CDP.UserManagement.Infrastructure.UseCase.AcceptInvite;
-using CO.CDP.UserManagement.Infrastructure.UseCase.AssignUserToApplication;
-using CO.CDP.UserManagement.Infrastructure.UseCase.RemovePersonFromOrganisation;
-using CO.CDP.UserManagement.Infrastructure.UseCase.RevokeApplicationAssignment;
-using CO.CDP.UserManagement.Infrastructure.UseCase.UpdateApplicationAssignment;
-using CO.CDP.UserManagement.Infrastructure.UseCase.UpdateOrganisationRole;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
 
 namespace CO.CDP.UserManagement.Infrastructure;
 
@@ -25,19 +17,34 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds user management infrastructure services to the service collection.
     /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="connectionString">The database connection string.</param>
+    /// <param name="useSharedConnection">
+    /// When true, resolves a scoped <c>NpgsqlConnection</c> from DI (for atomic dual-write via <c>IAtomicMembershipSync</c>).
+    /// When false, creates a new connection from the connection string.
+    /// </param>
+    /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementInfrastructure(
         this IServiceCollection services,
-        string connectionString)
+        string connectionString,
+        bool useSharedConnection = false)
     {
         services.AddScoped<AuditableEntityInterceptor>();
 
         services.AddDbContext<UserManagementDbContext>((sp, options) =>
         {
-            options.UseNpgsql(
-                connectionString,
-                npgsql => npgsql
-                    .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
-                    .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            if (useSharedConnection)
+                options.UseNpgsql(
+                    sp.GetRequiredService<NpgsqlConnection>(),
+                    npgsql => npgsql
+                        .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+            else
+                options.UseNpgsql(
+                    connectionString,
+                    npgsql => npgsql
+                        .MigrationsAssembly(typeof(UserManagementDbContext).Assembly.FullName)
+                        .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
 
             options.AddInterceptors(sp.GetRequiredService<AuditableEntityInterceptor>());
         });
@@ -52,6 +59,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationUserService, OrganisationUserService>();
         services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
         services.AddScoped<IRoleMappingService, RoleMappingService>();
+        services.AddScoped<IOrganisationPersonSyncRepository, OrganisationPersonSyncRepository>();
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
         services.AddScoped<IJoinRequestOrchestrationService, JoinRequestOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
@@ -69,37 +77,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-        services.AddScoped<IUmOrganisationSyncRepository, UmOrganisationSyncRepository>();
-
-        services.AddScoped<IUseCase<RemovePersonFromOrganisationCommand>, RemovePersonFromOrganisationUseCase>();
-        services
-            .AddScoped<IUseCase<UpdateOrganisationRoleCommand, UserOrganisationMembership>,
-                UpdateOrganisationRoleUseCase>();
-        services
-            .AddScoped<IUseCase<AssignUserToApplicationCommand, UserApplicationAssignment>,
-                AssignUserToApplicationUseCase>();
-        services
-            .AddScoped<IUseCase<UpdateApplicationAssignmentCommand, UserApplicationAssignment>,
-                UpdateApplicationAssignmentUseCase>();
-        services.AddScoped<IUseCase<RevokeApplicationAssignmentCommand>, RevokeApplicationAssignmentUseCase>();
-        services.AddScoped<IUseCase<AcceptInviteCommand>, AcceptInviteUseCase>();
-
         return services;
-    }
-
-    /// <summary>
-    /// Registers the outbox SQS publisher for UserManagement events.
-    /// Must be called after AWS services have been configured.
-    /// </summary>
-    public static IServiceCollection AddUserManagementOutboxPublisher(
-        this IServiceCollection services,
-        ConfigurationManager configuration,
-        bool enableBackgroundServices)
-    {
-        return services.AddMultiQueueOutboxSqsPublisher<UserManagementDbContext>(
-            configuration,
-            enableBackgroundServices,
-            notificationChannel: "user_management_outbox");
     }
 
     /// <summary>
@@ -131,6 +109,9 @@ public static class ServiceCollectionExtensions
     /// <summary>
     /// Adds caching services for user management using ElastiCache.
     /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="awsConfiguration">AWS configuration containing ElastiCache settings.</param>
+    /// <returns>The service collection for chaining.</returns>
     public static IServiceCollection AddUserManagementCaching(
         this IServiceCollection services,
         AwsConfiguration? awsConfiguration = null)
