@@ -20,6 +20,17 @@ module "entity_verification_queue" {
   visibility_timeout_seconds = 5 * 60
 }
 
+module "fts_notice_publish_queue" {
+  source = "../sqs"
+
+  message_retention_seconds  = 1209600 # 14 days
+  name                       = local.name_fts_notice_publish
+  role_consumer_arn          = [var.role_ecs_task_arn]
+  role_publisher_arn         = [var.role_ecs_task_arn]
+  tags                       = var.tags
+  visibility_timeout_seconds = 5 * 60
+}
+
 module "organisation_queue" {
   source = "../sqs"
 
