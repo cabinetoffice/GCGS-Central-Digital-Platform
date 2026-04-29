@@ -1,10 +1,9 @@
-using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Adapters;
-using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
-using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.Removal;
+using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
@@ -36,7 +35,7 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CurrentRole: user.OrganisationRole,
                 MemberSinceFormatted: user.JoinedAt?.ToString("MMMM dd, yyyy") ?? string.Empty,
                 CdpPersonId: cdpPersonId,
-                PendingInviteId: null,
+                PendingInviteGuid: null,
                 RemoveConfirmed: null);
         }
 
@@ -56,11 +55,12 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 CurrentRole: invite.OrganisationRole,
                 MemberSinceFormatted: invite.CreatedAt.ToString("d MMMM yyyy"),
                 CdpPersonId: null,
-                PendingInviteId: invite.PendingInviteId,
+                PendingInviteGuid: invite.CdpPersonInviteGuid,
                 RemoveConfirmed: null);
         }
 
-        public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
+        public async Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(Guid id, Guid cdpPersonId,
+            string clientId, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
@@ -91,7 +91,8 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
                 RevokeConfirmed: null);
         }
 
-        public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(Guid id, Guid cdpPersonId, CancellationToken ct)
+        public async Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(Guid id, Guid cdpPersonId,
+            CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return null;
@@ -179,7 +180,8 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
             return success ? new InviteRemovalSubmitResult.Removed() : new InviteRemovalSubmitResult.NotFound();
         }
 
-        public async Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(Guid id, Guid cdpPersonId, string clientId, CancellationToken ct)
+        public async Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(Guid id, Guid cdpPersonId,
+            string clientId, CancellationToken ct)
         {
             var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org is null) return new ApplicationRemovalSubmitResult.NotFound();
@@ -194,7 +196,9 @@ namespace CO.CDP.UserManagement.App.Application.Removal.Implementations
 
             var result = await _adapter.DeleteUserAssignmentAsync(org.Id, cdpPersonId, assignment.Id, ct);
             var success = result.Match(_ => false, outcome => outcome == ServiceOutcome.Success);
-            return success ? new ApplicationRemovalSubmitResult.Removed() : new ApplicationRemovalSubmitResult.NotFound();
+            return success
+                ? new ApplicationRemovalSubmitResult.Removed()
+                : new ApplicationRemovalSubmitResult.NotFound();
         }
 
         private static bool IsLastOwner(ICollection<OrganisationUserResponse> users, Guid cdpPersonId)

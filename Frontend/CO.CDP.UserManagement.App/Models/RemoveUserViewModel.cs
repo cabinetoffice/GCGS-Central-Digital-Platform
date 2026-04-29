@@ -11,7 +11,7 @@ public sealed record RemoveUserViewModel(
     OrganisationRole CurrentRole = OrganisationRole.Member,
     string MemberSinceFormatted = "",
     Guid? CdpPersonId = null,
-    int? PendingInviteId = null,
+    Guid? PendingInviteGuid = null,
     [Required(ErrorMessage = "Select if you want to remove this user")]
     bool? RemoveConfirmed = null)
 {
@@ -23,6 +23,6 @@ public sealed record RemoveUserViewModel(
         CurrentRole: OrganisationRole.Member,
         MemberSinceFormatted: string.Empty,
         CdpPersonId: null,
-        PendingInviteId: null,
+        PendingInviteGuid: null,
         RemoveConfirmed: null);
 }
