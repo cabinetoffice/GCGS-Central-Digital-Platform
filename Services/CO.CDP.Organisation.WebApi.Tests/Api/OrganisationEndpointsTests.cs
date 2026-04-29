@@ -218,7 +218,7 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(Forbidden, Channel.ServiceKey)]
+    [InlineData(OK, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetOrganisationJoinRequests_Authorization_ReturnsExpectedStatusCode(
