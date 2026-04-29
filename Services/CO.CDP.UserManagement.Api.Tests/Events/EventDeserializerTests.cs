@@ -16,7 +16,6 @@ public class EventDeserializerTests
             Id = "e4e5e6e7-0000-0000-0000-000000000001",
             Name = "Acme Ltd",
             Roles = new[] { "supplier" },
-            Type = 0,
             FounderPersonId = (Guid?)Guid.NewGuid(),
             FounderUserUrn = "urn:fdc:gov.uk:2022:user1"
         });

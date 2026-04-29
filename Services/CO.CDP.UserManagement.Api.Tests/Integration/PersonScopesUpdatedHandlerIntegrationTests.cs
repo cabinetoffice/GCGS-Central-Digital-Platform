@@ -127,7 +127,10 @@ public class PersonScopesUpdatedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, NullLogger<PersonScopesUpdatedHandler>.Instance);
+                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                    scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                    NullLogger<PersonScopesUpdatedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -158,7 +161,10 @@ public class PersonScopesUpdatedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, NullLogger<PersonScopesUpdatedHandler>.Instance);
+                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                    scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                    NullLogger<PersonScopesUpdatedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -188,7 +194,10 @@ public class PersonScopesUpdatedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, NullLogger<PersonScopesUpdatedHandler>.Instance);
+                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                    scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                    NullLogger<PersonScopesUpdatedHandler>.Instance);
             await handler.Handle(@event);
         };
 
@@ -226,7 +235,10 @@ public class PersonScopesUpdatedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, NullLogger<PersonScopesUpdatedHandler>.Instance);
+                new PersonScopesUpdatedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                    scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                    NullLogger<PersonScopesUpdatedHandler>.Instance);
             await handler.Handle(@event);
         }
 

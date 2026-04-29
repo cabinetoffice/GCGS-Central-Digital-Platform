@@ -11,6 +11,7 @@ namespace CO.CDP.UserManagement.Api.Tests.Events.Handlers;
 
 public class OrganisationRegisteredHandlerTests
 {
+    private readonly Mock<IClaimsCacheService> _claimsCacheService = new();
     private readonly Mock<IUmOrganisationSyncRepository> _syncRepo = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
@@ -27,7 +28,8 @@ public class OrganisationRegisteredHandlerTests
     }
 
     private OrganisationRegisteredHandler CreateSut() =>
-        new(_syncRepo.Object, _unitOfWork.Object, NullLogger<OrganisationRegisteredHandler>.Instance);
+        new(_syncRepo.Object, _unitOfWork.Object, _claimsCacheService.Object,
+            NullLogger<OrganisationRegisteredHandler>.Instance);
 
     private static OrganisationRegistered MakeEvent(Guid orgGuid, string name,
         Guid? founderPersonId = null, string? founderUrn = null) =>
@@ -36,7 +38,6 @@ public class OrganisationRegisteredHandlerTests
             Id = orgGuid.ToString(),
             Name = name,
             Roles = ["supplier"],
-            Type = 2,
             FounderPersonId = founderPersonId,
             FounderUserUrn = founderUrn
         };

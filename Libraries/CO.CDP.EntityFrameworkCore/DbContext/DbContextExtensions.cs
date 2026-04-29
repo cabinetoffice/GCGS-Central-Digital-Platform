@@ -14,7 +14,7 @@ public static class DbContextExtensions
         CancellationToken cancellationToken)
         where TDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
-        // When called inside an AtomicScope (or any external transaction), defer to that transaction.
+        // When called inside an external transaction, defer to that transaction.
         // The caller is responsible for committing or rolling back.
         if (context.Database.CurrentTransaction is not null)
         {

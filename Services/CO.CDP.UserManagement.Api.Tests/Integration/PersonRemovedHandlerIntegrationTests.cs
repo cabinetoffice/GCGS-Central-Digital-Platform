@@ -10,6 +10,7 @@ using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using Xunit.Abstractions;
 using UmOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 using UserOrganisationMembership = CO.CDP.UserManagement.Core.Entities.UserOrganisationMembership;
@@ -112,7 +113,10 @@ public class PersonRemovedHandlerIntegrationTests : IClassFixture<UserManagement
         {
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, NullLogger<PersonRemovedHandler>.Instance);
+            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                NullLogger<PersonRemovedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -143,7 +147,10 @@ public class PersonRemovedHandlerIntegrationTests : IClassFixture<UserManagement
             using var scope = _factory.Services.CreateScope();
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, NullLogger<PersonRemovedHandler>.Instance);
+            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                NullLogger<PersonRemovedHandler>.Instance);
             await handler.Handle(@event);
         };
 
@@ -165,7 +172,10 @@ public class PersonRemovedHandlerIntegrationTests : IClassFixture<UserManagement
             using var scope = _factory.Services.CreateScope();
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, NullLogger<PersonRemovedHandler>.Instance);
+            var handler = new PersonRemovedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+                scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+                NullLogger<PersonRemovedHandler>.Instance);
             await handler.Handle(@event);
         };
 

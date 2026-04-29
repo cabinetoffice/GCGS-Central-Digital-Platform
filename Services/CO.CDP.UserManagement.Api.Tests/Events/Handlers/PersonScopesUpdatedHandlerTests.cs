@@ -11,6 +11,9 @@ namespace CO.CDP.UserManagement.Api.Tests.Events.Handlers;
 
 public class PersonScopesUpdatedHandlerTests
 {
+    private readonly Mock<IClaimsCacheService> _claimsCacheService = new();
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IUmOrganisationSyncRepository> _syncRepo = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
@@ -23,7 +26,8 @@ public class PersonScopesUpdatedHandlerTests
     }
 
     private PersonScopesUpdatedHandler CreateSut() =>
-        new(_syncRepo.Object, _unitOfWork.Object, NullLogger<PersonScopesUpdatedHandler>.Instance);
+        new(_syncRepo.Object, _unitOfWork.Object, _claimsCacheService.Object, _organisationRepository.Object,
+            _membershipRepository.Object, NullLogger<PersonScopesUpdatedHandler>.Instance);
 
     private static PersonScopesUpdated MakeEvent(Guid orgGuid, Guid personGuid,
         List<string>? scopes = null) =>

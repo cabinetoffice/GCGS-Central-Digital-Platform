@@ -14,7 +14,7 @@ public interface IUnitOfWork : IDisposable
 
     /// <summary>
     /// Executes the given action within a single DB transaction, committing atomically on success
-    /// or rolling back on failure. If already inside an outer transaction (e.g. AtomicScope),
+    /// or rolling back on failure. If already inside an outer transaction,
     /// the action runs within that transaction without creating a nested one.
     /// </summary>
     Task ExecuteInTransactionAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default);

@@ -65,7 +65,6 @@ builder.Services.AddCdpAuthentication(builder.Configuration);
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
 var isRunningAsService = Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api");
-var outboxPublisherEnabled = builder.Configuration.GetValue("Features:OutboxPublisherEnabled", false);
 
 if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
 {
@@ -74,11 +73,8 @@ if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
         .AddCloudWatchSerilog(builder.Configuration)
         .AddAwsSqsService();
 
-    if (outboxPublisherEnabled)
-    {
-        sqsServices.AddUserManagementOutboxPublisher(builder.Configuration,
-            enableBackgroundServices: isRunningAsService);
-    }
+    sqsServices.AddUserManagementOutboxPublisher(builder.Configuration,
+        enableBackgroundServices: isRunningAsService);
 
     sqsServices.AddSqsDispatcher(
         EventDeserializer.Deserializer,

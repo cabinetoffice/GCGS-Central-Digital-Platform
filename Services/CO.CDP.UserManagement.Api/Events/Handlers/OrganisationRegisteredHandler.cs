@@ -6,6 +6,7 @@ namespace CO.CDP.UserManagement.Api.Events.Handlers;
 public class OrganisationRegisteredHandler(
     IUmOrganisationSyncRepository syncRepo,
     IUnitOfWork unitOfWork,
+    IClaimsCacheService claimsCacheService,
     ILogger<OrganisationRegisteredHandler> logger) : ISubscriber<OrganisationRegistered>
 {
     public async Task Handle(OrganisationRegistered @event)
@@ -34,18 +35,38 @@ public class OrganisationRegisteredHandler(
                     orgGuid, @event.FounderPersonId.Value, @event.FounderUserUrn))
                 .ThrowOnFailure("EnsureFounderOwnerCreatedAsync", logger);
 
+            await unitOfWork.SaveChangesAsync();
+
+            await InvalidateCacheAsync(@event.FounderUserUrn);
+
             logger.LogInformation(
                 "[OrganisationRegisteredHandler] Founder owner created for org {OrgGuid}, person {PersonGuid}",
                 orgGuid, @event.FounderPersonId.Value);
         }
         else
         {
+            await unitOfWork.SaveChangesAsync();
             logger.LogInformation(
                 "[OrganisationRegisteredHandler] No founder info — skipping owner creation for {OrgGuid}", orgGuid);
         }
 
-        await unitOfWork.SaveChangesAsync();
         logger.LogInformation("[OrganisationRegisteredHandler] Completed OrganisationRegistered for org {OrgGuid}",
             orgGuid);
+    }
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+            logger.LogInformation(
+                "[OrganisationRegisteredHandler] Invalidated claims cache for {UserPrincipalId}", userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "[OrganisationRegisteredHandler] Failed to invalidate claims cache for {UserPrincipalId}",
+                userPrincipalId);
+        }
     }
 }
