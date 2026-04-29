@@ -233,7 +233,7 @@ public static class EndpointExtensions
 
         app.MapGet("/organisations/{organisationId}/join-requests",
                 [OrganisationAuthorize(
-                    [AuthenticationChannel.OneLogin],
+                    [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                     [Constants.OrganisationPersonScope.Admin],
                     OrganisationIdLocation.Path)]
                 async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status,
