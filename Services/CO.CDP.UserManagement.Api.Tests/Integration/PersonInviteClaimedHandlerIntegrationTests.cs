@@ -114,7 +114,8 @@ public class PersonInviteClaimedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonInviteClaimedHandler(syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance);
+                new PersonInviteClaimedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    NullLogger<PersonInviteClaimedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -147,7 +148,8 @@ public class PersonInviteClaimedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonInviteClaimedHandler(syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance);
+                new PersonInviteClaimedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    NullLogger<PersonInviteClaimedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -182,7 +184,8 @@ public class PersonInviteClaimedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonInviteClaimedHandler(syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance);
+                new PersonInviteClaimedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    NullLogger<PersonInviteClaimedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -218,7 +221,8 @@ public class PersonInviteClaimedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonInviteClaimedHandler(syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance);
+                new PersonInviteClaimedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    NullLogger<PersonInviteClaimedHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -227,7 +231,8 @@ public class PersonInviteClaimedHandlerIntegrationTests : IClassFixture<UserMana
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler =
-                new PersonInviteClaimedHandler(syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance);
+                new PersonInviteClaimedHandler(syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+                    NullLogger<PersonInviteClaimedHandler>.Instance);
             await handler.Handle(@event);
         }
 

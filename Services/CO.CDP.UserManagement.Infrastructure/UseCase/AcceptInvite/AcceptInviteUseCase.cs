@@ -28,6 +28,7 @@ public class AcceptInviteUseCase(
     IOrganisationApiAdapter organisationApiAdapter,
     IUnitOfWork unitOfWork,
     IPublisher publisher,
+    IClaimsCacheService claimsCacheService,
     ILogger<AcceptInviteUseCase> logger) : IUseCase<AcceptInviteCommand>
 {
     private const string SystemAssignedBy = "system:default-app-assignment";
@@ -85,6 +86,8 @@ public class AcceptInviteUseCase(
                 "Accepted invite {MappingId}, created membership {MembershipId} in organisation {CdpOrganisationId}",
                 command.InviteRoleMappingId, membership.Id, command.CdpOrganisationId);
         }, ct);
+
+        await InvalidateCacheAsync(command.Request.UserPrincipalId);
     }
 
     private async Task AssignDefaultApplicationsAsync(
@@ -159,4 +162,17 @@ public class AcceptInviteUseCase(
         !assignment.IsDeleted &&
         assignment.Roles.Select(r => r.Id).OrderBy(id => id)
             .SequenceEqual(desiredRoles.Select(r => r.Id).OrderBy(id => id));
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "AcceptInviteUseCase: Failed to invalidate claims cache for {UserPrincipalId}", userPrincipalId);
+        }
+    }
 }

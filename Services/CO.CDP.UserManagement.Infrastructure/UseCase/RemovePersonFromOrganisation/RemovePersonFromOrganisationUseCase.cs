@@ -18,6 +18,7 @@ public class RemovePersonFromOrganisationUseCase(
     IUserApplicationAssignmentRepository assignmentRepository,
     IUnitOfWork unitOfWork,
     IPublisher publisher,
+    IClaimsCacheService claimsCacheService,
     ILogger<RemovePersonFromOrganisationUseCase> logger) : IUseCase<RemovePersonFromOrganisationCommand>
 {
     public async Task Execute(RemovePersonFromOrganisationCommand command, CancellationToken ct = default)
@@ -62,6 +63,8 @@ public class RemovePersonFromOrganisationUseCase(
 
                 await unitOfWork.SaveChangesAsync(ct);
 
+                await InvalidateCacheAsync(membership.UserPrincipalId);
+
                 logger.LogInformation(
                     "User {CdpPersonId} removed from organisation {CdpOrganisationId} by {ActingUser}",
                     command.CdpPersonId, command.CdpOrganisationId, command.ActingUserId);
@@ -75,5 +78,19 @@ public class RemovePersonFromOrganisationUseCase(
                           && await membershipRepository.CountActiveOwnersByOrganisationIdAsync(organisationId, ct) <= 1;
         if (isLastOwner)
             throw new LastOwnerRemovalException(cdpOrganisationId);
+    }
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "RemovePersonFromOrganisationUseCase: Failed to invalidate claims cache for {UserPrincipalId}",
+                userPrincipalId);
+        }
     }
 }

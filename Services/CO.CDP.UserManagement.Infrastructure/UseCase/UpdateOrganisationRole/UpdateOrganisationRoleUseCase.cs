@@ -22,6 +22,7 @@ public class UpdateOrganisationRoleUseCase(
     IRoleMappingService roleMappingService,
     IUnitOfWork unitOfWork,
     IPublisher publisher,
+    IClaimsCacheService claimsCacheService,
     ILogger<UpdateOrganisationRoleUseCase> logger) : IUseCase<UpdateOrganisationRoleCommand, UserOrganisationMembership>
 {
     public async Task<UserOrganisationMembership> Execute(UpdateOrganisationRoleCommand command,
@@ -54,6 +55,22 @@ public class UpdateOrganisationRoleUseCase(
 
         await unitOfWork.SaveChangesAsync(ct);
 
+        await InvalidateCacheAsync(membership.UserPrincipalId);
+
         return membership;
+    }
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "UpdateOrganisationRoleUseCase: Failed to invalidate claims cache for {UserPrincipalId}",
+                userPrincipalId);
+        }
     }
 }

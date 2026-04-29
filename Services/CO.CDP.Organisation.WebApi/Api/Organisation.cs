@@ -261,7 +261,7 @@ public static class EndpointExtensions
 
         app.MapPatch("/organisations/{organisationId}/join-requests/{joinRequestId}",
                 [OrganisationAuthorize(
-                    [AuthenticationChannel.OneLogin],
+                    [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
                     [Constants.OrganisationPersonScope.Admin],
                     OrganisationIdLocation.Path)]
                 async (Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest,

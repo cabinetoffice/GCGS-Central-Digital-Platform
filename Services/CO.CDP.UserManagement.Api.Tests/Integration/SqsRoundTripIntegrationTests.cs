@@ -204,7 +204,6 @@ public class SqsRoundTripIntegrationTests
             Id = orgGuid.ToString(),
             Name = orgName,
             Roles = new List<string> { "Tenderer" },
-            Type = 1
         };
 
         await SendEventAsync(queueUrl, @event, nameof(OrganisationRegistered));
@@ -215,7 +214,7 @@ public class SqsRoundTripIntegrationTests
 
         var dispatcher = BuildDispatcher(queueUrl);
         dispatcher.Subscribe(new OrganisationRegisteredHandler(
-            syncRepo, unitOfWork, NullLogger<OrganisationRegisteredHandler>.Instance));
+            syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance));
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         await dispatcher.ExecuteAsync(cts.Token);
@@ -298,7 +297,10 @@ public class SqsRoundTripIntegrationTests
 
         var dispatcher = BuildDispatcher(queueUrl);
         dispatcher.Subscribe(new PersonRemovedHandler(
-            syncRepo, unitOfWork, NullLogger<PersonRemovedHandler>.Instance));
+            syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+            scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+            scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+            NullLogger<PersonRemovedHandler>.Instance));
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         await dispatcher.ExecuteAsync(cts.Token);
@@ -343,7 +345,10 @@ public class SqsRoundTripIntegrationTests
 
         var dispatcher = BuildDispatcher(queueUrl);
         dispatcher.Subscribe(new PersonScopesUpdatedHandler(
-            syncRepo, unitOfWork, NullLogger<PersonScopesUpdatedHandler>.Instance));
+            syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(),
+            scope.ServiceProvider.GetRequiredService<IOrganisationRepository>(),
+            scope.ServiceProvider.GetRequiredService<IUserOrganisationMembershipRepository>(),
+            NullLogger<PersonScopesUpdatedHandler>.Instance));
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         await dispatcher.ExecuteAsync(cts.Token);
@@ -388,7 +393,7 @@ public class SqsRoundTripIntegrationTests
 
         var dispatcher = BuildDispatcher(queueUrl);
         dispatcher.Subscribe(new PersonInviteClaimedHandler(
-            syncRepo, unitOfWork, NullLogger<PersonInviteClaimedHandler>.Instance));
+            syncRepo, unitOfWork, Mock.Of<IClaimsCacheService>(), NullLogger<PersonInviteClaimedHandler>.Instance));
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
         await dispatcher.ExecuteAsync(cts.Token);

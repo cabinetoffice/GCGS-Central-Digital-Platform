@@ -19,6 +19,7 @@ public class RevokeApplicationAssignmentUseCase(
     IRoleMappingService roleMappingService,
     IUnitOfWork unitOfWork,
     IPublisher publisher,
+    IClaimsCacheService claimsCacheService,
     ILogger<RevokeApplicationAssignmentUseCase> logger) : IUseCase<RevokeApplicationAssignmentCommand>
 {
     public async Task Execute(RevokeApplicationAssignmentCommand command, CancellationToken ct = default)
@@ -44,6 +45,8 @@ public class RevokeApplicationAssignmentUseCase(
                 "Assignment {AssignmentId} revoked for user {UserId} in organisation {OrganisationId}",
                 command.AssignmentId, command.UserId, command.OrganisationId);
         }, ct);
+
+        await InvalidateCacheAsync(membership.UserPrincipalId);
     }
 
     private async Task<(UserOrganisationMembership, UserApplicationAssignment)> GetAssignmentForUserAsync(
@@ -79,4 +82,18 @@ public class RevokeApplicationAssignmentUseCase(
                 Scopes = scopes.ToList()
             });
         });
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "RevokeApplicationAssignmentUseCase: Failed to invalidate claims cache for {UserPrincipalId}",
+                userPrincipalId);
+        }
+    }
 }

@@ -11,6 +11,9 @@ namespace CO.CDP.UserManagement.Api.Tests.Events.Handlers;
 
 public class PersonRemovedHandlerTests
 {
+    private readonly Mock<IClaimsCacheService> _claimsCacheService = new();
+    private readonly Mock<IUserOrganisationMembershipRepository> _membershipRepository = new();
+    private readonly Mock<IOrganisationRepository> _organisationRepository = new();
     private readonly Mock<IUmOrganisationSyncRepository> _syncRepo = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
@@ -22,7 +25,8 @@ public class PersonRemovedHandlerTests
     }
 
     private PersonRemovedHandler CreateSut() =>
-        new(_syncRepo.Object, _unitOfWork.Object, NullLogger<PersonRemovedHandler>.Instance);
+        new(_syncRepo.Object, _unitOfWork.Object, _claimsCacheService.Object, _organisationRepository.Object,
+            _membershipRepository.Object, NullLogger<PersonRemovedHandler>.Instance);
 
     private static PersonRemovedFromOrganisation MakeEvent(Guid orgGuid, Guid personGuid) =>
         new() { OrganisationId = orgGuid.ToString(), PersonId = personGuid.ToString() };

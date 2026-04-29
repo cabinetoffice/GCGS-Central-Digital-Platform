@@ -77,7 +77,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "Test Organisation",
             Roles = [],
-            Type = 0
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -85,7 +84,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -105,7 +104,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "Idempotent Org",
             Roles = [],
-            Type = 0
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -113,7 +111,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -122,7 +120,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -141,7 +139,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "Founder Org",
             Roles = [],
-            Type = 0,
             FounderPersonId = personGuid,
             FounderUserUrn = "user|founder-test"
         };
@@ -151,7 +148,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -174,7 +171,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "FaT Tenderer Org",
             Roles = ["tenderer"],
-            Type = 0,
             FounderPersonId = personGuid,
             FounderUserUrn = "user|fat-tenderer-test"
         };
@@ -188,7 +184,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -213,7 +209,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "No Founder Org",
             Roles = [],
-            Type = 0
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -221,7 +216,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 
@@ -240,7 +235,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             Id = orgGuid.ToString(),
             Name = "App Enabled Org",
             Roles = [],
-            Type = 0
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -248,7 +242,7 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
             var syncRepo = scope.ServiceProvider.GetRequiredService<IUmOrganisationSyncRepository>();
             var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             var handler = new OrganisationRegisteredHandler(syncRepo, unitOfWork,
-                NullLogger<OrganisationRegisteredHandler>.Instance);
+                Mock.Of<IClaimsCacheService>(), NullLogger<OrganisationRegisteredHandler>.Instance);
             await handler.Handle(@event);
         }
 

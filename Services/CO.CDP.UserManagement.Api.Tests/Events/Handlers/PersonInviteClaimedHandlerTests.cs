@@ -11,6 +11,7 @@ namespace CO.CDP.UserManagement.Api.Tests.Events.Handlers;
 
 public class PersonInviteClaimedHandlerTests
 {
+    private readonly Mock<IClaimsCacheService> _claimsCacheService = new();
     private readonly Mock<IUmOrganisationSyncRepository> _syncRepo = new();
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
 
@@ -24,7 +25,8 @@ public class PersonInviteClaimedHandlerTests
     }
 
     private PersonInviteClaimedHandler CreateSut() =>
-        new(_syncRepo.Object, _unitOfWork.Object, NullLogger<PersonInviteClaimedHandler>.Instance);
+        new(_syncRepo.Object, _unitOfWork.Object, _claimsCacheService.Object,
+            NullLogger<PersonInviteClaimedHandler>.Instance);
 
     private static PersonInviteClaimed MakeEvent(Guid orgGuid, Guid personGuid,
         string urn = "urn:test:1", List<string>? scopes = null) =>

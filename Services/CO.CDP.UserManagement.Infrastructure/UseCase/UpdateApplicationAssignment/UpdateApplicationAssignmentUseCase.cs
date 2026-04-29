@@ -24,6 +24,7 @@ public class UpdateApplicationAssignmentUseCase(
     IRoleMappingService roleMappingService,
     IUnitOfWork unitOfWork,
     IPublisher publisher,
+    IClaimsCacheService claimsCacheService,
     ILogger<UpdateApplicationAssignmentUseCase> logger)
     : IUseCase<UpdateApplicationAssignmentCommand, UserApplicationAssignment>
 {
@@ -43,7 +44,7 @@ public class UpdateApplicationAssignmentUseCase(
             command.RoleIds,
             ct);
 
-        return await unitOfWork.ExecuteInTransactionAsync(async ct =>
+        var result = await unitOfWork.ExecuteInTransactionAsync(async ct =>
         {
             assignment.Roles.Clear();
             foreach (var role in roles)
@@ -60,6 +61,10 @@ public class UpdateApplicationAssignmentUseCase(
 
             return assignment;
         }, ct);
+
+        await InvalidateCacheAsync(membership.UserPrincipalId);
+
+        return result;
     }
 
     private async Task<(UserOrganisationMembership, UserApplicationAssignment)> GetAssignmentForUserAsync(
@@ -114,4 +119,18 @@ public class UpdateApplicationAssignmentUseCase(
                 Scopes = scopes.ToList()
             });
         });
+
+    private async Task InvalidateCacheAsync(string userPrincipalId)
+    {
+        try
+        {
+            await claimsCacheService.InvalidateCacheAsync(userPrincipalId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex,
+                "UpdateApplicationAssignmentUseCase: Failed to invalidate claims cache for {UserPrincipalId}",
+                userPrincipalId);
+        }
+    }
 }
