@@ -17,4 +17,6 @@ public sealed class RemoveSuccessViewModel
     public OrganisationRole Role { get; init; }
 
     public Guid CdpPersonId { get; init; }
+
+    public bool IsPendingInvite { get; init; }
 }

@@ -119,7 +119,8 @@ public class RemovalController(
             OrganisationName = state.OrganisationName,
             MemberSince = state.MemberSince,
             Role = state.Role,
-            CdpPersonId = Guid.Empty
+            CdpPersonId = Guid.Empty,
+            IsPendingInvite = true
         };
 
         return View(nameof(RemoveSuccess), viewModel);

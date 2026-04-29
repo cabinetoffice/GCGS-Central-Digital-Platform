@@ -1,4 +1,4 @@
-@model CO.CDP.UserManagement.App.Models.RemoveSuccessViewModel
+@model RemoveSuccessViewModel
 @{
     ViewData["Title"] = "User removed";
 }
@@ -34,7 +34,7 @@
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">Member since</dt>
+                <dt class="govuk-summary-list__key">@(Model.IsPendingInvite ? "Invited on" : "Member since")</dt>
                 <dd class="govuk-summary-list__value">@Model.MemberSince</dd>
             </div>
         </dl>
