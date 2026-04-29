@@ -1,10 +1,10 @@
-using CO.CDP.UserManagement.App.Models;
-using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.Functional;
+using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.Core.ApplicationRoles;
 using CO.CDP.UserManagement.Shared.Requests;
 using CO.CDP.UserManagement.Shared.Responses;
-using CO.CDP.UserManagement.Core.ApplicationRoles;
 
 namespace CO.CDP.UserManagement.App.Application.ApplicationRoles.Implementations;
 
@@ -238,12 +238,15 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
 
     private static bool HasRoleChanged(ApplicationRoleAssignmentState a)
     {
-        var selected = (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
-        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : new List<int>())).OrderBy(x => x);
+        var selected =
+            (a.SelectedRoleIds ?? (a.SelectedRoleId.HasValue ? [a.SelectedRoleId.Value] : [])).OrderBy(x => x);
+        var current = (a.CurrentRoleIds ?? (a.CurrentRoleId.HasValue ? [a.CurrentRoleId.Value] : new List<int>()))
+            .OrderBy(x => x);
         return !selected.SequenceEqual(current);
     }
 
-    private static UpdateUserAssignmentsRequest BuildUpdateRequest(IReadOnlyList<ApplicationRoleAssignmentPostModel> assignments)
+    private static UpdateUserAssignmentsRequest BuildUpdateRequest(
+        IReadOnlyList<ApplicationRoleAssignmentPostModel> assignments)
     {
         var mapped = assignments.Select(a => new ApplicationRoleAssignment
         {
@@ -285,7 +288,9 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
             existingRoleIds ??= new List<int>();
 
             var availableRoles = roleTasks[i].Result;
-            var hasExistingAccess = existingRoleIds.Count > 0 || (existingRoles ?? Enumerable.Empty<UserAssignmentResponse>()).Any(r => r.OrganisationApplicationId == app.Id);
+            var hasExistingAccess = existingRoleIds.Count > 0 ||
+                                    (existingRoles ?? Enumerable.Empty<UserAssignmentResponse>()).Any(r =>
+                                        r.OrganisationApplicationId == app.Id);
 
             return new ApplicationRoleChangeViewModel
             {
@@ -296,10 +301,15 @@ public class ApplicationRoleFlowService : IApplicationRoleFlowService
                 IsEnabledByDefault = app.Application?.IsEnabledByDefault ?? false,
                 HasExistingAccess = hasExistingAccess,
                 GiveAccess = hasExistingAccess,
-                SelectedRoleId = existingRoleIds.Count == 1 ? existingRoleIds[0] : (existingRoleIds.Count == 0 && hasExistingAccess && (availableRoles.Count == 1) ? availableRoles.FirstOrDefault()?.Id : null),
+                SelectedRoleId = existingRoleIds.Count == 1
+                    ? existingRoleIds[0]
+                    : (existingRoleIds.Count == 0 && hasExistingAccess && (availableRoles.Count == 1)
+                        ? availableRoles.FirstOrDefault()?.Id
+                        : null),
                 SelectedRoleIds = existingRoleIds,
                 Roles = availableRoles
-                    .Select(r => new ApplicationRoleOptionViewModel { Id = r.Id, Name = r.Name })
+                    .Select(r => new ApplicationRoleOptionViewModel
+                        { Id = r.Id, Name = r.Name, Description = r.Description })
                     .ToList()
             };
         }).ToList();
