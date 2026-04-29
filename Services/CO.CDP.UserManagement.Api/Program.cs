@@ -83,6 +83,7 @@ if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
         {
             services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredHandler>();
             services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedHandler>();
+            services.AddScoped<ISubscriber<OrganisationApproved>, OrganisationApprovedHandler>();
             services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedHandler>();
             services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
             services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedHandler>();
@@ -91,6 +92,7 @@ if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
         {
             dispatcher.Subscribe<OrganisationRegistered>(services);
             dispatcher.Subscribe<OrganisationUpdated>(services);
+            dispatcher.Subscribe<OrganisationApproved>(services);
             dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
             dispatcher.Subscribe<PersonScopesUpdated>(services);
             dispatcher.Subscribe<PersonInviteClaimed>(services);

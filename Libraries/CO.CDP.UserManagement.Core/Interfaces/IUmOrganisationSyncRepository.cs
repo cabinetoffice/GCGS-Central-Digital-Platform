@@ -49,4 +49,8 @@ public interface IUmOrganisationSyncRepository
         Guid cdpOrganisationGuid,
         Guid cdpPersonGuid,
         CancellationToken cancellationToken = default);
+
+    Task<Result<string, Unit>> EnsureOrganisationDefaultsReappliedAsync(
+        Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default);
 }

@@ -147,6 +147,39 @@ public class UmOrganisationSyncRepository(
             : await RemoveMembershipAsync(organisation, cdpPersonGuid, cancellationToken);
     }
 
+    public async Task<Result<string, Unit>> EnsureOrganisationDefaultsReappliedAsync(
+        Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default)
+    {
+        var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationGuid, cancellationToken);
+        if (organisation is null)
+            return Result<string, Unit>.Failure(
+                $"Cannot reapply defaults: UM organisation '{cdpOrganisationGuid}' does not exist.");
+
+        var partyRoles =
+            (await organisationApiAdapter.GetPartyRolesAsync(organisation.CdpOrganisationGuid, cancellationToken))
+            .ToList();
+
+        logger.LogDebug(
+            "[UmOrganisationSyncRepository] EnsureOrganisationDefaultsReappliedAsync: org={OrgGuid}, partyRoles=[{PartyRoles}]",
+            cdpOrganisationGuid, string.Join(", ", partyRoles));
+
+        var memberships = await membershipRepository.GetByOrganisationIdAsync(organisation.Id, cancellationToken);
+
+        foreach (var membership in memberships.Where(m => m.IsActive))
+        {
+            var roleEntity =
+                await membershipRepository.GetOrganisationRoleAsync(membership.OrganisationRole, cancellationToken);
+            if (roleEntity is null)
+                continue;
+
+            await TrackDefaultApplicationAssignmentsAsync(
+                membership, partyRoles, roleEntity.OrganisationInformationScopes, cancellationToken);
+        }
+
+        return Result<string, Unit>.Success(Unit.Value);
+    }
+
     private async Task<Result<string, Unit>> EnsureFounderMembershipTrackedAsync(
         CoreOrganisation organisation,
         Guid cdpPersonGuid,

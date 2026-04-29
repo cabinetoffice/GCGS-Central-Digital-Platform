@@ -12,6 +12,7 @@ public static class EventDeserializer
         type switch
         {
             nameof(OrganisationRegistered) => Deserialize<OrganisationRegistered>(type, body),
+            nameof(OrganisationApproved) => Deserialize<OrganisationApproved>(type, body),
             nameof(OrganisationUpdated) => Deserialize<OrganisationUpdated>(type, body),
             nameof(PersonRemovedFromOrganisation) => Deserialize<PersonRemovedFromOrganisation>(type, body),
             nameof(PersonScopesUpdated) => Deserialize<PersonScopesUpdated>(type, body),
