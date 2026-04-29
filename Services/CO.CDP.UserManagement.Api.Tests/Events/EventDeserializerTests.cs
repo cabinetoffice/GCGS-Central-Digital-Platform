@@ -15,7 +15,6 @@ public class EventDeserializerTests
         {
             Id = "e4e5e6e7-0000-0000-0000-000000000001",
             Name = "Acme Ltd",
-            Roles = new[] { "supplier" },
             FounderPersonId = (Guid?)Guid.NewGuid(),
             FounderUserUrn = "urn:fdc:gov.uk:2022:user1"
         });
@@ -25,7 +24,6 @@ public class EventDeserializerTests
         result.Should().BeOfType<OrganisationRegistered>();
         var evt = (OrganisationRegistered)result;
         evt.Name.Should().Be("Acme Ltd");
-        evt.Roles.Should().Contain("supplier");
         evt.FounderUserUrn.Should().Be("urn:fdc:gov.uk:2022:user1");
     }
 

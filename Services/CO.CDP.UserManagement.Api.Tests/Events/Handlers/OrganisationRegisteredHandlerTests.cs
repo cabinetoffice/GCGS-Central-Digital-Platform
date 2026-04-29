@@ -37,7 +37,6 @@ public class OrganisationRegisteredHandlerTests
         {
             Id = orgGuid.ToString(),
             Name = name,
-            Roles = ["supplier"],
             FounderPersonId = founderPersonId,
             FounderUserUrn = founderUrn
         };

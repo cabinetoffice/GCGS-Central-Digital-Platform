@@ -4,6 +4,7 @@ using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Services;
 using CO.CDP.UserManagement.Shared.Enums;
+using Microsoft.Extensions.Logging;
 using CorePartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 using CoreOrganisation = CO.CDP.UserManagement.Core.Entities.Organisation;
 
@@ -17,7 +18,8 @@ public class UmOrganisationSyncRepository(
     IUserApplicationAssignmentRepository userApplicationAssignmentRepository,
     IRoleRepository roleRepository,
     ISlugGeneratorService slugGeneratorService,
-    IOrganisationApiAdapter organisationApiAdapter) : IUmOrganisationSyncRepository
+    IOrganisationApiAdapter organisationApiAdapter,
+    ILogger<UmOrganisationSyncRepository> logger) : IUmOrganisationSyncRepository
 {
     private const string SystemUser = "system:org-sync";
 
@@ -70,6 +72,9 @@ public class UmOrganisationSyncRepository(
         var partyRoles =
             (await organisationApiAdapter.GetPartyRolesAsync(organisation.CdpOrganisationGuid, cancellationToken))
             .ToList();
+        logger.LogDebug(
+            "[UmOrganisationSyncRepository] EnsureFounderOwnerCreatedAsync: org={OrgGuid}, partyRoles=[{PartyRoles}]",
+            cdpOrganisationGuid, string.Join(", ", partyRoles));
         return await EnsureFounderMembershipTrackedAsync(
             organisation, cdpPersonGuid, userPrincipalId, partyRoles, cancellationToken);
     }
@@ -267,6 +272,11 @@ public class UmOrganisationSyncRepository(
         var defaultApps = await organisationApplicationRepository.GetDefaultEnabledByOrganisationIdAsync(
             membership.OrganisationId, cancellationToken);
 
+        logger.LogDebug(
+            "[UmOrganisationSyncRepository] TrackDefaultApplicationAssignmentsAsync: membership={MembershipId}, defaultApps={Count}, partyRoles=[{PartyRoles}], oiScopes=[{OiScopes}]",
+            membership.Id, defaultApps.Count(), string.Join(", ", organisationPartyRoles),
+            string.Join(", ", organisationInformationScopes));
+
         foreach (var orgApp in defaultApps)
             await TrackDefaultApplicationAssignmentAsync(
                 membership, organisationPartyRoles, organisationInformationScopes, orgApp, cancellationToken);
@@ -283,6 +293,11 @@ public class UmOrganisationSyncRepository(
             membership.Id, organisationApplication.Id, cancellationToken);
         var defaultRoles = await GetDefaultRolesAsync(
             organisationApplication, organisationPartyRoles, organisationInformationScopes, cancellationToken);
+
+        logger.LogDebug(
+            "[UmOrganisationSyncRepository] TrackDefaultApplicationAssignmentAsync: app={AppClientId}, existing={Existing}, selectedRoles=[{Roles}]",
+            organisationApplication.Application?.ClientId, existing is not null,
+            string.Join(", ", defaultRoles.Select(r => r.Name)));
 
         switch (existing)
         {

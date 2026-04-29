@@ -203,7 +203,6 @@ public class SqsRoundTripIntegrationTests
         {
             Id = orgGuid.ToString(),
             Name = orgName,
-            Roles = new List<string> { "Tenderer" },
         };
 
         await SendEventAsync(queueUrl, @event, nameof(OrganisationRegistered));

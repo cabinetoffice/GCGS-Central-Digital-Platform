@@ -76,7 +76,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "Test Organisation",
-            Roles = [],
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -103,7 +102,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "Idempotent Org",
-            Roles = [],
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -138,7 +136,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "Founder Org",
-            Roles = [],
             FounderPersonId = personGuid,
             FounderUserUrn = "user|founder-test"
         };
@@ -170,7 +167,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "FaT Tenderer Org",
-            Roles = ["tenderer"],
             FounderPersonId = personGuid,
             FounderUserUrn = "user|fat-tenderer-test"
         };
@@ -208,7 +204,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "No Founder Org",
-            Roles = [],
         };
 
         using (var scope = _factory.Services.CreateScope())
@@ -234,7 +229,6 @@ public class OrganisationRegisteredHandlerIntegrationTests : IClassFixture<UserM
         {
             Id = orgGuid.ToString(),
             Name = "App Enabled Org",
-            Roles = [],
         };
 
         using (var scope = _factory.Services.CreateScope())
