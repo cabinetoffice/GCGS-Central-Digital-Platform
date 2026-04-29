@@ -42,4 +42,23 @@ public interface IOrganisationApiAdapter
     Task<IReadOnlyList<OiPersonInvite>> GetOrganisationPersonInvitesAsync(
         Guid cdpOrganisationGuid,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Returns all join requests for the given organisation.
+    /// Returns an empty list if the organisation is not found.
+    /// </summary>
+    Task<IReadOnlyList<OiJoinRequest>> GetOrganisationJoinRequestsAsync(
+        Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Approves or rejects a join request via the Organisation API.
+    /// The Organisation API handles OI-side mutations and sends GOV.UK Notify emails.
+    /// </summary>
+    Task UpdateJoinRequestAsync(
+        Guid cdpOrganisationGuid,
+        Guid joinRequestId,
+        string status,
+        Guid reviewedByPersonId,
+        CancellationToken cancellationToken = default);
 }

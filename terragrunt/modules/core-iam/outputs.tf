@@ -38,20 +38,20 @@ output "ci_pipeline_name" {
   value = aws_iam_role.ci_pipeline.name
 }
 
-output "cloudwatch_events_arn" {
-  value = aws_iam_role.cloudwatch_events.arn
-}
-
-output "cloudwatch_events_name" {
-  value = aws_iam_role.cloudwatch_events.name
-}
-
 output "cloudfront_realtime_logs_role_arn" {
   value = aws_iam_role.cloudfront_realtime_logs.arn
 }
 
 output "cloudfront_realtime_logs_role_name" {
   value = aws_iam_role.cloudfront_realtime_logs.name
+}
+
+output "cloudwatch_events_arn" {
+  value = aws_iam_role.cloudwatch_events.arn
+}
+
+output "cloudwatch_events_name" {
+  value = aws_iam_role.cloudwatch_events.name
 }
 
 output "db_import_arn" {

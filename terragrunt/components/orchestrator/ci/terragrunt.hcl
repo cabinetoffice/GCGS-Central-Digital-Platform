@@ -61,13 +61,6 @@ dependency core_security_groups {
   }
 }
 
-dependency orchestrator_iam {
-  config_path = "../iam"
-  mock_outputs = {
-    github_user_access_key_id = "mock"
-  }
-}
-
 dependency orchestrator_ecr {
   config_path = "../ecr"
   mock_outputs = {
@@ -77,9 +70,11 @@ dependency orchestrator_ecr {
 
 
 inputs = {
-  account_ids         = local.global_vars.locals.account_ids
-  tags                = local.tags
-  tfstate_bucket_name = local.global_vars.locals.tg.state_bucket
+  account_ids                = local.global_vars.locals.account_ids
+  allow_github_pull_requests = true
+  allowed_github_branches    = ["main"]
+  tags                       = local.tags
+  tfstate_bucket_name        = local.global_vars.locals.tg.state_bucket
 
   ci_role_arn                 = dependency.core_iam.outputs.terraform_arn
   ci_role_name                = dependency.core_iam.outputs.terraform_name

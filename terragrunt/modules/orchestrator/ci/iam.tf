@@ -30,3 +30,20 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_events_policy" {
   policy_arn = aws_iam_policy.orchestrator_pipeline.arn
   role       = var.role_cloudwatch_events_name
 }
+
+resource "aws_iam_role" "fts_github_oidc_read_db_backup" {
+  name               = "${local.name_prefix}-fts-gh-oidc-read-db-backup"
+  assume_role_policy = data.aws_iam_policy_document.github_oidc_assume.json
+  tags               = var.tags
+}
+
+resource "aws_iam_policy" "fts_db_backup_read" {
+  name   = "${local.name_prefix}-fts-db-backup-read"
+  policy = data.aws_iam_policy_document.fts_db_backup_read.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "fts_db_backup_read" {
+  policy_arn = aws_iam_policy.fts_db_backup_read.arn
+  role       = aws_iam_role.fts_github_oidc_read_db_backup.name
+}

@@ -26,7 +26,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
-using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -66,33 +65,40 @@ builder.Services.AddCdpAuthentication(builder.Configuration);
 var swaggerEnabled = builder.Configuration.GetValue("Features:SwaggerUI", builder.Environment.IsDevelopment());
 
 var isRunningAsService = Assembly.GetEntryAssembly().IsRunAs("CO.CDP.UserManagement.Api");
+var outboxPublisherEnabled = builder.Configuration.GetValue("Features:OutboxPublisherEnabled", false);
 
 if (isRunningAsService || Assembly.GetEntryAssembly().IsRunAs("testhost"))
 {
-    builder.Services
+    var sqsServices = builder.Services
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration)
-        .AddAwsSqsService()
-        .AddUserManagementOutboxPublisher(builder.Configuration, enableBackgroundServices: isRunningAsService)
-        .AddSqsDispatcher(
-            EventDeserializer.Deserializer,
-            enableBackgroundServices: isRunningAsService,
-            services =>
-            {
-                services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredHandler>();
-                services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedHandler>();
-                services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedHandler>();
-                services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
-                services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedHandler>();
-            },
-            (services, dispatcher) =>
-            {
-                dispatcher.Subscribe<OrganisationRegistered>(services);
-                dispatcher.Subscribe<OrganisationUpdated>(services);
-                dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
-                dispatcher.Subscribe<PersonScopesUpdated>(services);
-                dispatcher.Subscribe<PersonInviteClaimed>(services);
-            });
+        .AddAwsSqsService();
+
+    if (outboxPublisherEnabled)
+    {
+        sqsServices.AddUserManagementOutboxPublisher(builder.Configuration,
+            enableBackgroundServices: isRunningAsService);
+    }
+
+    sqsServices.AddSqsDispatcher(
+        EventDeserializer.Deserializer,
+        enableBackgroundServices: isRunningAsService,
+        services =>
+        {
+            services.AddScoped<ISubscriber<OrganisationRegistered>, OrganisationRegisteredHandler>();
+            services.AddScoped<ISubscriber<OrganisationUpdated>, OrganisationUpdatedHandler>();
+            services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedHandler>();
+            services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
+            services.AddScoped<ISubscriber<PersonInviteClaimed>, PersonInviteClaimedHandler>();
+        },
+        (services, dispatcher) =>
+        {
+            dispatcher.Subscribe<OrganisationRegistered>(services);
+            dispatcher.Subscribe<OrganisationUpdated>(services);
+            dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
+            dispatcher.Subscribe<PersonScopesUpdated>(services);
+            dispatcher.Subscribe<PersonInviteClaimed>(services);
+        });
 }
 
 var personServiceUrl = builder.Configuration.GetValue<string>("PersonService");
@@ -176,23 +182,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-try
-{
-    using var conn = new NpgsqlConnection(umConnectionString);
-    conn.Open();
-    using var cmd = conn.CreateCommand();
-    cmd.CommandText = "SELECT 1";
-    cmd.ExecuteScalar();
-    app.Logger.LogInformation("UserManagement database connectivity check: OK");
-}
-catch (Exception ex)
-{
-    app.Logger.LogError(ex, "UserManagement database connectivity check FAILED: {Message}", ex.Message);
-}
-
-app.Lifetime.ApplicationStopping.Register(() =>
-    app.Logger.LogWarning("UserManagement API: ApplicationStopping triggered"));
 
 app.Run();
 

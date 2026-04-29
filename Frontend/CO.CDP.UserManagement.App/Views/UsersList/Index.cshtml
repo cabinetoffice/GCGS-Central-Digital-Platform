@@ -31,6 +31,37 @@
     <a href="/organisation/@organisationId/add-user" class="govuk-button" data-module="govuk-button">Add a user</a>
 </div>
 
+@if (Model?.PendingJoinRequests?.Count > 0)
+{
+    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+         data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">Important</h2>
+        </div>
+        <div class="govuk-notification-banner__content">
+            <h3 class="govuk-notification-banner__heading">
+                @(Model.PendingJoinRequests.Count == 1 ? "1 person has" : $"{Model.PendingJoinRequests.Count} people have") requested
+                to join your organisation
+            </h3>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-0">
+                @foreach (var jr in Model.PendingJoinRequests)
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">@jr.FirstName @jr.LastName</dt>
+                        <dd class="govuk-summary-list__value">@jr.Email</dd>
+                        <dd class="govuk-summary-list__actions">
+                            <a class="govuk-link"
+                               href="/organisation/@organisationId/join-requests/@jr.Id/approve?personId=@jr.PersonId">Approve</a>
+                            <a class="govuk-link govuk-!-margin-left-4"
+                               href="/organisation/@organisationId/join-requests/@jr.Id/reject?personId=@jr.PersonId">Reject</a>
+                        </dd>
+                    </div>
+                }
+            </dl>
+        </div>
+    </div>
+}
+
 <form method="get" aria-label="Search and filter users" class="app-filter-container">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-quarter">

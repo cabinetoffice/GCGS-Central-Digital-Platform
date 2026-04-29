@@ -64,4 +64,11 @@ public interface IUserManagementApiAdapter
 
     Task<Result<ServiceFailure, ServiceOutcome>> CancelInviteAsync(
         Guid organisationId, int pendingInviteId, CancellationToken ct);
+
+    Task<ICollection<JoinRequestResponse>> GetJoinRequestsAsync(
+        Guid organisationId, CancellationToken ct);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> ReviewJoinRequestAsync(
+        Guid organisationId, Guid joinRequestId,
+        ReviewJoinRequestRequest request, CancellationToken ct);
 }

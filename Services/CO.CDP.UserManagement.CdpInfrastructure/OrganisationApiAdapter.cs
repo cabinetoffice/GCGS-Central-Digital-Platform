@@ -103,6 +103,52 @@ public class OrganisationApiAdapter(IOrganisationClient organisationClient) : IO
         }
     }
 
+    public async Task<IReadOnlyList<OiJoinRequest>> GetOrganisationJoinRequestsAsync(
+        Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var requests = await organisationClient.GetOrganisationJoinRequestsAsync(
+                cdpOrganisationGuid,
+                OrganisationJoinRequestStatus.Pending,
+                cancellationToken);
+
+            return requests
+                .Select(r => new OiJoinRequest
+                {
+                    Id = r.Id,
+                    PersonId = r.Person.Id,
+                    FirstName = r.Person.FirstName,
+                    LastName = r.Person.LastName,
+                    Email = r.Person.Email,
+                    Status = r.Status.ToString()
+                })
+                .ToList();
+        }
+        catch (ApiException ex) when (ex.StatusCode == 404)
+        {
+            return [];
+        }
+    }
+
+    public async Task UpdateJoinRequestAsync(
+        Guid cdpOrganisationGuid,
+        Guid joinRequestId,
+        string status,
+        Guid reviewedByPersonId,
+        CancellationToken cancellationToken = default)
+    {
+        if (!Enum.TryParse<OrganisationJoinRequestStatus>(status, ignoreCase: true, out var oiStatus))
+            throw new ArgumentException($"Unknown join request status: {status}", nameof(status));
+
+        await organisationClient.UpdateOrganisationJoinRequestAsync(
+            cdpOrganisationGuid,
+            joinRequestId,
+            new UpdateJoinRequest(reviewedByPersonId, oiStatus),
+            cancellationToken);
+    }
+
     private static CorePartyRole ToUmPartyRole(OiPartyRole role) => role switch
     {
         OiPartyRole.Buyer => CorePartyRole.Buyer,

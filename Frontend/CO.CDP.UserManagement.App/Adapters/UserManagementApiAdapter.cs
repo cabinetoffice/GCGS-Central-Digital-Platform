@@ -328,4 +328,31 @@ public sealed class UserManagementApiAdapter : IUserManagementApiAdapter
             return ServiceResultMapper.FromApiException(ex);
         }
     }
+
+    public async Task<ICollection<JoinRequestResponse>> GetJoinRequestsAsync(Guid organisationId,
+        CancellationToken ct)
+    {
+        try
+        {
+            return (await _client.JoinRequestsAllAsync(organisationId, ct)) ?? new List<JoinRequestResponse>();
+        }
+        catch (ApiClient.ApiException ex) when (ex.StatusCode == 404)
+        {
+            return new List<JoinRequestResponse>();
+        }
+    }
+
+    public async Task<Result<ServiceFailure, ServiceOutcome>> ReviewJoinRequestAsync(
+        Guid organisationId, Guid joinRequestId, ReviewJoinRequestRequest request, CancellationToken ct)
+    {
+        try
+        {
+            await _client.JoinRequestsAsync(organisationId, joinRequestId, request, ct);
+            return Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);
+        }
+        catch (ApiClient.ApiException ex)
+        {
+            return ServiceResultMapper.FromApiException(ex);
+        }
+    }
 }

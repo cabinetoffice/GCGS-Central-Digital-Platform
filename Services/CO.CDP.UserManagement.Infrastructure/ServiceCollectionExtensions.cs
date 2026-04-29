@@ -53,6 +53,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IOrganisationRoleService, OrganisationRoleService>();
         services.AddScoped<IRoleMappingService, RoleMappingService>();
         services.AddScoped<IInviteOrchestrationService, InviteOrchestrationService>();
+        services.AddScoped<IJoinRequestOrchestrationService, JoinRequestOrchestrationService>();
         services.AddScoped<IClaimsService, ClaimsService>();
         services.AddScoped<ICurrentUserService, CurrentUserService>();
         services.AddScoped<IMembershipAuthorizationGuard, MembershipAuthorizationGuard>();
