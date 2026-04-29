@@ -17,7 +17,7 @@ public static class DefaultApplicationRoleSelector
             ? applicationRoles
                 .Where(IsSyncableRole)
                 .Where(MatchesDefaultOrganisationInformationScopes(organisationInformationScopes))
-                .Where(MatchesAnyRequiredPartyRole(ExpandPartyRoles(organisationPartyRoles)))
+                .Where(MatchesAnyRequiredPartyRole(organisationPartyRoles.ToHashSet()))
                 .ToList()
             : [];
 
@@ -50,15 +50,4 @@ public static class DefaultApplicationRoleSelector
             OrganisationPersonScopes.Viewer => [OrganisationPersonScopes.Viewer],
             _ => Array.Empty<string>()
         };
-
-    private static ISet<PartyRole> ExpandPartyRoles(IEnumerable<PartyRole> organisationPartyRoles)
-    {
-        var roles = organisationPartyRoles.ToHashSet();
-        return roles.Contains(PartyRole.Supplier) || roles.Contains(PartyRole.Tenderer)
-            ? roles
-                .Append(PartyRole.Supplier)
-                .Append(PartyRole.Tenderer)
-                .ToHashSet()
-            : roles;
-    }
 }

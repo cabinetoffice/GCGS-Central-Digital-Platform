@@ -300,7 +300,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Migrations
                         .HasColumnName("organisation_information_scopes")
                         .HasDefaultValueSql("'[]'");
 
-                    b.Property<int[]>("RequiredPartyRoles")
+                    b.Property<IEnumerable<int>>("RequiredPartyRoles")
                         .IsRequired()
                         .HasColumnType("integer[]")
                         .HasColumnName("required_party_roles");

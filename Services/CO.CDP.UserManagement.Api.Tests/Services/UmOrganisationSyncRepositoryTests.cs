@@ -4,6 +4,7 @@ using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Infrastructure.Repositories;
 using CO.CDP.UserManagement.Shared.Enums;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
 using Xunit.Sdk;
 using CorePartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
@@ -37,7 +38,8 @@ public class UmOrganisationSyncRepositoryTests
         _userApplicationAssignmentRepository.Object,
         _roleRepository.Object,
         _slugGeneratorService.Object,
-        _organisationApiAdapter.Object);
+        _organisationApiAdapter.Object,
+        NullLogger<UmOrganisationSyncRepository>.Instance);
 
     [Fact]
     public async Task EnsureFounderOwnerCreatedAsync_AddsOwnerMembership_WhenFounderDoesNotExist()
