@@ -3,6 +3,7 @@ using CO.CDP.UserManagement.App.Application.Removal.Implementations;
 using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Tests.TestFixtures;
 using CO.CDP.UserManagement.Core.Interfaces;
+using CO.CDP.UserManagement.Core.Removal;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Responses;
 using FluentAssertions;
@@ -57,7 +58,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
         result!.UserDisplayName.Should().Be("Jane Doe");
         result.Email.Should().Be("jane@example.com");
         result.CurrentRole.Should().Be(OrganisationRole.Member);
-        result.PendingInviteGuid.Should().BeNull();
+        result.PendingInviteId.Should().BeNull();
     }
 
     // ── GetInviteViewModelAsync ───────────────────────────────────────────────
@@ -96,7 +97,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
 
         var result = await _sut.GetInviteViewModelAsync(OrgGuid, inviteGuid, CancellationToken.None);
 
-        result!.PendingInviteGuid.Should().Be(inviteGuid);
+        result!.PendingInviteId.Should().Be(42);
     }
 
     // ── ValidateRemovalAsync ──────────────────────────────────────────────────
@@ -134,8 +135,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
             .ReturnsAsync(MakeUser(personId, OrganisationRole.Admin, email: "me@example.com"));
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[]
-                { MakeUser(personId, OrganisationRole.Admin), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
+            .ReturnsAsync(new[] { MakeUser(personId, OrganisationRole.Admin), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
         _currentUserService.Setup(s => s.GetUserEmail()).Returns("me@example.com");
         _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Admin);
 
@@ -153,8 +153,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
             .ReturnsAsync(MakeUser(personId, OrganisationRole.Owner, email: "owner@example.com"));
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[]
-                { MakeUser(personId, OrganisationRole.Owner), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
+            .ReturnsAsync(new[] { MakeUser(personId, OrganisationRole.Owner), MakeUser(Guid.NewGuid(), OrganisationRole.Owner) });
         _currentUserService.Setup(s => s.GetUserEmail()).Returns("admin@example.com");
         _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Admin);
 
@@ -190,8 +189,7 @@ public class UserRemovalServiceTests : AdapterTestFixture
         _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
             .ReturnsAsync(MakeUser(personId, OrganisationRole.Member, email: "member@example.com"));
         _adapter.Setup(a => a.GetUsersAsync(OrgGuid, default))
-            .ReturnsAsync(new[]
-                { MakeUser(Guid.NewGuid(), OrganisationRole.Owner), MakeUser(personId, OrganisationRole.Member) });
+            .ReturnsAsync(new[] { MakeUser(Guid.NewGuid(), OrganisationRole.Owner), MakeUser(personId, OrganisationRole.Member) });
         _currentUserService.Setup(s => s.GetUserEmail()).Returns("admin@example.com");
         _currentUserService.Setup(s => s.GetOrganisationRole(OrgGuid)).Returns(OrganisationRole.Owner);
 

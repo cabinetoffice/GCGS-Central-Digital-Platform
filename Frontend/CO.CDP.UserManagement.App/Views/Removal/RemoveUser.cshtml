@@ -1,5 +1,5 @@
 @using CO.CDP.UserManagement.Shared.Enums
-@model RemoveUserViewModel
+@model CO.CDP.UserManagement.App.Models.RemoveUserViewModel
 @{
     ViewData["Title"] = "Remove user from organisation";
 }
@@ -50,16 +50,16 @@
                             Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
                         </a>
                     }
-                    else if (Model.PendingInviteGuid.HasValue)
+                    else if (Model.PendingInviteId.HasValue)
                     {
-                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/invites/@Model.PendingInviteGuid/organisation-role/change">
+                        <a class="govuk-link" href="/organisation/@Model.OrganisationId/invites/@Model.PendingInviteId/organisation-role/change">
                             Change<span class="govuk-visually-hidden"> organisation role for @Model.UserDisplayName</span>
                         </a>
                     }
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
-                @if (Model.PendingInviteGuid.HasValue)
+                @if (Model.PendingInviteId.HasValue)
                 {
                     <dt class="govuk-summary-list__key">Invited on</dt>
                 }
