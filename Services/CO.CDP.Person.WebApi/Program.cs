@@ -1,22 +1,19 @@
-using System.Reflection;
 using CO.CDP.Authentication;
-using CO.CDP.Authentication.Authorization;
 using CO.CDP.AwsServices;
-using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
+using CO.CDP.Authentication.Authorization;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.OrganisationSync;
 using CO.CDP.Person.WebApi;
 using CO.CDP.Person.WebApi.Api;
 using CO.CDP.Person.WebApi.AutoMapper;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using CO.CDP.WebApi.Foundation;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 using Npgsql;
-using Person = CO.CDP.Person.WebApi.Model.Person;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.ConfigureForwardedHeaders();
@@ -26,18 +23,15 @@ builder.Services.AddSwaggerGen(options => { options.DocumentPersonApi(builder.Co
 
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
-var connectionString =
-    ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
-builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
-builder.Services.AddDbContext<OrganisationInformationContext>((sp, options) =>
-    options.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
+var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddOrganisationMembershipSync(connectionString);
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 
 builder.Services.AddScoped<IPersonRepository, DatabasePersonRepository>();
 builder.Services.AddScoped<IPersonInviteRepository, DatabasePersonInviteRepository>();
-builder.Services.AddScoped<IUseCase<RegisterPerson, Person>, RegisterPersonUseCase>();
-builder.Services.AddScoped<IUseCase<Guid, Person?>, GetPersonUseCase>();
-builder.Services.AddScoped<IUseCase<LookupPerson, Person?>, LookupPersonUseCase>();
+builder.Services.AddScoped<IUseCase<RegisterPerson, CO.CDP.Person.WebApi.Model.Person>, RegisterPersonUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, CO.CDP.Person.WebApi.Model.Person?>, GetPersonUseCase>();
+builder.Services.AddScoped<IUseCase<LookupPerson, CO.CDP.Person.WebApi.Model.Person?>, LookupPersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, UpdatePerson), bool>, UpdatePersonUseCase>();
 builder.Services.AddScoped<IUseCase<(Guid, ClaimPersonInvite), bool>, ClaimPersonInviteUseCase>();
 builder.Services.AddProblemDetails();
@@ -49,6 +43,7 @@ builder.Services.AddOrganisationAuthorization();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
 
+
 builder.Services
     .AddAwsConfiguration(builder.Configuration)
     .AddLoggingConfiguration(builder.Configuration);
@@ -57,22 +52,11 @@ var awsConfig = builder.Configuration.GetSection("Aws").Get<AwsConfiguration>();
 var awsRegion = builder.Configuration["AWS:Region"]
                 ?? Environment.GetEnvironmentVariable("AWS_REGION");
 if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.ServiceURL) ||
-                                          !string.IsNullOrWhiteSpace(awsRegion)))
+                                         !string.IsNullOrWhiteSpace(awsRegion)))
 {
     builder.Services
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration);
-}
-
-if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi")) ||
-    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
-{
-    builder.Services
-        .AddAwsSqsService()
-        .AddMultiQueueOutboxSqsPublisher<OrganisationInformationContext>(
-            builder.Configuration,
-            enableBackgroundServices: false,
-            notificationChannel: "organisation_information_outbox");
 }
 
 var app = builder.Build();
@@ -98,5 +82,4 @@ app.UseAuthorization();
 app.UsePersonEndpoints();
 app.UsePersonLookupEndpoints();
 app.Run();
-
 public abstract partial class Program;

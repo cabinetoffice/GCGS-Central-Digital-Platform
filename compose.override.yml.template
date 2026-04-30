@@ -117,11 +117,6 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
     deploy:
       replicas: 1
-  outbox-processor-user-management:
-    environment:
-      ASPNETCORE_ENVIRONMENT: Development
-    deploy:
-      replicas: 1
   scheduled-worker:
     environment:
       DOTNET_ENVIRONMENT: Development

@@ -5,9 +5,9 @@ namespace CO.CDP.UserManagement.Core.Interfaces;
 /// <summary>
 /// Pre-flight authorization guard for membership mutation operations.
 /// Evaluates actor/target permission rules (self-service, role hierarchy) against
-/// live repository state before the operation enters the use case.
+/// live repository state before the operation enters the atomic transaction.
 /// Transactional invariants (e.g. last-owner protection) are enforced separately
-/// inside the relevant use case.
+/// inside <c>IAtomicMembershipSync</c>.
 /// </summary>
 public interface IMembershipAuthorizationGuard
 {
@@ -23,6 +23,5 @@ public interface IMembershipAuthorizationGuard
     /// Throws <see cref="CO.CDP.UserManagement.Core.Exceptions.MembershipOperationForbiddenException"/>
     /// if the actor is the target (self-modification) or if an Admin attempts to modify an Owner's role.
     /// </summary>
-    Task ValidateRoleChangeAsync(Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole,
-        CancellationToken ct = default);
+    Task ValidateRoleChangeAsync(Guid cdpOrganisationId, Guid cdpPersonId, OrganisationRole newRole, CancellationToken ct = default);
 }

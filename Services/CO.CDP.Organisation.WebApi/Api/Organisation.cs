@@ -233,7 +233,7 @@ public static class EndpointExtensions
 
         app.MapGet("/organisations/{organisationId}/join-requests",
                 [OrganisationAuthorize(
-                    [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
+                    [AuthenticationChannel.OneLogin],
                     [Constants.OrganisationPersonScope.Admin],
                     OrganisationIdLocation.Path)]
                 async (Guid organisationId, [FromQuery] OrganisationJoinRequestStatus? status,
@@ -261,7 +261,7 @@ public static class EndpointExtensions
 
         app.MapPatch("/organisations/{organisationId}/join-requests/{joinRequestId}",
                 [OrganisationAuthorize(
-                    [AuthenticationChannel.OneLogin, AuthenticationChannel.ServiceKey],
+                    [AuthenticationChannel.OneLogin],
                     [Constants.OrganisationPersonScope.Admin],
                     OrganisationIdLocation.Path)]
                 async (Guid organisationId, Guid joinRequestId, UpdateJoinRequest updateJoinRequest,

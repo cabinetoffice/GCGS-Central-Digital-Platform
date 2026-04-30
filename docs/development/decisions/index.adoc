@@ -28,6 +28,4 @@ include::0008-git-merge-strategy.adoc[]
 
 include::0009-outbox-processor-topology-and-fanout.adoc[]
 
-include::0010-typed-outbox-routing.adoc[]
-
 :leveloffset: -1

@@ -1,4 +1,3 @@
-using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
 using CO.CDP.UserManagement.Core.OrganisationRoles;
@@ -15,7 +14,7 @@ namespace CO.CDP.UserManagement.Infrastructure.Services;
 /// <see cref="OrganisationRoleChangeValidator"/>.
 ///
 /// Note: last-owner protection is a transactional invariant and is enforced
-/// separately inside the use case that performs the removal.
+/// separately inside <c>AtomicMembershipSync</c>.
 /// </summary>
 public class MembershipAuthorizationGuard(
     ICurrentUserService currentUserService,
@@ -32,7 +31,7 @@ public class MembershipAuthorizationGuard(
             targetEmail: targetMembership.UserPrincipalId,
             currentUserEmail: actorPrincipalId,
             targetOrganisationRole: targetMembership.OrganisationRole,
-            isLastOwner: false, // transactional invariant — enforced in the use case
+            isLastOwner: false, // transactional invariant — checked inside AtomicMembershipSync
             currentUserOrganisationRole: actorRole);
 
         if (!result.IsValid)
@@ -60,26 +59,24 @@ public class MembershipAuthorizationGuard(
     /// Resolves the actor's principal ID and their live organisation role, plus the
     /// target membership, all from the repository.
     /// </summary>
-    private async Task<(string actorPrincipalId, OrganisationRole? actorRole, UserOrganisationMembership
-            targetMembership)>
+    private async Task<(string actorPrincipalId, OrganisationRole? actorRole, Core.Entities.UserOrganisationMembership targetMembership)>
         ResolveContextAsync(Guid cdpOrganisationId, Guid cdpPersonId, CancellationToken ct)
     {
         var actorPrincipalId = currentUserService.GetUserPrincipalId()
-                               ?? throw new MembershipOperationForbiddenException(
-                                   "Unable to determine the current user.");
+            ?? throw new MembershipOperationForbiddenException("Unable to determine the current user.");
 
         var organisation = await organisationRepository.GetByCdpGuidAsync(cdpOrganisationId, ct)
-                           ?? throw new EntityNotFoundException(
-                               nameof(Organisation), cdpOrganisationId);
+            ?? throw new EntityNotFoundException(
+                nameof(Core.Entities.Organisation), cdpOrganisationId);
 
         var actorMembership = await membershipRepository.GetByUserAndOrganisationAsync(
             actorPrincipalId, organisation.Id, ct);
         var actorRole = actorMembership?.OrganisationRole;
 
         var targetMembership = await membershipRepository.GetByPersonIdAndOrganisationAsync(
-                                   cdpPersonId, organisation.Id, ct)
-                               ?? throw new EntityNotFoundException(
-                                   nameof(UserOrganisationMembership), cdpPersonId);
+            cdpPersonId, organisation.Id, ct)
+            ?? throw new EntityNotFoundException(
+                nameof(Core.Entities.UserOrganisationMembership), cdpPersonId);
 
         return (actorPrincipalId, actorRole, targetMembership);
     }

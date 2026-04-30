@@ -2,7 +2,6 @@ using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class InvitePersonToOrganisationUseCase(
@@ -20,6 +19,7 @@ public class InvitePersonToOrganisationUseCase(
         IConfiguration configuration
     ) : this(organisationRepository, personInviteRepository, govUKNotifyApiClient, configuration, Guid.NewGuid)
     {
+
     }
 
     public async Task<bool> Execute((Guid organisationId, InvitePersonToOrganisation invitePersonData) command)
@@ -27,13 +27,10 @@ public class InvitePersonToOrganisationUseCase(
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
-        var isEmailUnique =
-            await organisationRepository.IsEmailUniqueWithinOrganisation(command.organisationId,
-                command.invitePersonData.Email);
+        var isEmailUnique = await organisationRepository.IsEmailUniqueWithinOrganisation(command.organisationId, command.invitePersonData.Email);
         if (!isEmailUnique)
         {
-            throw new DuplicateEmailWithinOrganisationException(
-                $"A user with this email address already exists for your organisation.");
+            throw new DuplicateEmailWithinOrganisationException($"A user with this email address already exists for your organisation.");
         }
 
         var existingInvites = await ExpireExistingPersonInvites(command.organisationId, command.invitePersonData.Email);
@@ -42,10 +39,10 @@ public class InvitePersonToOrganisationUseCase(
         await personInviteRepository.SaveNewInvite(newInvite, existingInvites);
 
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl")
-                         ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
+                            ?? throw new Exception("Missing configuration key: OrganisationAppUrl");
 
         var templateId = configuration.GetValue<string>("GOVUKNotify:PersonInviteEmailTemplateId")
-                         ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
+                            ?? throw new Exception("Missing configuration key: GOVUKNotify:PersonInviteEmailTemplateId.");
 
         Uri baseUri = new Uri(baseAppUrl);
         Uri inviteLink = new Uri(baseUri, $"organisation-invite/{newInvite.Guid}");
@@ -54,13 +51,11 @@ public class InvitePersonToOrganisationUseCase(
         {
             EmailAddress = newInvite.Email,
             TemplateId = templateId,
-            Personalisation = new Dictionary<string, string>
-            {
-                { "org_name", organisation.Name },
-                { "first_name", newInvite.FirstName },
-                { "last_name", newInvite.LastName },
-                { "invite_link", inviteLink.ToString() }
-            }
+            Personalisation = new Dictionary<string, string> {
+                                        { "org_name", organisation.Name},
+                                        { "first_name", newInvite.FirstName},
+                                        { "last_name", newInvite.LastName},
+                                        { "invite_link", inviteLink.ToString()} }
         };
 
         await govUKNotifyApiClient.SendEmail(emailRequest);
@@ -78,7 +73,11 @@ public class InvitePersonToOrganisationUseCase(
 
     private static PersonInvite ExpireInvite(PersonInvite personInvite, DateTimeOffset now)
     {
-        personInvite.ExpiresOn ??= now;
+        if (personInvite.ExpiresOn == null)
+        {
+            personInvite.ExpiresOn = now;
+        }
+
         return personInvite;
     }
 

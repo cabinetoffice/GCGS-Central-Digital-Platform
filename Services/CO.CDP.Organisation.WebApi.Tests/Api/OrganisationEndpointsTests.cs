@@ -1,6 +1,3 @@
-using System.Net;
-using System.Net.Http.Json;
-using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -9,32 +6,25 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
+using System.Net;
+using System.Net.Http.Json;
+using CO.CDP.MQ;
 using static CO.CDP.Authentication.Constants;
 using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
-
 public class OrganisationEndpointsTests
 {
-    private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>>
-        _getOrganisationJoinRequestsUseCase = new();
-
-    private readonly Mock<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>>
-        _getOrganisationsUseCase = new();
-
-    private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
-    private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
-
-    private readonly Mock<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult>, int)>>
-        _searchByNameOrPponUseCase = new();
-
-    private readonly Mock<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>>
-        _searchOrganisationUseCase = new();
-
-    private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
+    private readonly Mock<IUseCase<PaginatedOrganisationQuery, Tuple<IEnumerable<OrganisationDto>, int>>> _getOrganisationsUseCase = new();
+    private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
+    private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateOrganisation), bool>> _updatesOrganisationUseCase = new();
+    private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>> _getOrganisationJoinRequestsUseCase = new();
+    private readonly Mock<IUseCase<(Guid, Guid, UpdateJoinRequest), bool>> _updateJoinRequestUseCase = new();
+    private readonly Mock<IUseCase<OrganisationSearchQuery, IEnumerable<OrganisationSearchResult>>> _searchOrganisationUseCase = new();
+    private readonly Mock<IUseCase<OrganisationSearchByPponQuery, (IEnumerable<OrganisationSearchByPponResult>, int)>> _searchByNameOrPponUseCase = new();
 
     public OrganisationEndpointsTests()
     {
@@ -48,7 +38,8 @@ public class OrganisationEndpointsTests
                 services.AddScoped(_ => _updatesOrganisationUseCase.Object);
                 var mockPublisher = new Mock<IPublisher>();
 
-                services.AddScoped(_ => mockPublisher.Object);
+                services.AddScoped(
+                    _ => mockPublisher.Object);
 
                 services.ConfigureFakePolicyEvaluator();
             });
@@ -67,8 +58,7 @@ public class OrganisationEndpointsTests
         response.Should().HaveStatusCode(Created, await response.Content.ReadAsStringAsync());
 
         var returnedOrganisation = await response.Content.ReadFromJsonAsync<Model.Organisation>();
-        returnedOrganisation.Should()
-            .BeEquivalentTo(organisation, options => options.ComparingByMembers<Model.Organisation>());
+        returnedOrganisation.Should().BeEquivalentTo(organisation, options => options.ComparingByMembers<Model.Organisation>());
     }
 
     [Fact]
@@ -77,11 +67,11 @@ public class OrganisationEndpointsTests
         var command = GivenRegisterOrganisationCommand();
 
         _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
-            .ReturnsAsync((Model.Organisation)null!);
+                                    .ReturnsAsync((Model.Organisation)null!);
 
         var response = await _httpClient.PostAsJsonAsync("/organisations", command);
 
-        response.Should().HaveStatusCode(InternalServerError, await response.Content.ReadAsStringAsync());
+        response.Should().HaveStatusCode(HttpStatusCode.InternalServerError, await response.Content.ReadAsStringAsync());
     }
 
     [Theory]
@@ -90,15 +80,13 @@ public class OrganisationEndpointsTests
     public async Task UpdateOrganisation_TestCases(bool useCaseResult, HttpStatusCode expectedStatusCode)
     {
         var organisationId = Guid.NewGuid();
-        var updateOrganisation = new UpdateOrganisation
-            { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
         var command = (organisationId, updateOrganisation);
 
         if (useCaseResult)
             _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
         else
-            _updatesOrganisationUseCase.Setup(uc => uc.Execute(command))
-                .ThrowsAsync(new UnknownOrganisationException(""));
+            _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ThrowsAsync(new UnknownOrganisationException(""));
 
         var response = await _httpClient.PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
 
@@ -168,13 +156,12 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, "unknown_channel")]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     public async Task GetOrganisation_Authorization_ReturnsExpectedStatusCode(
-        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null,
-        string? personScope = null, string? apiKeyScope = null)
+        HttpStatusCode expectedStatusCode, string channel, string? organisationPersonScope = null, string? personScope = null, string? apiKeyScope = null)
     {
         var organisationId = Guid.NewGuid();
 
         _getOrganisationUseCase.Setup(useCase => useCase.Execute(organisationId))
-            .ReturnsAsync(GivenOrganisation(organisationId));
+                                    .ReturnsAsync(GivenOrganisation(organisationId));
 
         var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, organisationPersonScope,
@@ -197,8 +184,7 @@ public class OrganisationEndpointsTests
         HttpStatusCode expectedStatusCode, string channel, string? scope = null)
     {
         var organisationId = Guid.NewGuid();
-        var updateOrganisation = new UpdateOrganisation
-            { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
+        var updateOrganisation = new UpdateOrganisation { Type = OrganisationUpdateType.AdditionalIdentifiers, Organisation = new() };
         var command = (organisationId, updateOrganisation);
 
         _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
@@ -207,8 +193,7 @@ public class OrganisationEndpointsTests
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}", updateOrganisation);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
@@ -218,7 +203,7 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(OK, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task GetOrganisationJoinRequests_Authorization_ReturnsExpectedStatusCode(
@@ -234,8 +219,7 @@ public class OrganisationEndpointsTests
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getOrganisationJoinRequestsUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .GetAsync($"/organisations/{organisationId}/join-requests?status={status}");
+        var response = await factory.CreateClient().GetAsync($"/organisations/{organisationId}/join-requests?status={status}");
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
@@ -245,7 +229,7 @@ public class OrganisationEndpointsTests
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Editor)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Responder)]
     [InlineData(Forbidden, Channel.OneLogin, OrganisationPersonScope.Viewer)]
-    [InlineData(NoContent, Channel.ServiceKey)]
+    [InlineData(Forbidden, Channel.ServiceKey)]
     [InlineData(Forbidden, Channel.OrganisationKey)]
     [InlineData(Forbidden, "unknown_channel")]
     public async Task UpdateOrganisationJoinRequest_Authorization_ReturnsExpectedStatusCode(
@@ -253,8 +237,7 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
         var joinRequestId = Guid.NewGuid();
-        var updateJoinRequest = new UpdateJoinRequest
-            { ReviewedBy = Guid.NewGuid(), status = OrganisationJoinRequestStatus.Accepted };
+        var updateJoinRequest = new UpdateJoinRequest { ReviewedBy = Guid.NewGuid(), status = OrganisationJoinRequestStatus.Accepted };
         var command = (organisationId, joinRequestId, updateJoinRequest);
 
         _updateJoinRequestUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
@@ -263,8 +246,7 @@ public class OrganisationEndpointsTests
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updateJoinRequestUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .PatchAsJsonAsync($"/organisations/{organisationId}/join-requests/{joinRequestId}", updateJoinRequest);
+        var response = await factory.CreateClient().PatchAsJsonAsync($"/organisations/{organisationId}/join-requests/{joinRequestId}", updateJoinRequest);
 
         response.StatusCode.Should().Be(expectedStatusCode);
     }
@@ -282,16 +264,14 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var reviews = new List<Review>
-        {
-            new Review
-            {
-                ApprovedOn = null,
-                ReviewedBy = new ReviewedBy { Id = new Guid(), Name = "Reviewer name" },
-                Comment = "Org name is wrong",
-                Status = ReviewStatus.Rejected
-            }
-        };
+        var reviews = new List<Review> {
+                new Review {
+                    ApprovedOn = null,
+                    ReviewedBy = new ReviewedBy { Id = new Guid(), Name = "Reviewer name"},
+                    Comment = "Org name is wrong",
+                    Status = ReviewStatus.Rejected
+                }
+            };
 
         _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
             .ReturnsAsync(reviews);
@@ -304,7 +284,7 @@ public class OrganisationEndpointsTests
 
         response.StatusCode.Should().Be(expectedStatusCode);
 
-        if (expectedStatusCode != Forbidden)
+        if(expectedStatusCode != Forbidden)
         {
             var returnedReviews = await response.Content.ReadFromJsonAsync<List<Review>>();
             returnedReviews.Should().BeEquivalentTo(reviews, options => options.ComparingByMembers<Review>());
@@ -376,8 +356,7 @@ public class OrganisationEndpointsTests
         if (expectedStatusCode != Forbidden)
         {
             var results = await response.Content.ReadFromJsonAsync<List<OrganisationSearchResult>>();
-            results.Should().BeEquivalentTo(searchResults,
-                options => options.ComparingByMembers<OrganisationSearchResult>());
+            results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchResult>());
         }
     }
 
@@ -395,7 +374,7 @@ public class OrganisationEndpointsTests
 
         var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10&threshold=-1");
 
-        response.StatusCode.Should().Be(BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -412,7 +391,7 @@ public class OrganisationEndpointsTests
 
         var response = await factory.CreateClient().GetAsync($"/organisation/search?name=asd&limit=10&threshold=2");
 
-        response.StatusCode.Should().Be(BadRequest);
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
     [Fact]
@@ -436,8 +415,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Test Organisation Legal Name"
                     }
                 },
-                PartyRoles = new List<PartyRoleWithStatus>
-                    { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             },
             new OrganisationSearchByPponResult
@@ -454,8 +432,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Another Organisation Legal Name"
                     }
                 },
-                PartyRoles = new List<PartyRoleWithStatus>
-                    { new PartyRoleWithStatus { Role = PartyRole.Tenderer, Status = PartyRoleStatus.Active } },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Tenderer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             }
         };
@@ -470,17 +447,15 @@ public class OrganisationEndpointsTests
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder=asc");
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder=asc");
 
-        response.StatusCode.Should().Be(OK);
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var content = await response.Content.ReadFromJsonAsync<OrganisationSearchByPponResponse>();
         content.Should().NotBeNull();
         content!.Results.Should().HaveCount(2);
         content.TotalCount.Should().Be(2);
-        content.Results.Should().BeEquivalentTo(searchResults,
-            options => options.ComparingByMembers<OrganisationSearchByPponResult>());
+        content.Results.Should().BeEquivalentTo(searchResults, options => options.ComparingByMembers<OrganisationSearchByPponResult>());
     }
 
     [Fact]
@@ -499,10 +474,9 @@ public class OrganisationEndpointsTests
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .GetAsync($"/organisation/search-by-name-or-ppon?searchText=nonexistent&limit=10&skip=0&sortOrder=asc");
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=nonexistent&limit=10&skip=0&sortOrder=asc");
 
-        response.StatusCode.Should().Be(NotFound);
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]
@@ -514,17 +488,15 @@ public class OrganisationEndpointsTests
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .GetAsync($"/organisation/search-by-name-or-ppon?limit=10&skip=0&sortOrder=asc");
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?limit=10&skip=0&sortOrder=asc");
 
-        response.StatusCode.Should().Be(UnprocessableContent);
+        response.StatusCode.Should().Be(HttpStatusCode.UnprocessableContent);
     }
 
     [Theory]
-    [InlineData("invalid", OK)]
-    [InlineData("asecending", OK)]
-    public async Task SearchByNameOrPpon_AcceptsInvalidSortOrder_AndReturnsData(string sortOrder,
-        HttpStatusCode expectedStatusCode)
+    [InlineData("invalid", HttpStatusCode.OK)]
+    [InlineData("asecending", HttpStatusCode.OK)]
+    public async Task SearchByNameOrPpon_AcceptsInvalidSortOrder_AndReturnsData(string sortOrder, HttpStatusCode expectedStatusCode)
     {
         var organisationId = Guid.NewGuid();
 
@@ -544,8 +516,7 @@ public class OrganisationEndpointsTests
                         LegalName = "Demo Org"
                     }
                 },
-                PartyRoles = new List<PartyRoleWithStatus>
-                    { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
+                PartyRoles = new List<PartyRoleWithStatus> { new PartyRoleWithStatus { Role = PartyRole.Buyer, Status = PartyRoleStatus.Active } },
                 Addresses = new List<OrganisationAddress>()
             }
         };
@@ -560,12 +531,11 @@ public class OrganisationEndpointsTests
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
-        var response = await factory.CreateClient()
-            .GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder={sortOrder}");
+        var response = await factory.CreateClient().GetAsync($"/organisation/search-by-name-or-ppon?searchText=test&limit=10&skip=0&sortOrder={sortOrder}");
 
         response.StatusCode.Should().Be(expectedStatusCode);
 
-        if (expectedStatusCode == OK)
+        if (expectedStatusCode == HttpStatusCode.OK)
         {
             var content = await response.Content.ReadFromJsonAsync<OrganisationSearchByPponResponse>();
             content.Should().NotBeNull();
@@ -573,8 +543,8 @@ public class OrganisationEndpointsTests
             content.TotalCount.Should().Be(1);
 
             _searchByNameOrPponUseCase.Verify(uc => uc.Execute(
-                    It.Is<OrganisationSearchByPponQuery>(q =>
-                        q.OrderBy == (string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder))),
+                It.Is<OrganisationSearchByPponQuery>(q =>
+                    q.OrderBy == (string.IsNullOrEmpty(sortOrder) ? "rel" : sortOrder))),
                 Times.Once);
         }
     }
@@ -618,19 +588,16 @@ public class OrganisationEndpointsTests
                     LegalName = "AnotherOrganisationName"
                 }
             },
-            Addresses =
-            [
-                new OrganisationAddress
-                {
-                    Type = AddressType.Registered,
-                    StreetAddress = "1234 Example St",
-                    Locality = "Example City",
-                    Region = "Test Region",
-                    PostalCode = "12345",
-                    CountryName = "Exampleland",
-                    Country = "AB"
-                }
-            ],
+            Addresses = [new OrganisationAddress
+            {
+                Type = AddressType.Registered,
+                StreetAddress = "1234 Example St",
+                Locality = "Example City",
+                Region = "Test Region",
+                PostalCode = "12345",
+                CountryName = "Exampleland",
+                Country = "AB"
+            }],
             ContactPoint = new OrganisationContactPoint
             {
                 Name = "Contact Name",
@@ -658,7 +625,7 @@ public class OrganisationEndpointsTests
         };
 
         _registerOrganisationUseCase.Setup(useCase => useCase.Execute(It.IsAny<RegisterOrganisation>()))
-            .ReturnsAsync(organisation);
+                                    .ReturnsAsync(organisation);
 
         return organisation;
     }

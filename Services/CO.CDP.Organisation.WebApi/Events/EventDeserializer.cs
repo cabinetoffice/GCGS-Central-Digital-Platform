@@ -13,16 +13,6 @@ public static class EventDeserializer
             return Deserialize<PponGenerated>(type, body);
         }
 
-        if (type == "PersonRemovedFromOrganisation")
-        {
-            return Deserialize<PersonRemovedFromOrganisation>(type, body);
-        }
-
-        if (type == "PersonScopesUpdated")
-        {
-            return Deserialize<PersonScopesUpdated>(type, body);
-        }
-
         throw new UnknownEventException($"Unrecognised type `{type}` for event `{body}`.");
     };
 

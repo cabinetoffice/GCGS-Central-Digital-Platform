@@ -2,9 +2,12 @@ using AutoMapper;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Features;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
+using CO.CDP.OrganisationSync;
+using Microsoft.FeatureManagement;
 using Address = CO.CDP.OrganisationInformation.Persistence.Address;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
@@ -17,15 +20,19 @@ public class UpdateOrganisationUseCase(
     IMapper mapper,
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
-    ILogger<UpdateOrganisationUseCase> logger
+    ILogger<UpdateOrganisationUseCase> logger,
+    IAtomicScope atomicScope,
+    IOrganisationMembershipSync membershipSync,
+    IFeatureManager featureManager
 ) : IUseCase<(Guid organisationId, UpdateOrganisation updateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, UpdateOrganisation updateOrganisation) command)
     {
         var organisation = await organisationRepository.FindIncludingTenant(command.organisationId)
-                           ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var updateObject = command.updateOrganisation.Organisation;
+        var isNameUpdate = command.updateOrganisation.Type == OrganisationUpdateType.OrganisationName;
 
         switch (command.updateOrganisation.Type)
         {
@@ -34,7 +41,6 @@ public class UpdateOrganisationUseCase(
                 {
                     throw new InvalidUpdateOrganisationCommand.MissingOrganisationName();
                 }
-
                 organisation.Name = updateObject.OrganisationName;
                 organisation.Tenant.Name = updateObject.OrganisationName;
                 organisation.Identifiers.Select(x => x.LegalName = updateObject.OrganisationName).ToList();
@@ -50,13 +56,12 @@ public class UpdateOrganisationUseCase(
                 break;
 
             case OrganisationUpdateType.AddAsBuyerRole:
-                if (updateObject.BuyerInformation?.BuyerType == null ||
-                    updateObject.BuyerInformation.DevolvedRegulations == null)
+                if (updateObject.BuyerInformation?.BuyerType == null || updateObject.BuyerInformation.DevolvedRegulations == null)
                 {
                     throw new InvalidUpdateOrganisationCommand.MissingBuyerInformation();
                 }
 
-                organisation.BuyerInfo = new Persistence.BuyerInformation
+                organisation.BuyerInfo = new OrganisationInformation.Persistence.BuyerInformation
                 {
                     BuyerType = updateObject.BuyerInformation.BuyerType,
                     DevolvedRegulations = updateObject.BuyerInformation.DevolvedRegulations,
@@ -100,7 +105,7 @@ public class UpdateOrganisationUseCase(
                 }
                 else
                 {
-                    organisation.Addresses.Add(new Persistence.OrganisationAddress
+                    organisation.Addresses.Add(new OrganisationInformation.Persistence.OrganisationAddress
                     {
                         Type = newAddress.Type,
                         Address = new Address
@@ -114,11 +119,10 @@ public class UpdateOrganisationUseCase(
                         },
                     });
                 }
-
                 break;
             case OrganisationUpdateType.RemoveIdentifier:
-                var identifierToRemove = organisation.Identifiers.FirstOrDefault(i =>
-                    i.Scheme == command.updateOrganisation.Organisation.IdentifierToRemove!.Scheme);
+                var identifierToRemove = organisation.Identifiers.FirstOrDefault(
+                    i => i.Scheme == command.updateOrganisation.Organisation.IdentifierToRemove!.Scheme);
 
                 if (identifierToRemove != null)
                 {
@@ -141,8 +145,7 @@ public class UpdateOrganisationUseCase(
                         await ValidateIdentifierIsNotKnownToUs(identifier);
                     }
 
-                    var existingIdentifier =
-                        organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
+                    var existingIdentifier = organisation.Identifiers.FirstOrDefault(i => i.Scheme == identifier.Scheme);
                     if (existingIdentifier != null)
                     {
                         existingIdentifier.IdentifierId = identifier.Id;
@@ -150,7 +153,7 @@ public class UpdateOrganisationUseCase(
                     }
                     else
                     {
-                        organisation.Identifiers.Add(new Persistence.Identifier
+                        organisation.Identifiers.Add(new OrganisationInformation.Persistence.Identifier
                         {
                             IdentifierId = identifier.Id,
                             Primary = AssignIdentifierUseCase.IsPrimaryIdentifier(organisation, identifier.Scheme),
@@ -159,7 +162,6 @@ public class UpdateOrganisationUseCase(
                         });
                     }
                 }
-
                 break;
 
             case OrganisationUpdateType.ContactPoint:
@@ -179,9 +181,8 @@ public class UpdateOrganisationUseCase(
                 else
                 {
                     organisation.ContactPoints.Add(
-                        mapper.Map<Persistence.ContactPoint>(updateObject.ContactPoint));
+                        mapper.Map<OrganisationInformation.Persistence.ContactPoint>(updateObject.ContactPoint));
                 }
-
                 break;
 
             case OrganisationUpdateType.Address:
@@ -189,7 +190,6 @@ public class UpdateOrganisationUseCase(
                 {
                     throw new InvalidUpdateOrganisationCommand.MissingOrganisationAddress();
                 }
-
                 foreach (var address in updateObject.Addresses)
                 {
                     var existing = organisation.Addresses.FirstOrDefault(i => i.Type == address.Type);
@@ -204,7 +204,7 @@ public class UpdateOrganisationUseCase(
                     }
                     else
                     {
-                        organisation.Addresses.Add(new Persistence.OrganisationAddress
+                        organisation.Addresses.Add(new OrganisationInformation.Persistence.OrganisationAddress
                         {
                             Type = address.Type,
                             Address = new Address
@@ -229,8 +229,21 @@ public class UpdateOrganisationUseCase(
 
         await ResetRejectedStatus(command.updateOrganisation.Type, organisation);
 
-        await organisationRepository.SaveAsync(organisation,
-            async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
+        await atomicScope.ExecuteAsync(async ct =>
+        {
+            await organisationRepository.SaveAsync(organisation,
+                async o => await publisher.Publish(mapper.Map<OrganisationUpdated>(o)));
+
+            if (isNameUpdate && await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled))
+            {
+                (await membershipSync.SyncOrganisationNameAsync(organisation.Guid, organisation.Name, ct))
+                    .Match(
+                        onLeft: error => logger.LogError("UM name sync failed for org {Guid}: {Error}", organisation.Guid, error.Message),
+                        onRight: _ => { });
+            }
+
+            return true;
+        });
 
         return true;
     }
@@ -238,8 +251,7 @@ public class UpdateOrganisationUseCase(
     private async Task ResetRejectedStatus(OrganisationUpdateType updateType, Persistence.Organisation organisation)
     {
         if (
-            (updateType == OrganisationUpdateType.OrganisationName ||
-             updateType == OrganisationUpdateType.OrganisationEmail)
+            (updateType == OrganisationUpdateType.OrganisationName || updateType == OrganisationUpdateType.OrganisationEmail)
             && organisation.PendingRoles.Contains(PartyRole.Buyer)
         )
         {
@@ -272,13 +284,11 @@ public class UpdateOrganisationUseCase(
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send email to support admin"),
-                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
+            logger.LogError(new Exception("Unable to send email to support admin"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to support admin.");
             return;
         }
 
-        var requestLink =
-            new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
 
         var emailRequest = new EmailNotificationRequest
         {
@@ -316,8 +326,8 @@ public class UpdateOrganisationUseCase(
         }
     }
 
-    private void RemoveIdentifier(Persistence.Organisation organisation,
-        Persistence.Identifier identifierToRemove)
+    private void RemoveIdentifier(OrganisationInformation.Persistence.Organisation organisation,
+        OrganisationInformation.Persistence.Identifier identifierToRemove)
     {
         organisation.Identifiers.Remove(identifierToRemove);
 
@@ -327,7 +337,7 @@ public class UpdateOrganisationUseCase(
         }
     }
 
-    private void AllocateNextPrimaryIdentifier(Persistence.Organisation organisation)
+    private void AllocateNextPrimaryIdentifier(OrganisationInformation.Persistence.Organisation organisation)
     {
         var nextPrimaryIdentifier = organisation.Identifiers.FirstOrDefault(i =>
             i.Scheme != AssignIdentifierUseCase.IdentifierSchemes.Ppon &&

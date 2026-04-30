@@ -73,8 +73,7 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
                     AllowsMultipleRoleAssignments = app.Application?.AllowsMultipleRoleAssignments ?? false,
                     IsEnabledByDefault = app.Application?.IsEnabledByDefault ?? false,
                     Roles = roleTasks[i].Result
-                        .Select(r => new ApplicationRoleOptionViewModel
-                            { Id = r.Id, Name = r.Name, Description = r.Description }).ToList()
+                        .Select(r => new ApplicationRoleOptionViewModel { Id = r.Id, Name = r.Name }).ToList()
                 })
                 .ToList();
 

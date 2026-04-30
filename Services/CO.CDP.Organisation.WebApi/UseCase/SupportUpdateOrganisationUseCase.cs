@@ -1,27 +1,21 @@
-using CO.CDP.Authentication;
-using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.MQ;
+using CO.CDP.GovUKNotify;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using OrganisationApproved = CO.CDP.Organisation.WebApi.Events.OrganisationApproved;
+using CO.CDP.Authentication;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
-
 public class SupportUpdateOrganisationUseCase(
     IOrganisationRepository organisationRepository,
     IPersonRepository personRepository,
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
-    IPublisher publisher,
     ILogger<SupportUpdateOrganisationUseCase> logger)
     : IUseCase<(Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation), bool>
 {
     public async Task<bool> Execute((Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation) command)
     {
-        OrganisationInformation.Persistence.Organisation organisation =
-            await organisationRepository.Find(command.organisationId) ??
-            throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
+        OrganisationInformation.Persistence.Organisation organisation = await organisationRepository.Find(command.organisationId) ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
         var sendApprovalEmail = false;
         var sendRejectionEmail = false;
 
@@ -36,8 +30,7 @@ public class SupportUpdateOrganisationUseCase(
                     throw new MissingFieldException("Missing ReviewedById");
                 }
 
-                var person = await personRepository.Find(personId.Value) ??
-                             throw new UnknownPersonException($"Unknown person {personId}.");
+                var person = await personRepository.Find(personId.Value) ?? throw new UnknownPersonException($"Unknown person {personId}.");
 
                 if (command.supportUpdateOrganisation?.Organisation?.Approved == true)
                 {
@@ -70,7 +63,6 @@ public class SupportUpdateOrganisationUseCase(
 
         if (sendApprovalEmail)
         {
-            await publisher.Publish(new OrganisationApproved { Id = organisation.Guid.ToString() });
             await NotifyBuyerApprovedRequest(organisation);
         }
 
@@ -82,25 +74,22 @@ public class SupportUpdateOrganisationUseCase(
         return true;
     }
 
-    private void HandleAdditionalIdentifiersUpdate(SupportUpdateOrganisation supportUpdateOrganisation,
-        OrganisationInformation.Persistence.Organisation organisation)
+    private void HandleAdditionalIdentifiersUpdate(SupportUpdateOrganisation supportUpdateOrganisation, OrganisationInformation.Persistence.Organisation organisation)
     {
         var newIdentifiers = supportUpdateOrganisation.Organisation.AdditionalIdentifiers
-                             ?? throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
+            ?? throw new InvalidUpdateOrganisationCommand.MissingAdditionalIdentifiers();
 
         //Remove identifiers that are no longer present in the update request
         // Exclude PPON, we don't want to remove that
         var removedIdentifiers = organisation.Identifiers
-            .Where(existing =>
-                !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme) && existing.Scheme != "GB-PPON")
+            .Where(existing => !newIdentifiers.Any(newId => newId.Scheme == existing.Scheme) && existing.Scheme != "GB-PPON")
             .ToList();
 
         foreach (var removed in removedIdentifiers)
         {
             if (removed.Primary)
             {
-                throw new IOrganisationRepository.OrganisationRepositoryException.RemovePrimaryIdentifierException(
-                    "You cannot remove the primary registration number.");
+                throw new IOrganisationRepository.OrganisationRepositoryException.RemovePrimaryIdentifierException("You cannot remove the primary registration number.");
             }
 
             organisation.Identifiers.Remove(removed);
@@ -133,8 +122,7 @@ public class SupportUpdateOrganisationUseCase(
         }
     }
 
-    private async Task NotifyBuyerRequest(OrganisationInformation.Persistence.Organisation organisation,
-        string templateKey)
+    private async Task NotifyBuyerRequest(OrganisationInformation.Persistence.Organisation organisation, string templateKey)
     {
         var baseAppUrl = configuration.GetValue<string>("OrganisationAppUrl") ?? "";
         var templateId = configuration.GetValue<string>($"GOVUKNotify:{templateKey}") ?? "";
@@ -146,16 +134,13 @@ public class SupportUpdateOrganisationUseCase(
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send buyer review email"),
-                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer review email.");
+            logger.LogError(new Exception("Unable to send buyer review email"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send buyer review email.");
             return;
         }
 
         var orgLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}").ToString();
 
-        var adminPersons =
-            await organisationRepository.FindOrganisationPersons(organisation.Guid,
-                [Constants.OrganisationPersonScope.Admin]);
+        var adminPersons = await organisationRepository.FindOrganisationPersons(organisation.Guid, [Constants.OrganisationPersonScope.Admin]);
         if (!adminPersons.Any())
         {
             logger.LogError(new Exception("Unable to send buyer review email"), "Admin person not found");
@@ -167,12 +152,12 @@ public class SupportUpdateOrganisationUseCase(
             EmailAddress = p.Person.Email,
             TemplateId = templateId,
             Personalisation = new Dictionary<string, string>
-            {
-                { "org_name", organisation.Name },
-                { "first_name", p.Person.FirstName },
-                { "last_name", p.Person.LastName },
-                { "org_link", orgLink }
-            }
+                {
+                    { "org_name", organisation.Name },
+                    { "first_name", p.Person.FirstName },
+                    { "last_name", p.Person.LastName },
+                    { "org_link", orgLink }
+                }
         });
 
         var orgContactEmail = organisation.ContactPoints?.FirstOrDefault()?.Email;
@@ -196,8 +181,7 @@ public class SupportUpdateOrganisationUseCase(
         {
             try
             {
-                if (!string.IsNullOrEmpty(organisation.ReviewComment) &&
-                    emailNotificationRequest.Personalisation != null)
+                if (!string.IsNullOrEmpty(organisation.ReviewComment) && emailNotificationRequest.Personalisation != null)
                 {
                     emailNotificationRequest.Personalisation["comments"] = organisation.ReviewComment;
                 }
@@ -206,8 +190,7 @@ public class SupportUpdateOrganisationUseCase(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,
-                    $"Failed to send email to {emailNotificationRequest.EmailAddress} for organisation {organisation.Name}");
+                logger.LogError(ex, $"Failed to send email to {emailNotificationRequest.EmailAddress} for organisation {organisation.Name}");
             }
         });
 

@@ -1,8 +1,6 @@
 using CO.CDP.UserManagement.Core.Entities;
 using CO.CDP.UserManagement.Core.Exceptions;
 using CO.CDP.UserManagement.Core.Interfaces;
-using CO.CDP.UserManagement.Core.UseCase;
-using CO.CDP.UserManagement.Infrastructure.UseCase.AcceptInvite;
 using CO.CDP.UserManagement.Shared.Enums;
 using CO.CDP.UserManagement.Shared.Requests;
 using Microsoft.Extensions.Logging;
@@ -11,7 +9,8 @@ using InvalidOperationException = CO.CDP.UserManagement.Core.Exceptions.InvalidO
 namespace CO.CDP.UserManagement.Infrastructure.Services;
 
 /// <summary>
-/// Orchestrates invite lifecycle. Accept writes delegate to <see cref="AcceptInviteUseCase"/>.
+/// Orchestrates invite lifecycle. Write operations that touch OI
+/// delegate to <see cref="IAtomicMembershipSync"/> for atomic consistency.
 /// </summary>
 public class InviteOrchestrationService(
     IOrganisationRepository organisationRepository,
@@ -20,7 +19,7 @@ public class InviteOrchestrationService(
     IOrganisationApiAdapter organisationApiAdapter,
     IPersonApiAdapter personApiAdapter,
     IRoleMappingService roleMappingService,
-    IUseCase<AcceptInviteCommand> acceptInviteUseCase,
+    IAtomicMembershipSync atomicMembershipSync,
     IUnitOfWork unitOfWork,
     ILogger<InviteOrchestrationService> logger) : IInviteOrchestrationService
 {
@@ -117,8 +116,7 @@ public class InviteOrchestrationService(
         int inviteRoleMappingId,
         AcceptOrganisationInviteRequest request,
         CancellationToken cancellationToken = default) =>
-        acceptInviteUseCase.Execute(new AcceptInviteCommand(cdpOrganisationId, inviteRoleMappingId, request),
-            cancellationToken);
+        atomicMembershipSync.AcceptInviteAsync(cdpOrganisationId, inviteRoleMappingId, request, cancellationToken);
 
     public async Task ResendInviteAsync(
         Guid cdpOrganisationId,
