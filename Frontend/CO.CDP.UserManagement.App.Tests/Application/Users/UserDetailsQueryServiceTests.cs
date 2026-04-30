@@ -99,4 +99,46 @@ public class UserDetailsQueryServiceTests : AdapterTestFixture
 
         result!.ApplicationAccess.Should().BeEmpty();
     }
+
+    [Fact]
+    public async Task GetViewModelAsync_EnabledByDefaultApp_SortedFirst()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(
+                personId: personId,
+                applicationRoles: new[]
+                {
+                    new UserAssignmentResponse
+                    {
+                        OrganisationApplicationId = 1,
+                        Id = 1,
+                        UserOrganisationMembershipId = 0,
+                        IsActive = true,
+                        CreatedAt = DateTimeOffset.UtcNow
+                    },
+                    new UserAssignmentResponse
+                    {
+                        OrganisationApplicationId = 2,
+                        Id = 2,
+                        UserOrganisationMembershipId = 0,
+                        IsActive = true,
+                        CreatedAt = DateTimeOffset.UtcNow
+                    }
+                }
+            ));
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
+            .ReturnsAsync(new[]
+            {
+                MakeApplication(orgAppId: 1, appId: 1, name: "Regular App", isEnabledByDefault: false),
+                MakeApplication(orgAppId: 2, appId: 2, name: "FTS App", isEnabledByDefault: true)
+            });
+
+        var result = await _sut.GetViewModelAsync(OrgGuid, personId, CancellationToken.None);
+
+        result!.ApplicationAccess.Should().HaveCount(2);
+        result.ApplicationAccess[0].ApplicationName.Should().Be("FTS App");
+        result.ApplicationAccess[1].ApplicationName.Should().Be("Regular App");
+    }
 }

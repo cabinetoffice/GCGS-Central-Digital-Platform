@@ -75,6 +75,7 @@ namespace CO.CDP.UserManagement.App.Application.InviteUsers.Implementations
                     Roles = roleTasks[i].Result
                         .Select(r => new ApplicationRoleOptionViewModel { Id = r.Id, Name = r.Name }).ToList()
                 })
+                .OrderByDescending(a => a.IsEnabledByDefault)
                 .ToList();
 
             return new ApplicationRolesStepViewModel

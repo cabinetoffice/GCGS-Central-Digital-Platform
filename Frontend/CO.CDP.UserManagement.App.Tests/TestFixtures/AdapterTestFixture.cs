@@ -1,3 +1,4 @@
+using System.Reflection;
 using CO.CDP.Functional;
 using CO.CDP.UserManagement.App.Adapters;
 using CO.CDP.UserManagement.App.Models;
@@ -32,8 +33,8 @@ public abstract class AdapterTestFixture
     protected void SetupOrg()
     {
         var field = GetType().GetField("_adapter",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic |
-            System.Reflection.BindingFlags.Public);
+            BindingFlags.Instance | BindingFlags.NonPublic |
+            BindingFlags.Public);
         if (field == null)
             throw new InvalidOperationException(
                 "No _adapter field found on test class; pass the adapter to SetupOrg(adapter) instead.");
@@ -84,7 +85,7 @@ public abstract class AdapterTestFixture
 
     protected static OrganisationApplicationResponse MakeApplication(
         int orgAppId = 1, int appId = 1, string name = "Test App",
-        bool allowsMultipleRoles = false) => new()
+        bool allowsMultipleRoles = false, bool isEnabledByDefault = false) => new()
     {
         Id = orgAppId,
         OrganisationId = OrgId,
@@ -95,6 +96,7 @@ public abstract class AdapterTestFixture
             Name = name,
             ClientId = $"app-{appId}",
             IsActive = true,
+            IsEnabledByDefault = isEnabledByDefault,
             CreatedAt = DateTimeOffset.UtcNow
         },
         IsActive = true,
