@@ -1,13 +1,13 @@
-@model CO.CDP.UserManagement.App.Models.OrganisationRoleStepViewModel
+@model OrganisationRoleStepViewModel
 @{
     ViewData["Title"] = "What is their role in your organisation?";
-    var continueUrl = Model.ReturnToCheckAnswers
+    var backUrl = Model.ReturnToCheckAnswers
         ? $"/organisation/{Model.OrganisationId}/add-user/check-answers"
-        : $"/organisation/{Model.OrganisationId}/add-user/application-roles";
+        : $"/organisation/{Model.OrganisationId}/add-user";
 }
 
 @section BeforeContent {
-    <a href="/organisation/@Model.OrganisationId/add-user" class="govuk-back-link">Back</a>
+    <a href="@backUrl" class="govuk-back-link">Back</a>
 }
 
 <div class="govuk-grid-row">
@@ -21,7 +21,9 @@
         <h1 class="govuk-heading-xl">What is their role in your organisation?</h1>
         <p class="govuk-body">This determines what the user can manage at the organisation level, separate to application-specific roles.</p>
 
-        <form method="get" action="@continueUrl">
+        <form method="post" action="/organisation/@Model.OrganisationId/add-user/organisation-role">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="returnToCheckAnswers" value="@Model.ReturnToCheckAnswers.ToString().ToLowerInvariant()" />
             <div class="govuk-form-group">
                 <fieldset class="govuk-fieldset">
                     <legend class="govuk-visually-hidden">What is their role in your organisation?</legend>

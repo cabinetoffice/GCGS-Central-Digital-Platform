@@ -438,10 +438,70 @@ public class InviteUserControllerTests
     }
 
     [Fact]
+    public async Task OrganisationRoleStepSubmit_WhenStateMissing_RedirectsToAdd()
+    {
+        _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
+        var result = await _controller.OrganisationRoleStepSubmit(TestOrganisationData.Id,
+            OrganisationRole.Admin, returnToCheckAnswers: false, CancellationToken.None);
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.Add));
+    }
+
+    [Fact]
+    public async Task OrganisationRoleStepSubmit_WhenRoleNull_ReturnsViewWithError()
+    {
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
+        var orgRoleVm = new OrganisationRoleStepViewModel(TestOrganisationData.Id, "First", "Last", "user@example.com",
+            OrganisationRole.Member, false, Array.Empty<OrganisationRoleOption>());
+        _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+        _inviteUserFlowService
+            .Setup(s => s.GetOrganisationRoleStepViewModelAsync(state, false, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(orgRoleVm);
+
+        var result = await _controller.OrganisationRoleStepSubmit(TestOrganisationData.Id,
+            null, returnToCheckAnswers: false, CancellationToken.None);
+
+        result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
+            .Be(nameof(InviteUserController.OrganisationRoleStep));
+        _controller.ModelState.IsValid.Should().BeFalse();
+        _inviteUserStateStore.Verify(s => s.SetAsync(It.IsAny<InviteUserState>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task OrganisationRoleStepSubmit_WhenValid_SavesRoleAndRedirectsToApplicationRoles()
+    {
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
+        _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.OrganisationRoleStepSubmit(TestOrganisationData.Id,
+            OrganisationRole.Admin, returnToCheckAnswers: false, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.ApplicationRolesStep));
+        _inviteUserStateStore.Verify(s => s.SetAsync(
+            It.Is<InviteUserState>(st => st.OrganisationRole == OrganisationRole.Admin)), Times.Once);
+    }
+
+    [Fact]
+    public async Task OrganisationRoleStepSubmit_WhenValidAndReturnToCheckAnswers_RedirectsToCheckAnswers()
+    {
+        var state = new InviteUserState(TestOrganisationData.Id, "user@example.com", "First", "Last");
+        _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync(state);
+
+        var result = await _controller.OrganisationRoleStepSubmit(TestOrganisationData.Id,
+            OrganisationRole.Owner, returnToCheckAnswers: true, CancellationToken.None);
+
+        result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
+            .Be(nameof(InviteUserController.CheckAnswersStep));
+        _inviteUserStateStore.Verify(s => s.SetAsync(
+            It.Is<InviteUserState>(st => st.OrganisationRole == OrganisationRole.Owner)), Times.Once);
+    }
+
+    [Fact]
     public async Task ApplicationRoles_WhenStateMissing_RedirectsToAdd()
     {
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
-        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null,
+        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id,
             CancellationToken.None);
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(InviteUserController.Add));
@@ -465,7 +525,7 @@ public class InviteUserControllerTests
                 m.ApplyExistingSelections(viewModel, It.IsAny<IReadOnlyList<InviteApplicationAssignment>?>()))
             .Returns(viewModel);
 
-        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id, organisationRole: null,
+        var result = await _controller.ApplicationRolesStep(TestOrganisationData.Id,
             CancellationToken.None);
 
         var viewResult = result.Should().BeOfType<ViewResult>().Subject;
@@ -563,7 +623,7 @@ public class InviteUserControllerTests
     public async Task CheckAnswers_WhenStateMissing_RedirectsToAdd()
     {
         _inviteUserStateStore.Setup(s => s.GetAsync()).ReturnsAsync((InviteUserState?)null);
-        var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, null, CancellationToken.None);
+        var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, CancellationToken.None);
         result.Should().BeOfType<RedirectToActionResult>().Which.ActionName.Should()
             .Be(nameof(InviteUserController.Add));
     }
@@ -591,7 +651,7 @@ public class InviteUserControllerTests
                 s.GetApplicationRolesStepAsync(TestOrganisationData.Id, state, It.IsAny<CancellationToken>()))
             .ReturnsAsync(rolesViewModel);
 
-        var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, null, CancellationToken.None);
+        var result = await _controller.CheckAnswersStep(TestOrganisationData.Id, CancellationToken.None);
 
         result.Should().BeOfType<ViewResult>().Which.ViewName.Should()
             .Be(nameof(InviteUserController.CheckAnswersStep));

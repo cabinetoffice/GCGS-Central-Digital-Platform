@@ -98,8 +98,35 @@ public class InviteUserController(
             await inviteUserFlowService.GetOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
     }
 
+    [HttpPost("add-user/organisation-role")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> OrganisationRoleStepSubmit(
+        Guid id,
+        OrganisationRole? organisationRole,
+        bool returnToCheckAnswers = false,
+        CancellationToken ct = default)
+    {
+        var state = await inviteUserStateStore.GetAsync();
+        if (state is null || state.OrganisationId != id)
+            return RedirectToAction(nameof(Add), new { id });
+
+        if (organisationRole is null)
+        {
+            ModelState.AddModelError(nameof(organisationRole), "Select a role for this user");
+            return View(nameof(OrganisationRoleStep),
+                await inviteUserFlowService.GetOrganisationRoleStepViewModelAsync(state, returnToCheckAnswers, ct));
+        }
+
+        state = state with { OrganisationRole = organisationRole.Value };
+        await inviteUserStateStore.SetAsync(state);
+
+        return returnToCheckAnswers
+            ? RedirectToAction(nameof(CheckAnswersStep), new { id })
+            : RedirectToAction(nameof(ApplicationRolesStep), new { id });
+    }
+
     [HttpGet("add-user/application-roles")]
-    public async Task<IActionResult> ApplicationRolesStep(Guid id, OrganisationRole? organisationRole,
+    public async Task<IActionResult> ApplicationRolesStep(Guid id,
         CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
@@ -143,7 +170,6 @@ public class InviteUserController(
     [HttpGet("add-user/check-answers")]
     public async Task<IActionResult> CheckAnswersStep(
         Guid id,
-        OrganisationRole? organisationRole,
         CancellationToken ct)
     {
         var state = await inviteUserStateStore.GetAsync();
