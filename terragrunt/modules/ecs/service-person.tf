@@ -19,8 +19,6 @@ module "ecs_service_person" {
       name                          = var.service_configs.person.name
       public_domain                 = var.public_domain
       public_service_urls           = local.public_service_urls
-      queue_entity_verification_url = var.queue_entity_verification_url
-      queue_organisation_url        = var.queue_organisation_url
       queue_user_management_url     = var.queue_user_management_url
       service_port                  = local.service_ports_by_service[var.service_configs.person.name]
       service_version               = local.service_version_sirsi

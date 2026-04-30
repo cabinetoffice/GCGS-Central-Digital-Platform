@@ -129,10 +129,10 @@ dependency service_opensearch {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
-    entity_verification_queue_arn = "mock"
-    entity_verification_queue_url = "mock"
-    organisation_queue_arn        = "mock"
-    organisation_queue_url        = "mock"
+    entity_verification_queue_arn  = "mock"
+    entity_verification_queue_url  = "mock"
+    organisation_queue_arn         = "mock"
+    organisation_queue_url         = "mock"
   }
 }
 

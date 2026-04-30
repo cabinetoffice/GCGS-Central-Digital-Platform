@@ -145,6 +145,7 @@ output "services_target_group_arn_suffix_map" {
     (module.ecs_service_organisation_app.service_name)                     = module.ecs_service_organisation_app.service_target_group_arn_suffix,
     (module.ecs_service_outbox_processor_entity_verification.service_name) = module.ecs_service_outbox_processor_entity_verification.service_target_group_arn_suffix,
     (module.ecs_service_outbox_processor_organisation.service_name)        = module.ecs_service_outbox_processor_organisation.service_target_group_arn_suffix,
+    (module.ecs_service_outbox_processor_user_management.service_name)     = module.ecs_service_outbox_processor_user_management.service_target_group_arn_suffix,
     (module.ecs_service_person.service_name)                               = module.ecs_service_person.service_target_group_arn_suffix,
     (module.ecs_service_tenant.service_name)                               = module.ecs_service_tenant.service_target_group_arn_suffix,
     (module.ecs_service_user_management_api.service_name)                  = module.ecs_service_user_management_api.service_target_group_arn_suffix,
