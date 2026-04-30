@@ -222,6 +222,26 @@ public class InviteUserFlowServiceTests : AdapterTestFixture
         result.Applications[0].SelectedRoleId.Should().BeNull();
     }
 
+    [Fact]
+    public async Task GetApplicationRolesStepAsync_EnabledByDefaultApp_SortedFirst()
+    {
+        SetupOrg();
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
+            .ReturnsAsync([
+                MakeApplication(orgAppId: 1, appId: 1, name: "Regular App", isEnabledByDefault: false),
+                MakeApplication(orgAppId: 2, appId: 2, name: "FTS App", isEnabledByDefault: true)
+            ]);
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default)).ReturnsAsync([]);
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 2, default)).ReturnsAsync([]);
+
+        var result = await _sut.GetApplicationRolesStepAsync(OrgGuid, MakeState(), CancellationToken.None);
+
+        result!.Applications.Should().HaveCount(2);
+        result.Applications[0].ApplicationName.Should().Be("FTS App");
+        result.Applications[0].IsEnabledByDefault.Should().BeTrue();
+        result.Applications[1].ApplicationName.Should().Be("Regular App");
+    }
+
     // ── GetCheckAnswersViewModelAsync ─────────────────────────────────────────
 
     [Fact]

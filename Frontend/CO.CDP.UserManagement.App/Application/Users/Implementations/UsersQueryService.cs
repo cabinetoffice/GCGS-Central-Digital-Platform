@@ -133,6 +133,11 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                 .ToDictionary(a => a.Id, a => a);
 
             var appDetails = (user.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
+                .OrderByDescending(ar =>
+                {
+                    appLookup.TryGetValue(ar.OrganisationApplicationId, out var orgApp);
+                    return orgApp?.Application?.IsEnabledByDefault ?? false;
+                })
                 .Select(ar =>
                 {
                     appLookup.TryGetValue(ar.OrganisationApplicationId, out var orgApp);

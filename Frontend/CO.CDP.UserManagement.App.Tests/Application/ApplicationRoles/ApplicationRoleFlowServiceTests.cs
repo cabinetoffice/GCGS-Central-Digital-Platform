@@ -153,6 +153,29 @@ public class ApplicationRoleFlowServiceTests : AdapterTestFixture
         result.Applications[0].SelectedRoleId.Should().BeNull();
     }
 
+    [Fact]
+    public async Task GetUserViewModelAsync_EnabledByDefaultApp_SortedFirst()
+    {
+        var personId = Guid.NewGuid();
+        SetupOrg();
+        _adapter.Setup(a => a.GetUserAsync(OrgGuid, personId, default))
+            .ReturnsAsync(MakeUser(personId: personId));
+        _adapter.Setup(a => a.GetApplicationsAsync(OrgId, default))
+            .ReturnsAsync([
+                MakeApplication(orgAppId: 1, appId: 1, name: "Regular App", isEnabledByDefault: false),
+                MakeApplication(orgAppId: 2, appId: 2, name: "FTS App", isEnabledByDefault: true)
+            ]);
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 1, default)).ReturnsAsync([]);
+        _adapter.Setup(a => a.GetApplicationRolesAsync(OrgId, 2, default)).ReturnsAsync([]);
+
+        var result = await _sut.GetUserViewModelAsync(OrgGuid, personId, CancellationToken.None);
+
+        result!.Applications.Should().HaveCount(2);
+        result.Applications[0].ApplicationName.Should().Be("FTS App");
+        result.Applications[0].IsEnabledByDefault.Should().BeTrue();
+        result.Applications[1].ApplicationName.Should().Be("Regular App");
+    }
+
     // ── GetInviteViewModelAsync ───────────────────────────────────────────────
 
     [Fact]
