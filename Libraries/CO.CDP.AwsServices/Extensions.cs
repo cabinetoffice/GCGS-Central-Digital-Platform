@@ -74,7 +74,8 @@ public static class Extensions
             .AddAWSService<IAmazonSQS>();
     }
 
-    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddOutboxSqsPublisher<TDbContext>(this IServiceCollection services,
+        IConfiguration configuration)
         where TDbContext : DbContext, IOutboxMessageDbContext
     {
         var context = configuration.GetValue<string>("DbContext");
@@ -90,9 +91,9 @@ public static class Extensions
         }
 
         services.AddSingleton<OutboxProcessorBackgroundService.OutboxProcessorConfiguration>(s =>
-                 s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
-                 new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
-             );
+            s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher?.Outbox ??
+            new OutboxProcessorBackgroundService.OutboxProcessorConfiguration()
+        );
         services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
         services.AddScoped<IOutboxProcessor>(s =>
         {
@@ -125,7 +126,8 @@ public static class Extensions
         var awsConfig = awsSection.Get<AwsConfiguration>()
                         ?? throw new Exception("Aws environment configuration missing.");
 
-        if ((string.IsNullOrEmpty(awsConfig?.SqsPublisher?.QueueUrl)) || (string.IsNullOrEmpty(awsConfig?.SqsPublisher?.MessageGroupId)))
+        if ((string.IsNullOrEmpty(awsConfig.SqsPublisher?.QueueUrl)) ||
+            (string.IsNullOrEmpty(awsConfig.SqsPublisher?.MessageGroupId)))
         {
             throw new ArgumentNullException(nameof(awsConfig), "SqsPublisher QueueUrl / MessageGroupId is missing.");
         }
@@ -141,12 +143,12 @@ public static class Extensions
 
         services.AddSingleton<OutboxMessagePublisher.OutboxMessagePublisherConfiguration>(s =>
         {
-            var awsConfig = s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher;
+            var sqsPublisher = s.GetRequiredService<IOptions<AwsConfiguration>>().Value.SqsPublisher;
 
             return new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
             {
-                QueueUrl = awsConfig?.QueueUrl ?? "",
-                MessageGroupId = awsConfig?.MessageGroupId ?? ""
+                QueueUrl = sqsPublisher?.QueueUrl ?? "",
+                MessageGroupId = sqsPublisher?.MessageGroupId ?? ""
             };
         });
 
@@ -178,11 +180,16 @@ public static class Extensions
         string notificationChannel
     ) where TDbContext : DbContext, IOutboxMessageDbContext
     {
-        var awsSection = configuration.GetSection("Aws");
-        var awsConfig = awsSection.Get<AwsConfiguration>()
-                        ?? throw new Exception("Aws environment configuration missing.");
+        var routes = configuration
+            .GetSection("Aws:OutboxRoutes")
+            .Get<List<OutboxRoute>>();
 
-        var destinations = ResolveOutboxDestinationConfigurations(configuration, awsConfig);
+        if (routes == null || routes.Count == 0)
+        {
+            throw new InvalidOperationException(
+                "AddMultiQueueOutboxSqsPublisher requires at least one entry in Aws:OutboxRoutes. " +
+                "Add Aws:OutboxRoutes configuration with MessageType, QueueUrl, and MessageGroupId for each outbound event type.");
+        }
 
         services.AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<TDbContext>>();
         services.AddKeyedScoped<IPublisher, SqsPublisher>("SqsPublisher");
@@ -195,7 +202,7 @@ public static class Extensions
 
         services.AddSingleton(new MultiQueueOutboxMessagePublisherConfiguration
         {
-            Destinations = destinations
+            Routes = routes
         });
 
         if (!configuration.GetValue("Features:OutboxProcessorBackgroundService", false))
@@ -216,39 +223,6 @@ public static class Extensions
         }
 
         return services;
-    }
-
-    private static IReadOnlyList<OutboxMessagePublisher.OutboxMessagePublisherConfiguration> ResolveOutboxDestinationConfigurations(
-        IConfiguration configuration,
-        AwsConfiguration awsConfig)
-    {
-        var configuredDestinations = configuration
-            .GetSection("Aws:OutboxQueues")
-            .Get<List<OutboxMessagePublisher.OutboxMessagePublisherConfiguration>>();
-
-        if (configuredDestinations is { Count: > 0 })
-        {
-            if (configuredDestinations.Any(d => string.IsNullOrWhiteSpace(d.QueueUrl) || string.IsNullOrWhiteSpace(d.MessageGroupId)))
-            {
-                throw new ArgumentNullException(nameof(configuredDestinations), "Aws:OutboxQueues entries require QueueUrl and MessageGroupId.");
-            }
-
-            return configuredDestinations;
-        }
-
-        if ((string.IsNullOrEmpty(awsConfig.SqsPublisher?.QueueUrl)) || (string.IsNullOrEmpty(awsConfig.SqsPublisher?.MessageGroupId)))
-        {
-            throw new ArgumentNullException(nameof(awsConfig), "SqsPublisher QueueUrl / MessageGroupId is missing.");
-        }
-
-        return
-        [
-            new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
-            {
-                QueueUrl = awsConfig.SqsPublisher.QueueUrl,
-                MessageGroupId = awsConfig.SqsPublisher.MessageGroupId
-            }
-        ];
     }
 
     public static IServiceCollection AddSqsDispatcher(this IServiceCollection services,
@@ -275,6 +249,7 @@ public static class Extensions
         {
             services.AddHostedService<DispatcherBackgroundService>();
         }
+
         return services;
     }
 

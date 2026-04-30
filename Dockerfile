@@ -119,7 +119,6 @@ COPY --link Services/CO.CDP.RegisterOfCommercialTools.Persistence.Tests/CO.CDP.R
 COPY --link Libraries/CO.CDP.UserManagement.Core/CO.CDP.UserManagement.Core.csproj Libraries/CO.CDP.UserManagement.Core/
 COPY --link Libraries/CO.CDP.UserManagement.Shared/CO.CDP.UserManagement.Shared.csproj Libraries/CO.CDP.UserManagement.Shared/
 COPY --link Libraries/CO.CDP.UserManagement.WebApiClient/CO.CDP.UserManagement.WebApiClient.csproj Libraries/CO.CDP.UserManagement.WebApiClient/
-COPY --link Libraries/CO.CDP.OrganisationSync/CO.CDP.OrganisationSync.csproj Libraries/CO.CDP.OrganisationSync/
 COPY --link Services/CO.CDP.UserManagement.Infrastructure/CO.CDP.UserManagement.Infrastructure.csproj Services/CO.CDP.UserManagement.Infrastructure/
 COPY --link Services/CO.CDP.UserManagement.CdpInfrastructure/CO.CDP.UserManagement.CdpInfrastructure.csproj Services/CO.CDP.UserManagement.CdpInfrastructure/
 COPY --link Services/CO.CDP.UserManagement.Api/CO.CDP.UserManagement.Api.csproj Services/CO.CDP.UserManagement.Api/
@@ -418,6 +417,15 @@ ARG VERSION
 ENV VERSION=${VERSION}
 ENV DbContext=EntityVerificationContext
 ENV Channel=entity_verification_outbox
+WORKDIR /app
+COPY --from=publish-outbox-processor /app/publish .
+ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
+
+FROM base AS final-outbox-processor-user-management
+ARG VERSION
+ENV VERSION=${VERSION}
+ENV DbContext=UserManagementDbContext
+ENV Channel=user_management_outbox
 WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]

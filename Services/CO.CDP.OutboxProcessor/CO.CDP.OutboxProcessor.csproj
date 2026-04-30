@@ -21,6 +21,7 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.WebApi.Foundation\CO.CDP.WebApi.Foundation.csproj" />
         <ProjectReference Include="..\CO.CDP.EntityVerification.Persistence\CO.CDP.EntityVerification.Persistence.csproj" />
         <ProjectReference Include="..\CO.CDP.OrganisationInformation.Persistence\CO.CDP.OrganisationInformation.Persistence.csproj" />
+        <ProjectReference Include="..\CO.CDP.UserManagement.Infrastructure\CO.CDP.UserManagement.Infrastructure.csproj"/>
     </ItemGroup>
 
 </Project>

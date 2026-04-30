@@ -1,10 +1,7 @@
+using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.OrganisationSync;
-using CO.CDP.Person.WebApi.Features;
+using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
-using Microsoft.FeatureManagement;
-using IOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
-using UmPartyRole = CO.CDP.UserManagement.Core.Constants.PartyRole;
 
 namespace CO.CDP.Person.WebApi.UseCase;
 
@@ -12,63 +9,52 @@ public class ClaimPersonInviteUseCase(
     IPersonRepository personRepository,
     IPersonInviteRepository personInviteRepository,
     IOrganisationRepository organisationRepository,
-    IFeatureManager featureManager,
-    IAtomicScope atomicScope,
-    IOrganisationMembershipSync membershipSync,
+    IPublisher publisher,
     ILogger<ClaimPersonInviteUseCase> logger)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
     {
         var person = await personRepository.Find(command.personId)
-            ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
+                     ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
         var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId)
-            ?? throw new UnknownPersonInviteException($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
+                           ?? throw new UnknownPersonInviteException(
+                               $"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
 
         GuardPersonInviteExpired(personInvite);
         GuardPersonInviteAlreadyClaimed(personInvite);
         await GuardFromDuplicateEmailWithinOrganisation(organisationId: personInvite.Organisation!.Guid, person.Email);
 
         var organisation = await organisationRepository.FindIncludingTenantByOrgId(personInvite.OrganisationId)
-            ?? throw new UnknownOrganisationException(
-                $"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}.");
+                           ?? throw new UnknownOrganisationException(
+                               $"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}.");
 
-        return await atomicScope.ExecuteAsync(async ct =>
+        organisation.OrganisationPersons.Add(new OrganisationPerson
         {
-            organisation.OrganisationPersons.Add(new OrganisationPerson
-            {
-                Person = person,
-                Scopes = personInvite.Scopes,
-                OrganisationId = organisation.Id,
-            });
-
-            person.Tenants.Add(organisation.Tenant);
-            personInvite.Person = person;
-
-            personRepository.Track(person);
-            personInviteRepository.Track(personInvite);
-
-            var syncEnabled = await featureManager.IsEnabledAsync(FeatureFlags.OrganisationSyncEnabled);
-            var orgPartyRoles = organisation.Roles.Select(r => (UmPartyRole)(int)r).ToList();
-
-            return syncEnabled
-                ? (await membershipSync.ClaimMembershipAsync(
-                        new ClaimMembershipCommand(
-                            organisation.Guid,
-                            person.Guid,
-                            person.UserUrn,
-                            personInvite.Scopes,
-                            orgPartyRoles), ct))
-                    .Match(
-                        onLeft: error => LogAndContinue(error),
-                        onRight: _ => true)
-                : true;
+            Person = person,
+            Scopes = personInvite.Scopes,
+            OrganisationId = organisation.Id,
         });
-    }
 
-    private bool LogAndContinue(SyncError error)
-    {
-        logger.LogError("UM membership sync failed: {Error}", error.Message);
+        person.Tenants.Add(organisation.Tenant);
+        personInvite.Person = person;
+
+        personRepository.Track(person);
+        personInviteRepository.Track(personInvite);
+
+        logger.LogInformation("Publishing PersonInviteClaimed for org {OrgGuid}, person {PersonGuid}",
+            organisation.Guid, person.Guid);
+
+        await publisher.Publish(new PersonInviteClaimed
+        {
+            OrganisationId = organisation.Guid.ToString(),
+            PersonId = person.Guid.ToString(),
+            UserPrincipalId = person.UserUrn,
+            Scopes = personInvite.Scopes
+        });
+
+        await organisationRepository.SaveAsync(organisation, _ => Task.CompletedTask);
+
         return true;
     }
 

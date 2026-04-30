@@ -14,12 +14,15 @@ public class OrganisationRepository : Repository<CoreEntities.Organisation>, IOr
     {
     }
 
-    public async Task<CoreEntities.Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid, CancellationToken cancellationToken = default)
+    public async Task<CoreEntities.Organisation?> GetByCdpGuidAsync(Guid cdpOrganisationGuid,
+        CancellationToken cancellationToken = default)
     {
-        return await DbSet.FirstOrDefaultAsync(o => o.CdpOrganisationGuid == cdpOrganisationGuid, cancellationToken);
+        return DbSet.Local.FirstOrDefault(o => o.CdpOrganisationGuid == cdpOrganisationGuid)
+               ?? await DbSet.FirstOrDefaultAsync(o => o.CdpOrganisationGuid == cdpOrganisationGuid, cancellationToken);
     }
 
-    public async Task<bool> SlugExistsAsync(string slug, int? excludeId = null, CancellationToken cancellationToken = default)
+    public async Task<bool> SlugExistsAsync(string slug, int? excludeId = null,
+        CancellationToken cancellationToken = default)
     {
         var query = DbSet.Where(o => o.Slug == slug);
 
