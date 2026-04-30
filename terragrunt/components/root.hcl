@@ -270,6 +270,7 @@ locals {
     organisation_information_migrations           = { cpu = 256, memory = 512 }
     outbox_processor_entity_verification          = { desired_count = 1 }
     outbox_processor_organisation                 = { desired_count = 1 }
+    outbox_processor_user_management              = { desired_count = 1 }
     person                                        = {}
     scheduled_worker                              = { desired_count = 1 }
     tenant                                        = {}
@@ -329,6 +330,7 @@ locals {
     organisation_information_migrations           = { cluster = "sirsi",     type = "db-migration",                          name = "organisation-information-migrations" }
     outbox_processor_entity_verification          = { cluster = "sirsi",     type = "service",      listener_priority = 119, name = "outbox-processor-entity-verification" }
     outbox_processor_organisation                 = { cluster = "sirsi",     type = "service",      listener_priority = 120, name = "outbox-processor-organisation" }
+    outbox_processor_user_management              = { cluster = "sirsi",     type = "service",      listener_priority = 125, name = "outbox-processor-user-management" }
     person                                        = { cluster = "sirsi",     type = "web-service",  listener_priority = 121, name = "person" }
     scheduled_worker                              = { cluster = "sirsi",     type = "service",      listener_priority = 122, name = "scheduled-worker" }
     tenant                                        = { cluster = "sirsi",     type = "web-service",  listener_priority = 123, name = "tenant" }
