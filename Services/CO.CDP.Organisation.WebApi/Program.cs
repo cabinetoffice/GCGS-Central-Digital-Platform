@@ -19,6 +19,7 @@ using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
 using CO.CDP.WebApi.Foundation;
 using Microsoft.FeatureManagement;
+using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using Microsoft.AspNetCore.Authorization;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -40,7 +41,9 @@ builder.Services.AddSwaggerGen(options => { options.DocumentOrganisationApi(buil
 builder.Services.AddAutoMapper(typeof(WebApiToPersistenceProfile));
 
 var connectionString = ConnectionStringHelper.GetConnectionString(builder.Configuration, "OrganisationInformationDatabase");
+builder.Services.AddSingleton(new NpgsqlDataSourceBuilder(connectionString).MapEnums().Build());
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
+builder.Services.AddDbContext<OrganisationInformationContext>((sp, o) => o.UseNpgsql(sp.GetRequiredService<NpgsqlDataSource>()));
 
 builder.Services.AddScoped<IIdentifierService, IdentifierService>();
 builder.Services.AddScoped<IOrganisationRepository, DatabaseOrganisationRepository>();
