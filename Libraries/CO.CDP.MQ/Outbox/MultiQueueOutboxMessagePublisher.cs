@@ -1,12 +1,11 @@
 using System.Text.Json;
 using Microsoft.Extensions.Logging;
-using static CO.CDP.MQ.Outbox.OutboxMessagePublisher;
 
 namespace CO.CDP.MQ.Outbox;
 
 public record MultiQueueOutboxMessagePublisherConfiguration
 {
-    public IReadOnlyList<OutboxMessagePublisherConfiguration> Destinations { get; init; } = [];
+    public IReadOnlyList<OutboxRoute> Routes { get; init; } = [];
 }
 
 public class MultiQueueOutboxMessagePublisher(
@@ -30,21 +29,31 @@ public class MultiQueueOutboxMessagePublisher(
         var messageType = typeMapper(message);
         var serialized = serializer(message);
 
+        var matchingRoutes = configuration.Routes
+            .Where(r => r.MessageType == messageType)
+            .ToList();
+
+        if (matchingRoutes.Count == 0)
+        {
+            throw new InvalidOperationException(
+                $"No outbox route configured for message type '{messageType}'. " +
+                $"Add an entry to Aws:OutboxRoutes in the service configuration.");
+        }
+
         logger.LogDebug(
-            "Publishing the `{TYPE}` message to {DESTINATIONS} destination queue(s): `{MESSAGE}`",
+            "Publishing the `{TYPE}` message to {COUNT} route(s)",
             messageType,
-            configuration.Destinations.Count,
-            serialized
+            matchingRoutes.Count
         );
 
-        foreach (var destination in configuration.Destinations)
+        foreach (var route in matchingRoutes)
         {
             await messages.SaveAsync(new OutboxMessage
             {
                 Type = messageType,
                 Message = serialized,
-                QueueUrl = destination.QueueUrl,
-                MessageGroupId = destination.MessageGroupId
+                QueueUrl = route.QueueUrl,
+                MessageGroupId = route.MessageGroupId
             });
         }
     }

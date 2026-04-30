@@ -1262,11 +1262,15 @@ public class UmApiMembershipIntegrationTests
                     .AddScoped<IOutboxMessageRepository, DatabaseOutboxMessageRepository<UserManagementDbContext>>();
                 services.AddSingleton(new MultiQueueOutboxMessagePublisherConfiguration
                 {
-                    Destinations =
+                    Routes =
                     [
-                        new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
+                        new OutboxRoute
                         {
-                            QueueUrl = "http://test-queue",
+                            MessageType = "PersonScopesUpdated", QueueUrl = "http://test-queue", MessageGroupId = "test"
+                        },
+                        new OutboxRoute
+                        {
+                            MessageType = "PersonRemovedFromOrganisation", QueueUrl = "http://test-queue",
                             MessageGroupId = "test"
                         }
                     ]
@@ -1333,11 +1337,15 @@ public class UmApiMembershipIntegrationTests
                 services.AddScoped(_ => failingRepository.Object);
                 services.AddSingleton(new MultiQueueOutboxMessagePublisherConfiguration
                 {
-                    Destinations =
+                    Routes =
                     [
-                        new OutboxMessagePublisher.OutboxMessagePublisherConfiguration
+                        new OutboxRoute
                         {
-                            QueueUrl = "http://test-queue",
+                            MessageType = "PersonScopesUpdated", QueueUrl = "http://test-queue", MessageGroupId = "test"
+                        },
+                        new OutboxRoute
+                        {
+                            MessageType = "PersonRemovedFromOrganisation", QueueUrl = "http://test-queue",
                             MessageGroupId = "test"
                         }
                     ]
