@@ -624,6 +624,7 @@ pre.rouge .gs {
 <li><a href="#_7_shared_user_sessions">7. Shared user sessions</a></li>
 <li><a href="#_8_git_merge_strategy">8. Git merge strategy</a></li>
 <li><a href="#_9_outbox_processor_topology_and_fan_out_strategy">9. Outbox processor topology and fan-out strategy</a></li>
+<li><a href="#_10_typed_outbox_routing">10. Typed outbox routing</a></li>
 </ul>
 </li>
 </ul>
@@ -3201,7 +3202,7 @@ branches as if they were already merged, before merge.</p>
 <div class="sect4">
 <h5 id="_status_9">Status</h5>
 <div class="paragraph">
-<p>Accepted</p>
+<p>Superseded by <a href="0010-typed-outbox-routing.adoc">ADR 0010</a></p>
 </div>
 </div>
 <div class="sect4">
@@ -3413,13 +3414,166 @@ introduced operational problems. It also exposed fragility around shared Postgre
 </div>
 </div>
 </div>
+<div class="sect3">
+<h4 id="_10_typed_outbox_routing">10. Typed outbox routing</h4>
+<div class="paragraph">
+<p>Date: 2026-05-01</p>
+</div>
+<div class="sect4">
+<h5 id="_status_10">Status</h5>
+<div class="paragraph">
+<p>Accepted</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_context_11">Context</h5>
+<div class="paragraph">
+<p><a href="0009-outbox-processor-topology-and-fanout.adoc">ADR 0009</a> adopted a write-time fan-out model where
+every outbox event is persisted once per configured destination queue, regardless of event type.
+Consumers silently delete messages whose types they do not handle.</p>
+</div>
+<div class="paragraph">
+<p>This created three problems:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Incorrect queue ownership.</strong> <code>organisation.fifo</code> was consumed by Entity Verification, but its name suggested
+it belonged to Organisation. <code>entity-verification.fifo</code> was consumed by Organisation, but its name suggested
+it belonged to Entity Verification. Configuration was misleading and error-prone.</p>
+</li>
+<li>
+<p><strong>Blind fan-out sends noise.</strong> Person publishes <code>PersonInviteClaimed</code> to the <code>organisation.fifo</code> queue even
+though Organisation WebApi has no handler for it. Every Organisation service instance deletes the message
+silently. New event types added to a producer require manual validation that all receiving queues are not
+surprised by the arrival.</p>
+</li>
+<li>
+<p><strong>User Management publishes to the wrong queue.</strong> UM&#8217;s <code>PersonRemovedFromOrganisation</code> and <code>PersonScopesUpdated</code>
+events were sent to <code>entity-verification.fifo</code>, which is Organisation&#8217;s inbound queue. This worked because
+Organisation consumed that queue, but it is structurally confusing and ties UM to EV&#8217;s queue name.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Additionally, User Management had a running outbox (backed by a PostgreSQL NOTIFY trigger added in migration
+<code>20260421095017_AddOutboxMessages.cs</code>) but no dedicated draining processor.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_decision_9">Decision</h5>
+<div class="paragraph">
+<p>Replace blind fan-out with typed outbox routing, a dedicated inbound queue for Organisation, and consistent
+destination-based queue naming (each queue named after its consumer).</p>
+</div>
+<div class="sect5">
+<h6 id="_queue_topology">Queue topology</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Queue</th>
+<th class="tableblock halign-left valign-top">Consumer</th>
+<th class="tableblock halign-left valign-top">Events</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>entity-verification.fifo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Entity Verification</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OrganisationRegistered</code>, <code>OrganisationUpdated</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>organisation.fifo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Organisation WebApi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>PponGenerated</code>, <code>PersonRemovedFromOrganisation</code>, <code>PersonScopesUpdated</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user-management.fifo</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User Management API</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>OrganisationRegistered</code>, <code>OrganisationUpdated</code>, <code>OrganisationApproved</code>, <code>PersonInviteClaimed</code>, <code>PersonRemovedFromOrganisation</code>, <code>PersonScopesUpdated</code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_typed_routing">Typed routing</h6>
+<div class="paragraph">
+<p><code>AddMultiQueueOutboxSqsPublisher</code> now reads <code>Aws:OutboxRoutes</code> instead of <code>Aws:OutboxQueues</code>.
+Each route entry specifies <code>MessageType</code>, <code>QueueUrl</code>, and <code>MessageGroupId</code>.
+The publisher persists one outbox row per route whose <code>MessageType</code> matches the event being published.
+If no route matches, the publisher throws at runtime so events are never silently dropped.
+The service fails to start if no routes are configured.</p>
+</div>
+<div class="paragraph">
+<p>Example configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="nl">"Aws"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"OutboxRoutes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w"> </span><span class="nl">"MessageType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OrganisationRegistered"</span><span class="p">,</span><span class="w"> </span><span class="nl">"QueueUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...entity-verification.fifo"</span><span class="p">,</span><span class="w"> </span><span class="nl">"MessageGroupId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"EntityVerification"</span><span class="w"> </span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="w"> </span><span class="nl">"MessageType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"OrganisationRegistered"</span><span class="p">,</span><span class="w"> </span><span class="nl">"QueueUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"...user-management.fifo"</span><span class="p">,</span><span class="w"> </span><span class="nl">"MessageGroupId"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UserManagement"</span><span class="w"> </span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_user_management_outbox_processor">User Management outbox processor</h6>
+<div class="paragraph">
+<p>A new <code>outbox-processor-user-management</code> service drains the <code>user_management_outbox</code> PostgreSQL channel.
+The <code>UserManagementDbContext</code> branch is added to <code>CO.CDP.OutboxProcessor/Program.cs</code>.
+The UM API sets <code>Features:OutboxProcessorBackgroundService = true</code> so the in-process background drainer
+does not compete with the dedicated processor.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_rejected_alternatives">Rejected alternatives</h5>
+<div class="sect5">
+<h6 id="_keep_blind_fan_out_with_backward_compatible_fallback">Keep blind fan-out with backward-compatible fallback</h6>
+<div class="paragraph">
+<p>Retaining <code>Aws:OutboxQueues</code> as a fallback while adding <code>Aws:OutboxRoutes</code> would leave misconfigured
+services able to start without warning. Fail-fast is preferable to silent misconfiguration.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_consequences_9">Consequences</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Producers must declare an explicit route for every event type they publish.
+New event types without a matching route cause a runtime exception on the first publish attempt.</p>
+</li>
+<li>
+<p>Silent message deletion at consumers is eliminated for the listed event types.</p>
+</li>
+<li>
+<p>All queues follow destination-based naming (named after their consumer), consistent with <code>user-management.fifo</code> and <code>av-scanner.fifo</code>.</p>
+</li>
+<li>
+<p>Future fan-out to many consumers should be implemented using SNS or EventBridge rather than by adding
+more <code>OutboxRoutes</code> entries, and should be recorded as a separate ADR.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-04-30 15:15:36 UTC
+Last updated 2026-04-30 15:17:18 UTC
 </div>
 </div>
 </body>
