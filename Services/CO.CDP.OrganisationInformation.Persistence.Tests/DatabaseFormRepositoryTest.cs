@@ -323,6 +323,57 @@ public class DatabaseFormRepositoryTest(PostgreSqlFixture postgreSql) : IClassFi
     }
 
     [Fact]
+    public async Task GetConnectedEntityExclusionUsageAsync_ReturnsEntities_ReferencedByActiveExclusionAnswers()
+    {
+        using var connectedEntityRepo = ConnectedEntityRepository();
+        await using var context = GetDbContext();
+        var organisationId = Guid.NewGuid();
+        var organisation = GivenOrganisation(organisationId: organisationId);
+        var form = GivenForm();
+        var section = GivenFormSection(form: form, type: FormSectionType.Exclusions);
+        var sharedConsent = GivenSharedConsent(
+            state: SubmissionState.Draft,
+            organisation: organisation,
+            form: form);
+        var answerSet = GivenAnswerSet(sharedConsent: sharedConsent, section: section);
+        var ceGuid = Guid.NewGuid();
+        GivenAnswer(
+            question: GivenFormQuestion(type: FormQuestionType.Text, section: section),
+            textValue: "Answer 1",
+            answerSet: answerSet,
+            jsonValue: $@"
+            {{
+                ""id"": ""{ceGuid}"",
+                ""type"": ""connected-entity""
+            }}");
+        context.Organisations.Add(organisation);
+        context.SharedConsents.Add(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var ce = new ConnectedEntity
+        {
+            Guid = ceGuid,
+            EntityType = ConnectedEntityType.Organisation,
+            Organisation = new ConnectedEntity.ConnectedOrganisation
+            {
+                OrganisationId = organisation.Guid,
+                Name = "CHN_222",
+                Category = ConnectedOrganisationCategory.DirectorOrTheSameResponsibilities,
+                RegisteredLegalForm = "Legal Form",
+                LawRegistered = "Law Registered"
+            },
+            SupplierOrganisation = organisation
+        };
+        await connectedEntityRepo.Save(ce);
+
+        var usage = await connectedEntityRepo.GetConnectedEntityExclusionUsageAsync(organisationId);
+
+        usage.Should().ContainKey(ceGuid);
+        usage[ceGuid].Item1.Should().Be(form.Guid);
+        usage[ceGuid].Item2.Should().Be(section.Guid);
+    }
+
+    [Fact]
     public async Task DeleteAnswerSetAsync_ShouldReturnFalse_WhenAnswerSetNotFound()
     {
         var organisationId = Guid.NewGuid();
