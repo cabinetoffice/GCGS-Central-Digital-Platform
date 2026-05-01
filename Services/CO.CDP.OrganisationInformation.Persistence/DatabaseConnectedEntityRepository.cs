@@ -13,6 +13,38 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
     private sealed record ExclusionAnswer(Guid Id, string? Type);
 
+    private IQueryable<ActiveExclusionAnswerRow> ActiveExclusionAnswers(Guid organisationId) =>
+        (from fas in context.FormAnswerSets.AsNoTracking()
+         join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
+         join f in context.Forms on fs.FormId equals f.Id
+         join sc in context.SharedConsents on new { fs.FormId, Id = fas.SharedConsentId } equals new { sc.FormId, sc.Id }
+         join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
+         where fas.Deleted == false
+               && fs.Type == FormSectionType.Exclusions
+               && fa.JsonValue != null
+               && sc.Organisation.Guid == organisationId
+               && !context.FormAnswerSets.Any(d => d.Deleted && d.CreatedFrom == fas.Guid)
+         select new ActiveExclusionAnswerRow { FormGuid = f.Guid, SectionGuid = fs.Guid, JsonValue = fa.JsonValue! });
+
+    private sealed class ActiveExclusionAnswerRow
+    {
+        public Guid FormGuid { get; init; }
+        public Guid SectionGuid { get; init; }
+        public string JsonValue { get; init; } = string.Empty;
+    }
+
+    private static ExclusionAnswer? TryDeserialiseExclusionAnswer(string json)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<ExclusionAnswer>(json, JsonReadOptions);
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
     public void Dispose()
     {
         context.Dispose();
@@ -47,19 +79,10 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
     {
         var entityIdJson = $$"""{"id":"{{connectedEntityId}}"}""";
 
-        var match = await (from fas in context.FormAnswerSets.AsNoTracking()
-                           join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
-                           join f in context.Forms on fs.FormId equals f.Id
-                           join sc in context.SharedConsents on new { fs.FormId, Id = fas.SharedConsentId } equals new { sc.FormId, sc.Id }
-                           join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
-                           where fas.Deleted == false
-                                 && fs.Type == FormSectionType.Exclusions
-                                 && fa.JsonValue != null
-                                 && sc.Organisation.Guid == organisationId
-                                 && EF.Functions.JsonContains(fa.JsonValue!, entityIdJson)
-                                 && !context.FormAnswerSets.Any(d => d.Deleted && d.CreatedFrom == fas.Guid)
-                           select new { FormGuid = f.Guid, SectionGuid = fs.Guid })
-                          .FirstOrDefaultAsync();
+        var match = await ActiveExclusionAnswers(organisationId)
+            .Where(r => EF.Functions.JsonContains(r.JsonValue, entityIdJson))
+            .Select(r => new { r.FormGuid, r.SectionGuid })
+            .FirstOrDefaultAsync();
 
         return match != null
             ? new Tuple<bool, Guid, Guid>(true, match.FormGuid, match.SectionGuid)
@@ -68,18 +91,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
 
     public async Task<IReadOnlyDictionary<Guid, Tuple<Guid, Guid>>> GetConnectedEntityExclusionUsageAsync(Guid organisationId)
     {
-        var rows = await (from fas in context.FormAnswerSets.AsNoTracking()
-                          join fs in context.Set<FormSection>() on fas.SectionId equals fs.Id
-                          join f in context.Forms on fs.FormId equals f.Id
-                          join sc in context.SharedConsents on new { fs.FormId, Id = fas.SharedConsentId } equals new { sc.FormId, sc.Id }
-                          join fa in context.Set<FormAnswer>() on fas.Id equals fa.FormAnswerSetId
-                          where fas.Deleted == false
-                                && fs.Type == FormSectionType.Exclusions
-                                && fa.JsonValue != null
-                                && sc.Organisation.Guid == organisationId
-                                && !context.FormAnswerSets.Any(d => d.Deleted && d.CreatedFrom == fas.Guid)
-                          select new { FormGuid = f.Guid, SectionGuid = fs.Guid, fa.JsonValue })
-                         .ToListAsync();
+        var rows = await ActiveExclusionAnswers(organisationId).ToListAsync();
 
         var result = new Dictionary<Guid, Tuple<Guid, Guid>>();
 
@@ -87,16 +99,7 @@ public class DatabaseConnectedEntityRepository(OrganisationInformationContext co
         {
             if (string.IsNullOrEmpty(row.JsonValue)) continue;
 
-            ExclusionAnswer? answer;
-            try
-            {
-                answer = JsonSerializer.Deserialize<ExclusionAnswer>(row.JsonValue, JsonReadOptions);
-            }
-            catch (JsonException)
-            {
-                continue;
-            }
-
+            var answer = TryDeserialiseExclusionAnswer(row.JsonValue);
             if (answer == null || answer.Id == Guid.Empty) continue;
 
             // Preserve "first match wins" semantics of the original implementation.
