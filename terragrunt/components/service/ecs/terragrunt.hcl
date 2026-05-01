@@ -137,14 +137,14 @@ dependency service_cache {
 dependency service_queue {
   config_path = "../../service/queue"
   mock_outputs = {
-    av_scanner_queue_arn             = "mock"
-    av_scanner_queue_url             = "mock"
-    entity_verification_queue_arn    = "mock"
-    entity_verification_queue_url    = "mock"
-    organisation_queue_arn           = "mock"
-    organisation_queue_url           = "mock"
-    user_management_queue_arn        = "mock"
-    user_management_queue_url        = "mock"
+    av_scanner_queue_arn          = "mock"
+    av_scanner_queue_url          = "mock"
+    entity_verification_queue_arn = "mock"
+    entity_verification_queue_url = "mock"
+    organisation_queue_arn        = "mock"
+    organisation_queue_url        = "mock"
+    user_management_queue_arn     = "mock"
+    user_management_queue_url     = "mock"
   }
 }
 
@@ -250,14 +250,14 @@ inputs = {
   opensearch_endpoint   = dependency.service_opensearch.outputs.endpoint
   opensearch_domain_arn = dependency.service_opensearch.outputs.domain_arn
 
-  queue_av_scanner_arn             = dependency.service_queue.outputs.av_scanner_queue_arn
-  queue_av_scanner_url             = dependency.service_queue.outputs.av_scanner_queue_url
-  queue_entity_verification_arn    = dependency.service_queue.outputs.entity_verification_queue_arn
-  queue_entity_verification_url    = dependency.service_queue.outputs.entity_verification_queue_url
-  queue_organisation_arn           = dependency.service_queue.outputs.organisation_queue_arn
-  queue_organisation_url           = dependency.service_queue.outputs.organisation_queue_url
-  queue_user_management_arn        = dependency.service_queue.outputs.user_management_queue_arn
-  queue_user_management_url        = dependency.service_queue.outputs.user_management_queue_url
+  queue_av_scanner_arn          = dependency.service_queue.outputs.av_scanner_queue_arn
+  queue_av_scanner_url          = dependency.service_queue.outputs.av_scanner_queue_url
+  queue_entity_verification_arn = dependency.service_queue.outputs.entity_verification_queue_arn
+  queue_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
+  queue_organisation_arn        = dependency.service_queue.outputs.organisation_queue_arn
+  queue_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
+  queue_user_management_arn     = dependency.service_queue.outputs.user_management_queue_arn
+  queue_user_management_url     = dependency.service_queue.outputs.user_management_queue_url
 
   ses_configuration_set_arn  = dependency.service_notification.outputs.configuration_set_arn
   ses_configuration_set_name = dependency.service_notification.outputs.configuration_set_name
