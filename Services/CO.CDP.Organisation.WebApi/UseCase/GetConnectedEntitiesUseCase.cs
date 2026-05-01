@@ -1,6 +1,5 @@
 using AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 public class GetConnectedEntitiesUseCase(IConnectedEntityRepository connectedEntityRepository, IMapper mapper)
@@ -17,17 +16,23 @@ public class GetConnectedEntitiesUseCase(IConnectedEntityRepository connectedEnt
             o.Items["OrganisationId"] = organisationId;
         });
 
-        foreach(var entity in mappedEntities)
-        {
-            if (entity != null)
-            {
-                var connectedEntity = await connectedEntityRepository.IsConnectedEntityUsedInExclusionAsync(
-                   organisationId,
-                   entity.EntityId);
+        var exclusionUsage = await connectedEntityRepository.GetConnectedEntityExclusionUsageAsync(organisationId);
 
-                entity.IsInUse = connectedEntity.Item1;
-                entity.FormGuid = connectedEntity.Item2;
-                entity.SectionGuid = connectedEntity.Item3;
+        foreach (var entity in mappedEntities)
+        {
+            if (entity == null) continue;
+
+            if (exclusionUsage.TryGetValue(entity.EntityId, out var match))
+            {
+                entity.IsInUse = true;
+                entity.FormGuid = match.Item1;
+                entity.SectionGuid = match.Item2;
+            }
+            else
+            {
+                entity.IsInUse = false;
+                entity.FormGuid = Guid.Empty;
+                entity.SectionGuid = Guid.Empty;
             }
         }
 
