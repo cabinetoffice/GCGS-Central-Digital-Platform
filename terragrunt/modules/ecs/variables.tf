@@ -240,22 +240,22 @@ variable "queue_av_scanner_url" {
 }
 
 variable "queue_entity_verification_arn" {
-  description = "ARN of the Entity Verification's SQS queue (consumed by Entity Verification)"
+  description = "ARN of the Entity Verification's SQS queue"
   type        = string
 }
 
 variable "queue_entity_verification_url" {
-  description = "URL of the Entity Verification's SQS queue (consumed by Entity Verification)"
+  description = "URL of the Entity Verification's SQS queue"
   type        = string
 }
 
 variable "queue_organisation_arn" {
-  description = "ARN of the Organisation's SQS queue (consumed by Organisation WebApi)"
+  description = "ARN of the Organisation's SQS queue"
   type        = string
 }
 
 variable "queue_organisation_url" {
-  description = "URL of the Organisation's SQS queue (consumed by Organisation WebApi)"
+  description = "URL of the Organisation's outbound SQS queue"
   type        = string
 }
 
