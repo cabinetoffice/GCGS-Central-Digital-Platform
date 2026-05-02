@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//ecs" : "../../../modules//empty"
+  source = local.global_vars.locals.environment != "orchestrator" ? "../../../modules//ecs" : null
 }
 
 include {
@@ -9,7 +9,6 @@ include {
 locals {
   global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
-  is_orchestrator = local.global_vars.locals.environment == "orchestrator"
 
   tags = merge(
     local.global_vars.inputs.tags,
@@ -23,8 +22,7 @@ locals {
 
 dependency core_iam {
   config_path = "../../core/iam"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     cloudfront_realtime_logs_role_arn   = "mock"
     cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
@@ -41,8 +39,7 @@ dependency core_iam {
 
 dependency core_networking {
   config_path = "../../core/networking"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     internal_hosted_zone_id     = "mock"
     private_subnet_ids          = "mock"
     private_subnets_cidr_blocks = "mock"
@@ -52,18 +49,15 @@ dependency core_networking {
     public_hosted_zone_id       = "mock"
     public_subnet_ids           = "mock"
     public_subnets_cidr_blocks  = "mock"
-    vpc_cider                   = "mock"
     vpc_id                      = "mock"
     waf_acl_arn                 = "mock"
-    waf_acl_fts_arn             = "mock"
     waf_acl_php_arn             = "mock"
   }
 }
 
 dependency core_security_groups {
   config_path = "../../core/security-groups"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     alb_internal_sg_id        = "mock"
     alb_sg_id                 = "mock"
     db_mysql_sg_id            = "mock"
@@ -73,23 +67,20 @@ dependency core_security_groups {
     elasticache_redis_sg_id   = "mock"
     vpce_ecr_api_sg_id        = "mock"
     vpce_ecr_dkr_sg_id        = "mock"
-    vpce_logs_sg_id           = "mock"
     vpce_secretsmanager_sg_id = "mock"
   }
 }
 
 dependency common_networking {
   config_path = "../../common/networking"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     vpce_s3_prefix_list_id = "mock"
   }
 }
 
 dependency service_auth {
   config_path = "../../service/auth"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     cfs_user_pool_arn                        = "mock"
     cfs_user_pool_client_id                  = "mock"
     commercial_tools_app_user_pool_client_id = "mock"
@@ -99,15 +90,13 @@ dependency service_auth {
     fts_user_pool_client_id                  = "mock"
     organisation_app_user_pool_arn           = "mock"
     organisation_app_user_pool_client_id     = "mock"
-    user_management_app_user_pool_client_id  = "mock"
     user_pool_domain                         = "mock"
   }
 }
 
 dependency service_database {
   config_path = "../../service/database"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     cfs_cluster_address                                = "mock"
     cfs_cluster_credentials_arn                        = "mock"
     cfs_cluster_credentials_kms_key_id                 = "mock"
@@ -130,8 +119,7 @@ dependency service_database {
 
 dependency service_opensearch {
   config_path = "../../service/opensearch"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     domain_arn = "arn:aws:es:eu-west-2:123456789012:domain/mock-domain"
     endpoint   = "mock"
   }
@@ -139,8 +127,7 @@ dependency service_opensearch {
 
 dependency service_cache {
   config_path = "../../service/cache"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     port                     = "mock"
     primary_endpoint_address = "mock"
     redis_auth_token_arn     = "mock"
@@ -149,8 +136,7 @@ dependency service_cache {
 
 dependency service_queue {
   config_path = "../../service/queue"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
+  mock_outputs = {
     av_scanner_queue_arn          = "mock"
     av_scanner_queue_url          = "mock"
     entity_verification_queue_arn = "mock"
@@ -164,14 +150,12 @@ dependency service_queue {
 
 dependency service_notification {
   config_path = "../../service/notification"
-  skip_outputs = local.is_orchestrator
-  mock_outputs = local.is_orchestrator ? {} : {
-    configuration_set_arn  = "mock"
+  mock_outputs = {
     configuration_set_name = "mock"
   }
 }
 
-inputs = local.is_orchestrator ? tomap({}) : tomap({
+inputs = {
 
   account_ids                       = local.global_vars.locals.account_ids
   cfs_extra_domains                 = local.global_vars.locals.cfs_extra_domains
@@ -277,4 +261,4 @@ inputs = local.is_orchestrator ? tomap({}) : tomap({
 
   ses_configuration_set_arn  = dependency.service_notification.outputs.configuration_set_arn
   ses_configuration_set_name = dependency.service_notification.outputs.configuration_set_name
-})
+}
