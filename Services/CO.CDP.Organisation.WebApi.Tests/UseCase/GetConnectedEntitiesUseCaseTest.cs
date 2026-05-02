@@ -16,12 +16,16 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
         var organisationId = Guid.NewGuid();
 
         _repository
-            .Setup(r => r.GetConnectedEntityExclusionUsageAsync(organisationId))
-            .ReturnsAsync(new Dictionary<Guid, Tuple<Guid, Guid>>());
+            .Setup(r => r.GetSummary(organisationId))
+            .ReturnsAsync([]);
 
         var found = await UseCase.Execute(organisationId);
 
         found.Should().BeEmpty();
+
+        _repository.Verify(
+            r => r.GetConnectedEntityExclusionUsageAsync(It.IsAny<Guid>()),
+            Times.Never);
     }
 
     [Fact]
