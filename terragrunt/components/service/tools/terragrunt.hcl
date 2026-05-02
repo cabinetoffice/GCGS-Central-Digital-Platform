@@ -1,5 +1,5 @@
 terraform {
-  source = local.global_vars.locals.environment == "orchestrator" ? null : "../../../modules//tools"
+  source = local.global_vars.locals.environment == "orchestrator" ? "../../../modules//empty" : "../../../modules//tools"
 }
 
 include {
@@ -9,6 +9,7 @@ include {
 locals {
   global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
   service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
+  is_orchestrator = local.global_vars.locals.environment == "orchestrator"
 
   tags = merge(
     local.global_vars.inputs.tags,
@@ -22,7 +23,8 @@ locals {
 
 dependency core_iam {
   config_path = "../../core/iam"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     cloudwatch_events_arn               = "mock"
     cloudwatch_events_name              = "mock"
     ecs_task_arn                        = "mock"
@@ -40,7 +42,8 @@ dependency core_iam {
 
 dependency core_networking {
   config_path = "../../core/networking"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     private_subnet_ids    = "mock"
     public_domain         = "mock"
     public_hosted_zone_id = "mock"
@@ -52,7 +55,8 @@ dependency core_networking {
 
 dependency core_security_groups {
   config_path = "../../core/security-groups"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     alb_tools_sg_id   = "mock"
     db_mysql_sg_id    = "mock"
     db_postgres_sg_id = "mock"
@@ -63,7 +67,10 @@ dependency core_security_groups {
 
 dependency service_auth {
   config_path = "../../service/auth"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
+    cloud_beaver_user_pool_arn                = "mock"
+    cloud_beaver_user_pool_client_id          = "mock"
     healthcheck_user_pool_arn                = "mock"
     healthcheck_user_pool_client_id          = "mock"
     opensearch_admin_user_pool_client_id     = "mock"
@@ -75,13 +82,17 @@ dependency service_auth {
     opensearch_admin_user_pool_domain        = "mock"
     opensearch_gateway_user_pool_domain      = "mock"
     opensearch_debugtask_user_pool_domain    = "mock"
+    tools_user_pool_arn                      = "mock"
+    tools_user_pool_client_id_s3_uploader    = "mock"
+    tools_user_pool_domain                   = "mock"
     user_pool_domain                         = "mock"
   }
 }
 
 dependency service_cache {
   config_path = "../../service/cache"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     port                     = "mock"
     primary_endpoint_address = "mock"
     redis_auth_token_arn     = "mock"
@@ -90,7 +101,8 @@ dependency service_cache {
 
 dependency service_ecs {
   config_path = "../../service/ecs"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     certificate_arn  = "mock"
     ecs_alb_dns_name = "mock"
     ecs_cluster_id   = "mock"
@@ -101,7 +113,8 @@ dependency service_ecs {
 
 dependency service_database {
   config_path = "../../service/database"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     cfs_cluster_address                         = "mock"
     cfs_cluster_credentials_arn                 = "mock"
     cfs_cluster_name                            = "mock"
@@ -120,7 +133,8 @@ dependency service_database {
 
 dependency service_opensearch {
   config_path = "../../service/opensearch"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     dashboard_endpoint = "mock"
     endpoint           = "mock"
   }
@@ -128,7 +142,8 @@ dependency service_opensearch {
 
 dependency service_queue {
   config_path = "../../service/queue"
-  mock_outputs = {
+  skip_outputs = local.is_orchestrator
+  mock_outputs = local.is_orchestrator ? {} : {
     entity_verification_queue_arn = "mock"
     entity_verification_queue_url = "mock"
     organisation_queue_arn        = "mock"
@@ -136,7 +151,7 @@ dependency service_queue {
   }
 }
 
-inputs = {
+inputs = local.is_orchestrator ? tomap({}) : tomap({
   account_ids                 = local.global_vars.locals.account_ids
   cloud_beaver_config         = local.global_vars.locals.tools_configs.cloud_beaver
   healthcheck_config          = local.global_vars.locals.tools_configs.healthcheck
@@ -222,4 +237,4 @@ inputs = {
 
   sqs_entity_verification_url = dependency.service_queue.outputs.entity_verification_queue_url
   sqs_organisation_url        = dependency.service_queue.outputs.organisation_queue_url
-}
+})
