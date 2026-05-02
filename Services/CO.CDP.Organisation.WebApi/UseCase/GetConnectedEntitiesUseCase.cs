@@ -7,9 +7,14 @@ public class GetConnectedEntitiesUseCase(IConnectedEntityRepository connectedEnt
 {
     public async Task<IEnumerable<Model.ConnectedEntityLookup>> Execute(Guid organisationId)
     {
-        var entities = await connectedEntityRepository.GetSummary(organisationId);
+        var entities = (await connectedEntityRepository.GetSummary(organisationId))
+            .Where(ce => !ce!.Deleted)
+            .ToList();
 
-        entities = entities.Where(ce => !ce!.Deleted);
+        if (entities.Count == 0)
+        {
+            return [];
+        }
 
         IEnumerable<Model.ConnectedEntityLookup>? mappedEntities = mapper.Map<IEnumerable<Model.ConnectedEntityLookup>>(entities, o =>
         {
