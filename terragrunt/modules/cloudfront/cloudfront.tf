@@ -23,10 +23,6 @@ resource "aws_cloudfront_distribution" "this" {
     connection_attempts      = 3
     connection_timeout       = 10
     response_completion_timeout = 0
-
-    s3_origin_config {
-      origin_access_identity = ""
-    }
   }
 
   default_cache_behavior {

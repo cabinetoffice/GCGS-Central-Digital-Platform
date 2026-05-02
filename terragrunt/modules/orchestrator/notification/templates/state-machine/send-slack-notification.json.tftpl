@@ -51,7 +51,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:putItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "ConditionExpression": "attribute_not_exists(pipeline_execution_id)",
         "Item": {
           "pipeline_execution_id": {
@@ -123,7 +123,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:getItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "Key": {
           "pipeline_execution_id": {
             "S.$": "$.detail.execution-id"
@@ -151,7 +151,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "Key": {
           "pipeline_execution_id": {
             "S.$": "$.detail.execution-id"
@@ -170,7 +170,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "ConditionExpression": "attribute_exists(pipeline_execution_id)",
         "Key": {
           "pipeline_execution_id": {
@@ -224,7 +224,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "Key": {
           "pipeline_execution_id": {
             "S.$": "$.detail.execution-id"
@@ -261,7 +261,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::dynamodb:updateItem",
       "Parameters": {
-        "TableName": "${dynamodb_table_name}",
+        "TableName": "${use_lockfile_name}",
         "ConditionExpression": "attribute_exists(pipeline_execution_id) AND NOT contains(stages.#stage, :succeeded) AND NOT contains(stages.#stage, :failed)",
         "Key": {
           "pipeline_execution_id": {

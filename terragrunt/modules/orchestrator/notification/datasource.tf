@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "dynamodb:PutItem",
       "dynamodb:UpdateItem"
     ]
-    resources = [aws_dynamodb_table.pipeline_execution_timestamps.arn]
+    resources = [aws_use_lockfile.pipeline_execution_timestamps.arn]
   }
 
   statement {

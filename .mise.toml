@@ -1,5 +1,7 @@
 [tools]
-dotnet = "8.0.401"
+aws-cli = { version = "2.34.40", symlink_bins = "true" }
+dotnet = "8.0.420"
+jq = "1.8.1"
 poetry = "2.2.1"
-terraform = "1.14.3"
-terragrunt = "0.87.0"
+terraform = "1.15.1"
+terragrunt = "1.0.3"
