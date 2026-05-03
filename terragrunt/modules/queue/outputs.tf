@@ -42,6 +42,7 @@ output "queue_names" {
   value = concat(
     module.av_scanner_queue.queue_names,
     module.entity_verification_queue.queue_names,
+    module.fts_notice_publish_queue.queue_names,
     module.organisation_queue.queue_names,
     module.user_management_queue.queue_names,
   )

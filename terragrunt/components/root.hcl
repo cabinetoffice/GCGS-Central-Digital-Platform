@@ -264,7 +264,7 @@ locals {
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1 }
-    fts_notice_publish_worker            = { desired_count = 0 }
+    fts_notice_publish_worker            = { desired_count = 1 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256, memory = 512 }

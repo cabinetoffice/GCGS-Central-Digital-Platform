@@ -249,6 +249,16 @@ variable "queue_entity_verification_url" {
   type        = string
 }
 
+variable "queue_fts_notice_publish_arn" {
+  description = "ARN of the FTS notice publish SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_publish_url" {
+  description = "URL of the FTS notice publish SQS queue"
+  type        = string
+}
+
 variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string
