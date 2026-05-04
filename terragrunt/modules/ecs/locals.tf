@@ -124,4 +124,26 @@ locals {
 
   ses_identity_domain = var.is_production ? replace(var.public_domain, "supplier-information.", "") : var.public_domain
 
+  overwrite_to_new_fts_paths = [
+    "/api/cpv-codes/search*",
+    "/assets/*",
+    "/change-language/*",
+    "/commercial-tools*",
+    "/contracts/*",
+    "/css/*",
+    "/favicon.ico",
+    "/images/*",
+    "/js/*",
+    "/notices/*",
+    "/one-login/*",
+    "/search/commercial-tools*",
+    "/search/contracts*",
+    "/search/opportunities*",
+    "/session-timeout-keep-alive*",
+    "/signin-oidc*",
+    "/signout-callback-oidc*",
+  ]
+
+  overwrite_to_new_fts_path_groups = chunklist(local.overwrite_to_new_fts_paths, 4)
+
 }
