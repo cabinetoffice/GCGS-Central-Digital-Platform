@@ -30,6 +30,9 @@
         <ProjectReference Include="..\..\Libraries\CO.CDP.Configuration\CO.CDP.Configuration.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.MQ\CO.CDP.MQ.csproj" />
         <ProjectReference Include="..\..\Libraries\CO.CDP.AwsServices\CO.CDP.AwsServices.csproj" />
+        <ProjectReference Include="..\CO.CDP.ApplicationRegistry.Persistence\CO.CDP.ApplicationRegistry.Persistence.csproj" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.8" />
     </ItemGroup>
 
 </Project>
