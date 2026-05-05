@@ -18,6 +18,16 @@ output "entity_verification_queue_url" {
   value       = module.entity_verification_queue.queue_url
 }
 
+output "fts_notice_publish_queue_arn" {
+  description = "ARN of the fts-notice-publish SQS queue"
+  value       = module.fts_notice_publish_queue.queue_arn
+}
+
+output "fts_notice_publish_queue_url" {
+  description = "URL of the fts-notice-publish SQS queue"
+  value       = module.fts_notice_publish_queue.queue_url
+}
+
 output "organisation_queue_arn" {
   description = "ARN of the organisation SQS queue"
   value       = module.organisation_queue.queue_arn
@@ -32,6 +42,7 @@ output "queue_names" {
   value = concat(
     module.av_scanner_queue.queue_names,
     module.entity_verification_queue.queue_names,
+    module.fts_notice_publish_queue.queue_names,
     module.organisation_queue.queue_names,
     module.user_management_queue.queue_names,
   )

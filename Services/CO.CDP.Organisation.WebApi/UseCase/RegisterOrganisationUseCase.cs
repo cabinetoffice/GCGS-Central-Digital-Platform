@@ -2,12 +2,9 @@ using AutoMapper;
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.Functional;
 using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
-using CO.CDP.OrganisationInformation.Persistence;
-
 using OiOrganisationPerson = CO.CDP.OrganisationInformation.Persistence.OrganisationPerson;
 using OiOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 using OiPartyRole = CO.CDP.OrganisationInformation.PartyRole;
@@ -44,15 +41,15 @@ public class RegisterOrganisationUseCase(
         ILogger<RegisterOrganisationUseCase> logger,
         IClaimService claimService)
         : this(identifierService,
-              organisationRepository,
-              personRepository,
-              govUKNotifyApiClient,
-              publisher,
-              mapper,
-              configuration,
-              logger,
-              claimService,
-              Guid.NewGuid)
+            organisationRepository,
+            personRepository,
+            govUKNotifyApiClient,
+            publisher,
+            mapper,
+            configuration,
+            logger,
+            claimService,
+            Guid.NewGuid)
     {
     }
 
@@ -63,7 +60,11 @@ public class RegisterOrganisationUseCase(
 
         await organisationRepository.SaveAsync(
             organisation,
-            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
+            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation) with
+            {
+                FounderPersonId = person.Guid,
+                FounderUserUrn = person.UserUrn
+            }));
 
         if (organisation.PendingRoles.Contains(OiPartyRole.Buyer))
             await NotifyAdminOfApprovalRequest(organisation);
@@ -74,9 +75,11 @@ public class RegisterOrganisationUseCase(
     private async Task<OiPerson> FindPerson()
     {
         var userUrn = claimService.GetUserUrn()
-            ?? throw new UnknownPersonException("Ensure the token is valid and contains the necessary claims.");
+                      ?? throw new UnknownPersonException(
+                          "Ensure the token is valid and contains the necessary claims.");
 
-        return await personRepository.FindByUrn(userUrn) ?? throw new UnknownPersonException($"Unknown person {userUrn}.");
+        return await personRepository.FindByUrn(userUrn) ??
+               throw new UnknownPersonException($"Unknown person {userUrn}.");
     }
 
     private OiPersistenceOrganisation CreateOrganisation(RegisterOrganisation command, OiPerson person)
@@ -91,7 +94,9 @@ public class RegisterOrganisationUseCase(
 
         organisation.Identifiers
             .Where(i => i.Uri == null)
-            .Select(i => i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id, organisation.Guid))
+            .Select(i =>
+                i.Uri = identifierService.GetRegistryUri(command.Identifier.Scheme, command.Identifier.Id,
+                    organisation.Guid))
             .ToList();
 
         organisation.UpdateBuyerInformation();
@@ -118,7 +123,8 @@ public class RegisterOrganisationUseCase(
             return;
         }
 
-        var requestLink = new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
+        var requestLink =
+            new Uri(new Uri(baseAppUrl), $"/support/organisation/{organisation.Guid}/approval").ToString();
 
         var emailRequest = new EmailNotificationRequest
         {
@@ -131,8 +137,16 @@ public class RegisterOrganisationUseCase(
             }
         };
 
-        try { await govUKNotifyApiClient.SendEmail(emailRequest); }
-        catch { /* swallow — email failure must not abort org registration */ }
+        try
+        {
+            await govUKNotifyApiClient.SendEmail(emailRequest);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex,
+                "Failed to send approval-request email to support admin for organisation {OrganisationId}.",
+                organisation.Guid);
+        }
     }
 
     private OiPersistenceOrganisation MapRequestToOrganisation(RegisterOrganisation command, OiPerson person) =>

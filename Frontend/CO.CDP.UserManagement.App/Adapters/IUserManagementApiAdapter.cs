@@ -7,8 +7,8 @@ namespace CO.CDP.UserManagement.App.Adapters;
 
 public interface IUserManagementApiAdapter
 {
-    Task<OrganisationResponse?> GetOrganisationBySlugAsync(
-        string organisationSlug, CancellationToken ct);
+    Task<OrganisationResponse?> GetOrganisationByGuidAsync(
+        Guid cdpOrganisationId, CancellationToken ct);
 
     Task<ICollection<OrganisationUserResponse>> GetUsersAsync(
         Guid organisationId, CancellationToken ct);
@@ -64,4 +64,11 @@ public interface IUserManagementApiAdapter
 
     Task<Result<ServiceFailure, ServiceOutcome>> CancelInviteAsync(
         Guid organisationId, int pendingInviteId, CancellationToken ct);
+
+    Task<ICollection<JoinRequestResponse>> GetJoinRequestsAsync(
+        Guid organisationId, CancellationToken ct);
+
+    Task<Result<ServiceFailure, ServiceOutcome>> ReviewJoinRequestAsync(
+        Guid organisationId, Guid joinRequestId,
+        ReviewJoinRequestRequest request, CancellationToken ct);
 }

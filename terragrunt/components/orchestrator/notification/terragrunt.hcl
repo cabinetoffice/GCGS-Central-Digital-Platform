@@ -49,7 +49,14 @@ dependency orchestrator_ci {
 dependency orchestrator_common {
   config_path = "../common"
   mock_outputs = {
-    ssm_envs_sirsi_service_version_name = "mock"
+    ssm_envs_cfs_service_version_arn       = "mock"
+    ssm_envs_cfs_service_version_name      = "mock"
+    ssm_envs_combined_service_version_arn  = "mock"
+    ssm_envs_combined_service_version_name = "mock"
+    ssm_envs_fts_service_version_arn       = "mock"
+    ssm_envs_fts_service_version_name      = "mock"
+    ssm_envs_sirsi_service_version_arn     = "mock"
+    ssm_envs_sirsi_service_version_name    = "mock"
   }
 }
 

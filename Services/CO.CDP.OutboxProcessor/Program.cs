@@ -2,6 +2,7 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.UserManagement.Infrastructure.Data;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,8 +17,9 @@ if (builder.Configuration["DbContext"] == null)
     throw new ArgumentException("Missing DbContext configuration");
 }
 
-builder.Services.AddSingleton(_ => new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OutboxDatabase"))
-    .Build());
+builder.Services.AddSingleton(_ =>
+    new NpgsqlDataSourceBuilder(ConnectionStringHelper.GetConnectionString(builder.Configuration, "OutboxDatabase"))
+        .Build());
 builder.Services.AddHealthChecks().AddNpgSql(sp => sp.GetRequiredService<NpgsqlDataSource>());
 builder.Services.AddHttpClient();
 builder.Services.AddHealthChecks();
@@ -32,6 +34,10 @@ var context = builder.Configuration.GetValue<string>("DbContext");
 if (context == "OrganisationInformationContext")
 {
     builder.Services.AddOutboxSqsPublisher<OrganisationInformationContext>(builder.Configuration);
+}
+else if (context == "UserManagementDbContext")
+{
+    builder.Services.AddOutboxSqsPublisher<UserManagementDbContext>(builder.Configuration);
 }
 else
 {

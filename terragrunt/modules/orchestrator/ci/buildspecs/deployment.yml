@@ -13,9 +13,16 @@ phases:
 
   build:
     commands:
-      - echo "Applying updates to all components..."
-      - cd $CODEBUILD_SRC_DIR/terragrunt/components
-      - terragrunt run-all apply -auto-approve -non-interactive
+      - |
+          if [ "${AWS_ACCOUNT_ID}" = "${ORCHESTRATOR_ACCOUNT_ID}" ]; then
+            echo "Applying orchestrator components..."
+            cd $CODEBUILD_SRC_DIR/terragrunt/components/orchestrator
+          else
+            echo "Applying service account components..."
+            cd $CODEBUILD_SRC_DIR/terragrunt/components           
+          fi
+          echo "Working directory: $(pwd)"
+          terragrunt run --all apply -non-interactive -- -auto-approve
 
   post_build:
     commands:

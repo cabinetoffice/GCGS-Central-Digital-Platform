@@ -57,6 +57,7 @@ locals {
   }
 
   fts_parameters = {
+    async_enabled                        = "false"
     email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                      = "%"
@@ -75,6 +76,7 @@ locals {
     fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
     licenced_to                           = "No-one"
     local_version                         = 1100
+    notice_publish_queue_arn              = var.queue_fts_notice_publish_arn
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
@@ -190,6 +192,26 @@ locals {
   fts_migrations_container_parameters = merge(
     local.fts_parameters,
     local.fts_migrations_service_paremeters,
+    local.fts_secrets
+  )
+
+  fts_notice_publish_worker_service_paremeters = {
+    service_port    = local.service_ports_by_service[var.service_configs.fts_notice_publish_worker.name]
+    cpu             = var.service_configs.fts_notice_publish_worker.cpu
+    image           = local.ecr_urls[var.service_configs.fts_notice_publish_worker.name]
+    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_notice_publish_worker.name].name
+    lg_prefix       = "app"
+    lg_region       = data.aws_region.current.region
+    memory          = var.is_production ? var.service_configs.fts_notice_publish_worker.memory * 2 : var.service_configs.fts_notice_publish_worker.memory // @TODO (ABN) Burn me
+    name            = var.service_configs.fts_notice_publish_worker.name
+    public_domain   = var.public_domain
+    service_version = local.service_version_fts
+    vpc_cidr        = var.vpc_cider
+  }
+
+  fts_notice_publish_worker_container_parameters = merge(
+    local.fts_parameters,
+    local.fts_notice_publish_worker_service_paremeters,
     local.fts_secrets
   )
 

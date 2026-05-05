@@ -1,0 +1,30 @@
+[
+  {
+    "name" : "${name}",
+    "image" : "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "${lg_prefix}"
+      }
+    },
+    "environment": [
+      { "name" : "APP_HOST_ADDRESS", "value" : "${app_host_address}"},
+      { "name" : "AWS_REGION", "value" : "eu-west-2"},
+      { "name" : "ENVIRONMENT", "value" : "${environment}"},
+      { "name" : "NOTICE_PUBLISH_QUEUE_NAME", "value" : "${notice_publish_queue_arn}"},
+      { "name" : "NOTICE_PUBLISH_MAX_ITERATIONS", "value" : "1000"},
+      { "name" : "NOTICE_PUBLISH_MAX_MESSAGES", "value" : "5"},
+      { "name" : "ASYNC_ENABLED", "value" : "${async_enabled}"}
+    ],
+    "secrets": [],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

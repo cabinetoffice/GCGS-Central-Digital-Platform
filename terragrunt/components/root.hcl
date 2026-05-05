@@ -56,7 +56,7 @@ locals {
       opensearch_dedicated_master_enabled = true
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
-      opensearch_instance_type            = "t3.small.search"
+      opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = null
       pinned_service_version_fts          = null
       pinned_service_version              = null
@@ -100,8 +100,8 @@ locals {
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.3.1"
-      pinned_service_version              = "1.0.83"
+      pinned_service_version_fts          = "1.3.8"
+      pinned_service_version              = "1.0.87"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
@@ -146,8 +146,8 @@ locals {
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.3.1"
-      pinned_service_version              = "1.0.82"
+      pinned_service_version_fts          = "1.3.6"
+      pinned_service_version              = "1.0.87"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
@@ -188,8 +188,8 @@ locals {
       opensearch_instance_count           = 3
       opensearch_instance_type            = "m6g.large.search"
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.3.1"
-      pinned_service_version              = "1.0.82"
+      pinned_service_version_fts          = "1.3.6"
+      pinned_service_version              = "1.0.87"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
@@ -245,36 +245,37 @@ locals {
   }
 
   service_configs_base = {
-    authority                                     = {}
-    av_scanner_app                                = {}
-    cfs                                           = { desired_count = 3, cpu = 4096, memory = 8192 }
-    cfs_migrations                                = { desired_count = 1 }
-    cfs_scheduler                                 = { desired_count = 1 }
-    commercial_tools_app                          = {}
-    commercial_tools_api                          = {}
-    commercial_tools_migrations                   = { cpu = 256, memory = 512 }
-    data_sharing                                  = {}
-    entity_verification                           = {}
-    entity_verification_migrations                = { cpu = 256, memory = 512 }
-    forms                                         = {}
-    fts                                           = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_app                                       = { desired_count = 2 }
-    fts_healthcheck                               = { desired_count = 0 }
-    fts_migrations                                = { desired_count = 1 }
-    fts_scheduler                                 = { desired_count = 1, cpu = 4096, memory = 8192 }
-    fts_search_api                                = { desired_count = 2 }
-    fts_search_indexer                            = { desired_count = 1 }
-    organisation                                  = {}
-    organisation_app                              = {}
-    organisation_information_migrations           = { cpu = 256, memory = 512 }
-    outbox_processor_entity_verification          = { desired_count = 1 }
-    outbox_processor_organisation                 = { desired_count = 1 }
-    person                                        = {}
-    scheduled_worker                              = { desired_count = 1 }
-    tenant                                        = {}
-    user_management_api                           = { desired_count = local.environment == "development" ? 1 : 0 }
-    user_management_app                           = { desired_count = local.environment == "development" ? 1 : 0 }
-    user_management_migrations                    = { cpu = 256, memory = 512 }
+    authority                            = {}
+    av_scanner_app                       = {}
+    cfs                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    cfs_migrations                       = { desired_count = 1 }
+    cfs_scheduler                        = { desired_count = 1 }
+    commercial_tools_app                 = {}
+    commercial_tools_api                 = {}
+    commercial_tools_migrations          = { cpu = 256, memory = 512 }
+    data_sharing                         = {}
+    entity_verification                  = {}
+    entity_verification_migrations       = { cpu = 256, memory = 512 }
+    forms                                = {}
+    fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    fts_app                              = { desired_count = 2 }
+    fts_healthcheck                      = { desired_count = 0 }
+    fts_migrations                       = { desired_count = 1 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
+    fts_search_api                       = { desired_count = 2 }
+    fts_search_indexer                   = { desired_count = 1 }
+    fts_notice_publish_worker            = { desired_count = 1 }
+    organisation                         = {}
+    organisation_app                     = {}
+    organisation_information_migrations  = { cpu = 256, memory = 512 }
+    outbox_processor_entity_verification = { desired_count = 1 }
+    outbox_processor_organisation        = { desired_count = 1 }
+    person                               = {}
+    scheduled_worker                     = { desired_count = 1 }
+    tenant                               = {}
+    user_management_api                  = { desired_count = local.environment == "development" ? 1 : 0 }
+    user_management_app                  = { desired_count = local.environment == "development" ? 1 : 0 }
+    user_management_migrations           = { cpu = 256, memory = 512 }
   }
 
   desired_counts = {
@@ -303,36 +304,37 @@ locals {
   }
 
   service_configs_common = {
-    authority                                     = { cluster = "sirsi",     type = "web-service",  listener_priority = 118, name = "authority" }
-    av_scanner_app                                = { cluster = "sirsi",     type = "web-service",  listener_priority = 112, name = "av-scanner-app" }
-    cfs                                           = { cluster = "sirsi-php", type = "web-service",  listener_priority = 310, name = "cfs" }
-    cfs_migrations                                = { cluster = "sirsi-php", type = "db-migration",                          name = "cfs-migrations" }
-    cfs_scheduler                                 = { cluster = "sirsi-php", type = "service",                               name = "cfs-scheduler" }
-    commercial_tools_api                          = { cluster = "sirsi",     type = "web-service",  listener_priority = 113, name = "commercial-tools-api" }
-    commercial_tools_app                          = { cluster = "sirsi",     type = "web-service",  listener_priority = 111, name = "commercial-tools-app" }
-    commercial_tools_migrations                   = { cluster = "sirsi",     type = "db-migration",                          name = "commercial-tools-migrations" }
-    data_sharing                                  = { cluster = "sirsi",     type = "web-service",  listener_priority = 114, name = "data-sharing" }
-    entity_verification                           = { cluster = "sirsi",     type = "web-service",  listener_priority = 115, name = "entity-verification" }
-    entity_verification_migrations                = { cluster = "sirsi",     type = "db-migration",                          name = "entity-verification-migrations" }
-    forms                                         = { cluster = "sirsi",     type = "web-service",  listener_priority = 116, name = "forms" }
-    fts                                           = { cluster = "sirsi-php", type = "web-service",  listener_priority = 311, name = "fts" }
-    fts_app                                       = { cluster = "fts",       type = "service",      listener_priority = 210, name = "fts-app" }
-    fts_healthcheck                               = { cluster = "sirsi-php", type = "web-service",  listener_priority = 312, name = "fts-healthcheck" }
-    fts_migrations                                = { cluster = "sirsi-php", type = "db-migration",                          name = "fts-migrations" }
-    fts_scheduler                                 = { cluster = "sirsi-php", type = "service",                               name = "fts-scheduler" }
-    fts_search_api                                = { cluster = "fts",       type = "service",      listener_priority = 211, name = "fts-search-api" }
-    fts_search_indexer                            = { cluster = "fts",       type = "service",                               name = "fts-search-indexer" }
-    organisation                                  = { cluster = "sirsi",     type = "web-service",  listener_priority = 117, name = "organisation" }
-    organisation_app                              = { cluster = "sirsi",     type = "web-service",  listener_priority = 110, name = "organisation-app" }
-    organisation_information_migrations           = { cluster = "sirsi",     type = "db-migration",                          name = "organisation-information-migrations" }
-    outbox_processor_entity_verification          = { cluster = "sirsi",     type = "service",      listener_priority = 119, name = "outbox-processor-entity-verification" }
-    outbox_processor_organisation                 = { cluster = "sirsi",     type = "service",      listener_priority = 120, name = "outbox-processor-organisation" }
-    person                                        = { cluster = "sirsi",     type = "web-service",  listener_priority = 121, name = "person" }
-    scheduled_worker                              = { cluster = "sirsi",     type = "service",      listener_priority = 122, name = "scheduled-worker" }
-    tenant                                        = { cluster = "sirsi",     type = "web-service",  listener_priority = 123, name = "tenant" }
-    user_management_api                           = { cluster = "sirsi",     type = "web-service",  listener_priority = 130, name = "user-management-api" }
-    user_management_app                           = { cluster = "sirsi",     type = "web-service",  listener_priority = 131, name = "user-management-app" }
-    user_management_migrations                    = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }
+    authority                            = { cluster = "sirsi",     type = "web-service",  name = "authority", listener_priority = 118 }
+    av_scanner_app                       = { cluster = "sirsi",     type = "web-service",  name = "av-scanner-app", listener_priority = 112 }
+    cfs                                  = { cluster = "sirsi-php", type = "web-service",  name = "cfs", listener_priority = 310 }
+    cfs_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "cfs-migrations" }
+    cfs_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "cfs-scheduler" }
+    commercial_tools_api                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api", listener_priority = 113 }
+    commercial_tools_app                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app", listener_priority = 111 }
+    commercial_tools_migrations          = { cluster = "sirsi",     type = "db-migration", name = "commercial-tools-migrations" }
+    data_sharing                         = { cluster = "sirsi",     type = "web-service",  name = "data-sharing", listener_priority = 114 }
+    entity_verification                  = { cluster = "sirsi",     type = "web-service",  name = "entity-verification", listener_priority = 115 }
+    entity_verification_migrations       = { cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations" }
+    forms                                = { cluster = "sirsi",     type = "web-service",  name = "forms", listener_priority = 116 }
+    fts                                  = { cluster = "sirsi-php", type = "web-service",  name = "fts", listener_priority = 311 }
+    fts_app                              = { cluster = "fts",       type = "service",      name = "fts-app", listener_priority = 210 }
+    fts_healthcheck                      = { cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck", listener_priority = 312 }
+    fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
+    fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
+    fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }
+    fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
+    fts_search_indexer                   = { cluster = "fts",       type = "service",      name = "fts-search-indexer" }
+    organisation                         = { cluster = "sirsi",     type = "web-service",  name = "organisation", listener_priority = 117 }
+    organisation_app                     = { cluster = "sirsi",     type = "web-service",  name = "organisation-app", listener_priority = 110 }
+    organisation_information_migrations  = { cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations" }
+    outbox_processor_entity_verification = { cluster = "sirsi",     type = "service",      name = "outbox-processor-entity-verification", listener_priority = 119 }
+    outbox_processor_organisation        = { cluster = "sirsi",     type = "service",      name = "outbox-processor-organisation", listener_priority = 120 }
+    person                               = { cluster = "sirsi",     type = "web-service",  name = "person", listener_priority = 121 }
+    scheduled_worker                     = { cluster = "sirsi",     type = "service",      name = "scheduled-worker", listener_priority = 122 }
+    tenant                               = { cluster = "sirsi",     type = "web-service",  name = "tenant", listener_priority = 123 }
+    user_management_api                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-api", listener_priority = 130 }
+    user_management_app                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-app", listener_priority = 131 }
+    user_management_migrations           = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }
   }
 
   service_configs = {
@@ -422,7 +424,7 @@ remote_state {
   config = {
     bucket                = local.tg.state_bucket
     disable_bucket_update = true
-    dynamodb_table        = "terraform-locks"
+    use_lockfile          = true
     encrypt               = true
     key                   = local.tg.state_key
     region                = "eu-west-2"

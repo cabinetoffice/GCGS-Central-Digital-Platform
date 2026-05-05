@@ -1,46 +1,42 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using CO.CDP.UserManagement.App.Models;
-using CO.CDP.Functional;
-using CO.CDP.UserManagement.App.Services;
+using CO.CDP.UserManagement.Core.Removal;
 
-namespace CO.CDP.UserManagement.App.Application.Removal
+namespace CO.CDP.UserManagement.App.Application.Removal;
+
+public interface IUserRemovalService
 {
-    public interface IUserRemovalService
-    {
-        Task<RemoveUserViewModel?> GetUserViewModelAsync(
-            string organisationSlug,
-            Guid cdpPersonId,
-            CancellationToken ct);
+    Task<RemoveUserViewModel?> GetUserViewModelAsync(
+        Guid id,
+        Guid cdpPersonId,
+        CancellationToken ct);
 
-        Task<RemoveUserViewModel?> GetInviteViewModelAsync(
-            string organisationSlug,
-            Guid inviteGuid,
-            CancellationToken ct);
+    Task<RemoveUserViewModel?> GetInviteViewModelAsync(
+        Guid id,
+        Guid inviteGuid,
+        CancellationToken ct);
 
-        Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
-            string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+    Task<RemoveApplicationViewModel?> GetRemoveApplicationViewModelAsync(
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct);
 
-        Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
-            string organisationSlug, Guid cdpPersonId, CancellationToken ct);
+    Task<RemoveSuccessViewModel?> GetRemoveSuccessViewModelAsync(
+        Guid id, Guid cdpPersonId, CancellationToken ct);
 
-        Task<Result<ServiceFailure, ServiceOutcome>> RemoveApplicationAsync(
-            string organisationSlug, Guid cdpPersonId, string clientId, CancellationToken ct);
+    Task<RemovalValidationResult> ValidateRemovalAsync(
+        Guid id,
+        Guid cdpPersonId,
+        CancellationToken ct);
 
-        Task<bool> IsLastOwnerAsync(
-            string organisationSlug,
-            Guid cdpPersonId,
-            CancellationToken ct);
+    Task<UserRemovalSubmitResult> ValidateAndRemoveUserAsync(
+        Guid id,
+        Guid cdpPersonId,
+        bool? removeConfirmed,
+        CancellationToken ct);
 
-        Task<Result<ServiceFailure, ServiceOutcome>> RemoveUserAsync(
-            string organisationSlug,
-            Guid cdpPersonId,
-            CancellationToken ct);
+    Task<InviteRemovalSubmitResult> RemoveInviteAsync(
+        Guid id,
+        Guid inviteGuid,
+        CancellationToken ct);
 
-        Task<Result<ServiceFailure, ServiceOutcome>> RemoveInviteAsync(
-            string organisationSlug,
-            Guid inviteGuid,
-            CancellationToken ct);
-    }
+    Task<ApplicationRemovalSubmitResult> RemoveApplicationAsync(
+        Guid id, Guid cdpPersonId, string clientId, CancellationToken ct);
 }

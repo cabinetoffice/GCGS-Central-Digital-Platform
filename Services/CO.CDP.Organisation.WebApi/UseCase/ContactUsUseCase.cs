@@ -1,18 +1,17 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
+
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class ContactUsUseCase(
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
-     ILogger<ContactUsUseCase> logger)
+    ILogger<ContactUsUseCase> logger)
     : IUseCase<ContactUs, bool>
 {
     public async Task<bool> Execute(ContactUs command)
     {
-        var contactUsSentSuccess = true;
-
         var templateId = configuration["GOVUKNotify:ContactEmailTemplateId"] ?? "";
         var supportAdminEmailAddress = configuration["GOVUKNotify:SupportAdminEmailAddress"] ?? "";
 
@@ -23,32 +22,33 @@ public class ContactUsUseCase(
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send email "), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email.");
-            contactUsSentSuccess = false;
-            return contactUsSentSuccess;
+            logger.LogError(new Exception("Unable to send email "),
+                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email.");
+            return false;
         }
-       
+
         var emailRequest = new EmailNotificationRequest
         {
             EmailAddress = supportAdminEmailAddress,
             TemplateId = templateId,
-            Personalisation = new Dictionary<string, string> {
-                                        { "user_name", command.Name},
-                                        { "email_address", command.EmailAddress},
-                                        { "organisation_name", command.OrganisationName},
-                                        { "message", command.Message},
+            Personalisation = new Dictionary<string, string>
+            {
+                { "user_name", command.Name },
+                { "email_address", command.EmailAddress },
+                { "organisation_name", command.OrganisationName },
+                { "message", command.Message },
             }
         };
 
         try
         {
             await govUKNotifyApiClient.SendEmail(emailRequest);
+            return true;
         }
-        catch
+        catch (Exception ex)
         {
-            contactUsSentSuccess = false;
+            logger.LogError(ex, "Failed to send contact-us email to support admin.");
+            return false;
         }
-
-        return contactUsSentSuccess;
     }
 }

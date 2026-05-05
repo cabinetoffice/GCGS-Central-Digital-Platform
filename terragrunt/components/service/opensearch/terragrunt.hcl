@@ -35,9 +35,9 @@ dependency core_iam {
 dependency core_networking {
   config_path = "../../core/networking"
   mock_outputs = {
-    private_subnets = []
+    private_subnets             = []
     private_subnets_cidr_blocks = []
-    vpc_id = "mock"
+    vpc_id                      = "mock"
   }
 }
 
@@ -64,8 +64,8 @@ inputs = {
   role_ecs_task_opensearch_admin_name   = dependency.core_iam.outputs.ecs_task_opensearch_admin_name
   role_ecs_task_opensearch_gateway_arn  = dependency.core_iam.outputs.ecs_task_opensearch_gateway_arn
   role_ecs_task_opensearch_gateway_name = dependency.core_iam.outputs.ecs_task_opensearch_gateway_name
-  private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
-  private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks
+  private_subnet_ids                    = dependency.core_networking.outputs.private_subnet_ids
+  private_subnets_cidr_blocks           = dependency.core_networking.outputs.private_subnets_cidr_blocks
 
   ecs_sg_id = dependency.core_security_groups.outputs.ecs_sg_id
 }

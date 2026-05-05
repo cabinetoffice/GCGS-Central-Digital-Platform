@@ -1,12 +1,12 @@
+using AutoMapper;
+using CO.CDP.Authentication;
+using CO.CDP.GovUKNotify;
+using CO.CDP.GovUKNotify.Models;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation;
 using Persistence = CO.CDP.OrganisationInformation.Persistence;
 using OrganisationJoinRequest = CO.CDP.Organisation.WebApi.Model.OrganisationJoinRequest;
 using OiPerson = CO.CDP.OrganisationInformation.Persistence.Person;
-using AutoMapper;
-using CO.CDP.Authentication;
-using CO.CDP.GovUKNotify;
-using CO.CDP.GovUKNotify.Models;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -19,7 +19,8 @@ public class CreateOrganisationJoinRequestUseCase(
     IConfiguration configuration,
     IGovUKNotifyApiClient govUKNotifyApiClient,
     ILogger<CreateOrganisationJoinRequestUseCase> logger)
-    : IUseCase<(Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand), OrganisationJoinRequest>
+    : IUseCase<(Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand),
+        OrganisationJoinRequest>
 {
     public CreateOrganisationJoinRequestUseCase(
         Persistence.IOrganisationRepository organisationRepository,
@@ -29,22 +30,25 @@ public class CreateOrganisationJoinRequestUseCase(
         IConfiguration configuration,
         IGovUKNotifyApiClient govUKNotifyApiClient,
         ILogger<CreateOrganisationJoinRequestUseCase> logger
-    ) : this(organisationRepository, personRepository, organisationJoinRequestRepository, Guid.NewGuid, mapper, configuration, govUKNotifyApiClient, logger)
+    ) : this(organisationRepository, personRepository, organisationJoinRequestRepository, Guid.NewGuid, mapper,
+        configuration, govUKNotifyApiClient, logger)
     {
-
     }
 
-    public async Task<OrganisationJoinRequest> Execute((Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand) command)
+    public async Task<OrganisationJoinRequest> Execute(
+        (Guid organisationId, CreateOrganisationJoinRequest createOrganisationJoinRequestCommand) command)
     {
         var organisation = await organisationRepository.Find(command.organisationId)
                            ?? throw new UnknownOrganisationException($"Unknown organisation {command.organisationId}.");
 
         var person = await personRepository.Find(command.createOrganisationJoinRequestCommand.PersonId)
-                           ?? throw new UnknownPersonException($"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
+                     ?? throw new UnknownPersonException(
+                         $"Unknown person {command.createOrganisationJoinRequestCommand.PersonId}.");
 
         await GuardPersonIsNotAlreadyAdded(organisation, person);
 
-        var joinRequest = await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
+        var joinRequest =
+            await organisationJoinRequestRepository.FindByOrganisationAndPerson(organisation.Guid, person.Guid);
 
         if (joinRequest != null)
         {
@@ -102,13 +106,17 @@ public class CreateOrganisationJoinRequestUseCase(
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send email to organisation admins"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to organisation admins.");
+            logger.LogError(new Exception("Unable to send email to organisation admins"),
+                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to organisation admins.");
             return;
         }
 
-        var requestLink = new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/users/user-summary").ToString();
+        var requestLink =
+            new Uri(new Uri(baseAppUrl), $"/organisation/{organisation.Guid}/users/user-summary").ToString();
 
-        var organisationAdminUsers = await organisationRepository.FindOrganisationPersons(organisation.Guid, [Constants.OrganisationPersonScope.Admin]);
+        var organisationAdminUsers =
+            await organisationRepository.FindOrganisationPersons(organisation.Guid,
+                [Constants.OrganisationPersonScope.Admin]);
 
         foreach (var adminPerson in organisationAdminUsers)
         {
@@ -131,8 +139,9 @@ public class CreateOrganisationJoinRequestUseCase(
             {
                 await govUKNotifyApiClient.SendEmail(emailRequest);
             }
-            catch
+            catch (Exception ex)
             {
+                logger.LogError(ex, "Failed to send join-request notification email to an organisation admin.");
                 return;
             }
         }
@@ -144,11 +153,13 @@ public class CreateOrganisationJoinRequestUseCase(
 
         var missingConfigs = new List<string>();
 
-        if (string.IsNullOrEmpty(templateId)) missingConfigs.Add("GOVUKNotify:RequestToJoinConfirmationEmailTemplateId");
+        if (string.IsNullOrEmpty(templateId))
+            missingConfigs.Add("GOVUKNotify:RequestToJoinConfirmationEmailTemplateId");
 
         if (missingConfigs.Count != 0)
         {
-            logger.LogError(new Exception("Unable to send email to buyer user"), $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to buyer user.");
+            logger.LogError(new Exception("Unable to send email to buyer user"),
+                $"Missing configuration keys: {string.Join(", ", missingConfigs)}. Unable to send email to buyer user.");
             return;
         }
 
@@ -168,15 +179,16 @@ public class CreateOrganisationJoinRequestUseCase(
         {
             await govUKNotifyApiClient.SendEmail(emailRequest);
         }
-        catch
+        catch (Exception ex)
         {
-            return;
+            logger.LogError(ex, "Failed to send join-request confirmation email to the requesting person.");
         }
     }
 
     private async Task GuardPersonIsNotAlreadyAdded(Persistence.Organisation organisation, OiPerson person)
     {
-        var matchingOrganisationPerson = await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
+        var matchingOrganisationPerson =
+            await organisationRepository.FindOrganisationPerson(organisation.Guid, person.Guid);
 
         if (matchingOrganisationPerson != null)
         {

@@ -1,0 +1,100 @@
+= 10. Typed outbox routing
+
+Date: 2026-05-01
+
+== Status
+
+Accepted
+
+== Context
+
+link:0009-outbox-processor-topology-and-fanout.adoc[ADR 0009] adopted a write-time fan-out model where
+every outbox event is persisted once per configured destination queue, regardless of event type.
+Consumers silently delete messages whose types they do not handle.
+
+This created three problems:
+
+1. **Incorrect queue ownership.** `organisation.fifo` was consumed by Entity Verification, but its name suggested
+   it belonged to Organisation. `entity-verification.fifo` was consumed by Organisation, but its name suggested
+   it belonged to Entity Verification. Configuration was misleading and error-prone.
+
+2. **Blind fan-out sends noise.** Person publishes `PersonInviteClaimed` to the `organisation.fifo` queue even
+   though Organisation WebApi has no handler for it. Every Organisation service instance deletes the message
+   silently. New event types added to a producer require manual validation that all receiving queues are not
+   surprised by the arrival.
+
+3. **User Management publishes to the wrong queue.** UM's `PersonRemovedFromOrganisation` and `PersonScopesUpdated`
+   events were sent to `entity-verification.fifo`, which is Organisation's inbound queue. This worked because
+   Organisation consumed that queue, but it is structurally confusing and ties UM to EV's queue name.
+
+Additionally, User Management had a running outbox (backed by a PostgreSQL NOTIFY trigger added in migration
+`20260421095017_AddOutboxMessages.cs`) but no dedicated draining processor.
+
+== Decision
+
+Replace blind fan-out with typed outbox routing, a dedicated inbound queue for Organisation, and consistent
+destination-based queue naming (each queue named after its consumer).
+
+=== Queue topology
+
+[cols="2,2,3"]
+|===
+| Queue | Consumer | Events
+
+| `entity-verification.fifo`
+| Entity Verification
+| `OrganisationRegistered`, `OrganisationUpdated`
+
+| `organisation.fifo`
+| Organisation WebApi
+| `PponGenerated`, `PersonRemovedFromOrganisation`, `PersonScopesUpdated`
+
+| `user-management.fifo`
+| User Management API
+| `OrganisationRegistered`, `OrganisationUpdated`, `OrganisationApproved`, `PersonInviteClaimed`, `PersonRemovedFromOrganisation`, `PersonScopesUpdated`
+|===
+
+=== Typed routing
+
+`AddMultiQueueOutboxSqsPublisher` now reads `Aws:OutboxRoutes` instead of `Aws:OutboxQueues`.
+Each route entry specifies `MessageType`, `QueueUrl`, and `MessageGroupId`.
+The publisher persists one outbox row per route whose `MessageType` matches the event being published.
+If no route matches, the publisher throws at runtime so events are never silently dropped.
+The service fails to start if no routes are configured.
+
+Example configuration:
+
+[source,json]
+----
+{
+  "Aws": {
+    "OutboxRoutes": [
+      { "MessageType": "OrganisationRegistered", "QueueUrl": "...entity-verification.fifo", "MessageGroupId": "EntityVerification" },
+      { "MessageType": "OrganisationRegistered", "QueueUrl": "...user-management.fifo", "MessageGroupId": "UserManagement" }
+    ]
+  }
+}
+----
+
+=== User Management outbox processor
+
+A new `outbox-processor-user-management` service drains the `user_management_outbox` PostgreSQL channel.
+The `UserManagementDbContext` branch is added to `CO.CDP.OutboxProcessor/Program.cs`.
+The UM API sets `Features:OutboxProcessorBackgroundService = true` so the in-process background drainer
+does not compete with the dedicated processor.
+
+== Rejected alternatives
+
+=== Keep blind fan-out with backward-compatible fallback
+
+Retaining `Aws:OutboxQueues` as a fallback while adding `Aws:OutboxRoutes` would leave misconfigured
+services able to start without warning. Fail-fast is preferable to silent misconfiguration.
+
+== Consequences
+
+* Producers must declare an explicit route for every event type they publish.
+  New event types without a matching route cause a runtime exception on the first publish attempt.
+* Silent message deletion at consumers is eliminated for the listed event types.
+* All queues follow destination-based naming (named after their consumer), consistent with `user-management.fifo` and `av-scanner.fifo`.
+* Future fan-out to many consumers should be implemented using SNS or EventBridge rather than by adding
+  more `OutboxRoutes` entries, and should be recorded as a separate ADR.

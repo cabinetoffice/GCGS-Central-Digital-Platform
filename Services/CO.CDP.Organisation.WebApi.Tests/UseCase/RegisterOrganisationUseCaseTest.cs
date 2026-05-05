@@ -1,5 +1,4 @@
 using CO.CDP.Authentication;
-using CO.CDP.Functional;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
 using CO.CDP.MQ;
@@ -19,28 +18,16 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 {
-    private readonly Mock<IIdentifierService> _identifierService = new();
-    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
-    private readonly Mock<Persistence.IPersonRepository> _persons = new();
-    private readonly Mock<IPublisher> _publisher = new();
-    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
-    private readonly IConfiguration _mockConfiguration;
-    private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly Mock<IClaimService> _claimService = new();
     private readonly Guid _generatedGuid = Guid.NewGuid();
+    private readonly Mock<IIdentifierService> _identifierService = new();
+    private readonly Mock<ILogger<RegisterOrganisationUseCase>> _logger = new();
     private readonly AutoMapperFixture _mapperFixture;
-
-    private RegisterOrganisationUseCase UseCase => new(
-        _identifierService.Object,
-        _repository.Object,
-        _persons.Object,
-        _notifyApiClient.Object,
-        _publisher.Object,
-        _mapperFixture.Mapper,
-        _mockConfiguration,
-        _logger.Object,
-        _claimService.Object,
-        () => _generatedGuid);
+    private readonly IConfiguration _mockConfiguration;
+    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
+    private readonly Mock<Persistence.IPersonRepository> _persons = new();
+    private readonly Mock<IPublisher> _publisher = new();
+    private readonly Mock<Persistence.IOrganisationRepository> _repository = new();
 
     public RegisterOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
     {
@@ -56,8 +43,19 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         _mockConfiguration = new ConfigurationBuilder()
             .AddInMemoryCollection(inMemorySettings)
             .Build();
-
     }
+
+    private RegisterOrganisationUseCase UseCase => new(
+        _identifierService.Object,
+        _repository.Object,
+        _persons.Object,
+        _notifyApiClient.Object,
+        _publisher.Object,
+        _mapperFixture.Mapper,
+        _mockConfiguration,
+        _logger.Object,
+        _claimService.Object,
+        () => _generatedGuid);
 
     [Fact]
     public async Task ItShouldLogErrorWhenConfigurationKeysAreMissing()
@@ -79,28 +77,30 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
         var command = GivenRegisterOrganisationCommand(roles: [PartyRole.Buyer]);
 
         var useCase = new RegisterOrganisationUseCase(
-                            _identifierService.Object,
-                            _repository.Object,
-                            _persons.Object,
-                            _notifyApiClient.Object,
-                            _publisher.Object,
-                            _mapperFixture.Mapper,
-                            configurationMock,
-                            _logger.Object,
-                            _claimService.Object,
-                            () => _generatedGuid
-                        );
+            _identifierService.Object,
+            _repository.Object,
+            _persons.Object,
+            _notifyApiClient.Object,
+            _publisher.Object,
+            _mapperFixture.Mapper,
+            configurationMock,
+            _logger.Object,
+            _claimService.Object,
+            () => _generatedGuid
+        );
 
         await useCase.Execute(command);
 
         _logger.Verify(
-    x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, t) => v.ToString()!.Contains("Missing configuration keys: OrganisationAppUrl, GOVUKNotify:RequestReviewApplicationEmailTemplateId, GOVUKNotify:SupportAdminEmailAddress")),
-            It.IsAny<Exception>(),
-            It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)
-        ), Times.Once);
+            x => x.Log(
+                LogLevel.Error,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, t) =>
+                    v.ToString()!.Contains(
+                        "Missing configuration keys: OrganisationAppUrl, GOVUKNotify:RequestReviewApplicationEmailTemplateId, GOVUKNotify:SupportAdminEmailAddress")),
+                It.IsAny<Exception>(),
+                It.Is<Func<It.IsAnyType, Exception?, string>>((v, t) => true)
+            ), Times.Once);
 
         _notifyApiClient.Verify(g => g.SendEmail(It.IsAny<EmailNotificationRequest>()), Times.Never);
     }
@@ -140,8 +140,8 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
 
         _repository
             .Setup(x => x.SaveAsync(It.IsAny<Persistence.Organisation>(), AnyOnSave()))
-            .Callback<Persistence.Organisation, Func<Persistence.Organisation, Task>>(
-                (b, _) => persistanceOrganisation = b);
+            .Callback<Persistence.Organisation, Func<Persistence.Organisation, Task>>((b, _) =>
+                persistanceOrganisation = b);
 
         await UseCase.Execute(GivenRegisterOrganisationCommand());
 
@@ -310,7 +310,9 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             Addresses = command.Addresses.AsEventValue(),
             ContactPoint = command.ContactPoint.AsEventValue(),
             Roles = command.Roles.AsEventValue(),
-            Type = OrganisationType.Organisation
+            Type = OrganisationType.Organisation,
+            FounderPersonId = person.Guid,
+            FounderUserUrn = person.UserUrn
         });
     }
 
@@ -331,7 +333,6 @@ public class RegisterOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             req.Personalisation!["org_name"] == "TheOrganisation"
         )), Times.Once);
     }
-
 
     private static RegisterOrganisation GivenRegisterOrganisationCommand(
         string name = "TheOrganisation",

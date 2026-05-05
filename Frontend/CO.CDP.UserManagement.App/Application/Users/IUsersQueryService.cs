@@ -6,7 +6,7 @@ namespace CO.CDP.UserManagement.App.Application.Users
     public interface IUsersQueryService
     {
         Task<UsersViewModel?> GetViewModelAsync(
-            string? organisationSlug,
+            Guid id,
             string? role,
             string? application,
             string? search,
@@ -16,12 +16,12 @@ namespace CO.CDP.UserManagement.App.Application.Users
     public interface IUserDetailsQueryService
     {
         Task<UserDetailsViewModel?> GetViewModelAsync(
-            string organisationSlug,
+            Guid id,
             Guid cdpPersonId,
             CancellationToken ct);
 
         Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
-            string organisationSlug,
+            Guid id,
             Guid cdpPersonId,
             string clientId,
             CancellationToken ct);
@@ -30,7 +30,7 @@ namespace CO.CDP.UserManagement.App.Application.Users
     public interface IInviteDetailsQueryService
     {
         Task<InviteDetailsViewModel?> GetViewModelAsync(
-            string organisationSlug,
+            Guid id,
             Guid inviteGuid,
             CancellationToken ct);
     }

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 namespace CO.CDP.UserManagement.App.Models;
 
 public sealed record RemoveApplicationViewModel(
-    string OrganisationSlug = "",
+    Guid OrganisationId = default,
     string UserDisplayName = "",
     string UserEmail = "",
     string ApplicationName = "",

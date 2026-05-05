@@ -1,5 +1,5 @@
-using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.App.Adapters;
+using CO.CDP.UserManagement.App.Models;
 using CO.CDP.UserManagement.Shared.Responses;
 
 namespace CO.CDP.UserManagement.App.Application.Users.Implementations
@@ -14,53 +14,32 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
         }
 
         public async Task<UsersViewModel?> GetViewModelAsync(
-            string? organisationSlug,
+            Guid id,
             string? role,
             string? application,
             string? search,
             CancellationToken ct)
         {
-            if (string.IsNullOrEmpty(organisationSlug)) return null;
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            if (id == Guid.Empty) return null;
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org == null) return null;
-            // Fetch users, invites and applications in parallel
+
             var usersTask = _adapter.GetUsersAsync(org.CdpOrganisationGuid, ct);
             var invitesTask = _adapter.GetInvitesAsync(org.CdpOrganisationGuid, ct);
             var applicationsTask = _adapter.GetApplicationsAsync(org.Id, ct);
+            var joinRequestsTask = _adapter.GetJoinRequestsAsync(org.CdpOrganisationGuid, ct);
 
-            var users = (await usersTask);
-            var invites = (await invitesTask);
-            var applications = (await applicationsTask);
+            await Task.WhenAll(usersTask, invitesTask, applicationsTask, joinRequestsTask);
 
-            // Apply filters
-            IEnumerable<OrganisationUserResponse> filteredUsers = users;
-            if (!string.IsNullOrEmpty(role))
-            {
-                filteredUsers = filteredUsers.Where(u =>
-                    string.Equals(u.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase));
-                invites = (invites)
-                    .Where(i => string.Equals(i.OrganisationRole.ToString(), role, StringComparison.OrdinalIgnoreCase))
-                    .ToList();
-            }
+            var users = await usersTask;
+            var invites = await invitesTask;
+            var applications = (await applicationsTask).ToList();
+            var joinRequests = (await joinRequestsTask).ToList();
 
-            if (!string.IsNullOrEmpty(search))
-            {
-                var lower = search.ToLowerInvariant();
-                filteredUsers = filteredUsers.Where(u =>
-                    ($"{u.FirstName} {u.LastName}".ToLowerInvariant().Contains(lower)) ||
-                    (u.Email.ToLowerInvariant().Contains(lower) == true));
-            }
+            var filter = new UsersFilter(role, application, search);
 
-            // Application filter: best-effort match against user's ApplicationRoles (by ApplicationId or ClientId)
-            if (!string.IsNullOrEmpty(application))
-            {
-                filteredUsers = filteredUsers.Where(u =>
-                    (u.ApplicationAssignments ?? Enumerable.Empty<UserAssignmentResponse>())
-                    .Any(ar => string.Equals((ar.ApplicationId ?? ar.OrganisationApplicationId).ToString(), application,
-                                   StringComparison.OrdinalIgnoreCase)
-                               || string.Equals(ar.Application?.ClientId, application,
-                                   StringComparison.OrdinalIgnoreCase)));
-            }
+            var filteredUsers = UserFilterPipeline.ApplyTo(users, filter);
+            var filteredInvites = UserFilterPipeline.ApplyTo(invites, filter, applications);
 
             var usersVm = filteredUsers.Select(u => new UserSummaryViewModel(
                     u.CdpPersonId ?? Guid.Empty,
@@ -81,10 +60,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     .ToList()))
                 .ToList();
 
-            var invitesVm = (invites)
-                .Where(i => string.IsNullOrEmpty(search) ||
-                            (i.Email.Contains(search, StringComparison.OrdinalIgnoreCase)) ||
-                            ($"{i.FirstName} {i.LastName}".Contains(search, StringComparison.OrdinalIgnoreCase)))
+            var invitesVm = filteredInvites
                 .Select(i => new UserSummaryViewModel(
                     null,
                     i.CdpPersonInviteGuid,
@@ -105,7 +81,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                     .ToList()))
                 .ToList();
 
-            var appsVm = (applications)
+            var appsVm = applications
                 .Select(a => new ApplicationViewModel(
                     a.Application?.Id ?? 0,
                     a.Application?.ClientId ?? string.Empty,
@@ -120,14 +96,15 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
 
             return new UsersViewModel(
                 org.Name,
-                org.Slug,
+                org.CdpOrganisationGuid,
                 org.CdpOrganisationGuid,
                 usersVm.Concat(invitesVm).ToList(),
                 appsVm,
                 role,
                 application,
                 search,
-                users.Count() + invites.Count()
+                filteredUsers.Count + filteredInvites.Count,
+                joinRequests.Count > 0 ? joinRequests : null
             );
         }
     }
@@ -142,11 +119,11 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
         }
 
         public async Task<UserDetailsViewModel?> GetViewModelAsync(
-            string organisationSlug,
+            Guid id,
             Guid cdpPersonId,
             CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org == null) return null;
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
             if (user == null) return null;
@@ -177,7 +154,6 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
                         ar.AssignedAt ?? ar.CreatedAt,
                         assignedByEmail,
                         ar.Roles?.FirstOrDefault()?.Name ?? string.Empty);
-
                 })
                 .ToList();
 
@@ -193,12 +169,12 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
         }
 
         public async Task<RemoveApplicationSuccessViewModel?> GetRemoveApplicationSuccessViewModelAsync(
-            string organisationSlug,
+            Guid id,
             Guid cdpPersonId,
             string clientId,
             CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org == null) return null;
             var user = await _adapter.GetUserAsync(org.CdpOrganisationGuid, cdpPersonId, ct);
             if (user == null) return null;
@@ -209,7 +185,7 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
 
             return new RemoveApplicationSuccessViewModel
             {
-                OrganisationSlug = organisationSlug,
+                OrganisationId = id,
                 UserDisplayName = $"{user.FirstName} {user.LastName}",
                 Email = user.Email,
                 ApplicationName = app.Application.Name,
@@ -224,9 +200,9 @@ namespace CO.CDP.UserManagement.App.Application.Users.Implementations
         public InviteDetailsQueryService(IUserManagementApiAdapter adapter) => _adapter = adapter;
 
         public async Task<InviteDetailsViewModel?> GetViewModelAsync(
-            string organisationSlug, Guid inviteGuid, CancellationToken ct)
+            Guid id, Guid inviteGuid, CancellationToken ct)
         {
-            var org = await _adapter.GetOrganisationBySlugAsync(organisationSlug, ct);
+            var org = await _adapter.GetOrganisationByGuidAsync(id, ct);
             if (org == null) return null;
             var invite = await _adapter.GetInviteAsync(org.CdpOrganisationGuid, inviteGuid, ct);
             if (invite == null) return null;

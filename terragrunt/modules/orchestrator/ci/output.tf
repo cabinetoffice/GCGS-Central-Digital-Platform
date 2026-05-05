@@ -37,3 +37,19 @@ output "ssm_service_version_sirsi_name" {
 output "deployment_pipeline_name" {
   value = aws_codepipeline.this.name
 }
+
+output "fts_test_db_backup_bucket_name" {
+  value = module.fts_db_backup_bucket.bucket
+}
+
+output "fts_test_db_backup_bucket_arn" {
+  value = module.fts_db_backup_bucket.arn
+}
+
+output "fts_github_oidc_role_arn" {
+  value = aws_iam_role.fts_github_oidc_read_db_backup.arn
+}
+
+output "fts_github_oidc_role_name" {
+  value = aws_iam_role.fts_github_oidc_read_db_backup.name
+}

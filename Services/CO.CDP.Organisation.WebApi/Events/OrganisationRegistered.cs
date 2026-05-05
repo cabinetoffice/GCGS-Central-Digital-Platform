@@ -21,4 +21,8 @@ public record OrganisationRegistered
     public required List<string> Roles { get; init; }
 
     public required OrganisationType Type { get; init; }
+
+    public Guid? FounderPersonId { get; init; }
+
+    public string? FounderUserUrn { get; init; }
 }

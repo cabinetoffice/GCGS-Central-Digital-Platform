@@ -1,26 +1,28 @@
-using FluentAssertions;
-using Moq;
-using CO.CDP.Organisation.WebApi.Model;
-using Persistence = CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.GovUKNotify;
-using Microsoft.Extensions.Configuration;
-using CO.CDP.OrganisationInformation.Persistence;
-using Microsoft.Extensions.Logging;
 using CO.CDP.GovUKNotify.Models;
+using CO.CDP.MQ;
+using CO.CDP.Organisation.WebApi.Events;
+using CO.CDP.Organisation.WebApi.Model;
+using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
+using FluentAssertions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Persistence = CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 
 public class SupportUpdateOrganisationUseCaseTests
 {
-    private readonly Mock<IOrganisationRepository> _mockOrganisationRepository;
-    private readonly Mock<IPersonRepository> _mockPersonRepository;
-    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
     private readonly Mock<ILogger<SupportUpdateOrganisationUseCase>> _logger = new();
-    private readonly SupportUpdateOrganisationUseCase _useCase;
+    private readonly Mock<Persistence.IOrganisationRepository> _mockOrganisationRepository;
+    private readonly Mock<Persistence.IPersonRepository> _mockPersonRepository;
+    private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
     private readonly Persistence.Organisation _organisation;
     private readonly Persistence.Person _person;
+    private readonly Mock<IPublisher> _publisher = new();
+    private readonly SupportUpdateOrganisationUseCase _useCase;
 
     public SupportUpdateOrganisationUseCaseTests()
     {
@@ -38,13 +40,14 @@ public class SupportUpdateOrganisationUseCaseTests
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-        _mockOrganisationRepository = new Mock<IOrganisationRepository>();
-        _mockPersonRepository = new Mock<IPersonRepository>();
+        _mockOrganisationRepository = new Mock<Persistence.IOrganisationRepository>();
+        _mockPersonRepository = new Mock<Persistence.IPersonRepository>();
         _useCase = new SupportUpdateOrganisationUseCase(
             _mockOrganisationRepository.Object,
             _mockPersonRepository.Object,
             _notifyApiClient.Object,
             mockConfiguration,
+            _publisher.Object,
             _logger.Object);
         _organisation = new Persistence.Organisation
         {
@@ -84,7 +87,7 @@ public class SupportUpdateOrganisationUseCaseTests
         };
 
         _mockOrganisationRepository.Setup(repo => repo.Find(organisationId))
-            .ReturnsAsync(null as OrganisationInformation.Persistence.Organisation);
+            .ReturnsAsync(null as Persistence.Organisation);
 
         Func<Task> action = async () => await _useCase.Execute((organisationId, supportUpdateOrganisation));
 
@@ -137,9 +140,10 @@ public class SupportUpdateOrganisationUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        var orgPersonList = new List<OrganisationPerson>() { GetOrganisationPerson() };
+        var orgPersonList = new List<Persistence.OrganisationPerson>() { GetOrganisationPerson() };
 
-        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
+        _mockOrganisationRepository.Setup(repo =>
+                repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
             .ReturnsAsync(orgPersonList);
 
         var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
@@ -172,6 +176,10 @@ public class SupportUpdateOrganisationUseCaseTests
         )));
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
+
+        _publisher.Verify(
+            p => p.Publish(It.Is<OrganisationApproved>(e => e.Id == _organisation.Guid.ToString())),
+            Times.Once);
     }
 
     [Fact]
@@ -194,9 +202,10 @@ public class SupportUpdateOrganisationUseCaseTests
         _mockPersonRepository.Setup(repo => repo.Find(_person.Guid))
             .ReturnsAsync(_person);
 
-        var orgPersonList = new List<OrganisationPerson>() { GetOrganisationPerson() };
+        var orgPersonList = new List<Persistence.OrganisationPerson>() { GetOrganisationPerson() };
 
-        _mockOrganisationRepository.Setup(repo => repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
+        _mockOrganisationRepository.Setup(repo =>
+                repo.FindOrganisationPersons(_organisation.Guid, It.IsAny<IEnumerable<string>?>()))
             .ReturnsAsync(orgPersonList);
 
         var result = await _useCase.Execute((_organisation.Guid, supportUpdateOrganisation));
@@ -228,6 +237,10 @@ public class SupportUpdateOrganisationUseCaseTests
         )));
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
+
+        _publisher.Verify(
+            p => p.Publish(It.IsAny<OrganisationApproved>()),
+            Times.Never);
     }
 
     [Fact]
@@ -326,7 +339,8 @@ public class SupportUpdateOrganisationUseCaseTests
 
         result.Should().BeTrue();
 
-        _organisation.Identifiers.Should().ContainSingle(i => i.Scheme == "GB-COH" && i.IdentifierId == "12345678" && i.LegalName == "Test Org Ltd");
+        _organisation.Identifiers.Should().ContainSingle(i =>
+            i.Scheme == "GB-COH" && i.IdentifierId == "12345678" && i.LegalName == "Test Org Ltd");
         _organisation.Identifiers.Should().NotContain(i => i.Scheme == "GB-OLD");
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
@@ -400,9 +414,9 @@ public class SupportUpdateOrganisationUseCaseTests
     }
 
 
-    private static OrganisationPerson GetOrganisationPerson()
+    private static Persistence.OrganisationPerson GetOrganisationPerson()
     {
-        return new OrganisationPerson
+        return new Persistence.OrganisationPerson
         {
             Organisation = Mock.Of<Persistence.Organisation>(),
             Person = Mock.Of<Persistence.Person>(),

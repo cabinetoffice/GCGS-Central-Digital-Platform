@@ -1,29 +1,33 @@
+using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation.Persistence;
+using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
-using IOrganisationRepository = CO.CDP.OrganisationInformation.Persistence.IOrganisationRepository;
 
 namespace CO.CDP.Person.WebApi.UseCase;
 
 public class ClaimPersonInviteUseCase(
     IPersonRepository personRepository,
     IPersonInviteRepository personInviteRepository,
-    IOrganisationRepository organisationRepository)
+    IOrganisationRepository organisationRepository,
+    IPublisher publisher,
+    ILogger<ClaimPersonInviteUseCase> logger)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
     {
         var person = await personRepository.Find(command.personId)
-            ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
+                     ?? throw new UnknownPersonException($"Unknown person {command.personId}.");
         var personInvite = await personInviteRepository.Find(command.claimPersonInvite.PersonInviteId)
-            ?? throw new UnknownPersonInviteException($"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
+                           ?? throw new UnknownPersonInviteException(
+                               $"Unknown personInvite {command.claimPersonInvite.PersonInviteId}.");
 
         GuardPersonInviteExpired(personInvite);
         GuardPersonInviteAlreadyClaimed(personInvite);
         await GuardFromDuplicateEmailWithinOrganisation(organisationId: personInvite.Organisation!.Guid, person.Email);
 
         var organisation = await organisationRepository.FindIncludingTenantByOrgId(personInvite.OrganisationId)
-            ?? throw new UnknownOrganisationException(
-                $"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}.");
+                           ?? throw new UnknownOrganisationException(
+                               $"Unknown organisation {personInvite.OrganisationId} for PersonInvite {command.claimPersonInvite.PersonInviteId}.");
 
         organisation.OrganisationPersons.Add(new OrganisationPerson
         {
@@ -37,6 +41,18 @@ public class ClaimPersonInviteUseCase(
 
         personRepository.Track(person);
         personInviteRepository.Track(personInvite);
+
+        logger.LogInformation("Publishing PersonInviteClaimed for org {OrgGuid}, person {PersonGuid}",
+            organisation.Guid, person.Guid);
+
+        await publisher.Publish(new PersonInviteClaimed
+        {
+            OrganisationId = organisation.Guid.ToString(),
+            PersonId = person.Guid.ToString(),
+            UserPrincipalId = person.UserUrn,
+            Scopes = personInvite.Scopes
+        });
+
         await organisationRepository.SaveAsync(organisation, _ => Task.CompletedTask);
 
         return true;

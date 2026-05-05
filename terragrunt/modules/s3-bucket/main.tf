@@ -90,7 +90,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encrypted_bucket"
       kms_master_key_id = var.sse_algorithm == "aws:kms" ? module.s3_kms_key[0].key_arn : null
       sse_algorithm     = var.sse_algorithm
     }
-    bucket_key_enabled = var.sse_algorithm == "aws:kms"
+    bucket_key_enabled       = var.sse_algorithm == "aws:kms" ? true : null
+    blocked_encryption_types = var.sse_algorithm == "aws:kms" ? ["NONE"] : ["SSE-C"]
   }
 }
 
@@ -120,6 +121,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "log_bucket" {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
     }
+    blocked_encryption_types = ["SSE-C"]
   }
 }
 

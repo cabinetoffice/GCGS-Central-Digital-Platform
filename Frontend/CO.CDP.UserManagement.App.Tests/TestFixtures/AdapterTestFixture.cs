@@ -17,8 +17,8 @@ public abstract class AdapterTestFixture
         Mock<IUserManagementApiAdapter> adapter,
         string name = "Test Org") =>
         adapter
-            .Setup(a => a.GetOrganisationBySlugAsync(
-                It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            .Setup(a => a.GetOrganisationByGuidAsync(
+                It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new OrganisationResponse
             {
                 Slug = "test-org",
@@ -117,7 +117,7 @@ public abstract class AdapterTestFixture
         string firstName = "Test", string lastName = "User",
         OrganisationRole role = OrganisationRole.Member,
         IReadOnlyList<InviteApplicationAssignment>? assignments = null) =>
-        new("test-org", email, firstName, lastName, role, assignments);
+        new(OrgGuid, email, firstName, lastName, role, assignments);
 
     protected static Result<ServiceFailure, ServiceOutcome> SuccessResult()
         => Result<ServiceFailure, ServiceOutcome>.Success(ServiceOutcome.Success);

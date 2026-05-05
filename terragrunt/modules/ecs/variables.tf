@@ -25,6 +25,18 @@ variable "cfs_extra_host_headers" {
   default     = []
 }
 
+variable "cloudfront_downloads_enabled" {
+  description = "Whether to provision CloudFront distributions in front of the FTS/CFS download buckets"
+  type        = bool
+  default     = false
+}
+
+variable "cloudfront_realtime_logs_role_arn" {
+  description = "IAM role ARN used by CloudFront real-time logs to write to Kinesis"
+  type        = string
+  default     = null
+}
+
 variable "commercial_tools_session_timeout" {
   description = "Session timeout in minutes"
   type        = string
@@ -234,6 +246,16 @@ variable "queue_entity_verification_arn" {
 
 variable "queue_entity_verification_url" {
   description = "URL of the Entity Verification's SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_publish_arn" {
+  description = "ARN of the FTS notice publish SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_publish_url" {
+  description = "URL of the FTS notice publish SQS queue"
   type        = string
 }
 
