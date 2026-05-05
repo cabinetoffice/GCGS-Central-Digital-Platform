@@ -16,7 +16,7 @@ public class GetIdentifierRegistriesUseCase(IPponRepository repository) : IUseCa
 
         if (rawIdentifiers == null || !rawIdentifiers.Any())
         {
-            throw new NotFoundException($"No identifiers found for country code: {countryCode}");
+            throw new GetIdentifierRegistriesException.NotFoundException($"No identifiers found for country code: {countryCode}");
         }
 
         var identifiers = rawIdentifiers.Select(identifier => new Model.IdentifierRegistries
