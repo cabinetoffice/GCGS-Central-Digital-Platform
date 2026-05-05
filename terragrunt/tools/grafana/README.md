@@ -38,3 +38,4 @@ Each account stores a randomly generated password for its Grafana instance in a 
 ```shell
 ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-grafana-credentials --query SecretString --output text | jq -r '.'
 ```
+
