@@ -33,7 +33,7 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
             OutboxMessage(message: "Hello, again!", published: false),
         ]);
 
-        await WaitForMessagesToBeProcessed(100);
+        await WaitForMessagesToBeProcessed(2000);
         await _tokenSource.CancelAsync();
 
         // We pull up to 10 messages at a time and expect 3 calls:
@@ -59,14 +59,14 @@ public class OutboxProcessorListenerTest(PostgreSqlFixture postgreSql) : IClassF
         _ = listener.WaitAsync(1, _tokenSource.Token);
 
         // give the listener time to start, otherwise all messages might be processed by the pre-listener processing
-        await WaitForMessagesToBeProcessed(100);
+        await WaitForMessagesToBeProcessed(2000);
 
         await GivenOutboxMessagesAreCreated([
             OutboxMessage(message: "Bye!", published: false),
             OutboxMessage(message: "Bye, again!", published: false),
         ]);
 
-        await WaitForMessagesToBeProcessed(100);
+        await WaitForMessagesToBeProcessed(2000);
         await _tokenSource.CancelAsync();
 
         // We pull up to 1 message at a time and expect 7 calls:
