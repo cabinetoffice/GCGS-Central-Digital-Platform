@@ -94,6 +94,8 @@ locals {
     use_srsi_for_api                      = true
     valid_until                           = 1924990799
     validation_weight                     = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
+    modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
+    dotnet_ui_app_url                     = "https://fts-app.${var.public_domain}"
   }
 
 
