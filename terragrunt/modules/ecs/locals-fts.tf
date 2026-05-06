@@ -57,7 +57,7 @@ locals {
   }
 
   fts_parameters = {
-    async_enabled                        = "false"
+    async_enabled                        = var.environment == "development"? "true" : "false"
     email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                      = "%"
@@ -94,6 +94,8 @@ locals {
     use_srsi_for_api                      = true
     valid_until                           = 1924990799
     validation_weight                     = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
+    modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
+    dotnet_ui_app_url                     = "https://fts-app.${var.public_domain}"
   }
 
 
