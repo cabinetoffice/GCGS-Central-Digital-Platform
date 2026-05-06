@@ -18,8 +18,19 @@ using CO.CDP.OrganisationInformation.Persistence;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
 using CO.CDP.OrganisationInformation.Persistence.Repositories;
 using CO.CDP.WebApi.Foundation;
+using CO.CDP.Organisation.WebApi.ApplicationRegistry.Api;
+using CO.CDP.Organisation.WebApi.ApplicationRegistry.Authorization;
+using CO.CDP.Organisation.WebApi.ApplicationRegistry.Middleware;
+using CO.CDP.ApplicationRegistry.Persistence;
+using CO.CDP.ApplicationRegistry.Persistence.Interceptors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using AppRegModel = CO.CDP.Organisation.WebApi.ApplicationRegistry.Model;
+using AppRegOrgUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Organisation;
+using AppRegAppUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Application;
+using AppRegAuditUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Audit;
+using AppRegClaimsUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Claims;
+using AppRegRepo = CO.CDP.ApplicationRegistry.Persistence.Repositories;
 using Microsoft.FeatureManagement;
 using Npgsql;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -143,6 +154,54 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
+// --- Application Registry (shares the same database as OrganisationInformation) ---
+builder.Services.AddScoped<AuditSaveChangesInterceptor>();
+
+builder.Services.AddDbContext<ApplicationRegistryContext>((sp, options) =>
+{
+    options.UseNpgsql(connectionString);
+    options.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
+});
+
+var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
+if (!string.IsNullOrWhiteSpace(redisConnectionString))
+{
+    builder.Services.AddStackExchangeRedisCache(options =>
+    {
+        options.Configuration = redisConnectionString;
+        options.InstanceName = "AppRegistry_";
+    });
+}
+else
+{
+    builder.Services.AddDistributedMemoryCache();
+}
+
+builder.Services.AddScoped<AppRegRepo.IOrganisationRepository, AppRegRepo.DatabaseOrganisationRepository>();
+builder.Services.AddScoped<AppRegRepo.IApplicationRepository, AppRegRepo.DatabaseApplicationRepository>();
+builder.Services.AddScoped<AppRegRepo.IUserAssignmentRepository, AppRegRepo.DatabaseUserAssignmentRepository>();
+builder.Services.AddScoped<AppRegRepo.IAuditRepository, AppRegRepo.DatabaseAuditRepository>();
+builder.Services.AddScoped<AppRegRepo.IFeatureFlagRepository, AppRegRepo.DatabaseFeatureFlagRepository>();
+builder.Services.AddScoped<AppRegRepo.ICategoryRepository, AppRegRepo.DatabaseCategoryRepository>();
+builder.Services.AddScoped<AppRegRepo.IAccessControlRepository, AppRegRepo.DatabaseAccessControlRepository>();
+
+builder.Services.AddScoped<IUseCase<Guid, AppRegModel.OrganisationDto?>, AppRegOrgUseCase.GetOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<AppRegOrgUseCase.GetOrganisationsQuery, IEnumerable<AppRegModel.OrganisationDto>>, AppRegOrgUseCase.GetOrganisationsUseCase>();
+builder.Services.AddScoped<IUseCase<AppRegModel.CreateOrganisation, AppRegModel.OrganisationDto>, AppRegOrgUseCase.RegisterOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, AppRegModel.UpdateOrganisation), bool>, AppRegOrgUseCase.UpdateOrganisationUseCase>();
+builder.Services.AddScoped<IUseCase<string, AppRegModel.OrganisationDto?>, AppRegOrgUseCase.GetOrganisationBySlugUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, IEnumerable<AppRegModel.MemberDto>>, AppRegOrgUseCase.GetMembersUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, AppRegModel.AddMember), bool>, AppRegOrgUseCase.AddMemberUseCase>();
+builder.Services.AddScoped<IUseCase<Guid, AppRegModel.ApplicationDto?>, AppRegAppUseCase.GetApplicationUseCase>();
+builder.Services.AddScoped<IUseCase<bool, IEnumerable<AppRegModel.ApplicationDto>>, AppRegAppUseCase.GetApplicationsUseCase>();
+builder.Services.AddScoped<IUseCase<AppRegModel.CreateApplication, AppRegModel.ApplicationDto>, AppRegAppUseCase.RegisterApplicationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, AppRegModel.UpdateApplication), bool>, AppRegAppUseCase.UpdateApplicationUseCase>();
+builder.Services.AddScoped<IUseCase<(Guid, AppRegModel.CreatePermission), AppRegModel.PermissionDto>, AppRegAppUseCase.CreatePermissionUseCase>();
+builder.Services.AddScoped<IUseCase<string, AppRegModel.ClaimsTree>, AppRegClaimsUseCase.GetClaimsTreeUseCase>();
+builder.Services.AddScoped<IUseCase<AppRegAuditUseCase.AuditQuery, IEnumerable<AppRegModel.AuditLogDto>>, AppRegAuditUseCase.GetAuditLogsUseCase>();
+
+builder.Services.AddApplicationRegistryAuthorization();
+
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);
 builder.Services.AddProblemDetails();
 
@@ -206,6 +265,20 @@ app.UseAuthorization();
 app.UseOrganisationEndpoints();
 app.UseGlobalEndpoints();
 app.UseClaimsEndpoints();
+
+// Application Registry endpoints
+app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseAppRegistryOrganisationEndpoints();
+app.UseApplicationEndpoints();
+app.UseUserAssignmentEndpoints();
+app.UseAppRegistryClaimsEndpoints();
+app.UseProfileEndpoints();
+app.UseBulkOperationEndpoints();
+app.UseAuditEndpoints();
+app.UseFeatureFlagEndpoints();
+app.UseCategoryEndpoints();
+app.UseReportSharingEndpoints();
+app.UseAccessControlEndpoints();
 
 
 app.MapGroup("/support")
