@@ -110,9 +110,15 @@ public static class OrganisationEndpoints
         app.MapDelete("/api/organisations/{orgId:guid}/members/{userId}", async (
             Guid orgId,
             string userId,
-            IUseCase<(Guid, AddMember), bool> useCase) =>
+            CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository repo) =>
         {
-            // Soft delete by setting inactive
+            var membership = await repo.GetMemberAsync(orgId, userId);
+            if (membership == null)
+            {
+                return Results.NotFound();
+            }
+            membership.IsActive = false;
+            await repo.UpdateMemberAsync(membership);
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.OrgAdmin)

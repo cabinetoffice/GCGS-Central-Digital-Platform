@@ -69,7 +69,6 @@ public class OrganisationRoleHandler : AuthorizationHandler<OrganisationRoleRequ
         AuthorizationHandlerContext context,
         OrganisationRoleRequirement requirement)
     {
-        // Platform admins always pass org-level checks
         if (context.User.HasClaim(c => c.Type == "platform_role" && c.Value == "admin"))
         {
             context.Succeed(requirement);
@@ -82,8 +81,13 @@ public class OrganisationRoleHandler : AuthorizationHandler<OrganisationRoleRequ
             return Task.CompletedTask;
         }
 
-        // Check org role claims
-        var orgRoleClaims = context.User.FindAll("org_role");
+        if (!httpContext.Request.RouteValues.TryGetValue("orgId", out var orgIdValue)
+            || !Guid.TryParse(orgIdValue?.ToString(), out var orgId))
+        {
+            return Task.CompletedTask;
+        }
+
+        var orgRoleClaims = context.User.FindAll($"org:{orgId}:role");
         foreach (var claim in orgRoleClaims)
         {
             if (requirement.AllowedRoles.Contains(claim.Value, StringComparer.OrdinalIgnoreCase))

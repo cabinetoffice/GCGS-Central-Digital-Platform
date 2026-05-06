@@ -1,24 +1,13 @@
 using CO.CDP.ApplicationRegistry.Persistence.Entities;
-using CO.CDP.ApplicationRegistry.Persistence.Interceptors;
 using Microsoft.EntityFrameworkCore;
 
 namespace CO.CDP.ApplicationRegistry.Persistence;
 
 public class ApplicationRegistryContext : DbContext
 {
-    private readonly AuditSaveChangesInterceptor? _auditInterceptor;
-
     public ApplicationRegistryContext(DbContextOptions<ApplicationRegistryContext> options)
         : base(options)
     {
-    }
-
-    public ApplicationRegistryContext(
-        DbContextOptions<ApplicationRegistryContext> options,
-        AuditSaveChangesInterceptor auditInterceptor)
-        : base(options)
-    {
-        _auditInterceptor = auditInterceptor;
     }
 
     public DbSet<Organisation> Organisations => Set<Organisation>();
@@ -37,14 +26,6 @@ public class ApplicationRegistryContext : DbContext
     public DbSet<ReportCategoryAssignment> ReportCategoryAssignments => Set<ReportCategoryAssignment>();
     public DbSet<AccessControlEntry> AccessControlEntries => Set<AccessControlEntry>();
     public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (_auditInterceptor != null)
-        {
-            optionsBuilder.AddInterceptors(_auditInterceptor);
-        }
-    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

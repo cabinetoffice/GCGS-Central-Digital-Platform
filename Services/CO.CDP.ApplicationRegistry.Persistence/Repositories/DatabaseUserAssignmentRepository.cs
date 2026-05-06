@@ -31,6 +31,8 @@ public class DatabaseUserAssignmentRepository : IUserAssignmentRepository
         return await _context.UserApplicationAssignments
             .Include(a => a.RoleAssignments)
                 .ThenInclude(ra => ra.Role)
+                    .ThenInclude(r => r.RolePermissions)
+                        .ThenInclude(rp => rp.Permission)
             .FirstOrDefaultAsync(a => a.OrganisationId == organisationId
                 && a.ApplicationId == applicationId
                 && a.UserPrincipalId == userPrincipalId
