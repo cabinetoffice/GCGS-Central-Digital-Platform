@@ -2,7 +2,6 @@ using CO.CDP.AwsServices;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.EntityVerification.Persistence;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.UserManagement.Infrastructure.Data;
 using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -34,10 +33,6 @@ var context = builder.Configuration.GetValue<string>("DbContext");
 if (context == "OrganisationInformationContext")
 {
     builder.Services.AddOutboxSqsPublisher<OrganisationInformationContext>(builder.Configuration);
-}
-else if (context == "UserManagementDbContext")
-{
-    builder.Services.AddOutboxSqsPublisher<UserManagementDbContext>(builder.Configuration);
 }
 else
 {

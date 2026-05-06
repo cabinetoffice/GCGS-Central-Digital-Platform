@@ -6,7 +6,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using static CO.CDP.Authentication.Constants;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CO.CDP.Authentication.Authorization;
 
@@ -98,7 +97,7 @@ public class OrganisationScopeAuthorizationHandler(
                 break;
 
             case OrganisationIdLocation.Body:
-                if (currentRequest.Body == null || currentRequest.ContentType?.Contains(Application.Json) == false) return null;
+                if (currentRequest.Body == null || currentRequest.ContentType?.Contains(System.Net.Mime.MediaTypeNames.Application.Json) == false) return null;
 
                 if (!currentRequest.Body.CanSeek) currentRequest.EnableBuffering();
                 currentRequest.Body.Position = 0;

@@ -7,7 +7,6 @@ using CO.CDP.Organisation.Authority;
 using CO.CDP.Organisation.Authority.Http;
 using CO.CDP.Organisation.Authority.AutoMapper;
 using CO.CDP.OrganisationInformation.Persistence;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -33,26 +32,22 @@ builder.Services.Configure<FeaturesOptions>(builder.Configuration.GetSection("Fe
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddTransient<ServiceAccountTokenHandler>();
 
-var claimsApiEnabled = builder.Configuration.GetValue("Features:ClaimsApiEnabled", false);
 
-var userManagementServiceUrl = claimsApiEnabled
-    ? builder.Configuration.GetValue<string>("UserManagementService")
-      ?? throw new InvalidOperationException("Missing configuration: UserManagementService")
-    : null;
-
-const string userManagementHttpClientName = "UserManagementHttpClient";
+const string organisationApiHttpClientName = "OrganisationApiHttpClient";
+var claimsApiEnabled = builder.Configuration.GetValue<bool>("Features:ClaimsApiEnabled");
 
 if (claimsApiEnabled)
 {
-    builder.Services.AddHttpClient(userManagementHttpClientName,
-            client => { client.BaseAddress = new Uri(userManagementServiceUrl!); })
-        .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+    var organisationApiUrl = builder.Configuration.GetValue<string>("OrganisationApiService")
+        ?? throw new InvalidOperationException("Missing configuration: OrganisationApiService");
 
-    builder.Services.AddTransient<ApiClient.UserManagementClient>(sp =>
-    {
-        var httpClient = sp.GetRequiredService<IHttpClientFactory>().CreateClient(userManagementHttpClientName);
-        return new ApiClient.UserManagementClient(userManagementServiceUrl, httpClient);
-    });
+    builder.Services.AddHttpClient(organisationApiHttpClientName,
+            client => { client.BaseAddress = new Uri(organisationApiUrl); })
+        .AddHttpMessageHandler<ServiceAccountTokenHandler>();
+}
+else
+{
+    builder.Services.AddHttpClient();
 }
 
 if (Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.Authority"))

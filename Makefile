@@ -34,10 +34,10 @@ build-docker: ## Build Docker images sequentially to reduce memory usage
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --no-cache --memory=2g --build-arg VERSION=$(VERSION) db gateway
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) authority tenant
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation person forms
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification user-management-api
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api user-management-app
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) data-sharing entity-verification
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-app commercial-tools-app commercial-tools-api
 	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) av-scanner scheduled-worker outbox-processor-organisation outbox-processor-entity-verification
-	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations commercial-tools-migrations user-management-migrations
+	@DOCKER_BUILDKIT_INLINE_CACHE=1 docker compose build --memory=2g --build-arg VERSION=$(VERSION) organisation-information-migrations entity-verification-migrations
 .PHONY: build-docker
 
 up: render-compose-override ## Start Docker containers
@@ -52,7 +52,7 @@ verify-up: render-compose-override ## Verify if all Docker containers have run. 
 	interval=5; \
 	while [ $$timeout -gt 0 ]; do \
 		if docker compose ps -a --format json \
-			| jq --exit-status 'select(.Name != "co-cdp-organisation-information-migrations" and .Name != "co-cdp-entity-verification-migrations" and .Name != "co-cdp-commercial-tools-migrations" and .Name != "co-cdp-user-management-migrations") | select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
+			| jq --exit-status 'select(.Name != "co-cdp-organisation-information-migrations" and .Name != "co-cdp-entity-verification-migrations" ) | select(.ExitCode != 0 or (.Health != "healthy" and .Health != ""))' > /dev/null; then \
 			echo "Waiting for services to be healthy..."; \
 			sleep $$interval; \
 			timeout=$$(($$timeout - $$interval)); \
@@ -80,7 +80,7 @@ ps: ## Show Docker container status
 
 db: render-compose-override ## Start DB and DB migration services
 	@docker compose up -d db
-	@docker compose up organisation-information-migrations entity-verification-migrations commercial-tools-migrations user-management-migrations --abort-on-container-failure
+	@docker compose up organisation-information-migrations entity-verification-migrations --abort-on-container-failure
 .PHONY: db
 
 db-dump:
@@ -111,7 +111,6 @@ OpenAPI: build ## Create OpenAPI folder and copy relevant files in
 	cp ./Services/CO.CDP.Person.WebApi/OpenAPI/CO.CDP.Person.WebApi.json $(OPENAPI_DIR)/Person.json
 	cp ./Services/CO.CDP.Forms.WebApi/OpenAPI/CO.CDP.Forms.WebApi.json $(OPENAPI_DIR)/Forms.json
 	cp ./Services/CO.CDP.EntityVerification/OpenAPI/CO.CDP.EntityVerification.json $(OPENAPI_DIR)/EntityVerification.json
-	cp ./Services/CO.CDP.UserManagement.Api/OpenAPI/CO.CDP.UserManagement.Api.json $(OPENAPI_DIR)/UserManagement.json
 
 generate-authority-keys: ## Generate authority's private key and store in ./terragrunt/secrets/ folder
 	openssl genpkey -algorithm RSA -out ./terragrunt/secrets/authority-private-key.pem -pkeyopt rsa_keygen_bits:2048

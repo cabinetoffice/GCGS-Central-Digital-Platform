@@ -6,10 +6,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
 using Moq;
+using Moq.Protected;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.Organisation.Authority.Tests;
 
@@ -23,21 +24,17 @@ public class TokenServiceTest
     private readonly Mock<IConfigurationService> _configServiceMock = new();
     private readonly Mock<IPersonRepository> _personRepositoryMock = new();
     private readonly Mock<IAuthorityRepository> _authorityRepositoryMock = new();
-    private readonly Mock<ApiClient.UserManagementClient> _userManagementClientMock = new("http://localhost", new HttpClient());
-    private readonly Mock<IServiceProvider> _serviceProviderMock = new();
+    private readonly Mock<IHttpClientFactory> _httpClientFactoryMock = new();
     private readonly TokenService _tokenService;
 
     public TokenServiceTest()
     {
-        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
-            .Returns(_userManagementClientMock.Object);
-
         _tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
-            _personRepositoryMock.Object,
+             _personRepositoryMock.Object,
             _authorityRepositoryMock.Object,
-            _serviceProviderMock.Object,
+            _httpClientFactoryMock.Object,
             Options.Create(new FeaturesOptions { ClaimsApiEnabled = false }));
     }
 
@@ -63,7 +60,7 @@ public class TokenServiceTest
         claims.FirstOrDefault(c => c.Type == "role")?.Value.Should().Be(string.Empty);
         claims.FirstOrDefault(c => c.Type == "cdp_claims").Should().BeNull();
 
-        _userManagementClientMock.Verify(c => c.UsersGETAsync(It.IsAny<string>()), Times.Never);
+        _httpClientFactoryMock.Verify(f => f.CreateClient(It.IsAny<string>()), Times.Never);
     }
 
     [Fact]
@@ -73,11 +70,14 @@ public class TokenServiceTest
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
-        var userClaims = new ApiClient.UserClaims([], "urn:test");
-        _userManagementClientMock.Setup(c => c.UsersGETAsync(_userUrn))
-            .ReturnsAsync(userClaims);
+        var claimsJson = "{\"userPrincipalId\":\"urn:test\",\"organisations\":[]}";
+        var mockHandler = CreateMockHttpHandler(HttpStatusCode.OK, claimsJson);
+        var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
 
-        var tokenService = CreateTokenService(claimsApiEnabled: true);
+        var factoryMock = new Mock<IHttpClientFactory>();
+        factoryMock.Setup(f => f.CreateClient("OrganisationApiHttpClient")).Returns(httpClient);
+
+        var tokenService = CreateTokenService(claimsApiEnabled: true, httpClientFactory: factoryMock.Object);
         var result = await tokenService.CreateToken(_userUrn);
 
         result.Should().NotBeNull();
@@ -87,21 +87,25 @@ public class TokenServiceTest
         var cdpClaims = claims.FirstOrDefault(c => c.Type == "cdp_claims");
         cdpClaims.Should().NotBeNull();
         cdpClaims!.Value.Should().Contain("urn:test");
-
-        _userManagementClientMock.Verify(c => c.UsersGETAsync(_userUrn), Times.Once);
     }
 
     [Fact]
-    public async Task CreateToken_WhenClaimsFlagOn_AndUserManagementCallFails_ReturnsTokenWithoutCdpClaims()
+    public async Task CreateToken_WhenClaimsFlagOn_AndOrganisationApiCallFails_ReturnsTokenWithoutCdpClaims()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
-        _userManagementClientMock.Setup(c => c.UsersGETAsync(_userUrn))
-            .ThrowsAsync(new Exception("API failure"));
+        var mockHandler = new Mock<HttpMessageHandler>();
+        mockHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ThrowsAsync(new HttpRequestException("API failure"));
 
-        var tokenService = CreateTokenService(claimsApiEnabled: true);
+        var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
+        var factoryMock = new Mock<IHttpClientFactory>();
+        factoryMock.Setup(f => f.CreateClient("OrganisationApiHttpClient")).Returns(httpClient);
+
+        var tokenService = CreateTokenService(claimsApiEnabled: true, httpClientFactory: factoryMock.Object);
         var result = await tokenService.CreateToken(_userUrn);
 
         result.Should().NotBeNull();
@@ -263,75 +267,115 @@ public class TokenServiceTest
     }
 
     [Fact]
-    public async Task CreateToken_WhenClaimsFlagOn_AndUserManagementClientNotRegistered_ReturnsTokenWithoutCdpClaims_AndLogsWarning()
+    public async Task CreateToken_WhenClaimsFlagOn_AndOrganisationApiReturns404_ReturnsTokenWithoutCdpClaims()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
-        // Simulate IServiceProvider returning null (client not registered despite flag being on)
-        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
-            .Returns(null!);
+        var mockHandler = CreateMockHttpHandler(HttpStatusCode.NotFound, "");
+        var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
 
-        var tokenService = new TokenService(
-            _loggerMock.Object,
-            _configServiceMock.Object,
-            _personRepositoryMock.Object,
-            _authorityRepositoryMock.Object,
-            _serviceProviderMock.Object,
-            Options.Create(new FeaturesOptions { ClaimsApiEnabled = true }));
+        var factoryMock = new Mock<IHttpClientFactory>();
+        factoryMock.Setup(f => f.CreateClient("OrganisationApiHttpClient")).Returns(httpClient);
 
+        var tokenService = CreateTokenService(claimsApiEnabled: true, httpClientFactory: factoryMock.Object);
         var result = await tokenService.CreateToken(_userUrn);
 
         result.Should().NotBeNull();
         var claims = GetClaims(result.AccessToken);
         claims.FirstOrDefault(c => c.Type == "cdp_claims").Should().BeNull();
-
-        _loggerMock.Verify(
-            l => l.Log(
-                LogLevel.Warning,
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains("ClaimsApiEnabled") || v.ToString()!.Contains("UserManagementClient")),
-                null,
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
     }
 
     [Fact]
-    public async Task CreateToken_WhenClaimsFlagOff_NeverCallsServiceProvider()
+    public async Task CreateToken_WhenClaimsFlagOff_NeverCallsHttpClientFactory()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
         _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
             .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
-        var spMock = new Mock<IServiceProvider>();
+        var factoryMock = new Mock<IHttpClientFactory>();
 
         var tokenService = new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
             _personRepositoryMock.Object,
             _authorityRepositoryMock.Object,
-            spMock.Object,
+            factoryMock.Object,
             Options.Create(new FeaturesOptions { ClaimsApiEnabled = false }));
 
         var result = await tokenService.CreateToken(_userUrn);
 
         result.Should().NotBeNull();
-        spMock.Verify(sp => sp.GetService(typeof(ApiClient.UserManagementClient)), Times.Never);
+        factoryMock.Verify(f => f.CreateClient(It.IsAny<string>()), Times.Never);
     }
 
-    private TokenService CreateTokenService(bool claimsApiEnabled)
+    [Fact]
+    public async Task CreateToken_WhenClaimsFlagOn_WithFullClaimsPayload_IncludesOrganisationsAndApplications()
     {
-        // Ensure service provider returns our mock client when requested
-        _serviceProviderMock.Setup(sp => sp.GetService(typeof(ApiClient.UserManagementClient)))
-            .Returns(_userManagementClientMock.Object);
+        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
 
+        var claimsJson = @"{
+            ""userPrincipalId"": ""urn:fdc:gov.uk:2022:6fTvD1cMhQNJxrLZSyBgo5"",
+            ""organisations"": [{
+                ""organisationId"": ""d290f1ee-6c54-4b01-90e6-d701748f0851"",
+                ""organisationName"": ""Central Government Department"",
+                ""organisationRole"": ""ADMIN"",
+                ""applications"": [{
+                    ""applicationId"": ""a1b2c3d4-e5f6-7890-abcd-ef1234567890"",
+                    ""applicationName"": ""Find a Tender"",
+                    ""clientId"": ""find-a-tender-client"",
+                    ""roles"": [""DataManager"", ""ReportViewer""],
+                    ""permissions"": [""read:tenders"", ""write:tenders"", ""read:reports""]
+                }]
+            }]
+        }";
+
+        var mockHandler = CreateMockHttpHandler(HttpStatusCode.OK, claimsJson);
+        var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
+
+        var factoryMock = new Mock<IHttpClientFactory>();
+        factoryMock.Setup(f => f.CreateClient("OrganisationApiHttpClient")).Returns(httpClient);
+
+        var tokenService = CreateTokenService(claimsApiEnabled: true, httpClientFactory: factoryMock.Object);
+        var result = await tokenService.CreateToken(_userUrn);
+
+        result.Should().NotBeNull();
+        var claims = GetClaims(result.AccessToken);
+
+        var cdpClaims = claims.FirstOrDefault(c => c.Type == "cdp_claims");
+        cdpClaims.Should().NotBeNull();
+        cdpClaims!.Value.Should().Contain("find-a-tender-client");
+        cdpClaims.Value.Should().Contain("DataManager");
+        cdpClaims.Value.Should().Contain("read:tenders");
+        cdpClaims.Value.Should().Contain("Central Government Department");
+    }
+
+    private TokenService CreateTokenService(bool claimsApiEnabled, IHttpClientFactory? httpClientFactory = null)
+    {
         return new TokenService(
             _loggerMock.Object,
             _configServiceMock.Object,
             _personRepositoryMock.Object,
             _authorityRepositoryMock.Object,
-            _serviceProviderMock.Object,
+            httpClientFactory ?? _httpClientFactoryMock.Object,
             Options.Create(new FeaturesOptions { ClaimsApiEnabled = claimsApiEnabled }));
+    }
+
+    private static Mock<HttpMessageHandler> CreateMockHttpHandler(HttpStatusCode statusCode, string content)
+    {
+        var mockHandler = new Mock<HttpMessageHandler>();
+        mockHandler.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = statusCode,
+                Content = new StringContent(content)
+            });
+        return mockHandler;
     }
 }

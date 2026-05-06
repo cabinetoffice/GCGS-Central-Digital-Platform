@@ -443,16 +443,6 @@
           },
           {
             "selected": false,
-            "text": "User Management API",
-            "value": "/ecs/user-management-api"
-          },
-          {
-            "selected": false,
-            "text": "User Management App",
-            "value": "/ecs/user-management-app"
-          },
-          {
-            "selected": false,
             "text": "Outbox Processor Entity Verification",
             "value": "/ecs/outbox-processor-entity-verification"
           },
@@ -477,7 +467,7 @@
             "value": "/ecs/tenant"
           }
         ],
-        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Outbox Processor Entity Verification : /ecs/outbox-processor-entity-verification, Outbox Processor Organisation : /ecs/outbox-processor-organisation, Person : /ecs/person, Scheduled Worker : /ecs/scheduled-worker, Tenant : /ecs/tenant, User Management API : /ecs/user-management-api, User Management App : /ecs/user-management-app",
+        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Outbox Processor Entity Verification : /ecs/outbox-processor-entity-verification, Outbox Processor Organisation : /ecs/outbox-processor-organisation, Person : /ecs/person, Scheduled Worker : /ecs/scheduled-worker, Tenant : /ecs/tenant",
         "type": "custom"
       },
       {

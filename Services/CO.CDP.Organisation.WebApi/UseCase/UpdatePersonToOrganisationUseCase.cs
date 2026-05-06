@@ -24,6 +24,7 @@ public class UpdatePersonToOrganisationUseCase(
 
         organisationPerson.Scopes = command.updatePerson.Scopes;
         organisationRepository.TrackOrganisationPerson(organisationPerson);
+        await organisationRepository.SaveAsync(organisationPerson.Organisation!, _ => Task.CompletedTask);
 
         logger.LogInformation("Publishing PersonScopesUpdated for org {OrgId}, person {PersonId}, scopes=[{Scopes}]",
             command.organisationId, command.personId, string.Join(",", command.updatePerson.Scopes));

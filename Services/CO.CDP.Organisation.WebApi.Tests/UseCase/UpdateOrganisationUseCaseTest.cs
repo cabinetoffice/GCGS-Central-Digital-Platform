@@ -43,7 +43,6 @@ public class UpdateOrganisationUseCaseTest : IClassFixture<AutoMapperFixture>
             .AddInMemoryCollection(inMemorySettings)
             .Build();
 
-
         _useCase = new(_organisationRepositoryMock.Object, _publisher.Object, _mapperFixture.Mapper, _configuration,
             _notifyClient.Object, _logger.Object);
     }

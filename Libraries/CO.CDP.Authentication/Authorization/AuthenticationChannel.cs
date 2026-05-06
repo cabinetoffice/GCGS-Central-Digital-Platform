@@ -4,5 +4,6 @@ public enum AuthenticationChannel
 {
     OneLogin = 1,
     ServiceKey,
-    OrganisationKey
+    OrganisationKey,
+    ServiceAccount
 }

@@ -128,6 +128,7 @@ public static class Extensions
         services.AddSingleton<IAuthorizationPolicyProvider, OrganisationAuthorizationPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, ChannelAuthorizationHandler>();
         services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
+        services.AddScoped<IAuthorizationHandler, ApplicationScopeAuthorizationHandler>();
         services.AddAuthorization();
 
         return services;

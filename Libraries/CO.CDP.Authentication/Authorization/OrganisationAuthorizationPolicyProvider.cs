@@ -56,6 +56,9 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
         var organisationIdLocation = OrganisationIdLocation.None;
         string[] personScopes = [];
         string[] apiKeyScopes = [];
+        string? applicationClientId = null;
+        string[] applicationRoles = [];
+        string[] applicationPermissions = [];
 
         foreach (var token in policyTokens)
         {
@@ -89,6 +92,18 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
                     case OrganisationAuthorizeAttribute.ApiKeyScopesGroup:
                         apiKeyScopes = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
                         break;
+
+                    case OrganisationAuthorizeAttribute.AppClientIdGroup:
+                        applicationClientId = pair[1];
+                        break;
+
+                    case OrganisationAuthorizeAttribute.AppRolesGroup:
+                        applicationRoles = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
+                        break;
+
+                    case OrganisationAuthorizeAttribute.AppPermissionsGroup:
+                        applicationPermissions = pair[1].Split('|', StringSplitOptions.RemoveEmptyEntries);
+                        break;
                 }
             }
         }
@@ -109,6 +124,14 @@ public class OrganisationAuthorizationPolicyProvider(IOptions<AuthorizationOptio
         if (serviceKeyChannelPresent)
         {
             requirements.Add(new ApiKeyScopeAuthorizationRequirement(apiKeyScopes));
+        }
+
+        if (!string.IsNullOrWhiteSpace(applicationClientId))
+        {
+            requirements.Add(new ApplicationScopeAuthorizationRequirement(
+                applicationClientId,
+                applicationRoles.Length > 0 ? applicationRoles : null,
+                applicationPermissions.Length > 0 ? applicationPermissions : null));
         }
 
         return [.. requirements];

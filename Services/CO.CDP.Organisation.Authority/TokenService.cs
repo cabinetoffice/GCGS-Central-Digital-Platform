@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using ApiClient = CO.CDP.UserManagement.WebApiClient;
 
 namespace CO.CDP.Organisation.Authority;
 
@@ -17,7 +17,7 @@ public class TokenService(
     IConfigurationService configService,
     IPersonRepository personRepository,
     IAuthorityRepository authorityRepository,
-    IServiceProvider serviceProvider,
+    IHttpClientFactory httpClientFactory,
     IOptions<FeaturesOptions> features) : ITokenService
 {
     public async Task<Model.TokenResponse> CreateToken(string urn)
@@ -142,24 +142,28 @@ public class TokenService(
 
         if (features.Value.ClaimsApiEnabled)
         {
-            logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from UserManagement.", urn);
+            logger.LogDebug("Claims enrichment enabled for {UserUrn}. Fetching claims from Organisation API.", urn);
             try
             {
-                var userClient = serviceProvider.GetService<ApiClient.UserManagementClient>();
-                if (userClient == null)
+                var httpClient = httpClientFactory.CreateClient("OrganisationApiHttpClient");
+                var encodedUrn = Uri.EscapeDataString(urn);
+                using var response = await httpClient.GetAsync($"/organisations/claims/users/{encodedUrn}");
+
+                if (response.IsSuccessStatusCode)
                 {
-                    logger.LogWarning("UserManagementClient not registered despite ClaimsApiEnabled; skipping claims enrichment.");
+                    var claimsJson = await response.Content.ReadAsStringAsync();
+                    claims.Add(new Claim("cdp_claims", claimsJson, JsonClaimValueTypes.Json));
+                    logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
                 }
                 else
                 {
-                    var userClaims = await userClient.UsersGETAsync(urn);
-                    claims.Add(new Claim("cdp_claims", JsonSerializer.Serialize(userClaims), JsonClaimValueTypes.Json));
-                    logger.LogDebug("Added cdp_claims for {UserUrn}.", urn);
+                    logger.LogWarning("Organisation API returned {StatusCode} for claims request for {UserUrn}.",
+                        response.StatusCode, urn);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Failed to fetch user claims from UserManagement service.");
+                logger.LogWarning(ex, "Failed to fetch user claims from Organisation API.");
             }
         }
 

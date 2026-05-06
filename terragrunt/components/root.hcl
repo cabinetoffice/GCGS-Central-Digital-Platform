@@ -252,7 +252,6 @@ locals {
     cfs_scheduler                        = { desired_count = 1 }
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
-    commercial_tools_migrations          = { cpu = 256, memory = 512 }
     data_sharing                         = {}
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
@@ -311,7 +310,6 @@ locals {
     cfs_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "cfs-scheduler" }
     commercial_tools_api                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api", listener_priority = 113 }
     commercial_tools_app                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app", listener_priority = 111 }
-    commercial_tools_migrations          = { cluster = "sirsi",     type = "db-migration", name = "commercial-tools-migrations" }
     data_sharing                         = { cluster = "sirsi",     type = "web-service",  name = "data-sharing", listener_priority = 114 }
     entity_verification                  = { cluster = "sirsi",     type = "web-service",  name = "entity-verification", listener_priority = 115 }
     entity_verification_migrations       = { cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations" }
