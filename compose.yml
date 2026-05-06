@@ -236,8 +236,21 @@ services:
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
       Aws__SqsDispatcher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/entity-verification.fifo"
-      Aws__OutboxQueues__0__MessageGroupId: "Organisation"
-      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__0__MessageType: "OrganisationRegistered"
+      Aws__OutboxRoutes__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__0__MessageGroupId: "Organisation"
+      Aws__OutboxRoutes__1__MessageType: "OrganisationUpdated"
+      Aws__OutboxRoutes__1__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__1__MessageGroupId: "Organisation"
+      Aws__OutboxRoutes__2__MessageType: "OrganisationApproved"
+      Aws__OutboxRoutes__2__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__2__MessageGroupId: "Organisation"
+      Aws__OutboxRoutes__3__MessageType: "PersonScopesUpdated"
+      Aws__OutboxRoutes__3__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__3__MessageGroupId: "Organisation"
+      Aws__OutboxRoutes__4__MessageType: "PersonRemovedFromOrganisation"
+      Aws__OutboxRoutes__4__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__4__MessageGroupId: "Organisation"
       Aws__SqsPublisher__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
       OrganisationInformationDatabase__Server: 'db'
       OrganisationInformationDatabase__Database: 'cdp'
@@ -331,8 +344,9 @@ services:
       Aws__Credentials__AccessKeyId: test
       Aws__Credentials__SecretAccessKey: test
       Aws__ServiceURL: "http://localstack:4566"
-      Aws__OutboxQueues__0__MessageGroupId: "Organisation"
-      Aws__OutboxQueues__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__0__MessageType: "PersonInviteClaimed"
+      Aws__OutboxRoutes__0__QueueUrl: "http://sqs.us-east-1.localhost.localstack.cloud:4566/000000000000/organisation.fifo"
+      Aws__OutboxRoutes__0__MessageGroupId: "Organisation"
 
   forms:
     container_name: co-cdp-forms
