@@ -271,7 +271,7 @@ app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseAppRegistryOrganisationEndpoints();
 app.UseApplicationEndpoints();
 app.UseUserAssignmentEndpoints();
-app.UseClaimsEndpoints();
+app.UseAppRegistryClaimsEndpoints();
 app.UseProfileEndpoints();
 app.UseBulkOperationEndpoints();
 app.UseAuditEndpoints();

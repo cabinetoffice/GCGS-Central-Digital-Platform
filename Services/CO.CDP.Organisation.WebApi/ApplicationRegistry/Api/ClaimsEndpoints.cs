@@ -7,7 +7,7 @@ namespace CO.CDP.Organisation.WebApi.ApplicationRegistry.Api;
 
 public static class ClaimsEndpoints
 {
-    public static void UseClaimsEndpoints(this WebApplication app)
+    public static void UseAppRegistryClaimsEndpoints(this WebApplication app)
     {
         app.MapGet("/api/claims/{userPrincipalId}", async (
             string userPrincipalId,
