@@ -117,6 +117,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: true
       - name: Determine the version
         id: version
         run: |
@@ -124,6 +125,7 @@ jobs:
           CURRENT_COMMIT=$(make version-commit COMMIT_REF=$COMMIT_REF)
           CURRENT_TAG=$([[ "${GITHUB_REF:0:10}" = "refs/tags/" ]] && echo ${GITHUB_REF#refs/tags/} || echo "")
           LAST_TAG=$(make last-tag)
+          LAST_TAG=${LAST_TAG:-0.0.0}
           VERSION=$([[ "${CURRENT_TAG}" = "" ]] && echo "${LAST_TAG}-${CURRENT_COMMIT}" || echo "$CURRENT_TAG")
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
