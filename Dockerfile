@@ -378,15 +378,6 @@ WORKDIR /app
 COPY --from=publish-outbox-processor /app/publish .
 ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
 
-FROM base AS final-outbox-processor-user-management
-ARG VERSION
-ENV VERSION=${VERSION}
-ENV DbContext=UserManagementDbContext
-ENV Channel=user_management_outbox
-WORKDIR /app
-COPY --from=publish-outbox-processor /app/publish .
-ENTRYPOINT ["dotnet", "CO.CDP.OutboxProcessor.dll"]
-
 FROM base AS final-scheduled-worker
 ARG VERSION
 ENV VERSION=${VERSION}
