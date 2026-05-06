@@ -57,7 +57,7 @@ locals {
   }
 
   fts_parameters = {
-    async_enabled                        = "false"
+    async_enabled                        = var.environment == "development"? "true" : "false"
     email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                      = "%"
