@@ -166,6 +166,7 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Run E2E Tests
+        if: ${{ secrets.SIRSI_E2ETEST_EMAIL != '' }}
         run: make e2e-test
         env:
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
