@@ -61,6 +61,8 @@ public class CompleteMoUTimedHostedServiceTests
 
         await _service.StartAsync(CancellationToken.None);
 
+        await Task.Delay(200);
+
         _mockLogger.Verify(
             x => x.Log(
                 LogLevel.Error,
