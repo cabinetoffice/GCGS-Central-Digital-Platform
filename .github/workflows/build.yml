@@ -109,6 +109,7 @@ jobs:
     env:
       DOCKER_BUILDKIT: 1
       COMPOSE_DOCKER_CLI_BUILD: 1
+      E2E_EMAIL: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
     outputs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}
@@ -166,7 +167,7 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Run E2E Tests
-        if: ${{ secrets.SIRSI_E2ETEST_EMAIL != '' }}
+        if: env.E2E_EMAIL != ''
         run: make e2e-test
         env:
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
