@@ -145,6 +145,7 @@ locals {
     "/signout-callback-oidc*",
   ]
 
-  overwrite_to_new_fts_path_groups = chunklist(local.overwrite_to_new_fts_paths, 4)
+  overwrite_to_new_fts_paths_per_rule = max(1, 5 - length(var.fts_extra_domains))
+  overwrite_to_new_fts_path_groups    = chunklist(local.overwrite_to_new_fts_paths, local.overwrite_to_new_fts_paths_per_rule)
 
 }
