@@ -43,6 +43,19 @@ locals {
     ]
   )
 
+  waf_php_ocds_rate_limit_rules = {
+    ocds_release_packages = {
+      name     = "RateLimitOcdsReleasePackages"
+      priority = 0
+      regex    = "^/api/[^/]+/ocdsReleasePackages.*$"
+    }
+    ocds_record_packages = {
+      name     = "RateLimitOcdsRecordPackages"
+      priority = 10
+      regex    = "^/api/[^/]+/ocdsRecordPackages.*$"
+    }
+  }
+
   waf_php_bot_block_paths = join(
     "|",
     [

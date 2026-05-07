@@ -469,99 +469,54 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
-  rule {
-    name     = "${local.name_prefix_php}-RateLimitOcdsSReleasePackages"
-    priority = 0
+  dynamic "rule" {
+    for_each = local.waf_php_ocds_rate_limit_rules
+    content {
+      name     = "${local.name_prefix_php}-${rule.value.name}"
+      priority = rule.value.priority
 
-    action {
-      block {
-        custom_response {
-          response_code            = 429
-          custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
+      action {
+        block {
+          custom_response {
+            response_code            = 429
+            custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
 
-          response_header {
-            name  = "Retry-After"
-            value = local.rate_limit_window_seconds
-          }
-        }
-      }
-    }
-
-    statement {
-      rate_based_statement {
-        limit                 = local.rate_limit_count
-        evaluation_window_sec = local.rate_limit_window_seconds
-        aggregate_key_type    = "IP"
-
-        scope_down_statement {
-          regex_match_statement {
-            regex_string = "^/api/[^/]+/ocdsReleasePackages.*$"
-
-            field_to_match {
-              uri_path {}
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "NONE"
+            response_header {
+              name  = "Retry-After"
+              value = local.rate_limit_window_seconds
             }
           }
         }
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_php}-RateLimitOcdsSReleasePackages"
-      sampled_requests_enabled   = true
-    }
-  }
+      statement {
+        rate_based_statement {
+          limit                 = local.rate_limit_count
+          evaluation_window_sec = local.rate_limit_window_seconds
+          aggregate_key_type    = "IP"
 
-  rule {
-    name     = "${local.name_prefix_php}-RateLimitOcdsRecordPackages"
-    priority = 10
+          scope_down_statement {
+            regex_match_statement {
+              regex_string = rule.value.regex
 
-    action {
-      block {
-        custom_response {
-          response_code            = 429
-          custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
+              field_to_match {
+                uri_path {}
+              }
 
-          response_header {
-            name  = "Retry-After"
-            value = local.rate_limit_window_seconds
-          }
-        }
-      }
-    }
-
-    statement {
-      rate_based_statement {
-        limit                 = local.rate_limit_count
-        evaluation_window_sec = local.rate_limit_window_seconds
-        aggregate_key_type    = "IP"
-
-        scope_down_statement {
-          regex_match_statement {
-            regex_string = "^/api/[^/]+/ocdsRecordPackages.*$"
-
-            field_to_match {
-              uri_path {}
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "NONE"
+              text_transformation {
+                priority = 0
+                type     = "NONE"
+              }
             }
           }
         }
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_php}-RateLimitOcdsRecordPackages"
-      sampled_requests_enabled   = true
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${local.name_prefix_php}-${rule.value.name}"
+        sampled_requests_enabled   = true
+      }
     }
   }
 
