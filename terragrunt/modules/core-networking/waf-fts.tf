@@ -17,7 +17,7 @@ resource "aws_wafv2_web_acl" "fts" {
 
   custom_response_body {
     key          = "${local.name_prefix_fts}_rate_limit_exceeded"
-    content      = "Rate limit of ${local.rate_limit_ocdss_releasepac_kages_count} exceeded. Please retry after ${local.rate_limit_ocdss_releasepac_kages_window_seconds} seconds."
+    content      = "Rate limit of ${local.rate_limit_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
     content_type = "TEXT_PLAIN"
   }
 
@@ -104,7 +104,7 @@ resource "aws_wafv2_web_acl" "fts" {
 
           response_header {
             name  = "Retry-After"
-            value = local.rate_limit_ocdss_releasepac_kages_window_seconds
+            value = local.rate_limit_window_seconds
           }
         }
       }
@@ -112,8 +112,8 @@ resource "aws_wafv2_web_acl" "fts" {
 
     statement {
       rate_based_statement {
-        limit                 = local.rate_limit_ocdss_releasepac_kages_count
-        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window_seconds
+        limit                 = local.rate_limit_count
+        evaluation_window_sec = local.rate_limit_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {

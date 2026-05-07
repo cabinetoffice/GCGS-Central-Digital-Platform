@@ -17,7 +17,7 @@ resource "aws_wafv2_web_acl" "php" {
 
   custom_response_body {
     key          = "${local.name_prefix_php}_rate_limit_exceeded"
-    content      = "Rate limit of ${local.rate_limit_ocdss_releasepac_kages_count} exceeded. Please retry after ${local.rate_limit_ocdss_releasepac_kages_window_seconds} seconds."
+    content      = "Rate limit of ${local.rate_limit_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
     content_type = "TEXT_PLAIN"
   }
 
@@ -69,7 +69,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         statement {
           regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|supabaseedgeruntime|supabase).*"
+            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|supabaseedgeruntime|supabase|findtender-ai-agent|vinnikov-analytics|shapbot).*"
 
             field_to_match {
               single_header {
@@ -481,7 +481,7 @@ resource "aws_wafv2_web_acl" "php" {
 
           response_header {
             name  = "Retry-After"
-            value = local.rate_limit_ocdss_releasepac_kages_window_seconds
+            value = local.rate_limit_window_seconds
           }
         }
       }
@@ -489,8 +489,8 @@ resource "aws_wafv2_web_acl" "php" {
 
     statement {
       rate_based_statement {
-        limit                 = local.rate_limit_ocdss_releasepac_kages_count
-        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window_seconds
+        limit                 = local.rate_limit_count
+        evaluation_window_sec = local.rate_limit_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {
@@ -518,6 +518,54 @@ resource "aws_wafv2_web_acl" "php" {
   }
 
   rule {
+    name     = "${local.name_prefix_php}-RateLimitOcdsRecordPackages"
+    priority = 10
+
+    action {
+      block {
+        custom_response {
+          response_code            = 429
+          custom_response_body_key = "${local.name_prefix_php}_rate_limit_exceeded"
+
+          response_header {
+            name  = "Retry-After"
+            value = local.rate_limit_window_seconds
+          }
+        }
+      }
+    }
+
+    statement {
+      rate_based_statement {
+        limit                 = local.rate_limit_count
+        evaluation_window_sec = local.rate_limit_window_seconds
+        aggregate_key_type    = "IP"
+
+        scope_down_statement {
+          regex_match_statement {
+            regex_string = "^/api/[^/]+/ocdsRecordPackages.*$"
+
+            field_to_match {
+              uri_path {}
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "NONE"
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-RateLimitOcdsRecordPackages"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
     name     = "${local.name_prefix_php}-RateLimitSearchResultsAndNotice"
     priority = 9
 
@@ -529,7 +577,7 @@ resource "aws_wafv2_web_acl" "php" {
 
           response_header {
             name  = "Retry-After"
-            value = local.rate_limit_ocdss_releasepac_kages_window_seconds
+            value = local.rate_limit_window_seconds
           }
         }
       }
@@ -537,8 +585,8 @@ resource "aws_wafv2_web_acl" "php" {
 
     statement {
       rate_based_statement {
-        limit                 = local.rate_limit_ocdss_releasepac_kages_count
-        evaluation_window_sec = local.rate_limit_ocdss_releasepac_kages_window_seconds
+        limit                 = local.rate_limit_count
+        evaluation_window_sec = local.rate_limit_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {
