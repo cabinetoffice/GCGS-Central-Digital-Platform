@@ -76,7 +76,7 @@ locals {
     fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
     licenced_to                           = "No-one"
     local_version                         = 1100
-    notice_publish_queue_arn              = var.queue_fts_notice_publish_arn
+    notice_publish_queue_url              = var.queue_fts_notice_publish_url
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
