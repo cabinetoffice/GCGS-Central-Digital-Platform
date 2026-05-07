@@ -44,15 +44,10 @@ locals {
   )
 
   waf_php_ocds_rate_limit_rules = {
-    ocds_release_packages = {
-      name     = "RateLimitOcdsReleasePackages"
+    ocds_packages = {
+      name     = "RateLimitOcdsPackages"
       priority = 0
-      regex    = "^/api/[^/]+/ocdsReleasePackages.*$"
-    }
-    ocds_record_packages = {
-      name     = "RateLimitOcdsRecordPackages"
-      priority = 10
-      regex    = "^/api/[^/]+/ocdsRecordPackages.*$"
+      regex    = "^/api/[^/]+/ocds(?:Record|Release)Packages.*$"
     }
   }
 
