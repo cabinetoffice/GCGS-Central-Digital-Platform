@@ -17,8 +17,8 @@ locals {
     AWSManagedRulesKnownBadInputsRuleSet : 2
   }
 
-  rate_limit_ocdss_releasepac_kages_count          = 12
-  rate_limit_ocdss_releasepac_kages_window_seconds = 120
+  rate_limit_count          = 12
+  rate_limit_window_seconds = 120
 
   waf_rule_sets_priority_observers = {
     AWSManagedRulesSQLiRuleSet : 6
@@ -42,6 +42,14 @@ locals {
       "^/notice/.*",
     ]
   )
+
+  waf_php_ocds_rate_limit_rules = {
+    ocds_packages = {
+      name     = "RateLimitOcdsPackages"
+      priority = 0
+      regex    = "^/api/[^/]+/ocds(?:Record|Release)Packages.*$"
+    }
+  }
 
   waf_php_bot_block_paths = join(
     "|",
