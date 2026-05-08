@@ -16,7 +16,6 @@ locals {
   name_prefix                  = var.product.resource_name
   name_prefix_fts              = "${local.name_prefix}-fts"
   name_prefix_php              = "${local.name_prefix}-php"
-  notices_rebuild_enabled      = contains(["development", "staging"], var.environment)
   php_cluster_id               = aws_ecs_cluster.php.id
   php_cluster_name             = aws_ecs_cluster.php.name
   php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn

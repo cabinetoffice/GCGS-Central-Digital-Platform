@@ -20,7 +20,6 @@ module "ecs_service_fts_app" {
         ssm_data_protection_prefix     = local.ssm_data_protection_prefix
         use_internal_issuer            = local.use_internal_issuer
         use_internal_service_urls      = local.use_internal_service_urls
-        notices_rebuild_enabled        = local.notices_rebuild_enabled
       }
     )
   )
