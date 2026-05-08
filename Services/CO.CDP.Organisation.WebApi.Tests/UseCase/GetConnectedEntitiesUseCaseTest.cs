@@ -15,9 +15,17 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
     {
         var organisationId = Guid.NewGuid();
 
+        _repository
+            .Setup(r => r.GetSummary(organisationId))
+            .ReturnsAsync([]);
+
         var found = await UseCase.Execute(organisationId);
 
         found.Should().BeEmpty();
+
+        _repository.Verify(
+            r => r.GetConnectedEntityExclusionUsageAsync(It.IsAny<Guid>()),
+            Times.Never);
     }
 
     [Fact]
@@ -48,8 +56,12 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         _repository.Setup(r => r.GetSummary(organisationId)).ReturnsAsync(persistenceConnectedEntityList);
         _repository
-            .Setup(r => r.IsConnectedEntityUsedInExclusionAsync(organisationId, It.IsAny<Guid>()))
-            .ReturnsAsync(Tuple.Create(false, formGuid, sectionGuid));
+            .Setup(r => r.GetConnectedEntityExclusionUsageAsync(organisationId))
+            .ReturnsAsync(new Dictionary<Guid, Tuple<Guid, Guid>>
+            {
+                { eid1, Tuple.Create(formGuid, sectionGuid) },
+                { eid2, Tuple.Create(formGuid, sectionGuid) }
+            });
 
         var found = await UseCase.Execute(organisationId);
 
@@ -61,6 +73,7 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "CHN_123",
                 Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid1}"),
                 EntityType = Model.ConnectedEntityType.Organisation,
+                IsInUse = true,
                 FormGuid = formGuid,
                 SectionGuid = sectionGuid,
             },
@@ -70,6 +83,7 @@ public class GetConnectedEntitiesUseCaseTest(AutoMapperFixture mapperFixture) : 
                 Name = "First Name",
                 Uri = new Uri($"https://cdp.cabinetoffice.gov.uk/organisations/{organisationId}/connected-entities/{eid2}"),
                 EntityType = Model.ConnectedEntityType.Organisation,
+                IsInUse = true,
                 FormGuid = formGuid,
                 SectionGuid = sectionGuid,
             }
