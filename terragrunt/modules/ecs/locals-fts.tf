@@ -57,18 +57,19 @@ locals {
   }
 
   fts_parameters = {
-    async_enabled                        = var.environment == "development"? "true" : "false"
-    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
-    dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     app_host_address                      = "%"
+    async_enabled                        = var.environment == "development"? "true" : "false"
     buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
     cookie_domain                         = local.fts_site_domains[var.environment]
     database_schema                       = "cdp_sirsi_fts_cluster"
-    db_host                               = var.db_fts_cluster_address
-    db_name                               = var.db_fts_cluster_name
     database_server_address               = var.db_fts_cluster_address
     database_server_port                  = 3306
     database_ssl                          = false
+    db_host                               = var.db_fts_cluster_address
+    db_name                               = var.db_fts_cluster_name
+    dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
+    dotnet_ui_app_url                     = "https://fts-app.${var.public_domain}"
+    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     environment                           = upper(var.environment)
     fts_allowed_target_email_domains      = join(",", local.fts_allowed_target_email_domains[var.environment])
     fts_client_assertion_type             = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
@@ -76,7 +77,9 @@ locals {
     fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
     licenced_to                           = "No-one"
     local_version                         = 1100
+    modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
+    notices_rebuild_enabled               = contains(["development", "staging"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
@@ -86,16 +89,14 @@ locals {
     srsi_tenant_lookup_endpoint           = "https://tenant.${var.public_domain}/tenant/lookup"
     ssl_service                           = true
     submission_log_globally_enabled       = contains(["integration"], var.environment) ? true : false
-    uk17_enabled                          = true
-    uk17_enable_current_reporting_periods = contains(["development", "production"], var.environment) ? false : true
-    uk9_enabled                           = true
     uk11_240_enabled                      = true
+    uk17_enable_current_reporting_periods = contains(["development", "production"], var.environment) ? false : true
+    uk17_enabled                          = true
+    uk9_enabled                           = true
     use_srsi                              = true
     use_srsi_for_api                      = true
     valid_until                           = 1924990799
     validation_weight                     = contains(["integration"], var.environment) ? "QUAL_WEIGHT" : "PROD_WEIGHT"
-    modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
-    dotnet_ui_app_url                     = "https://fts-app.${var.public_domain}"
   }
 
 

@@ -27,7 +27,6 @@
       { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
       { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
       { "name" : "FtsService", "value" : "${fts_service_url}"},
-      { "name" : "NOTICES_REBUILD_ENABLED", "value" : "${notices_rebuild_enabled}"},
       { "name" : "SearchApiClient__BaseUrl", "value" : "${use_internal_service_urls ? internal_service_urls["fts-search-api"] : public_service_urls["fts-search-api"]}"}
     ],
     "secrets": [
