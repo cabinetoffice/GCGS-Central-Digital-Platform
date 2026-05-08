@@ -9,7 +9,10 @@ locals {
       validator_records = ["_f7e371359d8616d65633cce25d1ac449.jkddzztszm.acm-validations.aws."]
     }
     staging     = null
-    integration = null
+    integration = {
+      validator_name    = "_d3c54f1b2c3c0927c3c2a0d1cf07089c.ai.integration.supplier-information.find-tender.service.gov.uk."
+      validator_records = ["_e4df106351612a9a8edcb3fc873c7d58.jkddzztszm.acm-validations.aws."]
+    }
     production = {
       name              = "commercial-ai"
       records           = ["wdq6jpemgg.eu-west-2.awsapprunner.com"]
