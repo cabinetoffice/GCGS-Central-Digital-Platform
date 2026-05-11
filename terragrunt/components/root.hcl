@@ -412,7 +412,7 @@ locals {
   }
 
   versions = {
-    postgres_engine = "16.8"
+    postgres_engine = "16.11"
   }
 
 }
