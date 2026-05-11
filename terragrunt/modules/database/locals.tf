@@ -1,7 +1,8 @@
 locals {
-  name_prefix        = var.product.resource_name
-  sirsi_cluster_name = "${local.name_prefix}-cluster"
-  ev_cluster_name    = "${local.name_prefix}-ev-cluster"
+  name_prefix                = var.product.resource_name
+  sirsi_cluster_name         = "${local.name_prefix}-cluster"
+  ev_cluster_name            = "${local.name_prefix}-ev-cluster"
+  find_a_tender_cluster_name = "${local.name_prefix}-find-a-tender-cluster"
 
   is_production = var.is_production || var.environment == "staging"
 

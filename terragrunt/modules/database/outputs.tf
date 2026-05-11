@@ -15,7 +15,7 @@ output "cfs_cluster_name" {
 }
 
 output "cluster_ids" {
-  value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id]
+  value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id, module.cluster_find_a_tender.cluster_id]
 }
 
 output "entity_verification_cluster_address" {
@@ -32,6 +32,22 @@ output "entity_verification_cluster_credentials_kms_key_id" {
 
 output "entity_verification_cluster_name" {
   value = module.cluster_entity_verification.db_name
+}
+
+output "find_a_tender_cluster_address" {
+  value = module.cluster_find_a_tender.db_address
+}
+
+output "find_a_tender_cluster_credentials_arn" {
+  value = module.cluster_find_a_tender.db_master_user_secret_arn
+}
+
+output "find_a_tender_cluster_credentials_kms_key_id" {
+  value = module.cluster_find_a_tender.db_master_user_secret_kms_key_id
+}
+
+output "find_a_tender_cluster_name" {
+  value = module.cluster_find_a_tender.db_name
 }
 
 output "fts_cluster_address" {
