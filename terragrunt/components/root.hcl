@@ -260,6 +260,7 @@ locals {
     fts_app                              = { desired_count = 2 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
+    fts_findtender_migrations            = { cpu = 256, memory = 512 }
     fts_job_scheduler                    = { desired_count = 0 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
@@ -319,6 +320,7 @@ locals {
     fts_app                              = { cluster = "fts",       type = "service",      name = "fts-app", listener_priority = 210 }
     fts_healthcheck                      = { cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck", listener_priority = 312 }
     fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
+    fts_findtender_migrations            = { cluster = "fts",       type = "db-migration", name = "fts-findtender-migrations" }
     fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
     fts_job_scheduler                    = { cluster = "sirsi-php", type = "service",      name = "fts-job-scheduler" }
     fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }

@@ -1,10 +1,9 @@
-module "ecs_migration_tasks_fts" {
-  for_each = local.migration_configs_fts
+module "ecs_migration_task_fts" {
 
   source = "../ecs-service"
 
   container_definitions = templatefile(
-    "${path.module}/templates/task-definitions/${each.value.name}.json.tftpl",
+    "${path.module}/templates/task-definitions/${var.service_configs.fts_migrations.name}.json.tftpl",
     merge(
       local.fts_migrations_container_parameters,
       {
@@ -15,12 +14,12 @@ module "ecs_migration_tasks_fts" {
 
   alb_enabled            = false
   cluster_id             = local.php_cluster_id
-  cpu                    = each.value.cpu
+  cpu                    = var.service_configs.fts_migrations.cpu
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "db"
   is_standalone_task     = true
-  memory                 = each.value.memory
-  name                   = each.value.name
+  memory                 = var.service_configs.fts_migrations.memory
+  name                   = var.service_configs.fts_migrations.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
   public_domain          = var.public_domain
