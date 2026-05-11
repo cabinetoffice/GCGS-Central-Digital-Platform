@@ -27,10 +27,19 @@
       { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
       { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
       { "name" : "FtsService", "value" : "${fts_service_url}"},
+      { "name" : "FtsDatabase__Server", "value" : "${db_mysql_address}"},
+      { "name" : "FtsDatabase__Port", "value" : "${db_mysql_port}"},
+      { "name" : "FtsDatabase__Database", "value" : "${db_mysql_name}"},
+      { "name" : "FtsPostgreSQLDatabase__Server", "value" : "${db_pg_address}:${db_pg_port}"},
+      { "name" : "FtsPostgreSQLDatabase__Database", "value" : "${db_pg_name}"},
       { "name" : "SearchApiClient__BaseUrl", "value" : "${use_internal_service_urls ? internal_service_urls["fts-search-api"] : public_service_urls["fts-search-api"]}"}
     ],
     "secrets": [
       { "name" : "Aws__ElastiCache__Token", "valueFrom" : "${redis_auth_token_arn}"},
+      { "name" : "FtsDatabase__Password", "valueFrom" : "${db_mysql_password}"},
+      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_mysql_username}"},
+      { "name" : "FtsPostgreSQLDatabase__Password", "valueFrom" : "${db_pg_password}"},
+      { "name" : "FtsPostgreSQLDatabase__Username", "valueFrom" : "${db_pg_username}"},
       { "name" : "OneLogin__Authority", "valueFrom" : "${onelogin_authority}"},
       { "name" : "OneLogin__ClientId", "valueFrom" : "${onelogin_client_id}"},
       { "name" : "OneLogin__PrivateKey", "valueFrom" : "${onelogin_private_key}"}

@@ -100,6 +100,7 @@ data "aws_iam_policy_document" "ecs_task_access_secrets" {
     ]
     resources = [
       var.db_ev_cluster_credentials_kms_key_id,
+      var.db_find_a_tender_cluster_credentials_kms_key_id,
       var.db_sirsi_cluster_credentials_kms_key_id,
     ]
   }
