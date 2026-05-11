@@ -114,8 +114,18 @@ locals {
       onelogin_authority   = local.one_login.credential_locations.authority
       onelogin_client_id   = local.one_login.credential_locations.client_id
       onelogin_private_key = local.one_login.credential_locations.private_key
-      public_domain        = var.public_domain
-      vpc_cidr             = var.vpc_cider
+      db_pg_address      = var.db_find_a_tender_cluster_address
+      db_pg_name         = var.db_find_a_tender_cluster_name
+      db_pg_password     = local.db_find_a_tender_password
+      db_pg_port         = 5432
+      db_pg_username     = local.db_find_a_tender_username
+      db_mysql_address   = var.db_fts_cluster_address
+      db_mysql_name      = var.db_fts_cluster_name
+      db_mysql_password  = local.db_fts_password
+      db_mysql_port      = 3306
+      db_mysql_username  = local.db_fts_username
+      public_domain      = var.public_domain
+      vpc_cidr           = var.vpc_cider
     }
   )
 
@@ -135,6 +145,19 @@ locals {
       db_port             = 3306
       db_username         = local.db_fts_username
       opensearch_endpoint = "https://${var.opensearch_endpoint}"
+    }
+  )
+
+  fts_dotnet_job_scheduler = merge(
+    local.fts_dotnet_common,
+    {
+      db_address                     = var.db_find_a_tender_cluster_address
+      db_name                        = var.db_find_a_tender_cluster_name
+      db_password                    = local.db_find_a_tender_password
+      db_port                        = 5432
+      db_username                    = local.db_find_a_tender_username
+      notify_api_key                 = local.fts_secrets.notify_api_key
+      notify_template_id_saved_searches = local.fts_secrets.notify_template_id_saved_searches
     }
   )
 

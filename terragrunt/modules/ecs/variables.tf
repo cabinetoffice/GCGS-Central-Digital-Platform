@@ -88,6 +88,26 @@ variable "db_fts_cluster_name" {
   type        = string
 }
 
+variable "db_find_a_tender_cluster_address" {
+  description = "Find A Tender DB address"
+  type        = string
+}
+
+variable "db_find_a_tender_cluster_credentials_arn" {
+  description = "ARN of the secret holding Find A Tender DB credentials"
+  type        = string
+}
+
+variable "db_find_a_tender_cluster_credentials_kms_key_id" {
+  description = "Key ID of the KMS used to encrypt Find A Tender secrets"
+  type        = string
+}
+
+variable "db_find_a_tender_cluster_name" {
+  description = "Find A Tender DB name"
+  type        = string
+}
+
 variable "db_mysql_sg_id" {
   description = "Postgres DB security group ID"
   type        = string
