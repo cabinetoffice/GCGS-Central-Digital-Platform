@@ -114,18 +114,18 @@ locals {
       onelogin_authority   = local.one_login.credential_locations.authority
       onelogin_client_id   = local.one_login.credential_locations.client_id
       onelogin_private_key = local.one_login.credential_locations.private_key
-      db_pg_address      = var.db_find_a_tender_cluster_address
-      db_pg_name         = var.db_find_a_tender_cluster_name
-      db_pg_password     = local.db_find_a_tender_password
-      db_pg_port         = 5432
-      db_pg_username     = local.db_find_a_tender_username
-      db_mysql_address   = var.db_fts_cluster_address
-      db_mysql_name      = var.db_fts_cluster_name
-      db_mysql_password  = local.db_fts_password
-      db_mysql_port      = 3306
-      db_mysql_username  = local.db_fts_username
-      public_domain      = var.public_domain
-      vpc_cidr           = var.vpc_cider
+      db_pg_address        = var.db_find_a_tender_cluster_address
+      db_pg_name           = var.db_find_a_tender_cluster_name
+      db_pg_password       = local.db_find_a_tender_password
+      db_pg_port           = 5432
+      db_pg_username       = local.db_find_a_tender_username
+      db_mysql_address     = var.db_fts_cluster_address
+      db_mysql_name        = var.db_fts_cluster_name
+      db_mysql_password    = local.db_fts_password
+      db_mysql_port        = 3306
+      db_mysql_username    = local.db_fts_username
+      public_domain        = var.public_domain
+      vpc_cidr             = var.vpc_cider
     }
   )
 
@@ -221,6 +221,26 @@ locals {
     local.fts_secrets
   )
 
+  fts_findtender_migrations_container_parameters = merge(
+    local.fts_dotnet_common,
+    {
+      aspcore_environment = local.aspcore_environment
+      db_pg_address       = var.db_find_a_tender_cluster_address
+      db_pg_name          = var.db_find_a_tender_cluster_name
+      db_pg_password      = local.db_find_a_tender_password
+      db_pg_port          = 5432
+      db_pg_username      = local.db_find_a_tender_username
+      cpu                 = var.service_configs.fts_findtender_migrations.cpu
+      image               = local.ecr_urls[var.service_configs.fts_findtender_migrations.name]
+      lg_name             = aws_cloudwatch_log_group.tasks[var.service_configs.fts_findtender_migrations.name].name
+      lg_prefix           = "db"
+      lg_region           = data.aws_region.current.region
+      memory              = var.service_configs.fts_findtender_migrations.memory
+      name                = var.service_configs.fts_findtender_migrations.name
+      service_version     = local.service_version_fts
+    }
+  )
+
   fts_notice_publish_worker_service_paremeters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts_notice_publish_worker.name]
     cpu             = var.service_configs.fts_notice_publish_worker.cpu
@@ -240,13 +260,6 @@ locals {
     local.fts_notice_publish_worker_service_paremeters,
     local.fts_secrets
   )
-
-  migrations_fts = ["fts-migrations"]
-
-  migration_configs_fts = {
-    for name, config in var.service_configs :
-    config.name => config if contains(local.migrations_fts, config.name)
-  }
 
   fts_allowed_target_email_domains = {
     development = [

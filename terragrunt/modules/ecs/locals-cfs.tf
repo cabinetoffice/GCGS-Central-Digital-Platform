@@ -123,13 +123,6 @@ locals {
     local.cfs_secrets
   )
 
-  migrations_cfs = ["cfs-migrations"]
-
-  migration_configs_cfs = {
-    for name, config in var.service_configs :
-    config.name => config if contains(local.migrations_cfs, config.name)
-  }
-
   cfs_allowed_target_email_domains = {
     development = [
       "goaco.com"
