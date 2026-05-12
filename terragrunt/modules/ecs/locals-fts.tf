@@ -151,13 +151,11 @@ locals {
   fts_dotnet_job_scheduler = merge(
     local.fts_dotnet_common,
     {
-      db_address                     = var.db_find_a_tender_cluster_address
-      db_name                        = var.db_find_a_tender_cluster_name
-      db_password                    = local.db_find_a_tender_password
-      db_port                        = 5432
-      db_username                    = local.db_find_a_tender_username
-      notify_api_key                 = local.fts_secrets.notify_api_key
-      notify_template_id_saved_searches = local.fts_secrets.notify_template_id_saved_searches
+      db_address  = var.db_find_a_tender_cluster_address
+      db_name     = var.db_find_a_tender_cluster_name
+      db_password = local.db_find_a_tender_password
+      db_port     = 5432
+      db_username = local.db_find_a_tender_username
     }
   )
 
