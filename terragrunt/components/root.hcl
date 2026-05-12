@@ -261,7 +261,7 @@ locals {
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_findtender_migrations            = { cpu = 256, memory = 512 }
-    fts_job_scheduler                    = { desired_count = 0 }
+    fts_job_scheduler                    = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1 }
