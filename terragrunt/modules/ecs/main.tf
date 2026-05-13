@@ -1,7 +1,3 @@
-moved {
-  from = aws_ecs_cluster.this
-  to   = aws_ecs_cluster.sirsi
-}
 resource "aws_ecs_cluster" "sirsi" {
   name = local.name_prefix
 
@@ -25,10 +21,6 @@ resource "aws_ecs_cluster" "sirsi" {
   tags = var.tags
 }
 
-moved {
-  from = aws_ecs_cluster.that
-  to   = aws_ecs_cluster.php
-}
 resource "aws_ecs_cluster" "php" {
   name = local.name_prefix_php
 
