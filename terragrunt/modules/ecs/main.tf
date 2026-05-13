@@ -17,12 +17,9 @@ resource "aws_ecs_cluster" "sirsi" {
     }
   }
 
-  dynamic "setting" {
-    for_each = var.environment != "development" ? [0] : []
-    content {
-      name  = "containerInsights"
-      value = "enabled"
-    }
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
 
   tags = var.tags
@@ -47,12 +44,9 @@ resource "aws_ecs_cluster" "php" {
     }
   }
 
-  dynamic "setting" {
-    for_each = var.environment != "development" ? [0] : []
-    content {
-      name  = "containerInsights"
-      value = "enabled"
-    }
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
 
   tags = var.tags
@@ -73,12 +67,9 @@ resource "aws_ecs_cluster" "fts" {
     }
   }
 
-  dynamic "setting" {
-    for_each = var.environment != "development" ? [0] : []
-    content {
-      name  = "containerInsights"
-      value = "enabled"
-    }
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
 
   tags = var.tags
