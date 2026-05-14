@@ -128,11 +128,13 @@ locals {
   ses_identity_domain = var.is_production ? replace(var.public_domain, "supplier-information.", "") : var.public_domain
 
   overwrite_to_new_fts_paths = [
+    "/account*",
     "/api/cpv-codes/search*",
     "/assets/*",
     "/change-language/*",
     "/commercial-tools*",
     "/contracts/*",
+    "/cookies*",
     "/css/*",
     "/favicon.ico",
     "/images/*",
