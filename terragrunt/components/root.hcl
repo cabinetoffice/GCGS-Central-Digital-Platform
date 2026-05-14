@@ -265,6 +265,7 @@ locals {
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1 }
+    fts_user_api                         = { desired_count = 1 }
     fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
@@ -326,6 +327,7 @@ locals {
     fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }
     fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
     fts_search_indexer                   = { cluster = "fts",       type = "service",      name = "fts-search-indexer" }
+    fts_user_api                         = { cluster = "fts",       type = "service",      name = "fts-user-api", listener_priority = 212 }
     organisation                         = { cluster = "sirsi",     type = "web-service",  name = "organisation", listener_priority = 117 }
     organisation_app                     = { cluster = "sirsi",     type = "web-service",  name = "organisation-app", listener_priority = 110 }
     organisation_information_migrations  = { cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations" }
