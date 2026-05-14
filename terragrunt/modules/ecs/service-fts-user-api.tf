@@ -1,0 +1,42 @@
+module "ecs_service_fts_user_api" {
+  source = "../ecs-service"
+
+  container_definitions = templatefile(
+    "${path.module}/templates/task-definitions/${var.service_configs.fts_user_api.name}.json.tftpl",
+    merge(
+      local.fts_dotnet_user_api,
+      {
+        cpu          = var.service_configs.fts_user_api.cpu
+        image        = local.ecr_urls[var.service_configs.fts_user_api.name]
+        lg_name      = aws_cloudwatch_log_group.tasks[var.service_configs.fts_user_api.name].name
+        memory       = var.service_configs.fts_user_api.memory
+        name         = var.service_configs.fts_user_api.name
+        service_port = local.service_ports_by_service[var.service_configs.fts_user_api.name]
+      }
+    )
+  )
+
+  cluster_id             = local.fts_cluster_id
+  cpu                    = var.service_configs.fts_user_api.cpu
+  desired_count          = var.service_configs.fts_user_api.desired_count
+  ecs_alb_sg_id          = var.alb_sg_id
+  ecs_listener_arn       = local.fts_ecs_listener_arn
+  ecs_service_base_sg_id = var.ecs_sg_id
+  extra_host_headers     = var.fts_extra_host_headers
+  family                 = "app"
+  internal_alb_enabled   = local.use_internal_service_urls
+  internal_domain        = local.internal_domain
+  internal_listener_arn  = local.internal_ecs_listener_arn
+  listener_name          = "dotnet-${var.service_configs.fts_user_api.name}"
+  listener_priority      = var.service_configs.fts_user_api.listener_priority
+  memory                 = var.service_configs.fts_user_api.memory
+  name                   = var.service_configs.fts_user_api.name
+  private_subnet_ids     = var.private_subnet_ids
+  product                = var.product
+  public_domain          = var.public_domain
+  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
+  service_port           = local.service_ports_by_service[var.service_configs.fts_user_api.name]
+  tags                   = var.tags
+  vpc_id                 = var.vpc_id
+}
