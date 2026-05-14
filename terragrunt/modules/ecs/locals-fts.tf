@@ -148,6 +148,18 @@ locals {
     }
   )
 
+  fts_dotnet_user_api = merge(
+    local.fts_dotnet_common,
+    {
+      db_address                  = var.db_find_a_tender_cluster_address
+      db_name                     = var.db_find_a_tender_cluster_name
+      db_password                 = local.db_find_a_tender_password
+      db_port                     = 5432
+      db_username                 = local.db_find_a_tender_username
+      sirsi_authority_api_baseurl = local.use_internal_service_urls ? local.internal_service_urls["authority"] : local.public_service_urls["authority"]
+    }
+  )
+
   fts_dotnet_job_scheduler = merge(
     local.fts_dotnet_common,
     {
