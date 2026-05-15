@@ -20,8 +20,9 @@ locals {
 
   fts_domain = "${local.auth_domain}-fts"
   fts_url    = "fts.${var.public_domain}"
+  fts_app_url = "fts-app.${var.public_domain}"
   fts_urls = concat(
-    [local.fts_url],
+    [local.fts_url, local.fts_app_url],
     var.fts_extra_domains
   )
   fts_callback_urls = [for url in local.fts_urls : "https://${url}/oauth2/idpresponse"]
