@@ -17,13 +17,3 @@ resource "aws_security_group_rule" "ecs_alb_to_ecs_service" {
   to_port                  = var.grafana_config.port
   type                     = "egress"
 }
-
-resource "aws_security_group_rule" "ecs_to_grafana_db" {
-  description              = "From Grafana ECS to Grafana DB"
-  from_port                = 5432
-  protocol                 = "TCP"
-  security_group_id        = var.db_postgres_sg_id
-  source_security_group_id = var.ecs_sg_id
-  to_port                  = 5432
-  type                     = "ingress"
-}
