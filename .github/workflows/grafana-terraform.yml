@@ -62,6 +62,7 @@ jobs:
           echo "TF_VAR_grafana_url=${GRAFANA_URL}" >> $GITHUB_ENV
           echo "TF_VAR_environment=${{ matrix.env }}" >> $GITHUB_ENV
           echo "TF_VAR_cloudwatch_account_id=${{ matrix.account_id }}" >> $GITHUB_ENV
+          echo "TF_VAR_cloudwatch_assume_role_arn=arn:aws:iam::${{ matrix.account_id }}:role/cdp-sirsi-telemetry" >> $GITHUB_ENV
 
           GRAFANA_SECRET=$(aws secretsmanager get-secret-value \
             --secret-id cdp-sirsi-grafana-api-token \

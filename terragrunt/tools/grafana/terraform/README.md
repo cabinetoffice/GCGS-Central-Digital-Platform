@@ -24,6 +24,8 @@ Place Grafana dashboard JSON files under `dashboards/`, grouped by folder:
 - `dashboards/traffic`
 
 Each `*.json` file is provisioned into the matching folder.
+Dashboard UIDs are generated deterministically from the folder + filename and truncated to 40 chars,
+so URLs are stable across environments.
 
 ## Local usage
 
@@ -46,14 +48,43 @@ export TF_VAR_teams_webhook_url="$(ave aws secretsmanager get-secret-value \
     --secret-id cdp-sirsi-grafana-alerting-webhook \
     --query SecretString --output text | jq -r '.TEAMS_WEBHOOK_URL')"
 
-export TF_VAR_cloudwatch_datasource_name="CloudWatch"
-
 export TF_VAR_environment="${AWS_ENV:-${TG_ENVIRONMENT:-development}}"
 export TF_VAR_cloudwatch_account_id="$(ave aws sts get-caller-identity --query Account --output text)"
+export TF_VAR_cloudwatch_assume_role_arn="arn:aws:iam::${TF_VAR_cloudwatch_account_id}:role/cdp-sirsi-telemetry"
 
 ave terraform init -input=false
 ave terraform plan -input=false -var-file=env/${TF_VAR_environment}.tfvars
 ave terraform apply -input=false -var-file=env/${TF_VAR_environment}.tfvars
+```
+
+## One-time migration: wipe folders/dashboards and re-apply
+
+Use this when switching from file-based provisioning to Terraform to ensure
+stable, human-readable folder/dashboard UIDs.
+
+```bash
+export TF_VAR_grafana_url="https://grafana.dev.supplier-information.find-tender.service.gov.uk"
+export TF_VAR_grafana_token="<GRAFANA_API_TOKEN>"
+
+set -euo pipefail
+
+curl -s -H "Authorization: Bearer $TF_VAR_grafana_token" \
+  "$TF_VAR_grafana_url/api/search?type=dash-db&limit=5000" \
+| jq -r '.[].uid' \
+| while read -r uid; do
+    echo "Deleting dashboard $uid"
+    curl -s -X DELETE -H "Authorization: Bearer $TF_VAR_grafana_token" \
+      "$TF_VAR_grafana_url/api/dashboards/uid/$uid" > /dev/null
+  done
+
+curl -s -H "Authorization: Bearer $TF_VAR_grafana_token" \
+  "$TF_VAR_grafana_url/api/folders" \
+| jq -r '.[] | select(.uid!="general") | .uid' \
+| while read -r uid; do
+    echo "Deleting folder $uid"
+    curl -s -X DELETE -H "Authorization: Bearer $TF_VAR_grafana_token" \
+      "$TF_VAR_grafana_url/api/folders/$uid" > /dev/null
+  done
 ```
 
 ## Notes
