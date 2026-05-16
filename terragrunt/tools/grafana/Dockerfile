@@ -2,10 +2,11 @@ FROM grafana/grafana:latest
 
 USER root
 
-RUN mkdir -p /etc/grafana/provisioning/dashboards /var/lib/grafana/dashboards
+RUN mkdir -p /etc/grafana/provisioning/dashboards /etc/grafana/provisioning/alerting /var/lib/grafana/dashboards
 
 COPY configs/datasource.yaml.tpl /etc/grafana/provisioning/datasources/datasource.yaml.tpl
 COPY configs/dashboard.yaml /etc/grafana/provisioning/dashboards/dashboard.yaml
+COPY configs/alerting/ /etc/grafana/provisioning/alerting/
 COPY configs/entrypoint.sh /entrypoint.sh
 COPY configs/dashboards /var/lib/grafana/dashboards/
 COPY configs/grafana.ini /etc/grafana/grafana.ini

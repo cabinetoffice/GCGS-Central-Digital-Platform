@@ -1,6 +1,6 @@
 # Grafana
 
-This configuration is based on the latest published Grafana image, includes a CloudWatch data source, and provisions dashboards to enhance observability of SIRSI applications and infrastructure.
+This configuration is based on the latest published Grafana image, includes a CloudWatch data source, and provisions dashboards and alerts to enhance observability of SIRSI applications and infrastructure.
 
 > In the following examples ave is alias for `aws-vault exec` command.
 Feel free to use any convenient AWS profiler instead.
@@ -10,6 +10,11 @@ Feel free to use any convenient AWS profiler instead.
 ```shell
 docker compose build
 ```
+
+## Provisioning assets
+
+- Dashboards live under `configs/dashboards/` and are loaded via `configs/dashboard.yaml`.
+- Alerting rules and contact points live under `configs/alerting/` and are copied into `/etc/grafana/provisioning/alerting/` at build time.
 
 ## Deploy
 
@@ -37,4 +42,21 @@ Each account stores a randomly generated password for its Grafana instance in a 
 
 ```shell
 ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-grafana-credentials --query SecretString --output text | jq -r '.'
+```
+
+## Configure Microsoft Teams alerting
+
+Grafana reads the Teams webhook URL from a Secrets Manager secret named `cdp-sirsi-grafana-alerting-webhook`.
+Create it if it doesn't exist and set the webhook URL like this:
+
+```shell
+WEBHOOK_URL="https://outlook.office.com/webhook/REPLACE_ME"
+
+aws secretsmanager create-secret \
+  --name cdp-sirsi-grafana-alerting-webhook \
+  --description "Grafana alerting configuration" \
+  --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}" \
+  || aws secretsmanager put-secret-value \
+    --secret-id cdp-sirsi-grafana-alerting-webhook \
+    --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}"
 ```

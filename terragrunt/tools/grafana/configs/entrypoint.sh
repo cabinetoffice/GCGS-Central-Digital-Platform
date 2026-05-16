@@ -13,5 +13,8 @@ sed -i "s#__GRAFANA_CLOUDWATCH_ROLE__#${GRAFANA_CLOUDWATCH_ROLE}#g" /etc/grafana
 
 mv /etc/grafana/provisioning/datasources/datasource.yaml.tpl /etc/grafana/provisioning/datasources/datasource.yaml
 
+sed -i "s#__TEAMS_WEBHOOK_URL__#${GRAFANA_TEAMS_WEBHOOK_URL}#g" /etc/grafana/provisioning/alerting/alerting-teams.yaml.tpl
+mv /etc/grafana/provisioning/alerting/alerting-teams.yaml.tpl /etc/grafana/provisioning/alerting/alerting-teams.yaml
+
 
 /run.sh
