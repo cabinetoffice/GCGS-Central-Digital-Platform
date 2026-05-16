@@ -1,6 +1,6 @@
 resource "grafana_rule_group" "ecs_cpu_high" {
   name             = "ecs-cpu-5m"
-  folder_uid       = grafana_folder.ecs_alerts.uid
+  folder_uid       = grafana_folder.overview.uid
   interval_seconds = 300
 
   rule {
@@ -18,7 +18,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
 
     data {
       ref_id         = "A"
-      datasource_uid = data.grafana_data_source.cloudwatch.uid
+      datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
         to   = 0
@@ -130,7 +130,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
     dynamic "notification_settings" {
       for_each = var.teams_webhook_url != "" ? [1] : []
       content {
-        receiver = grafana_contact_point.teams[0].name
+        contact_point = grafana_contact_point.teams[0].name
       }
     }
   }
