@@ -60,3 +60,20 @@ aws secretsmanager create-secret \
     --secret-id cdp-sirsi-grafana-alerting-webhook \
     --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}"
 ```
+
+## Configure Grafana API token (for Terraform provisioning)
+
+Grafana Terraform needs an API token stored in Secrets Manager as `cdp-sirsi-grafana-api-token`.
+Create it if it doesn't exist and set the token like this:
+
+```shell
+API_TOKEN="REPLACE_ME"
+
+aws secretsmanager create-secret \
+  --name cdp-sirsi-grafana-api-token \
+  --description "Grafana API token for Terraform provisioning" \
+  --secret-string "{\"API_TOKEN\":\"${API_TOKEN}\"}" \
+  || aws secretsmanager put-secret-value \
+    --secret-id cdp-sirsi-grafana-api-token \
+    --secret-string "{\"API_TOKEN\":\"${API_TOKEN}\"}"
+```

@@ -76,22 +76,22 @@ inputs = {
   service_configs              = local.global_vars.locals.service_configs
   tags                         = local.tags
 
-  role_ecs_task_arn      = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name     = dependency.core_iam.outputs.ecs_task_name
-  role_ecs_task_exec_arn = dependency.core_iam.outputs.ecs_task_exec_arn
+  role_ecs_task_arn       = dependency.core_iam.outputs.ecs_task_arn
+  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
+  role_ecs_task_exec_arn  = dependency.core_iam.outputs.ecs_task_exec_arn
   role_ecs_task_exec_name = dependency.core_iam.outputs.ecs_task_exec_name
-  role_terraform_arn     = dependency.core_iam.outputs.terraform_arn
-  role_telemetry_arn     = dependency.core_iam.outputs.telemetry_arn
+  role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
+  role_telemetry_arn      = dependency.core_iam.outputs.telemetry_arn
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain
   public_hosted_zone_id = dependency.core_networking.outputs.public_hosted_zone_id
   vpc_id                = dependency.core_networking.outputs.vpc_id
 
-  ecs_alb_sg_id = dependency.core_security_groups.outputs.alb_sg_id
-  ecs_sg_id     = dependency.core_security_groups.outputs.ecs_sg_id
-  efs_sg_id     = dependency.core_security_groups.outputs.efs_sg_id
   db_postgres_sg_id = dependency.core_security_groups.outputs.db_postgres_sg_id
+  ecs_alb_sg_id     = dependency.core_security_groups.outputs.alb_sg_id
+  ecs_sg_id         = dependency.core_security_groups.outputs.ecs_sg_id
+  efs_sg_id         = dependency.core_security_groups.outputs.efs_sg_id
 
   user_pool_arn_grafana       = dependency.service_auth.outputs.grafana_user_pool_arn
   user_pool_client_id_grafana = dependency.service_auth.outputs.grafana_user_pool_client_id
@@ -102,5 +102,5 @@ inputs = {
   ecs_listener_arn = dependency.service_ecs.outputs.ecs_listener_arn
 
   grafana_db_instance_type = local.global_vars.locals.environments[local.global_vars.locals.environment].grafana_db_instance_type
-  grafana_db_multi_az       = local.global_vars.locals.environments[local.global_vars.locals.environment].grafana_db_multi_az
+  grafana_db_multi_az      = local.global_vars.locals.environments[local.global_vars.locals.environment].grafana_db_multi_az
 }

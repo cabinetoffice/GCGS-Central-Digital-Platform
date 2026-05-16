@@ -1,0 +1,84 @@
+name: Grafana Terraform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "terragrunt/tools/grafana/**"
+      - ".github/workflows/grafana-terraform.yml"
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  apply:
+    name: Apply Grafana config (${{ matrix.env }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - env: development
+            account_id: "471112892058"
+          - env: staging
+            account_id: "905418042182"
+          - env: integration
+            account_id: "767397666448"
+          - env: production
+            account_id: "471112843276"
+    concurrency:
+      group: grafana-terraform-${{ matrix.env }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ matrix.account_id }}:role/cdp-sirsi-terraform
+          aws-region: eu-west-2
+          role-session-name: grafana-terraform-${{ matrix.env }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Load Grafana secrets
+        id: secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          GRAFANA_SECRET=$(aws secretsmanager get-secret-value \
+            --secret-id cdp-sirsi-grafana-api-token \
+            --query SecretString \
+            --output text)
+
+          echo "TF_VAR_grafana_url=$(echo "$GRAFANA_SECRET" | jq -r '.GRAFANA_URL')" >> $GITHUB_ENV
+          echo "TF_VAR_grafana_token=$(echo "$GRAFANA_SECRET" | jq -r '.GRAFANA_TOKEN')" >> $GITHUB_ENV
+
+          ALERT_SECRET=$(aws secretsmanager get-secret-value \
+            --secret-id cdp-sirsi-grafana-alerting \
+            --query SecretString \
+            --output text 2>/dev/null || true)
+
+          if [ -n "$ALERT_SECRET" ]; then
+            echo "TF_VAR_teams_webhook_url=$(echo "$ALERT_SECRET" | jq -r '.TEAMS_WEBHOOK_URL')" >> $GITHUB_ENV
+          else
+            echo "TF_VAR_teams_webhook_url=" >> $GITHUB_ENV
+          fi
+
+      - name: Terraform Init
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform plan -input=false
+
+      - name: Terraform Apply
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform apply -input=false -auto-approve
