@@ -1,0 +1,96 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: ecs-cpu-5m
+    folder: ecs-alerts
+    interval: 5m
+    rules:
+      - uid: ecs-cpu-high
+        title: ECS CPU high
+        condition: C
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: CLOUDWATCH
+            model:
+              dimensions:
+                ClusterName: '*'
+                ServiceName: '*'
+              expression: ""
+              id: ""
+              intervalMs: 1000
+              label: ""
+              logGroups: []
+              matchExact: true
+              maxDataPoints: 43200
+              metricEditorMode: 0
+              metricName: CPUUtilization
+              metricQueryType: 0
+              namespace: ECS/ContainerInsights
+              period: 5m
+              queryLanguage: CWLI
+              queryMode: Metrics
+              refId: A
+              region: default
+              sqlExpression: ""
+              statistic: Average
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params: []
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: []
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: A
+              intervalMs: 1000
+              maxDataPoints: 43200
+              reducer: last
+              refId: B
+              type: reduce
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              conditions:
+                - evaluator:
+                    params:
+                      - 80
+                    type: gt
+                  operator:
+                    type: and
+                  query:
+                    params: []
+                  reducer:
+                    params: []
+                    type: last
+                  type: query
+              datasource:
+                type: __expr__
+                uid: __expr__
+              expression: B
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: C
+              type: threshold
+        noDataState: OK
+        execErrState: Error
+        for: 10m
+        annotations: {}
+        labels:
+          severity: warning
+        isPaused: false
+        notification_settings:
+          receiver: Microsoft Teams

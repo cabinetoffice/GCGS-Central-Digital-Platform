@@ -21,11 +21,14 @@
     "environment": [
         {"name": "CDP_SIRSI_ENVIRONMENT", "value": "${cdp_sirsi_environment}"},
         {"name": "GRAFANA_CLOUDWATCH_ROLE", "value": "${role_telemetry_arn}"},
-        {"name": "GRAFANA_CLOUDWATCH_ACCOUNT_ID", "value": "${account_id}"}
+        {"name": "GRAFANA_CLOUDWATCH_ACCOUNT_ID", "value": "${account_id}"},
+        {"name": "GF_SERVER_DOMAIN", "value": "${grafana_domain}"},
+        {"name": "GF_SERVER_ROOT_URL", "value": "${grafana_root_url}"}
     ],
     "secrets": [
         {"name": "GF_SECURITY_ADMIN_USER", "valueFrom": "${gf_admin_user}"},
-        {"name": "GF_SECURITY_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"}
+        {"name": "GF_SECURITY_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"},
+        {"name": "GRAFANA_TEAMS_WEBHOOK_URL", "valueFrom": "${teams_webhook_url}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],
