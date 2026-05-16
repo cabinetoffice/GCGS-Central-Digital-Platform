@@ -6,6 +6,9 @@ locals {
   orchestrator_sirsi_service_version = data.aws_ssm_parameter.orchestrator_sirsi_service_version.value
   grafana_image_tag                  = "latest" # var.pinned_service_version_sirsi == null ? local.orchestrator_sirsi_service_version : var.pinned_service_version_sirsi
 
+  grafana_db_instance_type  = var.grafana_db_instance_type
+  grafana_db_multi_az       = var.grafana_db_multi_az
+
   service_widgets = [
     for idx, service in values(var.service_configs) : [
       {

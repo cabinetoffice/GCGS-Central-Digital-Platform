@@ -20,6 +20,10 @@
     },
     "environment": [
         {"name": "CDP_SIRSI_ENVIRONMENT", "value": "${cdp_sirsi_environment}"},
+        {"name": "GF_DATABASE_TYPE", "value": "postgres"},
+        {"name": "GF_DATABASE_HOST", "value": "${grafana_db_address}:5432"},
+        {"name": "GF_DATABASE_NAME", "value": "${grafana_db_name}"},
+        {"name": "GF_DATABASE_SSL_MODE", "value": "require"},
         {"name": "GRAFANA_CLOUDWATCH_ROLE", "value": "${role_telemetry_arn}"},
         {"name": "GRAFANA_CLOUDWATCH_ACCOUNT_ID", "value": "${account_id}"},
         {"name": "GF_SERVER_DOMAIN", "value": "${grafana_domain}"},
@@ -28,6 +32,8 @@
     "secrets": [
         {"name": "GF_SECURITY_ADMIN_USER", "valueFrom": "${gf_admin_user}"},
         {"name": "GF_SECURITY_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"},
+        {"name": "GF_DATABASE_USER", "valueFrom": "${grafana_db_username}"},
+        {"name": "GF_DATABASE_PASSWORD", "valueFrom": "${grafana_db_password}"},
         {"name": "GRAFANA_TEAMS_WEBHOOK_URL", "valueFrom": "${teams_webhook_url}"}
     ],
     "volumesFrom": [],

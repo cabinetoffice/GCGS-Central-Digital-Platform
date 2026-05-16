@@ -73,21 +73,6 @@ variable "db_ev_cluster_name" {
   type        = string
 }
 
-variable "db_fts_cluster_address" {
-  description = "FTS DB address"
-  type        = string
-}
-
-variable "db_fts_cluster_credentials_arn" {
-  description = "ARN of the secret holding FTS DB credentials"
-  type        = string
-}
-
-variable "db_fts_cluster_name" {
-  description = "FTS DB name"
-  type        = string
-}
-
 variable "db_find_a_tender_cluster_address" {
   description = "Find A Tender DB address"
   type        = string
@@ -105,6 +90,21 @@ variable "db_find_a_tender_cluster_credentials_kms_key_id" {
 
 variable "db_find_a_tender_cluster_name" {
   description = "Find A Tender DB name"
+  type        = string
+}
+
+variable "db_fts_cluster_address" {
+  description = "FTS DB address"
+  type        = string
+}
+
+variable "db_fts_cluster_credentials_arn" {
+  description = "ARN of the secret holding FTS DB credentials"
+  type        = string
+}
+
+variable "db_fts_cluster_name" {
+  description = "FTS DB name"
   type        = string
 }
 
@@ -227,7 +227,6 @@ variable "public_domain" {
   description = "The public fully qualified domain name (FQDN)"
   type        = string
 }
-
 
 variable "public_hosted_zone_cfs_id" {
   description = "ID of the CFS public hosted zone"
