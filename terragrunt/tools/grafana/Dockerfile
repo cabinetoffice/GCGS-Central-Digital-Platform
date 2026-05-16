@@ -2,18 +2,14 @@ FROM grafana/grafana:latest
 
 USER root
 
-RUN mkdir -p /etc/grafana/provisioning/dashboards /etc/grafana/provisioning/alerting /var/lib/grafana/dashboards
+RUN mkdir -p /etc/grafana/provisioning/datasources
 
 COPY configs/datasource.yaml.tpl /etc/grafana/provisioning/datasources/datasource.yaml.tpl
-COPY configs/dashboard.yaml /etc/grafana/provisioning/dashboards/dashboard.yaml
-COPY configs/alerting/ /etc/grafana/provisioning/alerting/
 COPY configs/entrypoint.sh /entrypoint.sh
-COPY configs/dashboards /var/lib/grafana/dashboards/
 COPY configs/grafana.ini /etc/grafana/grafana.ini
 
 RUN chmod +x /entrypoint.sh \
-  && chown -R 472:472 /etc/grafana/provisioning /etc/grafana/grafana.ini /entrypoint.sh /var/lib/grafana/dashboards \
-  && chmod -R u+rwX /var/lib/grafana/dashboards
+  && chown -R 472:472 /etc/grafana/provisioning /etc/grafana/grafana.ini /entrypoint.sh
 
 USER grafana
 
