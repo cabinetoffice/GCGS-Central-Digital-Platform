@@ -30,6 +30,22 @@ data "aws_iam_policy_document" "ecs_assume_telemetry" {
   }
 }
 
+data "aws_iam_policy_document" "grafana_db_kms_decrypt" {
+  statement {
+    sid    = "AllowDecryptGrafanaDbSecret"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:DescribeKey"
+    ]
+
+    resources = [
+      module.grafana_db.db_kms_arn
+    ]
+  }
+}
+
 data "aws_secretsmanager_secret" "grafana_alerting" {
   name = "${local.name_prefix}-${var.grafana_config.name}-alerting-webhook"
 }

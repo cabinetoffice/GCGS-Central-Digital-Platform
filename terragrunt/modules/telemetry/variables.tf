@@ -3,6 +3,11 @@ variable "account_ids" {
   type        = map(string)
 }
 
+variable "db_postgres_sg_id" {
+  description = "Postgres DB security group ID"
+  type        = string
+}
+
 variable "ecs_alb_dns_name" {
   description = "DNS to the load balancer in front of ECS services"
   type        = string
@@ -41,6 +46,16 @@ variable "grafana_config" {
     name   = string
     port   = number
   })
+}
+
+variable "grafana_db_instance_type" {
+  description = "Instance type for Grafana database"
+  type        = string
+}
+
+variable "grafana_db_multi_az" {
+  description = "Whether Grafana DB should be Multi-AZ"
+  type        = bool
 }
 
 variable "is_production" {
@@ -88,6 +103,11 @@ variable "role_ecs_task_exec_arn" {
   type        = string
 }
 
+variable "role_ecs_task_exec_name" {
+  description = "Task execution IAM role name"
+  type        = string
+}
+
 variable "role_ecs_task_name" {
   description = "Task IAM role Name"
   type        = string
@@ -95,6 +115,11 @@ variable "role_ecs_task_name" {
 
 variable "role_telemetry_arn" {
   description = "IAM role to be assumed by Garafana Cloudwatch datasource"
+  type        = string
+}
+
+variable "role_terraform_arn" {
+  description = "Terraform IAM role ARN"
   type        = string
 }
 

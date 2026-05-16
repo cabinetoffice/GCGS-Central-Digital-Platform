@@ -57,6 +57,8 @@ locals {
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
+      grafana_db_instance_type            = "db.t4g.micro"
+      grafana_db_multi_az                 = false
       pinned_service_version_cfs          = null
       pinned_service_version_fts          = null
       pinned_service_version              = null
@@ -99,6 +101,8 @@ locals {
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
+      grafana_db_instance_type            = "db.t4g.micro"
+      grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.0.7"
       pinned_service_version_fts          = "1.3.11"
       pinned_service_version              = "1.0.88"
@@ -145,6 +149,8 @@ locals {
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
+      grafana_db_instance_type            = "db.t4g.micro"
+      grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.0.7"
       pinned_service_version_fts          = "1.3.8"
       pinned_service_version              = "1.0.87"
@@ -187,6 +193,8 @@ locals {
       opensearch_dedicated_master_type    = "m6g.large.search"
       opensearch_instance_count           = 3
       opensearch_instance_type            = "m6g.large.search"
+      grafana_db_instance_type            = "db.t4g.small"
+      grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
       pinned_service_version_fts          = "1.3.8"
       pinned_service_version              = "1.0.87"

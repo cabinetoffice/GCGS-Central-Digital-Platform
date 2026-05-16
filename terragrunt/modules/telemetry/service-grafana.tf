@@ -9,6 +9,10 @@ module "ecs_service_grafana" {
       cpu                   = var.grafana_config.cpu
       gf_admin_password     = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
       gf_admin_user         = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
+      grafana_db_address    = module.grafana_db.db_address
+      grafana_db_name       = module.grafana_db.db_name
+      grafana_db_password   = "${module.grafana_db.db_credentials_arn}:password::"
+      grafana_db_username   = "${module.grafana_db.db_credentials_arn}:username::"
       grafana_domain        = "grafana.${var.public_domain}"
       grafana_root_url      = "https://grafana.${var.public_domain}/"
       teams_webhook_url     = "${data.aws_secretsmanager_secret.grafana_alerting.arn}:TEAMS_WEBHOOK_URL::"
