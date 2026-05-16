@@ -1,0 +1,268 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "showControls": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dimensions": {},
+          "expression": "fields @timestamp, @message |\nsort @timestamp desc |\nlimit 20",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/cdp-sirsi/opensearch/application:*",
+              "name": "/cdp-sirsi/opensearch/application"
+            }
+          ],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Application",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 5,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "showControls": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dimensions": {},
+          "expression": "fields @timestamp, @message |\nsort @timestamp desc |\nlimit 20",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/cdp-sirsi/opensearch/search-slow:*",
+              "name": "/cdp-sirsi/opensearch/search-slow"
+            }
+          ],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Slow Search",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 3,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "showControls": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dimensions": {},
+          "expression": "fields @timestamp, @message |\nsort @timestamp desc |\nlimit 20",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/cdp-sirsi/opensearch/index-slow:*",
+              "name": "/cdp-sirsi/opensearch/index-slow"
+            }
+          ],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Slow Index",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 4,
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "showControls": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "unwrappedColumns": false,
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "dimensions": {},
+          "expression": "fields @timestamp, @message |\nsort @timestamp desc |\nlimit 20",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/cdp-sirsi/opensearch/audit:*",
+              "name": "/cdp-sirsi/opensearch/audit"
+            }
+          ],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Logs",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Average"
+        }
+      ],
+      "title": "Audit",
+      "type": "logs"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "OpenSearch Logs",
+  "uid": "opensearch-logs",
+  "version": 13,
+  "weekStart": ""
+}

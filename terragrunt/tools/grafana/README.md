@@ -13,8 +13,9 @@ docker compose build
 
 ## Provisioning assets
 
-- Dashboards live under `configs/dashboards/` and are loaded via `configs/dashboard.yaml`.
-- Alerting rules and contact points live under `configs/alerting/` and are copied into `/etc/grafana/provisioning/alerting/` at build time.
+Dashboards and alerting are now provisioned via Terraform under
+`/home/abn/Projects/CO/GCGS-Central-Digital-Platform/terragrunt/tools/grafana/terraform/`.
+The Docker image only provisions the CloudWatch data source and Grafana config.
 
 ## Deploy
 

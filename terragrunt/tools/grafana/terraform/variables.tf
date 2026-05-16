@@ -9,6 +9,16 @@ variable "grafana_token" {
   sensitive   = true
 }
 
+variable "environment" {
+  description = "Environment name (development, staging, integration, production)"
+  type        = string
+}
+
+variable "cloudwatch_account_id" {
+  description = "AWS account ID for CloudWatch logs/metrics"
+  type        = string
+}
+
 variable "teams_webhook_url" {
   description = "Microsoft Teams webhook URL"
   type        = string
@@ -20,4 +30,16 @@ variable "alert_contact_point_name" {
   description = "Name for the Teams contact point"
   type        = string
   default     = "Microsoft Teams"
+}
+
+variable "cloudwatch_datasource_name" {
+  description = "Name of the CloudWatch data source in Grafana"
+  type        = string
+  default     = "CloudWatch"
+}
+
+variable "ecs_cpu_threshold" {
+  description = "CPU threshold for ECS CPU alert"
+  type        = number
+  default     = 80
 }
