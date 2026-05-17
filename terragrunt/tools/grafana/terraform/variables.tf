@@ -42,3 +42,9 @@ variable "ecs_cpu_threshold" {
   type        = number
   default     = 80
 }
+
+variable "ecs_memory_threshold" {
+  description = "Memory threshold for ECS memory alert"
+  type        = number
+  default     = 80
+}

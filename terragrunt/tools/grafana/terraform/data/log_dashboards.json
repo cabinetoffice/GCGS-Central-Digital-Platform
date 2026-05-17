@@ -1,0 +1,248 @@
+{
+  "authority": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/authority",
+    "title": "Authority",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "av-scanner-app": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/av-scanner-app",
+    "title": "AV Scanner App",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "cfs": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
+    "log_group_name": "/ecs/cfs",
+    "title": "CFS",
+    "type": "single"
+  },
+  "cfs-migrations": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/ecs/cfs-migrations",
+    "title": "Migrations (CFS)",
+    "type": "single"
+  },
+  "cfs-scheduler": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
+    "log_group_name": "/ecs/cfs-scheduler",
+    "title": "CFS Scheduler",
+    "type": "single"
+  },
+  "clamav-rest": {
+    "expression": "fields @timestamp, @message  \n| sort @timestamp desc",
+    "log_group_name": "/ecs/clamav-rest",
+    "title": "ClamAV REST",
+    "type": "single"
+  },
+  "cloudbeaver": {
+    "all_expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @message\n| filter @message like \"err\" or @message like \"ERR\" or @message like \"Err\"\n| sort @timestamp desc\n| limit 5",
+    "log_group_name": "/ecs/cloud-beaver",
+    "title": "Cloud-Beaver",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @message\n| filter @message like \"warn\" or @message like \"WARN\" or @message like \"Warn\"\n| sort @timestamp desc\n| limit 5"
+  },
+  "commercial-tools-api": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/commercial-tools-api",
+    "title": "Commercial Tools API",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "commercial-tools-app": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/commercial-tools-app",
+    "title": "Commercial Tools Application",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "data-sharing": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/data-sharing",
+    "title": "Data Sharing",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "entity-verification": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/entity-verification",
+    "title": "Entity Verification",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "entity-verification-migrations": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/entity-verification-migrations",
+    "title": "Migrations (Entity Verification)",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "forms": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/forms",
+    "title": "Forms",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "fts": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts",
+    "title": "FTS",
+    "type": "single"
+  },
+  "fts-app": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-app",
+    "title": "FTS App",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "fts-findtender-migrations": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts-findtender-migrations",
+    "title": "Migrations (FTS Find Tender)",
+    "type": "single"
+  },
+  "fts-jobs-scheduler": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-job-scheduler",
+    "title": "FTS Job Scheduler",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "fts-migrations": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts-migrations",
+    "title": "Migrations (FTS)",
+    "type": "single"
+  },
+  "fts-notice-publish-worker": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts-notice-publish-worker",
+    "title": "FTS NOTICE PUBLISH WORKER",
+    "type": "single"
+  },
+  "fts-scheduler": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts-scheduler",
+    "title": "FTS Scheduler",
+    "type": "single"
+  },
+  "fts-search-api": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-search-api",
+    "title": "FTS Search API",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "fts-search-indexer": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-search-indexer",
+    "title": "FTS Search Indexer",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "fts-user-api": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-user-api",
+    "title": "FTS User API",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "grafana": {
+    "all_expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"err\"\n| sort @timestamp desc\n| limit 5",
+    "log_group_name": "/ecs/grafana",
+    "title": "Grafana",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"warn\"\n| sort @timestamp desc\n| limit 5"
+  },
+  "k6": {
+    "all_expression": "fields @timestamp, @message \n| sort @timestamp asc",
+    "error_expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"err\"\n| sort @timestamp asc",
+    "log_group_name": "/ecs/k6",
+    "title": "K6",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"warn\"\n| sort @timestamp asc"
+  },
+  "organisation": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/organisation",
+    "title": "Organisation",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "organisation-app": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/organisation-app",
+    "title": "Organisation App",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "organisation-information-migrations": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/organisation-information-migrations",
+    "title": "Migrations (Organisation Information)",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "outbox-processor-entity-verification": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/outbox-processor-entity-verification",
+    "title": "Outbox Processor Entity Verification",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "outbox-processor-organisation": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/outbox-processor-organisation",
+    "title": "Outbox Processor Organisation",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "person": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/person",
+    "title": "Person",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "schedule-worker": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/scheduled-worker",
+    "title": "Scheduled Worker",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "tenant": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/tenant",
+    "title": "Tenant",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  }
+}
