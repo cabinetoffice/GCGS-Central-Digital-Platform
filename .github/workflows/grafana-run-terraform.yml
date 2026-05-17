@@ -24,6 +24,10 @@ jobs:
   run:
     name: Grafana Terraform
     runs-on: ubuntu-latest
+    env:
+      BASE_DOMAIN: ${{ inputs.base_domain }}
+      ENV_NAME: ${{ inputs.environment }}
+      ACCOUNT_ID: ${{ inputs.account_id }}
     concurrency:
       group: grafana-terraform
       cancel-in-progress: false
@@ -31,37 +35,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
-
-      - name: Validate inputs
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          case "${{ inputs.environment }}" in
-            development|staging|integration|production) ;;
-            *) echo "Invalid environment input"; exit 1 ;;
-          esac
-
-          case "${{ inputs.terraform_action }}" in
-            plan|apply) ;;
-            *) echo "Invalid terraform_action input"; exit 1 ;;
-          esac
-
-          if [ "${{ inputs.base_domain }}" != "supplier-information.find-tender.service.gov.uk" ]; then
-            echo "Invalid base_domain input"; exit 1
-          fi
-
-          if ! [[ "${{ inputs.account_id }}" =~ ^[0-9]{12}$ ]]; then
-            echo "Invalid account_id input"; exit 1
-          fi
-
-      - name: Set context
-        shell: bash
-        run: |
-          set -euo pipefail
-          echo "ENV_NAME=${{ inputs.environment }}" >> $GITHUB_ENV
-          echo "ACCOUNT_ID=${{ inputs.account_id }}" >> $GITHUB_ENV
-          echo "BASE_DOMAIN=${{ inputs.base_domain }}" >> $GITHUB_ENV
 
       - name: Install tooling versions
         shell: bash
