@@ -1,0 +1,51 @@
+name: Grafana Plan
+
+on:
+  pull_request:
+    paths:
+      - "terragrunt/tools/grafana/**"
+      - ".github/workflows/grafana-*"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  plan-development:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      mode: plan
+      environment: development
+      account_id: "471112892058"
+      base_domain: supplier-information.find-tender.service.gov.uk
+
+  plan-staging:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    needs: plan-development
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      mode: plan
+      environment: staging
+      account_id: "905418042182"
+      base_domain: supplier-information.find-tender.service.gov.uk
+
+  plan-integration:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    needs: plan-staging
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      mode: plan
+      environment: integration
+      account_id: "767397666448"
+      base_domain: supplier-information.find-tender.service.gov.uk
+
+  plan-production:
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+    needs: plan-integration
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      mode: plan
+      environment: production
+      account_id: "471112843276"
+      base_domain: supplier-information.find-tender.service.gov.uk

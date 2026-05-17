@@ -1,8 +1,11 @@
-name: Grafana Terraform Apply
+name: Grafana Run Terraform
 
 on:
   workflow_call:
     inputs:
+      mode:
+        type: string
+        required: true
       environment:
         type: string
         required: true
@@ -14,20 +17,20 @@ on:
         required: true
 
 permissions:
-  id-token: write
   contents: read
+  id-token: write
 
 jobs:
-  apply:
-    name: Apply Grafana config (${{ inputs.environment }})
+  run:
+    name: ${{ inputs.mode }} Grafana config (${{ inputs.environment }})
     runs-on: ubuntu-latest
     env:
       BASE_DOMAIN: ${{ inputs.base_domain }}
       ENV_NAME: ${{ inputs.environment }}
       ACCOUNT_ID: ${{ inputs.account_id }}
     concurrency:
-      group: grafana-terraform-${{ inputs.environment }}
-      cancel-in-progress: false
+      group: grafana-terraform-${{ inputs.mode }}-${{ inputs.environment }}
+      cancel-in-progress: ${{ inputs.mode == 'plan' }}
 
     steps:
       - name: Checkout
@@ -50,7 +53,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/cdp-sirsi-terraform
           aws-region: eu-west-2
-          role-session-name: grafana-terraform-${{ env.ENV_NAME }}
+          role-session-name: grafana-terraform-${{ inputs.mode }}-${{ env.ENV_NAME }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
@@ -109,14 +112,11 @@ jobs:
             -backend-config="encrypt=true" \
             -backend-config="use_lockfile=true"
 
-      - name: Terraform State List (debug)
-        working-directory: terragrunt/tools/grafana/terraform
-        run: terraform state list || true
-
       - name: Terraform Plan
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform plan -input=false -var-file=env/${ENV_NAME}.tfvars
 
       - name: Terraform Apply
+        if: ${{ inputs.mode == 'apply' }}
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform apply -input=false -auto-approve -var-file=env/${ENV_NAME}.tfvars
