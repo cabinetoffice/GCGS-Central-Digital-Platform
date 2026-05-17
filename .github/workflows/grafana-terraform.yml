@@ -8,6 +8,10 @@ on:
       - ".github/workflows/grafana-terraform.yml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   apply-development:
     uses: ./.github/workflows/grafana-terraform-apply.yml
