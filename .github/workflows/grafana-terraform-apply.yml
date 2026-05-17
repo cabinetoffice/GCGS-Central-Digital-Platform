@@ -111,7 +111,7 @@ jobs:
 
       - name: Terraform State List (debug)
         working-directory: terragrunt/tools/grafana/terraform
-        run: terraform state list
+        run: terraform state list || true
 
       - name: Terraform Plan
         working-directory: terragrunt/tools/grafana/terraform

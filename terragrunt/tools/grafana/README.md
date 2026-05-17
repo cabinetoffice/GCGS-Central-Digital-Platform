@@ -70,7 +70,7 @@ Create it if it doesn't exist and set the token like this:
 ```shell
 API_TOKEN="REPLACE_ME"
 
-aws secretsmanager create-secret \
+ave aws secretsmanager create-secret \
   --name cdp-sirsi-grafana-api-token \
   --description "Grafana API token for Terraform provisioning" \
   --secret-string "{\"API_TOKEN\":\"${API_TOKEN}\"}" \
