@@ -76,6 +76,13 @@ jobs:
             echo "TF_VAR_teams_webhook_url=" >> $GITHUB_ENV
           fi
 
+      - name: Preflight checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          terraform version
+          curl -sSf "$TF_VAR_grafana_url/api/health" | jq .
+
       - name: Terraform Init
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform init -input=false -upgrade
