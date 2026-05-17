@@ -50,6 +50,8 @@ jobs:
 
           if [ "${ENV_NAME}" = "production" ]; then
             GRAFANA_URL="https://grafana.${BASE_DOMAIN}"
+          elif [ "${ENV_NAME}" = "development" ]; then
+            GRAFANA_URL="https://grafana.dev.${BASE_DOMAIN}"
           else
             GRAFANA_URL="https://grafana.${ENV_NAME}.${BASE_DOMAIN}"
           fi
