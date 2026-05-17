@@ -6,13 +6,13 @@ on:
       terraform_action:
         type: string
         required: true
-      environment:
+      grafana_env:
         type: string
         required: true
-      account_id:
+      grafana_account_id:
         type: string
         required: true
-      base_domain:
+      grafana_base_domain:
         type: string
         required: true
 
@@ -25,9 +25,9 @@ jobs:
     name: Grafana Terraform
     runs-on: ubuntu-latest
     env:
-      BASE_DOMAIN: ${{ inputs.base_domain }}
-      ENV_NAME: ${{ inputs.environment }}
-      ACCOUNT_ID: ${{ inputs.account_id }}
+      BASE_DOMAIN: ${{ inputs.grafana_base_domain }}
+      ENV_NAME: ${{ inputs.grafana_env }}
+      ACCOUNT_ID: ${{ inputs.grafana_account_id }}
     concurrency:
       group: grafana-terraform
       cancel-in-progress: false

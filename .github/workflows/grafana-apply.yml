@@ -18,9 +18,9 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: apply
-      environment: development
-      account_id: "471112892058"
-      base_domain: supplier-information.find-tender.service.gov.uk
+      grafana_env: development
+      grafana_account_id: "471112892058"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
 
   apply-staging:
     needs: apply-development
@@ -28,9 +28,9 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: apply
-      environment: staging
-      account_id: "905418042182"
-      base_domain: supplier-information.find-tender.service.gov.uk
+      grafana_env: staging
+      grafana_account_id: "905418042182"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
 
   apply-integration:
     needs: apply-staging
@@ -38,9 +38,9 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: apply
-      environment: integration
-      account_id: "767397666448"
-      base_domain: supplier-information.find-tender.service.gov.uk
+      grafana_env: integration
+      grafana_account_id: "767397666448"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
 
   apply-production:
     needs: apply-integration
@@ -48,6 +48,6 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: apply
-      environment: production
-      account_id: "471112843276"
-      base_domain: supplier-information.find-tender.service.gov.uk
+      grafana_env: production
+      grafana_account_id: "471112843276"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
