@@ -53,13 +53,13 @@ Create it if it doesn't exist and set the webhook URL like this:
 ```shell
 WEBHOOK_URL="https://outlook.office.com/webhook/REPLACE_ME"
 
-aws secretsmanager create-secret \
+`ave aws secretsmanager create-secret \
   --name cdp-sirsi-grafana-alerting-webhook \
   --description "Grafana alerting configuration" \
   --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}" \
-  || aws secretsmanager put-secret-value \
+  || ave aws secretsmanager put-secret-value \
     --secret-id cdp-sirsi-grafana-alerting-webhook \
-    --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}"
+    --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${WEBHOOK_URL}\"}"`
 ```
 
 ## Configure Grafana API token (for Terraform provisioning)
@@ -74,7 +74,7 @@ ave aws secretsmanager create-secret \
   --name cdp-sirsi-grafana-api-token \
   --description "Grafana API token for Terraform provisioning" \
   --secret-string "{\"API_TOKEN\":\"${API_TOKEN}\"}" \
-  || aws secretsmanager put-secret-value \
+  || ave aws secretsmanager put-secret-value \
     --secret-id cdp-sirsi-grafana-api-token \
     --secret-string "{\"API_TOKEN\":\"${API_TOKEN}\"}"
 ```

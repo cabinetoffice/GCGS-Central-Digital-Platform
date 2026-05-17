@@ -134,4 +134,10 @@ resource "grafana_rule_group" "ecs_cpu_high" {
       }
     }
   }
+
+  depends_on = [
+    grafana_data_source.cloudwatch,
+    grafana_dashboard.dashboards,
+    grafana_folder.overview,
+  ]
 }
