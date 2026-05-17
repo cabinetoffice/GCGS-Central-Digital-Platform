@@ -1,0 +1,337 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": false,
+          "firing": true,
+          "noData": false,
+          "normal": false,
+          "pending": false,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "stat"
+      },
+      "title": "Firing",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": false,
+          "firing": false,
+          "noData": false,
+          "normal": false,
+          "pending": true,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "stat"
+      },
+      "title": "Pending",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": false,
+          "firing": false,
+          "noData": false,
+          "normal": true,
+          "pending": false,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "stat"
+      },
+      "title": "Normal",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": true,
+          "firing": false,
+          "noData": true,
+          "normal": false,
+          "pending": false,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": true,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "stat"
+      },
+      "title": "Error/No Data",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": true,
+          "firing": true,
+          "noData": false,
+          "normal": false,
+          "pending": false,
+          "recovering": true
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "list"
+      },
+      "title": "Firing",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 4
+      },
+      "id": 6,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": false,
+          "firing": false,
+          "noData": false,
+          "normal": false,
+          "pending": true,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupMode": "default",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "list"
+      },
+      "title": "Pending",
+      "type": "alertlist"
+    },
+    {
+      "datasource": {
+        "type": "grafana",
+        "uid": "-- Grafana --"
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 7,
+      "options": {
+        "alertStateFilter": [
+          "alerting",
+          "pending",
+          "no_data",
+          "error",
+          "ok"
+        ],
+        "stateFilter": {
+          "error": false,
+          "firing": true,
+          "noData": false,
+          "normal": false,
+          "pending": true,
+          "recovering": false
+        },
+        "dashboardAlerts": false,
+        "groupBy": [
+          "ClusterName",
+          "ServiceName",
+          "alertname"
+        ],
+        "groupMode": "custom",
+        "maxItems": 50,
+        "showInactiveAlerts": false,
+        "showInstanceColumn": true,
+        "showLabelsColumn": true,
+        "showStateColumn": true,
+        "showTimeColumn": true,
+        "sortOrder": 1,
+        "viewMode": "list"
+      },
+      "title": "Grouped (Cluster / Service / Alert)",
+      "type": "alertlist"
+    }
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Alerts Overview",
+  "uid": "alerts-overview",
+  "version": 1
+}

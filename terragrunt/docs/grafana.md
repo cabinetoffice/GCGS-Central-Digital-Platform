@@ -39,6 +39,7 @@ terragrunt/tools/grafana/terraform
 ### Local usage
 
 ```shell
+# Prep
 ACCOUNT_ID="$(ave aws sts get-caller-identity --query Account --output text)"
 GRAFANA_API_TOKEN="$(ave aws secretsmanager get-secret-value \
   --secret-id cdp-sirsi-grafana-api-token \
@@ -68,12 +69,16 @@ region = "eu-west-2"
 encrypt = true
 use_lockfile = true
 EOF
+```
 
-terraform init -input=false -reconfigure \
+```bash
+# Run
+ave terraform init -input=false -reconfigure \
   -backend-config=backend.hcl
-
-terraform plan -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
-terraform apply -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
+# or
+ave terraform plan -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
+# or
+ave terraform apply -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
 ```
 
 ### Dashboards

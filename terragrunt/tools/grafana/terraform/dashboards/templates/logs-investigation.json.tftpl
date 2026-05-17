@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 36,
   "links": [],
   "panels": [
     {
@@ -26,29 +25,25 @@
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 20,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 2,
+      "id": 1,
       "options": {
         "dedupStrategy": "none",
-        "enableInfiniteScrolling": true,
-        "enableLogDetails": false,
+        "enableLogDetails": true,
+        "enableLogHighlight": true,
+        "showControls": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
-      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -56,16 +51,10 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+          "expression": "fields @timestamp, @message\n| filter @log like /$${log_group:regex}/\n| filter @message like /$log_level/\n| sort @timestamp desc\n| limit 200",
           "id": "",
           "label": "",
-          "logGroups": [
-            {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/cfs-migrations:*",
-              "name": "/ecs/cfs-migrations"
-            }
-          ],
+          "logGroups": ${log_groups},
           "matchExact": true,
           "metricEditorMode": 0,
           "metricName": "",
@@ -80,16 +69,43 @@
           "statsGroups": []
         }
       ],
-      "title": "",
+      "title": "Logs",
       "type": "logs"
     }
   ],
-  "preload": false,
-  "refresh": "",
-  "schemaVersion": 41,
+  "schemaVersion": 39,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "label": "Log group",
+        "multi": true,
+        "name": "log_group",
+        "options": [],
+        "query": ${log_group_values},
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": "Error + Warn",
+          "value": "[Ee]rr|ERROR|Error|[Ww]arn|WARN|Warn"
+        },
+        "hide": 0,
+        "label": "Level (regex)",
+        "name": "log_level",
+        "query": "All : .* , Error + Warn : [Ee]rr|ERROR|Error|[Ww]arn|WARN|Warn , Error only : [Ee]rr|ERROR|Error , Warning only : [Ww]arn|WARN|Warn",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
@@ -97,7 +113,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Migrations (CFS)",
-  "uid": "migrations-cfs",
-  "version": 1
+  "title": ${title},
+  "version": 1,
+  "weekStart": ""
 }

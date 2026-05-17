@@ -17,3 +17,8 @@ resource "grafana_folder" "traffic" {
   uid   = "traffic"
   title = "Traffic"
 }
+
+resource "grafana_folder" "alerts" {
+  uid   = "alerts"
+  title = "Alerts"
+}

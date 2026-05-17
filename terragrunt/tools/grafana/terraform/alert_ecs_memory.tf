@@ -1,10 +1,10 @@
-resource "grafana_rule_group" "ecs_cpu_high" {
-  name             = "ecs-cpu-5m"
+resource "grafana_rule_group" "ecs_memory_high" {
+  name             = "ecs-memory-5m"
   folder_uid       = grafana_folder.alerts.uid
   interval_seconds = 300
 
   rule {
-    name           = "ECS CPU high"
+    name           = "ECS Memory high"
     condition      = "C"
     for            = "10m"
     no_data_state  = "OK"
@@ -37,7 +37,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
         matchExact        = true
         maxDataPoints     = 43200
         metricEditorMode  = 0
-        metricName        = "CpuUtilized"
+        metricName        = "MemoryUtilized"
         metricQueryType   = 0
         namespace         = "ECS/ContainerInsights"
         period            = "5m"
@@ -100,7 +100,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
       model = jsonencode({
         conditions = [{
           evaluator = {
-            params = [var.ecs_cpu_threshold]
+            params = [var.ecs_memory_threshold]
             type   = "gt"
           }
           operator = {

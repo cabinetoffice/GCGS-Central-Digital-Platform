@@ -18,7 +18,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 34,
   "links": [],
   "panels": [
     {
@@ -26,29 +25,25 @@
         "type": "cloudwatch",
         "uid": "CLOUDWATCH"
       },
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "gridPos": {
         "h": 20,
         "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 2,
+      "id": 1,
       "options": {
         "dedupStrategy": "none",
-        "enableInfiniteScrolling": true,
-        "enableLogDetails": false,
+        "enableLogDetails": true,
+        "enableLogHighlight": true,
+        "showControls": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
-      "pluginVersion": "11.6.0",
       "targets": [
         {
           "datasource": {
@@ -56,14 +51,14 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
+          "expression": ${expression},
           "id": "",
           "label": "",
           "logGroups": [
             {
-              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
-              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/cfs:*",
-              "name": "/ecs/cfs"
+              "accountId": "${cloudwatch_account_id}",
+              "arn": "arn:aws:logs:eu-west-2:${cloudwatch_account_id}:log-group:${log_group_name}:*",
+              "name": "${log_group_name}"
             }
           ],
           "matchExact": true,
@@ -84,8 +79,6 @@
       "type": "logs"
     }
   ],
-  "preload": false,
-  "refresh": "",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -97,7 +90,6 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "CFS",
-  "uid": "cfs",
+  "title": ${title},
   "version": 1
 }
