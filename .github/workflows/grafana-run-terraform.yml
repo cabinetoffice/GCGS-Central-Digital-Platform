@@ -3,7 +3,7 @@ name: Grafana Run Terraform
 on:
   workflow_call:
     inputs:
-      mode:
+      terraform_action:
         type: string
         required: true
       environment:
@@ -22,15 +22,15 @@ permissions:
 
 jobs:
   run:
-    name: ${{ inputs.mode }} Grafana config (${{ inputs.environment }})
+    name: Grafana Terraform (${{ inputs.terraform_action }}) (${{ inputs.environment }})
     runs-on: ubuntu-latest
     env:
       BASE_DOMAIN: ${{ inputs.base_domain }}
       ENV_NAME: ${{ inputs.environment }}
       ACCOUNT_ID: ${{ inputs.account_id }}
     concurrency:
-      group: grafana-terraform-${{ inputs.mode }}-${{ inputs.environment }}
-      cancel-in-progress: ${{ inputs.mode == 'plan' }}
+      group: grafana-terraform-${{ inputs.environment }}
+      cancel-in-progress: false
 
     steps:
       - name: Checkout
@@ -117,6 +117,6 @@ jobs:
         run: terraform plan -input=false -var-file=env/${ENV_NAME}.tfvars
 
       - name: Terraform Apply
-        if: ${{ inputs.mode == 'apply' }}
+        if: ${{ inputs.terraform_action == 'apply' }}
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform apply -input=false -auto-approve -var-file=env/${ENV_NAME}.tfvars
