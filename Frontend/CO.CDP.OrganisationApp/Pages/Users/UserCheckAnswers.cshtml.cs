@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
+[DisabledByFeature(FeatureFlags.UserManagement)]
 public class UserCheckAnswersModel(
     IOrganisationClient organisationClient,
     ISession session) : PageModel

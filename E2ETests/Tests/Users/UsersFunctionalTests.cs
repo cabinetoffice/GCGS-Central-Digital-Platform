@@ -4,6 +4,7 @@ public class UsersFunctionalTests : UsersBaseTest
 {
     [Category("Users")]
     [Test]
+    [Ignore("Disabled: functionality moved behind UserManagement feature flag — to be re-enabled in follow-up PR")]
     public async Task AddMultipleUsersJourneyHappyPath()
     {
         TestContext.Out.WriteLine("🔹 Scenario: Add multiple users to an organisation.");
