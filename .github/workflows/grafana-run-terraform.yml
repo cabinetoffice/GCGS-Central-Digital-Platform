@@ -53,7 +53,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/cdp-sirsi-terraform
           aws-region: eu-west-2
-          role-session-name: grafana-terraform-${{ inputs.mode }}-${{ env.ENV_NAME }}
+          role-session-name: grafana-terraform-${{ env.ENV_NAME }}
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
