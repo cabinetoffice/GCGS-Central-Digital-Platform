@@ -1,0 +1,122 @@
+name: Grafana Terraform Apply
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      account_id:
+        type: string
+        required: true
+      base_domain:
+        type: string
+        required: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  apply:
+    name: Apply Grafana config (${{ inputs.environment }})
+    runs-on: ubuntu-latest
+    env:
+      BASE_DOMAIN: ${{ inputs.base_domain }}
+      ENV_NAME: ${{ inputs.environment }}
+      ACCOUNT_ID: ${{ inputs.account_id }}
+    concurrency:
+      group: grafana-terraform-${{ inputs.environment }}
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+
+      - name: Install tooling versions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -sSLo /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.40.zip"
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+          curl -sSLo /usr/local/bin/jq "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64"
+          sudo chmod +x /usr/local/bin/jq
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885
+        with:
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/cdp-sirsi-terraform
+          aws-region: eu-west-2
+          role-session-name: grafana-terraform-${{ env.ENV_NAME }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
+        with:
+          terraform_version: "1.15.1"
+
+      - name: Load Grafana secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ "${ENV_NAME}" = "production" ]; then
+            GRAFANA_URL="https://grafana.${BASE_DOMAIN}"
+          elif [ "${ENV_NAME}" = "development" ]; then
+            GRAFANA_URL="https://grafana.dev.${BASE_DOMAIN}"
+          else
+            GRAFANA_URL="https://grafana.${ENV_NAME}.${BASE_DOMAIN}"
+          fi
+          echo "TF_VAR_grafana_url=${GRAFANA_URL}" >> $GITHUB_ENV
+          echo "TF_VAR_environment=${ENV_NAME}" >> $GITHUB_ENV
+          echo "TF_VAR_cloudwatch_account_id=${ACCOUNT_ID}" >> $GITHUB_ENV
+          echo "TF_VAR_cloudwatch_assume_role_arn=arn:aws:iam::${ACCOUNT_ID}:role/cdp-sirsi-telemetry" >> $GITHUB_ENV
+
+          GRAFANA_SECRET=$(aws secretsmanager get-secret-value \
+            --secret-id cdp-sirsi-grafana-api-token \
+            --query SecretString \
+            --output text)
+
+          echo "TF_VAR_grafana_token=$(echo "$GRAFANA_SECRET" | jq -r '.API_TOKEN')" >> $GITHUB_ENV
+
+          ALERT_SECRET=$(aws secretsmanager get-secret-value \
+            --secret-id cdp-sirsi-grafana-alerting-webhook \
+            --query SecretString \
+            --output text 2>/dev/null || true)
+
+          if [ -n "$ALERT_SECRET" ]; then
+            echo "TF_VAR_teams_webhook_url=$(echo "$ALERT_SECRET" | jq -r '.TEAMS_WEBHOOK_URL')" >> $GITHUB_ENV
+          else
+            echo "TF_VAR_teams_webhook_url=" >> $GITHUB_ENV
+          fi
+
+      - name: Preflight checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          terraform version
+          curl -sSf "$TF_VAR_grafana_url/api/health" | jq .
+
+      - name: Terraform Init
+        working-directory: terragrunt/tools/grafana/terraform
+        run: |
+          terraform init -input=false -upgrade -reconfigure \
+            -backend-config="bucket=tfstate-cdp-sirsi-${ENV_NAME}-${ACCOUNT_ID}" \
+            -backend-config="key=tools/grafana/terraform/terraform.tfstate" \
+            -backend-config="region=eu-west-2" \
+            -backend-config="encrypt=true" \
+            -backend-config="use_lockfile=true"
+
+      - name: Terraform State List (debug)
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform state list || true
+
+      - name: Terraform Plan
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform plan -input=false -var-file=env/${ENV_NAME}.tfvars
+
+      - name: Terraform Apply
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform apply -input=false -auto-approve -var-file=env/${ENV_NAME}.tfvars

@@ -52,4 +52,11 @@ resource "grafana_dashboard" "dashboards" {
 
   folder      = local.dashboard_folder_map[split("/", each.value)[0]]
   config_json = jsonencode(local.dashboard_content[each.value])
+
+  depends_on = [
+    grafana_folder.application,
+    grafana_folder.infrastructure,
+    grafana_folder.overview,
+    grafana_folder.traffic,
+  ]
 }

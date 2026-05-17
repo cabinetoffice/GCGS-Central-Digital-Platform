@@ -3,6 +3,7 @@ locals {
   name_prefix             = var.product.resource_name
   orchestrator_account_id = var.account_ids["orchestrator"]
   pipeline_iam_name       = "${local.name_prefix}-${var.environment}-ci-pipeline"
+  terraform_state_bucket  = "tfstate-${local.name_prefix}-${var.environment}-${data.aws_caller_identity.current.account_id}"
 
   pen_testing_config = jsondecode(data.aws_secretsmanager_secret_version.pen_testing_configuration.secret_string)
   terraform_operators = concat(

@@ -43,4 +43,25 @@ data "aws_iam_policy_document" "github_actions_terraform" {
       values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
     }
   }
+
+  statement {
+    sid     = "TerraformStateAccess"
+    effect  = "Allow"
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+    ]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}"]
+  }
+
+  statement {
+    sid     = "TerraformStateObjects"
+    effect  = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}/*"]
+  }
 }
