@@ -34,6 +34,11 @@ DO $$
 DECLARE
   rule_id bigint;
 BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='alert_rule') THEN
+    RAISE NOTICE 'db-cleanup: table alert_rule not found, skipping';
+    RETURN;
+  END IF;
+
   SELECT id INTO rule_id FROM alert_rule WHERE uid = 'ecs-cpu-high';
   IF rule_id IS NULL THEN
     RAISE NOTICE 'db-cleanup: rule % not found', 'ecs-cpu-high';
