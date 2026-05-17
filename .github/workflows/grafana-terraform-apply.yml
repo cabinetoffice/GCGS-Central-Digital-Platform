@@ -107,8 +107,7 @@ jobs:
             -backend-config="key=tools/grafana/terraform/terraform.tfstate" \
             -backend-config="region=eu-west-2" \
             -backend-config="encrypt=true" \
-            -backend-config="use_lockfile=true" \
-            -backend-config="disable_bucket_update=true"
+            -backend-config="use_lockfile=true"
 
       - name: Terraform State List (debug)
         working-directory: terragrunt/tools/grafana/terraform
