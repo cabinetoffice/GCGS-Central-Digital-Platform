@@ -78,7 +78,7 @@ jobs:
 
       - name: Terraform Init
         working-directory: terragrunt/tools/grafana/terraform
-        run: terraform init -input=false
+        run: terraform init -input=false -upgrade
 
       - name: Terraform Plan
         working-directory: terragrunt/tools/grafana/terraform
