@@ -1,32 +1,35 @@
-name: Grafana Terraform Apply
+name: Grafana Run Terraform
 
 on:
   workflow_call:
     inputs:
-      environment:
+      terraform_action:
         type: string
         required: true
-      account_id:
+      grafana_env:
         type: string
         required: true
-      base_domain:
+      grafana_account_id:
+        type: string
+        required: true
+      grafana_base_domain:
         type: string
         required: true
 
 permissions:
-  id-token: write
   contents: read
+  id-token: write
 
 jobs:
-  apply:
-    name: Apply Grafana config (${{ inputs.environment }})
+  run:
+    name: Grafana Terraform
     runs-on: ubuntu-latest
     env:
-      BASE_DOMAIN: ${{ inputs.base_domain }}
-      ENV_NAME: ${{ inputs.environment }}
-      ACCOUNT_ID: ${{ inputs.account_id }}
+      BASE_DOMAIN: ${{ inputs.grafana_base_domain }}
+      ENV_NAME: ${{ inputs.grafana_env }}
+      ACCOUNT_ID: ${{ inputs.grafana_account_id }}
     concurrency:
-      group: grafana-terraform-${{ inputs.environment }}
+      group: grafana-terraform
       cancel-in-progress: false
 
     steps:
@@ -109,14 +112,11 @@ jobs:
             -backend-config="encrypt=true" \
             -backend-config="use_lockfile=true"
 
-      - name: Terraform State List (debug)
-        working-directory: terragrunt/tools/grafana/terraform
-        run: terraform state list || true
-
       - name: Terraform Plan
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform plan -input=false -var-file=env/${ENV_NAME}.tfvars
 
       - name: Terraform Apply
+        if: ${{ inputs.terraform_action == 'apply' }}
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform apply -input=false -auto-approve -var-file=env/${ENV_NAME}.tfvars

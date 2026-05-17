@@ -31,6 +31,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
       values = [
         "repo:cabinetoffice/GCGS-Central-Digital-Platform:ref:refs/heads/main",
         "repo:cabinetoffice/GCGS-Central-Digital-Platform:ref:refs/heads/*-grafana-*",
+        "repo:cabinetoffice/GCGS-Central-Digital-Platform:pull_request",
       ]
     }
   }

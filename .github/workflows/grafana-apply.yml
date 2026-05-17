@@ -1,0 +1,53 @@
+name: Grafana Apply
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "terragrunt/tools/grafana/**"
+      - ".github/workflows/grafana-*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apply-development:
+    if: ${{ (github.event_name == 'push' && github.ref_name == 'main') || (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || contains(github.ref_name, '-grafana-'))) }}
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      terraform_action: apply
+      grafana_env: development
+      grafana_account_id: "471112892058"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
+
+  apply-staging:
+    needs: apply-development
+    if: ${{ (github.event_name == 'push' && github.ref_name == 'main') || (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || contains(github.ref_name, '-grafana-'))) }}
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      terraform_action: apply
+      grafana_env: staging
+      grafana_account_id: "905418042182"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
+
+  apply-integration:
+    needs: apply-staging
+    if: ${{ (github.event_name == 'push' && github.ref_name == 'main') || (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || contains(github.ref_name, '-grafana-'))) }}
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      terraform_action: apply
+      grafana_env: integration
+      grafana_account_id: "767397666448"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk
+
+  apply-production:
+    needs: apply-integration
+    if: ${{ (github.event_name == 'push' && github.ref_name == 'main') || (github.event_name == 'workflow_dispatch' && (github.ref_name == 'main' || contains(github.ref_name, '-grafana-'))) }}
+    uses: ./.github/workflows/grafana-run-terraform.yml
+    with:
+      terraform_action: apply
+      grafana_env: production
+      grafana_account_id: "471112843276"
+      grafana_base_domain: supplier-information.find-tender.service.gov.uk

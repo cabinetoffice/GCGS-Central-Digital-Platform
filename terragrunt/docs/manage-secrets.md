@@ -16,14 +16,15 @@
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
+- [Update Grafana Secrets](#update-grafana-secrets)
 - [Update ODI Data Platform Secrets](#update-odi-data-platform-secrets)
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
-- [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
 - [Update Production Database Users](#update-production-database-users)
 - [Update Slack Configuration](#update-slack-configuration)
 - [Update Terraform Operators](#update-terraform-operators)
+- [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update WAF Allowed IP Set](#update-waf-allowed-ip-set)
 
 ---
@@ -150,6 +151,39 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
 
 ---
 
+## Update Grafana Secrets
+
+These secrets are required for Grafana provisioning and alerting. Make sure you
+target the correct environment account before updating secrets.
+
+### Update Grafana API token
+
+```shell
+GRAFANA_API_TOKEN="REPLACE_ME"
+
+ave aws secretsmanager create-secret \
+  --name cdp-sirsi-grafana-api-token \
+  --description "Grafana API token for Terraform provisioning" \
+  --secret-string "{\"API_TOKEN\":\"${GRAFANA_API_TOKEN}\"}" \
+  || ave aws secretsmanager put-secret-value \
+    --secret-id cdp-sirsi-grafana-api-token \
+    --secret-string "{\"API_TOKEN\":\"${GRAFANA_API_TOKEN}\"}"
+```
+
+### Update Grafana Teams webhook
+
+```shell
+GRAFANA_TEAMS_WEBHOOK_URL="https://outlook.office.com/webhook/REPLACE_ME"
+
+ave aws secretsmanager create-secret \
+  --name cdp-sirsi-grafana-alerting-webhook \
+  --description "Grafana alerting configuration" \
+  --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${GRAFANA_TEAMS_WEBHOOK_URL}\"}" \
+  || ave aws secretsmanager put-secret-value \
+    --secret-id cdp-sirsi-grafana-alerting-webhook \
+    --secret-string "{\"TEAMS_WEBHOOK_URL\":\"${GRAFANA_TEAMS_WEBHOOK_URL}\"}"
+```
+
 ## Update ODI Data Platform Secrets
 
 1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **odi-data-platform-development.json**:
@@ -227,23 +261,6 @@ ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-
 ```
 
 3. Redeploy the `organisation-app` service.
-
----
-
-## Update User Management Service Key API Key
-
-1. Use `uuidgen` (or your preferred secure generator) to create a service key and store it in the target account's Secrets Manager.
-
-```shell
-# Assume the appropriate role for the target environment and...
-# Add a new key:
-# ave aws secretsmanager create-secret --name cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
-
-# Or update an existing key:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
-```
-
-2. Redeploy the `user-management-api` service.
 
 ---
 
@@ -335,6 +352,23 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operator
 
 ---
 
+## Update User Management Service Key API Key
+
+1. Use `uuidgen` (or your preferred secure generator) to create a service key and store it in the target account's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
+
+# Or update an existing key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-user-management-servicekey-apikey --secret-string $(uuidgen) | jq .
+```
+
+2. Redeploy the `user-management-api` service.
+
+---
+
 ## Update WAF Allowed IP Set
 
 1. Create a JSON file in the `./secrets` folder containing the list of IP addresses/ranges with comments to identify the owners. Name the file based on the target environment, for example:, e.g., **waf-allowed-ip-set-development.json**, **waf-allowed-ip-set-development-tools.json**:
@@ -364,5 +398,3 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.
-
----

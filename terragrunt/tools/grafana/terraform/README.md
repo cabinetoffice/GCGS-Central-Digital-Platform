@@ -1,7 +1,9 @@
 # Grafana Terraform (configuration)
 
-This folder provisions Grafana configuration via the Grafana API (dashboards and alert contact points).
+This folder provisions Grafana configuration via the Grafana API.
 It is intentionally separate from the core infra Terraform so changes can be applied independently.
+
+Primary documentation: `terragrunt/docs/grafana.md`.
 
 ## Prerequisites
 
@@ -34,61 +36,41 @@ so URLs are stable across environments.
 ## Local usage
 
 ```bash
-ENVIRONMENT="${AWS_ENV:-${TG_ENVIRONMENT:-development}}"
-if [ "${ENVIRONMENT}" = "production" ]; then
+ACCOUNT_ID="$(ave aws sts get-caller-identity --query Account --output text)"
+GRAFANA_API_TOKEN="$(ave aws secretsmanager get-secret-value \
+  --secret-id cdp-sirsi-grafana-api-token \
+  --query SecretString --output text | jq -r '.API_TOKEN')"
+GRAFANA_TEAMS_WEBHOOK_URL="$(ave aws secretsmanager get-secret-value \
+  --secret-id cdp-sirsi-grafana-alerting-webhook \
+  --query SecretString --output text 2>/dev/null | jq -r '.TEAMS_WEBHOOK_URL')"
+
+if [ "${TG_ENVIRONMENT:-development}" = "production" ]; then
   TF_VAR_grafana_url="https://grafana.supplier-information.find-tender.service.gov.uk"
-elif [ "${ENVIRONMENT}" = "development" ]; then
+elif [ "${TG_ENVIRONMENT:-development}" = "development" ]; then
   TF_VAR_grafana_url="https://grafana.dev.supplier-information.find-tender.service.gov.uk"
 else
-  TF_VAR_grafana_url="https://grafana.${ENVIRONMENT}.supplier-information.find-tender.service.gov.uk"
+  TF_VAR_grafana_url="https://grafana.${TG_ENVIRONMENT:-development}.supplier-information.find-tender.service.gov.uk"
 fi
 export TF_VAR_grafana_url
 
-export TF_VAR_grafana_token="$(ave aws secretsmanager get-secret-value \
-    --secret-id cdp-sirsi-grafana-api-token \
-    --query SecretString --output text | jq -r '.API_TOKEN')"
-
-export TF_VAR_teams_webhook_url="$(ave aws secretsmanager get-secret-value \
-    --secret-id cdp-sirsi-grafana-alerting-webhook \
-    --query SecretString --output text | jq -r '.TEAMS_WEBHOOK_URL')"
-
-export TF_VAR_environment="${AWS_ENV:-${TG_ENVIRONMENT:-development}}"
-export TF_VAR_cloudwatch_account_id="$(ave aws sts get-caller-identity --query Account --output text)"
+export TF_VAR_grafana_token="${GRAFANA_API_TOKEN}"
+export TF_VAR_teams_webhook_url="${GRAFANA_TEAMS_WEBHOOK_URL:-}"
+export TF_VAR_environment="${TG_ENVIRONMENT:-development}"
+export TF_VAR_cloudwatch_account_id="${ACCOUNT_ID}"
 export TF_VAR_cloudwatch_assume_role_arn="arn:aws:iam::${TF_VAR_cloudwatch_account_id}:role/cdp-sirsi-telemetry"
 
-ave terraform init -input=false
-ave terraform plan -input=false -var-file=env/${TF_VAR_environment}.tfvars
-ave terraform apply -input=false -var-file=env/${TF_VAR_environment}.tfvars
-```
+cat > backend.hcl <<EOF
+bucket = "tfstate-cdp-sirsi-${TG_ENVIRONMENT:-development}-${ACCOUNT_ID}"
+key    = "tools/grafana/terraform/terraform.tfstate"
+region = "eu-west-2"
+encrypt = true
+use_lockfile = true
+EOF
 
-## One-time migration: wipe folders/dashboards and re-apply
-
-Use this when switching from file-based provisioning to Terraform to ensure
-stable, human-readable folder/dashboard UIDs.
-
-```bash
-export TF_VAR_grafana_url="https://grafana.dev.supplier-information.find-tender.service.gov.uk"
-export TF_VAR_grafana_token="<GRAFANA_API_TOKEN>"
-
-set -euo pipefail
-
-curl -s -H "Authorization: Bearer $TF_VAR_grafana_token" \
-  "$TF_VAR_grafana_url/api/search?type=dash-db&limit=5000" \
-| jq -r '.[].uid' \
-| while read -r uid; do
-    echo "Deleting dashboard $uid"
-    curl -s -X DELETE -H "Authorization: Bearer $TF_VAR_grafana_token" \
-      "$TF_VAR_grafana_url/api/dashboards/uid/$uid" > /dev/null
-  done
-
-curl -s -H "Authorization: Bearer $TF_VAR_grafana_token" \
-  "$TF_VAR_grafana_url/api/folders" \
-| jq -r '.[] | select(.uid!="general") | .uid' \
-| while read -r uid; do
-    echo "Deleting folder $uid"
-    curl -s -X DELETE -H "Authorization: Bearer $TF_VAR_grafana_token" \
-      "$TF_VAR_grafana_url/api/folders/$uid" > /dev/null
-  done
+ave terraform init -input=false -reconfigure \
+  -backend-config=backend.hcl
+ave terraform plan -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
+ave terraform apply -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
 ```
 
 ## Notes
@@ -98,7 +80,7 @@ curl -s -H "Authorization: Bearer $TF_VAR_grafana_token" \
 
 ## CI/CD
 
-GitHub Actions workflow: `.github/workflows/grafana-terraform.yml`
+GitHub Actions workflow: `.github/workflows/grafana-*.yml`
 
 - Runs on `main` when files under `terragrunt/tools/grafana/**` change
 - Uses OIDC to assume role `cdp-sirsi-terraform` in each account
