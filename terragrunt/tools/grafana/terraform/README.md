@@ -15,6 +15,10 @@ It is intentionally separate from the core infra Terraform so changes can be app
   - Secret JSON key:
     - `TEAMS_WEBHOOK_URL`
 
+- GitHub OIDC role must have S3 access to the state bucket:
+  - Bucket: `tfstate-cdp-sirsi-<env>-<account_id>`
+  - Actions: `s3:ListBucket`, `s3:GetBucketLocation`, `s3:GetObject`, `s3:PutObject`, `s3:DeleteObject`
+
 ## Dashboard provisioning
 
 Place Grafana dashboard JSON files under `dashboards/`, grouped by folder:

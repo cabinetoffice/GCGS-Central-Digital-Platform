@@ -33,6 +33,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
+      - name: Install tooling versions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          curl -sSLo /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.34.40.zip"
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          sudo /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+
+          curl -sSLo /usr/local/bin/jq "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64"
+          sudo chmod +x /usr/local/bin/jq
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@d979d5b3a71173a29b74b5b88418bfda9437d885
         with:
@@ -42,6 +54,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e
+        with:
+          terraform_version: "1.15.1"
 
       - name: Load Grafana secrets
         shell: bash
@@ -87,7 +101,18 @@ jobs:
 
       - name: Terraform Init
         working-directory: terragrunt/tools/grafana/terraform
-        run: terraform init -input=false -upgrade
+        run: |
+          terraform init -input=false -upgrade -reconfigure \
+            -backend-config="bucket=tfstate-cdp-sirsi-${ENV_NAME}-${ACCOUNT_ID}" \
+            -backend-config="key=tools/grafana/terraform/terraform.tfstate" \
+            -backend-config="region=eu-west-2" \
+            -backend-config="encrypt=true" \
+            -backend-config="use_lockfile=true" \
+            -backend-config="disable_bucket_update=true"
+
+      - name: Terraform State List (debug)
+        working-directory: terragrunt/tools/grafana/terraform
+        run: terraform state list
 
       - name: Terraform Plan
         working-directory: terragrunt/tools/grafana/terraform
