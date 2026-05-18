@@ -56,6 +56,7 @@ locals {
   log_dashboard_templates = {
     single = "${path.module}/dashboards/templates/logs-single.json.tftpl"
   }
+  rds_log_dashboard_template = "${path.module}/dashboards/templates/logs-single-db.json.tftpl"
   log_health_filter = "\n| filter RequestPath != \"/health\""
   log_expression_filtered = {
     for service, cfg in local.log_dashboard_defs : service => (
@@ -108,7 +109,7 @@ locals {
   }
   rds_log_dashboard_rendered = {
     for name, cfg in local.rds_log_dashboard_defs : name => templatefile(
-      local.log_dashboard_templates["single"],
+      local.rds_log_dashboard_template,
       {
         title                 = jsonencode(cfg.title)
         log_group_name        = cfg.log_group_name
