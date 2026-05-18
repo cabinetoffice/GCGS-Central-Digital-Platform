@@ -53,6 +53,6 @@ locals {
   import_instance_state = contains(["production"], var.environment) ? "running" : "stopped"
   import_instance_tags  = merge(var.tags, { Name = "fts-db-import" })
 
-  fts_instance_count = contains(["development", "staging", "integration"], var.environment) ? 1 : 2
+  fts_instance_count = contains(["development", "integration"], var.environment) ? 1 : 2
   cfs_instance_count = local.fts_instance_count
 }
