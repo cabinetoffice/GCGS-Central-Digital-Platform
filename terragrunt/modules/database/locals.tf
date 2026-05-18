@@ -4,7 +4,8 @@ locals {
   ev_cluster_name            = "${local.name_prefix}-ev-cluster"
   find_a_tender_cluster_name = "${local.name_prefix}-find-a-tender-cluster"
 
-  is_production = var.is_production || var.environment == "staging"
+  is_production = var.is_production || var.environment == "staging" # @TODO(ABN) switch to use is_staging
+  is_staging    = var.environment == "staging"
 
   cfs_cluster_name = "${local.name_prefix}-cfs-cluster"
   cfs_db_parameters_cluster = {
