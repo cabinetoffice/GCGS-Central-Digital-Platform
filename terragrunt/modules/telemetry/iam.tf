@@ -20,3 +20,20 @@ resource "aws_iam_role_policy_attachment" "grafana_db_kms_decrypt" {
   policy_arn = aws_iam_policy.grafana_db_kms_decrypt.arn
   role       = var.role_ecs_task_exec_name
 }
+
+resource "aws_iam_policy" "grafana_generic" {
+  name        = "${local.name_prefix}-grafana-generic"
+  description = "Generic permissions for Grafana CloudWatch access"
+  policy      = data.aws_iam_policy_document.grafana_generic.json
+  tags        = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "grafana_generic" {
+  policy_arn = aws_iam_policy.grafana_generic.arn
+  role       = var.role_telemetry_name
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_grafana_generic" {
+  policy_arn = aws_iam_policy.grafana_generic.arn
+  role       = var.role_ecs_task_name
+}

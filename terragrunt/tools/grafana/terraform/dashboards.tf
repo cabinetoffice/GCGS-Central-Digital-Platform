@@ -98,6 +98,35 @@ locals {
     )
   }
 
+  rds_log_dashboard_defs = jsondecode(file("${path.module}/data/rds_log_dashboards.json"))
+  rds_log_dashboard_uid_raw = {
+    for name, cfg in local.rds_log_dashboard_defs : name => "infra-db-logs-${name}"
+  }
+  rds_log_dashboard_uid = {
+    for name, raw_uid in local.rds_log_dashboard_uid_raw :
+    name => length(raw_uid) > 40 ? substr(raw_uid, 0, 40) : raw_uid
+  }
+  rds_log_dashboard_rendered = {
+    for name, cfg in local.rds_log_dashboard_defs : name => templatefile(
+      local.log_dashboard_templates["single"],
+      {
+        title                 = jsonencode(cfg.title)
+        log_group_name        = cfg.log_group_name
+        cloudwatch_account_id = var.cloudwatch_account_id
+        expression            = jsonencode(cfg.expression)
+      }
+    )
+  }
+  rds_log_dashboard_content = {
+    for name, rendered in local.rds_log_dashboard_rendered : name => merge(
+      jsondecode(rendered),
+      {
+        uid  = local.rds_log_dashboard_uid[name]
+        tags = distinct(concat(try(jsondecode(rendered).tags, []), ["terraform-managed"]))
+      }
+    )
+  }
+
   logs_investigation_log_groups = [
     for cfg in local.log_dashboard_defs : {
       accountId = var.cloudwatch_account_id
@@ -159,5 +188,16 @@ resource "grafana_dashboard" "logs_investigation" {
 
   depends_on = [
     grafana_folder.application,
+  ]
+}
+
+resource "grafana_dashboard" "rds_log_dashboards" {
+  for_each = local.rds_log_dashboard_content
+
+  folder      = grafana_folder.infrastructure.uid
+  config_json = jsonencode(each.value)
+
+  depends_on = [
+    grafana_folder.infrastructure,
   ]
 }
