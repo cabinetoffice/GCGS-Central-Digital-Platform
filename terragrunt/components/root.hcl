@@ -90,24 +90,25 @@ locals {
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
-      mysql_aurora_instance_type  = "db.r5.xlarge"
+      mysql_aurora_instance_type  = "db.r5.8xlarge"
       onelogin_logout_notification_urls = [
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
       ]
-      opensearch_availability_zone_count  = 2
+      opensearch_availability_zone_count  = 3
       opensearch_dedicated_master_count   = 3
       opensearch_dedicated_master_enabled = true
-      opensearch_dedicated_master_type    = "t3.small.search"
-      opensearch_instance_count           = 2
-      opensearch_instance_type            = "t3.medium.search"
-      grafana_db_instance_type            = "db.t4g.micro"
-      grafana_db_multi_az                 = false
+      opensearch_dedicated_master_type    = "m6g.large.search"
+      opensearch_instance_count           = 3
+      opensearch_instance_type            = "m6g.large.search"
+      grafana_db_instance_type            = "db.t4g.small"
+      grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
       pinned_service_version_fts          = "1.3.11"
       pinned_service_version              = "1.0.88"
       postgres_instance_type              = "db.t4g.micro"
-      postgres_aurora_instance_type       = "db.r5.large"
+      postgres_aurora_instance_type       = "db.r5.8xlarge"
+      postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
       private_subnets = [
         "10.${local.cidr_b_staging}.101.0/24",
         "10.${local.cidr_b_staging}.102.0/24",
@@ -118,7 +119,7 @@ locals {
         "10.${local.cidr_b_staging}.2.0/24",
         "10.${local.cidr_b_staging}.3.0/24"
       ]
-      redis_node_type = "cache.t3.medium"
+      redis_node_type = "cache.r5.xlarge"
     }
 
     integration = {

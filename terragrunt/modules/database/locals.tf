@@ -4,7 +4,8 @@ locals {
   ev_cluster_name            = "${local.name_prefix}-ev-cluster"
   find_a_tender_cluster_name = "${local.name_prefix}-find-a-tender-cluster"
 
-  is_production = var.is_production || var.environment == "staging"
+  is_production = var.is_production || var.environment == "staging" # @TODO(ABN) switch to use is_staging
+  is_staging    = var.environment == "staging"
 
   cfs_cluster_name = "${local.name_prefix}-cfs-cluster"
   cfs_db_parameters_cluster = {
@@ -59,6 +60,6 @@ locals {
   import_instance_state = contains(["production"], var.environment) ? "running" : "stopped"
   import_instance_tags  = merge(var.tags, { Name = "fts-db-import" })
 
-  fts_instance_count = contains(["development", "staging", "integration"], var.environment) ? 1 : 2
+  fts_instance_count = contains(["development", "integration"], var.environment) ? 1 : 2
   cfs_instance_count = local.fts_instance_count
 }

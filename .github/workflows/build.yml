@@ -12,7 +12,52 @@ on:
   pull_request:
 
 jobs:
+  pipeline_check:
+    runs-on: ubuntu-latest
+    outputs:
+      skip_pipeline: ${{ steps.calculate_skip_pipeline.outputs.skip_pipeline }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: calculate_skip_pipeline
+        shell: bash
+        run: |
+          # Default for non-PR events: always run the pipeline
+          if [[ "$GITHUB_EVENT_NAME" != "pull_request" ]]; then
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          BASE_SHA='${{ github.event.pull_request.base.sha }}'
+          HEAD_SHA='${{ github.event.pull_request.head.sha }}'
+
+          echo "Base: $BASE_SHA"
+          echo "Head: $HEAD_SHA"
+
+          # List changed files between base and head
+          mapfile -t files < <(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
+
+          if [[ "${#files[@]}" -eq 0 ]]; then
+            # No changes? Be safe and run the pipeline
+            echo "skip_pipeline=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          skip_pipeline=true
+          for f in "${files[@]}"; do
+            echo "Changed: $f"
+            if [[ "$f" != terragrunt/* ]]; then
+              skip_pipeline=false
+              break
+            fi
+          done
+
+          echo "skip_pipeline=$skip_pipeline" >> "$GITHUB_OUTPUT"
+
   test:
+    needs: pipeline_check
     runs-on: ubuntu-latest
     name: Tests
     strategy:
@@ -20,66 +65,45 @@ jobs:
         dotnet-version: [ '8.0.x' ]
 
     steps:
+      - name: Short-circuit for infra-only PRs
+        if: needs.pipeline_check.outputs.skip_pipeline == 'true'
+        run: echo "Infra-only PR (terragrunt/**); skipping tests."
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Detect changes
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            git fetch origin "${GITHUB_BASE_REF}" --depth=1
-            CHANGED=$(git diff --name-only "origin/${GITHUB_BASE_REF}" "${GITHUB_SHA}")
-          else
-            CHANGED=$(git diff --name-only "${GITHUB_SHA}^" "${GITHUB_SHA}")
-          fi
-
-          skip=true
-          while read -r f; do
-            [ -z "$f" ] && continue
-            if [[ "$f" == terragrunt/* ]]; then continue; fi
-            if [[ "$f" == .github/workflows/grafana-* ]]; then continue; fi
-            skip=false
-            break
-          done <<< "$CHANGED"
-
-          echo "SKIP_BUILD=$skip" >> "$GITHUB_ENV"
-      - name: Skip tests (infra-only change)
-        if: env.SKIP_BUILD == 'true'
-        run: echo "No app changes detected; skipping build/tests."
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
       - name: Setup dotnet ${{ matrix.dotnet-version }}
-        if: env.SKIP_BUILD != 'true'
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ matrix.dotnet-version }}      
       - uses: actions/cache@v4
-        if: env.SKIP_BUILD != 'true'
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget
       - name: Build
-        if: env.SKIP_BUILD != 'true'
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make build OpenAPI
       - name: Test
-        if: env.SKIP_BUILD != 'true'
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
       - name: Upload test results
-        if: env.SKIP_BUILD != 'true' && always()
+        if: always() && needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: test-results-dotnet-${{ matrix.dotnet-version }}
           path: TestResults-${{ matrix.dotnet-version }}
       - name: Upload OpenAPI contracts
-        if: env.SKIP_BUILD != 'true'
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: OpenAPI
           path: OpenAPI
 
   package:
-    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    needs: pipeline_check
+    if: github.event_name != 'pull_request' || needs.pipeline_check.outputs.skip_pipeline == 'false'
     runs-on: ubuntu-latest
     name: Build containers
     env:
@@ -95,32 +119,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      - name: Detect changes
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            git fetch origin "${GITHUB_BASE_REF}" --depth=1
-            CHANGED=$(git diff --name-only "origin/${GITHUB_BASE_REF}" "${GITHUB_SHA}")
-          else
-            CHANGED=$(git diff --name-only "${GITHUB_SHA}^" "${GITHUB_SHA}")
-          fi
-
-          skip=true
-          while read -r f; do
-            [ -z "$f" ] && continue
-            if [[ "$f" == terragrunt/* ]]; then continue; fi
-            if [[ "$f" == .github/workflows/grafana-* ]]; then continue; fi
-            skip=false
-            break
-          done <<< "$CHANGED"
-
-          echo "SKIP_BUILD=$skip" >> "$GITHUB_ENV"
-      - name: Skip build (infra-only change)
-        if: env.SKIP_BUILD == 'true'
-        run: echo "No app changes detected; skipping container build."
       - name: Determine the version
-        if: env.SKIP_BUILD != 'true'
         id: version
         run: |
           COMMIT_REF=$(if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then echo "${{ github.event.pull_request.head.sha }}"; else echo "${GITHUB_SHA:-HEAD}"; fi)
@@ -132,7 +131,6 @@ jobs:
           echo "Version: $VERSION"
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Build Grafana image
-        if: env.SKIP_BUILD != 'true'
         run: |
           docker build \
             -t cabinetoffice/cdp-grafana:${IMAGE_VERSION} \
@@ -141,12 +139,10 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Build
-        if: env.SKIP_BUILD != 'true'
         run: make build-docker VERSION=${IMAGE_VERSION}
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Start services
-        if: env.SKIP_BUILD != 'true'
         run: make up
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
@@ -163,17 +159,15 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           SirsiService: http://organisation-app:8080
       - name: Verify services
-        if: env.SKIP_BUILD != 'true'
         run: make verify-up
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Test migrations
-        if: env.SKIP_BUILD != 'true'
         run: make db
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Run E2E Tests
-        if: env.SKIP_BUILD != 'true' && env.E2E_EMAIL != ''
+        if: env.E2E_EMAIL != ''
         run: make e2e-test
         env:
           TestSettings__Email: ${{ secrets.SIRSI_E2ETEST_EMAIL }}
@@ -191,37 +185,35 @@ jobs:
           EntityVerificationService: http://entity-verification:8080
           SirsiService: http://organisation-app:8080
       - name: Grab Docker logs
-        if: env.SKIP_BUILD != 'true' && failure()
+        if: failure()
         run: |
           mkdir -p logs
           docker compose ps --services | while read -r svc; do
             docker compose logs --no-color --timestamps "$svc" > "logs/${svc}.log" 2>&1 || echo "No logs for $svc"
           done
       - name: Upload Docker Logs
-        if: env.SKIP_BUILD != 'true' && failure()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: docker-logs
           path: logs
       - name: Upload E2E failure screenshots
-        if: env.SKIP_BUILD != 'true' && failure()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: e2e-screenshots
           path: '**/Screenshots/*.png'
       - name: Upload Playwright traces
-        if: env.SKIP_BUILD != 'true' && failure()
+        if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: e2e-traces
           path: '**/Traces/*.zip'
       - name: Stop services
-        if: env.SKIP_BUILD != 'true'
         run: make down
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Save Docker Images
-        if: env.SKIP_BUILD != 'true'
         id: save
         run: |
           IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | awk -F: -v version="$IMAGE_VERSION" '$1 ~ /cabinetoffice\/cdp-/ && $2 == version { print $1":"$2 }' | tr '\n' ' ')
@@ -234,7 +226,6 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
-        if: env.SKIP_BUILD != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: docker-images

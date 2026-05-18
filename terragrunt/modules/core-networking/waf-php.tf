@@ -69,7 +69,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         statement {
           regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|supabaseedgeruntime|supabase|findtender-ai-agent|vinnikov-analytics|shapbot).*"
+            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|bun/1\\.3\\.5|supabaseedgeruntime|supabase|findtender-ai-agent|vinnikov-analytics|shapbot).*"
 
             field_to_match {
               single_header {

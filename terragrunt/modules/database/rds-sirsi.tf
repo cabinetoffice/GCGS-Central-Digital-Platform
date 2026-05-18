@@ -1,6 +1,7 @@
 module "cluster_sirsi" {
   source = "../db-postgres-cluster"
 
+  apply_immediately            = local.is_staging
   backup_retention_period      = local.is_production ? 35 : 1
   db_name                      = local.sirsi_cluster_name
   db_sg_id                     = var.db_postgres_sg_id
