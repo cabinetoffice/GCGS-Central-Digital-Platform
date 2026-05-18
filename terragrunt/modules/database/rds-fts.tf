@@ -11,6 +11,7 @@ module "cluster_fts" {
   db_sg_id                     = var.db_mysql_sg_id
   deletion_protection          = var.is_production
   engine_version               = var.aurora_mysql_engine_version
+  enabled_cloudwatch_logs_exports = local.fts_log_exports
   family                       = var.aurora_mysql_family
   instance_count               = local.fts_instance_count
   instance_type                = var.aurora_mysql_instance_type

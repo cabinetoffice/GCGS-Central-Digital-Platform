@@ -61,6 +61,12 @@ variable "engine_version" {
   type        = string
 }
 
+variable "enabled_cloudwatch_logs_exports" {
+  description = "List of log types to export to CloudWatch"
+  type        = list(string)
+  default     = []
+}
+
 variable "family" {
   description = "The family of the DB parameter group"
   type        = string
