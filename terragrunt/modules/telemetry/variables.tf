@@ -118,6 +118,11 @@ variable "role_telemetry_arn" {
   type        = string
 }
 
+variable "role_telemetry_name" {
+  description = "IAM role name to be assumed by Grafana Cloudwatch datasource"
+  type        = string
+}
+
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string

@@ -3,7 +3,7 @@
 This folder provisions Grafana configuration via the Grafana API.
 It is intentionally separate from the core infra Terraform so changes can be applied independently.
 
-Primary documentation: `terragrunt/docs/grafana.md`.
+Primary deployment documentation (container): `terragrunt/docs/grafana.md`.
 
 ## Prerequisites
 
@@ -58,17 +58,15 @@ export TF_VAR_teams_webhook_url="${GRAFANA_TEAMS_WEBHOOK_URL:-}"
 export TF_VAR_environment="${TG_ENVIRONMENT:-development}"
 export TF_VAR_cloudwatch_account_id="${ACCOUNT_ID}"
 export TF_VAR_cloudwatch_assume_role_arn="arn:aws:iam::${TF_VAR_cloudwatch_account_id}:role/cdp-sirsi-telemetry"
+```
 
-cat > backend.hcl <<EOF
-bucket = "tfstate-cdp-sirsi-${TG_ENVIRONMENT:-development}-${ACCOUNT_ID}"
-key    = "tools/grafana/terraform/terraform.tfstate"
-region = "eu-west-2"
-encrypt = true
-use_lockfile = true
-EOF
-
+```bash
 ave terraform init -input=false -reconfigure \
-  -backend-config=backend.hcl
+  -backend-config="bucket=tfstate-cdp-sirsi-${TG_ENVIRONMENT:-development}-${ACCOUNT_ID}" \
+  -backend-config="key=tools/grafana/terraform/terraform.tfstate" \
+  -backend-config="region=eu-west-2" \
+  -backend-config="encrypt=true" \
+  -backend-config="use_lockfile=true"
 ave terraform plan -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
 ave terraform apply -input=false -var-file=env/${TG_ENVIRONMENT:-development}.tfvars
 ```

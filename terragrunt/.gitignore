@@ -4,4 +4,5 @@
 **/terraform.tfstate.backup
 **/temp_providers.tf
 **/remote_state.tf
+**/backend.hcl
 .terraform.lock.hcl

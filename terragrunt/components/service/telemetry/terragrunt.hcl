@@ -28,6 +28,7 @@ dependency core_iam {
     ecs_task_exec_arn  = "mock"
     ecs_task_exec_name = "mock"
     telemetry_arn      = "mock"
+    telemetry_name     = "mock"
   }
 }
 
@@ -82,6 +83,7 @@ inputs = {
   role_ecs_task_exec_name = dependency.core_iam.outputs.ecs_task_exec_name
   role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
   role_telemetry_arn      = dependency.core_iam.outputs.telemetry_arn
+  role_telemetry_name     = dependency.core_iam.outputs.telemetry_name
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain

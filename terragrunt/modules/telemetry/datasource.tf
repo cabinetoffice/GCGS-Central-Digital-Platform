@@ -46,6 +46,32 @@ data "aws_iam_policy_document" "grafana_db_kms_decrypt" {
   }
 }
 
+data "aws_iam_policy_document" "grafana_generic" {
+  statement {
+    sid    = "AllowTelemetryReadAccess"
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeRegions",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowCloudWatchLogsInsights"
+    effect = "Allow"
+    actions = [
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams",
+      "logs:FilterLogEvents",
+      "logs:GetLogEvents",
+      "logs:GetQueryResults",
+      "logs:StartQuery",
+      "logs:StopQuery",
+    ]
+    resources = ["*"]
+  }
+}
+
 data "aws_secretsmanager_secret" "grafana_alerting" {
   name = "${local.name_prefix}-${var.grafana_config.name}-alerting-webhook"
 }

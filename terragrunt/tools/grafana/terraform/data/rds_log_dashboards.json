@@ -1,0 +1,22 @@
+{
+  "fts-audit": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/aws/rds/cluster/cdp-sirsi-fts-cluster/audit",
+    "title": "FTS DB Audit Log"
+  },
+  "fts-error": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/aws/rds/cluster/cdp-sirsi-fts-cluster/error",
+    "title": "FTS DB Error Log"
+  },
+  "fts-general": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/aws/rds/cluster/cdp-sirsi-fts-cluster/general",
+    "title": "FTS DB General Log"
+  },
+  "fts-slowquery": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/aws/rds/cluster/cdp-sirsi-fts-cluster/slowquery",
+    "title": "FTS DB Slow Query Log"
+  }
+}
