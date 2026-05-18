@@ -90,12 +90,14 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       images: ${{ steps.save.outputs.images }}
       images_json: ${{ steps.save.outputs.images_json }}
+      skip_build: ${{ steps.detect.outputs.skip_build }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           fetch-tags: true
       - name: Detect changes
+        id: detect
         shell: bash
         run: |
           set -euo pipefail
@@ -116,6 +118,7 @@ jobs:
           done <<< "$CHANGED"
 
           echo "SKIP_BUILD=$skip" >> "$GITHUB_ENV"
+          echo "skip_build=$skip" >> "$GITHUB_OUTPUT"
       - name: Skip build (infra-only change)
         if: env.SKIP_BUILD == 'true'
         run: echo "No app changes detected; skipping container build."
@@ -242,7 +245,7 @@ jobs:
 
   vulnerability-scan:
     # since we do not fail the build for now, but the report is to get feedback, only run it on the main branch and tags
-    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice' && needs.package.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
     name: Scan for vulnerabilities
     needs: [test, package]
@@ -283,7 +286,7 @@ jobs:
           category: ${{ steps.category.outputs.category }}
 
   publish:
-    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice'
+    if: (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner == 'cabinetoffice' && needs.package.outputs.skip_build != 'true'
     runs-on: ubuntu-latest
     name: Publish containers
     needs: [test, package]
