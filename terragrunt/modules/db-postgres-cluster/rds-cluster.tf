@@ -1,4 +1,5 @@
 resource "aws_rds_cluster" "this" {
+  apply_immediately                = var.apply_immediately
   backup_retention_period          = var.backup_retention_period
   cluster_identifier               = var.db_name
   copy_tags_to_snapshot            = var.copy_tags_to_snapshot

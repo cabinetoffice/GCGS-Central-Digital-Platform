@@ -1,6 +1,7 @@
 module "cluster_entity_verification" {
   source = "../db-postgres-cluster"
 
+  apply_immediately            = local.is_staging
   backup_retention_period      = local.is_production ? 35 : 1
   db_name                      = local.ev_cluster_name
   db_sg_id                     = var.db_postgres_sg_id
