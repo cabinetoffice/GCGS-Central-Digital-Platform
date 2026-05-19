@@ -43,63 +43,6 @@ resource "aws_wafv2_web_acl" "fts" {
   }
 
   dynamic "rule" {
-    for_each = length(local.waf_blocked_ip_list) > 0 ? [1] : []
-
-    content {
-      name     = "${local.name_prefix_fts}-block-ips"
-      priority = 2
-
-      action {
-        block {}
-      }
-
-      statement {
-        ip_set_reference_statement {
-          arn = aws_wafv2_ip_set.blocked[0].arn
-        }
-      }
-
-      visibility_config {
-        cloudwatch_metrics_enabled = true
-        metric_name                = "${local.name_prefix_fts}-block-ips"
-        sampled_requests_enabled   = true
-      }
-    }
-  }
-
-  rule {
-    name     = "${local.name_prefix_fts}-block-bots-ua"
-    priority = 3
-
-    action {
-      block {}
-    }
-
-    statement {
-      regex_match_statement {
-        regex_string = local.waf_php_bot_block_ua_regex
-
-        field_to_match {
-          single_header {
-            name = "user-agent"
-          }
-        }
-
-        text_transformation {
-          priority = 0
-          type     = "LOWERCASE"
-        }
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_fts}-block-bots-ua"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  dynamic "rule" {
     for_each = local.waf_rule_sets_priority_blockers
     content {
       name     = "${local.name_prefix_fts}-${rule.key}"

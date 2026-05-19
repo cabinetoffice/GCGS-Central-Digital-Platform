@@ -47,7 +47,7 @@ resource "aws_wafv2_web_acl" "php" {
 
     content {
       name     = "${local.name_prefix_php}-block-ips"
-      priority = 2
+      priority = 15
 
       action {
         block {}
@@ -76,37 +76,18 @@ resource "aws_wafv2_web_acl" "php" {
     }
 
     statement {
-      and_statement {
-        statement {
-          regex_match_statement {
-            regex_string = local.waf_php_bot_block_paths
+      regex_match_statement {
+        regex_string = local.waf_php_bot_block_ua_regex
 
-            field_to_match {
-              uri_path {}
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
-            }
+        field_to_match {
+          single_header {
+            name = "user-agent"
           }
         }
 
-        statement {
-          regex_match_statement {
-            regex_string = local.waf_php_bot_block_ua_regex
-
-            field_to_match {
-              single_header {
-                name = "user-agent"
-              }
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
-            }
-          }
+        text_transformation {
+          priority = 0
+          type     = "LOWERCASE"
         }
       }
     }
