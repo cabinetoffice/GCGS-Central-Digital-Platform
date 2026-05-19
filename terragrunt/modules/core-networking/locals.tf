@@ -12,6 +12,11 @@ locals {
 
   waf_allowed_ip_list = concat(local.waf_allowed_ip_list_secret, [aws_vpc.this.cidr_block])
 
+  waf_raw_blocked_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_blocked_ips.secret_string), [])
+  waf_blocked_ip_list = length(local.waf_raw_blocked_ip_set_json) > 0 ? [
+    for item in local.waf_raw_blocked_ip_set_json : item.value if can(item.value)
+  ] : []
+
   waf_rule_sets_priority_blockers = {
     AWSManagedRulesAmazonIpReputationList : 4
     AWSManagedRulesKnownBadInputsRuleSet : 2
@@ -61,6 +66,24 @@ locals {
       "^/procurement/.*",
     ]
   )
+
+  waf_php_bot_block_ua_list = [
+    "amazonbot",
+    "bun",
+    "chatgpt-user",
+    "deno",
+    "findtender-ai-agent",
+    "gptbot",
+    "meta-externalagent",
+    "oai-searchbot",
+    "procurementextractor",
+    "shapbot",
+    "supabase",
+    "supabaseedgeruntime",
+    "vinnikov-analytics",
+  ]
+
+  waf_php_bot_block_ua_regex = ".*(${join("|", local.waf_php_bot_block_ua_list)}).*"
 
   waf_raw_ip_set_json_tools = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips_tools.secret_string), [])
   waf_allowed_ip_list_tools_secret = length(local.waf_raw_ip_set_json_tools) > 0 ? [

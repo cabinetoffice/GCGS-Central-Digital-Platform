@@ -42,6 +42,31 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  dynamic "rule" {
+    for_each = length(local.waf_blocked_ip_list) > 0 ? [1] : []
+
+    content {
+      name     = "${local.name_prefix_php}-block-ips"
+      priority = 2
+
+      action {
+        block {}
+      }
+
+      statement {
+        ip_set_reference_statement {
+          arn = aws_wafv2_ip_set.blocked[0].arn
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${local.name_prefix_php}-block-ips"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   rule {
     name     = "${local.name_prefix_php}-block-bots-ua"
     priority = 3
@@ -69,7 +94,7 @@ resource "aws_wafv2_web_acl" "php" {
 
         statement {
           regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|bun/1\\.3\\.5|supabaseedgeruntime|supabase|findtender-ai-agent|vinnikov-analytics|shapbot).*"
+            regex_string = local.waf_php_bot_block_ua_regex
 
             field_to_match {
               single_header {

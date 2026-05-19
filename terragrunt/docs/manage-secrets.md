@@ -26,6 +26,7 @@
 - [Update Terraform Operators](#update-terraform-operators)
 - [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update WAF Allowed IP Set](#update-waf-allowed-ip-set)
+- [Update WAF Blocked IP Set](#update-waf-blocked-ip-set)
 
 ---
 
@@ -395,6 +396,34 @@ cdp-sirsi-tools-waf-allowed-ip-set
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
 # OR for tools
 # ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-tools-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development-tools.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/networking` component.
+
+---
+
+## Update WAF Blocked IP Set
+
+1. Create a JSON file in the `./secrets` folder containing the list of IP addresses/ranges to block. For example, **waf-blocked-ip-set-development.json**:
+```json
+[
+  { "comment": "Known abusive client", "value": "203.0.113.10/32" },
+  { "comment": "Abusive subnet", "value": "198.51.100.0/24" }
+]
+```
+
+> Use CIDR notation. Keep the list empty if you do not want to block any IPs:
+> `[]`
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment and update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-waf-blocked-ip-set --secret-string file://secrets/waf-blocked-ip-set-development.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-blocked-ip-set --secret-string file://secrets/waf-blocked-ip-set-development.json | jq .
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.
