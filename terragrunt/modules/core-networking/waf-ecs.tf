@@ -112,6 +112,21 @@ resource "aws_wafv2_ip_set" "this" {
   )
 }
 
+resource "aws_wafv2_ip_set" "blocked" {
+  count = length(local.waf_blocked_ip_list) > 0 ? 1 : 0
+
+  name               = "${local.name_prefix}-blocked-ips"
+  description        = "IP Set to explicitly block abusive IPs."
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = local.waf_blocked_ip_list
+
+  tags = merge(
+    { Name = "${local.name_prefix}-blocked-ips" },
+    var.tags
+  )
+}
+
 resource "aws_wafv2_web_acl_logging_configuration" "this" {
   count = var.environment != "orchestrator" ? 1 : 0
 

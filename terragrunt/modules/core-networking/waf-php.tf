@@ -21,6 +21,12 @@ resource "aws_wafv2_web_acl" "php" {
     content_type = "TEXT_PLAIN"
   }
 
+  custom_response_body {
+    key          = "${local.name_prefix_php}_rate_limit_global_exceeded"
+    content      = "Rate limit of ${local.rate_limit_global_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
+    content_type = "TEXT_PLAIN"
+  }
+
   rule {
     name     = "${local.name_prefix_php}-allow-known-ips"
     priority = 1
@@ -42,6 +48,31 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  dynamic "rule" {
+    for_each = length(local.waf_blocked_ip_list) > 0 ? [1] : []
+
+    content {
+      name     = "${local.name_prefix_php}-block-ips"
+      priority = 15
+
+      action {
+        block {}
+      }
+
+      statement {
+        ip_set_reference_statement {
+          arn = aws_wafv2_ip_set.blocked[0].arn
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${local.name_prefix_php}-block-ips"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   rule {
     name     = "${local.name_prefix_php}-block-bots-ua"
     priority = 3
@@ -51,37 +82,18 @@ resource "aws_wafv2_web_acl" "php" {
     }
 
     statement {
-      and_statement {
-        statement {
-          regex_match_statement {
-            regex_string = local.waf_php_bot_block_paths
+      regex_match_statement {
+        regex_string = local.waf_php_bot_block_ua_regex
 
-            field_to_match {
-              uri_path {}
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
-            }
+        field_to_match {
+          single_header {
+            name = "user-agent"
           }
         }
 
-        statement {
-          regex_match_statement {
-            regex_string = ".*(chatgpt-user|gptbot|oai-searchbot|amazonbot|meta-externalagent|procurementextractor|deno|bun/1\\.3\\.5|supabaseedgeruntime|supabase|findtender-ai-agent|vinnikov-analytics|shapbot).*"
-
-            field_to_match {
-              single_header {
-                name = "user-agent"
-              }
-            }
-
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
-            }
-          }
+        text_transformation {
+          priority = 0
+          type     = "LOWERCASE"
         }
       }
     }
@@ -521,8 +533,8 @@ resource "aws_wafv2_web_acl" "php" {
   }
 
   rule {
-    name     = "${local.name_prefix_php}-RateLimitSearchResultsAndNotice"
-    priority = 9
+    name     = "${local.name_prefix_php}-RateLimitHighTrafficPaths"
+    priority = 11
 
     action {
       block {
@@ -563,7 +575,40 @@ resource "aws_wafv2_web_acl" "php" {
 
     visibility_config {
       cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_php}-RateLimitSearchResultsAndNotice"
+      metric_name                = "${local.name_prefix_php}-RateLimitHighTrafficPaths"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "${local.name_prefix_php}-RateLimitAllPaths"
+    priority = 12
+
+    action {
+      block {
+        custom_response {
+          response_code            = 429
+          custom_response_body_key = "${local.name_prefix_php}_rate_limit_global_exceeded"
+
+          response_header {
+            name  = "Retry-After"
+            value = local.rate_limit_window_seconds
+          }
+        }
+      }
+    }
+
+    statement {
+      rate_based_statement {
+        limit                 = local.rate_limit_global_count
+        evaluation_window_sec = local.rate_limit_window_seconds
+        aggregate_key_type    = "IP"
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-RateLimitAllPaths"
       sampled_requests_enabled   = true
     }
   }
