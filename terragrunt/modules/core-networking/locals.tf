@@ -24,6 +24,7 @@ locals {
 
   rate_limit_count          = 12
   rate_limit_window_seconds = 120
+  rate_limit_global_count   = 240
 
   waf_rule_sets_priority_observers = {
     AWSManagedRulesSQLiRuleSet : 6
@@ -41,6 +42,9 @@ locals {
   waf_php_rate_limit_paths = join(
     "|",
     [
+      "^/api/[^/]+/ocdsreleasepackages.*$",
+      "^/published/notice/.*",
+      "^/published/notices/ocds/.*",
       "^/search/results$",
       "^/search/.*",
       "^/notice$",
