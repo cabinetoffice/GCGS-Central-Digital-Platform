@@ -7,6 +7,8 @@ module "ecs_service_fts_scheduler" {
       local.fts_scheduler_container_parameters,
       {
         aws_buckets_notices = module.s3_bucket_fts.bucket
+        govuknotify_apikey  = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
+        govuknotify_support_admin_email = data.aws_secretsmanager_secret_version.govuknotify_support_admin_email.arn
       }
     )
   )
