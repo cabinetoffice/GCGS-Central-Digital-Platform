@@ -42,7 +42,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "xray:PutTraceSegments",
     ]
     resources = [
-      aws_cloudwatch_event_connection.teams_webhook.arn,
+      "*",
     ]
   }
 
