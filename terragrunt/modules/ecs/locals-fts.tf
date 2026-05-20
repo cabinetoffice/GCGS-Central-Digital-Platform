@@ -68,7 +68,7 @@ locals {
     db_host                               = var.db_fts_cluster_address
     db_name                               = var.db_fts_cluster_name
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
-    dotnet_ui_app_url                     = "https://fts-app.${var.public_domain}"
+    dotnet_ui_app_url                     = "https://${local.fts_redirect_domains[var.environment]}"
     email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
     environment                           = upper(var.environment)
     fts_allowed_target_email_domains      = join(",", local.fts_allowed_target_email_domains[var.environment])
