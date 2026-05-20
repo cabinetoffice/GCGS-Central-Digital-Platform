@@ -27,12 +27,6 @@ variable "role_notification_step_function_name" {
   type        = string
 }
 
-variable "slack_channel_id" {
-  description = "Slack channel ID to send deployment notifications too"
-  type        = string
-  default     = "C07FUD6GL7R"
-}
-
 variable "ssm_envs_cfs_service_version_arn" {
   description = "ARN of the parameter holding the CFS service versions for all environments"
   type        = string

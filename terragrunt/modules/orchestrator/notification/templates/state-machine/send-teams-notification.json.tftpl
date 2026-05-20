@@ -1,0 +1,144 @@
+{
+  "Comment": "State machine for sending Teams notifications without Lambda",
+  "StartAt": "Get Teams Webhook",
+  "States": {
+    "Get Teams Webhook": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:secretsmanager:getSecretValue",
+      "Parameters": {
+        "SecretId": "${teams_webhook_secret_arn}"
+      },
+      "ResultPath": "$.teamsWebhook",
+      "Next": "Determine State Source"
+    },
+    "Determine State Source": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.detail.state",
+          "IsPresent": true,
+          "Next": "Set State From Pipeline"
+        },
+        {
+          "Variable": "$.detail.build-status",
+          "IsPresent": true,
+          "Next": "Set State From CodeBuild"
+        }
+      ],
+      "Default": "Set State Unknown"
+    },
+    "Set State From Pipeline": {
+      "Type": "Pass",
+      "Parameters": {
+        "state_label.$": "$.detail.state"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Set State From CodeBuild": {
+      "Type": "Pass",
+      "Parameters": {
+        "state_label.$": "$.detail.build-status"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Set State Unknown": {
+      "Type": "Pass",
+      "Parameters": {
+        "state_label": "UNKNOWN"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Pick State Emoji": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "FAILED",
+          "Next": "Set Emoji Failed"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "STOPPED",
+          "Next": "Set Emoji Failed"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "SUCCEEDED",
+          "Next": "Set Emoji Succeeded"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "IN_PROGRESS",
+          "Next": "Set Emoji Started"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "STARTED",
+          "Next": "Set Emoji Started"
+        }
+      ],
+      "Default": "Set Emoji Unknown"
+    },
+    "Set Emoji Failed": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "red_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Succeeded": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "green_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Started": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "blue_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Unknown": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "large_orange_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Format Message": {
+      "Type": "Pass",
+      "Parameters": {
+        "formattedMessage": {
+          "text.$": "States.Format(':{}: `{}` {}\n```{}```', $.state_emoji.emoji, $.state.state_label, $.['detail-type'], States.JsonToString($.detail))"
+        }
+      },
+      "ResultPath": "$.formattedMessage",
+      "Next": "Teams Post Message"
+    },
+    "Teams Post Message": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::http:invoke",
+      "Parameters": {
+        "Method": "POST",
+        "ApiEndpoint.$": "$.teamsWebhook.SecretString",
+        "Authentication": {
+          "ConnectionArn": "${auth_connection_arn}"
+        },
+        "RequestBody": {
+          "text.$": "$.formattedMessage.formattedMessage.text"
+        }
+      },
+      "ResultPath": "$.teamsResponse",
+      "End": true
+    }
+  }
+}

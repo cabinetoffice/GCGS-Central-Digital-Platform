@@ -1,31 +1,3 @@
-resource "aws_cloudwatch_event_connection" "slack" {
-  name               = "${local.name_prefix}-goaco-slack"
-  description        = "Allow connection to GOACO's slack private channel"
-  authorization_type = "BASIC"
-
-
-  auth_parameters {
-    basic {
-      username = "authentication"
-      password = "is not needed"
-    }
-  }
-}
-
-resource "aws_cloudwatch_event_connection" "slack_unified_notification" {
-  name               = "${local.name_prefix}-goaco-slack-unified-notification"
-  description        = "Allow connection to GOACO's slack API"
-  authorization_type = "API_KEY"
-
-
-  auth_parameters {
-    api_key {
-      key   = "Authorization"
-      value = local.slack_api_auth
-    }
-  }
-}
-
 resource "aws_cloudwatch_event_rule" "deployment_codebuild" {
 
   name        = "${local.name_prefix}-ci-deployment-codebuild"
@@ -42,8 +14,21 @@ resource "aws_cloudwatch_event_rule" "deployment_codebuild" {
   tags = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "deployment_codebuild_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
+resource "aws_cloudwatch_event_connection" "teams_webhook" {
+  name               = "${local.name_prefix}-teams-webhook"
+  description        = "Allow connection to Microsoft Teams webhook"
+  authorization_type = "BASIC"
+
+  auth_parameters {
+    basic {
+      username = "teams"
+      password = "not-used"
+    }
+  }
+}
+
+resource "aws_cloudwatch_event_target" "deployment_codebuild_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_codebuild.name
 }
@@ -62,8 +47,8 @@ resource "aws_cloudwatch_event_rule" "deployment_ecs" {
 }
 
 
-resource "aws_cloudwatch_event_target" "deployment_ecs_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
+resource "aws_cloudwatch_event_target" "deployment_ecs_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_ecs.name
 }
@@ -81,8 +66,8 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
   tags = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "deployment_pipeline_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification_middleman.arn
+resource "aws_cloudwatch_event_target" "deployment_pipeline_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification_middleman.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_pipeline.name
 }
