@@ -6,6 +6,8 @@ locals {
 
   fts_secrets_arn = data.aws_secretsmanager_secret.fts_secrets.arn
 
+  fts_notice_publish_internal_key_arn = aws_secretsmanager_secret.fts_notice_publish_internal_key.arn
+
   fts_site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
@@ -79,6 +81,7 @@ locals {
     local_version                         = 1100
     modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
+    notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notices_rebuild_enabled               = contains(["development", "staging"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
@@ -110,22 +113,23 @@ locals {
   fts_dotnet_fts_app = merge(
     local.fts_dotnet_common,
     {
-      fts_service_url      = local.fts_service_url
-      onelogin_authority   = local.one_login.credential_locations.authority
-      onelogin_client_id   = local.one_login.credential_locations.client_id
-      onelogin_private_key = local.one_login.credential_locations.private_key
-      db_pg_address        = var.db_find_a_tender_cluster_address
-      db_pg_name           = var.db_find_a_tender_cluster_name
-      db_pg_password       = local.db_find_a_tender_password
-      db_pg_port           = 5432
-      db_pg_username       = local.db_find_a_tender_username
-      db_mysql_address     = var.db_fts_cluster_address
-      db_mysql_name        = var.db_fts_cluster_name
-      db_mysql_password    = local.db_fts_password
-      db_mysql_port        = 3306
-      db_mysql_username    = local.db_fts_username
-      public_domain        = var.public_domain
-      vpc_cidr             = var.vpc_cider
+      fts_service_url             = local.fts_service_url
+      onelogin_authority          = local.one_login.credential_locations.authority
+      onelogin_client_id          = local.one_login.credential_locations.client_id
+      onelogin_private_key        = local.one_login.credential_locations.private_key
+      db_pg_address               = var.db_find_a_tender_cluster_address
+      db_pg_name                  = var.db_find_a_tender_cluster_name
+      db_pg_password              = local.db_find_a_tender_password
+      db_pg_port                  = 5432
+      db_pg_username              = local.db_find_a_tender_username
+      db_mysql_address            = var.db_fts_cluster_address
+      db_mysql_name               = var.db_fts_cluster_name
+      db_mysql_password           = local.db_fts_password
+      db_mysql_port               = 3306
+      db_mysql_username           = local.db_fts_username
+      notice_publish_internal_key = local.fts_notice_publish_internal_key_arn
+      public_domain               = var.public_domain
+      vpc_cidr                    = var.vpc_cider
     }
   )
 
