@@ -6,7 +6,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::aws-sdk:sfn:startExecution",
       "Parameters": {
-        "StateMachineArn": "${slack_notification_arn}",
+        "StateMachineArn": "${teams_notification_arn}",
         "Name.$": "States.Format('teams-notify-{}', States.ArrayGetItem(States.StringSplit($$.Execution.Name, '-'), 0))",
         "Input.$": "$",
         "TraceHeader": "NotificationMiddleman"

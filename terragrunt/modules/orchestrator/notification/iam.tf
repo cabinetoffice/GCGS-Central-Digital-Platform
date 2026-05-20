@@ -1,11 +1,11 @@
-resource "aws_iam_policy" "step_function_slack_notification" {
-  name   = "${local.name_prefix}-step-function-slack-notification"
+resource "aws_iam_policy" "step_function_teams_notification" {
+  name   = "${local.name_prefix}-step-function-teams-notification"
   policy = data.aws_iam_policy_document.notification_step_function.json
   tags   = var.tags
 }
 
 resource "aws_iam_role_policy_attachment" "notification_step_function" {
-  policy_arn = aws_iam_policy.step_function_slack_notification.arn
+  policy_arn = aws_iam_policy.step_function_teams_notification.arn
   role       = var.role_notification_step_function_name
 }
 

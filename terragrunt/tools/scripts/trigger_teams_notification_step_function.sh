@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULT_STEP_FUNCTION_ARN="arn:aws:states:eu-west-2:891377225335:stateMachine:cdp-sirsi-slack-notification-middleman"
+DEFAULT_STEP_FUNCTION_ARN="arn:aws:states:eu-west-2:891377225335:stateMachine:cdp-sirsi-teams-notification-middleman"
 DEFAULT_EVENTS_DIR="../../secrets/pipeline_inputs/disordered_events"
 
 STEP_FUNCTION_ARN="${1:-$DEFAULT_STEP_FUNCTION_ARN}"

@@ -298,19 +298,12 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-pen-testing-config
 
 ---
 
-## Update Slack Configuration
+## Update Teams Webhook
 
-When the orchestrator's notification component is enabled, the system will notify a specified Slack channel about important CI/CD events. The required configuration for this connection must be stored as a secret.
+When the orchestrator's notification component is enabled, the system will notify a Microsoft Teams channel about important CI/CD events. The Teams webhook URL must be stored as a secret.
 
-1.  Add a file named `cdp-sirsi-slack-configuration.json` under the `secrets` directory, containing the following:
+1. Add a file named `cdp-sirsi-teams-webhook-url.txt` under the `secrets` directory, containing the webhook URL as plain text.
 
-```json
-{
-  "API_ENDPOINT": "https://slack.com/api",
-  "API_AUTH": "Bearer xxx-xxxxxxxxx-xxxxxx-xxxx",
-  "SERVICE_ENDPOINT": "https://hooks.slack.com/services/xxxx/xxxxx/xxxx" 
-}
-```
 *Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
 
 2. Assume the appropriate role for the orchestrator environment and update the secret:
@@ -318,9 +311,9 @@ When the orchestrator's notification component is enabled, the system will notif
 ```shell
 aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
 # Add using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
+# ave aws secretsmanager create-secret --name cdp-sirsi-teams-webhook-url --secret-string file://secrets/cdp-sirsi-teams-webhook-url.txt | jq .
 # Or update using:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-slack-configuration --secret-string file://secrets/cdp-sirsi-slack-configuration.json | jq .
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-teams-webhook-url --secret-string file://secrets/cdp-sirsi-teams-webhook-url.txt | jq .
 ```
 
 ---

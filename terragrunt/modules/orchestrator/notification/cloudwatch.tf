@@ -27,8 +27,8 @@ resource "aws_cloudwatch_event_connection" "teams_webhook" {
   }
 }
 
-resource "aws_cloudwatch_event_target" "deployment_codebuild_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
+resource "aws_cloudwatch_event_target" "deployment_codebuild_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_codebuild.name
 }
@@ -47,8 +47,8 @@ resource "aws_cloudwatch_event_rule" "deployment_ecs" {
 }
 
 
-resource "aws_cloudwatch_event_target" "deployment_ecs_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification.arn
+resource "aws_cloudwatch_event_target" "deployment_ecs_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_ecs.name
 }
@@ -66,8 +66,8 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
   tags = var.tags
 }
 
-resource "aws_cloudwatch_event_target" "deployment_pipeline_slack_notification" {
-  arn      = aws_sfn_state_machine.slack_notification_middleman.arn
+resource "aws_cloudwatch_event_target" "deployment_pipeline_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification_middleman.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_pipeline.name
 }
