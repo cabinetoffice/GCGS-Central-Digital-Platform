@@ -1,7 +1,16 @@
 {
-  "Comment": "State machine for alerting in the given slack channel",
-  "StartAt": "Format Slack Message",
+  "Comment": "State machine for alerting in Microsoft Teams",
+  "StartAt": "Get Teams Webhook",
   "States": {
+    "Get Teams Webhook": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:secretsmanager:getSecretValue",
+      "Parameters": {
+        "SecretId": "${teams_webhook_secret_arn}"
+      },
+      "ResultPath": "$.teamsWebhook",
+      "Next": "Format Slack Message"
+    },
     "Format Slack Message": {
       "Type": "Pass",
       "Parameters": {
@@ -10,23 +19,19 @@
         }
       },
       "ResultPath": "$.formattedMessage",
-      "Next": "Slack Post Message"
+      "Next": "Teams Post Message"
     },
-    "Slack Post Message": {
+    "Teams Post Message": {
       "Type": "Task",
       "Resource": "arn:aws:states:::http:invoke",
       "Parameters": {
         "Method": "POST",
-        "ApiEndpoint": "${slack_post_endpoint}",
-        "Authentication": {
-          "ConnectionArn": "${auth_connection_arn}"
-        },
+        "ApiEndpoint.$": "$.teamsWebhook.SecretString",
         "RequestBody": {
-          "channel": "${slack_channel_id}",
           "text.$": "$.formattedMessage.formattedMessage.text"
         }
       },
-      "ResultPath": "$.slackResponse",
+      "ResultPath": "$.teamsResponse",
       "End": true
     }
   }

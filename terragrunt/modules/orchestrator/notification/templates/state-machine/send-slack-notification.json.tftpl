@@ -1,343 +1,143 @@
 {
-  "Comment": "State machine for updating DynamoDB and Slack without Lambda",
-  "StartAt": "What To Do",
+  "Comment": "State machine for sending Teams notifications without Lambda",
+  "StartAt": "Get Teams Webhook",
   "States": {
-    "What To Do": {
+    "Get Teams Webhook": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:secretsmanager:getSecretValue",
+      "Parameters": {
+        "SecretId": "${teams_webhook_secret_arn}"
+      },
+      "ResultPath": "$.teamsWebhook",
+      "Next": "Determine State Source"
+    },
+    "Determine State Source": {
       "Type": "Choice",
       "Choices": [
         {
-          "And": [
-            {
-              "Variable": "$.detail.action",
-              "StringMatches": "Source"
-            },
-            {
-              "Variable": "$.detail.state",
-              "StringMatches": "STARTED"
-            }
-          ],
-          "Next": "Create Message"
-        },
-        {
-          "And": [
-            {
-              "Variable": "$.detail.action",
-              "StringEquals": "Source"
-            },
-            {
-              "Variable": "$.detail.state",
-              "StringEquals": "SUCCEEDED"
-            }
-          ],
-          "Next": "Update Message Source Details"
-        },
-        {
-          "And": [
-            {
-              "Variable": "$.detail.action",
-              "StringEquals": "cdp-sirsi-deployment-to-orchestrator"
-            },
-            {
-              "Variable": "$.detail.state",
-              "StringEquals": "SUCCEEDED"
-            }
-          ],
-          "Next": "Get Envs Service Versions"
-        }
-      ],
-      "Default": "Update Message State"
-    },
-    "Create Message": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:putItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "ConditionExpression": "attribute_not_exists(pipeline_execution_id)",
-        "Item": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          },
-          "commit_message": {
-            "S": "..."
-          },
-          "commit_link": {
-            "S": "..."
-          },
-          "title": {
-            "S": "New deployment started, blah blah"
-          },
-          "stages": {
-            "M": {
-              "Source": {
-                "S.$": "States.Format(':loading: ` STARTED ` @ `{}`', $.detail['start-time'])"
-              },
-              "cdp-sirsi-deployment-to-orchestrator": {
-                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
-              },
-              "cdp-sirsi-deployment-to-development": {
-                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
-              },
-              "cdp-sirsi-deployment-to-staging": {
-                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
-              },
-              "cdp-sirsi-deployment-to-integration": {
-                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
-              },
-              "cdp-sirsi-deployment-to-production": {
-                "S.$": "States.Format(':white_circle: ` PENDING ` @ `{}....`', $.time)"
-              }
-            }
-          },
-          "versions": {
-            "M": {
-              "development": {
-                "S": "?.?.?"
-              },
-              "staging": {
-                "S": "?.?.?"
-              },
-              "integration": {
-                "S": "?.?.?"
-              },
-              "production": {
-                "S": "?.?.?"
-              }
-            }
-          }
-        }
-      },
-      "ResultPath": "$.result",
-      "Next": "Get Message",
-      "Catch": [
-        {
-          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
-          "ResultPath": "$.error",
-          "Next": "Nothing To Do Here"
-        }
-      ]
-    },
-    "Nothing To Do Here": {
-      "Type": "Succeed"
-    },
-    "Get Message": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:getItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "Key": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          }
-        }
-      },
-      "ResultSelector": {
-        "Attributes.$": "$.Item"
-      },
-      "ResultPath": "$.dynamoResult",
-      "Next": "Format Slack Message"
-    },
-    "Has Slack Timestamp": {
-      "Type": "Choice",
-      "Choices": [
-        {
-          "Variable": "$.dynamoResult.Attributes.slack_ts",
+          "Variable": "$.detail.state",
           "IsPresent": true,
-          "Next": "Slack Update Message"
+          "Next": "Set State From Pipeline"
+        },
+        {
+          "Variable": "$.detail.build-status",
+          "IsPresent": true,
+          "Next": "Set State From CodeBuild"
         }
       ],
-      "Default": "Slack Post Message"
+      "Default": "Set State Unknown"
     },
-    "Set Slack Timestamp": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:updateItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "Key": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          }
-        },
-        "UpdateExpression": "SET slack_ts = :slack_ts",
-        "ExpressionAttributeValues": {
-          ":slack_ts": {
-            "S.$": "$.slackResponse.ResponseBody.ts"
-          }
-        }
-      },
-      "End": true
-    },
-    "Update Message Source Details": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:updateItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "ConditionExpression": "attribute_exists(pipeline_execution_id)",
-        "Key": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          }
-        },
-        "UpdateExpression": "SET commit_message = :summary, commit_link = :commit",
-        "ExpressionAttributeValues": {
-          ":summary": {
-            "S.$": "$.commit_message.commit_message"
-          },
-          ":commit": {
-            "S.$": "$.commit_link.commit_link"
-          }
-        },
-        "ReturnValues": "ALL_NEW"
-      },
-      "ResultSelector": {
-        "Attributes.$": "$.Attributes"
-      },
-      "ResultPath": "$.dynamoResult",
-      "Next": "Update Message State",
-      "Retry": [
-        {
-          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
-          "IntervalSeconds": 1,
-          "MaxAttempts": 10,
-          "BackoffRate": 2.0
-        }
-      ]
-    },
-    "Get Envs Service Versions": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Parameters": {
-        "Name": "${ssm_envs_combined_service_version_name}",
-        "WithDecryption": true
-      },
-      "ResultPath": "$.serviceVersions",
-      "Next": "Parse Service Versions"
-    },
-    "Parse Service Versions": {
-    "Type": "Pass",
-      "Parameters": {
-        "parsedServiceVersions.$": "States.StringToJson($.serviceVersions.Parameter.Value)"
-      },
-      "ResultPath": "$.parsedServiceVersions",
-      "Next": "Update Message Versions"
-    },
-    "Update Message Versions": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:updateItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "Key": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          }
-        },
-        "UpdateExpression": "SET versions = :versions",
-        "ExpressionAttributeValues": {
-          ":versions": {
-            "M": {
-              "development": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['development']"
-              },
-              "staging": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['staging']"
-              },
-              "integration": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['integration']"
-              },
-              "production": {
-                "S.$": "$.parsedServiceVersions.parsedServiceVersions['production']"
-              }
-            }
-          }
-        },
-        "ReturnValues": "ALL_NEW"
-      },
-      "ResultSelector": {
-        "Attributes.$": "$.Attributes"
-      },
-      "ResultPath": "$.dynamoResult",
-      "Next": "Update Message State"
-    },
-    "Update Message State": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::dynamodb:updateItem",
-      "Parameters": {
-        "TableName": "${use_lockfile_name}",
-        "ConditionExpression": "attribute_exists(pipeline_execution_id) AND NOT contains(stages.#stage, :succeeded) AND NOT contains(stages.#stage, :failed)",
-        "Key": {
-          "pipeline_execution_id": {
-            "S.$": "$.detail.execution-id"
-          }
-        },
-        "UpdateExpression": "SET stages.#stage = :state",
-        "ExpressionAttributeNames": {
-          "#stage.$": "$.detail.action"
-        },
-        "ExpressionAttributeValues": {
-          ":state": {
-            "S.$": "$.translated_state.translated_state"
-          },
-          ":succeeded": { "S": "SUCCEEDED" },
-          ":failed": { "S": "FAILED" }
-        },
-        "ReturnValues": "ALL_NEW"
-      },
-      "ResultSelector": {
-        "Attributes.$": "$.Attributes"
-      },
-      "ResultPath": "$.dynamoResult",
-      "Next": "Get Message",
-      "Retry": [
-        {
-          "ErrorEquals": ["DynamoDB.ConditionalCheckFailedException"],
-          "IntervalSeconds": 1,
-          "MaxAttempts": 10,
-          "BackoffRate": 2.0
-        }
-      ]
-    },
-    "Format Slack Message": {
+    "Set State From Pipeline": {
       "Type": "Pass",
-      "InputPath": "$.dynamoResult.Attributes",
+      "Parameters": {
+        "state_label.$": "$.detail.state"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Set State From CodeBuild": {
+      "Type": "Pass",
+      "Parameters": {
+        "state_label.$": "$.detail.build-status"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Set State Unknown": {
+      "Type": "Pass",
+      "Parameters": {
+        "state_label": "UNKNOWN"
+      },
+      "ResultPath": "$.state",
+      "Next": "Pick State Emoji"
+    },
+    "Pick State Emoji": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "FAILED",
+          "Next": "Set Emoji Failed"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "STOPPED",
+          "Next": "Set Emoji Failed"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "SUCCEEDED",
+          "Next": "Set Emoji Succeeded"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "IN_PROGRESS",
+          "Next": "Set Emoji Started"
+        },
+        {
+          "Variable": "$.state.state_label",
+          "StringEquals": "STARTED",
+          "Next": "Set Emoji Started"
+        }
+      ],
+      "Default": "Set Emoji Unknown"
+    },
+    "Set Emoji Failed": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "red_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Succeeded": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "green_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Started": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "blue_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Set Emoji Unknown": {
+      "Type": "Pass",
+      "Parameters": {
+        "emoji": "large_orange_circle"
+      },
+      "ResultPath": "$.state_emoji",
+      "Next": "Format Message"
+    },
+    "Format Message": {
+      "Type": "Pass",
       "Parameters": {
         "formattedMessage": {
-          "text.$": "States.Format(':github: Git commit: {}\n```{}```\n:aws-codepipeline: AWS Execution ID: <https://eu-west-2.console.aws.amazon.com/codesuite/codepipeline/pipelines/cdp-sirsi-deployment/executions/{}/visualization?region=eu-west-2|{}>\n*Version legends:*\n - *S:* SIRSI Version\n - *F:* FTS Version\n - *C:* CFS Version\n*Started Deployment Pipeline:* \n{} Pull *Source Code*\n{} Update *Orchestrator*\n{} Deploy `{}` to *Development*\n{} Deploy `{}` to *Staging*\n{} Deploy `{}` to *Integration*\n{} Deploy `{}` to *Production*', $.commit_link.S, $.commit_message.S, $.pipeline_execution_id.S,$.pipeline_execution_id.S,$.stages.M.Source.S,$.stages.M['cdp-sirsi-deployment-to-orchestrator'].S, $.stages.M['cdp-sirsi-deployment-to-development'].S, $.versions.M['development'].S, $.stages.M['cdp-sirsi-deployment-to-staging'].S, $.versions.M['staging'].S, $.stages.M['cdp-sirsi-deployment-to-integration'].S, $.versions.M['integration'].S, $.stages.M['cdp-sirsi-deployment-to-production'].S, $.versions.M['production'].S)"
+          "text.$": "States.Format(':{}: `{}` {}\n```{}```', $.state_emoji.emoji, $.state.state_label, $.['detail-type'], States.JsonToString($.detail))"
         }
       },
       "ResultPath": "$.formattedMessage",
-      "Next": "Has Slack Timestamp"
+      "Next": "Teams Post Message"
     },
-    "Slack Post Message": {
+    "Teams Post Message": {
       "Type": "Task",
       "Resource": "arn:aws:states:::http:invoke",
       "Parameters": {
         "Method": "POST",
-        "ApiEndpoint": "${slack_post_endpoint}",
+        "ApiEndpoint.$": "$.teamsWebhook.SecretString",
         "Authentication": {
           "ConnectionArn": "${auth_connection_arn}"
         },
         "RequestBody": {
-          "channel": "${slack_channel_id}",
           "text.$": "$.formattedMessage.formattedMessage.text"
         }
       },
-      "ResultPath": "$.slackResponse",
-      "Next": "Set Slack Timestamp"
-    },
-    "Slack Update Message": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::http:invoke",
-      "Parameters": {
-        "Method": "POST",
-        "ApiEndpoint": "${slack_update_endpoint}",
-        "Authentication": {
-          "ConnectionArn": "${auth_connection_arn}"
-        },
-        "RequestBody": {
-          "channel": "${slack_channel_id}",
-          "ts.$": "$.dynamoResult.Attributes.slack_ts.S",
-          "text.$": "$.formattedMessage.formattedMessage.text"
-        }
-      },
+      "ResultPath": "$.teamsResponse",
       "End": true
     }
   }

@@ -2,12 +2,8 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
-data "aws_secretsmanager_secret_version" "slack_api_endpoint" {
-  secret_id = "cdp-sirsi-slack-api-endpoint"
-}
-
-data "aws_secretsmanager_secret_version" "slack_configuration" {
-  secret_id = "cdp-sirsi-slack-configuration"
+data "aws_secretsmanager_secret" "teams_webhook" {
+  name = "cdp-sirsi-teams-webhook-url"
 }
 
 data "aws_iam_policy_document" "notification_step_function" {
@@ -19,21 +15,8 @@ data "aws_iam_policy_document" "notification_step_function" {
       "states:InvokeHTTPEndpoint"
     ]
     resources = [
-      aws_sfn_state_machine.slack_alert.arn,
       aws_sfn_state_machine.slack_notification.arn
     ]
-  }
-
-  statement {
-    effect = "Allow"
-    sid    = "DynamoDB"
-
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem"
-    ]
-    resources = [aws_dynamodb_table.pipeline_execution_timestamps.arn]
   }
 
   statement {
@@ -44,36 +27,7 @@ data "aws_iam_policy_document" "notification_step_function" {
       "events:RetrieveConnectionCredentials"
     ]
     resources = [
-      aws_cloudwatch_event_connection.slack.arn,
-      aws_cloudwatch_event_connection.slack_unified_notification.arn
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    sid    = "FetchSecretValue"
-
-    actions = [
-      "secretsmanager:GetSecretValue",
-      "secretsmanager:DescribeSecret",
-    ]
-    resources = [
-      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*"
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    sid    = "FetchServiceVersionValue"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-    resources = [
-      var.ssm_envs_cfs_service_version_arn,
-      var.ssm_envs_combined_service_version_arn,
-      var.ssm_envs_fts_service_version_arn,
-      var.ssm_envs_sirsi_service_version_arn
+      aws_cloudwatch_event_connection.teams_webhook.arn
     ]
   }
 
@@ -88,8 +42,21 @@ data "aws_iam_policy_document" "notification_step_function" {
       "xray:PutTraceSegments",
     ]
     resources = [
-      aws_cloudwatch_event_connection.slack.arn,
-      aws_cloudwatch_event_connection.slack_unified_notification.arn,
+      aws_cloudwatch_event_connection.teams_webhook.arn,
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    sid    = "FetchSecretValue"
+
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+    ]
+    resources = [
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:events!connection/${local.name_prefix}-*",
+      data.aws_secretsmanager_secret.teams_webhook.arn
     ]
   }
 
