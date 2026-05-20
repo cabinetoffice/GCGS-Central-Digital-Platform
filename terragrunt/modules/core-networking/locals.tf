@@ -73,7 +73,7 @@ locals {
 
   waf_php_bot_block_ua_list = [
     "amazonbot",
-    "bun",
+    "bun/\\d",
     "chatgpt-user",
     "deno",
     "findtender-ai-agent",
