@@ -60,7 +60,7 @@ locals {
 
   fts_parameters = {
     app_host_address                      = "%"
-    async_enabled                         = contains(["development", "staging"], var.environment) ? true : false
+    async_enabled                         = var.is_production ? false : true
     buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
     cookie_domain                         = local.fts_site_domains[var.environment]
     database_schema                       = "cdp_sirsi_fts_cluster"
