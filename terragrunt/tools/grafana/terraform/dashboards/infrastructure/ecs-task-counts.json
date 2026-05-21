@@ -1,0 +1,528 @@
+{
+  "apiVersion": "dashboard.grafana.app/v2",
+  "kind": "Dashboard",
+  "metadata": {
+    "name": "infra-ecs-task-counts",
+    "namespace": "default",
+    "uid": "ef384249-2431-4894-a5e3-ea6bb457b2c4",
+    "resourceVersion": "1779395836458220",
+    "generation": 3,
+    "creationTimestamp": "2026-05-21T20:25:51Z",
+    "labels": {
+      "grafana.app/deprecatedInternalID": "3917080270884864"
+    },
+    "annotations": {
+      "grafana.app/createdBy": "service-account:afmbcyzr6ujggc",
+      "grafana.app/folder": "infrastructure",
+      "grafana.app/saved-from-ui": "Grafana v13.0.1+security-01 (9bbe672d)",
+      "grafana.app/updatedBy": "user:efmbcpc0m7yf4f",
+      "grafana.app/updatedTimestamp": "2026-05-21T20:37:16Z",
+      "grafana.app/folderTitle": "Infrastructure",
+      "grafana.app/folderUrl": "/dashboards/f/infrastructure/infrastructure"
+    }
+  },
+  "spec": {
+    "annotations": [
+      {
+        "kind": "AnnotationQuery",
+        "spec": {
+          "query": {
+            "kind": "DataQuery",
+            "group": "grafana",
+            "version": "v0",
+            "datasource": {
+              "name": "-- Grafana --"
+            },
+            "spec": {}
+          },
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "builtIn": true
+        }
+      }
+    ],
+    "cursorSync": "Off",
+    "editable": true,
+    "elements": {
+      "panel-11": {
+        "kind": "Panel",
+        "spec": {
+          "id": 11,
+          "title": "",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "organisation"
+                        },
+                        "label": "${PROP('MetricName')}",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "DesiredTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "$service"
+                        },
+                        "label": "${PROP('MetricName')}",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "RunningTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "$service"
+                        },
+                        "label": "${PROP('MetricName')}",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "PendingTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "stat",
+            "version": "13.0.1+security-01",
+            "spec": {
+              "options": {
+                "colorMode": "background",
+                "graphMode": "none",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                  "calcs": [
+                    "lastNotNull"
+                  ],
+                  "fields": "",
+                  "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "green"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  }
+                },
+                "overrides": []
+              }
+            }
+          },
+          "transparent": true
+        }
+      },
+      "panel-6": {
+        "kind": "Panel",
+        "spec": {
+          "id": 6,
+          "title": "",
+          "description": "",
+          "links": [],
+          "data": {
+            "kind": "QueryGroup",
+            "spec": {
+              "queries": [
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "$service"
+                        },
+                        "label": "",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "RunningTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "A",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "$service"
+                        },
+                        "label": "",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "DesiredTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "B",
+                    "hidden": false
+                  }
+                },
+                {
+                  "kind": "PanelQuery",
+                  "spec": {
+                    "query": {
+                      "kind": "DataQuery",
+                      "group": "cloudwatch",
+                      "version": "v0",
+                      "datasource": {
+                        "name": "CLOUDWATCH"
+                      },
+                      "spec": {
+                        "dimensions": {
+                          "ClusterName": "cdp-sirsi",
+                          "ServiceName": "$service"
+                        },
+                        "label": "",
+                        "matchExact": true,
+                        "metricEditorMode": 0,
+                        "metricName": "PendingTaskCount",
+                        "metricQueryType": 0,
+                        "namespace": "ECS/ContainerInsights",
+                        "queryMode": "Metrics",
+                        "region": "default",
+                        "statistic": "IQM"
+                      }
+                    },
+                    "refId": "C",
+                    "hidden": false
+                  }
+                }
+              ],
+              "transformations": [],
+              "queryOptions": {}
+            }
+          },
+          "vizConfig": {
+            "kind": "VizConfig",
+            "group": "timeseries",
+            "version": "13.0.1+security-01",
+            "spec": {
+              "options": {
+                "annotations": {
+                  "clustering": -1,
+                  "multiLane": false
+                },
+                "legend": {
+                  "calcs": [],
+                  "displayMode": "list",
+                  "placement": "right",
+                  "showLegend": true
+                },
+                "tooltip": {
+                  "hideZeros": false,
+                  "mode": "single",
+                  "sort": "none"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "decimals": 0,
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      {
+                        "value": 0,
+                        "color": "blue"
+                      },
+                      {
+                        "value": 80,
+                        "color": "red"
+                      }
+                    ]
+                  },
+                  "color": {
+                    "mode": "palette-classic"
+                  },
+                  "custom": {
+                    "axisBorderShow": false,
+                    "axisCenteredZero": false,
+                    "axisColorMode": "text",
+                    "axisLabel": "",
+                    "axisPlacement": "right",
+                    "barAlignment": 0,
+                    "barWidthFactor": 0.6,
+                    "drawStyle": "line",
+                    "fillOpacity": 4,
+                    "gradientMode": "none",
+                    "hideFrom": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": false
+                    },
+                    "insertNulls": false,
+                    "lineInterpolation": "linear",
+                    "lineStyle": {
+                      "dash": [
+                        0,
+                        10
+                      ],
+                      "fill": "dot"
+                    },
+                    "lineWidth": 4,
+                    "pointSize": 2,
+                    "scaleDistribution": {
+                      "type": "linear"
+                    },
+                    "showPoints": "auto",
+                    "showValues": false,
+                    "spanNulls": false,
+                    "stacking": {
+                      "group": "A",
+                      "mode": "none"
+                    },
+                    "thresholdsStyle": {
+                      "mode": "off"
+                    }
+                  }
+                },
+                "overrides": []
+              }
+            }
+          }
+        }
+      }
+    },
+    "layout": {
+      "kind": "RowsLayout",
+      "spec": {
+        "rows": [
+          {
+            "kind": "RowsLayoutRow",
+            "spec": {
+              "title": "$service",
+              "collapse": false,
+              "hideHeader": false,
+              "fillScreen": false,
+              "repeat": {
+                "mode": "variable",
+                "value": "service"
+              },
+              "layout": {
+                "kind": "GridLayout",
+                "spec": {
+                  "items": [
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 0,
+                        "y": 0,
+                        "width": 2,
+                        "height": 6,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-11"
+                        }
+                      }
+                    },
+                    {
+                      "kind": "GridLayoutItem",
+                      "spec": {
+                        "x": 2,
+                        "y": 0,
+                        "width": 22,
+                        "height": 6,
+                        "element": {
+                          "kind": "ElementReference",
+                          "name": "panel-6"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "links": [],
+    "liveNow": false,
+    "preload": false,
+    "tags": [
+      "terraform-managed"
+    ],
+    "timeSettings": {
+      "timezone": "browser",
+      "from": "now-6h",
+      "to": "now",
+      "autoRefresh": "",
+      "autoRefreshIntervals": [
+        "5s",
+        "10s",
+        "30s",
+        "1m",
+        "5m",
+        "15m",
+        "30m",
+        "1h",
+        "2h",
+        "1d"
+      ],
+      "hideTimepicker": false,
+      "fiscalYearStartMonth": 0
+    },
+    "title": "ECS Task Counts",
+    "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "service",
+          "current": {
+            "text": "All",
+            "value": "all"
+          },
+          "label": "",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "cloudwatch",
+            "version": "v0",
+            "datasource": {
+              "name": "CLOUDWATCH"
+            },
+            "spec": {
+              "dimensionKey": "ServiceName",
+              "metricName": "DesiredTaskCount",
+              "namespace": "ECS/ContainerInsights",
+              "queryType": "dimensionValues",
+              "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+              "region": "eu-west-2"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
+        }
+      }
+    ],
+    "preferences": {
+      "layout": {
+        "kind": "GridLayout",
+        "spec": {
+          "items": []
+        }
+      }
+    }
+  }
+}

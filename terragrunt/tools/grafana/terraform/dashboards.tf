@@ -42,15 +42,45 @@ locals {
       var.environment
     )
   }
-  dashboard_content = {
-    for file_path, content in local.dashboard_content_raw : file_path => merge(
-      jsondecode(content),
+  dashboard_content_decoded = {
+    for file_path, content in local.dashboard_content_raw : file_path => jsondecode(content)
+  }
+  dashboard_content_v2 = {
+    for file_path, content in local.dashboard_content_raw :
+    file_path => merge(
+      local.dashboard_content_decoded[file_path],
       {
-        uid  = local.dashboard_uid[file_path]
-        tags = distinct(concat(try(jsondecode(content).tags, []), ["terraform-managed"]))
+        metadata = merge(
+          try(local.dashboard_content_decoded[file_path].metadata, {}),
+          { uid = local.dashboard_uid[file_path] }
+        )
+        spec = merge(
+          try(local.dashboard_content_decoded[file_path].spec, {}),
+          {
+            tags = distinct(
+              concat(
+                try(local.dashboard_content_decoded[file_path].spec.tags, []),
+                ["terraform-managed"]
+              )
+            )
+          }
+        )
       }
     )
+    if try(local.dashboard_content_decoded[file_path].apiVersion, "") == "dashboard.grafana.app/v2"
   }
+  dashboard_content_legacy = {
+    for file_path, content in local.dashboard_content_raw :
+    file_path => merge(
+      local.dashboard_content_decoded[file_path],
+      {
+        uid  = local.dashboard_uid[file_path]
+        tags = distinct(concat(try(local.dashboard_content_decoded[file_path].tags, []), ["terraform-managed"]))
+      }
+    )
+    if try(local.dashboard_content_decoded[file_path].apiVersion, "") != "dashboard.grafana.app/v2"
+  }
+  dashboard_content = merge(local.dashboard_content_v2, local.dashboard_content_legacy)
 
   log_dashboard_defs = jsondecode(file("${path.module}/data/log_dashboards.json"))
   log_dashboard_templates = {
