@@ -12,7 +12,7 @@ module "ecs_service_fts_notice_publish_worker" {
   desired_count          = var.is_production ? 0 : var.service_configs.fts_notice_publish_worker.desired_count
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "standalone"
-  memory                 = var.is_production ? var.service_configs.fts_notice_publish_worker.memory * 2 : var.service_configs.fts_notice_publish_worker.memory
+  memory                 = local.is_prod_or_staging ? var.service_configs.fts_notice_publish_worker.memory * 2 : var.service_configs.fts_notice_publish_worker.memory
   name                   = var.service_configs.fts_notice_publish_worker.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product

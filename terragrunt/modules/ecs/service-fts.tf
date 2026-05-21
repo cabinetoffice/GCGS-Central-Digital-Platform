@@ -8,7 +8,7 @@ module "ecs_service_fts" {
 
   cluster_id             = local.php_cluster_id
   cpu                    = var.service_configs.fts.cpu
-  desired_count          = var.is_production ? var.service_configs.fts.desired_count * 2 : var.service_configs.fts.desired_count // @TODO (ABN) Burn me
+  desired_count          = local.is_prod_or_staging ? var.service_configs.fts.desired_count * 2 : var.service_configs.fts.desired_count // @TODO (ABN) Burn me
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.php_ecs_listener_arn
   ecs_service_base_sg_id = var.ecs_sg_id
@@ -20,7 +20,7 @@ module "ecs_service_fts" {
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts.name}"
   listener_priority      = var.service_configs.fts.listener_priority
-  memory                 = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
+  memory                 = local.is_prod_or_staging ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
   name                   = var.service_configs.fts.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product

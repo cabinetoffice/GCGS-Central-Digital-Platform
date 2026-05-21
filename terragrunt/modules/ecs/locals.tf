@@ -2,6 +2,7 @@ locals {
 
   aspcore_environment          = "Aws${title(var.environment)}"
   cognito_enabled              = contains(["development", "staging"], var.environment)
+  is_prod_or_staging            = contains(["production", "staging"], var.environment)
   fts_cluster_id               = aws_ecs_cluster.fts.id
   fts_cluster_name             = aws_ecs_cluster.fts.name
   fts_ecs_listener_arn         = aws_lb_listener.ecs_fts.arn
