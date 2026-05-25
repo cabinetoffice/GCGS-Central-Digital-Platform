@@ -232,7 +232,7 @@ resource "grafana_rule_group" "ecs_task_health" {
   rule {
     name           = "ECS tasks pending too long"
     condition      = "C"
-    for            = "10m"
+    for            = "3m"
     no_data_state  = "OK"
     exec_err_state = "Error"
     is_paused      = false
@@ -246,7 +246,7 @@ resource "grafana_rule_group" "ecs_task_health" {
       ref_id         = "A"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
-        from = 600
+        from = 180
         to   = 0
       }
 
