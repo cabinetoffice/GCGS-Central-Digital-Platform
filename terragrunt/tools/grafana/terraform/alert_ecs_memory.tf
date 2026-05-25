@@ -4,8 +4,8 @@ resource "grafana_rule_group" "ecs_memory_high" {
   interval_seconds = 300
 
   rule {
-    name           = "ECS Memory high"
-    condition      = "C"
+    name           = "ECS Memory low"
+    condition      = "F"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -52,40 +52,35 @@ resource "grafana_rule_group" "ecs_memory_high" {
 
     data {
       ref_id         = "B"
-      datasource_uid = "__expr__"
+      datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
-        from = 0
+        from = 600
         to   = 0
       }
 
       model = jsonencode({
-        conditions = [{
-          evaluator = {
-            params = []
-            type   = "gt"
-          }
-          operator = {
-            type = "and"
-          }
-          query = {
-            params = []
-          }
-          reducer = {
-            params = []
-            type   = "last"
-          }
-          type = "query"
-        }]
-        datasource = {
-          type = "__expr__"
-          uid  = "__expr__"
+        dimensions = {
+          ClusterName = "*"
+          ServiceName = "*"
         }
-        expression    = "A"
-        intervalMs    = 1000
-        maxDataPoints = 43200
-        reducer       = "last"
-        refId         = "B"
-        type          = "reduce"
+        expression        = ""
+        id                = ""
+        intervalMs        = 1000
+        label             = ""
+        logGroups         = []
+        matchExact        = true
+        maxDataPoints     = 43200
+        metricEditorMode  = 0
+        metricName        = "MemoryReserved"
+        metricQueryType   = 0
+        namespace         = "ECS/ContainerInsights"
+        period            = "5m"
+        queryLanguage     = "CWLI"
+        queryMode         = "Metrics"
+        refId             = "B"
+        region            = "default"
+        sqlExpression     = ""
+        statistic         = "Average"
       })
     }
 
@@ -98,10 +93,75 @@ resource "grafana_rule_group" "ecs_memory_high" {
       }
 
       model = jsonencode({
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "A"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        reducer       = "last"
+        refId         = "C"
+        type          = "reduce"
+      })
+    }
+
+    data {
+      ref_id         = "D"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "B"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        reducer       = "last"
+        refId         = "D"
+        type          = "reduce"
+      })
+    }
+
+    data {
+      ref_id         = "E"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "$D - $C"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        refId         = "E"
+        type          = "math"
+      })
+    }
+
+    data {
+      ref_id         = "F"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
         conditions = [{
           evaluator = {
-            params = [var.ecs_memory_threshold]
-            type   = "gt"
+            params = [512]
+            type   = "lt"
           }
           operator = {
             type = "and"
@@ -119,10 +179,10 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "E"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "F"
         type          = "threshold"
       })
     }
