@@ -141,7 +141,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "$D - $C"
+        expression    = "($D - $C) / $D * 100"
         intervalMs    = 1000
         maxDataPoints = 43200
         refId         = "E"
@@ -160,7 +160,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
       model = jsonencode({
         conditions = [{
           evaluator = {
-            params = [512]
+            params = [20]
             type   = "lt"
           }
           operator = {
