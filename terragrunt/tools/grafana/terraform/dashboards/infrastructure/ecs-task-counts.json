@@ -69,7 +69,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "organisation"
                         },
                         "label": "${PROP('MetricName')}",
@@ -99,7 +99,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "$service"
                         },
                         "label": "${PROP('MetricName')}",
@@ -129,7 +129,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "$service"
                         },
                         "label": "${PROP('MetricName')}",
@@ -223,7 +223,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "$service"
                         },
                         "label": "",
@@ -253,7 +253,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "$service"
                         },
                         "label": "",
@@ -283,7 +283,7 @@
                       },
                       "spec": {
                         "dimensions": {
-                          "ClusterName": "cdp-sirsi",
+                          "ClusterName": "$cluster",
                           "ServiceName": "$service"
                         },
                         "label": "",
@@ -477,6 +477,44 @@
     },
     "title": "ECS Task Counts",
     "variables": [
+      {
+        "kind": "QueryVariable",
+        "spec": {
+          "name": "cluster",
+          "current": {
+            "text": "All",
+            "value": "all"
+          },
+          "label": "Cluster",
+          "hide": "dontHide",
+          "refresh": "onDashboardLoad",
+          "skipUrlSync": false,
+          "query": {
+            "kind": "DataQuery",
+            "group": "cloudwatch",
+            "version": "v0",
+            "datasource": {
+              "name": "CLOUDWATCH"
+            },
+            "spec": {
+              "dimensionKey": "ClusterName",
+              "metricName": "DesiredTaskCount",
+              "namespace": "ECS/ContainerInsights",
+              "queryType": "dimensionValues",
+              "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+              "region": "default"
+            }
+          },
+          "regex": "",
+          "regexApplyTo": "value",
+          "sort": "disabled",
+          "definition": "",
+          "options": [],
+          "multi": true,
+          "includeAll": true,
+          "allowCustomValue": true
+        }
+      },
       {
         "kind": "QueryVariable",
         "spec": {
