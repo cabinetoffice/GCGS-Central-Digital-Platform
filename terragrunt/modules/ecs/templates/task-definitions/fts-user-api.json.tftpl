@@ -24,7 +24,8 @@
       { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
       { "name" : "FtsPostgreSQLDatabase__Server", "value" : "${db_address}:${db_port}"},
       { "name" : "FtsPostgreSQLDatabase__Database", "value" : "${db_name}"},
-      { "name" : "Sirsi__AuthorityApiBaseUrl", "value" : "${sirsi_authority_api_baseurl}"}
+      { "name" : "Sirsi__AuthorityApiBaseUrl", "value" : "${sirsi_authority_api_baseurl}"},
+      { "name" : "Sirsi__PersonApiBaseUrl", "value" : "${sirsi_person_api_baseurl}"}
     ],
     "secrets": [
       { "name" : "FtsPostgreSQLDatabase__Password", "valueFrom" : "${db_password}"},
