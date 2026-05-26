@@ -161,6 +161,7 @@ locals {
       db_port                     = 5432
       db_username                 = local.db_find_a_tender_username
       sirsi_authority_api_baseurl = local.use_internal_service_urls ? local.internal_service_urls["authority"] : local.public_service_urls["authority"]
+      sirsi_person_api_baseurl    = local.use_internal_service_urls ? local.internal_service_urls["person"] : local.public_service_urls["person"]
     }
   )
 
