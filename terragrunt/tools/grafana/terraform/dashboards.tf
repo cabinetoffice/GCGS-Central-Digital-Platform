@@ -42,19 +42,50 @@ locals {
       var.environment
     )
   }
-  dashboard_content = {
-    for file_path, content in local.dashboard_content_raw : file_path => merge(
-      jsondecode(content),
+  dashboard_content_decoded = {
+    for file_path, content in local.dashboard_content_raw : file_path => jsondecode(content)
+  }
+  dashboard_content_v2 = {
+    for file_path, content in local.dashboard_content_raw :
+    file_path => merge(
+      local.dashboard_content_decoded[file_path],
       {
-        uid  = local.dashboard_uid[file_path]
-        tags = distinct(concat(try(jsondecode(content).tags, []), ["terraform-managed"]))
+        metadata = merge(
+          try(local.dashboard_content_decoded[file_path].metadata, {}),
+          { uid = local.dashboard_uid[file_path] }
+        )
+        spec = merge(
+          try(local.dashboard_content_decoded[file_path].spec, {}),
+          {
+            tags = distinct(
+              concat(
+                try(local.dashboard_content_decoded[file_path].spec.tags, []),
+                ["terraform-managed"]
+              )
+            )
+          }
+        )
       }
     )
+    if try(local.dashboard_content_decoded[file_path].apiVersion, "") == "dashboard.grafana.app/v2"
   }
+  dashboard_content_legacy = {
+    for file_path, content in local.dashboard_content_raw :
+    file_path => merge(
+      local.dashboard_content_decoded[file_path],
+      {
+        uid  = local.dashboard_uid[file_path]
+        tags = distinct(concat(try(local.dashboard_content_decoded[file_path].tags, []), ["terraform-managed"]))
+      }
+    )
+    if try(local.dashboard_content_decoded[file_path].apiVersion, "") != "dashboard.grafana.app/v2"
+  }
+  dashboard_content = merge(local.dashboard_content_v2, local.dashboard_content_legacy)
 
   log_dashboard_defs = jsondecode(file("${path.module}/data/log_dashboards.json"))
   log_dashboard_templates = {
     single = "${path.module}/dashboards/templates/logs-single.json.tftpl"
+    multi  = "${path.module}/dashboards/templates/logs-multi.json.tftpl"
   }
   rds_log_dashboard_template = "${path.module}/dashboards/templates/logs-single-db.json.tftpl"
   log_health_filter = "\n| filter RequestPath != \"/health\""
@@ -69,6 +100,37 @@ locals {
         : (cfg.type == "multi" ? cfg.all_expression : cfg.expression)
     )
   }
+  log_expression_filtered_multi = {
+    for service, cfg in local.log_dashboard_defs : service => {
+      all = (
+        length(regexall("RequestPath", cfg.all_expression)) > 0
+          ? (
+              length(regexall("\n\\| sort", cfg.all_expression)) > 0
+                ? replace(cfg.all_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+                : "${cfg.all_expression}${local.log_health_filter}"
+            )
+          : cfg.all_expression
+      )
+      error = (
+        length(regexall("RequestPath", cfg.error_expression)) > 0
+          ? (
+              length(regexall("\n\\| sort", cfg.error_expression)) > 0
+                ? replace(cfg.error_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+                : "${cfg.error_expression}${local.log_health_filter}"
+            )
+          : cfg.error_expression
+      )
+      warning = (
+        length(regexall("RequestPath", cfg.warning_expression)) > 0
+          ? (
+              length(regexall("\n\\| sort", cfg.warning_expression)) > 0
+                ? replace(cfg.warning_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+                : "${cfg.warning_expression}${local.log_health_filter}"
+            )
+          : cfg.warning_expression
+      )
+    } if cfg.type == "multi"
+  }
   log_dashboard_uid_raw = {
     for service, cfg in local.log_dashboard_defs : service => "app-logs-${service}"
   }
@@ -77,16 +139,28 @@ locals {
     service => length(raw_uid) > 40 ? substr(raw_uid, 0, 40) : raw_uid
   }
   log_dashboard_rendered = {
-    for service, cfg in local.log_dashboard_defs : service => templatefile(
-      local.log_dashboard_templates["single"],
-      merge(
-        {
-          title                   = jsonencode(cfg.title)
-          log_group_name          = cfg.log_group_name
-          cloudwatch_account_id   = var.cloudwatch_account_id
-          expression              = jsonencode(local.log_expression_filtered[service])
-        }
-      )
+    for service, cfg in local.log_dashboard_defs : service => (
+      cfg.type == "multi"
+        ? templatefile(
+            local.log_dashboard_templates["multi"],
+            {
+              title                 = jsonencode(cfg.title)
+              log_group_name        = cfg.log_group_name
+              cloudwatch_account_id = var.cloudwatch_account_id
+              all_expression        = jsonencode(local.log_expression_filtered_multi[service].all)
+              error_expression      = jsonencode(local.log_expression_filtered_multi[service].error)
+              warning_expression    = jsonencode(local.log_expression_filtered_multi[service].warning)
+            }
+          )
+        : templatefile(
+            local.log_dashboard_templates["single"],
+            {
+              title                 = jsonencode(cfg.title)
+              log_group_name        = cfg.log_group_name
+              cloudwatch_account_id = var.cloudwatch_account_id
+              expression            = jsonencode(local.log_expression_filtered[service])
+            }
+          )
     )
   }
   log_dashboard_content = {
