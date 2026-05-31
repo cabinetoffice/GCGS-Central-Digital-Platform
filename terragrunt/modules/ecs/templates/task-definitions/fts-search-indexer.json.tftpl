@@ -21,11 +21,15 @@
       { "name" : "FtsDatabase__Host", "value" : "${db_address}"},
       { "name" : "FtsDatabase__Port", "value" : "${db_port}"},
       { "name" : "FtsDatabase__Server", "value" : "${db_address}"},
+      { "name" : "FtsPostgreSQLDatabase__Server", "value" : "${db_pg_address}:${db_pg_port}"},
+      { "name" : "FtsPostgreSQLDatabase__Database", "value" : "${db_pg_name}"},
       { "name" : "OpenSearch__Endpoint", "value" : "${opensearch_endpoint}"}
     ],
     "secrets": [
       { "name" : "FtsDatabase__Password", "valueFrom" : "${db_password}"},
-      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_username}"}
+      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_username}"},
+      { "name" : "FtsPostgreSQLDatabase__Password", "valueFrom" : "${db_pg_password}"},
+      { "name" : "FtsPostgreSQLDatabase__Username", "valueFrom" : "${db_pg_username}"}
     ],
     "volumesFrom": [],
     "mountPoints": [],

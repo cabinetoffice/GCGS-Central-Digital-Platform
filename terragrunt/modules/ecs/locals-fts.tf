@@ -148,6 +148,11 @@ locals {
       db_password         = local.db_fts_password
       db_port             = 3306
       db_username         = local.db_fts_username
+      db_pg_address       = var.db_find_a_tender_cluster_address
+      db_pg_name          = var.db_find_a_tender_cluster_name
+      db_pg_password      = local.db_find_a_tender_password
+      db_pg_port          = 5432
+      db_pg_username      = local.db_find_a_tender_username
       opensearch_endpoint = "https://${var.opensearch_endpoint}"
     }
   )
