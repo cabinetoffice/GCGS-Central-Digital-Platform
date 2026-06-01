@@ -7,9 +7,9 @@ locals {
 
   default_origin_id = "s3-origin"
 
-  origin_bucket_domain_name = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].bucket_regional_domain_name : data.aws_s3_bucket.origin[0].bucket_regional_domain_name
-  origin_bucket_arn         = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].arn : data.aws_s3_bucket.origin[0].arn
-  origin_bucket_id          = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].id : data.aws_s3_bucket.origin[0].id
+  origin_bucket_domain_name = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].bucket_regional_domain_name : "${var.cloudfront_origin_bucket_name}.s3.${data.aws_region.current.region}.amazonaws.com"
+  origin_bucket_arn         = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].arn : "arn:aws:s3:::${var.cloudfront_origin_bucket_name}"
+  origin_bucket_id          = var.cloudfront_manage_origin_bucket ? aws_s3_bucket.origin[0].id : var.cloudfront_origin_bucket_name
 
   ordered_cache_behaviors = []
 

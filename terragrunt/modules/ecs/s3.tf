@@ -51,3 +51,17 @@ module "s3_bucket_fts" {
 
   tags = var.tags
 }
+
+module "s3_bucket_fts_notice_render_cache" {
+  source             = "../s3-bucket"
+  bucket_name        = "${local.name_prefix}-${var.environment}-fts-notice-render-cache-${data.aws_caller_identity.current.account_id}"
+  cloudfront_read_access = true
+  create_kms_key     = false
+  enable_encryption  = true
+  kms_key_admin_role = var.role_terraform_arn
+  read_roles         = [var.role_ecs_task_exec_arn]
+  sse_algorithm      = "AES256"
+  write_roles        = [var.role_ecs_task_arn]
+
+  tags = var.tags
+}

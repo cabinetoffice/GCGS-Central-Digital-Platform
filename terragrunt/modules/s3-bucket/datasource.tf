@@ -71,6 +71,25 @@ data "aws_iam_policy_document" "private" {
   }
 
   dynamic "statement" {
+    for_each = var.cloudfront_read_access ? [1] : []
+    content {
+      sid    = "AllowCloudFrontRead"
+      effect = "Allow"
+      principals {
+        type        = "Service"
+        identifiers = ["cloudfront.amazonaws.com"]
+      }
+      actions   = ["s3:GetObject"]
+      resources = ["${aws_s3_bucket.this.arn}/*"]
+      condition {
+        test     = "StringEquals"
+        variable = "AWS:SourceAccount"
+        values   = [data.aws_caller_identity.current.account_id]
+      }
+    }
+  }
+
+  dynamic "statement" {
     for_each = length(var.write_roles) > 0 ? [var.write_roles] : []
     content {
       sid    = "WriteObjectOnly"
@@ -117,6 +136,25 @@ data "aws_iam_policy_document" "public" {
       principals {
         type        = "AWS"
         identifiers = statement.value
+      }
+    }
+  }
+
+  dynamic "statement" {
+    for_each = var.cloudfront_read_access ? [1] : []
+    content {
+      sid    = "AllowCloudFrontRead"
+      effect = "Allow"
+      principals {
+        type        = "Service"
+        identifiers = ["cloudfront.amazonaws.com"]
+      }
+      actions   = ["s3:GetObject"]
+      resources = ["${aws_s3_bucket.this.arn}/*"]
+      condition {
+        test     = "StringEquals"
+        variable = "AWS:SourceAccount"
+        values   = [data.aws_caller_identity.current.account_id]
       }
     }
   }

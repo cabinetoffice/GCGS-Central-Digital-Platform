@@ -3,6 +3,12 @@ variable "bucket_name" {
   type        = string
 }
 
+variable "cloudfront_read_access" {
+  description = "Allow CloudFront (in this account) to read from the bucket"
+  type        = bool
+  default     = false
+}
+
 variable "cors_rules" {
   description = "Optional CORS rules for the bucket"
   type        = list(any)
