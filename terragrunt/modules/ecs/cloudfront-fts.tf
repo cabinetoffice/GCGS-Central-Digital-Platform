@@ -16,3 +16,22 @@ module "cloudfront_fts_downloads" {
   waf_enabled                         = false
   waf_logging_enabled                 = false
 }
+
+module "cloudfront_fts_notice_render_cache" {
+  source = "../cloudfront"
+
+  cloudfront_enabled                  = var.cloudfront_downloads_enabled
+  cloudfront_log_bucket_name          = "${var.product.resource_name}-cloudfront-logs-fts-notice-render-cache-${data.aws_caller_identity.current.account_id}"
+  cloudfront_manage_origin_bucket     = false
+  cloudfront_name                     = "cf-fts-notice-render-cache"
+  cloudfront_origin_bucket_name       = module.s3_bucket_fts_notice_render_cache.bucket
+  cloudfront_realtime_log_name_suffix = "cf-rt-fts-notice-render-cache"
+  cloudfront_realtime_logs_role_arn   = var.cloudfront_realtime_logs_role_arn
+  cloudfront_seed_origin              = false
+  environment                         = var.environment
+  product                             = var.product
+  tags                                = var.tags
+  waf_bot_control_enabled             = false
+  waf_enabled                         = false
+  waf_logging_enabled                 = false
+}
