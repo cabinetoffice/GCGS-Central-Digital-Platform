@@ -10,42 +10,32 @@ resource "grafana_contact_point" "teams" {
 [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}{{ if $env }} ({{ $env }}){{ end }}
 EOT
     message = <<-EOT
-{{- if gt (len .Alerts.Firing) 0 -}}
-**Firing ({{ len .Alerts.Firing }})**
-{{- range .Alerts.Firing }}
-{{- $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") -}}
-- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} — {{ template "__text_values_list" . }}{{ end }}
-  {{- if .Annotations.summary }}  
-  {{ .Annotations.summary }}{{ end }}
-  {{- if .Annotations.description }}  
-  {{ .Annotations.description }}{{ end }}
-{{- end }}
-{{- end }}
+{{ if gt (len .Alerts.Firing) 0 }}
+**Firing ({{ len .Alerts.Firing }})**<br/>
+{{ range .Alerts.Firing }}
+{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") }}
+- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} — Value: {{ template "__text_values_list" . }}{{ end }}<br/>
+{{ end }}
+{{ end }}
 
-{{- if gt (len .Alerts.Resolved) 0 -}}
-**Resolved ({{ len .Alerts.Resolved }})**
-{{- range .Alerts.Resolved }}
-{{- $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") -}}
-- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}
-  {{- if .Annotations.summary }}  
-  {{ .Annotations.summary }}{{ end }}
-{{- end }}
-{{- end }}
+{{ if gt (len .Alerts.Resolved) 0 }}
+<br/>**Resolved ({{ len .Alerts.Resolved }})**<br/>
+{{ range .Alerts.Resolved }}
+{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") }}
+- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}<br/>
+{{ end }}
+{{ end }}
 
-{{- if gt (len .Alerts.Firing) 0 -}}
-{{- $a := index .Alerts.Firing 0 -}}
-{{- if or $a.GeneratorURL $a.SilenceURL $a.DashboardURL $a.PanelURL }}
-**Links**
-{{- if $a.GeneratorURL }}  
-Source: [Open]({{ $a.GeneratorURL }}){{ end }}
-{{- if $a.SilenceURL }}  
-Silence: [Open]({{ $a.SilenceURL }}){{ end }}
-{{- if $a.DashboardURL }}  
-Dashboard: [Open]({{ $a.DashboardURL }}){{ end }}
-{{- if $a.PanelURL }}  
-Panel: [Open]({{ $a.PanelURL }}){{ end }}
-{{- end }}
-{{- end }}
+{{ if gt (len .Alerts.Firing) 0 }}
+{{ $a := index .Alerts.Firing 0 }}
+{{ if or $a.GeneratorURL $a.SilenceURL $a.DashboardURL $a.PanelURL }}
+<br/>**Links**<br/>
+{{ if $a.GeneratorURL }}Source: [Open]({{ $a.GeneratorURL }})<br/>{{ end }}
+{{ if $a.SilenceURL }}Silence: [Open]({{ $a.SilenceURL }})<br/>{{ end }}
+{{ if $a.DashboardURL }}Dashboard: [Open]({{ $a.DashboardURL }})<br/>{{ end }}
+{{ if $a.PanelURL }}Panel: [Open]({{ $a.PanelURL }})<br/>{{ end }}
+{{ end }}
+{{ end }}
 EOT
   }
 }
