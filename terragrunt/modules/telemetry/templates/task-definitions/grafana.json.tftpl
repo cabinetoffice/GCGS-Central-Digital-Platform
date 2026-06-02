@@ -39,5 +39,34 @@
     "volumesFrom": [],
     "mountPoints": [],
     "essential": true
+  },
+  {
+    "name": "${name}-datasource-bootstrap",
+    "image": "curlimages/curl:8.8.0",
+    "cpu": 0,
+    "memory": 128,
+    "dependsOn": [
+      {
+        "containerName": "${name}",
+        "condition": "START"
+      }
+    ],
+    "environment": [
+        {"name": "GRAFANA_URL", "value": "http://localhost:${service_port}"},
+        {"name": "GRAFANA_DATASOURCE_UID", "value": "CLOUDWATCH"},
+        {"name": "GRAFANA_DATASOURCE_NAME", "value": "Cloudwatch"},
+        {"name": "GRAFANA_REGION", "value": "eu-west-2"},
+        {"name": "GRAFANA_ASSUME_ROLE_ARN", "value": "${role_telemetry_arn}"}
+    ],
+    "secrets": [
+        {"name": "GRAFANA_ADMIN_USER", "valueFrom": "${gf_admin_user}"},
+        {"name": "GRAFANA_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"}
+    ],
+    "command": [
+      "sh",
+      "-c",
+      "set -e; for i in $(seq 1 30); do if curl -sf \"$GRAFANA_URL/api/health\" >/dev/null; then break; fi; sleep 5; done; status=$(curl -s -o /dev/null -w \"%%{http_code}\" -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" \"$GRAFANA_URL/api/datasources/uid/$GRAFANA_DATASOURCE_UID\"); if [ \"$status\" != \"200\" ]; then curl -s -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" -H \"Content-Type: application/json\" -X POST \"$GRAFANA_URL/api/datasources\" -d \"{\\\"name\\\":\\\"$GRAFANA_DATASOURCE_NAME\\\",\\\"type\\\":\\\"cloudwatch\\\",\\\"uid\\\":\\\"$GRAFANA_DATASOURCE_UID\\\",\\\"access\\\":\\\"proxy\\\",\\\"isDefault\\\":false,\\\"jsonData\\\":{\\\"authType\\\":\\\"default\\\",\\\"defaultRegion\\\":\\\"$GRAFANA_REGION\\\",\\\"assumeRoleArn\\\":\\\"$GRAFANA_ASSUME_ROLE_ARN\\\"}}\" >/dev/null; fi"
+    ],
+    "essential": false
   }
 ]
