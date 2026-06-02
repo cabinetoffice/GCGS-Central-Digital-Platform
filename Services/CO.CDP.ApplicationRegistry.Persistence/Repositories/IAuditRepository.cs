@@ -12,4 +12,10 @@ public interface IAuditRepository
         DateTimeOffset? to = null,
         int limit = 100,
         int offset = 0);
+
+    /// <summary>
+    /// Appends an audit entry. Called explicitly by concrete repository implementations
+    /// after each create, update, or delete operation.
+    /// </summary>
+    Task LogAsync(AuditLog log, CancellationToken ct = default);
 }

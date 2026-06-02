@@ -21,16 +21,19 @@ using CO.CDP.WebApi.Foundation;
 using CO.CDP.Organisation.WebApi.ApplicationRegistry.Api;
 using CO.CDP.Organisation.WebApi.ApplicationRegistry.Authorization;
 using CO.CDP.Organisation.WebApi.ApplicationRegistry.Middleware;
-using CO.CDP.ApplicationRegistry.Persistence;
-using CO.CDP.ApplicationRegistry.Persistence.Interceptors;
+using CO.CDP.ApplicationRegistry.Persistence.MongoDB;
+using MongoDB.Driver;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;   // OrganisationInformationContext still uses EF Core / Npgsql
 using AppRegModel = CO.CDP.Organisation.WebApi.ApplicationRegistry.Model;
 using AppRegOrgUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Organisation;
 using AppRegAppUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Application;
 using AppRegAuditUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Audit;
 using AppRegClaimsUseCase = CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase.Claims;
-using AppRegRepo = CO.CDP.ApplicationRegistry.Persistence.Repositories;
+// AppRegRepo = concrete MongoDB implementations (swap this alias to change backing store)
+using AppRegRepo = CO.CDP.ApplicationRegistry.Persistence.Repositories.MongoDB;
+// AppRegInterfaces = repository interfaces (technology-agnostic, never change)
+using AppRegInterfaces = CO.CDP.ApplicationRegistry.Persistence.Repositories;
 using Microsoft.FeatureManagement;
 using Npgsql;
 using Announcement = CO.CDP.Organisation.WebApi.Model.Announcement;
@@ -154,36 +157,27 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAuthorizationHandler, OrganisationScopeAuthorizationHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ApiKeyScopeAuthorizationHandler>();
 
-// --- Application Registry (shares the same database as OrganisationInformation) ---
-builder.Services.AddScoped<AuditSaveChangesInterceptor>();
+// --- Application Registry — MongoDB concrete implementations ---
+BsonConfiguration.Register();
 
-builder.Services.AddDbContext<ApplicationRegistryContext>((sp, options) =>
-{
-    options.UseNpgsql(connectionString);
-    options.AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>());
-});
+var mongoConnectionString = builder.Configuration.GetConnectionString("MongoDb")
+    ?? "mongodb://localhost:27017";
+var mongoDbName = builder.Configuration["AppRegistry:DatabaseName"] ?? "app_registry";
 
-var redisConnectionString = builder.Configuration.GetConnectionString("Redis");
-if (!string.IsNullOrWhiteSpace(redisConnectionString))
-{
-    builder.Services.AddStackExchangeRedisCache(options =>
-    {
-        options.Configuration = redisConnectionString;
-        options.InstanceName = "AppRegistry_";
-    });
-}
-else
-{
-    builder.Services.AddDistributedMemoryCache();
-}
+builder.Services.AddSingleton<IMongoDatabase>(
+    new MongoClient(mongoConnectionString).GetDatabase(mongoDbName));
+builder.Services.AddSingleton<MongoAppRegistryDatabase>();
 
-builder.Services.AddScoped<AppRegRepo.IOrganisationRepository, AppRegRepo.DatabaseOrganisationRepository>();
-builder.Services.AddScoped<AppRegRepo.IApplicationRepository, AppRegRepo.DatabaseApplicationRepository>();
-builder.Services.AddScoped<AppRegRepo.IUserAssignmentRepository, AppRegRepo.DatabaseUserAssignmentRepository>();
-builder.Services.AddScoped<AppRegRepo.IAuditRepository, AppRegRepo.DatabaseAuditRepository>();
-builder.Services.AddScoped<AppRegRepo.IFeatureFlagRepository, AppRegRepo.DatabaseFeatureFlagRepository>();
-builder.Services.AddScoped<AppRegRepo.ICategoryRepository, AppRegRepo.DatabaseCategoryRepository>();
-builder.Services.AddScoped<AppRegRepo.IAccessControlRepository, AppRegRepo.DatabaseAccessControlRepository>();
+// Repository interfaces → MongoDB concrete classes (AppRegRepo alias).
+// To swap to a different store: implement the interfaces under a new namespace
+// and update the AppRegRepo alias at the top of this file only.
+builder.Services.AddScoped<AppRegInterfaces.IOrganisationRepository,    AppRegRepo.MongoOrganisationRepository>();
+builder.Services.AddScoped<AppRegInterfaces.IApplicationRepository,     AppRegRepo.MongoApplicationRepository>();
+builder.Services.AddScoped<AppRegInterfaces.IUserAssignmentRepository,  AppRegRepo.MongoUserAssignmentRepository>();
+builder.Services.AddScoped<AppRegInterfaces.IAuditRepository,           AppRegRepo.MongoAuditRepository>();
+builder.Services.AddScoped<AppRegInterfaces.IFeatureFlagRepository,     AppRegRepo.MongoFeatureFlagRepository>();
+builder.Services.AddScoped<AppRegInterfaces.ICategoryRepository,        AppRegRepo.MongoCategoryRepository>();
+builder.Services.AddScoped<AppRegInterfaces.IAccessControlRepository,   AppRegRepo.MongoAccessControlRepository>();
 
 builder.Services.AddScoped<IUseCase<Guid, AppRegModel.OrganisationDto?>, AppRegOrgUseCase.GetOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<AppRegOrgUseCase.GetOrganisationsQuery, IEnumerable<AppRegModel.OrganisationDto>>, AppRegOrgUseCase.GetOrganisationsUseCase>();
@@ -280,6 +274,13 @@ app.UseCategoryEndpoints();
 app.UseReportSharingEndpoints();
 app.UseAccessControlEndpoints();
 
+// Ensure AppRegistry MongoDB indexes after startup — fire-and-forget so tests and cold-starts are not blocked.
+app.Lifetime.ApplicationStarted.Register(() =>
+    _ = Task.Run(() =>
+    {
+        try { app.Services.GetRequiredService<MongoAppRegistryDatabase>().EnsureIndexes(); }
+        catch (Exception ex) { app.Logger.LogWarning(ex, "AppRegistry MongoDB index creation failed — indexes may be missing"); }
+    }));
 
 app.MapGroup("/support")
     .UseSupportEndpoints()

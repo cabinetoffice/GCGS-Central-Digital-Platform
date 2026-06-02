@@ -147,6 +147,144 @@ public class ClaimServiceTests
         result.Should().BeNull();
     }
 
+    // ── GetApplicationClaims (Phase 3B) ───────────────────────────────────
+
+    [Fact]
+    public void GetApplicationClaims_ShouldReturn_DeserializedClaims_WhenClaimPresent()
+    {
+        const string claimsJson =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"Org1","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":["Buyer"],"permissions":["submit:notice"]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, claimsJson)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        var result = svc.GetApplicationClaims();
+
+        result.Should().NotBeNull();
+        result!.UserPrincipalId.Should().Be("urn:test");
+        result.Organisations.Should().HaveCount(1);
+        result.Organisations.First().Applications.Should().HaveCount(1);
+        result.Organisations.First().Applications.First().ClientId.Should().Be("fts-app");
+    }
+
+    [Fact]
+    public void GetApplicationClaims_ShouldReturn_Null_WhenClaimAbsent()
+    {
+        var ctx = GivenHttpContextWith([]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.GetApplicationClaims().Should().BeNull();
+    }
+
+    [Fact]
+    public void GetApplicationClaims_ShouldReturn_Null_WhenJsonInvalid()
+    {
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, "not-valid-json{{{")]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.GetApplicationClaims().Should().BeNull();
+    }
+
+    // ── HasApplicationRole (Phase 3B) ─────────────────────────────────────
+
+    [Fact]
+    public void HasApplicationRole_ShouldReturnTrue_WhenRolePresentForOrgAndClient()
+    {
+        var orgId = new Guid("00000000-0000-0000-0000-000000000001");
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":["Buyer"],"permissions":[]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationRole(orgId, "fts-app", "Buyer").Should().BeTrue();
+    }
+
+    [Fact]
+    public void HasApplicationRole_ShouldReturnFalse_WhenRoleNotPresent()
+    {
+        var orgId = new Guid("00000000-0000-0000-0000-000000000001");
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":["Reviewer"],"permissions":[]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationRole(orgId, "fts-app", "Buyer").Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasApplicationRole_ShouldReturnFalse_WhenNoCdpClaimsClaim()
+    {
+        var ctx = GivenHttpContextWith([]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationRole(Guid.NewGuid(), "any-app", "AnyRole").Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasApplicationRole_ShouldReturnFalse_WhenWrongOrganisation()
+    {
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":["Buyer"],"permissions":[]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        // Different orgId — should not match
+        svc.HasApplicationRole(Guid.NewGuid(), "fts-app", "Buyer").Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasApplicationRole_ShouldReturnFalse_WhenWrongClientId()
+    {
+        var orgId = new Guid("00000000-0000-0000-0000-000000000001");
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":["Buyer"],"permissions":[]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationRole(orgId, "other-app", "Buyer").Should().BeFalse();
+    }
+
+    // ── HasApplicationPermission (Phase 3B) ───────────────────────────────
+
+    [Fact]
+    public void HasApplicationPermission_ShouldReturnTrue_WhenPermissionPresent()
+    {
+        var orgId = new Guid("00000000-0000-0000-0000-000000000001");
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":[],"permissions":["submit:notice"]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationPermission(orgId, "fts-app", "submit:notice").Should().BeTrue();
+    }
+
+    [Fact]
+    public void HasApplicationPermission_ShouldReturnFalse_WhenPermissionMissing()
+    {
+        var orgId = new Guid("00000000-0000-0000-0000-000000000001");
+        const string json =
+            """{"userPrincipalId":"urn:test","organisations":[{"organisationId":"00000000-0000-0000-0000-000000000001","organisationName":"O","organisationRole":"Admin","applications":[{"applicationId":"00000000-0000-0000-0000-000000000002","applicationName":"FTS","clientId":"fts-app","roles":[],"permissions":["read:data"]}]}]}""";
+
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, json)]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationPermission(orgId, "fts-app", "submit:notice").Should().BeFalse();
+    }
+
+    [Fact]
+    public void HasApplicationPermission_ShouldReturnFalse_WhenNoCdpClaimsClaim()
+    {
+        var ctx = GivenHttpContextWith([]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationPermission(Guid.NewGuid(), "any-app", "any:perm").Should().BeFalse();
+    }
+
     private static Mock<IHttpContextAccessor> GivenHttpContextWith(List<Claim> claims)
     {
         var identity = new ClaimsIdentity(claims, "TestAuthType");
