@@ -14,20 +14,11 @@ EOT
 **Firing ({{ len .Alerts.Firing }})**
 {{- range .Alerts.Firing }}
 {{- $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") -}}
-- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}
-  {{- if .Annotations.summary }} — {{ .Annotations.summary }}{{ end }}
+- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} — {{ template "__text_values_list" . }}{{ end }}
+  {{- if .Annotations.summary }}  
+  {{ .Annotations.summary }}{{ end }}
   {{- if .Annotations.description }}  
   {{ .Annotations.description }}{{ end }}
-  {{- if len .Values }}  
-  Value: {{ template "__text_values_list" . }}{{ end }}
-  {{- if .DashboardURL }}  
-  Dashboard: [Open]({{ .DashboardURL }}){{ end }}
-  {{- if .PanelURL }}  
-  Panel: [Open]({{ .PanelURL }}){{ end }}
-  {{- if .GeneratorURL }}  
-  Source: [Open]({{ .GeneratorURL }}){{ end }}
-  {{- if .SilenceURL }}  
-  Silence: [Open]({{ .SilenceURL }}){{ end }}
 {{- end }}
 {{- end }}
 
@@ -36,9 +27,23 @@ EOT
 {{- range .Alerts.Resolved }}
 {{- $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") -}}
 - **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}
-  {{- if .Annotations.summary }} — {{ .Annotations.summary }}{{ end }}
-  {{- if .GeneratorURL }}  
-  Source: [Open]({{ .GeneratorURL }}){{ end }}
+  {{- if .Annotations.summary }}  
+  {{ .Annotations.summary }}{{ end }}
+{{- end }}
+{{- end }}
+
+{{- if gt (len .Alerts.Firing) 0 -}}
+{{- $a := index .Alerts.Firing 0 -}}
+{{- if or $a.GeneratorURL $a.SilenceURL $a.DashboardURL $a.PanelURL }}
+**Links**
+{{- if $a.GeneratorURL }}  
+Source: [Open]({{ $a.GeneratorURL }}){{ end }}
+{{- if $a.SilenceURL }}  
+Silence: [Open]({{ $a.SilenceURL }}){{ end }}
+{{- if $a.DashboardURL }}  
+Dashboard: [Open]({{ $a.DashboardURL }}){{ end }}
+{{- if $a.PanelURL }}  
+Panel: [Open]({{ $a.PanelURL }}){{ end }}
 {{- end }}
 {{- end }}
 EOT
