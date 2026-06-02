@@ -43,8 +43,8 @@ module "ecs_service_grafana" {
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   service_port           = var.grafana_config.port
   tags                   = var.tags
-  # user_pool_arn          = var.is_production ? var.user_pool_arn_grafana : null
-  # user_pool_client_id    = var.is_production ? var.user_pool_client_id_grafana : null
-  # user_pool_domain       = var.is_production ? var.user_pool_domain_grafana : null
+  user_pool_arn          = null
+  user_pool_client_id    = null
+  user_pool_domain       = null
   vpc_id = var.vpc_id
 }
