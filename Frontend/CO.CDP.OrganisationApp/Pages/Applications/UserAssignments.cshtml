@@ -81,12 +81,12 @@
     </div>
 </div>
 
-<script>
+<script nonce-csp>
 function filterTable(query) {
-    const rows = document.querySelectorAll('#assignments-table tbody tr');
-    const q = query.toLowerCase();
-    rows.forEach(row => {
-        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
-    });
+    var rows = document.querySelectorAll('#assignments-table tbody tr');
+    var q = query.toLowerCase();
+    for (var i = 0; i < rows.length; i++) {
+        rows[i].style.display = rows[i].textContent.toLowerCase().indexOf(q) !== -1 ? '' : 'none';
+    }
 }
 </script>

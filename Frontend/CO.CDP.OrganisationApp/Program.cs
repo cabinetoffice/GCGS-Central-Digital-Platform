@@ -19,7 +19,6 @@ using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.WebApiClients;
-using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
