@@ -1,0 +1,114 @@
+@page "/organisation/{id}/applications/{appId:guid}/user-assignments/assign"
+@model CO.CDP.OrganisationApp.Pages.Applications.AssignUserModel
+
+@{
+    var pageTitle = Model.IsEdit ? $"Edit roles – {Model.ApplicationName}" : $"Assign user to {Model.ApplicationName}";
+    ViewData["Title"] = pageTitle;
+    var userHasError  = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedUserPrincipalId)).HasInnerHtml;
+    var rolesHasError = ((TagBuilder)Html.ValidationMessageFor(m => m.SelectedRoleIds)).HasInnerHtml;
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <partial name="_ErrorSummary" model="@Model.ModelState" />
+
+        <h1 class="govuk-heading-xl">@ViewData["Title"]</h1>
+        <p class="govuk-body">Organisation: <strong>@Model.OrganisationName</strong></p>
+
+        <form class="form" method="post">
+
+            @* ── User selector ────────────────────────────────────── *@
+            @if (Model.IsEdit)
+            {
+                <div class="govuk-form-group">
+                    <p class="govuk-label govuk-label--m">Member</p>
+                    <p class="govuk-body"><code>@Model.SelectedUserPrincipalId</code></p>
+                    <input type="hidden" name="SelectedUserPrincipalId" value="@Model.SelectedUserPrincipalId" />
+                </div>
+            }
+            else
+            {
+                <div class="govuk-form-group @(userHasError ? "govuk-form-group--error" : "")">
+                    <label class="govuk-label govuk-label--m" for="@nameof(Model.SelectedUserPrincipalId)">
+                        Select member
+                    </label>
+                    <div class="govuk-hint">
+                        Only members of your organisation who are not already assigned to this application are shown.
+                    </div>
+                    @if (userHasError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessageFor(m => m.SelectedUserPrincipalId)
+                        </p>
+                    }
+                    <select class="govuk-select @(userHasError ? "govuk-select--error" : "")"
+                            id="@nameof(Model.SelectedUserPrincipalId)"
+                            name="@nameof(Model.SelectedUserPrincipalId)"
+                            style="width:100%;">
+                        <option value="">Choose a member</option>
+                        @foreach (var member in Model.AvailableMembers)
+                        {
+                            <option value="@member.UserPrincipalId">@member.UserPrincipalId (@member.OrganisationRole)</option>
+                        }
+                    </select>
+                </div>
+            }
+
+            @* ── Role checkboxes ──────────────────────────────────── *@
+            <div class="govuk-form-group @(rolesHasError ? "govuk-form-group--error" : "")">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        Assign roles
+                    </legend>
+                    <div class="govuk-hint">
+                        Select one or more roles. The user will receive all permissions associated with the selected roles.
+                    </div>
+                    @if (rolesHasError)
+                    {
+                        <p class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span>
+                            @Html.ValidationMessageFor(m => m.SelectedRoleIds)
+                        </p>
+                    }
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        @foreach (var role in Model.AvailableRoles)
+                        {
+                            var isChecked = Model.SelectedRoleIds.Contains(role.Id);
+                            var permNames = string.Join(", ", role.Permissions.Select(p => p.Name));
+                            <div class="govuk-checkboxes__item">
+                                <input class="govuk-checkboxes__input"
+                                       id="role-@role.Id"
+                                       name="SelectedRoleIds"
+                                       type="checkbox"
+                                       value="@role.Id"
+                                       @(isChecked ? "checked" : "") />
+                                <label class="govuk-label govuk-checkboxes__label" for="role-@role.Id">
+                                    <strong>@role.Name</strong>
+                                    @if (!string.IsNullOrWhiteSpace(role.Description))
+                                    {
+                                        <br /><span class="govuk-body-s" style="color:#505a5f;">@role.Description</span>
+                                    }
+                                    @if (!string.IsNullOrWhiteSpace(permNames))
+                                    {
+                                        <br /><span class="govuk-body-s" style="color:#505a5f;font-style:italic;">@permNames</span>
+                                    }
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-button-group">
+                <govuk-button>Continue</govuk-button>
+                <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments" class="govuk-link">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>

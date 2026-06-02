@@ -1,0 +1,92 @@
+@page "/organisation/{id}/applications/{appId:guid}/user-assignments"
+@model CO.CDP.OrganisationApp.Pages.Applications.UserAssignmentsModel
+
+@{
+    ViewData["Title"] = $"User assignments – {Model.ApplicationName}";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/applications/@Model.AppId" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-xl">User assignments – @Model.ApplicationName</h1>
+        <p class="govuk-body">Organisation: <strong>@Model.OrganisationName</strong></p>
+
+        <div class="govuk-grid-row govuk-!-margin-bottom-4">
+            <div class="govuk-grid-column-two-thirds">
+                <input class="govuk-input" type="search" id="user-search"
+                       placeholder="Search users..."
+                       oninput="filterTable(this.value)"
+                       aria-label="Search assigned users" />
+            </div>
+            <div class="govuk-grid-column-one-third" style="text-align:right;">
+                <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments/assign"
+                   class="govuk-button">Assign user</a>
+            </div>
+        </div>
+
+        @if (!Model.Assignments.Any())
+        {
+            <p class="govuk-body" id="no-results-message">No users are currently assigned to this application.</p>
+        }
+        else
+        {
+            <table class="govuk-table" id="assignments-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">User principal</th>
+                        <th scope="col" class="govuk-table__header">Assigned roles</th>
+                        <th scope="col" class="govuk-table__header">Effective permissions</th>
+                        <th scope="col" class="govuk-table__header">Assigned</th>
+                        <th scope="col" class="govuk-table__header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var a in Model.Assignments)
+                    {
+                        var permCount = a.Roles.SelectMany(r => r.Permissions).Select(p => p.Name).Distinct().Count();
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <code>@(a.UserPrincipalId.Length > 16 ? a.UserPrincipalId[..8] + "..." + a.UserPrincipalId[^4..] : a.UserPrincipalId)</code>
+                            </td>
+                            <td class="govuk-table__cell">
+                                @foreach (var role in a.Roles)
+                                {
+                                    <strong class="govuk-tag govuk-tag--green">@role.Name</strong>
+                                    <text> </text>
+                                }
+                            </td>
+                            <td class="govuk-table__cell">@permCount permission@(permCount == 1 ? "" : "s")</td>
+                            <td class="govuk-table__cell">@a.AssignedAt.ToString("d MMM yyyy")</td>
+                            <td class="govuk-table__cell">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments/@Uri.EscapeDataString(a.UserPrincipalId)/edit-roles"
+                                           class="govuk-link">Edit roles</a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments/@Uri.EscapeDataString(a.UserPrincipalId)/revoke"
+                                           class="govuk-link" style="color:#d4351c;">Revoke</a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<script>
+function filterTable(query) {
+    const rows = document.querySelectorAll('#assignments-table tbody tr');
+    const q = query.toLowerCase();
+    rows.forEach(row => {
+        row.style.display = row.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+}
+</script>

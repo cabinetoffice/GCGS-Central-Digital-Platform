@@ -19,6 +19,7 @@ using CO.CDP.OrganisationApp.Pages.Forms.ChoiceProviderStrategies;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CharityCommission;
 using CO.CDP.OrganisationApp.ThirdPartyApiClients.CompaniesHouse;
 using CO.CDP.OrganisationApp.WebApiClients;
+using CO.CDP.OrganisationApp.WebApiClients;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
 using Microsoft.AspNetCore.Authentication;
@@ -221,6 +222,13 @@ builder.Services.AddHttpClient(OrganisationHttpClientName)
     .AddHttpMessageHandler<ApiBearerTokenHandler>();
 builder.Services.AddTransient<IOrganisationClient, OrganisationClient>(
     sc => new OrganisationClient(organisationServiceUrl,
+        sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
+
+// AppRegistryClient reuses the same HTTP client (OrganisationHttpClientName) since the
+// ApplicationRegistry endpoints (/api/...) live on the same OrganisationService base URL,
+// backed entirely by MongoDB via the ApplicationRegistry persistence layer.
+builder.Services.AddTransient<IAppRegistryClient, AppRegistryClient>(
+    sc => new AppRegistryClient(organisationServiceUrl,
         sc.GetRequiredService<IHttpClientFactory>().CreateClient(OrganisationHttpClientName)));
 
 var dataSharingServiceUrl = builder.Configuration.GetValue<string>("DataSharingService")

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CO-CDP — App Registry UI Sequence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06090f;--bg2:#0c1018;--bgc:#101622;--bdr:rgba(255,255,255,.07);
+  --txt:#dde3ef;--dim:#5a6880;--mut:#334155;
+  --blue:#1d70b8;--blue-l:#60a5fa;
+  --green:#00703c;--green-l:#4ade80;
+  --red:#d4351c;--red-l:#f87171;
+  --yellow:#ffdd00;--purple:#7c3aed;--purple-l:#c4b5fd;
+  --amber:#d97706;--amber-l:#fbbf24;--cyan:#0891b2;--cyan-l:#22d3ee;
+  --mono:'JetBrains Mono',monospace;--dis:'Syne',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:var(--mono);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;
+  background-image:linear-gradient(rgba(29,112,184,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(29,112,184,.03) 1px,transparent 1px);
+  background-size:48px 48px;pointer-events:none;z-index:0}
+.header{position:relative;z-index:10;padding:1.5rem 2.5rem 1rem;border-bottom:1px solid var(--bdr);background:rgba(6,9,15,.97)}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(29,112,184,.12);border:1px solid rgba(29,112,184,.35);color:#4d9fde;font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;padding:.22rem .7rem;border-radius:2px;margin-bottom:.6rem}
+.bd{width:6px;height:6px;background:#4d9fde;border-radius:50%;animation:bl 2s ease-in-out infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+h1{font-family:var(--dis);font-size:1.75rem;font-weight:800;letter-spacing:-.025em;margin-bottom:.25rem}
+h1 em{font-style:normal;color:#4d9fde}
+.hsub{font-size:.7rem;color:var(--dim);line-height:1.65}
+.wrap{position:relative;z-index:1;padding:1.5rem 2.5rem;max-width:1600px;margin:0 auto}
+.dbox{background:var(--bg2);border:1px solid var(--bdr);border-radius:6px;overflow-x:auto;margin-bottom:2rem}
+.dbox svg{display:block;min-width:1460px}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="badge"><span class="bd"></span>feature/app-roles · UI Design</div>
+  <h1>Application Registry <em>UI Sequence</em></h1>
+  <div class="hsub">Full navigation and data flow — OrganisationApp Buyer view through to API persistence. Covers Application List, Detail, User Assignments, Assign/Edit/Revoke flows.</div>
+</header>
+<main class="wrap">
+<div class="dbox">
+<svg viewBox="0 0 1460 1540" xmlns="http://www.w3.org/2000/svg" style="min-width:1200px">
+<defs>
+  <marker id="ms" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#64748b"/></marker>
+  <marker id="mr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polyline points="0 0,8 3,0 6" fill="none" stroke="#64748b" stroke-width="1.5"/></marker>
+  <marker id="mg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#00703c"/></marker>
+  <marker id="mrg" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polyline points="0 0,8 3,0 6" fill="none" stroke="#00703c" stroke-width="1.5"/></marker>
+  <marker id="mb" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#1d70b8"/></marker>
+  <marker id="mrb" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polyline points="0 0,8 3,0 6" fill="none" stroke="#1d70b8" stroke-width="1.5"/></marker>
+  <marker id="mp" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#7c3aed"/></marker>
+  <marker id="mrp" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polyline points="0 0,8 3,0 6" fill="none" stroke="#7c3aed" stroke-width="1.5"/></marker>
+  <marker id="mc" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#d97706"/></marker>
+  <marker id="mrc" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polyline points="0 0,8 3,0 6" fill="none" stroke="#d97706" stroke-width="1.5"/></marker>
+</defs>
+
+<!-- ═══ PARTICIPANTS (centres: BRW=75, OA=230, ARC=430, WEBAPI=660, REPO=890, MONGO=1100, APIDB=1330) ═══ -->
+
+<!-- :Browser -->
+<rect x="15"  y="18" width="120" height="54" rx="3" fill="#101622" stroke="#1d70b8" stroke-width="1.5"/>
+<text x="75"  y="37" text-anchor="middle" fill="#93c5fd" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«browser»</text>
+<text x="75"  y="51" text-anchor="middle" fill="#60a5fa" font-family="'JetBrains Mono'" font-size="9" font-weight="700">:Admin</text>
+<text x="75"  y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">Buyer org  Admin scope</text>
+
+<!-- :OrganisationApp (Razor) -->
+<rect x="170" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#00703c" stroke-width="1.5"/>
+<text x="230" y="37" text-anchor="middle" fill="#4ade80" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«razor pages»</text>
+<text x="230" y="51" text-anchor="middle" fill="#86efac" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700">:OrganisationApp</text>
+<text x="230" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">CO.CDP.OrganisationApp</text>
+
+<!-- :AppRegistryClient -->
+<rect x="370" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#00703c" stroke-width="1.2"/>
+<text x="430" y="37" text-anchor="middle" fill="#4ade80" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«http client»</text>
+<text x="430" y="51" text-anchor="middle" fill="#86efac" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700">:AppRegistryClient</text>
+<text x="430" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">IAppRegistryClient</text>
+
+<!-- :Organisation.WebApi -->
+<rect x="600" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#7c3aed" stroke-width="1.5"/>
+<text x="660" y="37" text-anchor="middle" fill="#c4b5fd" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«service»</text>
+<text x="660" y="51" text-anchor="middle" fill="#a78bfa" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700">:Organisation.WebApi</text>
+<text x="660" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">AppRegistry endpoints</text>
+
+<!-- :IOrganisationRepository -->
+<rect x="830" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#d97706" stroke-width="1.2"/>
+<text x="890" y="37" text-anchor="middle" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«repository»</text>
+<text x="890" y="51" text-anchor="middle" fill="#fcd34d" font-family="'JetBrains Mono'" font-size="8" font-weight="700">:MongoOrgRepo</text>
+<text x="890" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">Mongo*Repository</text>
+
+<!-- :MongoDB -->
+<rect x="1070" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#d97706" stroke-width="1.2"/>
+<text x="1130" y="37" text-anchor="middle" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«database»</text>
+<text x="1130" y="51" text-anchor="middle" fill="#fcd34d" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700">:MongoDB</text>
+<text x="1130" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">AppRegistry collections</text>
+
+<!-- :TempData (Session) -->
+<rect x="1300" y="18" width="120" height="54" rx="3" fill="#101622" stroke="#0891b2" stroke-width="1.2"/>
+<text x="1360" y="37" text-anchor="middle" fill="#22d3ee" font-family="'JetBrains Mono'" font-size="8" font-weight="700">«session»</text>
+<text x="1360" y="51" text-anchor="middle" fill="#67e8f9" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700">:TempData</text>
+<text x="1360" y="65" text-anchor="middle" fill="#334155" font-family="'JetBrains Mono'" font-size="7">UserAssignmentState</text>
+
+<!-- ═══ LIFELINES ═══ -->
+<line x1="75"   y1="72" x2="75"   y2="1520" stroke="#1d70b8" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".3"/>
+<line x1="230"  y1="72" x2="230"  y2="1520" stroke="#00703c" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".3"/>
+<line x1="430"  y1="72" x2="430"  y2="1520" stroke="#00703c" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".25"/>
+<line x1="660"  y1="72" x2="660"  y2="1520" stroke="#7c3aed" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".3"/>
+<line x1="890"  y1="72" x2="890"  y2="1520" stroke="#d97706" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".25"/>
+<line x1="1130" y1="72" x2="1130" y2="1520" stroke="#d97706" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".2"/>
+<line x1="1360" y1="72" x2="1360" y2="1520" stroke="#0891b2" stroke-width="1" stroke-dasharray="5,4" stroke-opacity=".25"/>
+
+<!-- ═══ ACTIVATION BOXES ═══ -->
+<rect x="224" y="100"  width="12" height="1400" fill="rgba(0,112,60,.18)"  stroke="#00703c"  stroke-width=".8"/>
+<rect x="654" y="130"  width="12" height="1370" fill="rgba(124,58,237,.15)" stroke="#7c3aed" stroke-width=".8"/>
+<rect x="884" y="150"  width="12" height="1340" fill="rgba(217,119,6,.15)" stroke="#d97706" stroke-width=".8"/>
+<rect x="1124" y="160" width="12" height="1320" fill="rgba(217,119,6,.12)" stroke="#d97706" stroke-width=".8"/>
+
+<!-- ═══════════ SEP 1: DASHBOARD ENTRY ═══════════ -->
+<line x1="14" y1="90" x2="1446" y2="90" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="78" width="265" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="92" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">1  DASHBOARD → APPLICATION LIST</text>
+
+<!-- Admin clicks "Manage application access" -->
+<line x1="75" y1="108" x2="224" y2="108" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="102" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET /organisation/{id}/applications</text>
+<!-- Buyer guard check -->
+<path d="M 236 124 L 266 124 L 266 142 L 236 142" fill="none" stroke="#64748b" stroke-width="1.5" marker-end="url(#ms)"/>
+<text x="270" y="122" fill="#64748b" font-family="'JetBrains Mono'" font-size="7.5">Buyer guard: GetOrganisationAsync({id}).IsBuyer()</text>
+<!-- fetch apps -->
+<line x1="236" y1="154" x2="424" y2="154" stroke="#4ade80" stroke-width="1.8" marker-end="url(#mg)"/>
+<text x="240" y="148" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GetOrganisationApplicationsAsync({id})</text>
+<line x1="424" y1="168" x2="654" y2="168" stroke="#4ade80" stroke-width="1.8" marker-end="url(#mg)"/>
+<text x="428" y="162" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GET /api/organisations/{id}/applications</text>
+<line x1="654" y1="182" x2="884" y2="182" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="658" y="176" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">GetOrganisationApplicationsAsync(id)</text>
+<line x1="884" y1="196" x2="1124" y2="196" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="888" y="190" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">query app_registry_organisations + app_registry_applications</text>
+<line x1="1124" y1="210" x2="896" y2="210" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<text x="900" y="205" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">OrganisationApplication[] (with embedded Application)</text>
+<line x1="884" y1="224" x2="666" y2="224" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrp)"/>
+<text x="670" y="219" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">ApplicationDto[]</text>
+<line x1="654" y1="238" x2="436" y2="238" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<text x="440" y="233" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">200 OK  ApplicationDto[]</text>
+<line x1="424" y1="252" x2="236" y2="252" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<text x="240" y="247" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">ICollection&lt;ApplicationDto&gt;</text>
+<line x1="224" y1="266" x2="75" y2="266" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="261" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  /applications  (table: name, clientId, category, roles count)</text>
+
+<!-- ═══════════ SEP 2: APPLICATION DETAIL ═══════════ -->
+<line x1="14" y1="284" x2="1446" y2="284" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="272" width="265" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="286" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">2  SELECT APPLICATION → DETAIL PAGE</text>
+
+<line x1="75" y1="300" x2="224" y2="300" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="294" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET /organisation/{id}/applications/{appId}</text>
+
+<!-- parallel fetch: app + roles -->
+<rect x="240" y="314" width="460" height="90" rx="3" fill="rgba(0,112,60,.04)" stroke="#4ade80" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="250" y="328" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5" font-weight="700">par</text>
+
+<line x1="236" y1="338" x2="424" y2="338" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="332" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GetApplicationAsync({appId})</text>
+<line x1="424" y1="352" x2="654" y2="352" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="428" y="346" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GET /api/applications/{appId}</text>
+
+<line x1="236" y1="366" x2="424" y2="366" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="360" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GetApplicationRolesAsync({appId})</text>
+<line x1="424" y1="380" x2="654" y2="380" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="428" y="374" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GET /api/applications/{appId}/roles</text>
+
+<line x1="654" y1="396" x2="436" y2="396" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<text x="440" y="390" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">ApplicationDto + RoleDto[] (with Permissions)</text>
+<line x1="424" y1="410" x2="236" y2="410" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="224" y1="424" x2="75" y2="424" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="418" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  /applications/{appId}  (govuk-tabs: Roles | Permissions + "Manage user assignments" button)</text>
+
+<!-- ═══════════ SEP 3: USER ASSIGNMENTS LIST ═══════════ -->
+<line x1="14" y1="442" x2="1446" y2="442" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="430" width="320" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="444" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">3  MANAGE USER ASSIGNMENTS (VIEW)</text>
+
+<line x1="75" y1="460" x2="224" y2="460" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="454" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET .../applications/{appId}/user-assignments</text>
+<line x1="236" y1="474" x2="424" y2="474" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="468" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GetUserAssignmentsAsync({id},{appId})</text>
+<line x1="424" y1="488" x2="654" y2="488" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="428" y="482" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GET /api/organisations/{id}/applications/{appId}/users</text>
+<line x1="654" y1="502" x2="436" y2="502" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<text x="440" y="497" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">UserAssignmentDto[] (user, roles, permissions count, assignedAt)</text>
+<line x1="424" y1="516" x2="236" y2="516" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="224" y1="530" x2="75" y2="530" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="524" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  user-assignments  (table + "Assign user" btn + Edit|Revoke per row)</text>
+
+<!-- ═══════════ SEP 4: ASSIGN USER FLOW ═══════════ -->
+<line x1="14" y1="548" x2="1446" y2="548" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="536" width="380" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="550" fill="#4ade80" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">4  ASSIGN USER FLOW (new assignment)</text>
+
+<!-- Step 4a: Load assign page -->
+<line x1="75" y1="566" x2="224" y2="566" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="560" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET .../user-assignments/assign</text>
+
+<!-- par: members + roles -->
+<rect x="240" y="578" width="460" height="90" rx="3" fill="rgba(0,112,60,.04)" stroke="#4ade80" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="250" y="592" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5" font-weight="700">par</text>
+
+<line x1="236" y1="602" x2="424" y2="602" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="596" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GetOrganisationMembersAsync({id})  → filter out already-assigned URNs</text>
+<line x1="424" y1="616" x2="654" y2="616" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="428" y="610" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GET /api/organisations/{id}/members</text>
+<line x1="236" y1="630" x2="424" y2="630" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="624" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GetApplicationRolesAsync({appId})  → role checkboxes + permissions hint</text>
+<line x1="424" y1="644" x2="654" y2="644" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="428" y="638" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">GET /api/applications/{appId}/roles</text>
+<line x1="654" y1="658" x2="436" y2="658" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<text x="440" y="653" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7">MemberDto[] + RoleDto[]</text>
+<line x1="424" y1="672" x2="236" y2="672" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="224" y1="686" x2="75" y2="686" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="680" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  /assign  (govuk-select: members  +  govuk-checkboxes: roles with permissions hint)</text>
+
+<!-- Step 4b: Submit selection -->
+<line x1="75" y1="702" x2="224" y2="702" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="696" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">POST .../assign  {userId, roleIds[]}</text>
+<path d="M 236 718 L 274 718 L 274 736 L 236 736" fill="none" stroke="#0891b2" stroke-width="1.5" marker-end="url(#ms)"/>
+<text x="278" y="716" fill="#22d3ee" font-family="'JetBrains Mono'" font-size="7.5">TempData[UserAssignmentState]</text>
+<text x="278" y="733" fill="#475569" font-family="'JetBrains Mono'" font-size="7">{applicationId, userId, fullName, roleIds[], roleNames[], isEdit=false}</text>
+<line x1="236" y1="748" x2="75" y2="748" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="742" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">302 Redirect → /check-answers</text>
+
+<!-- Step 4c: Check answers -->
+<line x1="75" y1="764" x2="224" y2="764" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="758" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET .../assign/check-answers</text>
+<path d="M 236 778 L 274 778 L 274 796 L 236 796" fill="none" stroke="#0891b2" stroke-width="1.5" marker-end="url(#ms)"/>
+<text x="278" y="776" fill="#22d3ee" font-family="'JetBrains Mono'" font-size="7.5">Read TempData[UserAssignmentState]</text>
+<line x1="224" y1="808" x2="75" y2="808" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="802" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  govuk-summary-list  (Application | User | Roles)  + Change links + Confirm</text>
+
+<!-- Step 4d: Confirm POST → API -->
+<line x1="75" y1="824" x2="224" y2="824" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="818" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">POST .../assign/check-answers  (confirm)</text>
+<line x1="236" y1="838" x2="424" y2="838" stroke="#4ade80" stroke-width="2" marker-end="url(#mg)"/>
+<text x="240" y="832" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">AssignUserAsync({id},{appId}, {userId, roleIds[]})</text>
+<line x1="424" y1="852" x2="654" y2="852" stroke="#4ade80" stroke-width="2" marker-end="url(#mg)"/>
+<text x="428" y="846" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">POST /api/organisations/{id}/applications/{appId}/users</text>
+<line x1="654" y1="866" x2="884" y2="866" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="658" y="860" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">CreateAssignmentAsync(assignment)</text>
+<line x1="884" y1="880" x2="1124" y2="880" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="888" y="874" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">InsertOne → app_registry_user_assignments</text>
+<line x1="1124" y1="894" x2="896" y2="894" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<line x1="884" y1="908" x2="666" y2="908" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrp)"/>
+<text x="670" y="903" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">201 Created</text>
+<line x1="654" y1="922" x2="436" y2="922" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="424" y1="936" x2="236" y2="936" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<path d="M 236 950 L 274 950 L 274 968 L 236 968" fill="none" stroke="#0891b2" stroke-width="1.5" marker-end="url(#ms)"/>
+<text x="278" y="948" fill="#22d3ee" font-family="'JetBrains Mono'" font-size="7.5">TempData.Remove(UserAssignmentState)</text>
+<line x1="224" y1="980" x2="75" y2="980" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="975" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">302 Redirect → /user-assignments  (user now visible in table)</text>
+
+<!-- ═══════════ SEP 5: EDIT ROLES ═══════════ -->
+<line x1="14" y1="998" x2="1446" y2="998" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="986" width="380" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="1000" fill="#d97706" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">5  EDIT ROLES (update existing assignment)</text>
+
+<line x1="75" y1="1016" x2="224" y2="1016" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="1010" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET .../user-assignments/{userId}/edit-roles</text>
+<line x1="236" y1="1030" x2="424" y2="1030" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="1024" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GetUserAssignmentsAsync + GetApplicationRolesAsync  (par)</text>
+<line x1="424" y1="1044" x2="654" y2="1044" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<line x1="654" y1="1058" x2="436" y2="1058" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="424" y1="1072" x2="236" y2="1072" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="224" y1="1086" x2="75" y2="1086" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="1080" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  /edit-roles  (user display-only  +  checkboxes pre-populated with current roles)</text>
+
+<!-- Submit edit -->
+<line x1="75" y1="1102" x2="224" y2="1102" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="1096" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">POST .../edit-roles  {roleIds[]}  → TempData (isEdit=true)  → 302 check-answers</text>
+
+<!-- Confirm → PUT API -->
+<line x1="75" y1="1118" x2="224" y2="1118" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="1112" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">POST .../assign/check-answers  (confirm, isEdit=true)</text>
+<line x1="236" y1="1132" x2="424" y2="1132" stroke="#d97706" stroke-width="2" marker-end="url(#mc)"/>
+<text x="240" y="1126" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">UpdateUserRolesAsync({id},{appId},{userId},{roleIds[]})</text>
+<line x1="424" y1="1146" x2="654" y2="1146" stroke="#d97706" stroke-width="2" marker-end="url(#mc)"/>
+<text x="428" y="1140" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">PUT /api/organisations/{id}/applications/{appId}/users/{userId}</text>
+<line x1="654" y1="1160" x2="884" y2="1160" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="658" y="1154" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">UpdateAssignmentAsync (clear + re-add roleIds)</text>
+<line x1="884" y1="1174" x2="1124" y2="1174" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="888" y="1168" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">ReplaceOne → app_registry_user_assignments</text>
+<line x1="1124" y1="1188" x2="896" y2="1188" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<line x1="884" y1="1202" x2="666" y2="1202" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrp)"/>
+<text x="670" y="1197" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">204 No Content</text>
+<line x1="654" y1="1216" x2="436" y2="1216" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<line x1="424" y1="1230" x2="236" y2="1230" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<line x1="224" y1="1244" x2="75" y2="1244" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="1238" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">302 Redirect → /user-assignments  (user shows updated roles)</text>
+
+<!-- ═══════════ SEP 6: REVOKE ═══════════ -->
+<line x1="14" y1="1262" x2="1446" y2="1262" stroke="#1e2d40" stroke-width="1"/>
+<rect x="14" y="1250" width="320" height="20" rx="2" fill="#0c1018"/>
+<text x="22" y="1264" fill="#f87171" font-family="'JetBrains Mono'" font-size="8.5" font-weight="700" letter-spacing=".12em">6  REVOKE ACCESS</text>
+
+<line x1="75" y1="1280" x2="224" y2="1280" stroke="#94a3b8" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="1274" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="8">GET .../user-assignments/{userId}/revoke</text>
+<line x1="236" y1="1294" x2="424" y2="1294" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<text x="240" y="1288" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7.5">GetUserAssignmentsAsync  (find userId  → get name for display)</text>
+<line x1="424" y1="1308" x2="654" y2="1308" stroke="#4ade80" stroke-width="1.5" marker-end="url(#mg)"/>
+<line x1="654" y1="1322" x2="436" y2="1322" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="424" y1="1336" x2="236" y2="1336" stroke="#4ade80" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrg)"/>
+<line x1="224" y1="1350" x2="75" y2="1350" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="1344" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">200 OK  "Remove {name}'s access to {application}?"  (Yes/No radios)</text>
+
+<!-- Confirm revoke -->
+<line x1="75" y1="1366" x2="224" y2="1366" stroke="#f87171" stroke-width="1.8" marker-end="url(#ms)"/>
+<text x="79" y="1360" fill="#f87171" font-family="'JetBrains Mono'" font-size="8">POST .../revoke  {confirm=true}</text>
+<line x1="236" y1="1380" x2="424" y2="1380" stroke="#f87171" stroke-width="2" marker-end="url(#mg)"/>
+<text x="240" y="1374" fill="#f87171" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">RevokeUserAsync({id},{appId},{userId})</text>
+<line x1="424" y1="1394" x2="654" y2="1394" stroke="#f87171" stroke-width="2" marker-end="url(#mg)"/>
+<text x="428" y="1388" fill="#f87171" font-family="'JetBrains Mono'" font-size="7.5" font-weight="600">DELETE /api/organisations/{id}/applications/{appId}/users/{userId}</text>
+<line x1="654" y1="1408" x2="884" y2="1408" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="658" y="1402" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">RevokeAssignmentAsync (isActive = false)</text>
+<line x1="884" y1="1422" x2="1124" y2="1422" stroke="#d97706" stroke-width="1.5" marker-end="url(#mc)"/>
+<text x="888" y="1416" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">UpdateOne $set isActive=false → app_registry_user_assignments</text>
+<line x1="1124" y1="1436" x2="896" y2="1436" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrc)"/>
+<line x1="884" y1="1450" x2="666" y2="1450" stroke="#d97706" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mrp)"/>
+<text x="670" y="1445" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7.5">204 No Content</text>
+<line x1="654" y1="1464" x2="436" y2="1464" stroke="#f87171" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<line x1="424" y1="1478" x2="236" y2="1478" stroke="#f87171" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<line x1="224" y1="1492" x2="75" y2="1492" stroke="#94a3b8" stroke-width="1" stroke-dasharray="5,3" marker-end="url(#mr)"/>
+<text x="79" y="1486" fill="#94a3b8" font-family="'JetBrains Mono'" font-size="7.5">302 Redirect → /user-assignments  (user no longer in table)</text>
+
+<!-- ═══ SEQUENCE NUMBERS ═══ -->
+<circle cx="152" cy="108" r="8" fill="#1e2a40" stroke="#334155" stroke-width=".8"/>
+<text x="152" y="112" text-anchor="middle" fill="#64748b" font-family="'JetBrains Mono'" font-size="7" font-weight="700">1</text>
+<circle cx="152" cy="300" r="8" fill="#1e2a40" stroke="#334155" stroke-width=".8"/>
+<text x="152" y="304" text-anchor="middle" fill="#64748b" font-family="'JetBrains Mono'" font-size="7" font-weight="700">2</text>
+<circle cx="152" cy="460" r="8" fill="#1e2a40" stroke="#334155" stroke-width=".8"/>
+<text x="152" y="464" text-anchor="middle" fill="#64748b" font-family="'JetBrains Mono'" font-size="7" font-weight="700">3</text>
+<circle cx="152" cy="566" r="8" fill="rgba(0,112,60,.3)" stroke="#4ade80" stroke-width=".8"/>
+<text x="152" y="570" text-anchor="middle" fill="#4ade80" font-family="'JetBrains Mono'" font-size="7" font-weight="700">4</text>
+<circle cx="152" cy="1016" r="8" fill="rgba(217,119,6,.3)" stroke="#d97706" stroke-width=".8"/>
+<text x="152" y="1020" text-anchor="middle" fill="#fbbf24" font-family="'JetBrains Mono'" font-size="7" font-weight="700">5</text>
+<circle cx="152" cy="1280" r="8" fill="rgba(212,53,28,.3)" stroke="#f87171" stroke-width=".8"/>
+<text x="152" y="1284" text-anchor="middle" fill="#f87171" font-family="'JetBrains Mono'" font-size="7" font-weight="700">6</text>
+
+</svg>
+</div>
+
+<!-- ROUTE MAP -->
+<div style="background:var(--bgc);border:1px solid var(--bdr);border-radius:6px;padding:1.25rem 1.5rem;margin-bottom:1.5rem">
+  <div style="font-family:var(--dis);font-size:1.1rem;font-weight:700;margin-bottom:.75rem;color:var(--txt)">Route Map</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem 2rem;font-size:.68rem;line-height:1.8">
+    <div><code style="color:#4ade80">/organisation/{id}/applications</code> <span style="color:var(--dim)">— ApplicationList (05-list)</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}</code> <span style="color:var(--dim)">— ApplicationDetail (06-detail)</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}/user-assignments</code> <span style="color:var(--dim)">— UserAssignments (08)</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}/user-assignments/assign</code> <span style="color:var(--dim)">— AssignUser (09)</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}/user-assignments/assign/check-answers</code> <span style="color:var(--dim)">— CheckAnswers</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}/user-assignments/{userId}/edit-roles</code> <span style="color:var(--dim)">— EditUserRoles</span></div>
+    <div><code style="color:#4ade80">/organisation/{id}/applications/{appId}/user-assignments/{userId}/revoke</code> <span style="color:var(--dim)">— RevokeConfirmation</span></div>
+    <div><code style="color:#fbbf24">GET /api/organisations/{orgId}/applications</code> <span style="color:var(--dim)">— NEW endpoint (OrgMember)</span></div>
+  </div>
+</div>
+
+<!-- FILES -->
+<div style="background:var(--bgc);border:1px solid var(--bdr);border-radius:6px;padding:1.25rem 1.5rem">
+  <div style="font-family:var(--dis);font-size:1.1rem;font-weight:700;margin-bottom:.75rem;color:var(--txt)">Files Created / Modified</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem 2rem;font-size:.67rem;line-height:1.8;color:var(--dim)">
+    <div><span style="color:#4ade80">ADD</span> OrganisationEndpoints.cs — new GET /api/organisations/{orgId}/applications</div>
+    <div><span style="color:#4ade80">ADD</span> WebApiClients/IAppRegistryClient.cs + AppRegistryClient.cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/UserAssignmentState.cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/ApplicationList.cshtml + .cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/ApplicationDetail.cshtml + .cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/UserAssignments.cshtml + .cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/AssignUser.cshtml + .cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/UserAssignmentCheckAnswers.cshtml + .cs</div>
+    <div><span style="color:#4ade80">ADD</span> Pages/Applications/RevokeConfirmation.cshtml + .cs</div>
+    <div><span style="color:#fbbf24">MOD</span> Program.cs — register IAppRegistryClient</div>
+    <div><span style="color:#fbbf24">MOD</span> OrganisationOverview.cshtml — add Applications nav link (Buyer + Admin)</div>
+  </div>
+</div>
+
+</main>
+</body>
+</html>

@@ -361,6 +361,17 @@
                 <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
             </authorize>
 
+            @if (organisationDetails.IsBuyer())
+            {
+                <authorize scope="@OrgScopeRequirement.Admin">
+                    <h3 class="govuk-heading-s govuk-!-margin-bottom-3">
+                        <a class="govuk-link" href="/organisation/@RouteData.Values["id"]/applications">Manage application access</a>
+                    </h3>
+                    <p class="govuk-body">View applications enabled for your organisation and manage which users can access them.</p>
+                    <div class="govuk-section-break govuk-section-break--visible govuk-section-break--m"></div>
+                </authorize>
+            }
+
             @if (!isAdmin)
             {
                 <h3 class="govuk-heading-s govuk-!-margin-bottom-3">

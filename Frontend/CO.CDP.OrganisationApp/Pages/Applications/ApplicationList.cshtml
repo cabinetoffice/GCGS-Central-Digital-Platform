@@ -1,0 +1,62 @@
+@page "/organisation/{id}/applications"
+@model CO.CDP.OrganisationApp.Pages.Applications.ApplicationListModel
+
+@{
+    ViewData["Title"] = "Applications";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-xl">Applications</h1>
+        <p class="govuk-body-l">
+            Applications registered in the Central Digital Platform that your organisation has access to.
+        </p>
+
+        @if (!Model.Applications.Any())
+        {
+            <p class="govuk-body">No applications are currently enabled for your organisation.</p>
+        }
+        else
+        {
+            <table class="govuk-table">
+                <thead class="govuk-table__head">
+                    <tr class="govuk-table__row">
+                        <th scope="col" class="govuk-table__header">Application</th>
+                        <th scope="col" class="govuk-table__header">Client ID</th>
+                        <th scope="col" class="govuk-table__header">Category</th>
+                        <th scope="col" class="govuk-table__header">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="govuk-table__body">
+                    @foreach (var app in Model.Applications)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a href="/organisation/@Model.Id/applications/@app.Id" class="govuk-link govuk-!-font-weight-bold">
+                                    @app.Name
+                                </a>
+                                @if (!string.IsNullOrWhiteSpace(app.Description))
+                                {
+                                    <br />
+                                    <span class="govuk-body-s" style="color:#505a5f;">@app.Description</span>
+                                }
+                            </td>
+                            <td class="govuk-table__cell">
+                                <code>@app.ClientId</code>
+                            </td>
+                            <td class="govuk-table__cell">@(app.Category ?? "—")</td>
+                            <td class="govuk-table__cell">
+                                <a href="/organisation/@Model.Id/applications/@app.Id" class="govuk-link">View</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>

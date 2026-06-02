@@ -130,7 +130,15 @@ public static class OrganisationEndpoints
             CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository repo) =>
         {
             var apps = await repo.GetOrganisationApplicationsAsync(orgId);
-            return Results.Ok(apps.Select(oa => new { oa.ApplicationId, oa.Application.Name, oa.EnabledAt, oa.EnabledBy }));
+            return Results.Ok(apps.Select(oa => new ApplicationDto(
+                oa.Application.Id,
+                oa.Application.Name,
+                oa.Application.ClientId,
+                oa.Application.Description,
+                oa.Application.Category,
+                oa.Application.IsActive,
+                oa.Application.CreatedOn,
+                oa.Application.UpdatedOn)));
         })
         .RequireAuthorization(AuthorizationPolicies.OrgMember)
         .WithTags("Organisation - Applications");

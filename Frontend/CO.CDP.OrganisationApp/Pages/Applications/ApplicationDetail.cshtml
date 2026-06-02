@@ -1,0 +1,133 @@
+@page "/organisation/{id}/applications/{appId:guid}"
+@model CO.CDP.OrganisationApp.Pages.Applications.ApplicationDetailModel
+
+@{
+    ViewData["Title"] = Model.Application?.Name ?? "Application";
+}
+
+@section BeforeContent {
+    <a href="/organisation/@Model.Id/applications" class="govuk-back-link">Back</a>
+}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+
+        <h1 class="govuk-heading-xl">@Model.Application?.Name</h1>
+        @if (!string.IsNullOrWhiteSpace(Model.Application?.Description))
+        {
+            <p class="govuk-body-l">@Model.Application.Description</p>
+        }
+
+        <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Client ID</dt>
+                <dd class="govuk-summary-list__value"><code>@Model.Application?.ClientId</code></dd>
+            </div>
+            @if (!string.IsNullOrWhiteSpace(Model.Application?.Category))
+            {
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Category</dt>
+                    <dd class="govuk-summary-list__value">@Model.Application.Category</dd>
+                </div>
+            }
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">Roles defined</dt>
+                <dd class="govuk-summary-list__value">@Model.Roles.Count</dd>
+            </div>
+        </dl>
+
+        <div class="govuk-button-group govuk-!-margin-bottom-6">
+            <a href="/organisation/@Model.Id/applications/@Model.AppId/user-assignments" class="govuk-button">
+                Manage user assignments
+            </a>
+        </div>
+
+        <div class="govuk-tabs" data-module="govuk-tabs">
+            <h2 class="govuk-tabs__title">Contents</h2>
+            <ul class="govuk-tabs__list">
+                <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                    <a class="govuk-tabs__tab" href="#roles">Roles (@Model.Roles.Count)</a>
+                </li>
+                <li class="govuk-tabs__list-item">
+                    <a class="govuk-tabs__tab" href="#permissions">
+                        Permissions (@Model.Roles.SelectMany(r => r.Permissions).Select(p => p.Name).Distinct().Count())
+                    </a>
+                </li>
+            </ul>
+
+            <div class="govuk-tabs__panel" id="roles">
+                <h2 class="govuk-heading-l">Application roles</h2>
+                @if (!Model.Roles.Any())
+                {
+                    <p class="govuk-body">No roles have been defined for this application.</p>
+                }
+                else
+                {
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Role</th>
+                                <th scope="col" class="govuk-table__header">Description</th>
+                                <th scope="col" class="govuk-table__header">Permissions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var role in Model.Roles)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell"><strong>@role.Name</strong></td>
+                                    <td class="govuk-table__cell">@(role.Description ?? "—")</td>
+                                    <td class="govuk-table__cell">
+                                        @foreach (var perm in role.Permissions)
+                                        {
+                                            <span style="display:inline-block;background:#f3f2f1;border:1px solid #b1b4b6;padding:2px 8px;margin:2px;font-family:monospace;font-size:14px;">
+                                                @perm.Name
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="permissions">
+                <h2 class="govuk-heading-l">Application permissions</h2>
+                @{
+                    var allPerms = Model.Roles
+                        .SelectMany(r => r.Permissions.Select(p => new { Permission = p, RoleName = r.Name }))
+                        .GroupBy(x => x.Permission.Name)
+                        .ToList();
+                }
+                @if (!allPerms.Any())
+                {
+                    <p class="govuk-body">No permissions have been defined for this application.</p>
+                }
+                else
+                {
+                    <table class="govuk-table">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Permission</th>
+                                <th scope="col" class="govuk-table__header">Description</th>
+                                <th scope="col" class="govuk-table__header">Used in roles</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var permGroup in allPerms)
+                            {
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell"><code>@permGroup.Key</code></td>
+                                    <td class="govuk-table__cell">@(permGroup.First().Permission.Description ?? "—")</td>
+                                    <td class="govuk-table__cell">@string.Join(", ", permGroup.Select(x => x.RoleName))</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>
