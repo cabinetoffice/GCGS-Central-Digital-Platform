@@ -95,7 +95,7 @@ locals {
     ssl_service                           = true
     submission_log_globally_enabled       = contains(["integration"], var.environment)
     uk11_240_enabled                      = true
-    uk17_enable_current_reporting_periods = contains(["development", "production"], var.environment)
+    uk17_enable_current_reporting_periods = !contains(["development", "production"], var.environment)
     uk17_enabled                          = true
     uk1_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk2_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
