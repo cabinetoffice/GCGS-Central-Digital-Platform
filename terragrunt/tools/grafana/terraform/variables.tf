@@ -41,3 +41,39 @@ variable "ecs_memory_threshold" {
   type        = number
   default     = 80
 }
+
+variable "rds_cpu_threshold" {
+  description = "CPU threshold for RDS CPU alert"
+  type        = number
+  default     = 80
+}
+
+variable "rds_free_storage_threshold_bytes" {
+  description = "Free storage threshold for RDS (bytes)"
+  type        = number
+  default     = 5 * 1024 * 1024 * 1024
+}
+
+variable "rds_freeable_memory_threshold_bytes" {
+  description = "Freeable memory threshold for RDS (bytes)"
+  type        = number
+  default     = 512 * 1024 * 1024
+}
+
+variable "rds_connections_threshold" {
+  description = "Database connections threshold for RDS"
+  type        = number
+  default     = 200
+}
+
+variable "rds_read_latency_threshold_seconds" {
+  description = "Read latency threshold for RDS (seconds)"
+  type        = number
+  default     = 0.2
+}
+
+variable "rds_write_latency_threshold_seconds" {
+  description = "Write latency threshold for RDS (seconds)"
+  type        = number
+  default     = 0.2
+}
