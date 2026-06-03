@@ -188,7 +188,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
     }
 
     dynamic "notification_settings" {
-      for_each = var.teams_webhook_url != "" ? [1] : []
+      for_each = local.teams_webhook_url != "" ? [1] : []
       content {
         contact_point = grafana_contact_point.teams[0].name
       }
