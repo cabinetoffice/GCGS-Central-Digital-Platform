@@ -229,14 +229,10 @@ if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Organisation.WebApi")) ||
             (services) =>
             {
                 services.AddScoped<ISubscriber<PponGenerated>, PponGeneratedSubscriber>();
-                services.AddScoped<ISubscriber<PersonRemovedFromOrganisation>, PersonRemovedFromOrganisationHandler>();
-                services.AddScoped<ISubscriber<PersonScopesUpdated>, PersonScopesUpdatedHandler>();
             },
             (services, dispatcher) =>
             {
                 dispatcher.Subscribe<PponGenerated>(services);
-                dispatcher.Subscribe<PersonRemovedFromOrganisation>(services);
-                dispatcher.Subscribe<PersonScopesUpdated>(services);
             }
         );
 }

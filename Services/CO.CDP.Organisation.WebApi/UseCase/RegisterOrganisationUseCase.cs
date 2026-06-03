@@ -60,11 +60,7 @@ public class RegisterOrganisationUseCase(
 
         await organisationRepository.SaveAsync(
             organisation,
-            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation) with
-            {
-                FounderPersonId = person.Guid,
-                FounderUserUrn = person.UserUrn
-            }));
+            async _ => await publisher.Publish(mapper.Map<OrganisationRegistered>(organisation)));
 
         if (organisation.PendingRoles.Contains(OiPartyRole.Buyer))
             await NotifyAdminOfApprovalRequest(organisation);

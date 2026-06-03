@@ -1,8 +1,6 @@
-using System.Reflection;
 using CO.CDP.Authentication;
 using CO.CDP.Authentication.Authorization;
 using CO.CDP.AwsServices;
-using CO.CDP.Configuration.Assembly;
 using CO.CDP.Configuration.ForwardedHeaders;
 using CO.CDP.Configuration.Helpers;
 using CO.CDP.OrganisationInformation.Persistence;
@@ -62,17 +60,6 @@ if (awsConfig?.CloudWatch is not null && (!string.IsNullOrWhiteSpace(awsConfig.S
     builder.Services
         .AddAmazonCloudWatchLogsService()
         .AddCloudWatchSerilog(builder.Configuration);
-}
-
-if ((Assembly.GetEntryAssembly().IsRunAs("CO.CDP.Person.WebApi")) ||
-    (Assembly.GetEntryAssembly().IsRunAs("testhost")))
-{
-    builder.Services
-        .AddAwsSqsService()
-        .AddMultiQueueOutboxSqsPublisher<OrganisationInformationContext>(
-            builder.Configuration,
-            enableBackgroundServices: false,
-            notificationChannel: "organisation_information_outbox");
 }
 
 var app = builder.Build();
