@@ -36,9 +36,12 @@ public class MongoApplicationRepository : IApplicationRepository
 
     public async Task<Application?> GetByIdAsync(Guid id)
     {
-        return await _applications
+        var application = await _applications
             .Find(a => a.Id == id)
             .FirstOrDefaultAsync();
+
+        if (application != null && !application.IsActive) return null;
+        return application;
     }
 
     public async Task<IEnumerable<Application>> GetAllAsync()
@@ -83,6 +86,7 @@ public class MongoApplicationRepository : IApplicationRepository
 
         var role = application.Roles.FirstOrDefault(r => r.Id == roleId);
         if (role == null) return null;
+        if (!role.IsActive) return null;
 
         // Hydrate RolePermissions from the application's standalone permissions.
         HydrateRolePermissions(role, application.Permissions);
@@ -193,10 +197,13 @@ public class MongoApplicationRepository : IApplicationRepository
 
         if (application == null) return;
 
-        var update = Builders<Application>.Update
-            .PullFilter(a => a.Permissions, p => p.Id == permissionId);
+        var permission = application.Permissions.FirstOrDefault(p => p.Id == permissionId);
+        if (permission == null) return;
 
-        await _applications.UpdateOneAsync(a => a.Id == application.Id, update);
+        permission.IsActive = false;
+
+        application.UpdatedOn = DateTimeOffset.UtcNow;
+        await _applications.ReplaceOneAsync(a => a.Id == application.Id, application);
         await _audit.LogAsync(new AuditLog
         {
             EntityType = nameof(ApplicationPermission),

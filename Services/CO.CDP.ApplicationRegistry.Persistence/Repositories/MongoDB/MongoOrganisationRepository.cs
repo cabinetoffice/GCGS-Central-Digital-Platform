@@ -102,7 +102,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
         var appMap = apps.ToDictionary(a => a.Id);
 
         return org.Applications
-            .Where(oa => appMap.ContainsKey(oa.ApplicationId))
+            .Where(oa => oa.IsEnabled && appMap.ContainsKey(oa.ApplicationId))
             .Select(oa =>
             {
                 oa.Application  = appMap[oa.ApplicationId];
@@ -204,10 +204,20 @@ public class MongoOrganisationRepository : IOrganisationRepository
 
     public async Task DisableApplicationAsync(Guid organisationId, Guid applicationId)
     {
-        var update = Builders<Organisation>.Update
-            .PullFilter(o => o.Applications, oa => oa.ApplicationId == applicationId);
+        var org = await _organisations
+            .Find(o => o.Id == organisationId)
+            .FirstOrDefaultAsync();
 
-        await _organisations.UpdateOneAsync(o => o.Id == organisationId, update);
+        if (org == null) return;
+
+        var oa = org.Applications.FirstOrDefault(a => a.ApplicationId == applicationId && a.IsEnabled);
+        if (oa == null) return;
+
+        oa.IsEnabled   = false;
+        oa.DisabledAt  = DateTimeOffset.UtcNow;
+        oa.DisabledBy  = CallerUrn;
+
+        await _organisations.ReplaceOneAsync(o => o.Id == organisationId, org);
         await _audit.LogAsync(new AuditLog
         {
             EntityType = nameof(OrganisationApplication),

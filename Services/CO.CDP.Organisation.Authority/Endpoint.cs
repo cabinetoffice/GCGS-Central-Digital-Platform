@@ -23,7 +23,7 @@ public static class EndpointExtensions
                     TokenEndpoint = $"{config.Issuer}/token",
                     RevocationEndpoint = $"{config.Issuer}/revocation",
                     JwksUri = $"{config.Issuer}/{Discovery.DiscoveryEndpoint}/jwks",
-                    ResponseTypesSupported = [ResponseTypes.Token],
+                    ResponseTypesSupported = ["token"],
                     ScopesSupported = [StandardScopes.OpenId],
                     TokenEndpointAuthMethodsSupported = [EndpointAuthenticationMethods.PostBody],
                     TokenEndpointAuthSigningAlgValuesSupported = [SecurityAlgorithms.RsaSha256],
@@ -36,8 +36,9 @@ public static class EndpointExtensions
             .Produces<OpenIdConfiguration>(StatusCodes.Status200OK);
 
         app.MapGet($"/{Discovery.DiscoveryEndpoint}/jwks",
-            (IConfigurationService service) =>
+            (HttpContext httpContext, IConfigurationService service) =>
             {
+                httpContext.Response.Headers["Cache-Control"] = "public, max-age=3600";
                 var config = service.GetAuthorityConfiguration();
                 return new Model.JsonWebKeySet
                 {

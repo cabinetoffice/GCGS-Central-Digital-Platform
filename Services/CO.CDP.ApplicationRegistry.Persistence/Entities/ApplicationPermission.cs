@@ -7,4 +7,5 @@ public class ApplicationPermission
     public Application Application { get; set; } = null!;
     public required string Name { get; set; }
     public string? Description { get; set; }
+    public bool IsActive { get; set; } = true;
 }

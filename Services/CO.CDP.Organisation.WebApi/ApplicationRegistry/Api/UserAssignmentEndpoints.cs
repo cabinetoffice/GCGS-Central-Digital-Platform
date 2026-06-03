@@ -35,8 +35,24 @@ public static class UserAssignmentEndpoints
             Guid appId,
             CreateUserAssignment command,
             IUserAssignmentRepository repo,
+            IApplicationRepository applicationRepo,
             Microsoft.AspNetCore.Http.HttpContext context) =>
         {
+            if (command.RoleIds != null && command.RoleIds.Any())
+            {
+                var appRoles = (await applicationRepo.GetRolesAsync(appId))
+                    .Select(r => r.Id)
+                    .ToHashSet();
+
+                if (command.RoleIds.Any(id => !appRoles.Contains(id)))
+                {
+                    return Results.BadRequest(new
+                    {
+                        detail = "One or more role IDs do not belong to this application."
+                    });
+                }
+            }
+
             var callerUrn = context.User?.FindFirst("sub")?.Value ?? "system";
             var assignment = new UserApplicationAssignment
             {

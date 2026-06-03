@@ -89,6 +89,10 @@ public class UserAssignmentEndpointsTests
             ApplicationId = appId, OrganisationId = orgId, AssignedBy = "system"
         };
 
+        _applicationRepo
+            .Setup(r => r.GetRolesAsync(appId))
+            .ReturnsAsync([new ApplicationRole { Id = roleId, ApplicationId = appId, Name = "Role" }]);
+
         _assignmentRepo.Setup(r => r.CreateAssignmentAsync(It.IsAny<UserApplicationAssignment>()))
             .ReturnsAsync(created);
 
@@ -117,6 +121,26 @@ public class UserAssignmentEndpointsTests
             $"/api/organisations/{orgId}/applications/{appId}/users",
             new CreateUserAssignment("urn:u", null));
         response.StatusCode.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task CreateAssignment_Returns_BadRequest_WhenRoleIdBelongsToDifferentApplication()
+    {
+        var orgId         = Guid.NewGuid();
+        var appId         = Guid.NewGuid();
+        var foreignRoleId = Guid.NewGuid(); // belongs to a different application
+
+        // Application repo returns an empty role list for appId — the foreign role is absent
+        _applicationRepo
+            .Setup(r => r.GetRolesAsync(appId))
+            .ReturnsAsync(Array.Empty<ApplicationRole>());
+
+        var command = new CreateUserAssignment("urn:bad:user", [foreignRoleId]);
+
+        var response = await OrgAdminClient(orgId)
+            .PostAsJsonAsync($"/api/organisations/{orgId}/applications/{appId}/users", command);
+
+        response.Should().HaveStatusCode(BadRequest);
     }
 
     // ── PUT /api/organisations/{orgId}/applications/{appId}/users/{userId} ──

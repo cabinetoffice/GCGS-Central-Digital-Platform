@@ -51,6 +51,7 @@ public static class ApplicationEndpoints
             var result = await useCase.Execute(appId);
             return result != null ? Results.Ok(result) : Results.NotFound();
         })
+        .RequireAuthorization()
         .WithTags("Application")
         .WithSummary("Get application by ID")
         .WithDescription("Returns the details of a specific application by its unique identifier.");
@@ -88,6 +89,7 @@ public static class ApplicationEndpoints
             var perms = await repo.GetPermissionsAsync(appId);
             return Results.Ok(perms.Select(p => new PermissionDto(p.Id, p.ApplicationId, p.Name, p.Description)));
         })
+        .RequireAuthorization()
         .WithTags("Application - Permissions")
         .WithSummary("List permissions for an application")
         .WithDescription("Returns all permissions defined for the specified application.");
@@ -149,6 +151,7 @@ public static class ApplicationEndpoints
                     rp.Permission.Id, rp.Permission.ApplicationId,
                     rp.Permission.Name, rp.Permission.Description)))));
         })
+        .RequireAuthorization()
         .WithTags("Application - Roles")
         .WithSummary("List roles for an application")
         .WithDescription("Returns all roles defined for the specified application, including the permissions assigned to each role.");
