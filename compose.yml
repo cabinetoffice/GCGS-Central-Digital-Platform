@@ -64,6 +64,20 @@ services:
       timeout: 3s
       retries: 5
 
+  mongodb:
+    container_name: co-cdp-mongodb
+    image: mongo:7.0
+    expose:
+      - '27017'
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      start_period: 10s
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      MONGO_INITDB_DATABASE: app_registry
+
   localstack:
     container_name: co-cdp-localstack
     image: localstack/localstack:3.5
@@ -230,6 +244,8 @@ services:
         condition: "service_healthy"
       localstack:
         condition: "service_healthy"
+      mongodb:
+        condition: "service_healthy"
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       Aws__Credentials__AccessKeyId: test
@@ -256,6 +272,8 @@ services:
       OrganisationInformationDatabase__Database: 'cdp'
       OrganisationInformationDatabase__Username: 'cdp_user'
       OrganisationInformationDatabase__Password: 'cdp123'
+      ConnectionStrings__MongoDb: 'mongodb://mongodb:27017'
+      AppRegistry__DatabaseName: 'app_registry'
       Organisation__Authority: *organisation-authority
       Features__OutboxProcessorBackgroundService: true
 

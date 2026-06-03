@@ -32,6 +32,11 @@ services:
   redis:
     ports:
       - "${CDP_REDIS_PORT:-6379}:6379"
+  mongodb:
+    ports:
+      - "${CDP_MONGODB_PORT:-27017}:27017"
+    deploy:
+      replicas: 1
   localstack:
     ports:
       - "4566:4566"
