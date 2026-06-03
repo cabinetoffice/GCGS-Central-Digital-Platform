@@ -37,4 +37,13 @@ public record AuthorityConfiguration
 
     /// <summary>Refresh token lifetime in seconds. Defaults to 86400. Set via TokenExpiry:RefreshTokenSeconds.</summary>
     public double RefreshTokenExpirySeconds { get; init; } = 86400d;
+
+    /// <summary>
+    /// Allow-list of registered client application IDs permitted to call POST /token.
+    /// When non-empty, a matching client_id must be supplied in the form body; requests
+    /// with a missing or unknown client_id are rejected with HTTP 401.
+    /// An empty list disables the check for backwards compatibility with unconfigured environments.
+    /// Set via AllowedClientIds in configuration.
+    /// </summary>
+    public IReadOnlyList<string> AllowedClientIds { get; init; } = [];
 }

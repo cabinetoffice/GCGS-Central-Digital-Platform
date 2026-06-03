@@ -56,8 +56,27 @@ public static class EndpointExtensions
             .Produces<Model.JsonWebKeySet>(StatusCodes.Status200OK);
 
         app.MapPost("/token",
-            async ([AsParameters] Model.TokenRequest request, ITokenService service) =>
+            async ([AsParameters] Model.TokenRequest request, ITokenService service,
+                   IConfigurationService configService, ILoggerFactory loggerFactory) =>
             {
+                var logger = loggerFactory.CreateLogger("CO.CDP.Organisation.Authority.TokenEndpoint");
+                var config = configService.GetAuthorityConfiguration();
+
+                if (config.AllowedClientIds.Count > 0)
+                {
+                    if (string.IsNullOrWhiteSpace(request.ClientId) ||
+                        !config.AllowedClientIds.Contains(request.ClientId))
+                    {
+                        return Results.Json(
+                            new { error = "invalid_client", error_description = "client_id is required" },
+                            statusCode: StatusCodes.Status401Unauthorized);
+                    }
+                }
+                else
+                {
+                    logger.LogWarning("AllowedClientIds is not configured — client_id validation is disabled");
+                }
+
                 switch (request.GrantType)
                 {
                     case GrantTypes.ClientCredentials:
@@ -84,6 +103,7 @@ public static class EndpointExtensions
             .WithMetadata(new ConsumesAttribute(MediaTypeNames.Application.FormUrlEncoded))
             .Produces<Model.TokenResponse>(StatusCodes.Status200OK)
             .Produces<ProblemDetails>(StatusCodes.Status400BadRequest)
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError);
 
         app.MapPost("/revocation",

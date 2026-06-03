@@ -35,13 +35,14 @@ public class ConfigurationService(IConfiguration config) : IConfigurationService
 
             authorityConfig = new AuthorityConfiguration
             {
-                Issuer                   = issuer,
-                RsaPrivateKey            = rsaPrivateKey,
-                RsaPublicParams          = rsaPublicParams,
-                DerivedKid               = kid,
-                OneLoginClientId         = config["OneLogin:ClientId"] ?? string.Empty,
-                AccessTokenExpirySeconds = config.GetValue<double?>("TokenExpiry:AccessTokenSeconds") ?? 3600d,
-                RefreshTokenExpirySeconds = config.GetValue<double?>("TokenExpiry:RefreshTokenSeconds") ?? 86400d
+                Issuer                    = issuer,
+                RsaPrivateKey             = rsaPrivateKey,
+                RsaPublicParams           = rsaPublicParams,
+                DerivedKid                = kid,
+                OneLoginClientId          = config["OneLogin:ClientId"] ?? string.Empty,
+                AccessTokenExpirySeconds  = config.GetValue<double?>("TokenExpiry:AccessTokenSeconds") ?? 3600d,
+                RefreshTokenExpirySeconds = config.GetValue<double?>("TokenExpiry:RefreshTokenSeconds") ?? 86400d,
+                AllowedClientIds          = config.GetSection("AllowedClientIds").Get<List<string>>() ?? []
             };
         }
 
