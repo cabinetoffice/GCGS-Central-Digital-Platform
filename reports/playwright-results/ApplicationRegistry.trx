@@ -1,0 +1,375 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a195aaba-b647-411e-b73a-782d69c62dd1" name="@b388c15cbf7d 2026-06-03 00:57:02" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-06-03T00:57:02.6194840+00:00" queuing="2026-06-03T00:57:02.6194840+00:00" start="2026-06-03T00:57:01.8126536+00:00" finish="2026-06-03T00:57:02.6461174+00:00" />
+  <TestSettings name="default" id="f2f5120a-4432-4858-a815-8e6ba63e9a93">
+    <Deployment runDeploymentRoot="_b388c15cbf7d_2026-06-03_00_57_02" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="9292fa60-7111-4b2c-be28-08ab461b12ca" testId="fdc11cf6-b550-bed5-1d16-845d4340bb9a" testName="UserAssignmentsPage_LoadsAndShowsAssignUserButton" computerName="b388c15cbf7d" duration="00:00:00.3717480" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759455+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9292fa60-7111-4b2c-be28-08ab461b12ca">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="3b163c5f-d927-4090-9aab-912ed765a2bb" testId="49827387-aedd-ea77-9baa-634f244ad290" testName="ApplicationListPage_LoadsCorrectly_ForBuyerOrg" computerName="b388c15cbf7d" duration="00:00:00.0816790" startTime="2026-06-03T00:57:02.4766221+00:00" endTime="2026-06-03T00:57:02.5583011+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="3b163c5f-d927-4090-9aab-912ed765a2bb">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="16848073-938e-4122-92dc-fcd1626c8acf" testId="5f3b75f6-6d6e-ded3-7ef4-99029fe22382" testName="ApplicationListPage_ShowsTable_WhenAppsAvailable" computerName="b388c15cbf7d" duration="00:00:00.0817350" startTime="2026-06-03T00:57:02.4766221+00:00" endTime="2026-06-03T00:57:02.5583574+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="16848073-938e-4122-92dc-fcd1626c8acf">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="843b7497-145f-4b94-ba2c-21cef15bce65" testId="76cc0078-e2cf-ec2f-097f-aec914c7f231" testName="AssignUserPage_LoadsWithUserPickerAndRoleCheckboxes" computerName="b388c15cbf7d" duration="00:00:00.3717460" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759437+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="843b7497-145f-4b94-ba2c-21cef15bce65">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="7b88c752-f369-4970-975c-efd441431f38" testId="983b79f9-d807-9833-6cb2-25016c7918d2" testName="ApplicationDetailPage_ShowsRolesAndPermissionsTabs" computerName="b388c15cbf7d" duration="00:00:00.3717340" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759315+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7b88c752-f369-4970-975c-efd441431f38">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="1bf343f7-3942-4e96-8b3e-cfd332367874" testId="a407041b-7f48-35be-e347-c2c634835485" testName="RevokeConfirmationPage_SelectNo_CancelsRevoke" computerName="b388c15cbf7d" duration="00:00:00.3717470" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759450+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1bf343f7-3942-4e96-8b3e-cfd332367874">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8cebc9d2-bed2-4ebc-a19f-96a049c427f0" testId="a8337dcb-d476-890e-334d-dde124494bb8" testName="AssignUserJourney_HappyPath_AssignsThenRevokes" computerName="b388c15cbf7d" duration="00:00:00.3717450" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759427+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8cebc9d2-bed2-4ebc-a19f-96a049c427f0">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="48e386c4-3974-4a32-897e-4e3305cbb30b" testId="0ad8b212-e6a7-8643-7904-5d4adaac68cf" testName="ApplicationListPage_ShowsManageApplicationAccessLink_InDashboard" computerName="b388c15cbf7d" duration="00:00:00.0817280" startTime="2026-06-03T00:57:02.4766221+00:00" endTime="2026-06-03T00:57:02.5583502+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="48e386c4-3974-4a32-897e-4e3305cbb30b">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="d986a228-8284-4805-91ee-17ac6b976a19" testId="5b5f45a0-94d7-590c-9893-3e657b266751" testName="ApplicationDetailPage_PermissionsTab_LoadsCorrectly" computerName="b388c15cbf7d" duration="00:00:00.3713770" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4755410+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d986a228-8284-4805-91ee-17ac6b976a19">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="4eeae104-1e67-4439-b4da-021e0c66d3de" testId="70346cb2-9c2d-a242-19fb-e2b762f5a2ec" testName="AssignUserPage_ValidationError_WhenNoSelectionMade" computerName="b388c15cbf7d" duration="00:00:00.3717470" startTime="2026-06-03T00:57:02.1041979+00:00" endTime="2026-06-03T00:57:02.4759444+00:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4eeae104-1e67-4439-b4da-021e0c66d3de">
+      <Output>
+        <ErrorInfo>
+          <Message>OneTimeSetUp: Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"</Message>
+          <StackTrace>   at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()
+</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="ApplicationListPage_LoadsCorrectly_ForBuyerOrg" storage="/app/bin/debug/net9.0/e2etests.dll" id="49827387-aedd-ea77-9baa-634f244ad290">
+      <Execution id="3b163c5f-d927-4090-9aab-912ed765a2bb" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryNavigationTests" name="ApplicationListPage_LoadsCorrectly_ForBuyerOrg" />
+    </UnitTest>
+    <UnitTest name="ApplicationListPage_ShowsManageApplicationAccessLink_InDashboard" storage="/app/bin/debug/net9.0/e2etests.dll" id="0ad8b212-e6a7-8643-7904-5d4adaac68cf">
+      <Execution id="48e386c4-3974-4a32-897e-4e3305cbb30b" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryNavigationTests" name="ApplicationListPage_ShowsManageApplicationAccessLink_InDashboard" />
+    </UnitTest>
+    <UnitTest name="ApplicationListPage_ShowsTable_WhenAppsAvailable" storage="/app/bin/debug/net9.0/e2etests.dll" id="5f3b75f6-6d6e-ded3-7ef4-99029fe22382">
+      <Execution id="16848073-938e-4122-92dc-fcd1626c8acf" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryNavigationTests" name="ApplicationListPage_ShowsTable_WhenAppsAvailable" />
+    </UnitTest>
+    <UnitTest name="RevokeConfirmationPage_SelectNo_CancelsRevoke" storage="/app/bin/debug/net9.0/e2etests.dll" id="a407041b-7f48-35be-e347-c2c634835485">
+      <Execution id="1bf343f7-3942-4e96-8b3e-cfd332367874" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="RevokeConfirmationPage_SelectNo_CancelsRevoke" />
+    </UnitTest>
+    <UnitTest name="ApplicationDetailPage_ShowsRolesAndPermissionsTabs" storage="/app/bin/debug/net9.0/e2etests.dll" id="983b79f9-d807-9833-6cb2-25016c7918d2">
+      <Execution id="7b88c752-f369-4970-975c-efd441431f38" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="ApplicationDetailPage_ShowsRolesAndPermissionsTabs" />
+    </UnitTest>
+    <UnitTest name="ApplicationDetailPage_PermissionsTab_LoadsCorrectly" storage="/app/bin/debug/net9.0/e2etests.dll" id="5b5f45a0-94d7-590c-9893-3e657b266751">
+      <Execution id="d986a228-8284-4805-91ee-17ac6b976a19" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="ApplicationDetailPage_PermissionsTab_LoadsCorrectly" />
+    </UnitTest>
+    <UnitTest name="AssignUserJourney_HappyPath_AssignsThenRevokes" storage="/app/bin/debug/net9.0/e2etests.dll" id="a8337dcb-d476-890e-334d-dde124494bb8">
+      <Execution id="8cebc9d2-bed2-4ebc-a19f-96a049c427f0" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="AssignUserJourney_HappyPath_AssignsThenRevokes" />
+    </UnitTest>
+    <UnitTest name="UserAssignmentsPage_LoadsAndShowsAssignUserButton" storage="/app/bin/debug/net9.0/e2etests.dll" id="fdc11cf6-b550-bed5-1d16-845d4340bb9a">
+      <Execution id="9292fa60-7111-4b2c-be28-08ab461b12ca" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="UserAssignmentsPage_LoadsAndShowsAssignUserButton" />
+    </UnitTest>
+    <UnitTest name="AssignUserPage_ValidationError_WhenNoSelectionMade" storage="/app/bin/debug/net9.0/e2etests.dll" id="70346cb2-9c2d-a242-19fb-e2b762f5a2ec">
+      <Execution id="4eeae104-1e67-4439-b4da-021e0c66d3de" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="AssignUserPage_ValidationError_WhenNoSelectionMade" />
+    </UnitTest>
+    <UnitTest name="AssignUserPage_LoadsWithUserPickerAndRoleCheckboxes" storage="/app/bin/debug/net9.0/e2etests.dll" id="76cc0078-e2cf-ec2f-097f-aec914c7f231">
+      <Execution id="843b7497-145f-4b94-ba2c-21cef15bce65" />
+      <TestMethod codeBase="/app/bin/Debug/net9.0/E2ETests.dll" adapterTypeName="executor://nunit3testexecutor/" className="E2ETests.Applications.ApplicationRegistryFunctionalTests" name="AssignUserPage_LoadsWithUserPickerAndRoleCheckboxes" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="fdc11cf6-b550-bed5-1d16-845d4340bb9a" executionId="9292fa60-7111-4b2c-be28-08ab461b12ca" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="49827387-aedd-ea77-9baa-634f244ad290" executionId="3b163c5f-d927-4090-9aab-912ed765a2bb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5f3b75f6-6d6e-ded3-7ef4-99029fe22382" executionId="16848073-938e-4122-92dc-fcd1626c8acf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="76cc0078-e2cf-ec2f-097f-aec914c7f231" executionId="843b7497-145f-4b94-ba2c-21cef15bce65" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="983b79f9-d807-9833-6cb2-25016c7918d2" executionId="7b88c752-f369-4970-975c-efd441431f38" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a407041b-7f48-35be-e347-c2c634835485" executionId="1bf343f7-3942-4e96-8b3e-cfd332367874" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="a8337dcb-d476-890e-334d-dde124494bb8" executionId="8cebc9d2-bed2-4ebc-a19f-96a049c427f0" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0ad8b212-e6a7-8643-7904-5d4adaac68cf" executionId="48e386c4-3974-4a32-897e-4e3305cbb30b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5b5f45a0-94d7-590c-9893-3e657b266751" executionId="d986a228-8284-4805-91ee-17ac6b976a19" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="70346cb2-9c2d-a242-19fb-e2b762f5a2ec" executionId="4eeae104-1e67-4439-b4da-021e0c66d3de" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="10" executed="10" passed="0" failed="10" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>NUnit Adapter 4.6.0.0: Test execution started
+Running selected tests in /app/bin/Debug/net9.0/E2ETests.dll
+   NUnit3TestExecutor discovered 10 of 10 NUnit test cases using Current Discovery mode, Non-Explicit run
+NUnit Adapter 4.6.0.0: Test execution complete
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="b388c15cbf7d" outcome="Warning" timestamp="2026-06-03T00:57:02.4935980+00:00">
+        <Text>Setup failed for test fixture E2ETests.Applications.ApplicationRegistryFunctionalTests</Text>
+      </RunInfo>
+      <RunInfo computerName="b388c15cbf7d" outcome="Warning" timestamp="2026-06-03T00:57:02.4937501+00:00">
+        <Text>Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"
+StackTrace:    at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()</Text>
+      </RunInfo>
+      <RunInfo computerName="b388c15cbf7d" outcome="Warning" timestamp="2026-06-03T00:57:02.6242990+00:00">
+        <Text>Setup failed for test fixture E2ETests.Applications.ApplicationRegistryNavigationTests</Text>
+      </RunInfo>
+      <RunInfo computerName="b388c15cbf7d" outcome="Warning" timestamp="2026-06-03T00:57:02.6243053+00:00">
+        <Text>Microsoft.Playwright.PlaywrightException : net::ERR_TOO_MANY_REDIRECTS at http://organisation-app:8080/
+Call log:
+  -   - navigating to "http://organisation-app:8080/", waiting until "load"
+StackTrace:    at Microsoft.Playwright.Transport.Connection.InnerSendMessageToServerAsync[T](ChannelOwner object, String method, Dictionary`2 dictionary, Boolean keepNulls) in /_/src/Playwright/Transport/Connection.cs:line 206
+   at Microsoft.Playwright.Transport.Connection.WrapApiCallAsync[T](Func`1 action, Boolean isInternal) in /_/src/Playwright/Transport/Connection.cs:line 535
+   at Microsoft.Playwright.Core.Frame.GotoAsync(String url, FrameGotoOptions options) in /_/src/Playwright/Core/Frame.cs:line 796
+   at E2ETests.Pages.LoginPage.Login(String loginUrl, String email, String password, String secretKey) in /app/Pages/LoginPage.cs:line 28
+   at E2ETests.BaseTest.OneTimeLoginPerFixture() in /app/Tests/BaseTest.cs:line 55
+   at NUnit.Framework.Internal.TaskAwaitAdapter.GenericAdapter`1.BlockUntilCompleted()
+   at NUnit.Framework.Internal.MessagePumpStrategy.NoMessagePumpStrategy.WaitForCompletion(AwaitAdapter awaiter)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await[TResult](Func`1 invoke)
+   at NUnit.Framework.Internal.AsyncToSyncAdapter.Await(Func`1 invoke)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUpOrTearDownMethod(TestExecutionContext context, IMethodInfo method)
+   at NUnit.Framework.Internal.Commands.SetUpTearDownItem.RunSetUp(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.OneTimeSetUpCommand.&lt;&gt;c__DisplayClass0_0.&lt;.ctor&gt;b__0(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Commands.BeforeTestCommand.Execute(TestExecutionContext context)
+   at NUnit.Framework.Internal.Execution.CompositeWorkItem.PerformOneTimeSetUp()</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>
