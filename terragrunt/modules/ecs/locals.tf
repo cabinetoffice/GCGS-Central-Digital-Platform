@@ -141,6 +141,7 @@ locals {
     "/js/*",
     "/notices/*",
     "/one-login/*",
+    "/pcr-2015*",
     "/search/commercial-tools*",
     "/search/contracts*",
     "/search/opportunities*",
