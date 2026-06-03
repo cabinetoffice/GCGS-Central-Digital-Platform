@@ -79,10 +79,9 @@ locals {
     fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
     licenced_to                           = "No-one"
     local_version                         = 1100
-    modernised_landing_page               = contains(["development", "staging"], var.environment) ? true : false
-    notice_publish_queue_url              = var.queue_fts_notice_publish_url
+    modernised_landing_page               = contains(["development", "staging"], var.environment)
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
-    notices_rebuild_enabled               = contains(["development", "staging"], var.environment)
+    notice_publish_queue_url              = var.queue_fts_notice_publish_url
     notice_render_cache_bucket            = module.s3_bucket_fts_notice_render_cache.bucket
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
     notice_render_cache_debug_marker      = contains(["development", "staging"], var.environment)
@@ -94,10 +93,12 @@ locals {
     srsi_organisation_lookup_endpoint     = "https://organisation.${var.public_domain}"
     srsi_tenant_lookup_endpoint           = "https://tenant.${var.public_domain}/tenant/lookup"
     ssl_service                           = true
-    submission_log_globally_enabled       = contains(["integration"], var.environment) ? true : false
+    submission_log_globally_enabled       = contains(["integration"], var.environment)
     uk11_240_enabled                      = true
-    uk17_enable_current_reporting_periods = contains(["development", "production"], var.environment) ? false : true
+    uk17_enable_current_reporting_periods = !contains(["development", "production"], var.environment)
     uk17_enabled                          = true
+    uk1_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
+    uk2_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk9_enabled                           = true
     use_srsi                              = true
     use_srsi_for_api                      = true
