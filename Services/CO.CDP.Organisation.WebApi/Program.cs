@@ -198,6 +198,7 @@ builder.Services.AddScoped<IUseCase<(Guid, AppRegModel.CreatePermission), AppReg
 builder.Services.AddScoped<IUseCase<string, AppRegModel.ClaimsTree>, AppRegClaimsUseCase.GetClaimsTreeUseCase>();
 builder.Services.AddScoped<IUseCase<AppRegAuditUseCase.AuditQuery, IEnumerable<AppRegModel.AuditLogDto>>, AppRegAuditUseCase.GetAuditLogsUseCase>();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddApplicationRegistryAuthorization();
 
 builder.Services.AddGovUKNotifyApiClient(builder.Configuration);

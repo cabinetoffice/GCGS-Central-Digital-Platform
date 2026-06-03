@@ -9,4 +9,5 @@ public class PersonScopes
 public class PersonScopeRequirement
 {
     public const string SupportAdmin = "PersonScope_" + PersonScopes.SupportAdmin;
+    public const string SuperAdmin = "PersonScope_" + PersonScopes.SuperAdmin;
 }

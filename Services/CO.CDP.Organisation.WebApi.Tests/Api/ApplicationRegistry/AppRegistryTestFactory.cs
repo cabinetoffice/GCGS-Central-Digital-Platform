@@ -1,3 +1,4 @@
+using CO.CDP.ApplicationRegistry.Persistence.Entities;
 using CO.CDP.ApplicationRegistry.Persistence.MongoDB;
 using CO.CDP.ApplicationRegistry.Persistence.Repositories;
 using CO.CDP.MQ;
@@ -42,6 +43,8 @@ internal static class AppRegistryTestFactory
 
     private static HttpClient Create(IEnumerable<Claim> authClaims, Action<IServiceCollection>? extraServices)
     {
+        var claimsList = authClaims.ToList();
+
         var factory = new TestWebApplicationFactory<Program>(builder =>
         {
             builder.ConfigureServices(services =>
@@ -65,7 +68,15 @@ internal static class AppRegistryTestFactory
                 services.AddTransient<IPolicyEvaluator>(sp =>
                     new AppRegistryPolicyEvaluator(
                         ActivatorUtilities.CreateInstance<PolicyEvaluator>(sp),
-                        authClaims.ToList()));
+                        claimsList));
+
+                // Provide a default IOrganisationRepository mock for OrganisationRoleHandler.
+                // When org-role claims are present (org:{id}:role=<role>), the handler calls
+                // GetMemberAsync to verify membership in the DB. We pre-configure the mock to
+                // return a matching membership so the handler succeeds.
+                // Tests that need different behaviour can override via extraServices.
+                var defaultOrgRepo = BuildDefaultOrgRepoMock(claimsList);
+                services.AddScoped<CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository>(_ => defaultOrgRepo);
 
                 // Extra per-test service overrides (repository mocks, use-case mocks, etc.)
                 extraServices?.Invoke(services);
@@ -73,6 +84,40 @@ internal static class AppRegistryTestFactory
         });
 
         return factory.CreateClient();
+    }
+
+    /// <summary>
+    /// Builds an <see cref="AppRegistry.Persistence.Repositories.IOrganisationRepository"/> mock
+    /// that returns a valid <see cref="UserOrganisationMembership"/> for every org:{orgId}:role
+    /// claim found in <paramref name="claims"/>. The test user URN is always <c>urn:test:user</c>
+    /// (matching the identity injected by <see cref="AppRegistryPolicyEvaluator"/>).
+    /// </summary>
+    private static CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository BuildDefaultOrgRepoMock(IReadOnlyList<Claim> claims)
+    {
+        var mock = new Mock<CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository>();
+
+        foreach (var claim in claims)
+        {
+            // Claim type format: org:{orgId}:role
+            var parts = claim.Type.Split(':');
+            if (parts.Length == 3 && parts[0] == "org" && parts[2] == "role"
+                && Guid.TryParse(parts[1], out var orgId))
+            {
+                var role = claim.Value; // e.g. "Admin" or "Member"
+                var membership = new UserOrganisationMembership
+                {
+                    UserPrincipalId  = "urn:test:user",
+                    OrganisationId   = orgId,
+                    OrganisationRole = role,
+                    IsActive         = true
+                };
+
+                mock.Setup(r => r.GetMemberAsync(orgId, "urn:test:user"))
+                    .ReturnsAsync(membership);
+            }
+        }
+
+        return mock.Object;
     }
 
     /// <summary>

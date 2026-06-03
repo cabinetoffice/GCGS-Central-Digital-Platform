@@ -1,3 +1,4 @@
+using CO.CDP.ApplicationRegistry.Persistence.Repositories;
 using Microsoft.AspNetCore.Authorization;
 
 namespace CO.CDP.Organisation.WebApi.ApplicationRegistry.Authorization;
@@ -58,45 +59,64 @@ public class PlatformAdminHandler : AuthorizationHandler<PlatformAdminRequiremen
 
 public class OrganisationRoleHandler : AuthorizationHandler<OrganisationRoleRequirement>
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public OrganisationRoleHandler(IHttpContextAccessor httpContextAccessor)
+    public OrganisationRoleHandler(IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
     {
+        _serviceProvider = serviceProvider;
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override Task HandleRequirementAsync(
+    protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         OrganisationRoleRequirement requirement)
     {
         if (context.User.HasClaim(c => c.Type == "platform_role" && c.Value == "admin"))
         {
             context.Succeed(requirement);
-            return Task.CompletedTask;
+            return;
         }
 
         var httpContext = _httpContextAccessor.HttpContext;
         if (httpContext == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
         if (!httpContext.Request.RouteValues.TryGetValue("orgId", out var orgIdValue)
             || !Guid.TryParse(orgIdValue?.ToString(), out var orgId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        var orgRoleClaims = context.User.FindAll($"org:{orgId}:role");
-        foreach (var claim in orgRoleClaims)
+        var urn = context.User.FindFirst("sub")?.Value;
+        if (string.IsNullOrEmpty(urn))
         {
-            if (requirement.AllowedRoles.Contains(claim.Value, StringComparer.OrdinalIgnoreCase))
-            {
-                context.Succeed(requirement);
-                break;
-            }
+            return;
         }
 
-        return Task.CompletedTask;
+        // Fast path: check JWT org-role claim (org:{orgId}:role=<role>).
+        // These claims are injected by the authority token-enrichment pipeline.
+        var claimType = $"org:{orgId}:role";
+        var orgRoleClaim = context.User.FindFirst(c => c.Type == claimType);
+        if (orgRoleClaim != null
+            && requirement.AllowedRoles.Contains(orgRoleClaim.Value, StringComparer.OrdinalIgnoreCase))
+        {
+            context.Succeed(requirement);
+            return;
+        }
+
+        // Fallback: verify membership via the AppRegistry database.
+        using var scope = _serviceProvider.CreateScope();
+        var orgRepo = scope.ServiceProvider.GetRequiredService<IOrganisationRepository>();
+
+        var membership = await orgRepo.GetMemberAsync(orgId, urn);
+        if (membership != null
+            && membership.IsActive
+            && requirement.AllowedRoles.Contains(membership.OrganisationRole, StringComparer.OrdinalIgnoreCase))
+        {
+            context.Succeed(requirement);
+        }
     }
 }

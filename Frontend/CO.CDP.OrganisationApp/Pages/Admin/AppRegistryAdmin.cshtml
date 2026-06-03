@@ -1,0 +1,79 @@
+@page "/admin/app-registry"
+@model AppRegistryAdminModel
+
+@{
+    ViewData["Title"] = "Application Registry — Platform Admin";
+}
+
+<h1 class="govuk-heading-l">Application Registry Management</h1>
+
+<p class="govuk-body">
+    This page is for <strong>Platform Administrators</strong> only. It provides an overview of the
+    Application Registry API and links to the interactive Swagger UI where you can execute
+    management operations.
+</p>
+
+<h2 class="govuk-heading-m">What is the Application Registry?</h2>
+
+<p class="govuk-body">
+    The Application Registry is the authoritative store of client applications that integrate
+    with the CDP platform. Each application record defines:
+</p>
+
+<ul class="govuk-list govuk-list--bullet">
+    <li><strong>Application</strong> — the client system (e.g. a procurement service or front-end portal).</li>
+    <li><strong>Permissions</strong> — fine-grained capabilities that can be granted (e.g. <code>read:organisations</code>).</li>
+    <li><strong>Roles</strong> — named collections of permissions assigned to users or service accounts.</li>
+</ul>
+
+<h2 class="govuk-heading-m">Operational workflow</h2>
+
+<ol class="govuk-list govuk-list--number">
+    <li>
+        <strong>Register the application</strong> — call <code>POST /api/applications</code> with the
+        application name, description, and client ID. Note the returned <code>id</code> (the <em>appId</em>).
+    </li>
+    <li>
+        <strong>Define permissions</strong> — call <code>POST /api/applications/{appId}/permissions</code>
+        for each permission the application exposes.
+    </li>
+    <li>
+        <strong>Create roles</strong> — call <code>POST /api/applications/{appId}/roles</code> for each
+        role (e.g. <em>Viewer</em>, <em>Editor</em>, <em>Admin</em>).
+    </li>
+    <li>
+        <strong>Assign permissions to roles</strong> — call
+        <code>PUT /api/applications/{appId}/roles/{roleId}/permissions</code> with the full list of
+        permission IDs for each role.
+    </li>
+    <li>
+        <strong>Verify</strong> — call <code>GET /api/applications/{appId}/roles</code> to confirm
+        permissions are correctly assigned.
+    </li>
+</ol>
+
+<div class="govuk-inset-text">
+    All write operations (<code>POST</code>, <code>PUT</code>, <code>DELETE</code>) require a valid
+    Platform Admin token obtained via the <code>client_credentials</code> OAuth 2.0 grant with the
+    <code>platform_admin</code> scope. Read operations on individual resources do not require the
+    Platform Admin scope.
+</div>
+
+<h2 class="govuk-heading-m">API reference</h2>
+
+<p class="govuk-body">
+    The full interactive API documentation is available in the Swagger UI. You can use it to
+    explore all endpoints and execute requests directly against the live service.
+</p>
+
+<p class="govuk-body">
+    <a class="govuk-link" href="/swagger/index.html" target="_blank" rel="noopener noreferrer">
+        Open Organisation API Swagger UI (opens in a new tab)
+    </a>
+</p>
+
+<p class="govuk-body">
+    Filter by the <strong>Application</strong> or <strong>Application - Permissions</strong> /
+    <strong>Application - Roles</strong> tag groups to find the relevant endpoints. All Platform
+    Admin-restricted endpoints are marked with the <em>[Platform Admin]</em> prefix in their summary.
+</p>

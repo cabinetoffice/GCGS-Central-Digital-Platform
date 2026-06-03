@@ -216,6 +216,97 @@ public class TokenServiceTest
         result.urn.Should().BeNull();
     }
 
+    [Fact]
+    public async Task ValidateAndRevokeRefreshToken_ShouldReturnInvalidWhenTokenIsExpired()
+    {
+        // The repository's Find implementation filters out expired tokens (ExpiryDate <= Now),
+        // so an expired token causes Find to return null — same observable result as not found.
+        string token = "expired:ZXhwaXJlZC1zYWx0";
+
+        _authorityRepositoryMock.Setup(x => x.Find(It.IsAny<string>()))
+            .ReturnsAsync((RefreshToken?)null);
+
+        var (valid, urn) = await _tokenService.ValidateAndRevokeRefreshToken(token);
+
+        valid.Should().BeFalse();
+        urn.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task ValidateAndRevokeRefreshToken_ShouldReturnInvalidWhenTokenIsRevoked()
+    {
+        // The repository's Find implementation excludes revoked tokens (Revoked = true),
+        // so a revoked token causes Find to return null — same observable result as not found.
+        string token = "revoked:cmV2b2tlZC1zYWx0";
+
+        _authorityRepositoryMock.Setup(x => x.Find(It.IsAny<string>()))
+            .ReturnsAsync((RefreshToken?)null);
+
+        var (valid, urn) = await _tokenService.ValidateAndRevokeRefreshToken(token);
+
+        valid.Should().BeFalse();
+        urn.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task CreateToken_WhenClaimsFlagOn_ShouldLogTokenIssuedEvent()
+    {
+        GenerateTempKeys(out var rsaPrivateKey, out var resPublicParams);
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = rsaPrivateKey, RsaPublicParams = resPublicParams });
+
+        var claimsJson = "{\"userPrincipalId\":\"urn:test\",\"organisations\":[]}";
+        var mockHandler = CreateMockHttpHandler(HttpStatusCode.OK, claimsJson);
+        var httpClient = new HttpClient(mockHandler.Object) { BaseAddress = new Uri("http://localhost") };
+
+        var factoryMock = new Mock<IHttpClientFactory>();
+        factoryMock.Setup(f => f.CreateClient("OrganisationApiHttpClient")).Returns(httpClient);
+
+        var loggerMock = new Mock<ILogger<TokenService>>();
+        loggerMock.Setup(l => l.IsEnabled(LogLevel.Information)).Returns(true);
+        var tokenService = new TokenService(
+            loggerMock.Object,
+            _configServiceMock.Object,
+            _personRepositoryMock.Object,
+            _authorityRepositoryMock.Object,
+            factoryMock.Object,
+            Options.Create(new FeaturesOptions { ClaimsApiEnabled = true }));
+
+        var result = await tokenService.CreateToken(_userUrn);
+
+        result.Should().NotBeNull();
+        result.AccessToken.Should().NotBeNullOrWhiteSpace();
+
+        loggerMock.Verify(
+            l => l.Log(
+                LogLevel.Information,
+                It.IsAny<EventId>(),
+                It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains(_userUrn)),
+                null,
+                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
+            Times.AtLeastOnce);
+    }
+
+    [Fact]
+    public async Task ValidateOneLoginToken_ShouldReturnFalseAndNullUrn_WhenTokenInvalid()
+    {
+        // Arrange: completely malformed token — not a valid JWT
+        const string invalidToken = "this.is.not.a.valid.jwt";
+
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
+            .ReturnsAsync(GetOneLoginAuthorityConfiguration().Object);
+
+        _configServiceMock.Setup(c => c.GetOneLoginConfiguration(true))
+            .ReturnsAsync(GetOneLoginAuthorityConfiguration().Object);
+
+        // Act
+        var (valid, urn) = await _tokenService.ValidateOneLoginToken(invalidToken);
+
+        // Assert
+        valid.Should().BeFalse();
+        urn.Should().BeNull();
+    }
+
     private string GenerateOneLoginToken(RsaSecurityKey rsaPrivateKey, string? urn = null)
     {
         List<Claim> claims = [];

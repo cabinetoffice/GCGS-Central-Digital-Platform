@@ -98,13 +98,13 @@ public class TokenService(
         var authorityConfig = configService.GetAuthorityConfiguration();
 
         // Validate audience when OneLogin:ClientId is configured (OIDC Core 1.0 §3.1.3.7).
-        // When the ClientId is absent (e.g. local dev without One Login), validation is skipped
-        // with a warning rather than silently accepting all tokens.
+        // When the ClientId is absent audience validation is disabled — log at ERROR level so
+        // this misconfiguration is visible in all environments, including local development.
         var validateAudience = !string.IsNullOrWhiteSpace(authorityConfig.OneLoginClientId);
         if (!validateAudience)
-            logger.LogWarning(
-                "OneLogin:ClientId is not configured — audience validation on incoming tokens is DISABLED. " +
-                "Set OneLogin:ClientId to enforce audience checks.");
+            logger.LogError(
+                "SECURITY: OneLogin:ClientId is not configured — audience validation on incoming tokens is DISABLED. " +
+                "Tokens from any client will be accepted. Set OneLogin:ClientId in configuration.");
 
         var parameters = new TokenValidationParameters
         {

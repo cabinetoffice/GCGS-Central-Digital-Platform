@@ -3,6 +3,7 @@ using CO.CDP.Organisation.WebApi.ApplicationRegistry.Model;
 using CO.CDP.Organisation.WebApi.ApplicationRegistry.UseCase;
 using CO.CDP.Organisation.WebApi.ApplicationRegistry.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace CO.CDP.Organisation.WebApi.ApplicationRegistry.Api;
 
@@ -17,17 +18,31 @@ public static class ApplicationEndpoints
             return Results.Ok(result);
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application");
+        .WithTags("Application")
+        .WithSummary("[Platform Admin] List all applications")
+        .WithDescription("Returns all registered applications in the Application Registry. Requires Platform Admin credentials (client_credentials grant with the platform_admin scope).");
 
         app.MapPost("/api/applications", async (
             CreateApplication command,
             IUseCase<CreateApplication, ApplicationDto> useCase) =>
         {
-            var result = await useCase.Execute(command);
-            return Results.Created($"/api/applications/{result.Id}", result);
+            try
+            {
+                var result = await useCase.Execute(command);
+                return Results.Created($"/api/applications/{result.Id}", result);
+            }
+            catch (MongoWriteException ex) when (ex.WriteError.Code == 11000)
+            {
+                return Results.Conflict(new
+                {
+                    error = "An application with this ClientId already exists."
+                });
+            }
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application");
+        .WithTags("Application")
+        .WithSummary("[Platform Admin] Register a new application")
+        .WithDescription("Creates a new application entry in the Application Registry. The application record defines the client system and is the root for permissions and roles. Requires Platform Admin credentials.");
 
         app.MapGet("/api/applications/{appId:guid}", async (
             Guid appId,
@@ -36,7 +51,9 @@ public static class ApplicationEndpoints
             var result = await useCase.Execute(appId);
             return result != null ? Results.Ok(result) : Results.NotFound();
         })
-        .WithTags("Application");
+        .WithTags("Application")
+        .WithSummary("Get application by ID")
+        .WithDescription("Returns the details of a specific application by its unique identifier.");
 
         app.MapPut("/api/applications/{appId:guid}", async (
             Guid appId,
@@ -47,7 +64,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application");
+        .WithTags("Application")
+        .WithSummary("[Platform Admin] Update an application")
+        .WithDescription("Updates the name, description, or active status of an existing application. Requires Platform Admin credentials.");
 
         app.MapDelete("/api/applications/{appId:guid}", async (
             Guid appId,
@@ -57,7 +76,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application");
+        .WithTags("Application")
+        .WithSummary("[Platform Admin] Deactivate an application")
+        .WithDescription("Soft-deletes (deactivates) an application by setting its active flag to false. The record is retained for audit purposes. Requires Platform Admin credentials.");
 
         // Permissions
         app.MapGet("/api/applications/{appId:guid}/permissions", async (
@@ -67,7 +88,9 @@ public static class ApplicationEndpoints
             var perms = await repo.GetPermissionsAsync(appId);
             return Results.Ok(perms.Select(p => new PermissionDto(p.Id, p.ApplicationId, p.Name, p.Description)));
         })
-        .WithTags("Application - Permissions");
+        .WithTags("Application - Permissions")
+        .WithSummary("List permissions for an application")
+        .WithDescription("Returns all permissions defined for the specified application.");
 
         app.MapPost("/api/applications/{appId:guid}/permissions", async (
             Guid appId,
@@ -78,7 +101,9 @@ public static class ApplicationEndpoints
             return Results.Created($"/api/applications/{appId}/permissions/{result.Id}", result);
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Permissions");
+        .WithTags("Application - Permissions")
+        .WithSummary("[Platform Admin] Add a permission to an application")
+        .WithDescription("Creates a new fine-grained permission for the specified application. Permissions are subsequently assigned to roles. Requires Platform Admin credentials.");
 
         app.MapPut("/api/applications/{appId:guid}/permissions/{permId:guid}", async (
             Guid appId,
@@ -95,7 +120,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Permissions");
+        .WithTags("Application - Permissions")
+        .WithSummary("[Platform Admin] Update a permission")
+        .WithDescription("Updates the name or description of an existing permission on the specified application. Requires Platform Admin credentials.");
 
         app.MapDelete("/api/applications/{appId:guid}/permissions/{permId:guid}", async (
             Guid appId,
@@ -106,7 +133,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Permissions");
+        .WithTags("Application - Permissions")
+        .WithSummary("[Platform Admin] Delete a permission")
+        .WithDescription("Permanently removes a permission from the specified application. All role-permission associations for this permission are also removed. Requires Platform Admin credentials.");
 
         // Roles
         app.MapGet("/api/applications/{appId:guid}/roles", async (
@@ -120,7 +149,9 @@ public static class ApplicationEndpoints
                     rp.Permission.Id, rp.Permission.ApplicationId,
                     rp.Permission.Name, rp.Permission.Description)))));
         })
-        .WithTags("Application - Roles");
+        .WithTags("Application - Roles")
+        .WithSummary("List roles for an application")
+        .WithDescription("Returns all roles defined for the specified application, including the permissions assigned to each role.");
 
         app.MapPost("/api/applications/{appId:guid}/roles", async (
             Guid appId,
@@ -139,7 +170,9 @@ public static class ApplicationEndpoints
                 created.IsActive, Enumerable.Empty<PermissionDto>()));
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Roles");
+        .WithTags("Application - Roles")
+        .WithSummary("[Platform Admin] Create a role for an application")
+        .WithDescription("Creates a new role for the specified application. Use the set-permissions endpoint to assign permissions to the role after creation. Requires Platform Admin credentials.");
 
         app.MapPut("/api/applications/{appId:guid}/roles/{roleId:guid}", async (
             Guid appId,
@@ -157,7 +190,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Roles");
+        .WithTags("Application - Roles")
+        .WithSummary("[Platform Admin] Update a role")
+        .WithDescription("Updates the name, description, or active status of an existing role. Requires Platform Admin credentials.");
 
         app.MapDelete("/api/applications/{appId:guid}/roles/{roleId:guid}", async (
             Guid appId,
@@ -168,7 +203,9 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Roles");
+        .WithTags("Application - Roles")
+        .WithSummary("[Platform Admin] Delete a role")
+        .WithDescription("Permanently removes a role from the specified application. All role-permission associations for this role are also removed. Requires Platform Admin credentials.");
 
         app.MapPut("/api/applications/{appId:guid}/roles/{roleId:guid}/permissions", async (
             Guid appId,
@@ -180,6 +217,8 @@ public static class ApplicationEndpoints
             return Results.NoContent();
         })
         .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
-        .WithTags("Application - Roles");
+        .WithTags("Application - Roles")
+        .WithSummary("[Platform Admin] Set permissions on a role")
+        .WithDescription("Replaces the full set of permissions assigned to a role. Supply the complete desired list of permission IDs; any existing assignments not in the list will be removed. Requires Platform Admin credentials.");
     }
 }

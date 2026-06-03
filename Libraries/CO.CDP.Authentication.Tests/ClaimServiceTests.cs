@@ -248,6 +248,16 @@ public class ClaimServiceTests
         svc.HasApplicationRole(orgId, "other-app", "Buyer").Should().BeFalse();
     }
 
+    [Fact]
+    public void HasApplicationRole_ShouldReturnFalse_WhenCdpClaimsIsEmptyJson()
+    {
+        // cdp_claims is valid JSON but contains no organisations array
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, "{}")]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.HasApplicationRole(Guid.NewGuid(), "any-app", "AnyRole").Should().BeFalse();
+    }
+
     // ── HasApplicationPermission (Phase 3B) ───────────────────────────────
 
     [Fact]
@@ -283,6 +293,16 @@ public class ClaimServiceTests
         var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
 
         svc.HasApplicationPermission(Guid.NewGuid(), "any-app", "any:perm").Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetApplicationClaims_ShouldReturnNull_WhenCdpClaimsIsNullOrWhitespace()
+    {
+        // cdp_claims claim is present but contains only whitespace — should not deserialize
+        var ctx = GivenHttpContextWith([new(ClaimType.CdpClaims, "   ")]);
+        var svc = new ClaimService(ctx.Object, mockOrgRepo.Object);
+
+        svc.GetApplicationClaims().Should().BeNull();
     }
 
     private static Mock<IHttpContextAccessor> GivenHttpContextWith(List<Claim> claims)
