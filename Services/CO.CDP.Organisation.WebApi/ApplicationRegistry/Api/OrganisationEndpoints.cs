@@ -143,22 +143,48 @@ public static class OrganisationEndpoints
         .RequireAuthorization(AuthorizationPolicies.OrgMember)
         .WithTags("Organisation - Applications");
 
-        app.MapPost("/api/organisations/{orgId:guid}/applications/{appId:guid}", (
+        app.MapPost("/api/organisations/{orgId:guid}/applications/{appId:guid}", async (
             Guid orgId,
-            Guid appId) =>
+            Guid appId,
+            CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository orgRepo,
+            CO.CDP.ApplicationRegistry.Persistence.Repositories.IApplicationRepository  appRepo,
+            Microsoft.AspNetCore.Http.IHttpContextAccessor http) =>
         {
-            return Results.Created();
+            var org = await orgRepo.GetByIdAsync(orgId);
+            if (org == null) return Results.NotFound();
+
+            var application = await appRepo.GetByIdAsync(appId);
+            if (application == null || !application.IsActive) return Results.NotFound();
+
+            var existing = await orgRepo.GetOrganisationApplicationsAsync(orgId);
+            if (existing.Any(oa => oa.ApplicationId == appId)) return Results.Conflict();
+
+            var enabledBy = http.HttpContext?.User?.FindFirst("sub")?.Value ?? "system";
+            await orgRepo.EnableApplicationAsync(new CO.CDP.ApplicationRegistry.Persistence.Entities.OrganisationApplication
+            {
+                OrganisationId = orgId,
+                ApplicationId  = appId,
+                EnabledAt      = DateTimeOffset.UtcNow,
+                EnabledBy      = enabledBy
+            });
+
+            return Results.Created($"/api/organisations/{orgId}/applications", null);
         })
-        .RequireAuthorization(AuthorizationPolicies.OrgAdmin)
+        .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
         .WithTags("Organisation - Applications");
 
-        app.MapDelete("/api/organisations/{orgId:guid}/applications/{appId:guid}", (
+        app.MapDelete("/api/organisations/{orgId:guid}/applications/{appId:guid}", async (
             Guid orgId,
-            Guid appId) =>
+            Guid appId,
+            CO.CDP.ApplicationRegistry.Persistence.Repositories.IOrganisationRepository orgRepo) =>
         {
+            var existing = await orgRepo.GetOrganisationApplicationsAsync(orgId);
+            if (!existing.Any(oa => oa.ApplicationId == appId)) return Results.NotFound();
+
+            await orgRepo.DisableApplicationAsync(orgId, appId);
             return Results.NoContent();
         })
-        .RequireAuthorization(AuthorizationPolicies.OrgAdmin)
+        .RequireAuthorization(AuthorizationPolicies.PlatformAdmin)
         .WithTags("Organisation - Applications");
     }
 }

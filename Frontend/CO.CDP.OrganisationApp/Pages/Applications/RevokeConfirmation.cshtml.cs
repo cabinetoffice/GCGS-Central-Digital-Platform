@@ -60,6 +60,7 @@ public class RevokeConfirmationModel(
             return Page();
         }
 
+        TempData["SuccessMessage"] = "User's access has been removed.";
         return Redirect($"/organisation/{Id}/applications/{AppId}/user-assignments");
     }
 

@@ -4,6 +4,7 @@ using MongoDB.Driver;
 
 namespace CO.CDP.ApplicationRegistry.Persistence.Repositories.MongoDB;
 
+
 /// <summary>
 /// MongoDB concrete implementation of <see cref="IApplicationRepository"/>.
 ///
@@ -20,12 +21,16 @@ public class MongoApplicationRepository : IApplicationRepository
 {
     private readonly IMongoCollection<Application> _applications;
     private readonly IAuditRepository _audit;
+    private readonly ICurrentUserContext _caller;
 
-    public MongoApplicationRepository(MongoAppRegistryDatabase db, IAuditRepository audit)
+    public MongoApplicationRepository(MongoAppRegistryDatabase db, IAuditRepository audit, ICurrentUserContext caller)
     {
         _applications = db.Applications;
-        _audit = audit;
+        _audit        = audit;
+        _caller       = caller;
     }
+
+    private string CallerUrn => _caller.UserId;
 
     // ── Read operations ────────────────────────────────────────────────────
 
@@ -115,7 +120,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(Application),
             EntityId   = application.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
         return application;
     }
@@ -129,7 +134,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(Application),
             EntityId   = application.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -144,7 +149,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationPermission),
             EntityId   = permission.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
         return permission;
     }
@@ -176,7 +181,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationPermission),
             EntityId   = permission.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -197,7 +202,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationPermission),
             EntityId   = permissionId,
             Action     = "Deleted",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -212,7 +217,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationRole),
             EntityId   = role.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
         return role;
     }
@@ -246,7 +251,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationRole),
             EntityId   = role.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -278,7 +283,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationRole),
             EntityId   = roleId,
             Action     = "Deleted",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -320,7 +325,7 @@ public class MongoApplicationRepository : IApplicationRepository
             EntityType = nameof(ApplicationRole),
             EntityId   = roleId,
             Action     = "PermissionsUpdated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 

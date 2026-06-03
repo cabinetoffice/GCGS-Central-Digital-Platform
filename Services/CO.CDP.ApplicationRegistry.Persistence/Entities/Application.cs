@@ -10,6 +10,7 @@ public class Application
     public bool IsActive { get; set; } = true;
     public DateTimeOffset CreatedOn { get; set; } = DateTimeOffset.UtcNow;
     public DateTimeOffset UpdatedOn { get; set; } = DateTimeOffset.UtcNow;
+    
 
     public ICollection<ApplicationPermission> Permissions { get; set; } = new List<ApplicationPermission>();
     public ICollection<ApplicationRole> Roles { get; set; } = new List<ApplicationRole>();

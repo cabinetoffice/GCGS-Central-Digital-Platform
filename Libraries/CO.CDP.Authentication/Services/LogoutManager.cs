@@ -43,9 +43,18 @@ public class LogoutManager : ILogoutManager
 
     private async Task AddToLoggedOutSessionsList(string userUrn)
     {
+        var sessionTimeout = _config.GetValue<double?>("SessionTimeoutInMinutes")
+            ?? throw new InvalidOperationException(
+                "Configuration key 'SessionTimeoutInMinutes' is required but missing or zero. " +
+                "Add it to appsettings.json with a positive value in minutes (e.g. 60).");
+
+        if (sessionTimeout <= 0)
+            throw new InvalidOperationException(
+                $"Configuration key 'SessionTimeoutInMinutes' must be a positive value, got {sessionTimeout}.");
+
         await _cache.Set(LoggedOutUserKey(userUrn), Value, new DistributedCacheEntryOptions
         {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(_config.GetValue<double>("SessionTimeoutInMinutes"))
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(sessionTimeout)
         });
     }
 

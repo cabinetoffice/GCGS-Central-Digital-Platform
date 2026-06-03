@@ -23,13 +23,17 @@ public class MongoUserAssignmentRepository : IUserAssignmentRepository
     private readonly IMongoCollection<UserApplicationAssignment> _assignments;
     private readonly IMongoCollection<Application>               _applications;
     private readonly IAuditRepository                            _audit;
+    private readonly ICurrentUserContext                         _caller;
 
-    public MongoUserAssignmentRepository(MongoAppRegistryDatabase db, IAuditRepository audit)
+    public MongoUserAssignmentRepository(MongoAppRegistryDatabase db, IAuditRepository audit, ICurrentUserContext caller)
     {
         _assignments  = db.UserAssignments;
         _applications = db.Applications;
         _audit        = audit;
+        _caller       = caller;
     }
+
+    private string CallerUrn => _caller.UserId;
 
     // ── Read operations ────────────────────────────────────────────────────
 
@@ -87,7 +91,7 @@ public class MongoUserAssignmentRepository : IUserAssignmentRepository
             EntityType = nameof(UserApplicationAssignment),
             EntityId   = assignment.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
         return assignment;
     }
@@ -100,7 +104,7 @@ public class MongoUserAssignmentRepository : IUserAssignmentRepository
             EntityType = nameof(UserApplicationAssignment),
             EntityId   = assignment.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -131,7 +135,7 @@ public class MongoUserAssignmentRepository : IUserAssignmentRepository
                     EntityType = nameof(UserApplicationAssignment),
                     EntityId   = doc.Id,
                     Action     = "Revoked",
-                    UserId     = "system"
+                    UserId     = CallerUrn
                 });
         }
     }

@@ -60,6 +60,9 @@ public class UserAssignmentCheckAnswersModel(
         }
 
         TempData.Remove(UserAssignmentState.TempDataKey);
+        TempData["SuccessMessage"] = State.IsEdit
+            ? "Roles updated. Changes take effect when the user next signs in."
+            : "User assigned. Changes take effect when the user next signs in.";
         return Redirect($"/organisation/{Id}/applications/{AppId}/user-assignments");
     }
 

@@ -87,9 +87,13 @@ public static class Extensions
             options.MapInboundClaims = false;
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidIssuer = authority,
-                ValidateAudience = false,
+                ValidateIssuer           = true,
+                ValidIssuer              = authority,
+                // Audience = Issuer URL (Authority sets aud=Issuer in CreateAccessToken).
+                // Enforces that tokens are only accepted by services that share the correct authority.
+                // OWASP ASVS §3.5.1 / RFC 7519 §4.1.3
+                ValidateAudience         = true,
+                ValidAudience            = authority,
                 ValidateIssuerSigningKey = true
             };
         });

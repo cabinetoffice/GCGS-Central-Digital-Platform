@@ -3,6 +3,7 @@ using CO.CDP.Organisation.WebApi.ApplicationRegistry.Authorization;
 using CO.CDP.ApplicationRegistry.Persistence.Entities;
 using CO.CDP.ApplicationRegistry.Persistence.Repositories;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace CO.CDP.Organisation.WebApi.ApplicationRegistry.Api;
 
@@ -33,15 +34,17 @@ public static class UserAssignmentEndpoints
             Guid orgId,
             Guid appId,
             CreateUserAssignment command,
-            IUserAssignmentRepository repo) =>
+            IUserAssignmentRepository repo,
+            Microsoft.AspNetCore.Http.HttpContext context) =>
         {
+            var callerUrn = context.User?.FindFirst("sub")?.Value ?? "system";
             var assignment = new UserApplicationAssignment
             {
                 UserPrincipalId = command.UserPrincipalId,
-                ApplicationId = appId,
-                OrganisationId = orgId,
-                AssignedBy = "system",
-                AssignedAt = DateTimeOffset.UtcNow
+                ApplicationId   = appId,
+                OrganisationId  = orgId,
+                AssignedBy      = callerUrn,
+                AssignedAt      = DateTimeOffset.UtcNow
             };
 
             if (command.RoleIds != null)
@@ -55,8 +58,18 @@ public static class UserAssignmentEndpoints
                 }
             }
 
-            var created = await repo.CreateAssignmentAsync(assignment);
-            return Results.Created($"/api/organisations/{orgId}/applications/{appId}/users/{command.UserPrincipalId}", created);
+            try
+            {
+                var created = await repo.CreateAssignmentAsync(assignment);
+                return Results.Created($"/api/organisations/{orgId}/applications/{appId}/users/{command.UserPrincipalId}", created);
+            }
+            catch (MongoWriteException ex) when (ex.WriteError.Code == 11000)
+            {
+                return Results.Conflict(new
+                {
+                    detail = $"User '{command.UserPrincipalId}' is already assigned to this application in this organisation."
+                });
+            }
         })
         .RequireAuthorization(AuthorizationPolicies.OrgAdmin)
         .WithTags("User Assignment");

@@ -296,7 +296,7 @@ builder.Services.AddAuthentication(options =>
     options.Scope.Add(StandardScopes.Email);
     options.SaveTokens = true;
     options.GetClaimsFromUserInfoEndpoint = true;
-    options.UsePkce = false;
+    options.UsePkce = true; // OAuth 2.1 §4.1.1 — PKCE required for all auth code flows
     options.EventsType = typeof(OidcEvents);
     options.ClaimActions.MapAll();
 

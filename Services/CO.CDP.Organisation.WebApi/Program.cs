@@ -168,6 +168,10 @@ builder.Services.AddSingleton<IMongoDatabase>(
     new MongoClient(mongoConnectionString).GetDatabase(mongoDbName));
 builder.Services.AddSingleton<MongoAppRegistryDatabase>();
 
+// Audit identity — provides the authenticated caller's URN to MongoDB write operations.
+builder.Services.AddScoped<CO.CDP.ApplicationRegistry.Persistence.ICurrentUserContext,
+    CO.CDP.Organisation.WebApi.ApplicationRegistry.HttpCurrentUserContext>();
+
 // Repository interfaces → MongoDB concrete classes (AppRegRepo alias).
 // To swap to a different store: implement the interfaces under a new namespace
 // and update the AppRegRepo alias at the top of this file only.

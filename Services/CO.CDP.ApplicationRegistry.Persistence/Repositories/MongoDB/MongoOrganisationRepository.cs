@@ -18,13 +18,17 @@ public class MongoOrganisationRepository : IOrganisationRepository
     private readonly IMongoCollection<Organisation>  _organisations;
     private readonly IMongoCollection<Application>   _applications;
     private readonly IAuditRepository                _audit;
+    private readonly ICurrentUserContext             _caller;
 
-    public MongoOrganisationRepository(MongoAppRegistryDatabase db, IAuditRepository audit)
+    public MongoOrganisationRepository(MongoAppRegistryDatabase db, IAuditRepository audit, ICurrentUserContext caller)
     {
         _organisations = db.Organisations;
         _applications  = db.Applications;
         _audit         = audit;
+        _caller        = caller;
     }
+
+    private string CallerUrn => _caller.UserId;
 
     // ── Read operations ────────────────────────────────────────────────────
 
@@ -120,7 +124,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(Organisation),
             EntityId   = organisation.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
         return organisation;
     }
@@ -134,7 +138,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(Organisation),
             EntityId   = organisation.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -149,7 +153,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(UserOrganisationMembership),
             EntityId   = membership.Id,
             Action     = "Created",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -176,7 +180,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(UserOrganisationMembership),
             EntityId   = membership.Id,
             Action     = "Updated",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -194,7 +198,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(OrganisationApplication),
             EntityId   = organisationApplication.ApplicationId,
             Action     = "ApplicationEnabled",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 
@@ -209,7 +213,7 @@ public class MongoOrganisationRepository : IOrganisationRepository
             EntityType = nameof(OrganisationApplication),
             EntityId   = applicationId,
             Action     = "ApplicationDisabled",
-            UserId     = "system"
+            UserId     = CallerUrn
         });
     }
 }

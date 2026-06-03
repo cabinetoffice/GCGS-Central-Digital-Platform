@@ -118,6 +118,10 @@ public class TokenServiceTest
     public async Task ValidateOneLoginToken_ShouldReturnTrueAndUrn_ForValidToken()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var rsaPublicParams);
+        GenerateTempKeys(out var authorityKey, out var authorityPublicParams);
+        // OneLoginClientId = empty → audience validation skipped (local dev / no client configured)
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = authorityKey, RsaPublicParams = authorityPublicParams });
         string token = GenerateOneLoginToken(rsaPrivateKey, _userUrn);
 
         _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
@@ -151,6 +155,9 @@ public class TokenServiceTest
     public async Task ValidateOneLoginToken_ShouldReturnTrueAndUrn_WhenMatchingSigningKeysOnRetry()
     {
         GenerateTempKeys(out var rsaPrivateKey, out var rsaPublicParams);
+        GenerateTempKeys(out var authorityKey, out var authorityPublicParams);
+        _configServiceMock.Setup(c => c.GetAuthorityConfiguration())
+            .Returns(new AuthorityConfiguration { Issuer = _issuer, RsaPrivateKey = authorityKey, RsaPublicParams = authorityPublicParams });
         string token = GenerateOneLoginToken(rsaPrivateKey, _userUrn);
 
         _configServiceMock.Setup(c => c.GetOneLoginConfiguration(false))
@@ -182,14 +189,20 @@ public class TokenServiceTest
     {
         string token = "password:dmFsaWQtc2FsdA==";
         string hashToValidate = "RfLTQtUMjxyhUSKTJOzTW6PIPv+zRvvWTM1ylJlnNS8=";
+        const string expectedUrn = "urn:fdc:gov.uk:2022:test-user";
 
         _authorityRepositoryMock.Setup(x => x.Find(hashToValidate))
-            .ReturnsAsync(new RefreshToken { TokenHash = hashToValidate, ExpiryDate = DateTimeOffset.Now.AddMinutes(1) });
+            .ReturnsAsync(new RefreshToken
+            {
+                TokenHash  = hashToValidate,
+                ExpiryDate = DateTimeOffset.Now.AddMinutes(1),
+                UserUrn    = expectedUrn   // URN now stored in DB, not derived from token salt
+            });
 
         var (valid, urn) = await _tokenService.ValidateAndRevokeRefreshToken(token);
 
         valid.Should().BeTrue();
-        urn.Should().Be("valid-salt");
+        urn.Should().Be(expectedUrn);
     }
 
     [Fact]
