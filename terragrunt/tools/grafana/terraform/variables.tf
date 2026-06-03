@@ -24,13 +24,6 @@ variable "cloudwatch_assume_role_arn" {
   type        = string
 }
 
-variable "teams_webhook_url" {
-  description = "Microsoft Teams webhook URL"
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
 variable "alert_contact_point_name" {
   description = "Name for the Teams contact point"
   type        = string

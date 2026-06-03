@@ -95,4 +95,17 @@ data "aws_iam_policy_document" "terraform_product_data" {
     sid = "ManageProductOpenSearch"
   }
 
+  statement {
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetResourcePolicy",
+      "secretsmanager:GetSecretValue",
+    ]
+    effect = "Allow"
+    resources = [
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-grafana-alerting-webhook*",
+    ]
+    sid = "ReadGrafanaAlertingWebhookSecret"
+  }
+
 }
