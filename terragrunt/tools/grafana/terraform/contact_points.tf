@@ -13,7 +13,7 @@ EOT
 {{ if gt (len .Alerts.Firing) 0 }}
 **Firing ({{ len .Alerts.Firing }})**<br/>
 {{ range .Alerts.Firing }}
-{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") }}
+{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") (index .Labels "DBInstanceIdentifier") (index .Labels "DBClusterIdentifier") }}
 - **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} — Value: {{ template "__text_values_list" . }}{{ end }}<br/>
 {{ end }}
 {{ end }}
@@ -21,7 +21,7 @@ EOT
 {{ if gt (len .Alerts.Resolved) 0 }}
 <br/>**Resolved ({{ len .Alerts.Resolved }})**<br/>
 {{ range .Alerts.Resolved }}
-{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") }}
+{{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") (index .Labels "DBInstanceIdentifier") (index .Labels "DBClusterIdentifier") }}
 - **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}<br/>
 {{ end }}
 {{ end }}
