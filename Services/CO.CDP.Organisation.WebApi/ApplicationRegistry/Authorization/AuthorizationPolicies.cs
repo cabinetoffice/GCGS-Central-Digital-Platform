@@ -9,6 +9,13 @@ public static class AuthorizationPolicies
     public const string OrgAdmin = "OrgAdmin";
     public const string OrgMember = "OrgMember";
 
+    /// <summary>
+    /// Named policy for endpoints that are intentionally open to any valid CDP bearer-token holder
+    /// (e.g. application metadata reads consumed by the assignment UI).  Uses an explicit name
+    /// rather than bare <c>.RequireAuthorization()</c> to document intent and satisfy audit policy.
+    /// </summary>
+    public const string AuthenticatedUser = "AuthenticatedUser";
+
     public static IServiceCollection AddApplicationRegistryAuthorization(this IServiceCollection services)
     {
         services.AddAuthorization(options =>
@@ -21,6 +28,10 @@ public static class AuthorizationPolicies
 
             options.AddPolicy(OrgMember, policy =>
                 policy.Requirements.Add(new OrganisationRoleRequirement("Member", "Admin", "Owner")));
+
+            // Any authenticated CDP user — explicit name documents the access decision.
+            options.AddPolicy(AuthenticatedUser, policy =>
+                policy.RequireAuthenticatedUser());
         });
 
         services.AddScoped<IAuthorizationHandler, PlatformAdminHandler>();

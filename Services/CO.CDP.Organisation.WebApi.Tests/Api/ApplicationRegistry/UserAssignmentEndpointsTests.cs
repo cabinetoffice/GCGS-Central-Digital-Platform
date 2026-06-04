@@ -150,6 +150,7 @@ public class UserAssignmentEndpointsTests
     {
         var orgId  = Guid.NewGuid();
         var appId  = Guid.NewGuid();
+        var roleId = Guid.NewGuid();
         var userId = "urn:existing:user";
 
         var existing = new UserApplicationAssignment
@@ -158,13 +159,18 @@ public class UserAssignmentEndpointsTests
             OrganisationId = orgId, AssignedBy = "system"
         };
 
+        // PUT now validates roleIds against the application's own roles — must set up the repo.
+        _applicationRepo
+            .Setup(r => r.GetRolesAsync(appId))
+            .ReturnsAsync([new ApplicationRole { Id = roleId, ApplicationId = appId, Name = "Role" }]);
+
         _assignmentRepo.Setup(r => r.GetAssignmentAsync(orgId, appId, userId)).ReturnsAsync(existing);
         _assignmentRepo.Setup(r => r.UpdateAssignmentAsync(existing)).Returns(Task.CompletedTask);
 
         var response = await OrgAdminClient(orgId)
             .PutAsJsonAsync(
                 $"/api/organisations/{orgId}/applications/{appId}/users/{userId}",
-                new UpdateUserAssignment([Guid.NewGuid()]));
+                new UpdateUserAssignment([roleId]));   // roleId belongs to appId — validation passes
 
         response.Should().HaveStatusCode(NoContent);
     }
@@ -176,6 +182,7 @@ public class UserAssignmentEndpointsTests
         var appId  = Guid.NewGuid();
         var userId = "urn:missing:user";
 
+        // Empty roleIds list → validation is skipped, handler goes straight to DB lookup.
         _assignmentRepo.Setup(r => r.GetAssignmentAsync(orgId, appId, userId))
             .ReturnsAsync((UserApplicationAssignment?)null);
 
@@ -185,6 +192,28 @@ public class UserAssignmentEndpointsTests
                 new UpdateUserAssignment([]));
 
         response.Should().HaveStatusCode(NotFound);
+    }
+
+    [Fact]
+    public async Task UpdateAssignment_Returns_BadRequest_WhenRoleIdBelongsToDifferentApplication()
+    {
+        var orgId         = Guid.NewGuid();
+        var appId         = Guid.NewGuid();
+        var foreignRoleId = Guid.NewGuid(); // belongs to a different application
+        var userId        = "urn:existing:user";
+
+        // Application repo returns an empty role list for this appId —
+        // the foreign roleId will therefore fail validation.
+        _applicationRepo
+            .Setup(r => r.GetRolesAsync(appId))
+            .ReturnsAsync(Array.Empty<ApplicationRole>());
+
+        var response = await OrgAdminClient(orgId)
+            .PutAsJsonAsync(
+                $"/api/organisations/{orgId}/applications/{appId}/users/{userId}",
+                new UpdateUserAssignment([foreignRoleId]));
+
+        response.Should().HaveStatusCode(BadRequest);
     }
 
     [Theory]
@@ -201,6 +230,7 @@ public class UserAssignmentEndpointsTests
             OrganisationId = orgId, AssignedBy = "system"
         };
 
+        // Empty roleIds list → cross-app validation is skipped (no roles to check).
         _assignmentRepo.Setup(r => r.GetAssignmentAsync(orgId, appId, userId)).ReturnsAsync(existing);
         _assignmentRepo.Setup(r => r.UpdateAssignmentAsync(existing)).Returns(Task.CompletedTask);
 

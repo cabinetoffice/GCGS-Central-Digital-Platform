@@ -95,8 +95,25 @@ public static class UserAssignmentEndpoints
             Guid appId,
             string userId,
             UpdateUserAssignment command,
-            IUserAssignmentRepository repo) =>
+            IUserAssignmentRepository repo,
+            IApplicationRepository applicationRepo) =>
         {
+            // Cross-application RoleId validation — mirrors the same guard in POST.
+            // Prevents a caller assigning roles that belong to a different application.
+            if (command.RoleIds.Any())
+            {
+                var roles    = await applicationRepo.GetRolesAsync(appId);
+                var appRoles = (roles ?? []).Select(r => r.Id).ToHashSet();
+
+                if (command.RoleIds.Any(id => !appRoles.Contains(id)))
+                {
+                    return Results.BadRequest(new
+                    {
+                        detail = "One or more role IDs do not belong to this application."
+                    });
+                }
+            }
+
             var assignment = await repo.GetAssignmentAsync(orgId, appId, userId);
             if (assignment == null) return Results.NotFound();
 

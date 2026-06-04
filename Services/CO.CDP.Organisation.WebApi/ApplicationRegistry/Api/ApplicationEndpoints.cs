@@ -51,10 +51,10 @@ public static class ApplicationEndpoints
             var result = await useCase.Execute(appId);
             return result != null ? Results.Ok(result) : Results.NotFound();
         })
-        .RequireAuthorization()
+        .RequireAuthorization(AuthorizationPolicies.AuthenticatedUser)
         .WithTags("Application")
         .WithSummary("Get application by ID")
-        .WithDescription("Returns the details of a specific application by its unique identifier.");
+        .WithDescription("Returns the details of a specific application by its unique identifier. Accessible to any authenticated CDP user (required by the role-assignment UI).");
 
         app.MapPut("/api/applications/{appId:guid}", async (
             Guid appId,
@@ -89,10 +89,10 @@ public static class ApplicationEndpoints
             var perms = await repo.GetPermissionsAsync(appId);
             return Results.Ok(perms.Select(p => new PermissionDto(p.Id, p.ApplicationId, p.Name, p.Description)));
         })
-        .RequireAuthorization()
+        .RequireAuthorization(AuthorizationPolicies.AuthenticatedUser)
         .WithTags("Application - Permissions")
         .WithSummary("List permissions for an application")
-        .WithDescription("Returns all permissions defined for the specified application.");
+        .WithDescription("Returns all permissions defined for the specified application. Accessible to any authenticated CDP user (required by the role-assignment UI).");
 
         app.MapPost("/api/applications/{appId:guid}/permissions", async (
             Guid appId,
@@ -151,10 +151,10 @@ public static class ApplicationEndpoints
                     rp.Permission.Id, rp.Permission.ApplicationId,
                     rp.Permission.Name, rp.Permission.Description)))));
         })
-        .RequireAuthorization()
+        .RequireAuthorization(AuthorizationPolicies.AuthenticatedUser)
         .WithTags("Application - Roles")
         .WithSummary("List roles for an application")
-        .WithDescription("Returns all roles defined for the specified application, including the permissions assigned to each role.");
+        .WithDescription("Returns all roles defined for the specified application, including the permissions assigned to each role. Accessible to any authenticated CDP user (required by the role-assignment UI).");
 
         app.MapPost("/api/applications/{appId:guid}/roles", async (
             Guid appId,

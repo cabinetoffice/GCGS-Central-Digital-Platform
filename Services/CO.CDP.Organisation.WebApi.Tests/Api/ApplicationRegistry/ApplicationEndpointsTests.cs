@@ -87,6 +87,8 @@ public class ApplicationEndpointsTests
     }
 
     // ── GET /api/applications/{appId} ─────────────────────────────────────
+    // Policy: AuthenticatedUser — accessible to any valid CDP bearer-token holder
+    // (used by the assignment UI running in an OrgAdmin-only Razor page).
 
     [Fact]
     public async Task GetApplication_Returns_Ok_WhenFound()
@@ -110,6 +112,50 @@ public class ApplicationEndpointsTests
 
         var response = await PlatformAdminClient().GetAsync($"/api/applications/{appId}");
         response.Should().HaveStatusCode(NotFound);
+    }
+
+    /// <summary>
+    /// Verifies the AuthenticatedUser named policy: OrgAdmin (non-PlatformAdmin) callers must be
+    /// able to read application metadata so the assignment UI can populate the form.
+    /// </summary>
+    [Fact]
+    public async Task GetApplication_IsAccessibleToOrgAdmin()
+    {
+        var orgId = Guid.NewGuid();
+        var appId = Guid.NewGuid();
+        _getApplicationUseCase.Setup(uc => uc.Execute(appId))
+            .ReturnsAsync(GivenApplicationDto(appId, "FTS"));
+
+        var client   = OrgAdminClient(orgId);
+        var response = await client.GetAsync($"/api/applications/{appId}");
+
+        response.Should().HaveStatusCode(OK);
+    }
+
+    [Fact]
+    public async Task GetRoles_IsAccessibleToOrgAdmin()
+    {
+        var orgId  = Guid.NewGuid();
+        var appId  = Guid.NewGuid();
+        _appRepo.Setup(r => r.GetRolesAsync(appId)).ReturnsAsync([]);
+
+        var client   = OrgAdminClient(orgId);
+        var response = await client.GetAsync($"/api/applications/{appId}/roles");
+
+        response.Should().HaveStatusCode(OK);
+    }
+
+    [Fact]
+    public async Task GetPermissions_IsAccessibleToOrgAdmin()
+    {
+        var orgId  = Guid.NewGuid();
+        var appId  = Guid.NewGuid();
+        _appRepo.Setup(r => r.GetPermissionsAsync(appId)).ReturnsAsync([]);
+
+        var client   = OrgAdminClient(orgId);
+        var response = await client.GetAsync($"/api/applications/{appId}/permissions");
+
+        response.Should().HaveStatusCode(OK);
     }
 
     // ── PUT /api/applications/{appId} ─────────────────────────────────────
@@ -339,27 +385,24 @@ public class ApplicationEndpointsTests
 
     // ── Helpers ───────────────────────────────────────────────────────────
 
+    private Action<IServiceCollection> AllServices() => services =>
+    {
+        services.AddScoped(_ => _getApplicationsUseCase.Object);
+        services.AddScoped(_ => _getApplicationUseCase.Object);
+        services.AddScoped(_ => _registerAppUseCase.Object);
+        services.AddScoped(_ => _updateAppUseCase.Object);
+        services.AddScoped(_ => _createPermUseCase.Object);
+        services.AddScoped<IApplicationRepository>(_ => _appRepo.Object);
+    };
+
     private HttpClient PlatformAdminClient() =>
-        AppRegistryTestFactory.PlatformAdmin(services =>
-        {
-            services.AddScoped(_ => _getApplicationsUseCase.Object);
-            services.AddScoped(_ => _getApplicationUseCase.Object);
-            services.AddScoped(_ => _registerAppUseCase.Object);
-            services.AddScoped(_ => _updateAppUseCase.Object);
-            services.AddScoped(_ => _createPermUseCase.Object);
-            services.AddScoped<IApplicationRepository>(_ => _appRepo.Object);
-        });
+        AppRegistryTestFactory.PlatformAdmin(AllServices());
+
+    private HttpClient OrgAdminClient(Guid orgId) =>
+        AppRegistryTestFactory.OrgAdmin(orgId, AllServices());
 
     private HttpClient UnauthorizedClient() =>
-        AppRegistryTestFactory.Unauthorized(services =>
-        {
-            services.AddScoped(_ => _getApplicationsUseCase.Object);
-            services.AddScoped(_ => _getApplicationUseCase.Object);
-            services.AddScoped(_ => _registerAppUseCase.Object);
-            services.AddScoped(_ => _updateAppUseCase.Object);
-            services.AddScoped(_ => _createPermUseCase.Object);
-            services.AddScoped<IApplicationRepository>(_ => _appRepo.Object);
-        });
+        AppRegistryTestFactory.Unauthorized(AllServices());
 
     private static ApplicationDto GivenApplicationDto(Guid id, string name) =>
         new(id, name, $"{name.ToLower()}-client", null, null, true,
