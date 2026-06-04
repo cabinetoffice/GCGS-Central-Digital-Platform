@@ -137,6 +137,7 @@ locals {
     "/cookies*",
     "/css/*",
     "/favicon.ico",
+    "/help*",
     "/images/*",
     "/js/*",
     "/notices/*",
