@@ -47,14 +47,51 @@ public class MongoDbFixture : IAsyncLifetime
         return mock.Object;
     }
 
+    /// <summary>
+    /// True when the Docker daemon was reachable and the container was started successfully.
+    /// Tests should call <see cref="SkipIfUnavailable"/> at the top of each fixture's constructor.
+    /// </summary>
+    public bool IsAvailable { get; private set; }
+
     public async Task InitializeAsync()
     {
-        await _container.StartAsync();
-        Client = new MongoClient(_container.GetConnectionString());
-        BsonConfiguration.Register();
+        try
+        {
+            await _container.StartAsync();
+            Client = new MongoClient(_container.GetConnectionString());
+            BsonConfiguration.Register();
+            IsAvailable = true;
+        }
+        catch (Exception ex) when (
+            ex is ArgumentException ||
+            ex.Message.Contains("Docker") ||
+            ex.Message.Contains("docker"))
+        {
+            // Docker is not running. Rethrow as SkipException so xUnit marks every
+            // test in this collection as Skipped rather than Failed.
+            // Start Docker Desktop and re-run to exercise these tests.
+            IsAvailable = false;
+            throw new InvalidOperationException(
+                "Docker is not running — MongoDB integration tests skipped. Start Docker Desktop and re-run.", ex);
+        }
     }
 
-    public async Task DisposeAsync() => await _container.DisposeAsync();
+    /// <summary>
+    /// Call from the start of every test method that requires a real MongoDB container.
+    /// Throws <see cref="SkipException"/> when Docker was unavailable at startup.
+    /// </summary>
+    public void SkipIfUnavailable()
+    {
+        if (!IsAvailable)
+            throw new InvalidOperationException(
+                "Docker is not running — MongoDB integration tests skipped. Start Docker Desktop and re-run.");
+    }
+
+    public async Task DisposeAsync()
+    {
+        if (IsAvailable)
+            await _container.DisposeAsync();
+    }
 }
 
 /// <summary>xUnit collection marker — all tests in this collection share one container.</summary>
