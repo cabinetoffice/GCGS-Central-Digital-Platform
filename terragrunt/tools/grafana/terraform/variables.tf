@@ -42,6 +42,12 @@ variable "ecs_memory_threshold" {
   default     = 80
 }
 
+variable "ecs_task_stopped_threshold" {
+  description = "Stopped task count threshold for ECS restart alert"
+  type        = number
+  default     = 0
+}
+
 variable "rds_cpu_threshold" {
   description = "CPU threshold for RDS CPU alert"
   type        = number
