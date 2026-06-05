@@ -284,8 +284,8 @@ locals {
     person                               = {}
     scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
-    user_management_api                  = { desired_count = local.environment == "development" ? 1 : 0 }
-    user_management_app                  = { desired_count = local.environment == "development" ? 1 : 0 }
+    user_management_api                  = { desired_count = 0 }
+    user_management_app                  = { desired_count = 0 }
     user_management_migrations           = { cpu = 256, memory = 512 }
   }
 
