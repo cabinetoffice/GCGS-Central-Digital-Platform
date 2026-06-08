@@ -1,6 +1,4 @@
-using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
 
 namespace CO.CDP.Person.WebApi.UseCase;
@@ -8,9 +6,7 @@ namespace CO.CDP.Person.WebApi.UseCase;
 public class ClaimPersonInviteUseCase(
     IPersonRepository personRepository,
     IPersonInviteRepository personInviteRepository,
-    IOrganisationRepository organisationRepository,
-    IPublisher publisher,
-    ILogger<ClaimPersonInviteUseCase> logger)
+    IOrganisationRepository organisationRepository)
     : IUseCase<(Guid personId, ClaimPersonInvite claimPersonInvite), bool>
 {
     public async Task<bool> Execute((Guid personId, ClaimPersonInvite claimPersonInvite) command)
@@ -41,17 +37,6 @@ public class ClaimPersonInviteUseCase(
 
         personRepository.Track(person);
         personInviteRepository.Track(personInvite);
-
-        logger.LogInformation("Publishing PersonInviteClaimed for org {OrgGuid}, person {PersonGuid}",
-            organisation.Guid, person.Guid);
-
-        await publisher.Publish(new PersonInviteClaimed
-        {
-            OrganisationId = organisation.Guid.ToString(),
-            PersonId = person.Guid.ToString(),
-            UserPrincipalId = person.UserUrn,
-            Scopes = personInvite.Scopes
-        });
 
         await organisationRepository.SaveAsync(organisation, _ => Task.CompletedTask);
 

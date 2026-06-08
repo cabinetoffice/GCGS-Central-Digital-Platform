@@ -1,7 +1,5 @@
-using CO.CDP.MQ;
 using CO.CDP.OrganisationInformation;
 using CO.CDP.OrganisationInformation.Persistence;
-using CO.CDP.Person.WebApi.Events;
 using CO.CDP.Person.WebApi.Model;
 using CO.CDP.Person.WebApi.UseCase;
 using FluentAssertions;
@@ -23,7 +21,6 @@ public class ClaimPersonInviteUseCaseTests
     private readonly Mock<IOrganisationRepository> _mockOrganizationRepository;
     private readonly Mock<IPersonInviteRepository> _mockPersonInviteRepository;
     private readonly Mock<IPersonRepository> _mockPersonRepository;
-    private readonly Mock<IPublisher> _mockPublisher;
 
     private readonly ClaimPersonInviteUseCase _useCase;
 
@@ -32,15 +29,12 @@ public class ClaimPersonInviteUseCaseTests
         _mockPersonRepository = new Mock<IPersonRepository>();
         _mockPersonInviteRepository = new Mock<IPersonInviteRepository>();
         _mockOrganizationRepository = new Mock<IOrganisationRepository>();
-        _mockPublisher = new Mock<IPublisher>();
         _mockLogger = new Mock<ILogger<ClaimPersonInviteUseCase>>();
 
         _useCase = new ClaimPersonInviteUseCase(
             _mockPersonRepository.Object,
             _mockPersonInviteRepository.Object,
-            _mockOrganizationRepository.Object,
-            _mockPublisher.Object,
-            _mockLogger.Object);
+            _mockOrganizationRepository.Object);
 
         _defaultPersonGuid = Guid.NewGuid();
         _defaultPersonInviteGuid = Guid.NewGuid();
@@ -277,44 +271,5 @@ public class ClaimPersonInviteUseCaseTests
 
         _mockPersonRepository.Verify(repo => repo.Track(_defaultPerson), Times.Once);
         _mockPersonInviteRepository.Verify(repo => repo.Track(personInvite), Times.Once);
-    }
-
-    [Fact]
-    public async Task Execute_PublishesPersonInviteClaimed_WhenInviteSuccessfullyAccepted()
-    {
-        var inviteScopes = new List<string> { "EDITOR", "ADMIN" };
-        var personInvite = new PersonInvite
-        {
-            Id = 0,
-            Person = null,
-            Guid = _defaultPersonInviteGuid,
-            FirstName = null!,
-            LastName = null!,
-            Email = null!,
-            OrganisationId = 1,
-            Organisation = _defaultOrganisation,
-            Scopes = inviteScopes
-        };
-        var command = (personId: _defaultPerson.Guid,
-            claimPersonInvite: new ClaimPersonInvite { PersonInviteId = personInvite.Guid });
-
-        _mockPersonRepository.Setup(repo => repo.Find(_defaultPerson.Guid))
-            .ReturnsAsync(_defaultPerson);
-        _mockPersonInviteRepository.Setup(repo => repo.Find(command.claimPersonInvite.PersonInviteId))
-            .ReturnsAsync(personInvite);
-        _mockOrganizationRepository.Setup(repo => repo.FindIncludingTenantByOrgId(1))
-            .ReturnsAsync(personInvite.Organisation);
-        _mockOrganizationRepository.Setup(repo =>
-                repo.IsEmailUniqueWithinOrganisation(_defaultOrganisation.Guid, _defaultPerson.Email))
-            .ReturnsAsync(true);
-
-        var result = await _useCase.Execute(command);
-
-        result.Should().BeTrue();
-        _mockPublisher.Verify(p => p.Publish(It.Is<PersonInviteClaimed>(e =>
-            e.PersonId == _defaultPerson.Guid.ToString() &&
-            !string.IsNullOrEmpty(e.UserPrincipalId) &&
-            e.OrganisationId == _defaultOrganisationGuid.ToString() &&
-            e.Scopes == inviteScopes)), Times.Once);
     }
 }

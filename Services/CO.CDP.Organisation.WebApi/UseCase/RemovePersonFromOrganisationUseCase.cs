@@ -1,14 +1,10 @@
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
 public class RemovePersonFromOrganisationUseCase(
-    IOrganisationRepository organisationRepository,
-    IPublisher publisher,
-    ILogger<RemovePersonFromOrganisationUseCase> logger)
+    IOrganisationRepository organisationRepository)
     : IUseCase<(Guid organisationId, RemovePersonFromOrganisation removePersonFromOrganisation), bool>
 {
     public async Task<bool> Execute(
@@ -29,15 +25,7 @@ public class RemovePersonFromOrganisationUseCase(
         if (organisationPerson != null)
             organisation.OrganisationPersons.Remove(organisationPerson);
 
-        logger.LogInformation("Publishing PersonRemovedFromOrganisation for org {OrgId}, person {PersonId}",
-            command.organisationId, personId);
-
-        await organisationRepository.SaveAsync(organisation,
-            async _ => await publisher.Publish(new PersonRemovedFromOrganisation
-            {
-                OrganisationId = command.organisationId.ToString(),
-                PersonId = personId.ToString()
-            }));
+        await organisationRepository.SaveAsync(organisation, _ => Task.CompletedTask);
 
         return true;
     }

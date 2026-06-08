@@ -1,5 +1,3 @@
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -17,12 +15,9 @@ namespace CO.CDP.Organisation.WebApi.Tests.UseCase;
 public class RemovePersonFromOrganisationUseCaseTest
 {
     private readonly Mock<OiOrganisationRepository> _organisationRepository = new();
-    private readonly Mock<IPublisher> _publisherMock = new();
 
     private RemovePersonFromOrganisationUseCase UseCase => new(
-        _organisationRepository.Object,
-        _publisherMock.Object,
-        NullLogger<RemovePersonFromOrganisationUseCase>.Instance);
+        _organisationRepository.Object);
 
     [Fact]
     public async Task Execute_OrganisationPersonAndPersonWithTenant_BothLinksAreRemoved()
@@ -103,30 +98,6 @@ public class RemovePersonFromOrganisationUseCaseTest
         await UseCase.Invoking(u => u.Execute(command))
             .Should().ThrowAsync<UnknownOrganisationException>();
     }
-
-    [Fact]
-    public async Task Execute_PublishesPersonRemovedFromOrganisation_WhenPersonFound()
-    {
-        var orgId = Guid.NewGuid();
-        var personId = Guid.NewGuid();
-        var person = GivenPerson(personId);
-        var organisation = GivenOrganisation(organisationPerson: person, guid: orgId);
-
-        var command = (orgId, new RemovePersonFromOrganisation { PersonId = personId });
-        _organisationRepository.Setup(r => r.FindIncludingPersons(orgId)).ReturnsAsync(organisation);
-        _organisationRepository
-            .Setup(r => r.SaveAsync(It.IsAny<OiOrganisation>(), It.IsAny<Func<OiOrganisation, Task>>()))
-            .Returns<OiOrganisation, Func<OiOrganisation, Task>>(async (o, onSave) => await onSave(o));
-        _publisherMock
-            .Setup(p => p.Publish(It.IsAny<PersonRemovedFromOrganisation>()))
-            .Returns(Task.CompletedTask);
-
-        await UseCase.Execute(command);
-
-        _publisherMock.Verify(p => p.Publish(It.Is<PersonRemovedFromOrganisation>(e =>
-            e.OrganisationId == orgId.ToString() && e.PersonId == personId.ToString())), Times.Once);
-    }
-
     private static OiPerson GivenPerson(Guid? guid = null) => new()
     {
         Id = 1,
