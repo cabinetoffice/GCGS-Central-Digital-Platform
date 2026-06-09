@@ -1,7 +1,7 @@
 module "cluster_fts" {
   source = "../rds-cluster"
 
-  apply_immediately               = true
+  apply_immediately               = local.is_staging
   apply_master_password           = var.fts_apply_master_password
   backup_retention_period         = var.is_production ? 14 : 1
   copy_tags_to_snapshot           = true
@@ -19,6 +19,7 @@ module "cluster_fts" {
   monitoring_role_arn             = var.role_rds_cloudwatch_arn
   performance_insights_enabled    = true
   private_subnet_ids              = var.private_subnet_ids
+  publicly_accessible             = true
   restore_from_snapshot           = var.fts_restore_from_snapshot
   role_terraform_arn              = var.role_terraform_arn
   snapshot_identifier             = var.fts_snapshot_identifier
