@@ -30,7 +30,7 @@ locals {
     email_tech_support                        = "${local.fts_secrets_arn}:TECHSUPPORT_EMAIL::"
     email_user_research                       = "${local.fts_secrets_arn}:USER_RESEARCH_EMAIL::"
     fts_one_login_client_id                   = local.one_login.credential_locations.client_id
-    fts_sirsi_api_key                         = "${local.fts_secrets_arn}:fts_sirsi_api_key::"
+    fts_sirsi_api_key                         = "${local.fts_secrets_arn}:FTS_SIRSI_API_KEY::"
     google_analytics_key                      = "${local.fts_secrets_arn}:GOOGLE_ANALYTICS_KEY::"
     google_tag_manager_key                    = "${local.fts_secrets_arn}:GOOGLE_TAG_MANAGER_KEY::"
     http_basic_auth_enabled                   = "${local.fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"
@@ -134,7 +134,7 @@ locals {
       db_mysql_username           = local.db_fts_username
       notice_publish_internal_key = local.fts_notice_publish_internal_key_arn
       public_domain               = var.public_domain
-      fts_sirsi_api_key           = "${local.fts_secrets_arn}:fts_sirsi_api_key::"
+      fts_sirsi_api_key           = "${local.fts_secrets_arn}:FTS_SIRSI_API_KEY::"
       vpc_cidr                    = var.vpc_cider
     }
   )
