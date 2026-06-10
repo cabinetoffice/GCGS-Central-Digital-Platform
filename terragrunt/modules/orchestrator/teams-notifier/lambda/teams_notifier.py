@@ -462,6 +462,12 @@ def handler(event, _context):
     if commit_message:
         update_exprs.append("commit_message = :commit_message")
         expr_values[":commit_message"] = commit_message
+    if commit_url:
+        update_exprs.append("commit_url = :commit_url")
+        expr_values[":commit_url"] = commit_url
+    if commit_id:
+        update_exprs.append("commit_id = :commit_id")
+        expr_values[":commit_id"] = commit_id
 
     update_exprs.append("updated_at = :updated_at")
     expr_values[":updated_at"] = int(time.time())
@@ -482,6 +488,8 @@ def handler(event, _context):
     if stage_key and state in failed_states:
         handler_mention = secret.get("HANDLER_DISPLAY_NAME") or "handler"
 
+    commit_url = item.get("commit_url") or commit_url
+    commit_id = item.get("commit_id") or commit_id
     html_content = _build_html_summary(item, versions, execution_id, link, commit_url, commit_id)
     message_id = item.get("message_id")
 
