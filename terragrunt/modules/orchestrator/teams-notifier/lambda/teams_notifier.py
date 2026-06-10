@@ -463,10 +463,10 @@ def handler(event, _context):
         update_exprs.append("commit_message = :commit_message")
         expr_values[":commit_message"] = commit_message
     if commit_url:
-        update_exprs.append("commit_url = :commit_url")
+        update_exprs.append("commit_url = if_not_exists(commit_url, :commit_url)")
         expr_values[":commit_url"] = commit_url
     if commit_id:
-        update_exprs.append("commit_id = :commit_id")
+        update_exprs.append("commit_id = if_not_exists(commit_id, :commit_id)")
         expr_values[":commit_id"] = commit_id
 
     update_exprs.append("updated_at = :updated_at")
