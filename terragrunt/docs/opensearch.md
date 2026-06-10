@@ -93,7 +93,10 @@ PUT _plugins/_security/api/roles/cdp_sirsi_service_writer
     "cluster:monitor/main",
     "cluster:monitor/health",
     "cluster:monitor/task/get",
-    "cluster:monitor/tasks/get"
+    "cluster:monitor/tasks/get",
+    "cluster:admin/ingest/pipeline/put",
+    "cluster:admin/ingest/pipeline/get",
+    "cluster:admin/ingest/pipeline/delete"
   ],
   "index_permissions": [
     {
