@@ -1,7 +1,5 @@
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.UseCase;
 using CO.CDP.OrganisationInformation;
@@ -21,7 +19,6 @@ public class SupportUpdateOrganisationUseCaseTests
     private readonly Mock<IGovUKNotifyApiClient> _notifyApiClient = new();
     private readonly Persistence.Organisation _organisation;
     private readonly Persistence.Person _person;
-    private readonly Mock<IPublisher> _publisher = new();
     private readonly SupportUpdateOrganisationUseCase _useCase;
 
     public SupportUpdateOrganisationUseCaseTests()
@@ -47,7 +44,6 @@ public class SupportUpdateOrganisationUseCaseTests
             _mockPersonRepository.Object,
             _notifyApiClient.Object,
             mockConfiguration,
-            _publisher.Object,
             _logger.Object);
         _organisation = new Persistence.Organisation
         {
@@ -176,10 +172,6 @@ public class SupportUpdateOrganisationUseCaseTests
         )));
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
-
-        _publisher.Verify(
-            p => p.Publish(It.Is<OrganisationApproved>(e => e.Id == _organisation.Guid.ToString())),
-            Times.Once);
     }
 
     [Fact]
@@ -237,10 +229,6 @@ public class SupportUpdateOrganisationUseCaseTests
         )));
 
         _mockOrganisationRepository.Verify(repo => repo.Save(_organisation), Times.Once);
-
-        _publisher.Verify(
-            p => p.Publish(It.IsAny<OrganisationApproved>()),
-            Times.Never);
     }
 
     [Fact]

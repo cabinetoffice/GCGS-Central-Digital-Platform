@@ -1,5 +1,3 @@
-using CO.CDP.MQ;
-using CO.CDP.Organisation.WebApi.Events;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.Organisation.WebApi.Tests.AutoMapper;
 using CO.CDP.Organisation.WebApi.UseCase;
@@ -16,15 +14,12 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly Mock<Persistence.IOrganisationRepository> _organisationRepositoryMock = new();
     private readonly Guid _personId = Guid.NewGuid();
-    private readonly Mock<IPublisher> _publisherMock = new();
     private readonly UpdatePersonToOrganisationUseCase _useCase;
 
     public UpdatePersonToOrganisationUseCaseTest(AutoMapperFixture mapperFixture)
     {
         _useCase = new UpdatePersonToOrganisationUseCase(
-            _organisationRepositoryMock.Object,
-            _publisherMock.Object,
-            NullLogger<UpdatePersonToOrganisationUseCase>.Instance);
+            _organisationRepositoryMock.Object);
     }
 
     private Persistence.Organisation Organisation =>
@@ -96,21 +91,5 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
 
         await act.Should().ThrowAsync<UnknownOrganisationException>()
             .WithMessage($"Unknown organisation {_organisationId} or Person {_personId}.");
-    }
-
-    [Fact]
-    public async Task Execute_PublishesPersonScopesUpdated_WhenPersonFound()
-    {
-        var scopes = new List<string> { "ADMIN", "EDITOR" };
-        var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = scopes };
-        _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId))
-            .ReturnsAsync(organisationPerson);
-
-        await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
-
-        _publisherMock.Verify(p => p.Publish(It.Is<PersonScopesUpdated>(e =>
-            e.OrganisationId == _organisationId.ToString() &&
-            e.PersonId == _personId.ToString() &&
-            e.Scopes.SequenceEqual(scopes))), Times.Once);
     }
 }

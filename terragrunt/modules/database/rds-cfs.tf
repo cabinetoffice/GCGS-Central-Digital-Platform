@@ -1,7 +1,7 @@
 module "cluster_cfs" {
   source = "../rds-cluster"
 
-  apply_immediately            = true
+  apply_immediately            = local.is_staging
   backup_retention_period      = var.is_production ? 14 : 1
   copy_tags_to_snapshot        = true
   db_name                      = local.cfs_cluster_name

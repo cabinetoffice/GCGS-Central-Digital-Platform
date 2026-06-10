@@ -1,10 +1,8 @@
 using CO.CDP.Authentication;
 using CO.CDP.GovUKNotify;
 using CO.CDP.GovUKNotify.Models;
-using CO.CDP.MQ;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence;
-using OrganisationApproved = CO.CDP.Organisation.WebApi.Events.OrganisationApproved;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -13,7 +11,6 @@ public class SupportUpdateOrganisationUseCase(
     IPersonRepository personRepository,
     IGovUKNotifyApiClient govUKNotifyApiClient,
     IConfiguration configuration,
-    IPublisher publisher,
     ILogger<SupportUpdateOrganisationUseCase> logger)
     : IUseCase<(Guid organisationId, SupportUpdateOrganisation supportUpdateOrganisation), bool>
 {
@@ -70,7 +67,6 @@ public class SupportUpdateOrganisationUseCase(
 
         if (sendApprovalEmail)
         {
-            await publisher.Publish(new OrganisationApproved { Id = organisation.Guid.ToString() });
             await NotifyBuyerApprovedRequest(organisation);
         }
 

@@ -92,6 +92,13 @@ resource "aws_iam_policy" "terraform_product_ecs" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_product_telemetry" {
+  name        = "${local.name_prefix}-terraform-product-telemetry-teams-notifier"
+  description = "Product telemetry policy for Teams notifier Lambda/Dynamo/Logs/Secrets"
+  policy      = data.aws_iam_policy_document.terraform_product_telemetry.json
+  tags        = var.tags
+}
+
 import {
   to = aws_iam_policy.terraform_assume_orchestrator_role
   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-terraform-assume-orchestrator-role"
@@ -157,6 +164,11 @@ moved {
 }
 resource "aws_iam_role_policy_attachment" "terraform_product_ecs" {
   policy_arn = aws_iam_policy.terraform_product_ecs.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_telemetry" {
+  policy_arn = aws_iam_policy.terraform_product_telemetry.arn
   role       = aws_iam_role.terraform.name
 }
 
