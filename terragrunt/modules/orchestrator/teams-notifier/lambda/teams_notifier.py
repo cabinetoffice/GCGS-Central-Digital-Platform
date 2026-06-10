@@ -45,6 +45,17 @@ STATE_EMOJI = {
     "UNKNOWN": "⁉️",
 }
 
+LEGEND_ORDER = [
+    ("IN_PROGRESS", "started/in progress"),
+    ("SUCCEEDED", "succeeded"),
+    ("FAILED", "failed"),
+    ("STOPPED", "stopped"),
+    ("CANCELED", "canceled"),
+    ("SKIPPED", "skipped"),
+    ("PENDING", "pending"),
+    ("UNKNOWN", "unknown"),
+]
+
 
 def _get_secret():
     global _secrets
@@ -288,18 +299,9 @@ def _build_html_summary(item, versions, execution_id, link, commit_url, commit_i
         spacer = "<br/><br/><br/>"
         parts.append(spacer + "<br/>".join(footer_lines))
 
-    legend = [
-        "<hr/>",
-        "Legend:",
-        "🔄 started/in progress",
-        "✅ succeeded",
-        "🔴 failed",
-        "🛑 stopped",
-        "⛔ canceled",
-        "🦘 skipped",
-        "⏳ pending",
-        "⁉️ unknown",
-    ]
+    legend = ["<hr/>", "Legend:"]
+    for key, label in LEGEND_ORDER:
+        legend.append(f"{STATE_EMOJI.get(key, '⁉️')} {label}")
     parts.append("<br/>".join(legend))
 
     return "<br/>".join(parts)
