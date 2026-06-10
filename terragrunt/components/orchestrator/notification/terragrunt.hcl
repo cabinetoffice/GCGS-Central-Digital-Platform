@@ -67,6 +67,12 @@ dependency orchestrator_ecr {
   }
 }
 
+dependency teams_notifier {
+  config_path = "../teams-notifier"
+  mock_outputs = {
+    teams_notifier_lambda_arn = "mock"
+  }
+}
 
 inputs = {
   account_ids = local.global_vars.locals.account_ids
@@ -87,4 +93,6 @@ inputs = {
   ssm_envs_fts_service_version_name      = dependency.orchestrator_common.outputs.ssm_envs_fts_service_version_name
   ssm_envs_sirsi_service_version_arn     = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_arn
   ssm_envs_sirsi_service_version_name    = dependency.orchestrator_common.outputs.ssm_envs_sirsi_service_version_name
+
+  teams_notifier_lambda_arn = dependency.teams_notifier.outputs.teams_notifier_lambda_arn
 }

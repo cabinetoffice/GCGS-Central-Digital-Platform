@@ -62,6 +62,18 @@ data "aws_iam_policy_document" "notification_step_function" {
 
   statement {
     effect = "Allow"
+    sid    = "AllowLambdaInvoke"
+
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      var.teams_notifier_lambda_arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
     sid    = "ExecuteStates"
 
     actions = [
