@@ -231,7 +231,7 @@ resource "grafana_rule_group" "ecs_task_health" {
 
   rule {
     name           = "ECS tasks pending too long"
-    condition      = "C"
+    condition      = "Threshold"
     for            = "3m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -243,7 +243,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "Query"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 180
@@ -269,7 +269,7 @@ resource "grafana_rule_group" "ecs_task_health" {
         period            = "1m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "Query"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Maximum"
@@ -277,7 +277,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "Value"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -289,17 +289,17 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "Query"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "Value"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "Threshold"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -328,10 +328,10 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "Value"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "Threshold"
         type          = "threshold"
       })
     }
