@@ -231,7 +231,7 @@ resource "grafana_rule_group" "ecs_task_health" {
 
   rule {
     name           = "ECS tasks pending too long"
-    condition      = "C"
+    condition      = "Threshold"
     for            = "3m"
     no_data_state  = "OK"
     exec_err_state = "Error"
