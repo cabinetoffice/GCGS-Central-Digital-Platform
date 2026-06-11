@@ -57,7 +57,7 @@ locals {
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
-      grafana_db_instance_type            = "db.t4g.micro"
+      grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = null
       pinned_service_version_fts          = null
@@ -150,7 +150,7 @@ locals {
       opensearch_dedicated_master_type    = "t3.small.search"
       opensearch_instance_count           = 2
       opensearch_instance_type            = "t3.medium.search"
-      grafana_db_instance_type            = "db.t4g.micro"
+      grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.0.7"
       pinned_service_version_fts          = "1.3.28"
