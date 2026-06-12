@@ -5,7 +5,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
 
   rule {
     name           = "ECS Memory low"
-    condition      = "F"
+    condition      = "mem_free_low"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -17,7 +17,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "mem_used"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -43,7 +43,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "mem_used"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -51,7 +51,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "mem_reserved"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -77,7 +77,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "B"
+        refId             = "mem_reserved"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -85,7 +85,7 @@ resource "grafana_rule_group" "ecs_memory_high" {
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "mem_used_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -97,17 +97,17 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "mem_used"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "C"
+        refId         = "mem_used_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "D"
+      ref_id         = "mem_reserved_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -119,17 +119,17 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "mem_reserved"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "D"
+        refId         = "mem_reserved_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "E"
+      ref_id         = "mem_free_pct"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -141,16 +141,16 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "($D - $C) / $D * 100"
+        expression    = "($mem_reserved_last - $mem_used_last) / $mem_reserved_last * 100"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "E"
+        refId         = "mem_free_pct"
         type          = "math"
       })
     }
 
     data {
-      ref_id         = "F"
+      ref_id         = "mem_free_low"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -179,10 +179,10 @@ resource "grafana_rule_group" "ecs_memory_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "E"
+        expression    = "mem_free_pct"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "F"
+        refId         = "mem_free_low"
         type          = "threshold"
       })
     }

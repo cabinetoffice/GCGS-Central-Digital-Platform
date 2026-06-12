@@ -5,7 +5,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS CPU high"
-    condition      = "C"
+    condition      = "cpu_gt"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -17,7 +17,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "cpu_util"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -42,7 +42,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "cpu_util"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -50,7 +50,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "cpu_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -79,17 +79,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "cpu_util"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "cpu_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "cpu_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -118,10 +118,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "cpu_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "cpu_gt"
         type          = "threshold"
       })
     }
@@ -136,7 +136,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS Free storage low"
-    condition      = "C"
+    condition      = "free_storage_low"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -148,7 +148,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "free_storage"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -173,7 +173,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "free_storage"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Minimum"
@@ -181,7 +181,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "free_storage_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -210,17 +210,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "free_storage"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "free_storage_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "free_storage_low"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -249,10 +249,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "free_storage_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "free_storage_low"
         type          = "threshold"
       })
     }
@@ -267,7 +267,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS Freeable memory low"
-    condition      = "C"
+    condition      = "freeable_mem_low"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -279,7 +279,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "freeable_mem"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -304,7 +304,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "freeable_mem"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Minimum"
@@ -312,7 +312,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "freeable_mem_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -341,17 +341,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "freeable_mem"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "freeable_mem_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "freeable_mem_low"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -380,10 +380,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "freeable_mem_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "freeable_mem_low"
         type          = "threshold"
       })
     }
@@ -398,7 +398,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS connections high"
-    condition      = "C"
+    condition      = "db_conns_gt"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -410,7 +410,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "db_conns"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -435,7 +435,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "db_conns"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -443,7 +443,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "db_conns_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -472,17 +472,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "db_conns"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "db_conns_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "db_conns_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -511,10 +511,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "db_conns_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "db_conns_gt"
         type          = "threshold"
       })
     }
@@ -529,7 +529,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS read latency high"
-    condition      = "C"
+    condition      = "read_latency_gt"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -541,7 +541,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "read_latency"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -566,7 +566,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "read_latency"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -574,7 +574,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "read_latency_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -603,17 +603,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "read_latency"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "read_latency_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "read_latency_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -642,10 +642,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "read_latency_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "read_latency_gt"
         type          = "threshold"
       })
     }
@@ -660,7 +660,7 @@ resource "grafana_rule_group" "rds_health" {
 
   rule {
     name           = "RDS write latency high"
-    condition      = "C"
+    condition      = "write_latency_gt"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -672,7 +672,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "write_latency"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -697,7 +697,7 @@ resource "grafana_rule_group" "rds_health" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "write_latency"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -705,7 +705,7 @@ resource "grafana_rule_group" "rds_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "write_latency_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -734,17 +734,17 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "write_latency"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "write_latency_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "write_latency_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -773,10 +773,10 @@ resource "grafana_rule_group" "rds_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "write_latency_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "write_latency_gt"
         type          = "threshold"
       })
     }
