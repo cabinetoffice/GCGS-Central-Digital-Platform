@@ -5,7 +5,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
 
   rule {
     name           = "ECS CPU high"
-    condition      = "C"
+    condition      = "cpu_gt"
     for            = "10m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -17,7 +17,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "cpu_util"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 600
@@ -43,7 +43,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "cpu_util"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Average"
@@ -51,7 +51,7 @@ resource "grafana_rule_group" "ecs_cpu_high" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "cpu_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -80,17 +80,17 @@ resource "grafana_rule_group" "ecs_cpu_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "cpu_util"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "cpu_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "cpu_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -119,10 +119,10 @@ resource "grafana_rule_group" "ecs_cpu_high" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "cpu_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "cpu_gt"
         type          = "threshold"
       })
     }

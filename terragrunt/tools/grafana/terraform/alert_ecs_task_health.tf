@@ -5,7 +5,7 @@ resource "grafana_rule_group" "ecs_task_health" {
 
   rule {
     name           = "ECS tasks below desired"
-    condition      = "F"
+    condition      = "tasks_missing_gt0"
     for            = "5m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -17,7 +17,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "desired_tasks"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 300
@@ -43,7 +43,7 @@ resource "grafana_rule_group" "ecs_task_health" {
         period            = "1m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "desired_tasks"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Maximum"
@@ -51,7 +51,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "running_tasks"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 300
@@ -77,7 +77,7 @@ resource "grafana_rule_group" "ecs_task_health" {
         period            = "1m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "B"
+        refId             = "running_tasks"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Maximum"
@@ -85,7 +85,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "desired_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -114,17 +114,17 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "desired_tasks"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "C"
+        refId         = "desired_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "D"
+      ref_id         = "running_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -153,17 +153,17 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "running_tasks"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "D"
+        refId         = "running_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "E"
+      ref_id         = "tasks_missing"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -175,16 +175,16 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "$C - $D"
+        expression    = "$desired_last - $running_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "E"
+        refId         = "tasks_missing"
         type          = "math"
       })
     }
 
     data {
-      ref_id         = "F"
+      ref_id         = "tasks_missing_gt0"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -213,10 +213,10 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "E"
+        expression    = "tasks_missing"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "F"
+        refId         = "tasks_missing_gt0"
         type          = "threshold"
       })
     }
@@ -231,7 +231,7 @@ resource "grafana_rule_group" "ecs_task_health" {
 
   rule {
     name           = "ECS tasks pending too long"
-    condition      = "C"
+    condition      = "pending_gt0"
     for            = "3m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -243,7 +243,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "pending_tasks"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 180
@@ -269,7 +269,7 @@ resource "grafana_rule_group" "ecs_task_health" {
         period            = "1m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "pending_tasks"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Maximum"
@@ -277,7 +277,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "pending_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -289,17 +289,17 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "pending_tasks"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "pending_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "pending_gt0"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -328,10 +328,10 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "pending_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "pending_gt0"
         type          = "threshold"
       })
     }
@@ -346,7 +346,7 @@ resource "grafana_rule_group" "ecs_task_health" {
 
   rule {
     name           = "ECS tasks stopping/restarting"
-    condition      = "C"
+    condition      = "tasks_stopped_gt"
     for            = "5m"
     no_data_state  = "OK"
     exec_err_state = "Error"
@@ -358,7 +358,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "A"
+      ref_id         = "tasks_stopped"
       datasource_uid = grafana_data_source.cloudwatch.uid
       relative_time_range {
         from = 300
@@ -384,7 +384,7 @@ resource "grafana_rule_group" "ecs_task_health" {
         period            = "1m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
-        refId             = "A"
+        refId             = "tasks_stopped"
         region            = "default"
         sqlExpression     = ""
         statistic         = "Sum"
@@ -392,7 +392,7 @@ resource "grafana_rule_group" "ecs_task_health" {
     }
 
     data {
-      ref_id         = "B"
+      ref_id         = "tasks_stopped_last"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -404,17 +404,17 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "A"
+        expression    = "tasks_stopped"
         intervalMs    = 1000
         maxDataPoints = 43200
         reducer       = "last"
-        refId         = "B"
+        refId         = "tasks_stopped_last"
         type          = "reduce"
       })
     }
 
     data {
-      ref_id         = "C"
+      ref_id         = "tasks_stopped_gt"
       datasource_uid = "__expr__"
       relative_time_range {
         from = 0
@@ -443,10 +443,10 @@ resource "grafana_rule_group" "ecs_task_health" {
           type = "__expr__"
           uid  = "__expr__"
         }
-        expression    = "B"
+        expression    = "tasks_stopped_last"
         intervalMs    = 1000
         maxDataPoints = 43200
-        refId         = "C"
+        refId         = "tasks_stopped_gt"
         type          = "threshold"
       })
     }

@@ -14,7 +14,6 @@ resource "aws_sfn_state_machine" "teams_notification" {
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/send-teams-notification.json.tftpl", {
-    auth_connection_arn                  = aws_cloudwatch_event_connection.teams_webhook.arn
-    teams_webhook_secret_arn              = local.teams_webhook_secret_arn
+    teams_notifier_lambda_arn = var.teams_notifier_lambda_arn
   })
 }
