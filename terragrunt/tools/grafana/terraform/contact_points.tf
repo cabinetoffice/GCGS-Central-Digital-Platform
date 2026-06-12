@@ -14,7 +14,7 @@ EOT
 **Firing ({{ len .Alerts.Firing }})**<br/>
 {{ range .Alerts.Firing }}
 {{ $service := or (index .Labels "service") (index .Labels "ServiceName") (index .Labels "servicename") (index .Labels "DBInstanceIdentifier") (index .Labels "DBClusterIdentifier") }}
-- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} — Value: {{ template "__text_values_list" . }}{{ end }}<br/>
+- **{{ if $service }}{{ $service }}{{ else }}(unknown service){{ end }}**{{ if index .Labels "severity" }} ({{ index .Labels "severity" }}){{ end }}{{ if len .Values }} <br/> {{ template "__text_values_list" . }}{{ end }}<br/>
 {{ end }}
 {{ end }}
 
