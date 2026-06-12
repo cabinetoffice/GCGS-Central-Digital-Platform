@@ -67,6 +67,7 @@ builder.Services.AddScoped<IUseCase<ShareVerificationRequest, ShareVerificationR
 builder.Services.AddScoped<IUseCase<string, CO.CDP.DataSharing.WebApi.Model.SupplierInformation?>, GetSharedDataUseCase>();
 builder.Services.AddScoped<IUseCase<string, SharedDataFile?>, GetSharedDataFileUseCase>();
 builder.Services.AddScoped<IUseCase<(string, string), string?>, GetSharedDataDocumentDownloadUrlUseCase>();
+builder.Services.AddScoped<IUseCase<BulkShareCodeLookupRequest, IEnumerable<BulkShareCodeLookupResult>>, BulkShareCodeLookupUseCase>();
 builder.Services.AddProblemDetails();
 
 builder.Services.AddJwtBearerAndApiKeyAuthentication(builder.Configuration, builder.Environment);
