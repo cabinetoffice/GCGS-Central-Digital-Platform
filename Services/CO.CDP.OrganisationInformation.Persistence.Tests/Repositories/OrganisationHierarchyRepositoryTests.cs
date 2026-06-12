@@ -7,9 +7,9 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
 {
     public class OrganisationHierarchyRepositoryTests : IClassFixture<OrganisationInformationPostgreSqlFixture>
     {
+        private readonly OrganisationInformationContext _context;
         private readonly OrganisationInformationPostgreSqlFixture _fixture;
         private readonly IOrganisationHierarchyRepository _repository;
-        private readonly OrganisationInformationContext _context;
 
         public OrganisationHierarchyRepositoryTests(OrganisationInformationPostgreSqlFixture fixture)
         {
@@ -209,7 +209,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         }
 
         [Fact]
-        public async Task CreateRelationshipAsync_WithExistingInvertedChildToParentRelationship_ShouldThrowArgumentException()
+        public async Task
+            CreateRelationshipAsync_WithExistingInvertedChildToParentRelationship_ShouldThrowArgumentException()
         {
             var (parentId, childId) = await CreateTestOrganisations();
 
@@ -219,7 +220,37 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
                 _repository.CreateRelationshipAsync(parentId, childId));
 
             exception.Message.Should()
-                .Contain($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+                .Contain(
+                    $"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+        }
+
+        [Fact]
+        public async Task CreateRelationshipAsync_WithCreatedBy_ShouldPersistCreatedBy()
+        {
+            var (parentId, childId) = await CreateTestOrganisations();
+            var userUrn = "urn:fdc:gov.uk:2022:test-user";
+
+            var relationshipId = await _repository.CreateRelationshipAsync(parentId, childId, userUrn);
+
+            var savedHierarchy = await _context.OrganisationHierarchies
+                .FirstOrDefaultAsync(h => h.RelationshipId == relationshipId);
+
+            savedHierarchy.Should().NotBeNull();
+            savedHierarchy!.CreatedBy.Should().Be(userUrn);
+        }
+
+        [Fact]
+        public async Task CreateRelationshipAsync_WithNullCreatedBy_ShouldPersistNullCreatedBy()
+        {
+            var (parentId, childId) = await CreateTestOrganisations();
+
+            var relationshipId = await _repository.CreateRelationshipAsync(parentId, childId, null);
+
+            var savedHierarchy = await _context.OrganisationHierarchies
+                .FirstOrDefaultAsync(h => h.RelationshipId == relationshipId);
+
+            savedHierarchy.Should().NotBeNull();
+            savedHierarchy!.CreatedBy.Should().BeNull();
         }
 
         #endregion
@@ -325,6 +356,41 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
             supersededHierarchy.Should().NotBeNull();
             supersededHierarchy!.SupersededOn.Should().NotBeNull();
             supersededHierarchy.SupersededOn.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+        }
+
+        [Fact]
+        public async Task SupersedeRelationshipAsync_WithSupersededBy_ShouldPersistSupersededBy()
+        {
+            var (parentId, childId) = await CreateTestOrganisations();
+            var relationshipId = await CreateTestHierarchy(parentId, childId);
+            var userUrn = "urn:fdc:gov.uk:2022:superseding-user";
+
+            var result = await _repository.SupersedeRelationshipAsync(relationshipId, userUrn);
+
+            result.Should().BeTrue();
+
+            var supersededHierarchy = await _context.OrganisationHierarchies
+                .FirstOrDefaultAsync(h => h.RelationshipId == relationshipId);
+
+            supersededHierarchy.Should().NotBeNull();
+            supersededHierarchy!.SupersededBy.Should().Be(userUrn);
+        }
+
+        [Fact]
+        public async Task SupersedeRelationshipAsync_WithNullSupersededBy_ShouldPersistNullSupersededBy()
+        {
+            var (parentId, childId) = await CreateTestOrganisations();
+            var relationshipId = await CreateTestHierarchy(parentId, childId);
+
+            var result = await _repository.SupersedeRelationshipAsync(relationshipId, null);
+
+            result.Should().BeTrue();
+
+            var supersededHierarchy = await _context.OrganisationHierarchies
+                .FirstOrDefaultAsync(h => h.RelationshipId == relationshipId);
+
+            supersededHierarchy.Should().NotBeNull();
+            supersededHierarchy!.SupersededBy.Should().BeNull();
         }
 
         [Fact]

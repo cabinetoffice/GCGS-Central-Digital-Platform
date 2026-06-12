@@ -20,7 +20,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
         }
 
         /// <inheritdoc />
-        public async Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId)
+        public async Task<Guid> CreateRelationshipAsync(Guid parentId, Guid childId, string? createdBy = null)
         {
             if (parentId == Guid.Empty)
                 throw new ArgumentException("Parent ID cannot be empty", nameof(parentId));
@@ -50,7 +50,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
                 .FirstOrDefaultAsync();
 
             if (inverseRelationship != null)
-                throw new ArgumentException($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
+                throw new ArgumentException(
+                    $"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
 
             var existingRelationship = await _context.OrganisationHierarchies
                 .Where(h => h.ParentOrganisationId == parent.Id &&
@@ -69,7 +70,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
                 RelationshipId = relationshipId,
                 ParentOrganisationId = parent.Id,
                 ChildOrganisationId = child.Id,
-                CreatedOn = DateTime.UtcNow
+                CreatedOn = DateTime.UtcNow,
+                CreatedBy = createdBy
             };
 
             await _context.OrganisationHierarchies.AddAsync(hierarchy);
@@ -93,13 +95,13 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
 
             return await _context.OrganisationHierarchies
                 .Include(h => h.Child)
-                    .ThenInclude(c => c!.Identifiers)
+                .ThenInclude(c => c!.Identifiers)
                 .Where(h => h.ParentOrganisationId == parent.Id && h.SupersededOn == null)
                 .ToListAsync();
         }
 
         /// <inheritdoc />
-        public async Task<bool> SupersedeRelationshipAsync(Guid id)
+        public async Task<bool> SupersedeRelationshipAsync(Guid id, string? supersededBy = null)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("ID cannot be empty", nameof(id));
@@ -111,6 +113,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
                 return false;
 
             hierarchy.SupersededOn = DateTime.UtcNow;
+            hierarchy.SupersededBy = supersededBy;
             await _context.SaveChangesAsync();
 
             return true;
