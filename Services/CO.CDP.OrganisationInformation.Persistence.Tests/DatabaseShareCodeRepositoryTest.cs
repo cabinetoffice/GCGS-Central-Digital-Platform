@@ -233,6 +233,78 @@ public class DatabaseShareCodeRepositoryTest(PostgreSqlFixture postgreSql)
 
 
     [Fact]
+    public async Task GetByShareCodes_WhenNoneExist_ReturnsEmpty()
+    {
+        using var repository = ShareCodeRepository();
+
+        var found = await repository.GetByShareCodes(["NONEXISTENT-1", "NONEXISTENT-2"]);
+
+        found.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetByShareCodes_WhenShareCodesExist_ReturnsOnlyMatchingSummaries()
+    {
+        var shareCode1 = "BULK-CODE-1";
+        var shareCode2 = "BULK-CODE-2";
+
+        await GivenSubmittedSharedConsentWithSnapshot(shareCode1);
+        await GivenSubmittedSharedConsentWithSnapshot(shareCode2);
+
+        using var repository = ShareCodeRepository();
+
+        var found = (await repository.GetByShareCodes([shareCode1, shareCode2, "NONEXISTENT"])).ToList();
+
+        found.Should().HaveCount(2);
+        found.Select(x => x.ShareCode).Should().BeEquivalentTo([shareCode1, shareCode2]);
+
+        var consent = found.First(x => x.ShareCode == shareCode1);
+        consent.SubmittedAt.Should().NotBeNull();
+        consent.Organisation.Name.Should().StartWith("New Corporation");
+        consent.Organisation.Identifiers.Should().ContainSingle(i => i.LegalName == "New Corporation Ltd");
+        consent.Organisation.ContactPoints.Should().ContainSingle(cp => cp.Name == "Procurement Team");
+        consent.Organisation.Addresses.Should().ContainSingle(a => a.Type == AddressType.Registered && a.PostalCode == "CH43 7UR");
+
+        // Bulk lookup returns summaries only, no form answer sets.
+        consent.AnswerSets.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task GetByShareCodes_WhenGivenEmptyCollection_ReturnsEmptyWithoutQuerying()
+    {
+        using var repository = ShareCodeRepository();
+
+        var found = await repository.GetByShareCodes([]);
+
+        found.Should().BeEmpty();
+    }
+
+    private async Task GivenSubmittedSharedConsentWithSnapshot(string shareCode)
+    {
+        var form = GivenForm(Guid.NewGuid());
+        var section = GivenSection(Guid.NewGuid(), form);
+        var question = GivenYesOrNoQuestion(section);
+        var sharedConsent = GivenSharedConsent(form);
+        var answerSet = GivenAnswerSet(sharedConsent, section);
+        GivenAnswer(question, answerSet);
+
+        sharedConsent.SubmissionState = SubmissionState.Submitted;
+        sharedConsent.SubmittedAt = DateTime.UtcNow;
+        sharedConsent.ShareCode = shareCode;
+
+        var context = GetDbContext();
+        await context.SharedConsents.AddAsync(sharedConsent);
+        await context.SaveChangesAsync();
+
+        var conn = (NpgsqlConnection)context.Database.GetDbConnection();
+        if (conn.State != ConnectionState.Open) await conn.OpenAsync();
+        using var command = new NpgsqlCommand("CALL create_shared_consent_snapshot(@p_share_code)", conn);
+        command.Parameters.AddWithValue("p_share_code", shareCode);
+        await command.ExecuteNonQueryAsync();
+        await conn.CloseAsync();
+    }
+
+    [Fact]
     public async Task GetShareCodeVerifyAsync_WhenShareCodeIsLatest_ReturnsTrue()
     {
         var form = GivenForm(Guid.NewGuid());

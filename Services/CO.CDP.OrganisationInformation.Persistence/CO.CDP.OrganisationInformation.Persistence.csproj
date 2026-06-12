@@ -32,6 +32,9 @@
       <None Update="StoredProcedures\get_shared_consent_details.psql">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
+      <None Update="StoredProcedures\get_bulk_shared_consent_details.psql">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>

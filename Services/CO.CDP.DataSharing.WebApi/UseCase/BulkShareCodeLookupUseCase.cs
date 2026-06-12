@@ -14,10 +14,13 @@ public class BulkShareCodeLookupUseCase(
     {
         var results = new List<BulkShareCodeLookupResult>();
 
+        var sharedConsents = (await shareCodeRepository.GetByShareCodes(request.ShareCodes.ToList()))
+            .Where(s => s.ShareCode != null)
+            .ToDictionary(s => s.ShareCode!);
+
         foreach (var shareCode in request.ShareCodes)
         {
-            var sharedConsent = await shareCodeRepository.GetByShareCode(shareCode)
-                                ?? throw new ShareCodeNotFoundException(Constants.ShareCodeNotFoundExceptionMessage);
+            sharedConsents.TryGetValue(shareCode, out var sharedConsent);
 
             var partySupplierInfo = mapper.Map<Model.SupplierInformation>(sharedConsent,
                 opt => { opt.Items["RootSource"] = sharedConsent; });

@@ -359,6 +359,136 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
         return sharedConsent;
     }
 
+    public async Task<IEnumerable<SharedConsentNonEf>> GetByShareCodes(ICollection<string> shareCodes)
+    {
+        var sharedConsents = new Dictionary<int, SharedConsentNonEf>();
+
+        if (shareCodes.Count == 0) return sharedConsents.Values;
+
+        NpgsqlConnection? conn = null;
+        NpgsqlTransaction? tran = null;
+        try
+        {
+            conn = (NpgsqlConnection)context.Database.GetDbConnection();
+            if (conn.State != ConnectionState.Open) await conn.OpenAsync();
+            tran = await conn.BeginTransactionAsync();
+
+            using var command = new NpgsqlCommand("get_bulk_shared_consent_details", conn);
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new NpgsqlParameter("p_share_codes", NpgsqlDbType.Array | NpgsqlDbType.Text) { Value = shareCodes.ToArray() });
+            command.Parameters.Add(new NpgsqlParameter("consent_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "consent_cursor" });
+            command.Parameters.Add(new NpgsqlParameter("identifier_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "identifier_cursor" });
+            command.Parameters.Add(new NpgsqlParameter("address_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "address_cursor" });
+            command.Parameters.Add(new NpgsqlParameter("contact_cursor", NpgsqlDbType.Refcursor) { Direction = ParameterDirection.InputOutput, Value = "contact_cursor" });
+
+            await command.ExecuteNonQueryAsync(); // Declare the cursors
+
+            using (var consentCmd = new NpgsqlCommand("FETCH ALL IN consent_cursor", conn))
+            {
+                using var consentReader = await consentCmd.ExecuteReaderAsync();
+
+                while (await consentReader.ReadAsync())
+                {
+                    var sharedConsentId = consentReader.GetInt32("id");
+
+                    sharedConsents[sharedConsentId] = new SharedConsentNonEf
+                    {
+                        Guid = Guid.Empty,
+                        SubmittedAt = consentReader.GetFieldValue<DateTimeOffset?>("submitted_at"),
+                        SubmissionState = SubmissionState.Submitted,
+                        ShareCode = consentReader.GetNullableString("share_code"),
+                        Form = new FormNonEf { Name = string.Empty, Version = string.Empty, IsRequired = false },
+                        Organisation = new OrganisationNonEf
+                        {
+                            Guid = consentReader.GetGuid("organisation_guid"),
+                            Name = consentReader.GetString("organisation_name"),
+                            Type = (OrganisationType)consentReader.GetInt32("type")
+                        }
+                    };
+                }
+            }
+
+            if (sharedConsents.Count == 0) return sharedConsents.Values;
+
+            using (var identifierCmd = new NpgsqlCommand("FETCH ALL IN identifier_cursor", conn))
+            {
+                using var identifierReader = await identifierCmd.ExecuteReaderAsync();
+
+                while (await identifierReader.ReadAsync())
+                {
+                    if (!sharedConsents.TryGetValue(identifierReader.GetInt32("shared_consent_id"), out var sharedConsent)) continue;
+
+                    sharedConsent.Organisation.Identifiers.Add(
+                        new IdentifierNonEf
+                        {
+                            IdentifierId = identifierReader.GetNullableString("identifier_id"),
+                            Scheme = identifierReader.GetString("scheme"),
+                            LegalName = identifierReader.GetString("legal_name"),
+                            Uri = identifierReader.GetNullableString("uri"),
+                            Primary = identifierReader.GetBoolean("primary")
+                        });
+                }
+            }
+
+            using (var addressCmd = new NpgsqlCommand("FETCH ALL IN address_cursor", conn))
+            {
+                using var addressReader = await addressCmd.ExecuteReaderAsync();
+
+                while (await addressReader.ReadAsync())
+                {
+                    if (!sharedConsents.TryGetValue(addressReader.GetInt32("shared_consent_id"), out var sharedConsent)) continue;
+
+                    sharedConsent.Organisation.Addresses.Add(
+                        new AddressNonEf
+                        {
+                            StreetAddress = addressReader.GetString("street_address"),
+                            Locality = addressReader.GetString("locality"),
+                            Region = addressReader.GetNullableString("region"),
+                            PostalCode = addressReader.GetNullableString("postal_code"),
+                            CountryName = addressReader.GetString("country_name"),
+                            Country = addressReader.GetString("country"),
+                            Type = (AddressType)addressReader.GetInt32("type")
+                        });
+                }
+            }
+
+            using (var contactCmd = new NpgsqlCommand("FETCH ALL IN contact_cursor", conn))
+            {
+                using var contactReader = await contactCmd.ExecuteReaderAsync();
+
+                while (await contactReader.ReadAsync())
+                {
+                    if (!sharedConsents.TryGetValue(contactReader.GetInt32("shared_consent_id"), out var sharedConsent)) continue;
+
+                    sharedConsent.Organisation.ContactPoints.Add(
+                        new ContactPointNonEf
+                        {
+                            Name = contactReader.GetNullableString("name"),
+                            Email = contactReader.GetNullableString("email"),
+                            Telephone = contactReader.GetNullableString("telephone"),
+                            Url = contactReader.GetNullableString("url")
+                        });
+                }
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            return sharedConsents.Values;
+        }
+        catch
+        {
+            if (tran != null) await tran.RollbackAsync();
+            throw;
+        }
+        finally
+        {
+            if (conn != null) await conn.CloseAsync();
+        }
+
+        return sharedConsents.Values;
+    }
+
     public async Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode)
     {
         var query = from s in context.SharedConsents

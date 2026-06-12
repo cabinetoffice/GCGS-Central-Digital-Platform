@@ -1,0 +1,55 @@
+CREATE OR REPLACE PROCEDURE get_bulk_shared_consent_details(
+	IN p_share_codes text[],
+	INOUT consent_cursor refcursor,
+	INOUT identifier_cursor refcursor,
+	INOUT address_cursor refcursor,
+	INOUT contact_cursor refcursor)
+LANGUAGE 'plpgsql'
+AS $BODY$
+
+BEGIN
+    -- Cursor for Shared Consent and Organisation Details
+    OPEN consent_cursor FOR
+        SELECT
+            s.id, s.share_code, s.submitted_at,
+            o."guid" AS organisation_guid, os."name" AS organisation_name, o."type"
+        FROM
+            shared_consents AS s
+            INNER JOIN organisations AS o ON s.organisation_id = o.id
+            INNER JOIN organisations_snapshot AS os ON os.shared_consent_id = s.id
+        WHERE
+            s.share_code = ANY(p_share_codes);
+
+    -- Cursor for Identifiers
+    OPEN identifier_cursor FOR
+        SELECT
+            i.shared_consent_id, i.identifier_id, i.scheme, i.legal_name, i.uri, i."primary"
+        FROM
+            identifiers_snapshot AS i
+            INNER JOIN shared_consents AS s ON s.id = i.shared_consent_id
+        WHERE
+            s.share_code = ANY(p_share_codes);
+
+    -- Cursor for Organisation Addresses
+    OPEN address_cursor FOR
+        SELECT
+            oa.shared_consent_id, oa."type", a.street_address, a.locality,
+            a.region, a.postal_code, a.country_name, a.country
+        FROM
+            organisation_address_snapshot AS oa
+            INNER JOIN shared_consents AS s ON s.id = oa.shared_consent_id
+            LEFT JOIN addresses_snapshot AS a ON a.id = oa.address_id
+        WHERE
+            s.share_code = ANY(p_share_codes);
+
+    -- Cursor for Contact Points
+    OPEN contact_cursor FOR
+        SELECT
+            cp.shared_consent_id, cp.email, cp.name, cp.telephone, cp.url
+        FROM
+            contact_points_snapshot AS cp
+            INNER JOIN shared_consents AS s ON s.id = cp.shared_consent_id
+        WHERE
+            s.share_code = ANY(p_share_codes);
+END;
+$BODY$;
