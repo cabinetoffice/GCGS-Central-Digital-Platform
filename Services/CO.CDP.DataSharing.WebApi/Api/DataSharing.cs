@@ -180,7 +180,7 @@ public static class EndpointExtensions
             });
 
         app.MapPost("/share/data/bulk-verify",
-            [OrganisationAuthorize([AuthenticationChannel.OrganisationKey])]
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
         async (BulkShareCodeLookupRequest request,
                IUseCase<BulkShareCodeLookupRequest, IEnumerable<BulkShareCodeLookupResult>> useCase) =>
                 await useCase.Execute(request)
