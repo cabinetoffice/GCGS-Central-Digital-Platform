@@ -6,7 +6,7 @@ module "ecs_service_fts" {
     local.fts_container_parameters
   )
 
-  allowed_unauthenticated_paths = ["/api/latest/notice/submission/info/*"]
+  allowed_unauthenticated_paths = ["/api*"]
   cluster_id                    = local.php_cluster_id
   cpu                           = var.service_configs.fts.cpu
   desired_count                 = var.is_production ? var.service_configs.fts.desired_count * 2 : var.service_configs.fts.desired_count // @TODO (ABN) Burn me
