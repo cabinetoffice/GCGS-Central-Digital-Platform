@@ -21,6 +21,8 @@ locals {
   php_ecs_listener_arn         = aws_lb_listener.ecs_php.arn
   unauthenticated_assets_paths = ["/one-login/back-channel-sign-out", "/assets/*", "/css/*", "/manifest.json"]
 
+  fts_host_headers = distinct(compact(concat(["${var.service_configs.fts.name}.${var.public_domain}"], var.fts_extra_host_headers)))
+
   db_ev_password              = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn            = var.db_ev_cluster_credentials_arn
   db_ev_username              = "${local.db_ev_secret_arn}:username::"

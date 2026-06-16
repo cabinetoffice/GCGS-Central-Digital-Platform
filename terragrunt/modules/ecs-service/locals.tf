@@ -51,5 +51,6 @@ locals {
   tg_name                        = "${local.tg_base_name_sanitized}-${local.tg_suffix}"
   internal_tg_name               = "${substr(local.tg_base_name_sanitized, 0, 16)}-i-${local.tg_suffix}"
   tg_host_header                 = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}"]
+  unauthenticated_host_headers   = var.unauthenticated_host_headers != null ? var.unauthenticated_host_headers : local.tg_host_header
   tg_host_header_with_alias      = var.public_domain == null ? [] : ["${var.name}.${var.public_domain}", var.public_domain]
 }
