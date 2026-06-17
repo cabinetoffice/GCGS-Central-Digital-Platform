@@ -80,7 +80,6 @@ locals {
     licenced_to                           = "No-one"
     local_version                         = 1100
     modernised_landing_page               = contains(["development", "staging"], var.environment)
-    saved_search_ignore_time_window       = contains(["development", "staging"], var.environment)
     summarised_search_enabled             = contains(["development", "staging"], var.environment)
     pa23_enabled                          = contains(["development"], var.environment)
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
