@@ -10,6 +10,9 @@ indent_size = 4
 [{*.resx,*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.postman_collection,*.postman_environment,.babelrc,.eslintrc,.prettierrc,.stylelintrc,bowerrc,jest.config}]
 indent_size = 2
 
+[*.{tf,tfvars,tftpl,hcl}]
+insert_final_newline = true
+
 [Makefile]
 indent_style = tab
 
