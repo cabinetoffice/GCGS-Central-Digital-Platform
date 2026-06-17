@@ -12,6 +12,12 @@ variable "alb_enabled" {
   default     = true
 }
 
+variable "unauthenticated_host_headers" {
+  description = "Optional list of host headers to use for unauthenticated path rule"
+  type        = list(string)
+  default     = null
+}
+
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
