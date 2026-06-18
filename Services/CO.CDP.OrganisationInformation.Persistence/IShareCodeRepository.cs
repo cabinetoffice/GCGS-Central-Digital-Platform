@@ -9,6 +9,7 @@ public interface IShareCodeRepository : IDisposable
     Task<IEnumerable<SharedConsent>> GetShareCodesAsync(Guid organisationId);
     Task<SharedConsent?> GetSharedConsentDraftAsync(Guid formId, Guid organisationId);
     Task<SharedConsentNonEf?> GetByShareCode(string sharecode);
+    Task<IEnumerable<SharedConsentNonEf>> GetByShareCodes(ICollection<string> shareCodes);
     Task<SharedConsentDetails?> GetShareCodeDetailsAsync(Guid organisationId, string shareCode);
     Task<bool?> GetShareCodeVerifyAsync(string formVersionId, string shareCode);
     Task<IEnumerable<string>> GetConsortiumOrganisationsShareCode(string shareCode);

@@ -178,6 +178,26 @@ public static class EndpointExtensions
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;
             });
+
+        app.MapPost("/share/data/bulk-verify",
+            [OrganisationAuthorize([AuthenticationChannel.OneLogin])]
+        async (BulkShareCodeLookupRequest request,
+               IUseCase<BulkShareCodeLookupRequest, IEnumerable<BulkShareCodeLookupResult>> useCase) =>
+                await useCase.Execute(request)
+                    .AndThen(results => Results.Ok(results)))
+            .Produces<IEnumerable<BulkShareCodeLookupResult>>(StatusCodes.Status200OK, "application/json")
+            .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
+            .Produces<ProblemDetails>(StatusCodes.Status500InternalServerError)
+            .WithOpenApi(operation =>
+            {
+                operation.OperationId = "BulkShareCodeLookup";
+                operation.Description = "Operation to verify the existence and retrieve basic metadata for multiple share codes in a single request.";
+                operation.Summary = "Bulk lookup of share codes.";
+                operation.Responses["200"].Description = "List of share code lookup results, one entry per requested share code.";
+                operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
+                operation.Responses["500"].Description = "Internal server error.";
+                return operation;
+            });
     }
 }
 
