@@ -102,6 +102,7 @@ locals {
     uk17_enabled                          = true
     uk1_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk2_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
+    uk3_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk9_enabled                           = true
     use_srsi                              = true
     use_srsi_for_api                      = true
