@@ -11,7 +11,8 @@ namespace CO.CDP.OrganisationApp.Pages;
 
 public class YourDetailsModel(
     ISession session,
-    IPersonClient personClient) : LoggedInUserAwareModel(session)
+    IPersonClient personClient,
+    IFtsUrlService ftsUrlService) : LoggedInUserAwareModel(session)
 {
     [BindProperty]
     [DisplayName(nameof(StaticTextResource.Users_FirstName_Label))]
@@ -62,12 +63,12 @@ public class YourDetailsModel(
             return Page();
         }
 
-        if (Helper.ValidRelativeUri(redirectUri))
+        if (redirectUri != "/" && Helper.ValidRelativeUri(redirectUri))
         {
             return Redirect(redirectUri!);
         }
 
-        return RedirectToPage("Organisation/OrganisationSelection");
+        return Redirect(ftsUrlService.BuildUrl("/login", null, "/dashboard"));
     }
 
     private async Task<Person.WebApiClient.Person?> RegisterPersonAsync(UserDetails details)

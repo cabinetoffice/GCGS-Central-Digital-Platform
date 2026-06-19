@@ -17,6 +17,7 @@ public class YourDetailsModelTest
 {
     private readonly Mock<ISession> sessionMock;
     private readonly Mock<IPersonClient> personClientMock;
+    private readonly Mock<IFtsUrlService> ftsUrlServiceMock;
 
     public YourDetailsModelTest()
     {
@@ -24,6 +25,9 @@ public class YourDetailsModelTest
         sessionMock.Setup(session => session.Get<UserDetails>(Session.UserDetailsKey))
             .Returns(new UserDetails { UserUrn = "urn:test" });
         personClientMock = new Mock<IPersonClient>();
+        ftsUrlServiceMock = new Mock<IFtsUrlService>();
+        ftsUrlServiceMock.Setup(f => f.BuildUrl("/login", null, "/dashboard"))
+            .Returns("http://fts-example.com/login?redirect=/dashboard");
     }
 
     [Fact]
@@ -157,8 +161,8 @@ public class YourDetailsModelTest
         var actionResult = await model.OnPost();
 
         personClientMock.Verify(s => s.CreatePersonAsync(It.IsAny<NewPerson>()), Times.Once);
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
+        actionResult.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("http://fts-example.com/login?redirect=/dashboard");
     }
 
     [Fact]
@@ -187,8 +191,8 @@ public class YourDetailsModelTest
 
         var actionResult = await model.OnPost("http://test-domain/org/1");
 
-        actionResult.Should().BeOfType<RedirectToPageResult>()
-            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
+        actionResult.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("http://fts-example.com/login?redirect=/dashboard");
     }
 
     [Fact]
@@ -298,6 +302,6 @@ public class YourDetailsModelTest
 
     private YourDetailsModel GivenYourDetailsModel()
     {
-        return new YourDetailsModel(sessionMock.Object, personClientMock.Object);
+        return new YourDetailsModel(sessionMock.Object, personClientMock.Object, ftsUrlServiceMock.Object);
     }
 }
