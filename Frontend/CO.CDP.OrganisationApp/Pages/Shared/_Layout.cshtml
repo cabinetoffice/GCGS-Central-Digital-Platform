@@ -1,8 +1,6 @@
-@using System.Text.RegularExpressions
 @using CO.CDP.OrganisationApp.Constants
 @using Microsoft.AspNetCore.Mvc.Localization
 @using CO.CDP.Localization
-@using CO.CDP.Organisation.WebApiClient
 @using Microsoft.FeatureManagement
 @addTagHelper *, Microsoft.FeatureManagement.AspNetCore
 
@@ -41,7 +39,7 @@
 
 @{
     var organisationId = userInfoService.GetOrganisationId();
-    var homeLink = organisationId == null ? $"{this.Context.Request.Path}{this.Context.Request.QueryString}" : FtsUrlService.BuildUrl("/login", organisationId, "/Search");
+    var homeLink = User.Identity?.IsAuthenticated == true ? FtsUrlService.BuildUrl("/login", organisationId, "/") : FtsUrlService.BuildUrl("/");
     var pageName = ViewContext.ActionDescriptor?.DisplayName;
 }
 
