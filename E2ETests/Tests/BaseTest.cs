@@ -168,6 +168,9 @@ public class BaseTest
 
     protected async Task Logout()
     {
+        // Make sure we are on the base URL before clicking the sign-out link, to avoid issues if the current page is not loaded or has changed.
+        await _page.GotoAsync(_baseUrl);
+
         // Avoid calling this in setup/teardown for per-fixture mode; it will invalidate the server session.
         await _page.ClickAsync("a.govuk-header__link[href='/one-login/sign-out']");
     }
