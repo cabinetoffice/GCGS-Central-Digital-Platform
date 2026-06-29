@@ -290,6 +290,26 @@ locals {
     local.fts_secrets
   )
 
+  fts_notice_renderer_worker_service_paremeters = {
+    service_port    = local.service_ports_by_service[var.service_configs.fts_notice_renderer_worker.name]
+    cpu             = var.service_configs.fts_notice_renderer_worker.cpu
+    image           = local.ecr_urls[var.service_configs.fts_notice_renderer_worker.name]
+    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_notice_renderer_worker.name].name
+    lg_prefix       = "app"
+    lg_region       = data.aws_region.current.region
+    memory          = var.is_production ? var.service_configs.fts_notice_renderer_worker.memory * 2 : var.service_configs.fts_notice_renderer_worker.memory // @TODO (ABN) Burn me
+    name            = var.service_configs.fts_notice_renderer_worker.name
+    public_domain   = var.public_domain
+    service_version = local.service_version_fts
+    vpc_cidr        = var.vpc_cider
+  }
+
+  fts_notice_renderer_worker_container_parameters = merge(
+    local.fts_parameters,
+    local.fts_notice_renderer_worker_service_paremeters,
+    local.fts_secrets
+  )
+
   fts_allowed_target_email_domains = {
     development = [
       "goaco.com"
