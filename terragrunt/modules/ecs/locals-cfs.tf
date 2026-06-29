@@ -63,7 +63,7 @@ locals {
     valid_until                         = 1924990799
   }
 
-  cfs_service_paremeters = {
+  cfs_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.cfs.name]
     cpu             = var.service_configs.cfs.cpu
     image           = local.ecr_urls[var.service_configs.cfs.name]
@@ -77,7 +77,7 @@ locals {
     vpc_cidr        = var.vpc_cider
   }
 
-  cfs_scheduler_service_paremeters = {
+  cfs_scheduler_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.cfs_scheduler.name]
     cpu             = var.service_configs.cfs_scheduler.cpu
     image           = local.ecr_urls[var.service_configs.cfs_scheduler.name]
@@ -91,7 +91,7 @@ locals {
     vpc_cidr        = var.vpc_cider
   }
 
-  cfs_migrations_service_paremeters = {
+  cfs_migrations_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.cfs_migrations.name]
     cpu             = var.service_configs.cfs_migrations.cpu
     image           = local.ecr_urls[var.service_configs.cfs_migrations.name]
@@ -107,19 +107,19 @@ locals {
 
   cfs_container_parameters = merge(
     local.cfs_parameters,
-    local.cfs_service_paremeters,
+    local.cfs_service_parameters,
     local.cfs_secrets
   )
 
   cfs_scheduler_container_parameters = merge(
     local.cfs_parameters,
-    local.cfs_scheduler_service_paremeters,
+    local.cfs_scheduler_service_parameters,
     local.cfs_secrets
   )
 
   cfs_migrations_container_parameters = merge(
     local.cfs_parameters,
-    local.cfs_migrations_service_paremeters,
+    local.cfs_migrations_service_parameters,
     local.cfs_secrets
   )
 

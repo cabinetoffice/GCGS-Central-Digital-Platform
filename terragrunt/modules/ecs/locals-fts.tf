@@ -190,7 +190,7 @@ locals {
     }
   )
 
-  fts_service_paremeters = {
+  fts_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts.name]
     cpu             = var.service_configs.fts.cpu
     image           = local.ecr_urls[var.service_configs.fts.name]
@@ -204,7 +204,7 @@ locals {
     vpc_cidr        = var.vpc_cider
   }
 
-  fts_scheduler_service_paremeters = {
+  fts_scheduler_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts_scheduler.name]
     cpu             = var.service_configs.fts_scheduler.cpu
     image           = local.ecr_urls[var.service_configs.fts_scheduler.name]
@@ -218,7 +218,7 @@ locals {
     vpc_cidr        = var.vpc_cider
   }
 
-  fts_migrations_service_paremeters = {
+  fts_migrations_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts_migrations.name]
     cpu             = var.service_configs.fts_migrations.cpu
     image           = local.ecr_urls[var.service_configs.fts_migrations.name]
@@ -234,19 +234,19 @@ locals {
 
   fts_container_parameters = merge(
     local.fts_parameters,
-    local.fts_service_paremeters,
+    local.fts_service_parameters,
     local.fts_secrets
   )
 
   fts_scheduler_container_parameters = merge(
     local.fts_parameters,
-    local.fts_scheduler_service_paremeters,
+    local.fts_scheduler_service_parameters,
     local.fts_secrets
   )
 
   fts_migrations_container_parameters = merge(
     local.fts_parameters,
-    local.fts_migrations_service_paremeters,
+    local.fts_migrations_service_parameters,
     local.fts_secrets
   )
 
@@ -270,7 +270,7 @@ locals {
     }
   )
 
-  fts_notice_publish_worker_service_paremeters = {
+  fts_notice_publish_worker_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts_notice_publish_worker.name]
     cpu             = var.service_configs.fts_notice_publish_worker.cpu
     image           = local.ecr_urls[var.service_configs.fts_notice_publish_worker.name]
@@ -286,11 +286,11 @@ locals {
 
   fts_notice_publish_worker_container_parameters = merge(
     local.fts_parameters,
-    local.fts_notice_publish_worker_service_paremeters,
+    local.fts_notice_publish_worker_service_parameters,
     local.fts_secrets
   )
 
-  fts_notice_renderer_worker_service_paremeters = {
+  fts_notice_renderer_worker_service_parameters = {
     service_port    = local.service_ports_by_service[var.service_configs.fts_notice_renderer_worker.name]
     cpu             = var.service_configs.fts_notice_renderer_worker.cpu
     image           = local.ecr_urls[var.service_configs.fts_notice_renderer_worker.name]
@@ -306,7 +306,7 @@ locals {
 
   fts_notice_renderer_worker_container_parameters = merge(
     local.fts_parameters,
-    local.fts_notice_renderer_worker_service_paremeters,
+    local.fts_notice_renderer_worker_service_parameters,
     local.fts_secrets
   )
 
