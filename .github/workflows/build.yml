@@ -215,6 +215,7 @@ jobs:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Save Docker Images
         id: save
+        if: github.event_name != 'pull_request'
         run: |
           IMAGES=$(docker images --format '{{.Repository}}:{{.Tag}}' | awk -F: -v version="$IMAGE_VERSION" '$1 ~ /cabinetoffice\/cdp-/ && $2 == version { print $1":"$2 }' | tr '\n' ' ')
           IMAGES_JSON=$(echo $IMAGES | tr " " "\n" | jq -R . | jq -c -s .)
@@ -226,6 +227,7 @@ jobs:
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
       - name: Upload Docker Images as Artifacts
+        if: github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
