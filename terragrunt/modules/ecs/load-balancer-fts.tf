@@ -71,9 +71,9 @@ resource "aws_lb_listener_rule" "authenticate_pcr2015_fts_app" {
     order = 1
 
     authenticate_cognito {
-      user_pool_arn              = var.user_pool_fts_arn
-      user_pool_client_id        = var.user_pool_fts_client_id
-      user_pool_domain           = var.user_pool_fts_domain
+      user_pool_arn              = var.user_pool_pcr2015_arn
+      user_pool_client_id        = var.user_pool_pcr2015_client_id
+      user_pool_domain           = var.user_pool_pcr2015_domain
       session_cookie_name        = "AWSELBAuthSessionCookie"
       scope                      = "openid"
       on_unauthenticated_request = "authenticate"

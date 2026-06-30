@@ -90,6 +90,9 @@ dependency service_auth {
     fts_user_pool_client_id                  = "mock"
     organisation_app_user_pool_arn           = "mock"
     organisation_app_user_pool_client_id     = "mock"
+    pcr2015_user_pool_arn                    = "mock"
+    pcr2015_user_pool_client_id              = "mock"
+    pcr2015_user_pool_domain                 = "mock"
     user_pool_domain                         = "mock"
   }
 }
@@ -227,6 +230,9 @@ inputs = {
   user_pool_fts_healthcheck_arn        = dependency.service_auth.outputs.fts_healthcheck_user_pool_arn
   user_pool_fts_healthcheck_client_id  = dependency.service_auth.outputs.fts_healthcheck_user_pool_client_id
   user_pool_fts_healthcheck_domain     = dependency.service_auth.outputs.user_pool_domain
+  user_pool_pcr2015_arn                = dependency.service_auth.outputs.pcr2015_user_pool_arn
+  user_pool_pcr2015_client_id          = dependency.service_auth.outputs.pcr2015_user_pool_client_id
+  user_pool_pcr2015_domain             = dependency.service_auth.outputs.pcr2015_user_pool_domain
 
   db_cfs_cluster_address                          = dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn                  = dependency.service_database.outputs.cfs_cluster_credentials_arn
