@@ -213,6 +213,11 @@ jobs:
         run: make down
         env:
           IMAGE_VERSION: ${{ steps.version.outputs.version }}
+      - name: Reclaim Docker disk
+        run: |
+          docker builder prune -af || true
+          docker container prune -f || true
+          docker image prune -f || true
       - name: Save Docker Images
         id: save
         run: |
@@ -220,7 +225,7 @@ jobs:
           IMAGES_JSON=$(echo $IMAGES | tr " " "\n" | jq -R . | jq -c -s .)
           echo "Images to be saved: $IMAGES"
           echo "Images to be saved (json): $IMAGES_JSON"
-          docker save -o cdp-images.tar $IMAGES
+          docker save $IMAGES | gzip -1 > cdp-images.tar.gz
           echo "images=${IMAGES}" >> $GITHUB_OUTPUT
           echo "images_json=${IMAGES_JSON}" >> $GITHUB_OUTPUT
         env:
@@ -229,7 +234,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docker-images
-          path: cdp-images.tar
+          path: cdp-images.tar.gz
 
   vulnerability-scan:
     # since we do not fail the build for now, but the report is to get feedback, only run it on the main branch and tags
@@ -251,7 +256,7 @@ jobs:
         with:
           name: docker-images
       - name: Load Docker Images
-        run: docker load -i cdp-images.tar
+        run: docker load -i cdp-images.tar.gz
 
       - name: Determine the category
         id: category
@@ -293,7 +298,7 @@ jobs:
           name: docker-images
 
       - name: Load Docker Images
-        run: docker load -i cdp-images.tar
+        run: docker load -i cdp-images.tar.gz
 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v4
