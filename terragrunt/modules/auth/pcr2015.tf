@@ -72,7 +72,7 @@ resource "random_password" "pcr2015" {
 }
 
 resource "aws_cognito_user" "pcr2015" {
-  user_pool_id   = aws_cognito_user_pool.pcr2015.id
+  user_pool_id   = aws_cognito_user_pool.auth.id
   username       = "pcr2015"
   password       = random_password.pcr2015.result
   message_action = "SUPPRESS"
