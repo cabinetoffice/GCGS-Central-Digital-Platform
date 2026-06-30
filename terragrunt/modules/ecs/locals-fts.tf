@@ -86,8 +86,8 @@ locals {
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
     notice_render_cache_bucket            = module.s3_bucket_fts_notice_render_cache.bucket
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
-    notice_render_cache_debug_marker      = contains(["development", "staging"], var.environment)
-    notice_render_cache_enabled           = contains(["development", "staging"], var.environment)
+    notice_render_cache_debug_marker      = var.is_production ? false : true
+    notice_render_cache_enabled           = var.is_production ? false : true
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
