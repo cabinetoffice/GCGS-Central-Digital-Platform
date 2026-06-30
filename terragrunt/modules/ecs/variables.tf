@@ -451,6 +451,18 @@ variable "user_pool_fts_healthcheck_domain" {
   type = string
 }
 
+variable "user_pool_pcr2015_arn" {
+  type = string
+}
+
+variable "user_pool_pcr2015_client_id" {
+  type = string
+}
+
+variable "user_pool_pcr2015_domain" {
+  type = string
+}
+
 variable "user_pool_user_management_client_id" {
   type = string
 }

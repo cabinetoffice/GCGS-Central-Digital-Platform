@@ -94,6 +94,18 @@ output "opensearch_gateway_user_pool_domain" {
   value = aws_cognito_user_pool_domain.opensearch_gateway.domain
 }
 
+output "pcr2015_user_pool_arn" {
+  value = aws_cognito_user_pool.pcr2015.arn
+}
+
+output "pcr2015_user_pool_client_id" {
+  value = aws_cognito_user_pool_client.pcr2015.id
+}
+
+output "pcr2015_user_pool_domain" {
+  value = aws_cognito_user_pool_domain.pcr2015.domain
+}
+
 output "organisation_app_user_pool_arn" {
   value = aws_cognito_user_pool.auth.arn
 }

@@ -61,3 +61,42 @@ resource "aws_lb_listener" "ecs_fts_http" {
   }
 
 }
+
+resource "aws_lb_listener_rule" "authenticate_pcr2015_fts_app" {
+  listener_arn = aws_lb_listener.ecs_fts.arn
+  priority     = 200
+
+  action {
+    type  = "authenticate-cognito"
+    order = 1
+
+    authenticate_cognito {
+      user_pool_arn              = var.user_pool_pcr2015_arn
+      user_pool_client_id        = var.user_pool_pcr2015_client_id
+      user_pool_domain           = var.user_pool_pcr2015_domain
+      session_cookie_name        = "AWSELBAuthSessionCookie"
+      scope                      = "openid"
+      on_unauthenticated_request = "authenticate"
+    }
+  }
+
+  action {
+    type             = "forward"
+    target_group_arn = module.ecs_service_fts_app.service_target_group_arn
+    order            = 2
+  }
+
+  condition {
+    host_header {
+      values = distinct(concat(["${var.service_configs.fts_app.name}.${var.public_domain}"], var.fts_extra_host_headers))
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/pcr-2015/*", "/*/pcr-2015/*"]
+    }
+  }
+
+  tags = merge(var.tags, { Name : "authenticate-pcr2015-fts-app" })
+}
