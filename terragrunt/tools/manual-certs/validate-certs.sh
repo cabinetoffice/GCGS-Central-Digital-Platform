@@ -53,7 +53,7 @@ fi
 # shellcheck source=/dev/null
 source "$DOMAINS_FILE"
 
-ENV_KEY="${ENV_NAME^^}"
+ENV_KEY="$(printf '%s' "$ENV_NAME" | tr '[:lower:]' '[:upper:]')"
 FTS_DOMAIN_VAR="FTS_${ENV_KEY}"
 CFS_DOMAIN_VAR="CFS_${ENV_KEY}"
 
