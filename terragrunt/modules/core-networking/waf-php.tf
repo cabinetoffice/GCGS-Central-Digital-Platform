@@ -268,6 +268,84 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  rule {
+    name     = "${local.name_prefix_php}-RateLimitOldChromeNoticeByUA"
+    priority = 10
+
+    action {
+      dynamic "challenge" {
+        for_each = local.waf_php_old_chrome_notice_challenge_enabled ? [1] : []
+        content {}
+      }
+
+      dynamic "count" {
+        for_each = local.waf_php_old_chrome_notice_challenge_enabled ? [] : [1]
+        content {}
+      }
+    }
+
+    statement {
+      rate_based_statement {
+        limit                 = local.rate_limit_old_chrome_notice_ua_count
+        evaluation_window_sec = local.rate_limit_window_seconds
+        aggregate_key_type    = "CUSTOM_KEYS"
+
+        custom_key {
+          header {
+            name = "user-agent"
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+
+        scope_down_statement {
+          and_statement {
+            statement {
+              regex_match_statement {
+                regex_string = local.waf_php_notice_paths_all
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "LOWERCASE"
+                }
+              }
+            }
+
+            statement {
+              regex_match_statement {
+                regex_string = local.waf_php_old_chrome_notice_ua_regex
+
+                field_to_match {
+                  single_header {
+                    name = "user-agent"
+                  }
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "LOWERCASE"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-RateLimitOldChromeNoticeByUA"
+      sampled_requests_enabled   = true
+    }
+  }
+
   dynamic "rule" {
     for_each = local.waf_rule_sets_priority_blockers
     content {
