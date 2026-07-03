@@ -344,8 +344,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         }
     }
 
-    public void Track(Organisation organisation) => context.Update(organisation);
-
     public async Task SaveAsync(Organisation organisation, Func<Organisation, Task> onSave) =>
         await context.InTransaction(async _ =>
         {
@@ -360,9 +358,6 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
         context.Update(organisationPerson);
         context.SaveChanges();
     }
-
-    public void TrackOrganisationPerson(OrganisationPerson organisationPerson) =>
-        context.Update(organisationPerson);
 
     public void SaveOrganisationMou(MouSignature mouSignature)
     {
