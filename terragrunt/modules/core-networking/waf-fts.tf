@@ -22,6 +22,36 @@ resource "aws_wafv2_web_acl" "fts" {
   }
 
   rule {
+    name     = "${local.name_prefix_fts}-block-notice-pdf-paths"
+    priority = 0
+
+    action {
+      block {}
+    }
+
+    statement {
+      regex_match_statement {
+        regex_string = local.waf_notice_pdf_path_regex
+
+        field_to_match {
+          uri_path {}
+        }
+
+        text_transformation {
+          priority = 0
+          type     = "LOWERCASE"
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_fts}-block-notice-pdf-paths"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
     name     = "${local.name_prefix_fts}-allow-known-ips"
     priority = 1
 
@@ -94,7 +124,7 @@ resource "aws_wafv2_web_acl" "fts" {
 
   rule {
     name     = "${local.name_prefix_fts}-RateLimitOcdsSReleasePackages"
-    priority = 0
+    priority = 9
 
     action {
       block {
