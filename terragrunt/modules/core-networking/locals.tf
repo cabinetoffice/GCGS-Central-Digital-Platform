@@ -22,9 +22,14 @@ locals {
     AWSManagedRulesKnownBadInputsRuleSet : 2
   }
 
-  rate_limit_count          = 12
-  rate_limit_window_seconds = 120
-  rate_limit_global_count   = 240
+  rate_limit_count                      = 12
+  rate_limit_window_seconds             = 120
+  rate_limit_global_count               = 240
+  rate_limit_old_chrome_notice_ua_count = 100
+
+  waf_php_old_chrome_notice_ua_regex = ".*chrome/(9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-6])\\..*"
+
+  waf_php_old_chrome_notice_challenge_enabled = contains(["development", "staging"], var.environment)
 
   waf_rule_sets_priority_observers = {
     AWSManagedRulesSQLiRuleSet : 6
