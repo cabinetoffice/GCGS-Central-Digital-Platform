@@ -278,6 +278,16 @@ variable "queue_fts_notice_publish_url" {
   type        = string
 }
 
+variable "queue_fts_notice_render_arn" {
+  description = "ARN of the FTS notice render SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_render_url" {
+  description = "URL of the FTS notice render SQS queue"
+  type        = string
+}
+
 variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string

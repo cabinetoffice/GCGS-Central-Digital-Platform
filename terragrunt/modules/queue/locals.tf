@@ -4,6 +4,7 @@ locals {
   name_av_scanner_queue          = "${local.name_prefix}-${var.environment}-av-scanner"
   name_organisation_queue        = "${local.name_prefix}-${var.environment}-organisation"
   name_fts_notice_publish        = "${local.name_prefix}-${var.environment}-fts-notice-publish"
+  name_fts_notice_render         = "${local.name_prefix}-${var.environment}-fts-notice-render"
   name_user_management_queue     = "${local.name_prefix}-${var.environment}-user-management"
   name_entity_verification_queue = "${local.name_prefix}-${var.environment}-entity-verification"
 }
