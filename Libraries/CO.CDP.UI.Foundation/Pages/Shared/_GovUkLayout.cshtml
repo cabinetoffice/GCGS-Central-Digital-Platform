@@ -120,7 +120,7 @@
         </div>
     </section>
 
-    <div class="govuk-width-container app-width-container">
+    <div class="govuk-width-container @containerClasses">
         @await RenderSectionAsync("PhaseBanner", required: false)
 
         @* Replicates the BeforeContent region in the base govuk-frontend template *@
