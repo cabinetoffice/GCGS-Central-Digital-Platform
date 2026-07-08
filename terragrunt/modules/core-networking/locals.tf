@@ -26,6 +26,7 @@ locals {
   rate_limit_window_seconds             = 120
   rate_limit_global_count               = 240
   rate_limit_old_chrome_notice_ua_count = 100
+  waf_notice_pdf_path_regex             = "^/notice/[0-9]+-[0-9]+/pdf.*$"
 
   waf_php_old_chrome_notice_ua_regex = ".*chrome/(9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-6])\\..*"
 
@@ -60,7 +61,7 @@ locals {
   waf_php_ocds_rate_limit_rules = {
     ocds_packages = {
       name     = "RateLimitOcdsPackages"
-      priority = 0
+      priority = 9
       regex    = "^/api/[^/]+/ocds(?:Record|Release)Packages.*$"
     }
   }
