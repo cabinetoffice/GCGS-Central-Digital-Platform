@@ -53,3 +53,9 @@ variable "cfs_versions_param_name" {
   type        = string
   default     = "cdp-sirsi-cfs-envs-service-version"
 }
+
+variable "versions_cache_ttl_seconds" {
+  description = "Optional cache TTL for SSM version reads (0 disables caching)"
+  type        = number
+  default     = 0
+}

@@ -22,6 +22,7 @@ resource "aws_lambda_function" "teams_notifier" {
       SIRSI_VERSIONS_PARAM   = var.sirsi_versions_param_name
       FTS_VERSIONS_PARAM     = var.fts_versions_param_name
       CFS_VERSIONS_PARAM     = var.cfs_versions_param_name
+      VERSIONS_CACHE_TTL_SECONDS = tostring(var.versions_cache_ttl_seconds)
     }
   }
 
