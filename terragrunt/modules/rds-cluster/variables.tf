@@ -50,6 +50,12 @@ variable "deletion_protection" {
   default     = true
 }
 
+variable "enabled_cloudwatch_logs_exports" {
+  description = "List of log types to export to CloudWatch"
+  type        = list(string)
+  default     = []
+}
+
 variable "engine" {
   description = "RDS engine"
   type        = string
@@ -59,12 +65,6 @@ variable "engine" {
 variable "engine_version" {
   description = "DB engine version"
   type        = string
-}
-
-variable "enabled_cloudwatch_logs_exports" {
-  description = "List of log types to export to CloudWatch"
-  type        = list(string)
-  default     = []
 }
 
 variable "family" {
