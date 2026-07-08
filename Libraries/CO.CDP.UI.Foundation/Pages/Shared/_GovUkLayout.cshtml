@@ -88,17 +88,11 @@
 
     <section aria-label="@serviceName" class="govuk-service-navigation" data-module="govuk-service-navigation">
         <div class="govuk-width-container @containerClasses">
-            @if (IsSectionDefined("LanguageSwitcher"))
-            {
-                <div class="app-language-select-container">
-                    @await RenderSectionAsync("LanguageSwitcher", required: false)
-                </div>
-            }
             <div class="govuk-service-navigation__container">
                 <span class="govuk-service-navigation__service-name">
                     @if (!string.IsNullOrEmpty(serviceUrl))
                     {
-                        <a href="@serviceUrl" class="govuk-service-navigation__link">@serviceName</a>
+                        <span class="govuk-service-navigation__text"><a href="@serviceUrl" class="govuk-service-navigation__link">@serviceName</a></span>
                     }
                     else
                     {
@@ -115,6 +109,10 @@
                             @await RenderSectionAsync("HeaderNavigation", required: false)
                         </ul>
                     </nav>
+                }
+                @if (IsSectionDefined("LanguageSwitcher"))
+                {
+                    @await RenderSectionAsync("LanguageSwitcher", required: false)
                 }
             </div>
         </div>
