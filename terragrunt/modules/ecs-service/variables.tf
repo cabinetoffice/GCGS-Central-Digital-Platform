@@ -12,12 +12,6 @@ variable "alb_enabled" {
   default     = true
 }
 
-variable "unauthenticated_host_headers" {
-  description = "Optional list of host headers to use for unauthenticated path rule"
-  type        = list(string)
-  default     = null
-}
-
 variable "allowed_unauthenticated_paths" {
   description = "List of paths allowed access to protected services, bypassing Cognito authentication."
   type        = list(string)
@@ -248,6 +242,12 @@ variable "tg_suffix" {
   description = "Optional short suffix for target group names to allow create_before_destroy without name collision"
   type        = string
   default     = "v1"
+}
+
+variable "unauthenticated_host_headers" {
+  description = "Optional list of host headers to use for unauthenticated path rule"
+  type        = list(string)
+  default     = null
 }
 
 variable "unhealthy_threshold" {

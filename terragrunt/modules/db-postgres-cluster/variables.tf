@@ -1,13 +1,13 @@
-variable "backup_retention_period" {
-  description = "The number of days to retain backups for"
-  type        = number
-  default     = 7
-}
-
 variable "apply_immediately" {
   description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
   type        = bool
   default     = false
+}
+
+variable "backup_retention_period" {
+  description = "The number of days to retain backups for"
+  type        = number
+  default     = 7
 }
 
 variable "copy_tags_to_snapshot" {
