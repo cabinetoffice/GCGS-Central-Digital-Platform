@@ -273,7 +273,7 @@ locals {
     fts_job_scheduler                    = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
-    fts_search_indexer                   = { desired_count = 1 }
+    fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
     fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
     fts_notice_renderer_worker           = { desired_count = 0, cpu = 4096, memory = 8192 }
