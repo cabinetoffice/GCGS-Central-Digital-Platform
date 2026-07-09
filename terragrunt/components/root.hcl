@@ -276,7 +276,7 @@ locals {
     fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
     fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_notice_render_worker             = { desired_count = 0, cpu = 4096, memory = 8192 }
+    fts_notice_render_worker             = { desired_count = 1, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256, memory = 512 }
