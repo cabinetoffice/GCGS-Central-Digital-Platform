@@ -308,7 +308,13 @@ locals {
   fts_notice_render_worker_container_parameters = merge(
     local.fts_parameters,
     local.fts_notice_render_worker_service_parameters,
-    local.fts_secrets
+    local.fts_secrets,
+    {
+      notice_render_cache_enabled  = true
+      notice_render_dlq_url        = var.queue_fts_notice_render_dlq_url
+      notice_render_queue_url      = var.queue_fts_notice_render_url
+      notice_render_worker_enabled = false
+    }
   )
 
   fts_allowed_target_email_domains = {

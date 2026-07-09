@@ -283,6 +283,11 @@ variable "queue_fts_notice_render_arn" {
   type        = string
 }
 
+variable "queue_fts_notice_render_dlq_url" {
+  description = "URL of the FTS notice render SQS dead-letter queue"
+  type        = string
+}
+
 variable "queue_fts_notice_render_url" {
   description = "URL of the FTS notice render SQS queue"
   type        = string
