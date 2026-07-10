@@ -9,6 +9,17 @@ locals {
   grafana_db_instance_type  = var.grafana_db_instance_type
   grafana_db_multi_az       = var.grafana_db_multi_az
 
+  grafana_admin_emails      = [for email in var.grafana_admin_emails : lower(email)]
+  grafana_admin_emails_json = jsonencode(local.grafana_admin_emails)
+  grafana_admin_role_attribute_path = length(local.grafana_admin_emails) > 0 ? format(
+    "contains(%s, email) && 'Admin' || contains(%s, preferred_username) && 'Admin' || 'Viewer'",
+    local.grafana_admin_emails_json,
+    local.grafana_admin_emails_json
+  ) : "'Viewer'"
+  grafana_admin_role_attribute_path_json = jsonencode(local.grafana_admin_role_attribute_path)
+
+  grafana_allowed_domains = join(",", var.grafana_allowed_email_domains)
+
   service_widgets = [
     for idx, service in values(var.service_configs) : [
       {
