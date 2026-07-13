@@ -13,6 +13,8 @@ module "cluster_entity_verification" {
   performance_insights_enabled = local.is_production
   instance_type                = var.aurora_postgres_instance_type_ev
   private_subnet_ids           = var.private_subnet_ids
+  restore_from_snapshot        = var.ev_restore_from_snapshot
   role_terraform_arn           = var.role_terraform_arn
+  snapshot_identifier          = var.ev_snapshot_identifier
   tags                         = var.tags
 }

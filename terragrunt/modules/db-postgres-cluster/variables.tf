@@ -106,9 +106,21 @@ variable "publicly_accessible" {
   default     = false
 }
 
+variable "restore_from_snapshot" {
+  description = "Whether this cluster is restored from snapshot (affects create-only fields)"
+  type        = bool
+  default     = false
+}
+
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string
+}
+
+variable "snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore the cluster from"
+  type        = string
+  default     = null
 }
 
 variable "tags" {
