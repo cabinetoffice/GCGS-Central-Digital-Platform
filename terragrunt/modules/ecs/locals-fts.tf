@@ -89,6 +89,7 @@ locals {
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
     notice_render_cache_debug_marker      = var.is_production ? false : true
     notice_render_cache_enabled           = var.is_production ? false : true
+    notice_render_worker_enabled          = var.environment == "development"
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
@@ -104,6 +105,7 @@ locals {
     uk1_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk2_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk3_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
+    uk6_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk9_enabled                           = true
     use_srsi                              = true
     use_srsi_for_api                      = true
@@ -310,10 +312,8 @@ locals {
     local.fts_notice_render_worker_service_parameters,
     local.fts_secrets,
     {
-      notice_render_cache_enabled  = true
       notice_render_dlq_url        = var.queue_fts_notice_render_dlq_url
       notice_render_queue_url      = var.queue_fts_notice_render_url
-      notice_render_worker_enabled = false
     }
   )
 
