@@ -132,7 +132,13 @@
   "fts-notice-publish-worker": {
     "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
     "log_group_name": "/ecs/fts-notice-publish-worker",
-    "title": "FTS NOTICE PUBLISH WORKER",
+    "title": "FTS Notice Publish Worker",
+    "type": "single"
+  },
+  "fts-notice-render-worker": {
+    "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
+    "log_group_name": "/ecs/fts-notice-render-worker",
+    "title": "FTS Notice Render Worker",
     "type": "single"
   },
   "fts-scheduler": {

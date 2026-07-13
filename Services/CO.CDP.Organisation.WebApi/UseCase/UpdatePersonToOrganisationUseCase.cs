@@ -19,8 +19,7 @@ public class UpdatePersonToOrganisationUseCase(
                                      $"Unknown organisation {command.organisationId} or Person {command.personId}.");
 
         organisationPerson.Scopes = command.updatePerson.Scopes;
-        organisationRepository.TrackOrganisationPerson(organisationPerson);
-        await organisationRepository.SaveAsync(organisationPerson.Organisation!, _ => Task.CompletedTask);
+        organisationRepository.SaveOrganisationPerson(organisationPerson);
 
         return true;
     }

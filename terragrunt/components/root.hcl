@@ -104,8 +104,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.8.0"
-      pinned_service_version              = "1.1.0"
+      pinned_service_version_fts          = "1.9.2"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
@@ -153,8 +153,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.7.0"
-      pinned_service_version              = "1.1.0"
+      pinned_service_version_fts          = "1.9.2"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
@@ -197,8 +197,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.4.3"
-      pinned_service_version              = "1.0.89"
+      pinned_service_version_fts          = "1.9.2"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
@@ -273,10 +273,10 @@ locals {
     fts_job_scheduler                    = { desired_count = 1 }
     fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_search_api                       = { desired_count = 2 }
-    fts_search_indexer                   = { desired_count = 1 }
+    fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
     fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_notice_renderer_worker           = { desired_count = 0, cpu = 4096, memory = 8192 }
+    fts_notice_render_worker             = { desired_count = 1, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256, memory = 512 }
@@ -333,7 +333,7 @@ locals {
     fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
     fts_findtender_migrations            = { cluster = "fts",       type = "db-migration", name = "fts-findtender-migrations" }
     fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
-    fts_notice_renderer_worker           = { cluster = "sirsi-php", type = "service",      name = "fts-notice-renderer-worker" }
+    fts_notice_render_worker             = { cluster = "sirsi-php", type = "service",      name = "fts-notice-render-worker" }
     fts_job_scheduler                    = { cluster = "sirsi-php", type = "service",      name = "fts-job-scheduler" }
     fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }
     fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }

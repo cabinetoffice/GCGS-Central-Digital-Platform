@@ -67,12 +67,12 @@ variable "ssm_envs_sirsi_service_version_name" {
   type        = string
 }
 
-variable "teams_notifier_lambda_arn" {
-  description = "Lambda ARN to post/update Teams messages"
-  type        = string
-}
-
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)
+}
+
+variable "teams_notifier_lambda_arn" {
+  description = "Lambda ARN to post/update Teams messages"
+  type        = string
 }

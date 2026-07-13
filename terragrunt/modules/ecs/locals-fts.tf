@@ -84,6 +84,7 @@ locals {
     pa23_enabled                          = true
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
+    notice_render_queue_url               = var.queue_fts_notice_render_url
     notice_render_cache_bucket            = module.s3_bucket_fts_notice_render_cache.bucket
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
     notice_render_cache_debug_marker      = var.is_production ? false : true
@@ -290,24 +291,30 @@ locals {
     local.fts_secrets
   )
 
-  fts_notice_renderer_worker_service_parameters = {
-    service_port    = local.service_ports_by_service[var.service_configs.fts_notice_renderer_worker.name]
-    cpu             = var.service_configs.fts_notice_renderer_worker.cpu
-    image           = local.ecr_urls[var.service_configs.fts_notice_renderer_worker.name]
-    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_notice_renderer_worker.name].name
+  fts_notice_render_worker_service_parameters = {
+    service_port    = local.service_ports_by_service[var.service_configs.fts_notice_render_worker.name]
+    cpu             = var.service_configs.fts_notice_render_worker.cpu
+    image           = local.ecr_urls[var.service_configs.fts_notice_render_worker.name]
+    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_notice_render_worker.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.region
-    memory          = var.is_production ? var.service_configs.fts_notice_renderer_worker.memory * 2 : var.service_configs.fts_notice_renderer_worker.memory // @TODO (ABN) Burn me
-    name            = var.service_configs.fts_notice_renderer_worker.name
+    memory          = var.service_configs.fts_notice_render_worker.memory
+    name            = var.service_configs.fts_notice_render_worker.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
     vpc_cidr        = var.vpc_cider
   }
 
-  fts_notice_renderer_worker_container_parameters = merge(
+  fts_notice_render_worker_container_parameters = merge(
     local.fts_parameters,
-    local.fts_notice_renderer_worker_service_parameters,
-    local.fts_secrets
+    local.fts_notice_render_worker_service_parameters,
+    local.fts_secrets,
+    {
+      notice_render_cache_enabled  = true
+      notice_render_dlq_url        = var.queue_fts_notice_render_dlq_url
+      notice_render_queue_url      = var.queue_fts_notice_render_url
+      notice_render_worker_enabled = false
+    }
   )
 
   fts_allowed_target_email_domains = {
