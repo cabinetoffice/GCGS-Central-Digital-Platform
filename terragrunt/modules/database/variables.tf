@@ -70,6 +70,30 @@ variable "fts_snapshot_identifier" {
   default     = null
 }
 
+variable "sirsi_restore_from_snapshot" {
+  description = "Whether Sirsi Aurora Postgres should be restored from a snapshot"
+  type        = bool
+  default     = false
+}
+
+variable "sirsi_snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore Sirsi Aurora cluster from"
+  type        = string
+  default     = null
+}
+
+variable "ev_restore_from_snapshot" {
+  description = "Whether EV Aurora Postgres should be restored from a snapshot"
+  type        = bool
+  default     = false
+}
+
+variable "ev_snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore EV Aurora cluster from"
+  type        = string
+  default     = null
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool
