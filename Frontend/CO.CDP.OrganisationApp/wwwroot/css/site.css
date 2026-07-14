@@ -12,12 +12,6 @@
         color: #fff;
     }
 
-.govuk-phase-banner__content__tag {
-    background-color: #1d70b8;
-    color: #fff;
-    text-transform: uppercase;
-}
-
 /**
  * Language switcher, positioned top-right of the service navigation row.
  */
