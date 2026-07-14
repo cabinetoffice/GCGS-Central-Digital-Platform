@@ -7,7 +7,7 @@ public class LoginPage
 {
     private readonly IPage _page;
 
-    private readonly string SignInToAccountLink = "a.govuk-link[href='/one-login/sign-in']";
+    private readonly string SignInToAccountLink = "a.govuk-header__link[href='/one-login/sign-in']";
     private readonly string SignOutLink = "a.govuk-header__link[href='/one-login/sign-out']";
     private readonly string OneLoginSignInButton = "#sign-in-button";
     private readonly string OneLoginEmailAddressInputBox = "input.govuk-input#email";
@@ -26,11 +26,14 @@ public class LoginPage
     public async Task Login(string loginUrl, string email, string password, string secretKey)
     {
         await _page.GotoAsync(loginUrl);
-        await _page.ClickAsync(SignInToAccountLink);
-
         bool isSignOutVisible = await _page.Locator(SignOutLink).IsVisibleAsync();
 
-        if (!isSignOutVisible) {
+
+
+
+        if (!isSignOutVisible)
+        {
+            await _page.ClickAsync(SignInToAccountLink);
             await _page.ClickAsync(OneLoginSignInButton);
             await _page.FillAsync(OneLoginEmailAddressInputBox, email);
             await _page.ClickAsync(ContinueButton);
