@@ -21,9 +21,9 @@ public class BaseTest
 
     // ---------- config ----------
     protected readonly string _baseUrl = ConfigUtility.GetBaseUrl();
-    private readonly string _testEmail    = ConfigUtility.GetTestEmail();
+    private readonly string _testEmail = ConfigUtility.GetTestEmail();
     private readonly string _testPassword = ConfigUtility.GetTestPassword();
-    private readonly string _secretKey    = ConfigUtility.GetSecretKey();
+    private readonly string _secretKey = ConfigUtility.GetSecretKey();
     protected static string SuperAdminEmail => ConfigUtility.GetTestSupportAdminEmail();
     private readonly string _superAdminPassword = ConfigUtility.GetTestSupportAdminPassword();
     private readonly string _superAdminSecretKey = ConfigUtility.GetTestSupportAdminSecretKey();
@@ -40,14 +40,14 @@ public class BaseTest
         if (_fixtureStatePath.ContainsKey(fixtureKey)) return;
 
         var work = TestContext.CurrentContext.WorkDirectory;
-        var dir  = Path.Combine(work, "AuthStates");
+        var dir = Path.Combine(work, "AuthStates");
         Directory.CreateDirectory(dir);
 
         var statePath = Path.Combine(dir, fixtureKey.Replace('.', '_') + ".json");
 
         if (!File.Exists(statePath))
         {
-            var tempCtx  = await PlaywrightHost.Browser!.NewContextAsync();
+            var tempCtx = await PlaywrightHost.Browser!.NewContextAsync();
             var tempPage = await tempCtx.NewPageAsync();
 
             // Real OneLogin ONCE for this fixture
@@ -77,14 +77,14 @@ public class BaseTest
             throw new("Auth state not initialised. Did OneTimeSetUp run?");
 
         _context = await PlaywrightHost.Browser!.NewContextAsync(new() { StorageStatePath = statePath });
-        _page    = await _context.NewPageAsync();
+        _page = await _context.NewPageAsync();
 
         // Tracing per test
         await _context.Tracing.StartAsync(new()
         {
             Screenshots = true,
-            Snapshots   = true,
-            Sources     = true
+            Snapshots = true,
+            Sources = true
         });
     }
 
@@ -161,8 +161,8 @@ public class BaseTest
         _loginPage = new LoginPage(_page);
         await _loginPage.Login(
             _baseUrl,
-            isSuperAdminUser ? SuperAdminEmail      : _testEmail,
-            isSuperAdminUser ? _superAdminPassword  : _testPassword,
+            isSuperAdminUser ? SuperAdminEmail : _testEmail,
+            isSuperAdminUser ? _superAdminPassword : _testPassword,
             isSuperAdminUser ? _superAdminSecretKey : _secretKey);
     }
 
@@ -172,7 +172,7 @@ public class BaseTest
         await _page.GotoAsync(_baseUrl);
 
         // Avoid calling this in setup/teardown for per-fixture mode; it will invalidate the server session.
-        await _page.ClickAsync("a.govuk-header__link[href='/one-login/sign-out']");
+        await _page.ClickAsync("a.govuk-service-navigation__link[href='/one-login/sign-out']");
     }
 
     public string GetBaseUrl() => _baseUrl;
