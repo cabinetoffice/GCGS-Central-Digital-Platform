@@ -43,6 +43,10 @@ locals {
       fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -86,6 +90,10 @@ locals {
       fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       name                        = "staging"
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
@@ -131,6 +139,10 @@ locals {
       fts_extra_domains           = ["www-tpp.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -179,6 +191,10 @@ locals {
       fts_extra_domains           = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -226,6 +242,10 @@ locals {
   fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
   fts_restore_from_snapshot           = try(local.environments[local.environment].fts_restore_from_snapshot, false)
   fts_snapshot_identifier             = try(local.environments[local.environment].fts_snapshot_identifier, null)
+  sirsi_restore_from_snapshot         = try(local.environments[local.environment].sirsi_restore_from_snapshot, false)
+  sirsi_snapshot_identifier           = try(local.environments[local.environment].sirsi_snapshot_identifier, null)
+  ev_restore_from_snapshot            = try(local.environments[local.environment].ev_restore_from_snapshot, false)
+  ev_snapshot_identifier              = try(local.environments[local.environment].ev_snapshot_identifier, null)
   mail_from_domains                   = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls   = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   opensearch_availability_zone_count  = try(local.environments[local.environment].opensearch_availability_zone_count, 2)

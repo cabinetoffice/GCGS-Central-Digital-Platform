@@ -3,7 +3,7 @@ resource "aws_rds_cluster" "this" {
   backup_retention_period          = var.backup_retention_period
   cluster_identifier               = var.db_name
   copy_tags_to_snapshot            = var.copy_tags_to_snapshot
-  database_name                    = replace(var.db_name, "-", "_")
+  database_name                    = var.restore_from_snapshot ? null : replace(var.db_name, "-", "_")
   db_cluster_parameter_group_name  = aws_rds_cluster_parameter_group.this.name
   db_instance_parameter_group_name = aws_db_parameter_group.this.name
   db_subnet_group_name             = aws_db_subnet_group.this.name
@@ -11,10 +11,11 @@ resource "aws_rds_cluster" "this" {
   engine                           = var.engine
   engine_version                   = var.engine_version
   kms_key_id                       = module.storage_encryption_key.key_arn
-  manage_master_user_password      = true
-  master_username                  = "${replace(var.db_name, "-", "_")}_user"
+  manage_master_user_password      = var.restore_from_snapshot ? null : true
+  master_username                  = var.restore_from_snapshot ? null : "${replace(var.db_name, "-", "_")}_user"
   preferred_backup_window          = "00:00-02:00"
   preferred_maintenance_window     = "mon:03:00-mon:05:00"
+  snapshot_identifier              = var.snapshot_identifier
   storage_encrypted                = true
 
   vpc_security_group_ids = [var.db_sg_id]
