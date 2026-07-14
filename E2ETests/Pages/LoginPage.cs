@@ -26,12 +26,14 @@ public class LoginPage
     public async Task Login(string loginUrl, string email, string password, string secretKey)
     {
         await _page.GotoAsync(loginUrl);
-        await _page.ClickAsync(SignInToAccountLink);
-
         bool isSignOutVisible = await _page.Locator(SignOutLink).IsVisibleAsync();
+
+
+
 
         if (!isSignOutVisible)
         {
+            await _page.ClickAsync(SignInToAccountLink);
             await _page.ClickAsync(OneLoginSignInButton);
             await _page.FillAsync(OneLoginEmailAddressInputBox, email);
             await _page.ClickAsync(ContinueButton);
