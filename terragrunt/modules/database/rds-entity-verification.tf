@@ -5,7 +5,7 @@ module "cluster_entity_verification" {
   backup_retention_period      = local.is_production ? 35 : 1
   db_name                      = local.ev_cluster_name
   db_sg_id                     = var.db_postgres_sg_id
-  deletion_protection          = local.is_production
+  deletion_protection          = true
   engine_version               = var.aurora_postgres_engine_version
   family                       = "aurora-postgresql${floor(var.aurora_postgres_engine_version)}"
   monitoring_interval          = local.is_production ? 30 : 0
