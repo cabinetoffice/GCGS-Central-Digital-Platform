@@ -1,0 +1,104 @@
+{
+  "Version": "2012-10-17",
+  "Id": "key-consolepolicy-3",
+  "Statement": [
+    {
+      "Sid": "EnableSourceAccountAdmin",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::471112843276:root"
+      },
+      "Action": "kms:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSourceBootstrapUse",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::471112892058:role/bootstrap"
+      },
+      "Action": [
+        "kms:Encrypt",
+        "kms:Decrypt",
+        "kms:ReEncrypt*",
+        "kms:GenerateDataKey*",
+        "kms:DescribeKey"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowStagingTerraformUseForRDSCopy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::905418042182:role/cdp-sirsi-staging-terraform"
+      },
+      "Action": [
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:ReEncryptFrom",
+        "kms:GenerateDataKeyWithoutPlaintext"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "rds.eu-west-2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowStagingTerraformCreateGrantForRDSCopy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::905418042182:role/cdp-sirsi-staging-terraform"
+      },
+      "Action": "kms:CreateGrant",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "rds.eu-west-2.amazonaws.com"
+        },
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    },
+    {
+      "Sid": "TempAllowStagingRootForCopy",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::905418042182:root"
+      },
+      "Action": [
+        "kms:DescribeKey",
+        "kms:Decrypt",
+        "kms:ReEncryptFrom",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:CreateGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "kms:ViaService": "rds.eu-west-2.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "AllowAttachmentOfPersistentResources",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::905418042182:root"
+      },
+      "Action": [
+        "kms:CreateGrant",
+        "kms:ListGrants",
+        "kms:RevokeGrant"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "Bool": {
+          "kms:GrantIsForAWSResource": "true"
+        }
+      }
+    }
+  ]
+}

@@ -123,6 +123,18 @@ variable "snapshot_identifier" {
   default     = null
 }
 
+variable "skip_final_snapshot" {
+  description = "Override whether to skip final snapshot on delete"
+  type        = bool
+  default     = null
+}
+
+variable "final_snapshot_identifier" {
+  description = "Optional final snapshot identifier used when skip_final_snapshot is false"
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "Tags to apply to all resources in this module"
   type        = map(string)

@@ -7,11 +7,11 @@ output "db_address" {
 }
 
 output "db_master_user_secret_arn" {
-  value = aws_rds_cluster.this.master_user_secret[0].secret_arn
+  value = try(aws_rds_cluster.this.master_user_secret[0].secret_arn, null)
 }
 
 output "db_master_user_secret_kms_key_id" {
-  value = aws_rds_cluster.this.master_user_secret[0].kms_key_id
+  value = try(aws_rds_cluster.this.master_user_secret[0].kms_key_id, null)
 }
 
 output "db_name" {

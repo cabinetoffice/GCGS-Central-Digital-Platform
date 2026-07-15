@@ -8,6 +8,8 @@ resource "aws_rds_cluster" "this" {
   db_instance_parameter_group_name = aws_db_parameter_group.this.name
   db_subnet_group_name             = aws_db_subnet_group.this.name
   deletion_protection              = var.deletion_protection
+  skip_final_snapshot              = coalesce(var.skip_final_snapshot, var.deletion_protection ? false : true)
+  final_snapshot_identifier        = var.final_snapshot_identifier
   engine                           = var.engine
   engine_version                   = var.engine_version
   kms_key_id                       = module.storage_encryption_key.key_arn

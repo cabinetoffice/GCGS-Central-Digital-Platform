@@ -15,6 +15,8 @@ module "cluster_sirsi" {
   db_parameters_instance       = { "max_connections" : 16000 }
   private_subnet_ids           = var.private_subnet_ids
   restore_from_snapshot        = var.sirsi_restore_from_snapshot
+  skip_final_snapshot          = local.is_staging ? true : null
+  final_snapshot_identifier    = local.is_staging ? "${local.sirsi_cluster_name}-final-staging" : null
   role_terraform_arn           = var.role_terraform_arn
   snapshot_identifier          = var.sirsi_snapshot_identifier
   tags                         = var.tags
