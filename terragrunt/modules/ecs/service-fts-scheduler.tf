@@ -19,7 +19,7 @@ module "ecs_service_fts_scheduler" {
   desired_count          = var.service_configs.fts_scheduler.desired_count
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "standalone"
-  memory                 = var.is_production ? var.service_configs.fts_scheduler.memory * 2 : var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
+  memory                 = var.service_configs.fts_scheduler.memory
   name                   = var.service_configs.fts_scheduler.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product

@@ -276,7 +276,7 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
-    cfs                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    cfs                                  = { desired_count = 3, cpu = local.environment == "production" ? 8192 : 4096, memory = local.environment == "production" ? 16384 : 8192 }
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
     commercial_tools_app                 = {}
@@ -285,17 +285,17 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    fts                                  = { desired_count = local.environment == "production" ? 6 : 3, cpu = local.environment == "production" ? 8192 : 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_app                              = { desired_count = 2 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_findtender_migrations            = { cpu = 256, memory = 512 }
     fts_job_scheduler                    = { desired_count = 1 }
-    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
-    fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
+    fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_notice_render_worker             = { desired_count = 1, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
