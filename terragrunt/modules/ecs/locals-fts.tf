@@ -200,7 +200,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.region
-    memory          = var.is_production ? var.service_configs.fts.memory * 2 : var.service_configs.fts.memory // @TODO (ABN) Burn me
+    memory          = var.service_configs.fts.memory
     name            = var.service_configs.fts.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
@@ -214,7 +214,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.region
-    memory          = var.is_production ? var.service_configs.fts_scheduler.memory * 2 : var.service_configs.fts_scheduler.memory // @TODO (ABN) Burn me
+    memory          = var.service_configs.fts_scheduler.memory
     name            = var.service_configs.fts_scheduler.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
@@ -280,7 +280,7 @@ locals {
     lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_notice_publish_worker.name].name
     lg_prefix       = "app"
     lg_region       = data.aws_region.current.region
-    memory          = var.is_production ? var.service_configs.fts_notice_publish_worker.memory * 2 : var.service_configs.fts_notice_publish_worker.memory // @TODO (ABN) Burn me
+    memory          = var.service_configs.fts_notice_publish_worker.memory
     name            = var.service_configs.fts_notice_publish_worker.name
     public_domain   = var.public_domain
     service_version = local.service_version_fts
