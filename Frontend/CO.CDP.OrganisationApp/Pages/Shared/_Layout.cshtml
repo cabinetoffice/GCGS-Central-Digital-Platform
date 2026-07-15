@@ -62,6 +62,13 @@
 }
 
 @section HeaderNavigation {
+    @{
+        // Highlight a nav item only when on its own local linked page (prefix-match the link path).
+        // Items that link to another app (e.g. Search -> FTS) never light up here.
+        var __cur = ("/" + (Context.Request.Path.Value ?? "").Trim('/')).TrimEnd('/').ToLowerInvariant();
+        var __accountActive = __cur == "/organisation-selection" || __cur.StartsWith("/organisation-selection/");
+        var __supportActive = __cur == "/support/organisations/buyer" || __cur.StartsWith("/support/organisations/buyer/");
+    }
     @if (User.Identity?.IsAuthenticated == true)
     {
         @if (await userInfoService.HasOrganisations())
@@ -83,16 +90,16 @@
                 </feature>
             }
 
-            <li class="govuk-service-navigation__item">
-                <a class="govuk-service-navigation__link" href="/organisation-selection">
+            <li class="govuk-service-navigation__item@(__accountActive ? " govuk-service-navigation__item--active" : "")">
+                <a class="govuk-service-navigation__link" aria-current="@(__accountActive ? "true" : null)" href="/organisation-selection">
                     @StaticTextResource.Header_MyAccount
                 </a>
             </li>
         }
 
         <authorize scope="@PersonScopeRequirement.SupportAdmin">
-            <li class="govuk-service-navigation__item">
-                <a class="govuk-service-navigation__link" href="/support/organisations/buyer">
+            <li class="govuk-service-navigation__item@(__supportActive ? " govuk-service-navigation__item--active" : "")">
+                <a class="govuk-service-navigation__link" aria-current="@(__supportActive ? "true" : null)" href="/support/organisations/buyer">
                     @StaticTextResource.Header_Support
                 </a>
             </li>
