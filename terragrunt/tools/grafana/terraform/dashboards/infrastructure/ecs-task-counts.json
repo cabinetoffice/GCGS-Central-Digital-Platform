@@ -70,7 +70,7 @@
                       "spec": {
                         "dimensions": {
                           "ClusterName": "$cluster",
-                          "ServiceName": "organisation"
+                          "ServiceName": "$service"
                         },
                         "label": "${PROP('MetricName')}",
                         "matchExact": true,
@@ -482,8 +482,8 @@
         "spec": {
           "name": "cluster",
           "current": {
-            "text": "All",
-            "value": "all"
+            "text": "cdp-sirsi",
+            "value": "cdp-sirsi"
           },
           "label": "Cluster",
           "hide": "dontHide",
@@ -510,8 +510,8 @@
           "sort": "disabled",
           "definition": "",
           "options": [],
-          "multi": true,
-          "includeAll": true,
+          "multi": false,
+          "includeAll": false,
           "allowCustomValue": true
         }
       },
@@ -540,7 +540,10 @@
               "namespace": "ECS/ContainerInsights",
               "queryType": "dimensionValues",
               "refId": "CloudWatchVariableQueryEditor-VariableQuery",
-              "region": "eu-west-2"
+              "region": "eu-west-2",
+              "dimensionFilters": {
+                "ClusterName": "$cluster"
+              }
             }
           },
           "regex": "",
