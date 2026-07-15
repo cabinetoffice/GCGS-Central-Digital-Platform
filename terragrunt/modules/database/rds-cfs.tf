@@ -8,7 +8,7 @@ module "cluster_cfs" {
   db_parameters_cluster        = local.cfs_db_parameters_cluster
   db_parameters_instance       = local.cfs_db_parameters_instance
   db_sg_id                     = var.db_mysql_sg_id
-  deletion_protection          = var.is_production
+  deletion_protection          = true
   engine_version               = var.aurora_mysql_engine_version
   family                       = var.aurora_mysql_family
   instance_type                = var.aurora_mysql_instance_type

@@ -5,7 +5,7 @@ module "cluster_find_a_tender" {
   backup_retention_period      = local.is_production ? 35 : 1
   db_name                      = local.find_a_tender_cluster_name
   db_sg_id                     = var.db_postgres_sg_id
-  deletion_protection          = local.is_production
+  deletion_protection          = true
   engine_version               = var.aurora_postgres_engine_version
   family                       = "aurora-postgresql${floor(var.aurora_postgres_engine_version)}"
   monitoring_interval          = local.is_production ? 30 : 0

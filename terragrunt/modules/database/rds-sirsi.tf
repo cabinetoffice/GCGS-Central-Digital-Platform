@@ -5,7 +5,7 @@ module "cluster_sirsi" {
   backup_retention_period      = local.is_production ? 35 : 1
   db_name                      = local.sirsi_cluster_name
   db_sg_id                     = var.db_postgres_sg_id
-  deletion_protection          = local.is_production
+  deletion_protection          = true
   engine_version               = var.aurora_postgres_engine_version
   family                       = "aurora-postgresql${floor(var.aurora_postgres_engine_version)}"
   monitoring_interval          = local.is_production ? 30 : 0
@@ -15,8 +15,8 @@ module "cluster_sirsi" {
   db_parameters_instance       = { "max_connections" : 16000 }
   private_subnet_ids           = var.private_subnet_ids
   restore_from_snapshot        = var.sirsi_restore_from_snapshot
-  skip_final_snapshot          = local.is_staging ? true : null
-  final_snapshot_identifier    = local.is_staging ? "${local.sirsi_cluster_name}-final-staging" : null
+  skip_final_snapshot          = null
+  final_snapshot_identifier    = null
   role_terraform_arn           = var.role_terraform_arn
   snapshot_identifier          = var.sirsi_snapshot_identifier
   tags                         = var.tags
