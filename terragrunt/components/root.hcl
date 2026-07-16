@@ -112,7 +112,7 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.9.2"
+      pinned_service_version_fts          = "2.0.0"
       pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
@@ -305,6 +305,7 @@ locals {
     person                               = {}
     scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
+    user_journey_monitoring              = { desired_count = 0 }
     user_management_api                  = { desired_count = 0 }
     user_management_app                  = { desired_count = 0 }
     user_management_migrations           = { cpu = 256, memory = 512 }
@@ -367,6 +368,7 @@ locals {
     person                               = { cluster = "sirsi",     type = "web-service",  name = "person", listener_priority = 121 }
     scheduled_worker                     = { cluster = "sirsi",     type = "service",      name = "scheduled-worker", listener_priority = 122 }
     tenant                               = { cluster = "sirsi",     type = "web-service",  name = "tenant", listener_priority = 123 }
+    user_journey_monitoring              = { cluster = "sirsi-php", type = "service",      name = "user-journey-monitoring" }
     user_management_api                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-api", listener_priority = 130 }
     user_management_app                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-app", listener_priority = 131 }
     user_management_migrations           = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }

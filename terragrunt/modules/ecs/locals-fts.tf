@@ -89,7 +89,7 @@ locals {
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
     notice_render_cache_debug_marker      = var.is_production ? false : true
     notice_render_cache_enabled           = var.is_production ? false : true
-    notice_render_worker_enabled          = var.environment == "development"
+    notice_render_worker_enabled          = contains(["development", "staging"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
