@@ -37,9 +37,9 @@ resource "grafana_rule_group" "ecs_cpu_high" {
         matchExact        = true
         maxDataPoints     = 43200
         metricEditorMode  = 0
-        metricName        = "CpuUtilized"
+        metricName        = "CPUUtilization"
         metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
+        namespace         = "AWS/ECS"
         period            = "5m"
         queryLanguage     = "CWLI"
         queryMode         = "Metrics"
