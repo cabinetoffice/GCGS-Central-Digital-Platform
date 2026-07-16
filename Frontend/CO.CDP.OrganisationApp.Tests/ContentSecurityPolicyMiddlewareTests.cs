@@ -26,6 +26,21 @@ public class ContentSecurityPolicyMiddlewareTests
     }
 
     [Fact]
+    public async Task Middleware_ShouldAllowGoogleTagManagerFrames_WhenFeatureIsEnabled()
+    {
+        var context = GivenHttpContext();
+        var nextDelegate = new RequestDelegate(ctx => Task.CompletedTask);
+
+        var middleware = new ContentSecurityPolicyMiddleware(nextDelegate);
+
+        await middleware.InvokeAsync(context, GivenConfiguration(isFeatureEnabled: true));
+
+        var cspHeader = context.Response.Headers["Content-Security-Policy"].ToString();
+        cspHeader.Should().Contain("frame-src https://*.googletagmanager.com",
+            "The Google Tag Manager noscript iframe must be allowed by the CSP.");
+    }
+
+    [Fact]
     public async Task Middleware_ShouldNotAddCspHeaderOrNonce_WhenFeatureIsDisabled()
     {
         var context = GivenHttpContext();
