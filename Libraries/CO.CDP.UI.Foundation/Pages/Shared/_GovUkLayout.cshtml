@@ -5,6 +5,7 @@
 
    Apps supply their own content through these optional sections:
      - Head             extra <head> content (analytics, site.css, manifest)
+     - BodyStart         content immediately after the opening <body> tag (e.g. analytics noscript)
      - CookieBanner      the app's cookie banner partial
      - LanguageSwitcher  language toggle (rendered top-right of the service nav)
      - PhaseBanner       the beta/alpha phase banner
@@ -47,6 +48,8 @@
     <title>@ViewData["Title"]</title>
 </head>
 <body class="govuk-template__body">
+    @await RenderSectionAsync("BodyStart", required: false)
+
     <script nonce-csp>document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');</script>
 
     @await RenderSectionAsync("CookieBanner", required: false)

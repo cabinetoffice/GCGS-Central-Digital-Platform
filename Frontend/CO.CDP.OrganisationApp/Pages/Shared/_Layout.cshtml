@@ -20,6 +20,7 @@
     var homeLink = User.Identity?.IsAuthenticated == true ? FtsUrlService.BuildUrl("/login", organisationId, "/") : FtsUrlService.BuildUrl("/");
     var pageName = ViewContext.ActionDescriptor?.DisplayName;
     var ftsRedirectEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks);
+    var googleTagId = config["GoogleTagId"];
 
     ViewData["HtmlLang"] ??= System.Globalization.CultureInfo.CurrentUICulture.Name;
     ViewData["ServiceName"] = StaticTextResource.Header_ServiceName;
@@ -27,17 +28,27 @@
 }
 
 @section Head {
-    @{
-        var googleTagId = config["GoogleTagId"];
+    @{        
         if (!string.IsNullOrWhiteSpace(googleTagId) && cookiePreferencesService.IsAccepted())
         {
-            <!-- Google tag (gtag.js) -->
-            <script async src="https://www.googletagmanager.com/gtag/js?id=@googleTagId"></script>
-            <script nonce-csp>window.dataLayer = window.dataLayer || []; function gtag() { dataLayer.push(arguments); } gtag('js', new Date()); gtag('config', '@googleTagId');</script>
+            <!-- Google Tag Manager -->
+            <script nonce-csp>(function(w, d, s, l, i) { w[l] = w[l] || []; w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' }); var f = d.getElementsByTagName(s)[0], j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f); })(window, document, 'script', 'dataLayer', '@googleTagId');</script>
+            <!-- End Google Tag Manager -->
         }
     }
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
+}
+
+@section BodyStart {
+    @{
+        if (!string.IsNullOrWhiteSpace(googleTagId) && cookiePreferencesService.IsAccepted())
+        {
+            <!-- Google Tag Manager (noscript) -->
+            <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@googleTagId" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+            <!-- End Google Tag Manager (noscript) -->
+        }
+    }
 }
 
 @section CookieBanner {

@@ -21,7 +21,8 @@ public class ContentSecurityPolicyMiddleware
                 $"style-src 'self' 'nonce-{nonce}'; " +
                 $"script-src 'self' https://*.googletagmanager.com 'nonce-{nonce}'; " +
                 "img-src 'self' https://*.google-analytics.com https://*.googletagmanager.com; " +
-                "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com");
+                "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; " +
+                "frame-src https://*.googletagmanager.com");
         }
 
         await _next(context);
