@@ -20,6 +20,7 @@
     var homeLink = User.Identity?.IsAuthenticated == true ? FtsUrlService.BuildUrl("/login", organisationId, "/") : FtsUrlService.BuildUrl("/");
     var pageName = ViewContext.ActionDescriptor?.DisplayName;
     var ftsRedirectEnabled = await featureManager.IsEnabledAsync(FeatureFlags.AllowFtsRedirectLinks);
+    var googleTagId = config["GoogleTagId"];
 
     ViewData["HtmlLang"] ??= System.Globalization.CultureInfo.CurrentUICulture.Name;
     ViewData["ServiceName"] = StaticTextResource.Header_ServiceName;
@@ -28,7 +29,6 @@
 
 @section Head {
     @{
-        var googleTagId = config["GoogleTagId"];
         if (!string.IsNullOrWhiteSpace(googleTagId) && cookiePreferencesService.IsAccepted())
         {
             <!-- Google Tag Manager -->
@@ -38,6 +38,15 @@
     }
     <link rel="manifest" href="/manifest.json" />
     <link rel="stylesheet" href="/css/site.css" asp-append-version="true">
+}
+
+@section BodyStart {
+    @if (!string.IsNullOrWhiteSpace(googleTagId) && cookiePreferencesService.IsAccepted())
+    {
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=@googleTagId" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    }
 }
 
 @section CookieBanner {
