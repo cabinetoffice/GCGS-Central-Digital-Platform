@@ -61,6 +61,12 @@ variable "family" {
   type        = string
 }
 
+variable "final_snapshot_identifier" {
+  description = "Optional final snapshot identifier used when skip_final_snapshot is false"
+  type        = string
+  default     = null
+}
+
 variable "instance_count" {
   description = ""
   type        = number
@@ -117,20 +123,14 @@ variable "role_terraform_arn" {
   type        = string
 }
 
-variable "snapshot_identifier" {
-  description = "Optional snapshot identifier/ARN to restore the cluster from"
-  type        = string
-  default     = null
-}
-
 variable "skip_final_snapshot" {
   description = "Override whether to skip final snapshot on delete"
   type        = bool
   default     = null
 }
 
-variable "final_snapshot_identifier" {
-  description = "Optional final snapshot identifier used when skip_final_snapshot is false"
+variable "snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore the cluster from"
   type        = string
   default     = null
 }

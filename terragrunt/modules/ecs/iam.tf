@@ -86,6 +86,17 @@ resource "aws_iam_role_policy_attachment" "cloudwatch_event_invoke_deployer_step
   role       = var.role_cloudwatch_events_name
 }
 
+resource "aws_iam_policy" "cloudwatch_event_run_user_journey_monitoring" {
+  name        = "${local.name_prefix}-run-user-journey-monitoring"
+  description = "Policy for CloudWatch Events to run user-journey-monitoring task"
+  policy      = data.aws_iam_policy_document.cloudwatch_event_run_user_journey_monitoring.json
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_event_run_user_journey_monitoring" {
+  policy_arn = aws_iam_policy.cloudwatch_event_run_user_journey_monitoring.arn
+  role       = var.role_cloudwatch_events_name
+}
+
 resource "aws_iam_policy" "step_function_manage_services" {
   name        = "${local.name_prefix}-step-function-manage-services"
   description = "Policy for Step Functions to update ECS service"
