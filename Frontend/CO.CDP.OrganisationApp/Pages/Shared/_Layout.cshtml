@@ -76,7 +76,7 @@
         // Items that link to another app (e.g. Search -> FTS) never light up here.
         var __cur = ("/" + (Context.Request.Path.Value ?? "").Trim('/')).TrimEnd('/').ToLowerInvariant();
         var __accountActive = __cur == "/organisation-selection" || __cur.StartsWith("/organisation-selection/");
-        var __supportActive = __cur == "/support/organisations/buyer" || __cur.StartsWith("/support/organisations/buyer/");
+        var __supportActive = __cur == "/support" || __cur.StartsWith("/support/");
     }
     @if (User.Identity?.IsAuthenticated == true)
     {
