@@ -163,6 +163,7 @@
                             @await RenderSectionAsync("FooterLinks", required: false)
                         </ul>
                     }
+                    @await RenderSectionAsync("FooterExtra", required: false)
                     <svg aria-hidden="true"
                          focusable="false"
                          class="govuk-footer__licence-logo"
@@ -183,7 +184,6 @@
                             <text>All content is available under the <a class="govuk-footer__link" target="_blank" href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="noopener noreferrer license">Open Government Licence v3.0</a>, except where otherwise stated</text>
                         }
                     </span>
-                    @await RenderSectionAsync("FooterExtra", required: false)
                 </div>
                 <div class="govuk-footer__meta-item">
                     <a class="govuk-footer__link govuk-footer__copyright-logo" target="_blank" rel="noopener noreferrer" href="https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/">
