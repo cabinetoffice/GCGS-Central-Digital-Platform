@@ -11,7 +11,7 @@ module "ecs_service_user_journey_monitoring" {
       lg_region             = data.aws_region.current.region
       memory                = var.service_configs.user_journey_monitoring.memory
       name                  = var.service_configs.user_journey_monitoring.name
-      service_version       = local.service_version_sirsi
+      service_version       = local.service_version_fts
       test_env              = "production"
       test_settings_fts_public_url = "https://www.find-tender.service.gov.uk"
     }
