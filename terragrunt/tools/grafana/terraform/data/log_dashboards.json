@@ -250,5 +250,11 @@
     "title": "Tenant",
     "type": "multi",
     "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
+  "user-journey-monitoring": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/ecs/user-journey-monitoring",
+    "title": "User Journey Monitoring",
+    "type": "single"
   }
 }
