@@ -312,8 +312,9 @@ locals {
     local.fts_notice_render_worker_service_parameters,
     local.fts_secrets,
     {
-      notice_render_dlq_url        = var.queue_fts_notice_render_dlq_url
-      notice_render_queue_url      = var.queue_fts_notice_render_url
+      notice_render_dlq_url     = var.queue_fts_notice_render_dlq_url
+      notice_render_queue_url   = var.queue_fts_notice_render_url
+      notice_render_pdf_enabled = contains(["development"], var.environment)
     }
   )
 
