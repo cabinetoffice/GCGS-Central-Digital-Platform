@@ -236,6 +236,7 @@ resource "grafana_dashboard" "dashboards" {
 
   folder      = local.dashboard_folder_map[split("/", each.value)[0]]
   config_json = jsonencode(local.dashboard_content[each.value])
+  overwrite   = true
 
   depends_on = [
     grafana_folder.application,
@@ -251,6 +252,7 @@ resource "grafana_dashboard" "log_dashboards" {
 
   folder      = grafana_folder.application.uid
   config_json = jsonencode(each.value)
+  overwrite   = true
 
   depends_on = [
     grafana_folder.application,
@@ -260,6 +262,7 @@ resource "grafana_dashboard" "log_dashboards" {
 resource "grafana_dashboard" "logs_investigation" {
   folder      = grafana_folder.application.uid
   config_json = jsonencode(local.logs_investigation_content)
+  overwrite   = true
 
   depends_on = [
     grafana_folder.application,
@@ -271,6 +274,7 @@ resource "grafana_dashboard" "rds_log_dashboards" {
 
   folder      = grafana_folder.infrastructure.uid
   config_json = jsonencode(each.value)
+  overwrite   = true
 
   depends_on = [
     grafana_folder.infrastructure,
