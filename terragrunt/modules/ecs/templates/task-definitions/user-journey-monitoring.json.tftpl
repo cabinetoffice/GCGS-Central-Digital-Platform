@@ -18,7 +18,11 @@
       { "name": "TEST_ENV", "value": "${test_env}"},
       { "name": "TestSettings__FTSPublicUrl", "value": "${test_settings_fts_public_url}"}
     ],
-    "secrets": [],
+    "secrets": [
+      { "name": "BETTERSTACK_SOURCE_TOKEN", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_SOURCE_TOKEN::"},
+      { "name": "BETTERSTACK_INGEST_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_INGEST_URL::"},
+      { "name": "BETTERSTACK_HEARTBEAT_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_HEARTBEAT_URL::"}
+    ],
     "volumesFrom": [],
     "mountPoints": [],
     "essential": true
