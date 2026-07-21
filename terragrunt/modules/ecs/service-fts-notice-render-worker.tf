@@ -9,7 +9,7 @@ module "ecs_service_fts_notice_render_worker" {
   alb_enabled            = false
   cluster_id             = local.php_cluster_id
   cpu                    = var.service_configs.fts_notice_render_worker.cpu
-  desired_count          = var.is_production ? 0 : var.service_configs.fts_notice_render_worker.desired_count
+  desired_count          = var.service_configs.fts_notice_render_worker.desired_count
   ecs_service_base_sg_id = var.ecs_sg_id
   family                 = "standalone"
   memory                 = var.service_configs.fts_notice_render_worker.memory
