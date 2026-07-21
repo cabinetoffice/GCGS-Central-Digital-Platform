@@ -14,6 +14,7 @@ module "ecs_service_user_journey_monitoring" {
       service_version       = local.service_version_fts
       test_env              = "production"
       test_settings_fts_public_url = "https://www.find-tender.service.gov.uk"
+      betterstack_secret_arn = data.aws_secretsmanager_secret.betterstack_user_journey_monitoring.arn
     }
   )
 
