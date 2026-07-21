@@ -201,6 +201,23 @@ data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" 
   }
 }
 
+data "aws_iam_policy_document" "cloudwatch_event_run_user_journey_monitoring" {
+  statement {
+    actions = ["ecs:RunTask"]
+    resources = [
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/standalone-user-journey-monitoring*"
+    ]
+  }
+
+  statement {
+    actions = ["iam:PassRole"]
+    resources = [
+      var.role_ecs_task_arn,
+      var.role_ecs_task_exec_arn
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "step_function_manage_services" {
   statement {
     actions = ["ecs:UpdateService"]
