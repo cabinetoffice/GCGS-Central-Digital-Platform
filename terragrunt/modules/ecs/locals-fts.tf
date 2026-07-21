@@ -87,7 +87,7 @@ locals {
     notice_render_queue_url               = var.queue_fts_notice_render_url
     notice_render_cache_bucket            = module.s3_bucket_fts_notice_render_cache.bucket
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
-    notice_render_cache_debug_marker      = var.is_production ? false : true
+    notice_render_cache_debug_marker      = true
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
     session_name_default                  = "SRSI_FT_AUTH"
