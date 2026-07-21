@@ -46,6 +46,8 @@ public class BulkShareCodeLookupUseCase(
                     OrganisationId = sharedConsent.Organisation.Guid,
                     OrganisationName = sharedConsent.Organisation.Name,
                     SubmittedAt = sharedConsent.SubmittedAt,
+                    OperationTypes = sharedConsent.Organisation.SupplierInfo?.OperationTypes ?? [],
+                    SupplierTypeDescription = (sharedConsent.Organisation.Type == OrganisationType.Organisation ? "Organisation" : "Individual"),
                     Identifier = partySupplierInfo.Identifier,
                     AdditionalIdentifiers = partySupplierInfo.AdditionalIdentifiers,
                     Address = partySupplierInfo.Address,
