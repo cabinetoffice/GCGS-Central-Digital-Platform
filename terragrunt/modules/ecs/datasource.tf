@@ -53,6 +53,10 @@ data "aws_secretsmanager_secret" "fts_secrets" {
   name = "${local.name_prefix}-fts/secrets"
 }
 
+data "aws_secretsmanager_secret" "betterstack_user_journey_monitoring" {
+  name = "${local.name_prefix}-betterstack-user-journey-monitoring"
+}
+
 data "aws_secretsmanager_secret_version" "fts_service_url" {
   secret_id = "${local.name_prefix}-fts-service-url"
 }
