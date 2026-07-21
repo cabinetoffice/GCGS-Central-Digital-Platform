@@ -60,7 +60,7 @@ locals {
 
   fts_parameters = {
     app_host_address                      = "%"
-    async_enabled                         = var.is_production ? false : true
+    async_enabled                         = true
     buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
     cookie_domain                         = local.fts_site_domains[var.environment]
     database_schema                       = "cdp_sirsi_fts_cluster"
@@ -88,8 +88,8 @@ locals {
     notice_render_cache_bucket            = module.s3_bucket_fts_notice_render_cache.bucket
     notice_render_cache_cdn_url           = var.cloudfront_downloads_enabled ? "https://${module.cloudfront_fts_notice_render_cache.cloudfront_domain_name}" : ""
     notice_render_cache_debug_marker      = var.is_production ? false : true
-    notice_render_cache_enabled           = var.is_production ? false : true
-    notice_render_worker_enabled          = var.is_production ? false : true
+    notice_render_cache_enabled           = true
+    notice_render_worker_enabled          = true
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
