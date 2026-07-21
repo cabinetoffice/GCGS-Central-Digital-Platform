@@ -30,6 +30,8 @@ public class BulkShareCodeLookupUseCaseTest(AutoMapperFixture mapperFixture) : I
         results.Select(r => r.ShareCode).Should().ContainInOrder("MISSING-1", "MISSING-2");
         results.Should().OnlyContain(r =>
             r.OrganisationId == null && r.OrganisationName == null && r.SubmittedAt == null);
+        results.Should().OnlyContain(r =>
+            r.OperationTypes.Count == 0 && r.SupplierTypeDescription == null);
     }
 
     [Fact]
@@ -41,6 +43,11 @@ public class BulkShareCodeLookupUseCaseTest(AutoMapperFixture mapperFixture) : I
         var sharedConsent = NonEfEntityFactory.GetSharedConsent(organisationGuid, Guid.NewGuid());
         sharedConsent.ShareCode = "VALID-CODE";
         sharedConsent.SubmittedAt = submittedAt;
+        sharedConsent.Organisation.SupplierInfo = new SupplierInformationNonEf
+        {
+            SupplierType = SupplierType.Organisation,
+            OperationTypes = [OperationType.SmallOrMediumSized]
+        };
 
         _shareCodeRepository
             .Setup(r => r.GetByShareCodes(It.IsAny<ICollection<string>>()))
@@ -64,6 +71,8 @@ public class BulkShareCodeLookupUseCaseTest(AutoMapperFixture mapperFixture) : I
         result.Address.StreetAddress.Should().Be("1234 Default St");
         result.AdditionalAddresses.Should().ContainSingle(a => a.Type == AddressType.Postal);
         result.ContactPoint.Name.Should().Be("Default Contact");
+        result.OperationTypes.Should().Equal(OperationType.SmallOrMediumSized);
+        result.SupplierTypeDescription.Should().Be("Organisation");
     }
 
     [Fact]
