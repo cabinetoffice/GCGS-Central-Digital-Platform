@@ -989,7 +989,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "$cluster",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1014,7 +1014,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "$cluster",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1133,7 +1133,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "$cluster",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1158,7 +1158,7 @@
                 "uid": "CLOUDWATCH"
               },
               "dimensions": {
-                "ClusterName": "cdp-sirsi",
+                "ClusterName": "$cluster",
                 "ServiceName": "$service"
               },
               "expression": "",
@@ -1195,6 +1195,32 @@
   "templating": {
     "list": [
       {
+        "name": "cluster",
+        "label": "Cluster",
+        "type": "query",
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "CLOUDWATCH"
+        },
+        "query": {
+          "dimensionKey": "ClusterName",
+          "metricName": "DesiredTaskCount",
+          "namespace": "ECS/ContainerInsights",
+          "queryType": "dimensionValues",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "default"
+        },
+        "refresh": 1,
+        "includeAll": false,
+        "multi": false,
+        "hide": 0,
+        "current": {
+          "text": "cdp-sirsi",
+          "value": "cdp-sirsi"
+        },
+        "options": []
+      },
+      {
         "current": {
           "text": [
             "$__all"
@@ -1207,85 +1233,23 @@
         "label": "Service",
         "multi": true,
         "name": "service",
-        "options": [
-          {
-            "selected": false,
-            "text": "authority",
-            "value": "authority"
-          },
-          {
-            "selected": false,
-            "text": "av-scanner-app",
-            "value": "av-scanner-app"
-          },
-          {
-            "selected": false,
-            "text": "clamav-rest",
-            "value": "clamav-rest"
-          },
-          {
-            "selected": false,
-            "text": "commercial-tools-api",
-            "value": "commercial-tools-api"
-          },
-          {
-            "selected": false,
-            "text": "commercial-tools-app",
-            "value": "commercial-tools-app"
-          },
-          {
-            "selected": false,
-            "text": "data-sharing",
-            "value": "data-sharing"
-          },
-          {
-            "selected": false,
-            "text": "entity-verification",
-            "value": "entity-verification"
-          },
-          {
-            "selected": false,
-            "text": "forms",
-            "value": "forms"
-          },
-          {
-            "selected": false,
-            "text": "organisation",
-            "value": "organisation"
-          },
-          {
-            "selected": false,
-            "text": "organisation-app",
-            "value": "organisation-app"
-          },
-          {
-            "selected": false,
-            "text": "outbox-processor-entity-verification",
-            "value": "outbox-processor-entity-verification"
-          },
-          {
-            "selected": false,
-            "text": "outbox-processor-organisation",
-            "value": "outbox-processor-organisation"
-          },
-          {
-            "selected": false,
-            "text": "person",
-            "value": "person"
-          },
-          {
-            "selected": false,
-            "text": "scheduled-worker",
-            "value": "scheduled-worker"
-          },
-          {
-            "selected": false,
-            "text": "tenant",
-            "value": "tenant"
+        "options": [],
+        "query": {
+          "dimensionKey": "ServiceName",
+          "metricName": "DesiredTaskCount",
+          "namespace": "ECS/ContainerInsights",
+          "queryType": "dimensionValues",
+          "refId": "CloudWatchVariableQueryEditor-VariableQuery",
+          "region": "default",
+          "dimensionFilters": {
+            "ClusterName": "$cluster"
           }
-        ],
-        "query": "authority, av-scanner-app, clamav-rest, commercial-tools-api, commercial-tools-app, data-sharing, entity-verification, forms, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
-        "type": "custom"
+        },
+        "type": "query",
+        "datasource": {
+          "type": "cloudwatch",
+          "uid": "CLOUDWATCH"
+        }
       },
       {
         "current": {
@@ -1322,8 +1286,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "ECS Sirsi",
-  "uid": "ecs-sirsi",
+  "title": "ECS Services (All Clusters)",
+  "uid": "ecs-all",
   "version": 2,
   "weekStart": ""
 }

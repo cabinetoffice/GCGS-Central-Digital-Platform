@@ -43,6 +43,10 @@ locals {
       fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -86,6 +90,10 @@ locals {
       fts_extra_domains           = ["www-staging.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       name                        = "staging"
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
@@ -104,8 +112,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.9.2"
-      pinned_service_version              = "1.1.0"
+      pinned_service_version_fts          = "2.0.1"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
@@ -131,6 +139,10 @@ locals {
       fts_extra_domains           = ["www-tpp.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = []
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -153,8 +165,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.7.0"
-      pinned_service_version              = "1.1.0"
+      pinned_service_version_fts          = "2.0.0"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
@@ -179,6 +191,10 @@ locals {
       fts_extra_domains           = ["www.find-tender.service.gov.uk", "find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
+      sirsi_restore_from_snapshot = false
+      sirsi_snapshot_identifier   = null
+      ev_restore_from_snapshot    = false
+      ev_snapshot_identifier      = null
       mail_from_domains           = ["find-tender.service.gov.uk", "contractsfinder.service.gov.uk"]
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
@@ -197,8 +213,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "1.4.3"
-      pinned_service_version              = "1.0.89"
+      pinned_service_version_fts          = "2.0.0"
+      pinned_service_version              = "1.1.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
@@ -226,6 +242,10 @@ locals {
   fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
   fts_restore_from_snapshot           = try(local.environments[local.environment].fts_restore_from_snapshot, false)
   fts_snapshot_identifier             = try(local.environments[local.environment].fts_snapshot_identifier, null)
+  sirsi_restore_from_snapshot         = try(local.environments[local.environment].sirsi_restore_from_snapshot, false)
+  sirsi_snapshot_identifier           = try(local.environments[local.environment].sirsi_snapshot_identifier, null)
+  ev_restore_from_snapshot            = try(local.environments[local.environment].ev_restore_from_snapshot, false)
+  ev_snapshot_identifier              = try(local.environments[local.environment].ev_snapshot_identifier, null)
   mail_from_domains                   = try(local.environments[local.environment].mail_from_domains, [])
   onelogin_logout_notification_urls   = try(local.environments[local.environment].onelogin_logout_notification_urls, null)
   opensearch_availability_zone_count  = try(local.environments[local.environment].opensearch_availability_zone_count, 2)
@@ -256,7 +276,7 @@ locals {
   service_configs_base = {
     authority                            = {}
     av_scanner_app                       = {}
-    cfs                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    cfs                                  = { desired_count = 3, cpu = local.environment == "production" ? 8192 : 4096, memory = local.environment == "production" ? 16384 : 8192 }
     cfs_migrations                       = { desired_count = 1 }
     cfs_scheduler                        = { desired_count = 1 }
     commercial_tools_app                 = {}
@@ -265,18 +285,18 @@ locals {
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
-    fts                                  = { desired_count = 3, cpu = 4096, memory = 8192 }
+    fts                                  = { desired_count = local.environment == "production" ? 6 : 3, cpu = local.environment == "production" ? 8192 : 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_app                              = { desired_count = 2 }
     fts_healthcheck                      = { desired_count = 0 }
     fts_migrations                       = { desired_count = 1 }
     fts_findtender_migrations            = { cpu = 256, memory = 512 }
     fts_job_scheduler                    = { desired_count = 1 }
-    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = 8192 }
+    fts_scheduler                        = { desired_count = 1, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_search_api                       = { desired_count = 2 }
-    fts_search_indexer                   = { desired_count = 1 }
+    fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
-    fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = 8192 }
-    fts_notice_renderer_worker           = { desired_count = 0, cpu = 4096, memory = 8192 }
+    fts_notice_publish_worker            = { desired_count = 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
+    fts_notice_render_worker             = { desired_count = 1, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
     organisation_information_migrations  = { cpu = 256, memory = 512 }
@@ -285,6 +305,7 @@ locals {
     person                               = {}
     scheduled_worker                     = { desired_count = 1 }
     tenant                               = {}
+    user_journey_monitoring              = { desired_count = 0 }
     user_management_api                  = { desired_count = 0 }
     user_management_app                  = { desired_count = 0 }
     user_management_migrations           = { cpu = 256, memory = 512 }
@@ -333,7 +354,7 @@ locals {
     fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
     fts_findtender_migrations            = { cluster = "fts",       type = "db-migration", name = "fts-findtender-migrations" }
     fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
-    fts_notice_renderer_worker           = { cluster = "sirsi-php", type = "service",      name = "fts-notice-renderer-worker" }
+    fts_notice_render_worker             = { cluster = "sirsi-php", type = "service",      name = "fts-notice-render-worker" }
     fts_job_scheduler                    = { cluster = "sirsi-php", type = "service",      name = "fts-job-scheduler" }
     fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }
     fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
@@ -347,6 +368,7 @@ locals {
     person                               = { cluster = "sirsi",     type = "web-service",  name = "person", listener_priority = 121 }
     scheduled_worker                     = { cluster = "sirsi",     type = "service",      name = "scheduled-worker", listener_priority = 122 }
     tenant                               = { cluster = "sirsi",     type = "web-service",  name = "tenant", listener_priority = 123 }
+    user_journey_monitoring              = { cluster = "sirsi-php", type = "service",      name = "user-journey-monitoring" }
     user_management_api                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-api", listener_priority = 130 }
     user_management_app                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-app", listener_priority = 131 }
     user_management_migrations           = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }

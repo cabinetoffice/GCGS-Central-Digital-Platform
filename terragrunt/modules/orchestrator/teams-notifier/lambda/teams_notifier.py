@@ -16,6 +16,7 @@ logger.setLevel(logging.INFO)
 
 _secrets = None
 _versions_cache = None
+_versions_cache_at = None
 
 STAGE_ORDER = ["orchestrator", "development", "staging", "integration", "production"]
 STAGE_LABELS = {
@@ -70,9 +71,15 @@ def _get_secret():
 
 
 def _get_versions():
-    global _versions_cache
-    if _versions_cache is not None:
-        return _versions_cache
+    global _versions_cache, _versions_cache_at
+    ttl_raw = os.environ.get("VERSIONS_CACHE_TTL_SECONDS")
+    try:
+        ttl_seconds = int(ttl_raw) if ttl_raw else 0
+    except ValueError:
+        ttl_seconds = 0
+    if _versions_cache is not None and _versions_cache_at is not None:
+        if ttl_seconds and (time.time() - _versions_cache_at) < ttl_seconds:
+            return _versions_cache
 
     ssm = boto3.client("ssm")
     sirsi_param = os.environ.get("SIRSI_VERSIONS_PARAM", DEFAULT_SIRSI_PARAM)
@@ -104,6 +111,7 @@ def _get_versions():
         }
 
     _versions_cache = versions
+    _versions_cache_at = time.time()
     return versions
 
 

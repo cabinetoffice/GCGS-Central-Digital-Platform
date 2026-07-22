@@ -62,6 +62,10 @@ inputs = {
   fts_snapshot_identifier   = local.global_vars.locals.fts_snapshot_identifier
   fts_restore_from_snapshot = local.global_vars.locals.fts_restore_from_snapshot
   fts_apply_master_password = local.global_vars.locals.fts_apply_master_password
+  sirsi_snapshot_identifier = local.global_vars.locals.sirsi_snapshot_identifier
+  sirsi_restore_from_snapshot = local.global_vars.locals.sirsi_restore_from_snapshot
+  ev_snapshot_identifier    = local.global_vars.locals.ev_snapshot_identifier
+  ev_restore_from_snapshot  = local.global_vars.locals.ev_restore_from_snapshot
 
   private_subnet_ids          = dependency.core_networking.outputs.private_subnet_ids
   private_subnets_cidr_blocks = dependency.core_networking.outputs.private_subnets_cidr_blocks

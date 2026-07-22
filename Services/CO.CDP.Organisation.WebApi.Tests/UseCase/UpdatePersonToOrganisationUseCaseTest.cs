@@ -64,7 +64,30 @@ public class UpdatePersonToOrganisationUseCaseTest : IClassFixture<AutoMapperFix
         var result = await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
 
         result.Should().Be(true);
-        _organisationRepositoryMock.Verify(repo => repo.TrackOrganisationPerson(orgPerson!), Times.Once);
+        _organisationRepositoryMock.Verify(repo => repo.SaveOrganisationPerson(orgPerson!), Times.Once);
+    }
+
+    [Fact]
+    public async Task Execute_ShouldUpdatePerson_WhenOrganisationNavigationIsNull()
+    {
+        var updatePersonToOrganisation = new UpdatePersonToOrganisation { Scopes = ["VIEWER"] };
+        var orgPerson = new Persistence.OrganisationPerson
+        {
+            Organisation = null,
+            OrganisationId = Organisation.Id,
+            PersonId = person.Id,
+            Person = person,
+            Scopes = ["Admin"]
+        };
+
+        _organisationRepositoryMock.Setup(repo => repo.FindOrganisationPerson(_organisationId, _personId))
+            .ReturnsAsync(orgPerson);
+
+        var result = await _useCase.Execute((_organisationId, _personId, updatePersonToOrganisation));
+
+        result.Should().Be(true);
+        orgPerson.Scopes.Should().BeEquivalentTo(updatePersonToOrganisation.Scopes);
+        _organisationRepositoryMock.Verify(repo => repo.SaveOrganisationPerson(orgPerson), Times.Once);
     }
 
     [Fact]

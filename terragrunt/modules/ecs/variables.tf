@@ -278,6 +278,21 @@ variable "queue_fts_notice_publish_url" {
   type        = string
 }
 
+variable "queue_fts_notice_render_arn" {
+  description = "ARN of the FTS notice render SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_render_dlq_url" {
+  description = "URL of the FTS notice render SQS dead-letter queue"
+  type        = string
+}
+
+variable "queue_fts_notice_render_url" {
+  description = "URL of the FTS notice render SQS queue"
+  type        = string
+}
+
 variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string
@@ -315,6 +330,11 @@ variable "redis_primary_endpoint" {
 
 variable "redis_sg_id" {
   description = "ElastiCache Redis security group ID"
+  type        = string
+}
+
+variable "role_cloudwatch_events_arn" {
+  description = "ARN of the IAM role used by CloudWatch Events"
   type        = string
 }
 

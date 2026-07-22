@@ -52,6 +52,18 @@ variable "environment" {
   type        = string
 }
 
+variable "ev_restore_from_snapshot" {
+  description = "Whether EV Aurora Postgres should be restored from a snapshot"
+  type        = bool
+  default     = false
+}
+
+variable "ev_snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore EV Aurora cluster from"
+  type        = string
+  default     = null
+}
+
 variable "fts_apply_master_password" {
   description = "When restoring from snapshot, apply the generated master password after restore"
   type        = bool
@@ -129,6 +141,18 @@ variable "role_rds_cloudwatch_arn" {
 variable "role_terraform_arn" {
   description = "Terraform IAM role ARN"
   type        = string
+}
+
+variable "sirsi_restore_from_snapshot" {
+  description = "Whether Sirsi Aurora Postgres should be restored from a snapshot"
+  type        = bool
+  default     = false
+}
+
+variable "sirsi_snapshot_identifier" {
+  description = "Optional snapshot identifier/ARN to restore Sirsi Aurora cluster from"
+  type        = string
+  default     = null
 }
 
 variable "tags" {

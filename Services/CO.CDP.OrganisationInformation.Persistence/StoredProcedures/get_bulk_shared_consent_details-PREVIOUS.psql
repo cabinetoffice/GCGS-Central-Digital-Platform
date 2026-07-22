@@ -12,15 +12,11 @@ BEGIN
     OPEN consent_cursor FOR
         SELECT
             s.id, s.share_code, s.submitted_at,
-            o."guid" AS organisation_guid, os."name" AS organisation_name, o."type", o.roles,
-            s0.supplier_type, s0.operation_types, s0.completed_reg_address, s0.completed_postal_address, 
-            s0.completed_vat, s0.completed_website_address, s0.completed_email_address, s0.completed_operation_type, 
-            s0.completed_legal_form, s0.completed_connected_person
+            o."guid" AS organisation_guid, os."name" AS organisation_name, o."type"
         FROM
             shared_consents AS s
             INNER JOIN organisations AS o ON s.organisation_id = o.id
             INNER JOIN organisations_snapshot AS os ON os.shared_consent_id = s.id
-            LEFT JOIN supplier_information_snapshot AS s0 ON s0.shared_consent_id = s.id
         WHERE
             s.share_code = ANY(p_share_codes);
 

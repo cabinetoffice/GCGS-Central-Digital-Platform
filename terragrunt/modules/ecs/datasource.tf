@@ -53,6 +53,10 @@ data "aws_secretsmanager_secret" "fts_secrets" {
   name = "${local.name_prefix}-fts/secrets"
 }
 
+data "aws_secretsmanager_secret" "betterstack_user_journey_monitoring" {
+  name = "${local.name_prefix}-betterstack-user-journey-monitoring"
+}
+
 data "aws_secretsmanager_secret_version" "fts_service_url" {
   secret_id = "${local.name_prefix}-fts-service-url"
 }
@@ -122,6 +126,7 @@ data "aws_iam_policy_document" "ecs_task_access_queue" {
       var.queue_av_scanner_arn,
       var.queue_entity_verification_arn,
       var.queue_fts_notice_publish_arn,
+      var.queue_fts_notice_render_arn,
       var.queue_organisation_arn,
       var.queue_user_management_arn
     ]
@@ -197,6 +202,23 @@ data "aws_iam_policy_document" "cloudwatch_event_invoke_deployer_step_function" 
       [for fd in aws_sfn_state_machine.ecs_force_deploy : fd.arn],
       [for rm in aws_sfn_state_machine.ecs_run_migration : rm.arn]
     )
+  }
+}
+
+data "aws_iam_policy_document" "cloudwatch_event_run_user_journey_monitoring" {
+  statement {
+    actions = ["ecs:RunTask"]
+    resources = [
+      "arn:aws:ecs:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:task-definition/standalone-user-journey-monitoring*"
+    ]
+  }
+
+  statement {
+    actions = ["iam:PassRole"]
+    resources = [
+      var.role_ecs_task_arn,
+      var.role_ecs_task_exec_arn
+    ]
   }
 }
 
