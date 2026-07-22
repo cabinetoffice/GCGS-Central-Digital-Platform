@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_event_rule" "user_journey_monitoring" {
-  count = var.environment == "development" ? 1 : 0
+  count = 0
 
   name                = "${local.name_prefix}-user-journey-monitoring"
   schedule_expression = "rate(5 minutes)"
@@ -7,7 +7,7 @@ resource "aws_cloudwatch_event_rule" "user_journey_monitoring" {
 }
 
 resource "aws_cloudwatch_event_target" "user_journey_monitoring" {
-  count = var.environment == "development" ? 1 : 0
+  count = 0
 
   rule      = aws_cloudwatch_event_rule.user_journey_monitoring[0].name
   target_id = "user-journey-monitoring"
