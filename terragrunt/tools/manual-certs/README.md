@@ -53,6 +53,8 @@ Defaults:
 - CFS_LB_NAME = cdp-sirsi-php
 - EMAIL = ali.bahman@goaco.com
 - VERIFY_CHALLENGE = 1
+- PREFERRED_CHAIN = (unset; certbot default)
+- CERTBOT_PROFILE = (unset; certbot default)
 - ACME_SERVER = (default: Let's Encrypt production)
   - production: `https://acme-v02.api.letsencrypt.org/directory`
   - staging: `https://acme-staging-v02.api.letsencrypt.org/directory`
@@ -76,8 +78,35 @@ rotate-certs env overrides:
 - `VERIFY_CHALLENGE` (default 1)
 - `KEEP_RULE` (set to 1 to retain ALB rule)
 - `ACME_SERVER` (override CA directory URL; see above)
+- `PREFERRED_CHAIN` (passed to certbot `--preferred-chain` when supported, e.g. `ISRG Root X1`)
+- `CERTBOT_PROFILE` (passed to certbot `--profile` when supported, e.g. `classic`)
 - `KEY_TYPE` (default rsa)
 - `RSA_KEY_SIZE` (default 2048)
+
+## Chain/profile selection
+Certbot options vary by version. `issue-cert.sh` detects support before adding
+`--preferred-chain` or `--profile`; unsupported overrides print a warning and
+the run continues with certbot defaults.
+
+Prefer the classic Let's Encrypt chain for older clients:
+- `PREFERRED_CHAIN="ISRG Root X1" ave ./rotate-certs.sh integration`
+
+If the installed certbot and ACME server support profiles:
+- `CERTBOT_PROFILE=classic ave ./rotate-certs.sh integration`
+
+Both can be set together; certbot receives only the flags it supports:
+- `PREFERRED_CHAIN="ISRG Root X1" CERTBOT_PROFILE=classic ave ./rotate-certs.sh integration`
+
+Safe integration flow:
+- `PREFERRED_CHAIN="ISRG Root X1" ave ./rotate-certs.sh integration --dry-run`
+- `PREFERRED_CHAIN="ISRG Root X1" ave ./rotate-certs.sh integration`
+- `ave ./attach-certs.sh integration --dry-run`
+- `ave ./attach-certs.sh integration`
+- `ave ./validate-certs.sh integration`
+
+`validate-certs.sh` prints the live certificate chain as served by the ALB.
+Check the `LIVE CHAIN` issuer/subject lines before repeating the flow for
+production.
 
 issue-cert env overrides:
 - `DOMAIN` (single domain) or `DOMAINS` (comma-separated)

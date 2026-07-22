@@ -23,14 +23,20 @@ fi
 
 # === Split fullchain.pem ===
 echo "Splitting $FULLCHAIN into $CERT and $CHAIN ..."
+rm -f "$CERT_DIR"/part*.pem
 awk 'BEGIN {c=0} /BEGIN CERTIFICATE/{c++} {print > (dir "/part" c ".pem")}' dir="$CERT_DIR/" "$FULLCHAIN"
 
 mv "$CERT_DIR/part1.pem" "$CERT"
 if [[ -f "$CERT_DIR/part2.pem" ]]; then
-  mv "$CERT_DIR/part2.pem" "$CHAIN"
+  : > "$CHAIN"
+  for part in "$CERT_DIR"/part*.pem; do
+    [[ "$part" == "$CERT_DIR/part1.pem" ]] && continue
+    cat "$part" >> "$CHAIN"
+  done
+  rm -f "$CERT_DIR"/part*.pem
   echo "Split successful: cert.pem and chain.pem created."
 else
-  echo "No intermediate cert found — creating empty chain.pem."
+  echo "No intermediate cert found - creating empty chain.pem."
   touch "$CHAIN"
 fi
 

@@ -26,6 +26,14 @@ public record BulkShareCodeLookupResult
     /// <summary>When the share code was submitted, present when the share code is valid.</summary>
     public DateTimeOffset? SubmittedAt { get; init; }
 
+    /// <summary>Operation types (e.g. small or medium-sized enterprise), present when the share code is valid.</summary>
+    /// <example>["SmallOrMediumSized"]</example>
+    public List<OperationType> OperationTypes { get; init; } = [];
+
+    /// <summary>Supplier type description (Organisation or Individual), present when the share code is valid.</summary>
+    /// <example>"Organisation"</example>
+    public string? SupplierTypeDescription { get; init; }
+
     [Required] public required OrganisationInformation.Identifier Identifier { get; init; }
     [Required] public required List<OrganisationInformation.Identifier> AdditionalIdentifiers { get; init; } = [];
     [Required] public required Address Address { get; init; }
