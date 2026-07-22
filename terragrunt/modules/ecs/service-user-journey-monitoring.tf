@@ -4,6 +4,8 @@ module "ecs_service_user_journey_monitoring" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.user_journey_monitoring.name}.json.tftpl",
     {
+      betterstack_secret_arn       = data.aws_secretsmanager_secret.betterstack_user_journey_monitoring.arn
+      fts_secrets_arn              = data.aws_secretsmanager_secret.fts_secrets.arn
       cpu                          = var.service_configs.user_journey_monitoring.cpu
       image                        = local.ecr_urls[var.service_configs.user_journey_monitoring.name]
       lg_name                      = aws_cloudwatch_log_group.tasks[var.service_configs.user_journey_monitoring.name].name
@@ -14,7 +16,6 @@ module "ecs_service_user_journey_monitoring" {
       service_version              = local.service_version_fts
       test_env                     = var.environment
       test_settings_fts_public_url = "https://${local.fts_site_domains[var.environment]}"
-      betterstack_secret_arn       = data.aws_secretsmanager_secret.betterstack_user_journey_monitoring.arn
     }
   )
 
