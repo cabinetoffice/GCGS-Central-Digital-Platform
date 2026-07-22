@@ -295,7 +295,7 @@ locals {
     fts_search_api                       = { desired_count = 2 }
     fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
-    fts_notice_publish_worker            = { desired_count = local.environment == "production" ? 6 : 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
+    fts_notice_publish_worker            = { desired_count = local.environment == "production" ? 5 : 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_notice_render_worker             = { desired_count = local.environment == "production" ? 2 : 1, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
