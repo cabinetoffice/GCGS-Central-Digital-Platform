@@ -53,7 +53,7 @@ fi
 # shellcheck source=/dev/null
 source "$DOMAINS_FILE"
 
-ENV_KEY="${ENV_NAME^^}"
+ENV_KEY="$(printf '%s' "$ENV_NAME" | tr '[:lower:]' '[:upper:]')"
 FTS_DOMAIN_VAR="FTS_${ENV_KEY}"
 CFS_DOMAIN_VAR="CFS_${ENV_KEY}"
 
@@ -176,13 +176,47 @@ print_live_cert() {
     s_client_cmd=(openssl s_client -servername "$domain" -connect "$domain:443" -showcerts)
   fi
 
-  local cert_out
-  cert_out="$("${s_client_cmd[@]}" </dev/null 2>/dev/null | openssl x509 -noout -subject -issuer -dates -serial -fingerprint -sha256 2>/dev/null || true)"
-  if [[ -z "$cert_out" ]]; then
+  local certs
+  certs="$("${s_client_cmd[@]}" </dev/null 2>/dev/null || true)"
+  if [[ -z "$certs" ]]; then
     echo "  LIVE: unable to fetch cert" >&2
     return 0
   fi
-  echo "$cert_out" | sed 's/^/  LIVE: /'
+
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  printf '%s\n' "$certs" | awk '
+    /-----BEGIN CERTIFICATE-----/ { n++; out=sprintf("%s/cert-%02d.pem", dir, n) }
+    n > 0 { print > out }
+    /-----END CERTIFICATE-----/ { close(out) }
+  ' dir="$tmpdir"
+
+  local cert_file cert_out cert_index=0
+  for cert_file in "$tmpdir"/cert-*.pem; do
+    if [[ ! -f "$cert_file" ]]; then
+      continue
+    fi
+    cert_index=$((cert_index + 1))
+    cert_out="$(openssl x509 -in "$cert_file" -noout -subject -issuer -dates -serial -fingerprint -sha256 2>/dev/null || true)"
+    if [[ -n "$cert_out" ]]; then
+      echo "  LIVE CHAIN[$cert_index]:"
+      echo "$cert_out" | sed 's/^/    /'
+    fi
+  done
+  rm -rf "$tmpdir"
+}
+
+print_live_serial() {
+  local expected_serial="$1"
+  local live_serial="$2"
+  if [[ -n "$live_serial" ]]; then
+    echo "  LIVE: serial=$live_serial"
+  else
+    echo "  LIVE: serial=<unavailable>"
+  fi
+  if [[ -n "$expected_serial" ]]; then
+    echo "  LIVE: expected_serial=$expected_serial"
+  fi
 }
 
 fetch_live_serial() {
@@ -238,6 +272,7 @@ wait_for_live_cert() {
     if [[ -n "$expected_serial" && -n "$live_serial" && "$live_serial" == "$expected_serial" ]]; then
       LIVE_SERIAL="$live_serial"
       LIVE_NOT_AFTER="$(fetch_live_not_after "$domain" || true)"
+      print_live_serial "$expected_serial" "$live_serial"
       print_live_cert "$domain"
       return 0
     fi
@@ -258,7 +293,8 @@ wait_for_live_cert() {
       fi
     fi
     if [[ "$waited" -eq 0 ]]; then
-      echo "  LIVE: waiting for new cert to appear (serial mismatch)"
+      print_live_serial "$expected_serial" "$live_serial"
+      echo "  LIVE: waiting for new cert to appear (serial mismatch or unavailable)"
     fi
     sleep "$LIVE_WAIT_INTERVAL"
     waited=$((waited + LIVE_WAIT_INTERVAL))
@@ -266,6 +302,7 @@ wait_for_live_cert() {
 
   LIVE_SERIAL="$live_serial"
   LIVE_NOT_AFTER="$(fetch_live_not_after "$domain" || true)"
+  print_live_serial "$expected_serial" "$live_serial"
   print_live_cert "$domain"
   return 1
 }

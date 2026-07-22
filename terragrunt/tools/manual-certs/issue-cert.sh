@@ -47,6 +47,7 @@ ENV_DIR="$(cd "$(dirname "$HOOK_ENV")" && pwd)"
 STATE_DIR="${STATE_DIR:-$ENV_DIR/state}"
 CERT_DIR="${CERT_DIR:-$ENV_DIR/certs}"
 CERTBOT_DIR="${CERTBOT_DIR:-$ENV_DIR/certbot}"
+VERIFY_CHALLENGE="${VERIFY_CHALLENGE:-1}"
 
 mkdir -p "$STATE_DIR" "$CERT_DIR" "$CERTBOT_DIR"
 
@@ -70,13 +71,35 @@ CERTBOT_ARGS=(
   --logs-dir "$CERTBOT_DIR/logs"
 )
 
-if certbot --help 2>/dev/null | grep -q -- "--manual-public-ip-logging-ok"; then
+certbot_supports() {
+  certbot --help all 2>/dev/null | grep -q -- "$1"
+}
+
+if certbot_supports "--manual-public-ip-logging-ok"; then
   CERTBOT_ARGS+=( --manual-public-ip-logging-ok )
 fi
 
 # Allow overriding CA for testing (e.g. Let's Encrypt staging)
 if [[ -n "${ACME_SERVER:-}" ]]; then
   CERTBOT_ARGS+=( --server "$ACME_SERVER" )
+fi
+
+# Allow selecting a Let's Encrypt chain/profile where supported by certbot.
+# For older trust stores, prefer PREFERRED_CHAIN="ISRG Root X1" where possible.
+if [[ -n "${CERTBOT_PROFILE:-}" ]]; then
+  if certbot_supports "--profile"; then
+    CERTBOT_ARGS+=( --profile "$CERTBOT_PROFILE" )
+  else
+    echo "WARNING: certbot does not support --profile; ignoring CERTBOT_PROFILE=$CERTBOT_PROFILE" >&2
+  fi
+fi
+
+if [[ -n "${PREFERRED_CHAIN:-}" ]]; then
+  if certbot_supports "--preferred-chain"; then
+    CERTBOT_ARGS+=( --preferred-chain "$PREFERRED_CHAIN" )
+  else
+    echo "WARNING: certbot does not support --preferred-chain; ignoring PREFERRED_CHAIN=$PREFERRED_CHAIN" >&2
+  fi
 fi
 
 for d in "${DOMAINS_ARR[@]}"; do
@@ -100,6 +123,7 @@ export LISTENER_ARN
 export AWS_REGION
 export AWS_CMD
 export STATE_DIR
+export VERIFY_CHALLENGE
 
 if [[ -z "${LISTENER_ARN:-}" ]]; then
   echo "LISTENER_ARN is still empty after resolution" >&2
