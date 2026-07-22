@@ -12,7 +12,7 @@ module "ecs_service_user_journey_monitoring" {
       memory                       = var.service_configs.user_journey_monitoring.memory
       name                         = var.service_configs.user_journey_monitoring.name
       service_version              = local.service_version_fts
-      test_env                     = "production"
+      test_env                     = var.environment
       test_settings_fts_public_url = "https://${local.fts_site_domains[var.environment]}"
       betterstack_secret_arn       = data.aws_secretsmanager_secret.betterstack_user_journey_monitoring.arn
     }

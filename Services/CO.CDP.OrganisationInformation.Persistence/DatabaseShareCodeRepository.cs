@@ -403,9 +403,28 @@ public class DatabaseShareCodeRepository(OrganisationInformationContext context)
                         {
                             Guid = consentReader.GetGuid("organisation_guid"),
                             Name = consentReader.GetString("organisation_name"),
-                            Type = (OrganisationType)consentReader.GetInt32("type")
+                            Type = (OrganisationType)consentReader.GetInt32("type"),
+                            Roles = consentReader.GetFieldValue<int[]>("roles").Select(r => (PartyRole)r).ToList()
                         }
                     };
+
+                    var supplierType = consentReader.GetFieldValue<int?>("supplier_type");
+                    if (supplierType.HasValue)
+                    {
+                        sharedConsents[sharedConsentId].Organisation.SupplierInfo = new SupplierInformationNonEf
+                        {
+                            SupplierType = (SupplierType)supplierType,
+                            OperationTypes = consentReader.GetFieldValue<int[]>("operation_types").Select(r => (OperationType)r).ToList(),
+                            CompletedRegAddress = consentReader.GetBoolean("completed_reg_address"),
+                            CompletedPostalAddress = consentReader.GetBoolean("completed_postal_address"),
+                            CompletedVat = consentReader.GetBoolean("completed_vat"),
+                            CompletedWebsiteAddress = consentReader.GetBoolean("completed_website_address"),
+                            CompletedEmailAddress = consentReader.GetBoolean("completed_email_address"),
+                            CompletedOperationType = consentReader.GetBoolean("completed_operation_type"),
+                            CompletedLegalForm = consentReader.GetBoolean("completed_legal_form"),
+                            CompletedConnectedPerson = consentReader.GetBoolean("completed_connected_person")
+                        };
+                    }
                 }
             }
 
