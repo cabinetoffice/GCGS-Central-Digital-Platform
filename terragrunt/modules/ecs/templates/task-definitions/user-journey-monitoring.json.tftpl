@@ -19,9 +19,12 @@
       { "name": "TestSettings__FTSPublicUrl", "value": "${test_settings_fts_public_url}"}
     ],
     "secrets": [
-      { "name": "BETTERSTACK_SOURCE_TOKEN", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_SOURCE_TOKEN::"},
+      { "name": "BETTERSTACK_HEARTBEAT_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_HEARTBEAT_URL::"},
       { "name": "BETTERSTACK_INGEST_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_INGEST_URL::"},
-      { "name": "BETTERSTACK_HEARTBEAT_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_HEARTBEAT_URL::"}
+      { "name": "BETTERSTACK_SOURCE_TOKEN", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_SOURCE_TOKEN::"},
+      { "name": "TestSettings__FTSHttpBasicAuthEnabled", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"},
+      { "name": "TestSettings__FTSHttpBasicAuthPassword", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"},
+      { "name": "TestSettings__FTSHttpBasicAuthUsername", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"}
     ],
     "volumesFrom": [],
     "mountPoints": [],
