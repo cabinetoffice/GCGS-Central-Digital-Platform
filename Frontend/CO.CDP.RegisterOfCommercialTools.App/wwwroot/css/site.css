@@ -709,3 +709,24 @@ button[aria-expanded="true"] .custom-chevron-icon {
         padding: 20px;
     }
 }
+/* Footer links: aligned column grid - 1 (mobile) / 2 (tablet) / 3 (desktop). */
+.govuk-footer .govuk-footer__inline-list {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: start;
+    column-gap: 15px;
+    row-gap: 5px;
+}
+.govuk-footer .govuk-footer__inline-list-item {
+    margin: 0;
+}
+@media (min-width: 40.0625em) {
+    .govuk-footer .govuk-footer__inline-list {
+        grid-template-columns: repeat(2, auto);
+    }
+}
+@media (min-width: 48.0625em) {
+    .govuk-footer .govuk-footer__inline-list {
+        grid-template-columns: repeat(3, auto);
+    }
+}
