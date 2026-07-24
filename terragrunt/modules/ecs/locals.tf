@@ -147,6 +147,7 @@ locals {
     "/pcr-2015*",
     "/search/commercial-tools*",
     "/search/contracts*",
+    "/search/notices*",
     "/search/opportunities*",
     "/session-timeout-keep-alive*",
     "/signin-oidc*",
