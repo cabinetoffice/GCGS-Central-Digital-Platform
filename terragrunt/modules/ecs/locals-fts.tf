@@ -90,6 +90,7 @@ locals {
     notice_render_cache_debug_marker      = true
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
+    render_cache_purge_on_migrate         = contains(["development", "staging", "integration"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
     site_tag                              = "TEST"
