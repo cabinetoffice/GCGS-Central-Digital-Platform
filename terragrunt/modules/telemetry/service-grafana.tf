@@ -9,6 +9,7 @@ module "ecs_service_grafana" {
       cpu                   = var.grafana_config.cpu
       gf_admin_password     = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
       gf_admin_user         = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
+      grafana_api_token     = "${data.aws_secretsmanager_secret.grafana_api_token.arn}:API_TOKEN::"
       grafana_db_address    = module.grafana_db.db_address
       grafana_db_name       = module.grafana_db.db_name
       grafana_db_password   = "${module.grafana_db.db_credentials_arn}:password::"

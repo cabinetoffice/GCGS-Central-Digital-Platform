@@ -75,3 +75,7 @@ data "aws_iam_policy_document" "grafana_generic" {
 data "aws_secretsmanager_secret" "grafana_alerting" {
   name = "${local.name_prefix}-${var.grafana_config.name}-alerting-webhook"
 }
+
+data "aws_secretsmanager_secret" "grafana_api_token" {
+  name = "${local.name_prefix}-${var.grafana_config.name}-api-token"
+}
