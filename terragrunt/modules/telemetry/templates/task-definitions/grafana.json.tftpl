@@ -44,10 +44,18 @@
     "essential": true
   },
   {
-    "name": "${name}-datasource-bootstrap",
+    "name": "${name}-datasource-watchdog",
     "image": "curlimages/curl:8.8.0",
     "cpu": 0,
     "memory": 128,
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}-datasource-watchdog"
+      }
+    },
     "dependsOn": [
       {
         "containerName": "${name}",
@@ -68,7 +76,7 @@
     "command": [
       "sh",
       "-c",
-      "set -e; for i in $(seq 1 30); do if curl -sf \"$GRAFANA_URL/api/health\" >/dev/null; then break; fi; sleep 5; done; status=$(curl -s -o /dev/null -w \"%%{http_code}\" -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" \"$GRAFANA_URL/api/datasources/uid/$GRAFANA_DATASOURCE_UID\"); if [ \"$status\" != \"200\" ]; then curl -s -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" -H \"Content-Type: application/json\" -X POST \"$GRAFANA_URL/api/datasources\" -d \"{\\\"name\\\":\\\"$GRAFANA_DATASOURCE_NAME\\\",\\\"type\\\":\\\"cloudwatch\\\",\\\"uid\\\":\\\"$GRAFANA_DATASOURCE_UID\\\",\\\"access\\\":\\\"proxy\\\",\\\"isDefault\\\":false,\\\"jsonData\\\":{\\\"authType\\\":\\\"default\\\",\\\"defaultRegion\\\":\\\"$GRAFANA_REGION\\\",\\\"assumeRoleArn\\\":\\\"$GRAFANA_ASSUME_ROLE_ARN\\\"}}\" >/dev/null; fi"
+      "set -u; echo \"Starting Grafana datasource watchdog for $GRAFANA_DATASOURCE_UID\"; while true; do until curl -fsS \"$GRAFANA_URL/api/health\" >/dev/null; do sleep 5; done; status=$(curl -sS -o /tmp/datasource-response -w \"%%{http_code}\" -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" \"$GRAFANA_URL/api/datasources/uid/$GRAFANA_DATASOURCE_UID\" || true); if [ \"$status\" = \"404\" ]; then create_status=$(curl -sS -o /tmp/datasource-create-response -w \"%%{http_code}\" -u \"$GRAFANA_ADMIN_USER:$GRAFANA_ADMIN_PASSWORD\" -H \"Content-Type: application/json\" -X POST \"$GRAFANA_URL/api/datasources\" -d \"{\\\"name\\\":\\\"$GRAFANA_DATASOURCE_NAME\\\",\\\"type\\\":\\\"cloudwatch\\\",\\\"uid\\\":\\\"$GRAFANA_DATASOURCE_UID\\\",\\\"access\\\":\\\"proxy\\\",\\\"isDefault\\\":false,\\\"jsonData\\\":{\\\"authType\\\":\\\"default\\\",\\\"defaultRegion\\\":\\\"$GRAFANA_REGION\\\",\\\"assumeRoleArn\\\":\\\"$GRAFANA_ASSUME_ROLE_ARN\\\"}}\" || true); if [ \"$create_status\" = \"200\" ]; then echo \"Restored Grafana datasource $GRAFANA_DATASOURCE_UID\"; else echo \"Failed to restore Grafana datasource $GRAFANA_DATASOURCE_UID: HTTP $create_status: $(cat /tmp/datasource-create-response)\" >&2; fi; elif [ \"$status\" != \"200\" ]; then echo \"Failed to check Grafana datasource $GRAFANA_DATASOURCE_UID: HTTP $status: $(cat /tmp/datasource-response)\" >&2; fi; sleep 60; done"
     ],
     "essential": false
   }
