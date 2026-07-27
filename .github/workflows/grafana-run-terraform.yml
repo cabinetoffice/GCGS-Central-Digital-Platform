@@ -109,3 +109,41 @@ jobs:
         if: ${{ inputs.terraform_action == 'apply' }}
         working-directory: terragrunt/tools/grafana/terraform
         run: terraform apply -input=false -auto-approve -var-file=env/${ENV_NAME}.tfvars
+
+      - name: Validate CloudWatch data source
+        if: ${{ inputs.terraform_action == 'apply' }}
+        working-directory: terragrunt/tools/grafana/terraform
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          datasource_url="${TF_VAR_grafana_url}/api/datasources/uid/CLOUDWATCH"
+          response_file=$(mktemp)
+
+          status=$(curl -sS -o "$response_file" -w "%{http_code}" \
+            -H "Authorization: Bearer ${TF_VAR_grafana_token}" \
+            "$datasource_url")
+
+          if [ "$status" = "404" ]; then
+            echo "CloudWatch data source is missing after apply; forcing recreation"
+            terraform apply -input=false -auto-approve \
+              -replace=grafana_data_source.cloudwatch \
+              -var-file="env/${ENV_NAME}.tfvars"
+
+            status=$(curl -sS -o "$response_file" -w "%{http_code}" \
+              -H "Authorization: Bearer ${TF_VAR_grafana_token}" \
+              "$datasource_url")
+          fi
+
+          if [ "$status" != "200" ]; then
+            echo "CloudWatch data source validation failed with HTTP $status" >&2
+            cat "$response_file" >&2
+            exit 1
+          fi
+
+          health_response=$(curl -fsS \
+            -H "Authorization: Bearer ${TF_VAR_grafana_token}" \
+            "$datasource_url/health")
+
+          echo "$health_response" | jq .
+          echo "$health_response" | jq -e '.status == "OK"' >/dev/null
