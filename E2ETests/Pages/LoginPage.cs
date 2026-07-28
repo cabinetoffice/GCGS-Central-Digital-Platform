@@ -17,6 +17,7 @@ public class LoginPage
     private readonly string EnterYourNameFirstNameTextBox = "input.govuk-input#FirstName";
     private readonly string EnterYourNameLastNameTextBox = "input.govuk-input#LastName";
     private readonly string OtpInputBox = "input.govuk-input.govuk-input--width-10#code";
+    private readonly string SkipPasskeyCreationButton = "button[name=\"createPasskeyOption\"][value=\"skip\"]";
 
     public LoginPage(IPage page)
     {
@@ -41,6 +42,13 @@ public class LoginPage
             string otpCode = TOTPUtility.GenerateTOTP(secretKey);
             await _page.FillAsync(OtpInputBox, otpCode);
             await _page.ClickAsync(ContinueButton);
+
+            var skipButton = _page.Locator(SkipPasskeyCreationButton);
+
+            if (await skipButton.IsVisibleAsync())
+            {
+                await skipButton.ClickAsync();
+            }
         }
 
         bool isPrivacyNoticeCheckboxVisible = await _page.Locator(AgreePrivacyNoticeCheckBox).IsVisibleAsync();
