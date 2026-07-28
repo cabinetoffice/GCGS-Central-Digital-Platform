@@ -10,7 +10,7 @@ locals {
     for item in local.waf_raw_ip_set_json : item.value if can(item.value)
   ] : []
 
-  waf_allowed_ip_list = concat(local.waf_allowed_ip_list_secret, [aws_vpc.this.cidr_block])
+  waf_allowed_ip_list = concat(local.waf_allowed_ip_list_secret, [aws_vpc.this.cidr_block, "${aws_nat_gateway.this.public_ip}/32"])
 
   waf_raw_blocked_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_blocked_ips.secret_string), [])
   waf_blocked_ip_list = length(local.waf_raw_blocked_ip_set_json) > 0 ? [
