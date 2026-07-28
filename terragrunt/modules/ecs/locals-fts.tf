@@ -80,7 +80,7 @@ locals {
     licenced_to                           = "No-one"
     local_version                         = 1100
     modernised_landing_page               = true
-    summarised_search_enabled             = contains(["development", "staging"], var.environment)
+    summarised_search_enabled             = true
     pa23_enabled                          = true
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
