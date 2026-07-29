@@ -18,5 +18,6 @@ resource "aws_secretsmanager_secret_version" "grafana_credentials_version" {
 }
 
 data "aws_secretsmanager_secret" "grafana_entra_id" {
-  name = "${local.name_prefix}-${var.grafana_config.name}-entra-id"
+  count = var.grafana_azuread_enabled ? 1 : 0
+  name  = "${local.name_prefix}-${var.grafana_config.name}-entra-id"
 }

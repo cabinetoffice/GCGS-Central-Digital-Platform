@@ -15,7 +15,7 @@ module "ecs_service_grafana" {
       grafana_db_password   = "${module.grafana_db.db_credentials_arn}:password::"
       grafana_db_username   = "${module.grafana_db.db_credentials_arn}:username::"
       grafana_domain        = "grafana.${var.public_domain}"
-      grafana_entra_id_arn  = data.aws_secretsmanager_secret.grafana_entra_id.arn
+      grafana_entra_id_arn  = var.grafana_azuread_enabled ? data.aws_secretsmanager_secret.grafana_entra_id[0].arn : ""
       grafana_root_url      = "https://grafana.${var.public_domain}/"
       grafana_azuread_enabled = var.grafana_azuread_enabled ? "true" : "false"
       grafana_azuread_scopes = "openid email profile"
