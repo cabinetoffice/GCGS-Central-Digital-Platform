@@ -12,60 +12,28 @@
         color: #fff;
     }
 
-.govuk-phase-banner__content__tag {
-    background-color: #1d70b8;
-    color: #fff;
-    text-transform: uppercase;
-}
-
 /**
- * Custom header layout to allow for language switcher
-*/
-@media screen and (min-width: 768px) {
-    .app-header-layout {
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row-reverse;
-    }
-}
-
-/**
- * Language switcher, adapted from hmrc-frontend to roughly match FTS
+ * Language switcher, positioned top-right of the service navigation row.
  */
-.app-language-select {
-    margin: 0;
-    float: right;
+.govuk-service-navigation__container {
+    position: relative;
 }
 
-.app-language-select__list {
-    float: right;
-    margin: 0;
+.languageSwitch {
+    position: absolute;
+    top: 30%;
+    right: 0;
 }
 
-.app-language-select__list-item {
-    display: inline-block;
-    margin-right: 0;
-    border-bottom: 0;
+.languageSwitch li {
+    border-left: 1px solid #b1b4b6;
+    padding: 0 8px;
+    display: inline;
 }
 
-    .app-language-select__list-item:first-child::after {
-        content: "";
-        display: inline-block;
-        position: relative;
-        top: 0.1875em;
-        height: 1em;
-        border-right: 0.09375em solid #b1b4b6;
-    }
-
-    .app-language-select__list-item a,
-    .app-language-select__list-item [aria-current] {
-        padding: 0.3125em;
-    }
-
-    .app-language-select__list-item [aria-current] {
-        color: #b1b4b6;
-        font-weight: 700;
-    }
+.languageSwitch li:first-child {
+    border: 0;
+}
 
 /**
  * Wide container, reserved for support admin use only
@@ -235,5 +203,27 @@
         width: auto;
         min-width: 44px;
         padding: 0 8px;
+    }
+}
+
+/* Footer links: aligned column grid - 1 (mobile) / 2 (tablet) / 3 (desktop). */
+.govuk-footer .govuk-footer__inline-list {
+    display: grid;
+    grid-template-columns: auto;
+    justify-content: start;
+    column-gap: 15px;
+    row-gap: 5px;
+}
+.govuk-footer .govuk-footer__inline-list-item {
+    margin: 0;
+}
+@media (min-width: 40.0625em) {
+    .govuk-footer .govuk-footer__inline-list {
+        grid-template-columns: repeat(2, auto);
+    }
+}
+@media (min-width: 48.0625em) {
+    .govuk-footer .govuk-footer__inline-list {
+        grid-template-columns: repeat(3, auto);
     }
 }
