@@ -15,7 +15,12 @@ module "ecs_service_grafana" {
       grafana_db_password   = "${module.grafana_db.db_credentials_arn}:password::"
       grafana_db_username   = "${module.grafana_db.db_credentials_arn}:username::"
       grafana_domain        = "grafana.${var.public_domain}"
+      grafana_entra_id_arn  = var.grafana_azuread_enabled ? data.aws_secretsmanager_secret.grafana_entra_id[0].arn : ""
       grafana_root_url      = "https://grafana.${var.public_domain}/"
+      grafana_azuread_enabled = var.grafana_azuread_enabled ? "true" : "false"
+      grafana_azuread_scopes = "openid email profile"
+      grafana_azuread_allowed_domains = local.grafana_allowed_domains
+      grafana_azuread_role_attribute_path_json = local.grafana_admin_role_attribute_path_json
       teams_webhook_url     = "${data.aws_secretsmanager_secret.grafana_alerting.arn}:TEAMS_WEBHOOK_URL::"
       image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.grafana_config.name}:${local.grafana_image_tag}"
       lg_name               = aws_cloudwatch_log_group.grafana.name

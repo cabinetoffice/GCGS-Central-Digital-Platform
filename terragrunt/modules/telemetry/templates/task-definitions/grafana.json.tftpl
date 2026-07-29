@@ -30,14 +30,29 @@
         {"name": "GF_SERVER_ROOT_URL", "value": "${grafana_root_url}"},
         {"name": "GF_AUTH_ANONYMOUS_ENABLED", "value": "false"},
         {"name": "GF_USERS_ALLOW_SIGN_UP", "value": "true"},
-        {"name": "GF_USERS_AUTO_ASSIGN_ORG", "value": "false"}
+        {"name": "GF_USERS_AUTO_ASSIGN_ORG", "value": "false"},
+        {"name": "GF_AUTH_AZUREAD_ENABLED", "value": "${grafana_azuread_enabled}"},
+        {"name": "GF_AUTH_AZUREAD_ALLOW_SIGN_UP", "value": "true"},
+        {"name": "GF_AUTH_AZUREAD_ALLOW_ASSIGN_GRAFANA_ADMIN", "value": "true"},
+        {"name": "GF_AUTH_AZUREAD_SCOPES", "value": "${grafana_azuread_scopes}"},
+        {"name": "GF_AUTH_AZUREAD_ALLOWED_DOMAINS", "value": "${grafana_azuread_allowed_domains}"},
+        {"name": "GF_AUTH_AZUREAD_ROLE_ATTRIBUTE_PATH", "value": ${grafana_azuread_role_attribute_path_json}},
+        {"name": "GF_AUTH_AZUREAD_ROLE_ATTRIBUTE_STRICT", "value": "false"},
+        {"name": "GF_AUTH_AZUREAD_SKIP_ORG_ROLE_SYNC", "value": "false"},
+        {"name": "GF_AUTH_AZUREAD_USE_PKCE", "value": "true"},
+        {"name": "GF_AUTH_AZUREAD_USE_REFRESH_TOKEN", "value": "true"}
     ],
     "secrets": [
         {"name": "GF_SECURITY_ADMIN_USER", "valueFrom": "${gf_admin_user}"},
         {"name": "GF_SECURITY_ADMIN_PASSWORD", "valueFrom": "${gf_admin_password}"},
         {"name": "GF_DATABASE_USER", "valueFrom": "${grafana_db_username}"},
         {"name": "GF_DATABASE_PASSWORD", "valueFrom": "${grafana_db_password}"},
-        {"name": "GRAFANA_TEAMS_WEBHOOK_URL", "valueFrom": "${teams_webhook_url}"}
+        {"name": "GRAFANA_TEAMS_WEBHOOK_URL", "valueFrom": "${teams_webhook_url}"}%{ if grafana_azuread_enabled == "true" },
+        {"name": "GF_AUTH_AZUREAD_CLIENT_ID", "valueFrom": "${grafana_entra_id_arn}:CLIENT_ID::"},
+        {"name": "GF_AUTH_AZUREAD_CLIENT_SECRET", "valueFrom": "${grafana_entra_id_arn}:CLIENT_SECRET::"},
+        {"name": "GF_AUTH_AZUREAD_AUTH_URL", "valueFrom": "${grafana_entra_id_arn}:AUTH_URL::"},
+        {"name": "GF_AUTH_AZUREAD_TOKEN_URL", "valueFrom": "${grafana_entra_id_arn}:TOKEN_URL::"}
+%{ endif }
     ],
     "volumesFrom": [],
     "mountPoints": [],
