@@ -112,8 +112,8 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.0.7"
-      pinned_service_version_fts          = "2.6.0"
-      pinned_service_version              = "1.1.1"
+      pinned_service_version_fts          = "2.7.0"
+      pinned_service_version              = "1.2.0"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
       postgres_aurora_instance_type_ev    = "db.r5.4xlarge"
