@@ -536,3 +536,59 @@ variable "waf_acl_php_arn" {
   description = "Special services WAF ACL ARN to be associated with their ALB in isolation"
   type        = string
 }
+
+variable "document_exports_prefix" {
+  description = "S3 prefix for exported documents. External consumers are restricted to this prefix."
+  type        = string
+  default     = "exports/"
+
+  validation {
+    condition     = can(regex("/$", var.document_exports_prefix))
+    error_message = "document_exports_prefix must end with a trailing slash, e.g. exports/"
+  }
+}
+
+variable "document_exports_external_access_key_enabled" {
+  description = "Whether to provision an IAM user + access key for external consumers to read exported documents."
+  type        = bool
+  default     = true
+}
+
+variable "document_exports_oidc_enabled" {
+  description = "Whether to provision an IAM role for external OIDC (web identity) access to exported documents."
+  type        = bool
+  default     = false
+
+  validation {
+    condition = !var.document_exports_oidc_enabled || (
+      var.document_exports_oidc_provider_arn != null &&
+      var.document_exports_oidc_provider_url != null &&
+      length(var.document_exports_oidc_subjects) > 0
+    )
+    error_message = "When document_exports_oidc_enabled is true you must set document_exports_oidc_provider_arn, document_exports_oidc_provider_url, and at least one document_exports_oidc_subjects entry."
+  }
+}
+
+variable "document_exports_oidc_provider_arn" {
+  description = "ARN of the IAM OIDC provider to trust (required when document_exports_oidc_enabled=true)."
+  type        = string
+  default     = null
+}
+
+variable "document_exports_oidc_provider_url" {
+  description = "OIDC issuer URL (without scheme changes) used for condition keys, e.g. https://login.microsoftonline.com/<tenant>/v2.0 (required when document_exports_oidc_enabled=true)."
+  type        = string
+  default     = null
+}
+
+variable "document_exports_oidc_subjects" {
+  description = "Allowed OIDC subject patterns for the external reader role (required when document_exports_oidc_enabled=true)."
+  type        = list(string)
+  default     = []
+}
+
+variable "document_exports_oidc_audiences" {
+  description = "Allowed OIDC audiences for the external reader role."
+  type        = list(string)
+  default     = ["sts.amazonaws.com"]
+}

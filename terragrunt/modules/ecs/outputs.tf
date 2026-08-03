@@ -164,3 +164,15 @@ output "services_target_group_arn_suffix_map_fts" {
     (module.ecs_service_fts_search_api.service_name) = module.ecs_service_fts_search_api.service_target_group_arn_suffix,
   }
 }
+
+output "document_exports_bucket" {
+  value = module.s3_bucket_document_exports.bucket
+}
+
+output "document_exports_external_reader_credentials_arn" {
+  value = var.document_exports_external_access_key_enabled ? aws_secretsmanager_secret.document_exports_reader_credentials[0].arn : null
+}
+
+output "document_exports_external_reader_oidc_role_arn" {
+  value = var.document_exports_oidc_enabled ? aws_iam_role.document_exports_reader_oidc[0].arn : null
+}
