@@ -274,3 +274,11 @@ data "aws_iam_policy_document" "ecr_pull_from_orchestrator" {
     resources = ["*"]
   }
 }
+
+data "aws_secretsmanager_secret" "ocds_exports_oidc_params" {
+  name = "${local.name_prefix}-ocds-exports-ey-oidc-params"
+}
+
+data "aws_secretsmanager_secret_version" "ocds_exports_oidc_params" {
+  secret_id = data.aws_secretsmanager_secret.ocds_exports_oidc_params.id
+}

@@ -65,3 +65,15 @@ module "s3_bucket_fts_notice_render_cache" {
 
   tags = var.tags
 }
+
+module "s3_bucket_ocds_exports" {
+  source = "../s3-bucket"
+
+  bucket_name        = "${local.name_prefix}-${var.environment}-ocds-exports-${data.aws_caller_identity.current.account_id}"
+  enable_encryption  = false
+  kms_key_admin_role = var.role_terraform_arn
+  read_roles         = [var.role_ecs_task_exec_arn]
+  write_roles        = [var.role_ecs_task_arn]
+
+  tags = var.tags
+}

@@ -38,6 +38,24 @@ variable "environment" {
   type        = string
 }
 
+variable "grafana_admin_emails" {
+  description = "Email addresses that should be Grafana org admins"
+  type        = list(string)
+  default     = ["ali.bahman@goaco.com"]
+}
+
+variable "grafana_allowed_email_domains" {
+  description = "Allowed email domains for Grafana Entra ID sign-in"
+  type        = list(string)
+  default     = ["goaco.com"]
+}
+
+variable "grafana_azuread_enabled" {
+  description = "Enable Grafana Entra ID (Azure AD) OAuth"
+  type        = bool
+  default     = true
+}
+
 variable "grafana_config" {
   description = "Grafana services configuration"
   type = object({
@@ -56,24 +74,6 @@ variable "grafana_db_instance_type" {
 variable "grafana_db_multi_az" {
   description = "Whether Grafana DB should be Multi-AZ"
   type        = bool
-}
-
-variable "grafana_azuread_enabled" {
-  description = "Enable Grafana Entra ID (Azure AD) OAuth"
-  type        = bool
-  default     = true
-}
-
-variable "grafana_admin_emails" {
-  description = "Email addresses that should be Grafana org admins"
-  type        = list(string)
-  default     = ["ali.bahman@goaco.com"]
-}
-
-variable "grafana_allowed_email_domains" {
-  description = "Allowed email domains for Grafana Entra ID sign-in"
-  type        = list(string)
-  default     = ["goaco.com"]
 }
 
 variable "is_production" {
