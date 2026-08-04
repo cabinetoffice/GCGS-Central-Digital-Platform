@@ -66,6 +66,26 @@ output "internal_domain" {
   value = local.internal_domain
 }
 
+output "ocds_exports_bucket" {
+  value = module.s3_bucket_ocds_exports.bucket
+}
+
+output "ocds_exports_external_reader_oidc_params_secret_arn" {
+  value = data.aws_secretsmanager_secret.ocds_exports_oidc_params.arn
+}
+
+output "ocds_exports_external_reader_oidc_provider_arn" {
+  value = aws_iam_openid_connect_provider.ocds_exports.arn
+}
+
+output "ocds_exports_external_reader_oidc_role_arn" {
+  value = aws_iam_role.ocds_exports_reader_oidc.arn
+}
+
+output "ocds_exports_external_reader_s3_uri_prefix" {
+  value = "s3://${module.s3_bucket_ocds_exports.bucket}/${var.ocds_exports_prefix}"
+}
+
 output "php_ecs_cluster_id" {
   value = local.php_cluster_id
 }

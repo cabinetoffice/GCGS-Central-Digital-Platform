@@ -157,4 +157,8 @@ locals {
   overwrite_to_new_fts_paths_per_rule = max(1, 5 - length(var.fts_extra_domains))
   overwrite_to_new_fts_path_groups    = chunklist(local.overwrite_to_new_fts_paths, local.overwrite_to_new_fts_paths_per_rule)
 
+  ocds_exports_oidc_client_id    = local.ocds_exports_oidc_params.CLIENT_ID
+  ocds_exports_oidc_issuer_url   = local.ocds_exports_oidc_params.ISSUER_URL
+  ocds_exports_oidc_params       = jsondecode(data.aws_secretsmanager_secret_version.ocds_exports_oidc_params.secret_string)
+  ocds_exports_oidc_provider_url = trimsuffix(local.ocds_exports_oidc_issuer_url, "/") # AWS will reject some values with trailing / as InvalidInput.
 }

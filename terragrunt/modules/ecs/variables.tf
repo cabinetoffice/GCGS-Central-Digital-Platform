@@ -176,6 +176,20 @@ variable "manage_alb_ecs_sg_rules" {
   default     = true
 }
 
+
+# OCDS exports: we always provision the Azure OIDC reader role/provider in every environment.
+# Configuration comes from Secrets Manager (see ocds-exports-ey-oidc-params secret).
+variable "ocds_exports_prefix" {
+  description = "S3 prefix for exported documents. External consumers are restricted to this prefix."
+  type        = string
+  default     = "exports/"
+
+  validation {
+    condition     = can(regex("/$", var.ocds_exports_prefix))
+    error_message = "ocds_exports_prefix must end with a trailing slash, e.g. exports/"
+  }
+}
+
 variable "onelogin_logout_notification_urls" {
   description = "A list of URLs that the organisation app will call to notify other services of a logout event"
   type        = list(string)
