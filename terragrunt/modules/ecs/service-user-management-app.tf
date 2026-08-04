@@ -6,6 +6,8 @@ module "ecs_service_user_management_app" {
     {
       aspcore_environment            = local.aspcore_environment
       cpu                            = var.service_configs.user_management_app.cpu
+      diagnostic_page_enabled        = !var.is_production || var.environment == "integration"
+      diagnostic_page_path_arn       = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
       image                          = local.ecr_urls[var.service_configs.user_management_app.name]
       internal_service_urls          = local.internal_service_urls
       lg_name                        = aws_cloudwatch_log_group.tasks[var.service_configs.user_management_app.name].name
@@ -41,7 +43,7 @@ module "ecs_service_user_management_app" {
   internal_alb_enabled          = local.use_internal_service_urls
   internal_domain               = local.internal_domain
   internal_listener_arn         = local.internal_ecs_listener_arn
-  is_frontend_app               = true
+  is_frontend_app               = false
   listener_priority             = var.service_configs.user_management_app.listener_priority
   memory                        = var.service_configs.user_management_app.memory
   name                          = var.service_configs.user_management_app.name
