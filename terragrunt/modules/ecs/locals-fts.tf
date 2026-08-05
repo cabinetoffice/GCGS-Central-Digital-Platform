@@ -46,6 +46,8 @@ locals {
     one_login_base_url                        = local.one_login.credential_locations.authority
     one_login_fln_api_key_arn                 = data.aws_secretsmanager_secret.one_login_forward_logout_notification_api_key.arn
     one_login_private_key                     = local.one_login.credential_locations.private_key
+    pdf_render_api_key                        = "${local.fts_secrets_arn}:PDF_RENDER_API_KEY::"
+    pdf_signing_combined_pem                  = "${local.fts_secrets_arn}:PDF_SIGNING_COMBINED_PEM::"
     run_guest_token                           = "${local.fts_secrets_arn}:RUN_GUEST_TOKEN::"
     run_migrator_token                        = "${local.fts_secrets_arn}:RUN_MIGRATOR_TOKEN::"
     run_registrar_token                       = "${local.fts_secrets_arn}:RUN_REGISTRAR_TOKEN::"
