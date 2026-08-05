@@ -1,0 +1,32 @@
+[
+  {
+    "name" : "${name}",
+    "image" : "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${service_port},
+        "protocol" : "tcp"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "${lg_prefix}"
+      }
+    },
+    "environment": [
+      { "name" : "PDF_SIGNING_ALLOW_EXPIRED", "value" : "true"}
+    ],
+    "secrets": [
+      { "name" : "PDF_RENDER_API_KEY", "valueFrom" : "${pdf_render_api_key}"},
+      { "name" : "PDF_SIGNING_COMBINED_PEM", "valueFrom" : "${pdf_signing_combined_pem}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]

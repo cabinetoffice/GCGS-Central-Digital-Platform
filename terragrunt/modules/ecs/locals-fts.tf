@@ -321,6 +321,14 @@ locals {
     }
   )
 
+  fts_pdf_render_service_container_parameters = {
+    lg_prefix                = "app"
+    lg_region                = data.aws_region.current.region
+    pdf_render_api_key       = local.fts_secrets.pdf_render_api_key
+    pdf_signing_combined_pem = local.fts_secrets.pdf_signing_combined_pem
+    service_version          = local.service_version_fts
+  }
+
   fts_allowed_target_email_domains = {
     development = [
       "goaco.com"
