@@ -1554,7 +1554,8 @@ public static class EndpointExtensions
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes:
                     [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                    organisationIdLocation: OrganisationIdLocation.Path)]
+                    organisationIdLocation: OrganisationIdLocation.Path,
+                    personScopes: [Constants.PersonScope.SupportAdmin])]
                 async (Guid organisationId, CreateParentChildRelationshipRequest request,
                     IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
                 {
@@ -1587,7 +1588,8 @@ public static class EndpointExtensions
                         Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor,
                         Constants.OrganisationPersonScope.Viewer
                     ],
-                    organisationIdLocation: OrganisationIdLocation.Path)]
+                    organisationIdLocation: OrganisationIdLocation.Path,
+                    personScopes: [Constants.PersonScope.SupportAdmin])]
                 async (Guid organisationId, IUseCase<Guid, GetChildOrganisationsResponse> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(response => response.Success
@@ -1612,7 +1614,8 @@ public static class EndpointExtensions
                 [OrganisationAuthorize([AuthenticationChannel.OneLogin],
                     organisationPersonScopes:
                     [Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor],
-                    organisationIdLocation: OrganisationIdLocation.Path)]
+                    organisationIdLocation: OrganisationIdLocation.Path,
+                    personScopes: [Constants.PersonScope.SupportAdmin])]
                 async (Guid organisationId, Guid childOrganisationId,
                     [FromServices] ISupersedeChildOrganisationUseCase useCase) =>
                 {
@@ -1654,7 +1657,8 @@ public static class EndpointExtensions
                         Constants.OrganisationPersonScope.Admin, Constants.OrganisationPersonScope.Editor,
                         Constants.OrganisationPersonScope.Viewer
                     ],
-                    organisationIdLocation: OrganisationIdLocation.Path)]
+                    organisationIdLocation: OrganisationIdLocation.Path,
+                    personScopes: [Constants.PersonScope.SupportAdmin])]
                 async (Guid organisationId, IUseCase<Guid, GetParentOrganisationsResponse> useCase) =>
                     await useCase.Execute(organisationId)
                         .AndThen(response => response.Success

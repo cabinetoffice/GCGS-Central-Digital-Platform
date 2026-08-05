@@ -53,10 +53,19 @@ public sealed class OrganisationHierarchy
     [Required]
     public DateTimeOffset CreatedOn { get; set; }
 
+    /// <summary>
+    /// The user URN of the person who created this relationship
+    /// </summary>
+    public string? CreatedBy { get; set; }
 
     /// <summary>
     /// The date and time when this relationship was deleted/superseded
     /// Null if the relationship is still active
     /// </summary>
     public DateTimeOffset? SupersededOn { get; set; }
+
+    /// <summary>
+    /// The user URN of the person who superseded this relationship
+    /// </summary>
+    public string? SupersededBy { get; set; }
 }
