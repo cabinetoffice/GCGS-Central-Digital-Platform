@@ -48,6 +48,16 @@ output "fts_notice_render_queue_url" {
   value       = module.fts_notice_render_queue.queue_url
 }
 
+output "ocds_export_queue_arn" {
+  description = "ARN of the OCDS export SQS queue"
+  value       = module.ocds_export_queue.queue_arn
+}
+
+output "ocds_export_queue_url" {
+  description = "URL of the OCDS export SQS queue"
+  value       = module.ocds_export_queue.queue_url
+}
+
 output "organisation_queue_arn" {
   description = "ARN of the organisation SQS queue"
   value       = module.organisation_queue.queue_arn
