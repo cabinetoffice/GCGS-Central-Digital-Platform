@@ -149,6 +149,8 @@ dependency service_queue {
     fts_notice_render_queue_arn     = "mock"
     fts_notice_render_queue_dlq_url = "mock"
     fts_notice_render_queue_url     = "mock"
+    ocds_export_queue_arn           = "mock"
+    ocds_export_queue_url           = "mock"
     organisation_queue_arn          = "mock"
     organisation_queue_url          = "mock"
     user_management_queue_arn       = "mock"
@@ -274,6 +276,8 @@ inputs = {
   queue_fts_notice_render_arn     = dependency.service_queue.outputs.fts_notice_render_queue_arn
   queue_fts_notice_render_dlq_url = dependency.service_queue.outputs.fts_notice_render_queue_dlq_url
   queue_fts_notice_render_url     = dependency.service_queue.outputs.fts_notice_render_queue_url
+  queue_ocds_export_arn           = dependency.service_queue.outputs.ocds_export_queue_arn
+  queue_ocds_export_url           = dependency.service_queue.outputs.ocds_export_queue_url
   queue_organisation_arn          = dependency.service_queue.outputs.organisation_queue_arn
   queue_organisation_url          = dependency.service_queue.outputs.organisation_queue_url
   queue_user_management_arn       = dependency.service_queue.outputs.user_management_queue_arn
