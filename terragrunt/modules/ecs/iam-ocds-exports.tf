@@ -10,6 +10,8 @@ data "aws_iam_policy_document" "ocds_exports_external_read" {
       test     = "StringLike"
       variable = "s3:prefix"
       values = [
+        # Some clients use prefix=exports (no trailing slash). Allow both forms.
+        trimsuffix(var.ocds_exports_prefix, "/"),
         var.ocds_exports_prefix,
         "${var.ocds_exports_prefix}*",
       ]
