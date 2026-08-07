@@ -364,8 +364,8 @@ locals {
     fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
     fts_search_indexer                   = { cluster = "fts",       type = "service",      name = "fts-search-indexer" }
     fts_user_api                         = { cluster = "fts",       type = "service",      name = "fts-user-api", listener_priority = 212 }
-    ocds_export_seeder                   = { cluster = "fts",       type = "service",      name = "ocds-export-seeder" }
-    ocds_exporter                        = { cluster = "fts",       type = "service",      name = "ocds-exporter" }
+    ocds_export_seeder                   = { cluster = "fts",       type = "service",      name = "fts-ocds-export-seeder" }
+    ocds_exporter                        = { cluster = "fts",       type = "service",      name = "fts-ocds-exporter" }
     organisation                         = { cluster = "sirsi",     type = "web-service",  name = "organisation", listener_priority = 117 }
     organisation_app                     = { cluster = "sirsi",     type = "web-service",  name = "organisation-app", listener_priority = 110 }
     organisation_information_migrations  = { cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations" }

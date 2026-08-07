@@ -141,6 +141,14 @@
     "title": "FTS Notice Render Worker",
     "type": "single"
   },
+  "fts-ocds-exporter": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-ocds-exporter",
+    "title": "FTS OCDS Exporter",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
   "fts-scheduler": {
     "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
     "log_group_name": "/ecs/fts-scheduler",
@@ -171,15 +179,6 @@
     "type": "multi",
     "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
   },
-  "ocds-exporter": {
-    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
-    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
-    "log_group_name": "/ecs/ocds-exporter",
-    "title": "OCDS Exporter",
-    "type": "multi",
-    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
-  },
-
   "grafana": {
     "all_expression": "fields @timestamp, @message \n| sort @timestamp desc",
     "error_expression": "fields @timestamp, @message\n| parse @message \"level=* msg=\\\"*\\\"\" as log_level, log_message, more\n| filter log_level like \"err\"\n| sort @timestamp desc\n| limit 5",
