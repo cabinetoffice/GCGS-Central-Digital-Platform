@@ -307,6 +307,16 @@ variable "queue_fts_notice_render_url" {
   type        = string
 }
 
+variable "queue_ocds_export_arn" {
+  description = "ARN of the OCDS export SQS queue"
+  type        = string
+}
+
+variable "queue_ocds_export_url" {
+  description = "URL of the OCDS export SQS queue"
+  type        = string
+}
+
 variable "queue_organisation_arn" {
   description = "ARN of the Organisation's SQS queue"
   type        = string

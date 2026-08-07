@@ -1,0 +1,39 @@
+[
+  {
+    "name" : "${name}",
+    "image" : "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "${lg_prefix}"
+      }
+    },
+    "environment": [
+      { "name" : "ASPNETCORE_ENVIRONMENT", "value" : "${aspcore_environment}"},
+      { "name" : "Aws__Buckets__Bucket", "value" : "${ocds_exports_bucket}"},
+      { "name" : "Aws__CloudWatch__LogGroup", "value" : "${lg_name}"},
+      { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
+      { "name" : "Aws__Region", "value" : "${aws_region}"},
+      { "name" : "DOTNET_ENVIRONMENT", "value" : "${aspcore_environment}"},
+      { "name" : "FtsDatabase__Database", "value" : "${db_name}"},
+      { "name" : "FtsDatabase__Host", "value" : "${db_address}"},
+      { "name" : "FtsDatabase__Port", "value" : "${db_port}"},
+      { "name" : "FtsDatabase__Server", "value" : "${db_address}"},
+      { "name" : "OcdsExport__QueueUrl", "value" : "${ocds_export_queue_url}"},
+      { "name" : "OcdsExport__S3BucketName", "value" : "${ocds_exports_bucket}"},
+      { "name" : "OcdsExport__SqsQueueUrl", "value" : "${ocds_export_queue_url}"}
+    ],
+    "secrets": [
+      { "name" : "FtsDatabase__Password", "valueFrom" : "${db_password}"},
+      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_username}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
