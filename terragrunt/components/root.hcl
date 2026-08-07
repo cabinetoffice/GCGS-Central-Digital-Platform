@@ -298,6 +298,7 @@ locals {
     fts_notice_publish_worker            = { desired_count = local.environment == "production" ? 5 : 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_notice_render_worker             = { desired_count = local.environment == "production" ? 2 : 1, cpu = 4096, memory = 8192 }
     fts_pdf_render_service               = { desired_count = local.environment == "production" ? 2 : 1, cpu = 4096, memory = 8192 }
+    ocds_export_seeder                   = { desired_count = 0, cpu = 4096, memory = 8192 }
     ocds_exporter                        = { desired_count = 0, cpu = 4096, memory = 8192 }
     organisation                         = {}
     organisation_app                     = {}
@@ -363,6 +364,7 @@ locals {
     fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
     fts_search_indexer                   = { cluster = "fts",       type = "service",      name = "fts-search-indexer" }
     fts_user_api                         = { cluster = "fts",       type = "service",      name = "fts-user-api", listener_priority = 212 }
+    ocds_export_seeder                   = { cluster = "fts",       type = "service",      name = "ocds-export-seeder" }
     ocds_exporter                        = { cluster = "fts",       type = "service",      name = "ocds-exporter" }
     organisation                         = { cluster = "sirsi",     type = "web-service",  name = "organisation", listener_priority = 117 }
     organisation_app                     = { cluster = "sirsi",     type = "web-service",  name = "organisation-app", listener_priority = 110 }
