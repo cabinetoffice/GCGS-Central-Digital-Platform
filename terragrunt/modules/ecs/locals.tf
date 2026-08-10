@@ -73,6 +73,12 @@ locals {
     (var.service_configs.ocds_export_seeder.name) = module.ecs_task_fts_ocds_export_seeder.task_definition_arn
   }
 
+  # Restrict to only the one-off tasks we can map to a task definition.
+  one_off_task_configs_mapped = {
+    for name, cfg in local.one_off_task_configs :
+    name => cfg if contains(keys(local.one_off_task_definition_arns), name)
+  }
+
   # Step Function "run task" runners (db-migrations + one-off tasks).
   runnable_task_runners = merge(
     # Sirsi cluster db-migrations created via the for_each module.
@@ -98,14 +104,13 @@ locals {
         task_definition = module.ecs_migration_task_fts_postgres.task_definition_arn
       }
     },
-    # One-off tasks (invoked manually / optionally from automation).
+    # One-off tasks (run manually for now while not deployed to higher envs).
     {
-      for name, cfg in local.one_off_task_configs :
+      for name, cfg in local.one_off_task_configs_mapped :
       name => {
         cluster         = cfg.cluster == "sirsi-php" ? local.php_cluster_name : cfg.cluster == "fts" ? local.fts_cluster_name : local.main_cluster_name
-        task_definition = lookup(local.one_off_task_definition_arns, name, null)
+        task_definition = local.one_off_task_definition_arns[name]
       }
-      if lookup(local.one_off_task_definition_arns, name, null) != null
     }
   )
 
