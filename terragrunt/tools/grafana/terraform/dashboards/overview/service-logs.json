@@ -465,9 +465,14 @@
             "selected": false,
             "text": "Tenant",
             "value": "/ecs/tenant"
+          },
+          {
+            "selected": false,
+            "text": "FTS PDF Render Service",
+            "value": "/ecs/fts-pdf-render-service"
           }
         ],
-        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Outbox Processor Entity Verification : /ecs/outbox-processor-entity-verification, Outbox Processor Organisation : /ecs/outbox-processor-organisation, Person : /ecs/person, Scheduled Worker : /ecs/scheduled-worker, Tenant : /ecs/tenant",
+        "query": "Authority : /ecs/authority, AV Scanner App : /ecs/av-scanner-app, Data Sharing : /ecs/data-sharing, Entity Verification : /ecs/entity-verification, Forms : /ecs/forms, Organisation : /ecs/organisation, Organisation App : /ecs/organisation-app, Outbox Processor Entity Verification : /ecs/outbox-processor-entity-verification, Outbox Processor Organisation : /ecs/outbox-processor-organisation, Person : /ecs/person, Scheduled Worker : /ecs/scheduled-worker, Tenant : /ecs/tenant, FTS PDF Render Service : /ecs/fts-pdf-render-service",
         "type": "custom"
       },
       {
