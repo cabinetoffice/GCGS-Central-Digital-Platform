@@ -11,59 +11,22 @@ resource "aws_sfn_state_machine" "ecs_force_deploy" {
   })
 }
 
-resource "aws_sfn_state_machine" "ecs_run_migration" {
-  for_each = local.migration_configs_sirsi
-  name     = "${local.name_prefix}-run-${each.value.name}"
+# Runnable ECS tasks (db-migrations + one-off tasks) invoked via Step Functions.
+#
+# These state machines are intentionally named `cdp-sirsi-run-<taskname>` so automation can
+# `StartExecution` without needing Terraform output wiring.
+resource "aws_sfn_state_machine" "ecs_run_task" {
+  for_each = local.runnable_task_runners
+
+  name     = "${local.name_prefix}-run-${each.key}"
   role_arn = var.role_service_deployer_step_function_arn
   tags     = var.tags
 
   definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = local.main_cluster_name,
+    cluster         = each.value.cluster
     security_groups = var.ecs_sg_id
     subnet          = var.private_subnet_ids[0]
-    task            = each.value.name
-    task_definition = module.ecs_migration_tasks[each.key].task_definition_arn
-  })
-}
-
-resource "aws_sfn_state_machine" "ecs_run_migration_cfs" {
-  name     = "${local.name_prefix}-run-${var.service_configs.cfs_migrations.name}"
-  role_arn = var.role_service_deployer_step_function_arn
-  tags     = var.tags
-
-  definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = local.php_cluster_name
-    security_groups = var.ecs_sg_id
-    subnet          = var.private_subnet_ids[0]
-    task            = var.service_configs.cfs_migrations.name
-    task_definition = module.ecs_migration_task_cfs.task_definition_arn
-  })
-}
-
-resource "aws_sfn_state_machine" "ecs_run_migration_fts" {
-  name     = "${local.name_prefix}-run-${var.service_configs.fts_migrations.name}"
-  role_arn = var.role_service_deployer_step_function_arn
-  tags     = var.tags
-
-  definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = local.php_cluster_name
-    security_groups = var.ecs_sg_id
-    subnet          = var.private_subnet_ids[0]
-    task            = var.service_configs.fts_migrations.name
-    task_definition = module.ecs_migration_task_fts.task_definition_arn
-  })
-}
-
-resource "aws_sfn_state_machine" "ecs_run_migration_fts_postgres" {
-  name     = "${local.name_prefix}-run-${var.service_configs.fts_findtender_migrations.name}"
-  role_arn = var.role_service_deployer_step_function_arn
-  tags     = var.tags
-
-  definition = templatefile("${path.module}/templates/state-machine/run-task.json.tftpl", {
-    cluster         = local.fts_cluster_name
-    security_groups = var.ecs_sg_id
-    subnet          = var.private_subnet_ids[0]
-    task            = var.service_configs.fts_findtender_migrations.name
-    task_definition = module.ecs_migration_task_fts_postgres.task_definition_arn
+    task            = each.key
+    task_definition = each.value.task_definition
   })
 }

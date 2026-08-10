@@ -63,6 +63,55 @@ locals {
     config.name => config if config.type == "db-migration" && config.cluster == "sirsi"
   }
 
+  one_off_task_configs = {
+    for name, config in var.service_configs :
+    config.name => config if config.type == "one-off-task"
+  }
+
+  # Map one-off task names to their ECS task definition ARNs (used by Step Functions runners).
+  one_off_task_definition_arns = {
+    (var.service_configs.ocds_export_seeder.name) = module.ecs_task_fts_ocds_export_seeder.task_definition_arn
+  }
+
+  # Step Function "run task" runners (db-migrations + one-off tasks).
+  #
+  # We keep the SFN names stable as `cdp-sirsi-run-<taskname>` so existing automation (CodeBuild)
+  # can continue to invoke migration tasks without changes.
+  runnable_task_runners = merge(
+    # Sirsi cluster db-migrations created via the for_each module.
+    {
+      for name, cfg in local.migration_configs_sirsi :
+      name => {
+        cluster         = local.main_cluster_name
+        task_definition = module.ecs_migration_tasks[name].task_definition_arn
+      }
+    },
+    # Special-case db-migrations in other clusters.
+    {
+      (var.service_configs.cfs_migrations.name) = {
+        cluster         = local.php_cluster_name
+        task_definition = module.ecs_migration_task_cfs.task_definition_arn
+      }
+      (var.service_configs.fts_migrations.name) = {
+        cluster         = local.php_cluster_name
+        task_definition = module.ecs_migration_task_fts.task_definition_arn
+      }
+      (var.service_configs.fts_findtender_migrations.name) = {
+        cluster         = local.fts_cluster_name
+        task_definition = module.ecs_migration_task_fts_postgres.task_definition_arn
+      }
+    },
+    # One-off tasks (invoked manually / optionally from automation).
+    {
+      for name, cfg in local.one_off_task_configs :
+      name => {
+        cluster         = cfg.cluster == "sirsi-php" ? local.php_cluster_name : cfg.cluster == "fts" ? local.fts_cluster_name : local.main_cluster_name
+        task_definition = lookup(local.one_off_task_definition_arns, name, null)
+      }
+      if lookup(local.one_off_task_definition_arns, name, null) != null
+    }
+  )
+
   send_notify_emails_enabled_accounts = ["development", "staging", "integration", "production"]
   send_notify_emails                  = contains(local.send_notify_emails_enabled_accounts, var.environment)
 
@@ -71,7 +120,7 @@ locals {
     config.name => {
       for key, value in config :
       key => value if value != null
-    } if config.type != "db-migration"
+    } if contains(["service", "web-service"], config.type)
   }
 
   internal_service_urls = {
@@ -89,7 +138,7 @@ locals {
     config.name => {
       for key, value in config :
       key => value if value != null
-    } if config.type != "db-migration" && config.cluster == "sirsi-php"
+    } if contains(["service", "web-service"], config.type) && config.cluster == "sirsi-php"
   }
 
   service_configs_fts = {
@@ -97,7 +146,7 @@ locals {
     config.name => {
       for key, value in config :
       key => value if value != null
-    } if config.type != "db-migration" && config.cluster == "fts"
+    } if contains(["service", "web-service"], config.type) && config.cluster == "fts"
   }
 
   service_ports = {

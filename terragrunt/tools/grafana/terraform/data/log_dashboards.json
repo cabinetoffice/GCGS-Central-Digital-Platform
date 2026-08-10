@@ -141,6 +141,14 @@
     "title": "FTS Notice Render Worker",
     "type": "single"
   },
+  "fts-ocds-export-seeder": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-ocds-export-seeder",
+    "title": "FTS OCDS Export Seeder",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
   "fts-ocds-exporter": {
     "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
     "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
