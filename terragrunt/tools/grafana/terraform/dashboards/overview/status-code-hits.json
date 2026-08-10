@@ -1227,6 +1227,16 @@
           },
           {
             "selected": false,
+            "text": "cfs",
+            "value": "cfs"
+          },
+          {
+            "selected": false,
+            "text": "cfs-scheduler",
+            "value": "cfs-scheduler"
+          },
+          {
+            "selected": false,
             "text": "data-sharing",
             "value": "data-sharing"
           },
@@ -1242,6 +1252,21 @@
           },
           {
             "selected": false,
+            "text": "fts",
+            "value": "fts"
+          },
+          {
+            "selected": false,
+            "text": "fts-scheduler",
+            "value": "fts-scheduler"
+          },
+          {
+            "selected": false,
+            "text": "fts-pdf-render-service",
+            "value": "fts-pdf-render-service"
+          },
+          {
+            "selected": false,
             "text": "organisation",
             "value": "organisation"
           },
@@ -1249,11 +1274,6 @@
             "selected": false,
             "text": "organisation-app",
             "value": "organisation-app"
-          },
-          {
-            "selected": false,
-            "text": "outbox-processor-entity-verification",
-            "value": "outbox-processor-entity-verification"
           },
           {
             "selected": false,
@@ -1281,7 +1301,7 @@
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, fts-pdf-render-service, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {

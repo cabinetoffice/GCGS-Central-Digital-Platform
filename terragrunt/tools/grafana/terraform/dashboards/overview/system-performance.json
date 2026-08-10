@@ -191,6 +191,11 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
               "name": "/ecs/scheduled-worker"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/fts-pdf-render-service:*",
+              "name": "/ecs/fts-pdf-render-service"
             }
           ],
           "matchExact": true,
@@ -698,6 +703,11 @@
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
               "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/scheduled-worker:*",
               "name": "/ecs/scheduled-worker"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:/ecs/fts-pdf-render-service:*",
+              "name": "/ecs/fts-pdf-render-service"
             }
           ],
           "matchExact": true,
