@@ -32,17 +32,26 @@ phases:
           echo "Deployment successful, triggering Step Functions for ECS migration tasks...";
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-organisation-information-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-entity-verification-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-cfs-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
           STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-findtender-migrations";
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
-          echo "Step Function ${STEP_FUNCTION_NAME} triggered successfully.";
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
+
+          # Run the OCDS export seeder after deployment by default. May be disabled by setting RUN_OCDS_EXPORT_SEEDER=false.
+          if [ "${RUN_OCDS_EXPORT_SEEDER:-true}" = "false" ]; then
+            echo "Skipping OCDS export seeder (RUN_OCDS_EXPORT_SEEDER=false).";
+          else
+            STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${AWS_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-ocds-export-seeder";
+            aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
+            echo "Started Step Function: ${STEP_FUNCTION_ARN}";
+          fi
          fi

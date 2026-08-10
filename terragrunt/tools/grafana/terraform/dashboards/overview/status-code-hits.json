@@ -1297,11 +1297,16 @@
           },
           {
             "selected": false,
+            "text": "fts-ocds-exporter",
+            "value": "fts-ocds-exporter"
+          },
+          {
+            "selected": false,
             "text": "tenant",
             "value": "tenant"
           }
         ],
-        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, fts-pdf-render-service, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
+        "query": "authority, av-scanner-app, cfs, cfs-scheduler, data-sharing, entity-verification, forms, fts, fts-scheduler, fts-pdf-render-service, fts-ocds-exporter, organisation, organisation-app, outbox-processor-entity-verification, outbox-processor-entity-verification, outbox-processor-organisation, person, scheduled-worker, tenant",
         "type": "custom"
       },
       {
