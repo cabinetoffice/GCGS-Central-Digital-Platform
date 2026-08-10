@@ -1297,11 +1297,6 @@
           },
           {
             "selected": false,
-            "text": "fts-pdf-render-service",
-            "value": "fts-pdf-render-service"
-          },
-          {
-            "selected": false,
             "text": "fts-ocds-exporter",
             "value": "fts-ocds-exporter"
           },

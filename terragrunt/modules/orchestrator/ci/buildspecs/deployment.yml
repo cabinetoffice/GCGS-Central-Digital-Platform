@@ -46,8 +46,7 @@ phases:
           aws stepfunctions start-execution --state-machine-arn ${STEP_FUNCTION_ARN};
           echo "Started Step Function: ${STEP_FUNCTION_ARN}";
 
-          # Run the OCDS export seeder after deployment by default.
-          # Set RUN_OCDS_EXPORT_SEEDER=false to skip (e.g. once initial backfill is done).
+          # Run the OCDS export seeder after deployment by default. May be disabled by setting RUN_OCDS_EXPORT_SEEDER=false.
           if [ "${RUN_OCDS_EXPORT_SEEDER:-true}" = "false" ]; then
             echo "Skipping OCDS export seeder (RUN_OCDS_EXPORT_SEEDER=false).";
           else

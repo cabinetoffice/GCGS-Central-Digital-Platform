@@ -12,9 +12,6 @@ resource "aws_sfn_state_machine" "ecs_force_deploy" {
 }
 
 # Runnable ECS tasks (db-migrations + one-off tasks) invoked via Step Functions.
-#
-# These state machines are intentionally named `cdp-sirsi-run-<taskname>` so automation can
-# `StartExecution` without needing Terraform output wiring.
 resource "aws_sfn_state_machine" "ecs_run_task" {
   for_each = local.runnable_task_runners
 

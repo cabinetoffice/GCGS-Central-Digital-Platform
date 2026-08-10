@@ -74,9 +74,6 @@ locals {
   }
 
   # Step Function "run task" runners (db-migrations + one-off tasks).
-  #
-  # We keep the SFN names stable as `cdp-sirsi-run-<taskname>` so existing automation (CodeBuild)
-  # can continue to invoke migration tasks without changes.
   runnable_task_runners = merge(
     # Sirsi cluster db-migrations created via the for_each module.
     {
