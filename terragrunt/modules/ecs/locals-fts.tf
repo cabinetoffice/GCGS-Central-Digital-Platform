@@ -212,17 +212,18 @@ locals {
   }
 
   fts_scheduler_service_parameters = {
-    service_port    = local.service_ports_by_service[var.service_configs.fts_scheduler.name]
-    cpu             = var.service_configs.fts_scheduler.cpu
-    image           = local.ecr_urls[var.service_configs.fts_scheduler.name]
-    lg_name         = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
-    lg_prefix       = "app"
-    lg_region       = data.aws_region.current.region
-    memory          = var.service_configs.fts_scheduler.memory
-    name            = var.service_configs.fts_scheduler.name
-    public_domain   = var.public_domain
-    service_version = local.service_version_fts
-    vpc_cidr        = var.vpc_cider
+    service_port          = local.service_ports_by_service[var.service_configs.fts_scheduler.name]
+    cpu                   = var.service_configs.fts_scheduler.cpu
+    image                 = local.ecr_urls[var.service_configs.fts_scheduler.name]
+    lg_name               = aws_cloudwatch_log_group.tasks[var.service_configs.fts_scheduler.name].name
+    lg_prefix             = "app"
+    lg_region             = data.aws_region.current.region
+    memory                = var.service_configs.fts_scheduler.memory
+    name                  = var.service_configs.fts_scheduler.name
+    ocds_export_queue_url = var.queue_ocds_export_url
+    public_domain         = var.public_domain
+    service_version       = local.service_version_fts
+    vpc_cidr              = var.vpc_cider
   }
 
   fts_migrations_service_parameters = {
