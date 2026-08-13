@@ -38,7 +38,6 @@ locals {
     http_basic_auth_user                      = "${local.fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"
     letsencrypt_key_authorization             = "${local.fts_secrets_arn}:LETSENCRYPT_KEY_AUTHORIZATION::"
     letsencrypt_token                         = "${local.fts_secrets_arn}:LETSENCRYPT_TOKEN::"
-    notice_publish_dotnet_enabled             = "${local.fts_secrets_arn}:NOTICE_PUBLISH_DOTNET_ENABLED::"
     notify_api_key                            = "${local.fts_secrets_arn}:NOTIFY_API_KEY::"
     notify_template_id_general                = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_GENERAL::"
     notify_template_id_saved_searches         = "${local.fts_secrets_arn}:NOTIFY_TEMPLATE_ID_SAVED_SEARCHES::"
@@ -85,6 +84,7 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
+    notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url

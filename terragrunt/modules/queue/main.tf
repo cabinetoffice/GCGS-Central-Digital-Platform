@@ -34,7 +34,6 @@ module "fts_notice_publish_queue" {
 module "fts_notice_publish_dotnet_queue" {
   source = "../sqs"
 
-  max_receive_count          = 3
   message_retention_seconds  = 1209600 # 14 days
   name                       = local.name_fts_notice_publish_dotnet
   role_consumer_arn          = [var.role_ecs_task_arn]
