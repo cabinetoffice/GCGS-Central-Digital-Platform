@@ -287,6 +287,16 @@ variable "queue_fts_notice_publish_arn" {
   type        = string
 }
 
+variable "queue_fts_notice_publish_dotnet_arn" {
+  description = "ARN of the FTS notice publish dotnet SQS queue"
+  type        = string
+}
+
+variable "queue_fts_notice_publish_dotnet_url" {
+  description = "URL of the FTS notice publish dotnet SQS queue"
+  type        = string
+}
+
 variable "queue_fts_notice_publish_url" {
   description = "URL of the FTS notice publish SQS queue"
   type        = string

@@ -18,6 +18,16 @@ output "entity_verification_queue_url" {
   value       = module.entity_verification_queue.queue_url
 }
 
+output "fts_notice_publish_dotnet_queue_arn" {
+  description = "ARN of the fts-notice-publish-dotnet SQS queue"
+  value       = module.fts_notice_publish_dotnet_queue.queue_arn
+}
+
+output "fts_notice_publish_dotnet_queue_url" {
+  description = "URL of the fts-notice-publish-dotnet SQS queue"
+  value       = module.fts_notice_publish_dotnet_queue.queue_url
+}
+
 output "fts_notice_publish_queue_arn" {
   description = "ARN of the fts-notice-publish SQS queue"
   value       = module.fts_notice_publish_queue.queue_arn
@@ -73,6 +83,7 @@ output "queue_names" {
     module.av_scanner_queue.queue_names,
     module.entity_verification_queue.queue_names,
     module.fts_notice_publish_queue.queue_names,
+    module.fts_notice_publish_dotnet_queue.queue_names,
     module.fts_notice_render_queue.queue_names,
     module.organisation_queue.queue_names,
     module.user_management_queue.queue_names,

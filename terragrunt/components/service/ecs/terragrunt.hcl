@@ -144,6 +144,8 @@ dependency service_queue {
     av_scanner_queue_url            = "mock"
     entity_verification_queue_arn   = "mock"
     entity_verification_queue_url   = "mock"
+    fts_notice_publish_dotnet_queue_arn = "mock"
+    fts_notice_publish_dotnet_queue_url = "mock"
     fts_notice_publish_queue_arn    = "mock"
     fts_notice_publish_queue_url    = "mock"
     fts_notice_render_queue_arn     = "mock"
@@ -272,6 +274,8 @@ inputs = {
   queue_entity_verification_arn   = dependency.service_queue.outputs.entity_verification_queue_arn
   queue_entity_verification_url   = dependency.service_queue.outputs.entity_verification_queue_url
   queue_fts_notice_publish_arn    = dependency.service_queue.outputs.fts_notice_publish_queue_arn
+  queue_fts_notice_publish_dotnet_arn = dependency.service_queue.outputs.fts_notice_publish_dotnet_queue_arn
+  queue_fts_notice_publish_dotnet_url = dependency.service_queue.outputs.fts_notice_publish_dotnet_queue_url
   queue_fts_notice_publish_url    = dependency.service_queue.outputs.fts_notice_publish_queue_url
   queue_fts_notice_render_arn     = dependency.service_queue.outputs.fts_notice_render_queue_arn
   queue_fts_notice_render_dlq_url = dependency.service_queue.outputs.fts_notice_render_queue_dlq_url

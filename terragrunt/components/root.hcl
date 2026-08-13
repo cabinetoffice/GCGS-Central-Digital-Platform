@@ -296,6 +296,7 @@ locals {
     fts_search_indexer                   = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_user_api                         = { desired_count = 1 }
     fts_notice_publish_worker            = { desired_count = local.environment == "production" ? 5 : 3, cpu = 4096, memory = local.environment == "production" ? 16384 : 8192 }
+    fts_notice_publish_worker_dotnet     = { desired_count = 1, cpu = 4096, memory = 8192 }
     fts_notice_render_worker             = { desired_count = local.environment == "production" ? 2 : 1, cpu = 4096, memory = 8192 }
     fts_pdf_render_service               = { desired_count = local.environment == "production" ? 2 : 1, cpu = 4096, memory = 8192 }
     ocds_export_seeder                   = { desired_count = 0, cpu = 4096, memory = 8192 }
@@ -357,6 +358,7 @@ locals {
     fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
     fts_findtender_migrations            = { cluster = "fts",       type = "db-migration", name = "fts-findtender-migrations" }
     fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
+    fts_notice_publish_worker_dotnet     = { cluster = "fts",       type = "service",      name = "fts-notice-publish-worker-dotnet" }
     fts_notice_render_worker             = { cluster = "sirsi-php", type = "service",      name = "fts-notice-render-worker" }
     fts_pdf_render_service               = { cluster = "sirsi-php", type = "service",      name = "fts-pdf-render-service", listener_priority = 313 }
     fts_job_scheduler                    = { cluster = "sirsi-php", type = "service",      name = "fts-job-scheduler" }
