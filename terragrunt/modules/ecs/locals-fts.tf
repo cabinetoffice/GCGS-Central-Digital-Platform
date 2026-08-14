@@ -92,6 +92,11 @@ locals {
     notice_render_cache_debug_marker      = true
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
+    # Form codes with a .NET build available. Replaces the four uk*_notices_rebuild_enabled
+    # flags below, which FC-1990 removes once dev and staging run FTS with FC-1959.
+    notices_rebuild_enabled               = contains(["development", "staging"], var.environment) ? "UK1,UK2,UK3,UK6" : ""
+    # Form codes that go straight to the .NET flow when created. Empty in every environment.
+    notices_dotnet_default                = ""
     render_cache_purge_on_migrate         = contains(["development", "staging", "integration"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
