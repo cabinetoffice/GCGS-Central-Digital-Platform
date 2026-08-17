@@ -335,7 +335,7 @@ locals {
     {
       notice_render_dlq_url             = var.queue_fts_notice_render_dlq_url
       notice_render_queue_url           = var.queue_fts_notice_render_url
-      notice_render_pdf_enabled         = var.environment != "production"
+      notice_render_pdf_enabled         = true
       notice_render_idle_threshold      = 1
       notice_render_worker_wait_seconds = 10
     }
