@@ -84,6 +84,8 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
+    notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
+    notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
     notice_render_queue_url               = var.queue_fts_notice_render_url
@@ -334,6 +336,25 @@ locals {
       notice_render_dlq_url     = var.queue_fts_notice_render_dlq_url
       notice_render_queue_url   = var.queue_fts_notice_render_url
       notice_render_pdf_enabled = var.environment != "production"
+    }
+  )
+
+  fts_notice_publish_worker_dotnet_container_parameters = merge(
+    local.fts_dotnet_common,
+    {
+      aws_region                      = data.aws_region.current.region
+      db_address                      = var.db_fts_cluster_address
+      db_name                         = var.db_fts_cluster_name
+      db_password                     = local.db_fts_password
+      db_port                         = 3306
+      db_username                     = local.db_fts_username
+      environment                     = upper(var.environment)
+      fts_sirsi_api_key               = "${local.fts_secrets_arn}:FTS_SIRSI_API_KEY::"
+      notice_publish_dotnet_queue_url = var.queue_fts_notice_publish_dotnet_url
+      notice_publish_queue_url        = var.queue_fts_notice_publish_url
+      notice_render_queue_url         = var.queue_fts_notice_render_url
+      sirsi_organisation_api_baseurl  = local.use_internal_service_urls ? local.internal_service_urls["organisation"] : local.public_service_urls["organisation"]
+      site_url                        = "https://${local.fts_site_domains[var.environment]}"
     }
   )
 

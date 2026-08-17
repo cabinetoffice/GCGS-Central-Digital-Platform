@@ -1,0 +1,41 @@
+[
+  {
+    "name" : "${name}",
+    "image" : "${image}:${service_version}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [],
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "${lg_prefix}"
+      }
+    },
+    "environment": [
+      { "name" : "AWS_REGION", "value" : "${aws_region}"},
+      { "name" : "DOTNET_ENVIRONMENT", "value" : "${aspcore_environment}"},
+      { "name" : "ENVIRONMENT", "value" : "${environment}"},
+      { "name" : "FtsDatabase__Database", "value" : "${db_name}"},
+      { "name" : "FtsDatabase__Port", "value" : "${db_port}"},
+      { "name" : "FtsDatabase__Server", "value" : "${db_address}"},
+      { "name" : "NoticePublishWorker__PublishQueueUrl", "value" : "${notice_publish_queue_url}"},
+      { "name" : "NoticePublishWorker__QueueUrl", "value" : "${notice_publish_dotnet_queue_url}"},
+      { "name" : "NoticePublishWorker__RenderQueueUrl", "value" : "${notice_render_queue_url}"},
+      { "name" : "NoticePublishWorker__SiteUrl", "value" : "${site_url}"},
+      { "name" : "SaxonValidation__JarPath", "value" : "/saxon/saxon9he.jar"},
+      { "name" : "SaxonValidation__SchemaRoot", "value" : "/schemas"},
+      { "name" : "Sirsi__OrganisationApiBaseUrl", "value" : "${sirsi_organisation_api_baseurl}"},
+      { "name" : "XsdValidation__SchemaRoot", "value" : "/schemas"}
+    ],
+    "secrets": [
+      { "name" : "FtsDatabase__Password", "valueFrom" : "${db_password}"},
+      { "name" : "FtsDatabase__Username", "valueFrom" : "${db_username}"},
+      { "name" : "Sirsi__ApiKey", "valueFrom" : "${fts_sirsi_api_key}"}
+    ],
+    "volumesFrom": [],
+    "mountPoints": [],
+    "essential": true
+  }
+]
