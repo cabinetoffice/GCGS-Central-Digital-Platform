@@ -135,6 +135,15 @@
     "title": "FTS Notice Publish Worker",
     "type": "single"
   },
+
+  "fts-notice-publish-worker-dotnet": {
+    "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-notice-publish-worker-dotnet",
+    "title": "FTS Notice Publish Worker (.NET)",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
+  },
   "fts-notice-render-worker": {
     "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\" and @message not like \"GET /javascripts/\" and @message not like \"GET /libraries/\" and @message not like \"GET /stylesheets/\" and @message not like \"GET /fonts/\" \n| sort @timestamp desc",
     "log_group_name": "/ecs/fts-notice-render-worker",
