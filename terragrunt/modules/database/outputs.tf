@@ -66,6 +66,14 @@ output "fts_cluster_name" {
   value = module.cluster_fts.db_name
 }
 
+output "fts_proxy_endpoint" {
+  value = aws_db_proxy.fts.endpoint
+}
+
+output "cfs_proxy_endpoint" {
+  value = aws_db_proxy.cfs.endpoint
+}
+
 output "import_instance_private_key_pem" {
   sensitive = true
   value     = tls_private_key.import_key.private_key_pem

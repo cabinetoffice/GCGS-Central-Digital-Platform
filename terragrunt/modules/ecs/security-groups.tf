@@ -146,6 +146,16 @@ resource "aws_security_group_rule" "mysql_from_ecs_service" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "mysql_from_db_mysql_sg" {
+  description              = "From resources in the MySQL DB SG (e.g. RDS Proxy)"
+  from_port                = 3306
+  protocol                 = "TCP"
+  security_group_id        = var.db_mysql_sg_id
+  source_security_group_id = var.db_mysql_sg_id
+  to_port                  = 3306
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "ecs_service_to_mysql" {
   description              = "To RDS MySQL"
   from_port                = 3306
