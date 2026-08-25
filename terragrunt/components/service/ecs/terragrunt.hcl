@@ -7,8 +7,9 @@ include {
 }
 
 locals {
-  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
-  service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
+  global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  rds_proxy_enabled = false # contains(["development"], local.global_vars.locals.environment)
+  service_vars      = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
     local.global_vars.inputs.tags,
@@ -243,7 +244,7 @@ inputs = {
   user_pool_pcr2015_client_id          = dependency.service_auth.outputs.pcr2015_user_pool_client_id
   user_pool_pcr2015_domain             = dependency.service_auth.outputs.pcr2015_user_pool_domain
 
-  db_cfs_cluster_address                          = contains(["development"], local.global_vars.locals.environment) ? dependency.service_database.outputs.cfs_proxy_endpoint : dependency.service_database.outputs.cfs_cluster_address
+  db_cfs_cluster_address                          = local.rds_proxy_enabled ? dependency.service_database.outputs.cfs_proxy_endpoint : dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn                  = dependency.service_database.outputs.cfs_cluster_credentials_arn
   db_cfs_cluster_credentials_kms_key_id           = dependency.service_database.outputs.cfs_cluster_credentials_kms_key_id
   db_cfs_cluster_name                             = dependency.service_database.outputs.cfs_cluster_name
@@ -251,7 +252,7 @@ inputs = {
   db_ev_cluster_credentials_arn                   = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id            = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
   db_ev_cluster_name                              = dependency.service_database.outputs.entity_verification_cluster_name
-  db_fts_cluster_address                          = contains(["development"], local.global_vars.locals.environment) ? dependency.service_database.outputs.fts_proxy_endpoint : dependency.service_database.outputs.fts_cluster_address
+  db_fts_cluster_address                          = local.rds_proxy_enabled ? dependency.service_database.outputs.fts_proxy_endpoint : dependency.service_database.outputs.fts_cluster_address
   db_fts_cluster_credentials_arn                  = dependency.service_database.outputs.fts_cluster_credentials_arn
   db_fts_cluster_credentials_kms_key_id           = dependency.service_database.outputs.fts_cluster_credentials_kms_key_id
   db_fts_cluster_name                             = dependency.service_database.outputs.fts_cluster_name
