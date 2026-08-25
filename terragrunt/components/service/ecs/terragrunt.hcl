@@ -243,7 +243,7 @@ inputs = {
   user_pool_pcr2015_client_id          = dependency.service_auth.outputs.pcr2015_user_pool_client_id
   user_pool_pcr2015_domain             = dependency.service_auth.outputs.pcr2015_user_pool_domain
 
-  db_cfs_cluster_address                          = contains(["development", "staging"], local.global_vars.locals.environment) ? dependency.service_database.outputs.cfs_proxy_endpoint : dependency.service_database.outputs.cfs_cluster_address
+  db_cfs_cluster_address                          = contains(["development"], local.global_vars.locals.environment) ? dependency.service_database.outputs.cfs_proxy_endpoint : dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn                  = dependency.service_database.outputs.cfs_cluster_credentials_arn
   db_cfs_cluster_credentials_kms_key_id           = dependency.service_database.outputs.cfs_cluster_credentials_kms_key_id
   db_cfs_cluster_name                             = dependency.service_database.outputs.cfs_cluster_name
@@ -251,7 +251,7 @@ inputs = {
   db_ev_cluster_credentials_arn                   = dependency.service_database.outputs.entity_verification_cluster_credentials_arn
   db_ev_cluster_credentials_kms_key_id            = dependency.service_database.outputs.entity_verification_cluster_credentials_kms_key_id
   db_ev_cluster_name                              = dependency.service_database.outputs.entity_verification_cluster_name
-  db_fts_cluster_address                          = contains(["development", "staging"], local.global_vars.locals.environment) ? dependency.service_database.outputs.fts_proxy_endpoint : dependency.service_database.outputs.fts_cluster_address
+  db_fts_cluster_address                          = contains(["development"], local.global_vars.locals.environment) ? dependency.service_database.outputs.fts_proxy_endpoint : dependency.service_database.outputs.fts_cluster_address
   db_fts_cluster_credentials_arn                  = dependency.service_database.outputs.fts_cluster_credentials_arn
   db_fts_cluster_credentials_kms_key_id           = dependency.service_database.outputs.fts_cluster_credentials_kms_key_id
   db_fts_cluster_name                             = dependency.service_database.outputs.fts_cluster_name
