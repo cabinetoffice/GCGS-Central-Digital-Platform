@@ -8,7 +8,7 @@ include {
 
 locals {
   global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
-  rds_proxy_enabled = local.global_vars.locals.environment == "development"
+  rds_proxy_enabled = false # local.global_vars.locals.environment == "development"
   service_vars      = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
