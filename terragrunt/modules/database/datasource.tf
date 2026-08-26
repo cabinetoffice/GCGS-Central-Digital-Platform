@@ -61,3 +61,19 @@ data "aws_iam_policy_document" "db_import_handover_s3" {
     resources = [module.sql_dump_upload_bucket.key_arn]
   }
 }
+
+data "aws_secretsmanager_secret" "fts_app_secrets" {
+  name = "${local.name_prefix}-fts/secrets"
+}
+
+data "aws_secretsmanager_secret_version" "fts_app_secrets" {
+  secret_id = data.aws_secretsmanager_secret.fts_app_secrets.id
+}
+
+data "aws_secretsmanager_secret" "cfs_app_secrets" {
+  name = "${local.name_prefix}-cfs/secrets"
+}
+
+data "aws_secretsmanager_secret_version" "cfs_app_secrets" {
+  secret_id = data.aws_secretsmanager_secret.cfs_app_secrets.id
+}
