@@ -38,6 +38,7 @@ module "ecs_service_fts_healthcheck" {
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   listener_priority      = var.service_configs.fts_healthcheck.listener_priority
+  tg_suffix              = "v2"
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids

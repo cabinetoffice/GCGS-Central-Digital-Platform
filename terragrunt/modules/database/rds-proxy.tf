@@ -5,26 +5,29 @@ resource "aws_db_proxy" "fts" {
   vpc_subnet_ids         = var.private_subnet_ids
   vpc_security_group_ids = [var.db_mysql_sg_id]
   require_tls            = false
-  debug_logging          = var.environment == "development"
+  debug_logging          = false
 
   depends_on = [
     aws_iam_role_policy.rds_proxy,
+    aws_cloudwatch_log_group.fts_rds_proxy,
     aws_secretsmanager_secret_version.fts_proxy_auth_user
   ]
 
   auth {
-    auth_scheme = "SECRETS"
-    secret_arn  = module.cluster_fts.db_credentials_arn
-    iam_auth    = "DISABLED"
+    auth_scheme               = "SECRETS"
+    secret_arn                = module.cluster_fts.db_credentials_arn
+    iam_auth                  = "DISABLED"
+    client_password_auth_type = "MYSQL_NATIVE_PASSWORD"
   }
 
   # PHP FTS app/worker stack uses multiple DB users (registrar/guest/migrator).
   dynamic "auth" {
     for_each = toset(local.fts_proxy_auth_secret_arns)
     content {
-      auth_scheme = "SECRETS"
-      secret_arn  = auth.value
-      iam_auth    = "DISABLED"
+      auth_scheme               = "SECRETS"
+      secret_arn                = auth.value
+      iam_auth                  = "DISABLED"
+      client_password_auth_type = "MYSQL_NATIVE_PASSWORD"
     }
   }
 
@@ -55,25 +58,28 @@ resource "aws_db_proxy" "cfs" {
   vpc_subnet_ids         = var.private_subnet_ids
   vpc_security_group_ids = [var.db_mysql_sg_id]
   require_tls            = false
-  debug_logging          = var.environment == "development"
+  debug_logging          = false
 
   depends_on = [
     aws_iam_role_policy.rds_proxy,
+    aws_cloudwatch_log_group.cfs_rds_proxy,
     aws_secretsmanager_secret_version.cfs_proxy_auth_user
   ]
 
   auth {
-    auth_scheme = "SECRETS"
-    secret_arn  = module.cluster_cfs.db_credentials_arn
-    iam_auth    = "DISABLED"
+    auth_scheme               = "SECRETS"
+    secret_arn                = module.cluster_cfs.db_credentials_arn
+    iam_auth                  = "DISABLED"
+    client_password_auth_type = "MYSQL_NATIVE_PASSWORD"
   }
 
   dynamic "auth" {
     for_each = toset(local.cfs_proxy_auth_secret_arns)
     content {
-      auth_scheme = "SECRETS"
-      secret_arn  = auth.value
-      iam_auth    = "DISABLED"
+      auth_scheme               = "SECRETS"
+      secret_arn                = auth.value
+      iam_auth                  = "DISABLED"
+      client_password_auth_type = "MYSQL_NATIVE_PASSWORD"
     }
   }
 

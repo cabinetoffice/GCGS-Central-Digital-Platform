@@ -77,3 +77,43 @@ data "aws_secretsmanager_secret" "cfs_app_secrets" {
 data "aws_secretsmanager_secret_version" "cfs_app_secrets" {
   secret_id = data.aws_secretsmanager_secret.cfs_app_secrets.id
 }
+
+data "aws_iam_policy_document" "rds_proxy" {
+  statement {
+    sid    = "ReadDbSecrets"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+    ]
+    resources = concat(
+      [
+        module.cluster_fts.db_credentials_arn,
+        module.cluster_cfs.db_credentials_arn,
+        "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-fts-rds-proxy-*-credentials*",
+        "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-cfs-rds-proxy-*-credentials*",
+      ],
+    )
+  }
+
+  statement {
+    sid    = "DecryptSecretKms"
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+    ]
+    resources = ["*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "kms:CallerAccount"
+      values   = [data.aws_caller_identity.current.account_id]
+    }
+  }
+}
