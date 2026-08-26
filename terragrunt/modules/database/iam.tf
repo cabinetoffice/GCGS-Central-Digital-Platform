@@ -43,7 +43,9 @@ resource "aws_iam_role_policy" "rds_proxy" {
         ]
         Resource = [
           module.cluster_fts.db_credentials_arn,
-          module.cluster_cfs.db_credentials_arn
+          module.cluster_cfs.db_credentials_arn,
+          "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-fts-rds-proxy-*-credentials*",
+          "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-cfs-rds-proxy-*-credentials*",
         ]
       },
       {

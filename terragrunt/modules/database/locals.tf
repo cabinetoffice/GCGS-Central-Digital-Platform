@@ -62,4 +62,42 @@ locals {
 
   fts_instance_count = contains(["development", "integration"], var.environment) ? 1 : 2
   cfs_instance_count = local.fts_instance_count
+
+  fts_run_tokens = jsondecode(data.aws_secretsmanager_secret_version.fts_app_secrets.secret_string)
+  cfs_run_tokens = jsondecode(data.aws_secretsmanager_secret_version.cfs_app_secrets.secret_string)
+
+  fts_proxy_auth_users = {
+    registrar = {
+      username = "${module.cluster_fts.db_name}_registrar"
+      password = local.fts_run_tokens.RUN_REGISTRAR_TOKEN
+    }
+    guest = {
+      username = "${module.cluster_fts.db_name}_guest"
+      password = local.fts_run_tokens.RUN_GUEST_TOKEN
+    }
+    migrator = {
+      username = "${module.cluster_fts.db_name}_migrator"
+      password = local.fts_run_tokens.RUN_MIGRATOR_TOKEN
+    }
+  }
+
+  cfs_proxy_auth_users = {
+    registrar = {
+      username = "${module.cluster_cfs.db_name}_registrar"
+      password = local.cfs_run_tokens.RUN_REGISTRAR_TOKEN
+    }
+    guest = {
+      username = "${module.cluster_cfs.db_name}_guest"
+      password = local.cfs_run_tokens.RUN_GUEST_TOKEN
+    }
+    migrator = {
+      username = "${module.cluster_cfs.db_name}_migrator"
+      password = local.cfs_run_tokens.RUN_MIGRATOR_TOKEN
+    }
+  }
+
+  fts_proxy_auth_secret_arns = [for s in aws_secretsmanager_secret.fts_proxy_auth_user : s.arn]
+  cfs_proxy_auth_secret_arns = [for s in aws_secretsmanager_secret.cfs_proxy_auth_user : s.arn]
+
+  rds_proxy_log_retention_in_days = var.environment == "production" ? 90 : 30
 }

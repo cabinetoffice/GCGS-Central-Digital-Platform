@@ -1,10 +1,16 @@
 resource "aws_db_proxy" "fts" {
-  name                   = "${local.name_prefix}-fts-proxy"
+  name                   = "${local.name_prefix}-fts"
   engine_family          = "MYSQL"
   role_arn               = aws_iam_role.rds_proxy.arn
   vpc_subnet_ids         = var.private_subnet_ids
   vpc_security_group_ids = [var.db_mysql_sg_id]
-  require_tls            = true
+  require_tls            = false
+  debug_logging          = var.environment == "development"
+
+  depends_on = [
+    aws_iam_role_policy.rds_proxy,
+    aws_secretsmanager_secret_version.fts_proxy_auth_user
+  ]
 
   auth {
     auth_scheme = "SECRETS"
@@ -12,7 +18,17 @@ resource "aws_db_proxy" "fts" {
     iam_auth    = "DISABLED"
   }
 
-  tags = merge(var.tags, { Name = "${local.name_prefix}-fts-proxy" })
+  # PHP FTS app/worker stack uses multiple DB users (registrar/guest/migrator).
+  dynamic "auth" {
+    for_each = toset(local.fts_proxy_auth_secret_arns)
+    content {
+      auth_scheme = "SECRETS"
+      secret_arn  = auth.value
+      iam_auth    = "DISABLED"
+    }
+  }
+
+  tags = merge(var.tags, { Name = "${local.name_prefix}-fts" })
 }
 
 resource "aws_db_proxy_default_target_group" "fts" {
@@ -33,12 +49,18 @@ resource "aws_db_proxy_target" "fts" {
 }
 
 resource "aws_db_proxy" "cfs" {
-  name                   = "${local.name_prefix}-cfs-proxy"
+  name                   = "${local.name_prefix}-cfs"
   engine_family          = "MYSQL"
   role_arn               = aws_iam_role.rds_proxy.arn
   vpc_subnet_ids         = var.private_subnet_ids
   vpc_security_group_ids = [var.db_mysql_sg_id]
-  require_tls            = true
+  require_tls            = false
+  debug_logging          = var.environment == "development"
+
+  depends_on = [
+    aws_iam_role_policy.rds_proxy,
+    aws_secretsmanager_secret_version.cfs_proxy_auth_user
+  ]
 
   auth {
     auth_scheme = "SECRETS"
@@ -46,7 +68,16 @@ resource "aws_db_proxy" "cfs" {
     iam_auth    = "DISABLED"
   }
 
-  tags = merge(var.tags, { Name = "${local.name_prefix}-cfs-proxy" })
+  dynamic "auth" {
+    for_each = toset(local.cfs_proxy_auth_secret_arns)
+    content {
+      auth_scheme = "SECRETS"
+      secret_arn  = auth.value
+      iam_auth    = "DISABLED"
+    }
+  }
+
+  tags = merge(var.tags, { Name = "${local.name_prefix}-cfs" })
 }
 
 resource "aws_db_proxy_default_target_group" "cfs" {
