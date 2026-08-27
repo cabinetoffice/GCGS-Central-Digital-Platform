@@ -43,9 +43,21 @@ variable "commercial_tools_session_timeout" {
   default     = 30
 }
 
+variable "use_rds_proxy" {
+  description = "When true, use the RDS Proxy endpoints (if provided) instead of direct RDS cluster endpoints"
+  type        = bool
+  default     = false
+}
+
 variable "db_cfs_cluster_address" {
   description = "CFS DB address"
   type        = string
+}
+
+variable "db_cfs_proxy_endpoint" {
+  description = "CFS RDS Proxy endpoint (if provisioned)"
+  type        = string
+  default     = null
 }
 
 variable "db_cfs_cluster_name" {
@@ -96,6 +108,12 @@ variable "db_find_a_tender_cluster_name" {
 variable "db_fts_cluster_address" {
   description = "FTS DB address"
   type        = string
+}
+
+variable "db_fts_proxy_endpoint" {
+  description = "FTS RDS Proxy endpoint (if provisioned)"
+  type        = string
+  default     = null
 }
 
 variable "db_fts_cluster_credentials_arn" {
@@ -175,7 +193,6 @@ variable "manage_alb_ecs_sg_rules" {
   type        = bool
   default     = true
 }
-
 
 # OCDS exports: we always provision the Azure OIDC reader role/provider in every environment.
 # Configuration comes from Secrets Manager (see ocds-exports-ey-oidc-params secret).
