@@ -8,7 +8,7 @@ module "ecs_task_fts_ocds_export_seeder" {
       {
         aws_region            = data.aws_region.current.region
         cpu                   = var.service_configs.ocds_export_seeder.cpu
-        db_address            = var.db_fts_cluster_address
+        db_address            = local.fts_db_address
         db_name               = var.db_fts_cluster_name
         db_password           = local.db_fts_password
         db_port               = 3306

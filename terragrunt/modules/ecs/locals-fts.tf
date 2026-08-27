@@ -8,6 +8,8 @@ locals {
 
   fts_notice_publish_internal_key_arn = aws_secretsmanager_secret.fts_notice_publish_internal_key.arn
 
+  fts_db_address = var.use_rds_proxy ? var.db_fts_proxy_endpoint : var.db_fts_cluster_address
+
   fts_site_domains = {
     development = "fts.${var.public_domain}"
     staging     = "www-staging.find-tender.service.gov.uk"
@@ -66,10 +68,10 @@ locals {
     buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
     cookie_domain                         = local.fts_site_domains[var.environment]
     database_schema                       = "cdp_sirsi_fts_cluster"
-    database_server_address               = var.db_fts_cluster_address
+    database_server_address               = local.fts_db_address
     database_server_port                  = 3306
     database_ssl                          = false
-    db_host                               = var.db_fts_cluster_address
+    db_host                               = local.fts_db_address
     db_name                               = var.db_fts_cluster_name
     dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
     dotnet_ui_app_url                     = "https://${local.fts_redirect_domains[var.environment]}"
@@ -151,7 +153,7 @@ locals {
       db_pg_password              = local.db_find_a_tender_password
       db_pg_port                  = 5432
       db_pg_username              = local.db_find_a_tender_username
-      db_mysql_address            = var.db_fts_cluster_address
+      db_mysql_address            = local.fts_db_address
       db_mysql_name               = var.db_fts_cluster_name
       db_mysql_password           = local.db_fts_password
       db_mysql_port               = 3306
@@ -173,7 +175,7 @@ locals {
   fts_dotnet_search_indexer = merge(
     local.fts_dotnet_common,
     {
-      db_address          = var.db_fts_cluster_address
+      db_address          = local.fts_db_address
       db_name             = var.db_fts_cluster_name
       db_password         = local.db_fts_password
       db_port             = 3306
@@ -354,7 +356,7 @@ locals {
     local.fts_dotnet_common,
     {
       aws_region                      = data.aws_region.current.region
-      db_address                      = var.db_fts_cluster_address
+      db_address                      = local.fts_db_address
       db_name                         = var.db_fts_cluster_name
       db_password                     = local.db_fts_password
       db_port                         = 3306

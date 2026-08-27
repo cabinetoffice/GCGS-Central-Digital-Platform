@@ -47,7 +47,7 @@ locals {
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
     cookie_domain                       = local.cfs_site_domains[var.environment]
     data_harvester_folder_format        = ""
-    db_host                             = var.db_cfs_cluster_address
+    db_host                             = var.use_rds_proxy ? var.db_cfs_proxy_endpoint : var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306
     database_user_host_address          = "%"

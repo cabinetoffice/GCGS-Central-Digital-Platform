@@ -8,7 +8,7 @@ module "ecs_service_ocds_exporter" {
       {
         aws_region            = data.aws_region.current.region
         cpu                   = var.service_configs.ocds_exporter.cpu
-        db_address            = var.db_fts_cluster_address
+        db_address            = local.fts_db_address
         db_name               = var.db_fts_cluster_name
         db_password           = local.db_fts_password
         db_port               = 3306
