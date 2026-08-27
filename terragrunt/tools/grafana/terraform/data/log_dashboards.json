@@ -166,6 +166,14 @@
     "type": "multi",
     "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
   },
+  "fts-pdf-render-service": {
+    "all_expression": "fields @timestamp, level, message, request_id, elapsed_ms, pages, bytes, @message  \n| filter @message not like \"GET /health\" \n| sort @timestamp desc",
+    "error_expression": "fields @timestamp, level, message, request_id, elapsed_ms, pages, bytes, @message  \n| filter level = \"ERROR\" \n| sort @timestamp desc \n| limit 5",
+    "log_group_name": "/ecs/fts-pdf-render-service",
+    "title": "FTS PDF Render Service",
+    "type": "multi",
+    "warning_expression": "fields @timestamp, level, message, request_id, elapsed_ms, pages, bytes, @message  \n| filter level = \"WARNING\" \n| sort @timestamp desc \n| limit 5"
+  },
   "fts-scheduler": {
     "expression": "fields @timestamp, @message \n| filter @message not like \"ELB-HealthChecker\"\n| sort @timestamp desc",
     "log_group_name": "/ecs/fts-scheduler",
