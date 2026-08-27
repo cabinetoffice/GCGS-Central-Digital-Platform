@@ -84,8 +84,16 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
-    notice_edit_rebuild_by_default        = false
-    notice_edit_rebuild_form_codes        = contains(["development", "staging"], var.environment) ? "UK1,UK2,UK3,UK6" : ""
+    notice_edit_rebuild_by_default        = contains(["integration"], var.environment) ? "UK1,UK2,UK3" : ""
+    notice_edit_rebuild_form_codes        = lookup(
+                                              {
+                                                development = "UK1,UK2,UK3,UK6"
+                                                staging     = "UK1,UK2,UK3,UK6"
+                                                integration = "UK1,UK2,UK3"
+                                              },
+                                              var.environment,
+                                              ""
+                                            )
     notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
     notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK2" : ""
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
