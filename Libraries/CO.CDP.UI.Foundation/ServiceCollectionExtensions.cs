@@ -192,6 +192,34 @@ public class UiFoundationBuilder
     }
 
     /// <summary>
+    /// Adds User Management URL service with default configuration
+    /// </summary>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddUserManagementUrlService()
+    {
+        var options = _configuration.GetSection("UserManagementApp").Get<UserManagementUrlOptions>()
+                      ?? throw new InvalidOperationException("UserManagementApp configuration is missing.");
+        _services.AddSingleton(options);
+        _services.AddScoped<IUserManagementUrlService, UserManagementUrlService>();
+        return this;
+    }
+
+    /// <summary>
+    /// Adds User Management URL service with custom configuration
+    /// </summary>
+    /// <param name="configure">Action to configure User Management URL options</param>
+    /// <returns>The builder for method chaining</returns>
+    public UiFoundationBuilder AddUserManagementUrlService(Action<UserManagementUrlOptions> configure)
+    {
+        var options = _configuration.GetSection("UserManagementApp").Get<UserManagementUrlOptions>()
+                      ?? throw new InvalidOperationException("UserManagementApp configuration is missing.");
+        configure(options);
+        _services.AddSingleton(options);
+        _services.AddScoped<IUserManagementUrlService, UserManagementUrlService>();
+        return this;
+    }
+
+    /// <summary>
     /// Adds the unified External Service URL builder
     /// </summary>
     /// <returns>The builder for method chaining</returns>
