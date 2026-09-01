@@ -165,7 +165,7 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.1.0"
-      pinned_service_version_fts          = "2.8.0"
+      pinned_service_version_fts          = "2.9.2"
       pinned_service_version              = "1.3.0"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
@@ -287,7 +287,7 @@ locals {
     forms                                = {}
     fts                                  = { desired_count = local.environment == "production" ? 6 : 3, cpu = local.environment == "production" ? 8192 : 4096, memory = local.environment == "production" ? 16384 : 8192 }
     fts_app                              = { desired_count = 2 }
-    fts_healthcheck                      = { desired_count = 0 }
+    fts_healthcheck                      = { desired_count = local.environment == "production" ? 0 : 1 }
     fts_migrations                       = { desired_count = 1 }
     fts_findtender_migrations            = { cpu = 256, memory = 512 }
     fts_job_scheduler                    = { desired_count = 1 }

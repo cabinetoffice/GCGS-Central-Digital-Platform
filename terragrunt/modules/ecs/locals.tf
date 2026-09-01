@@ -152,10 +152,11 @@ locals {
   }
 
   service_ports = {
-    "cluster:sirsi"     = 8080
-    "cluster:fts"       = 8080
-    "cluster:sirsi-php" = 8070
-    "service:cfs"       = 8060
+    "cluster:sirsi"           = 8080
+    "cluster:fts"             = 8080
+    "cluster:sirsi-php"       = 8070
+    "service:fts-healthcheck" = 8071
+    "service:cfs"             = 8060
   }
 
   service_ports_by_service = {

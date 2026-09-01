@@ -6,7 +6,7 @@ module "ecs_service_fts_healthcheck" {
     {
       aws_region                 = data.aws_region.current.region
       cpu                        = var.service_configs.fts_healthcheck.cpu
-      db_host                    = var.db_fts_cluster_address
+      db_host                    = var.db_fts_proxy_endpoint
       db_name                    = var.db_fts_cluster_name
       db_pass                    = local.db_fts_password
       db_user                    = local.db_fts_username
@@ -38,6 +38,7 @@ module "ecs_service_fts_healthcheck" {
   internal_listener_arn  = local.internal_ecs_listener_arn
   listener_name          = "php-${var.service_configs.fts_healthcheck.name}"
   listener_priority      = var.service_configs.fts_healthcheck.listener_priority
+  tg_suffix              = "v2"
   memory                 = var.service_configs.fts_healthcheck.memory
   name                   = var.service_configs.fts_healthcheck.name
   private_subnet_ids     = var.private_subnet_ids
