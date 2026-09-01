@@ -97,7 +97,7 @@ locals {
                                               ""
                                             )
     notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
-    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK2" : ""
+    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3" : ""
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
