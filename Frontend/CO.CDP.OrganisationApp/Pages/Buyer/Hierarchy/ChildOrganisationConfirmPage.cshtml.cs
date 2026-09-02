@@ -99,12 +99,12 @@ public class ChildOrganisationConfirmPage(
                 WarningMessage = @StaticTextResource
                     .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent;
             }
-            else if (await IsChildConnectedAsChild())
+            else if (await ChildAlreadyHasParent())
             {
                 WarningTagMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild;
+                    .BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent;
                 WarningMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild;
+                    .BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent;
             }
         }
         catch (Exception ex)
@@ -133,22 +133,15 @@ public class ChildOrganisationConfirmPage(
 
         return false;
     }
-    private async Task<bool> IsChildConnectedAsChild()
+    private async Task<bool> ChildAlreadyHasParent()
     {
-        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
-        if (connectedChildren == null || connectedChildren.Count == 0)
+        var connectedParents = await _organisationClient.GetParentOrganisationsAsync(ChildId);
+        if (connectedParents == null || connectedParents.Count == 0)
         {
             return false;
         }
 
-        var childOrganisationMatch = connectedChildren.FirstOrDefault(x => x.Id == ChildId);
-        if (childOrganisationMatch == null)
-        {
-            return false;
-        }
-
-        _logger.LogInformation("Child organisation {ChildId} is already assigned to parent {ParentId}",
-            ChildId, Id);
+        _logger.LogInformation("Child organisation {ChildId} already has an active parent organisation", ChildId);
 
         return true;
     }
@@ -200,6 +193,17 @@ public class ChildOrganisationConfirmPage(
             TempData["ChildName"] = ChildOrganisation.Name;
 
             return RedirectToPage("ChildOrganisationSuccessPage", new { Id });
+        }
+        catch (ApiException ex) when (ex.StatusCode == StatusCodes.Status409Conflict)
+        {
+            _logger.LogWarning(
+                "Child organisation {ChildId} was assigned to another parent before the relationship could be created",
+                ChildId);
+            WarningTagMessage =
+                StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent;
+            WarningMessage =
+                StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent;
+            return Page();
         }
         catch (Exception ex)
         {

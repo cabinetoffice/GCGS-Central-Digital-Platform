@@ -69,6 +69,17 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
                 RelationshipId = relationshipId
             };
         }
+        catch (ChildOrganisationAlreadyHasParentException ex)
+        {
+            _logger.LogWarning(ex,
+                "Child organisation {ChildId} already has an active parent organisation",
+                request.ChildId);
+            return new CreateParentChildRelationshipResult
+            {
+                Success = false,
+                ChildAlreadyHasParent = true
+            };
+        }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating parent-child relationship between {ParentId} and {ChildId}",

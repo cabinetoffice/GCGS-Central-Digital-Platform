@@ -120,10 +120,17 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
 
     public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy, double threshold = 0.3)
     {
-        return await SearchByNameOrPpon(searchText, limit, skip, orderBy, threshold, false);
+        return await SearchByNameOrPpon(searchText, limit, skip, orderBy, threshold, false, false);
     }
 
-    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy, double threshold, bool excludeOnlyPendingBuyerRoles)
+    public async Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(
+        string searchText,
+        int? limit,
+        int skip,
+        string orderBy,
+        double threshold,
+        bool excludeOnlyPendingBuyerRoles,
+        bool excludeOrganisationsWithActiveParent)
     {
         var baseQuery = context.Organisations
             .Include(b => b.Identifiers)
@@ -143,6 +150,13 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 t.Roles.Any(r => r != PartyRole.Buyer) ||
                 t.Roles.Contains(PartyRole.Buyer)
             );
+        }
+
+        if (excludeOrganisationsWithActiveParent)
+        {
+            baseQuery = baseQuery.Where(organisation =>
+                !context.OrganisationHierarchies.Any(hierarchy =>
+                    hierarchy.ChildOrganisationId == organisation.Id && hierarchy.SupersededOn == null));
         }
 
         baseQuery = orderBy.ToLowerInvariant() switch

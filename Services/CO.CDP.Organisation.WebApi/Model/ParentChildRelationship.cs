@@ -35,4 +35,9 @@ public class CreateParentChildRelationshipResult
     /// The unique identifier of the relationship, if created
     /// </summary>
     public Guid? RelationshipId { get; set; }
+
+    /// <summary>
+    /// Whether the child organisation already belongs to another active parent organisation
+    /// </summary>
+    public bool ChildAlreadyHasParent { get; set; }
 }
