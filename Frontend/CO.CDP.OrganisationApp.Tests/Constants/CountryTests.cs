@@ -19,7 +19,7 @@ public class CountryTests
     public void Nationalities_HaveExpectedCountAndInvariants()
     {
         Country.Nationalities.Should().HaveCount(227);
-        Country.Nationalities.Should().BeInAscendingOrder();
+        Country.Nationalities.Should().BeInAscendingOrder(StringComparer.OrdinalIgnoreCase);
         Country.Nationalities.Should().OnlyHaveUniqueItems();
     }
 
