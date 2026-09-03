@@ -99,13 +99,6 @@ public class ChildOrganisationConfirmPage(
                 WarningMessage = @StaticTextResource
                     .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent;
             }
-            else if (await ChildAlreadyHasParent())
-            {
-                WarningTagMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent;
-                WarningMessage = @StaticTextResource
-                    .BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent;
-            }
         }
         catch (Exception ex)
         {
@@ -133,19 +126,6 @@ public class ChildOrganisationConfirmPage(
 
         return false;
     }
-    private async Task<bool> ChildAlreadyHasParent()
-    {
-        var connectedParents = await _organisationClient.GetParentOrganisationsAsync(ChildId);
-        if (connectedParents == null || connectedParents.Count == 0)
-        {
-            return false;
-        }
-
-        _logger.LogInformation("Child organisation {ChildId} already has an active parent organisation", ChildId);
-
-        return true;
-    }
-
     private async Task<bool> IsChildConnectedAsParent()
     {
         var connectedParents = await _organisationClient.GetParentOrganisationsAsync(Id);
