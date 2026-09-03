@@ -292,7 +292,7 @@ public class ChildOrganisationConfirmPageTests
                 client.CreateParentChildRelationshipAsync(
                     id,
                     It.IsAny<CreateParentChildRelationshipRequest>()))
-            .ReturnsAsync(new CreateParentChildRelationshipResult(relationshipId, true));
+            .ReturnsAsync(new CreateParentChildRelationshipResult(true, relationshipId, false));
 
         var result = await _model.OnPostAsync();
 
@@ -308,6 +308,51 @@ public class ChildOrganisationConfirmPageTests
                     r.ParentId == id &&
                     r.ChildId == childId)),
             Times.Once);
+    }
+
+    [Fact]
+    public async Task OnPostAsync_WhenChildWasAlreadyAssigned_ShowsValidationWarning()
+    {
+        var id = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        const string ppon = "GB-PPON:ABCD-1234-EFGH";
+        _model.Id = id;
+        _model.ChildId = childId;
+        _model.Ppon = ppon;
+
+        var organisation = new CDP.Organisation.WebApiClient.Organisation(
+            additionalIdentifiers: [],
+            addresses: [],
+            contactPoint: null,
+            id: childId,
+            identifier: new Identifier(ppon, "Test Org", "GB-PPON", new Uri("http://test")),
+            name: "Test Organisation",
+            type: OrganisationType.Organisation,
+            roles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
+
+        _mockOrganisationClient
+            .Setup(client => client.LookupOrganisationAsync(null, ppon))
+            .ReturnsAsync(organisation);
+        _mockOrganisationClient
+            .Setup(client => client.CreateParentChildRelationshipAsync(
+                id,
+                It.IsAny<CreateParentChildRelationshipRequest>()))
+            .ThrowsAsync(new ApiException(
+                "Conflict",
+                409,
+                string.Empty,
+                new Dictionary<string, IEnumerable<string>>(),
+                null!));
+
+        var result = await _model.OnPostAsync();
+
+        result.Should().BeOfType<PageResult>();
+        _model.WarningTagMessage.Should()
+            .Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent);
+        _model.WarningMessage.Should()
+            .Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent);
     }
 
     [Fact]
@@ -386,44 +431,4 @@ public class ChildOrganisationConfirmPageTests
         _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent);
     }
 
-    [Fact]
-    public async Task OnGetAsync_WhenChildIsConnectedAsChild_SetsWarningMessage()
-    {
-        var id = Guid.NewGuid();
-        var childId = Guid.NewGuid();
-        const string ppon = "ABCD-1234-EFGH";
-
-        _model.Id = id;
-        _model.ChildId = childId;
-        _model.Ppon = ppon;
-
-        var organisation = new CDP.Organisation.WebApiClient.Organisation(
-            additionalIdentifiers: [],
-            addresses: [],
-            contactPoint: null,
-            id: childId,
-            identifier: new Identifier("12345", "Test Org", "DUNS", new Uri("http://test")),
-            name: "Test Organisation",
-            type: OrganisationType.Organisation,
-            roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
-                publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
-        );
-
-        _mockOrganisationClient
-            .Setup(client => client.LookupOrganisationAsync(null, ppon))
-            .ReturnsAsync(organisation);
-
-        _mockOrganisationClient
-            .Setup(client => client.GetChildOrganisationsAsync(id))
-            .ReturnsAsync(new List<OrganisationSummary> {
-                new(childId, "Test Organisation", "Buyer", null)
-            });
-
-        var result = await _model.OnGetAsync();
-
-        result.Should().BeOfType<PageResult>();
-        _model.WarningTagMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild);
-        _model.WarningMessage.Should().Be(StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild);
-    }
 }

@@ -63,7 +63,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 3);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
@@ -114,7 +114,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                _model.Query, 20, 0, "rel", 0.2, null))
+                _model.Query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ThrowsAsync(new Exception("Test exception"));
 
         await _model.OnGetAsync();
@@ -129,7 +129,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                _model.Query, 20, 0, "rel", 0.2, null))
+                _model.Query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync((OrganisationSearchByPponResponse)null!);
 
         await _model.OnGetAsync();
@@ -145,7 +145,7 @@ public class ChildOrganisationResultsPageTests
         var emptyResponse = new OrganisationSearchByPponResponse(new List<OrganisationSearchByPponResult>(), 0);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                _model.Query, 20, 0, "rel", 0.2, null))
+                _model.Query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(emptyResponse);
 
         await _model.OnGetAsync();
@@ -181,7 +181,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
@@ -232,7 +232,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                "test", 20, 0, "rel", 0.2, null))
+                "test", 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         _model.Query = "test";
@@ -269,7 +269,7 @@ public class ChildOrganisationResultsPageTests
         );
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -278,7 +278,7 @@ public class ChildOrganisationResultsPageTests
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null),
+            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent),
             Times.Once);
         _mockOrganisationClient.Verify(
             client => client.SearchOrganisationAsync(
@@ -306,13 +306,13 @@ public class ChildOrganisationResultsPageTests
         );
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
 
         _mockOrganisationClient.Verify(
-            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null),
+            client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent),
             Times.Once);
         _model.Results.Should().BeEmpty();
     }
@@ -326,7 +326,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                _model.Query, 20, 0, "rel", 0.2, null))
+                _model.Query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -352,7 +352,7 @@ public class ChildOrganisationResultsPageTests
         var exception = new Exception("Test exception");
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ThrowsAsync(exception);
 
         var result = await _model.OnGetAsync();
@@ -386,7 +386,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 1);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         var result = await _model.OnPost();
@@ -409,7 +409,7 @@ public class ChildOrganisationResultsPageTests
         var emptyResponse = new OrganisationSearchByPponResponse(new List<OrganisationSearchByPponResult>(), 0);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(emptyResponse);
 
         var result = await _model.OnPost();
@@ -439,7 +439,7 @@ public class ChildOrganisationResultsPageTests
 
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ThrowsAsync(apiException);
 
         var result = await _model.OnPost();
@@ -481,7 +481,7 @@ public class ChildOrganisationResultsPageTests
                 It.Is<int>(s => s == 0),
                 It.Is<string>(o => o == "rel"),
                 It.Is<double>(t => Math.Abs(t - 0.2) < Tolerance),
-                null))
+                OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ThrowsAsync(httpRequestException);
 
         var result = await _model.OnPost();
@@ -524,7 +524,7 @@ public class ChildOrganisationResultsPageTests
         _model.Query = query;
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -564,7 +564,7 @@ public class ChildOrganisationResultsPageTests
         _model.SelectedChildId = childId;
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient.Setup(c => c.GetChildOrganisationsAsync(It.IsAny<Guid>()))
@@ -677,7 +677,7 @@ public class ChildOrganisationResultsPageTests
         );
 
         _mockOrganisationClient
-            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), null))
+            .Setup(client => client.SearchByNameOrPponAsync(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<double?>(), OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         _mockOrganisationClient
@@ -707,7 +707,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 2);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
@@ -739,7 +739,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(searchResults, 4);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         await _model.OnGetAsync();
@@ -781,7 +781,7 @@ public class ChildOrganisationResultsPageTests
         var searchResponse = new OrganisationSearchByPponResponse(allSearchResults, 2);
         _mockOrganisationClient
             .Setup(client => client.SearchByNameOrPponAsync(
-                query, 20, 0, "rel", 0.2, null))
+                query, 20, 0, "rel", 0.2, OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent))
             .ReturnsAsync(searchResponse);
 
         var result = await _model.OnGetAsync();

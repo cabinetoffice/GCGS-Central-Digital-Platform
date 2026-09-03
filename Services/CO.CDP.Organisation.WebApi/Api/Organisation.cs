@@ -1558,14 +1558,19 @@ public static class EndpointExtensions
                 async (Guid organisationId, CreateParentChildRelationshipRequest request,
                     IUseCase<CreateParentChildRelationshipRequest, CreateParentChildRelationshipResult> useCase) =>
                 {
+                    request.ParentId = organisationId;
+
                     return await useCase.Execute(request)
                         .AndThen(result => result.Success
                             ? Results.Created(
                                 $"/organisations/{organisationId}/hierarchy/child/{result.RelationshipId}", result)
-                            : Results.Problem(statusCode: StatusCodes.Status400BadRequest));
+                            : result.ChildAlreadyHasParent
+                                ? Results.Problem(statusCode: StatusCodes.Status409Conflict)
+                                : Results.Problem(statusCode: StatusCodes.Status400BadRequest));
                 })
             .Produces<CreateParentChildRelationshipResult>(StatusCodes.Status201Created, "application/json")
             .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status409Conflict)
             .Produces<ProblemDetails>(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status500InternalServerError)
             .WithOpenApi(operation =>
@@ -1575,6 +1580,7 @@ public static class EndpointExtensions
                 operation.Summary = "Create a parent-child organisation relationship.";
                 operation.Responses["201"].Description = "Parent-child relationship created successfully.";
                 operation.Responses["400"].Description = "Bad request or failed to create relationship.";
+                operation.Responses["409"].Description = "The child organisation already has an active parent.";
                 operation.Responses["401"].Description = "Valid authentication credentials are missing in the request.";
                 operation.Responses["500"].Description = "Internal server error.";
                 return operation;

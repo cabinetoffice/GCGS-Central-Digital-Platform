@@ -31,14 +31,26 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             if (parentId == childId)
                 throw new ArgumentException("Parent and child organisations cannot be the same");
 
-            var parent = await _context.Organisations
-                .FirstOrDefaultAsync(o => o.Guid == parentId);
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+
+            // Lock both organisations in a consistent order so two concurrent requests cannot
+            // assign the same child to different parents between validation and insertion.
+            var organisations = await _context.Organisations
+                .FromSqlInterpolated($"""
+                    SELECT *
+                    FROM organisations
+                    WHERE guid IN ({parentId}, {childId})
+                    ORDER BY guid
+                    FOR UPDATE
+                    """)
+                .ToListAsync();
+
+            var parent = organisations.FirstOrDefault(o => o.Guid == parentId);
 
             if (parent == null)
                 throw new ArgumentException($"Parent organisation with ID {parentId} does not exist", nameof(parentId));
 
-            var child = await _context.Organisations
-                .FirstOrDefaultAsync(o => o.Guid == childId);
+            var child = organisations.FirstOrDefault(o => o.Guid == childId);
 
             if (child == null)
                 throw new ArgumentException($"Child organisation with ID {childId} does not exist", nameof(childId));
@@ -52,15 +64,22 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
             if (inverseRelationship != null)
                 throw new ArgumentException($"Child organisation with ID {childId} is already a parent to the parent organisation with ID {parentId}");
 
-            var existingRelationship = await _context.OrganisationHierarchies
-                .Where(h => h.ParentOrganisationId == parent.Id &&
-                            h.ChildOrganisationId == child.Id &&
-                            h.SupersededOn == null)
-                .FirstOrDefaultAsync();
+            var existingRelationships = await _context.OrganisationHierarchies
+                .Where(h => h.ChildOrganisationId == child.Id && h.SupersededOn == null)
+                .ToListAsync();
+
+            var existingRelationship = existingRelationships
+                .FirstOrDefault(h => h.ParentOrganisationId == parent.Id);
 
             if (existingRelationship != null)
             {
+                await transaction.CommitAsync();
                 return existingRelationship.RelationshipId;
+            }
+
+            if (existingRelationships.Count > 0)
+            {
+                throw new ChildOrganisationAlreadyHasParentException(childId);
             }
 
             var relationshipId = Guid.NewGuid();
@@ -74,6 +93,7 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
 
             await _context.OrganisationHierarchies.AddAsync(hierarchy);
             await _context.SaveChangesAsync();
+            await transaction.CommitAsync();
 
             return relationshipId;
         }

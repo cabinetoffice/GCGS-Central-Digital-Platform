@@ -125,6 +125,26 @@ public class CreateParentChildRelationshipUseCaseTest
     }
 
     [Fact]
+    public async Task Execute_WhenChildAlreadyHasParent_ShouldReturnConflictResult()
+    {
+        var parentId = Guid.NewGuid();
+        var childId = Guid.NewGuid();
+        _repository
+            .Setup(r => r.CreateRelationshipAsync(parentId, childId))
+            .ThrowsAsync(new ChildOrganisationAlreadyHasParentException(childId));
+
+        var result = await UseCase.Execute(new CreateParentChildRelationshipRequest
+        {
+            ParentId = parentId,
+            ChildId = childId
+        });
+
+        result.Success.Should().BeFalse();
+        result.ChildAlreadyHasParent.Should().BeTrue();
+        result.RelationshipId.Should().BeNull();
+    }
+
+    [Fact]
     public async Task Execute_WhenExceptionOccurs_ShouldReturnFailure()
     {
         var mockLogger = new Mock<ILogger<CreateParentChildRelationshipUseCase>>();
