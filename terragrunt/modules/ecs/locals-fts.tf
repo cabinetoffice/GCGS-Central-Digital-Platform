@@ -348,7 +348,7 @@ locals {
       notice_render_pdf_enabled         = true
       notice_render_idle_threshold      = 1
       notice_render_worker_wait_seconds = 10
-      pdf_render_service_url            = contains(["development"], var.environment) ? local.internal_service_urls[var.service_configs.fts_pdf_render_service.name] : ""
+      pdf_render_service_url            = contains(["development", "staging"], var.environment) ? local.internal_service_urls[var.service_configs.fts_pdf_render_service.name] : ""
     }
   )
 
