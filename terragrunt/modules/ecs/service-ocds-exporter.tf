@@ -21,6 +21,7 @@ module "ecs_service_ocds_exporter" {
         name                  = var.service_configs.ocds_exporter.name
         ocds_export_queue_url = var.queue_ocds_export_url
         ocds_exports_bucket   = module.s3_bucket_ocds_exports.bucket
+        service_version       = "2.9.3" # @TODO (FC-2059) Unpin once the same version was released
       }
     )
   )
@@ -30,8 +31,7 @@ module "ecs_service_ocds_exporter" {
   cpu                                = var.service_configs.ocds_exporter.cpu
   deployment_maximum_percent         = 100
   deployment_minimum_healthy_percent = 0
-  # Run only in development for now; other envs stay disabled until the one-off task is ready.
-  desired_count                      = var.environment == "development" ? 1 : 0
+  desired_count                      = var.service_configs.ocds_exporter.desired_count
   ecs_service_base_sg_id             = var.ecs_sg_id
   family                             = "standalone"
   memory                             = var.service_configs.ocds_exporter.memory
