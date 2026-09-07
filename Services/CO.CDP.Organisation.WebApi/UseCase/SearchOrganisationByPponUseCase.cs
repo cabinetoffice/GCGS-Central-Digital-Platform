@@ -13,6 +13,8 @@ public class SearchOrganisationByPponUseCase(IOrganisationRepository organisatio
     {
         var excludeOnlyPendingBuyerRoles = query.Filters.HasValue &&
             query.Filters.Value.HasFlag(Model.OrganisationSearchFilter.ExcludeOnlyPendingBuyerRoles);
+        var excludeOrganisationsWithActiveParent = query.Filters.HasValue &&
+            query.Filters.Value.HasFlag(Model.OrganisationSearchFilter.ExcludeOrganisationsWithActiveParent);
 
         var result = await organisationRepository.SearchByNameOrPpon(
             query.SearchText,
@@ -20,7 +22,8 @@ public class SearchOrganisationByPponUseCase(IOrganisationRepository organisatio
             query.Skip,
             query.OrderBy,
             query.Threshold,
-            excludeOnlyPendingBuyerRoles);
+            excludeOnlyPendingBuyerRoles,
+            excludeOrganisationsWithActiveParent);
 
         var mappedResults = result.Results.Select(mapper.Map<Model.OrganisationSearchByPponResult>).ToList();
 

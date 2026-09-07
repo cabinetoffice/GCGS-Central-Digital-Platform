@@ -133,6 +133,7 @@ public class ChildOrganisationConfirmPage(
 
         return false;
     }
+
     private async Task<bool> IsChildConnectedAsChild()
     {
         var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
@@ -200,6 +201,17 @@ public class ChildOrganisationConfirmPage(
             TempData["ChildName"] = ChildOrganisation.Name;
 
             return RedirectToPage("ChildOrganisationSuccessPage", new { Id });
+        }
+        catch (ApiException ex) when (ex.StatusCode == StatusCodes.Status409Conflict)
+        {
+            _logger.LogWarning(
+                "Child organisation {ChildId} was assigned to another parent before the relationship could be created",
+                ChildId);
+            WarningTagMessage =
+                StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent;
+            WarningMessage =
+                StaticTextResource.BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent;
+            return Page();
         }
         catch (Exception ex)
         {

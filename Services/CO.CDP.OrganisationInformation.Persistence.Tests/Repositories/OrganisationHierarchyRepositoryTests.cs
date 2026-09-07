@@ -148,6 +148,69 @@ namespace CO.CDP.OrganisationInformation.Persistence.Tests.Repositories
         }
 
         [Fact]
+        public async Task CreateRelationshipAsync_WhenChildAlreadyHasAnotherParent_ShouldRejectRelationship()
+        {
+            var (firstParentId, childId) = await CreateTestOrganisations();
+            var (secondParentId, _) = await CreateTestOrganisations();
+            await _repository.CreateRelationshipAsync(firstParentId, childId);
+
+            var act = () => _repository.CreateRelationshipAsync(secondParentId, childId);
+
+            await act.Should().ThrowAsync<ChildOrganisationAlreadyHasParentException>()
+                .WithMessage($"*{childId}*");
+
+            var child = await _context.Organisations.FirstAsync(o => o.Guid == childId);
+            var activeRelationships = await _context.OrganisationHierarchies
+                .Where(h => h.ChildOrganisationId == child.Id && h.SupersededOn == null)
+                .ToListAsync();
+            activeRelationships.Should().ContainSingle();
+        }
+
+        [Fact]
+        public async Task CreateRelationshipAsync_WhenPreviousParentWasSuperseded_ShouldAllowNewParent()
+        {
+            var (firstParentId, childId) = await CreateTestOrganisations();
+            var (secondParentId, _) = await CreateTestOrganisations();
+            var relationshipId = await _repository.CreateRelationshipAsync(firstParentId, childId);
+            await _repository.SupersedeRelationshipAsync(relationshipId);
+
+            var newRelationshipId = await _repository.CreateRelationshipAsync(secondParentId, childId);
+
+            newRelationshipId.Should().NotBeEmpty().And.NotBe(relationshipId);
+        }
+
+        [Fact]
+        public async Task CreateRelationshipAsync_WhenTwoParentsAssignSameChildConcurrently_ShouldCreateOnlyOneRelationship()
+        {
+            var (firstParentId, childId) = await CreateTestOrganisations();
+            var (secondParentId, _) = await CreateTestOrganisations();
+            await using var firstContext = _fixture.OrganisationInformationContext();
+            await using var secondContext = _fixture.OrganisationInformationContext();
+            var firstRepository = new OrganisationHierarchyRepository(firstContext);
+            var secondRepository = new OrganisationHierarchyRepository(secondContext);
+
+            static async Task<bool> TryCreate(Func<Task<Guid>> createRelationship)
+            {
+                try
+                {
+                    await createRelationship();
+                    return true;
+                }
+                catch (ChildOrganisationAlreadyHasParentException)
+                {
+                    return false;
+                }
+            }
+
+            var results = await Task.WhenAll(
+                TryCreate(() => firstRepository.CreateRelationshipAsync(firstParentId, childId)),
+                TryCreate(() => secondRepository.CreateRelationshipAsync(secondParentId, childId)));
+
+            results.Should().ContainSingle(result => result);
+            results.Should().ContainSingle(result => !result);
+        }
+
+        [Fact]
         public async Task CreateRelationshipAsync_WithEmptyParentId_ShouldThrowArgumentException()
         {
             var (_, childId) = await CreateTestOrganisations();

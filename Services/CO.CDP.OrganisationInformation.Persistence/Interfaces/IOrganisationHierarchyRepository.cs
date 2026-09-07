@@ -1,5 +1,8 @@
 namespace CO.CDP.OrganisationInformation.Persistence.Interfaces
 {
+    public sealed class ChildOrganisationAlreadyHasParentException(Guid childOrganisationId)
+        : InvalidOperationException($"Child organisation with ID {childOrganisationId} already has an active parent organisation");
+
     /// <summary>
     /// Repository interface for operations on organisation hierarchies
     /// </summary>

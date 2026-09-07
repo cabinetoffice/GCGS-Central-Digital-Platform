@@ -52,7 +52,14 @@ public interface IOrganisationRepository : IDisposable
 
     Task<IEnumerable<Organisation>> SearchByName(string name, PartyRole? role, int? limit, double threshold, bool includePendingRoles);
 
-    Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(string searchText, int? limit, int skip, string orderBy, double threshold, bool excludeOnlyPendingBuyerRoles);
+    Task<(IEnumerable<Organisation> Results, int TotalCount)> SearchByNameOrPpon(
+        string searchText,
+        int? limit,
+        int skip,
+        string orderBy,
+        double threshold,
+        bool excludeOnlyPendingBuyerRoles,
+        bool excludeOrganisationsWithActiveParent);
 
     public Task<IEnumerable<Organisation>> FindByAdminEmail(string email, PartyRole? role, int? limit);
 

@@ -2096,6 +2096,12 @@
   <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild" xml:space="preserve">
     <value>Already added</value>
   </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Warning_ChildAlreadyHasParent" xml:space="preserve">
+    <value>The selected organisation is already assigned to a parent organisation.</value>
+  </data>
+  <data name="BuyerParentChildRelationship_ConfirmPage_Tag_ChildAlreadyHasParent" xml:space="preserve">
+    <value>Already assigned</value>
+  </data>
   <data name="Global_NoAddressAvailable" xml:space="preserve">
     <value>No address information available</value>
   </data>

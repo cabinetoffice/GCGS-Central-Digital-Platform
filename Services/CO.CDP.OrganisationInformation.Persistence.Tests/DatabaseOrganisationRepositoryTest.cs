@@ -791,6 +791,54 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
     }
 
     [Fact]
+    public async Task SearchByNameOrPpon_WhenExcludingOrganisationsWithActiveParent_HidesOnlyActiveChildren()
+    {
+        using var repository = OrganisationRepository();
+        await using var context = GetDbContext();
+        await ClearTestData(context);
+
+        var parent = GivenOrganisation(name: "Parent Organisation");
+        var assignedChild = GivenOrganisation(
+            name: "Available Search Assigned",
+            roles: [PartyRole.Buyer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PPON-ASSIGNED",
+                LegalName = "Available Search Assigned"
+            }]);
+        var availableChild = GivenOrganisation(
+            name: "Available Search Unassigned",
+            roles: [PartyRole.Buyer],
+            identifiers: [new Identifier
+            {
+                Primary = true,
+                Scheme = "GB-PPON",
+                IdentifierId = "PPON-AVAILABLE",
+                LegalName = "Available Search Unassigned"
+            }]);
+
+        await context.Organisations.AddRangeAsync(parent, assignedChild, availableChild);
+        await context.SaveChangesAsync();
+        context.OrganisationHierarchies.Add(new OrganisationHierarchy
+        {
+            RelationshipId = Guid.NewGuid(),
+            ParentOrganisationId = parent.Id,
+            ChildOrganisationId = assignedChild.Id,
+            CreatedOn = DateTimeOffset.UtcNow
+        });
+        await context.SaveChangesAsync();
+
+        var result = await repository.SearchByNameOrPpon(
+            "Available Search", 10, 0, "asc", 0.2, false, true);
+
+        result.Results.Should().ContainSingle(o => o.Guid == availableChild.Guid);
+        result.Results.Should().NotContain(o => o.Guid == assignedChild.Guid);
+        result.TotalCount.Should().Be(1);
+    }
+
+    [Fact]
     public async Task SearchByNameOrPpon_WhenSearchingByPpon_ReturnsMatchingOrganisations()
     {
         using var repository = OrganisationRepository();

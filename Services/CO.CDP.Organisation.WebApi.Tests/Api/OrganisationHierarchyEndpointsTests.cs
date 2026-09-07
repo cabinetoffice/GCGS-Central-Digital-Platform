@@ -130,6 +130,37 @@ public class OrganisationHierarchyEndpointsTests
         Assert.Equal("Bad Request", problemDetails.Title);
     }
 
+    [Fact]
+    public async Task CreateParentChildRelationship_WhenChildAlreadyHasParent_ReturnsConflict()
+    {
+        var organisationId = Guid.NewGuid();
+        var factory = CreateTestFactory(
+            Constants.Channel.OneLogin,
+            organisationId,
+            Constants.OrganisationPersonScope.Admin);
+        var client = factory.CreateClient();
+        var childOrganisationId = Guid.NewGuid();
+
+        _mockCreateParentChildRelationshipUseCase
+            .Setup(x => x.Execute(It.Is<CreateParentChildRelationshipRequest>(r =>
+                r.ParentId == organisationId && r.ChildId == childOrganisationId)))
+            .ReturnsAsync(new CreateParentChildRelationshipResult
+            {
+                Success = false,
+                ChildAlreadyHasParent = true
+            });
+
+        var response = await client.PostAsJsonAsync(
+            $"/organisations/{organisationId}/hierarchy/child",
+            new CreateParentChildRelationshipRequest
+            {
+                ParentId = Guid.NewGuid(),
+                ChildId = childOrganisationId
+            });
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
     #endregion
 
     #region Get Child Organisations Tests

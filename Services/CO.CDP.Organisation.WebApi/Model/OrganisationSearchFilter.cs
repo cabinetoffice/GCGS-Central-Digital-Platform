@@ -15,4 +15,10 @@ public enum OrganisationSearchFilter
     /// Used by PPON search to hide organisations that are not yet fully active.
     /// </summary>
     ExcludeOnlyPendingBuyerRoles = 1,
+
+    /// <summary>
+    /// Exclude organisations that already have an active parent organisation.
+    /// Used when searching for organisations that can be added as children.
+    /// </summary>
+    ExcludeOrganisationsWithActiveParent = 2,
 }
