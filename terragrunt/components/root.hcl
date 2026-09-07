@@ -112,7 +112,7 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.1.0"
-      pinned_service_version_fts          = "2.9.0"
+      pinned_service_version_fts          = "2.9.3"
       pinned_service_version              = "1.3.0"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
@@ -282,6 +282,7 @@ locals {
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
     data_sharing                         = {}
+    e2e_nightly_dev                      = { desired_count = 0 }
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
@@ -349,6 +350,7 @@ locals {
     commercial_tools_api                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api", listener_priority = 113 }
     commercial_tools_app                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app", listener_priority = 111 }
     data_sharing                         = { cluster = "sirsi",     type = "web-service",  name = "data-sharing", listener_priority = 114 }
+    e2e_nightly_dev                      = { cluster = "sirsi-php", type = "service",      name = "e2e-nightly-dev" }
     entity_verification                  = { cluster = "sirsi",     type = "web-service",  name = "entity-verification", listener_priority = 115 }
     entity_verification_migrations       = { cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations" }
     forms                                = { cluster = "sirsi",     type = "web-service",  name = "forms", listener_priority = 116 }
