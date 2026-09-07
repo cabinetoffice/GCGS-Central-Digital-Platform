@@ -35,6 +35,8 @@ namespace CO.CDP.OrganisationInformation.Persistence.Repositories
 
             // Lock both organisations in a consistent order so two concurrent requests cannot
             // assign the same child to different parents between validation and insertion.
+            // Keep the lock criteria and ordering inside this SQL. Additional LINQ composition
+            // could change which rows PostgreSQL locks and weaken the concurrency protection.
             var organisations = await _context.Organisations
                 .FromSqlInterpolated($"""
                     SELECT *
