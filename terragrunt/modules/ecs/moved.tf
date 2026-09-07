@@ -45,6 +45,16 @@ moved {
   from = aws_sfn_state_machine.ecs_run_one_off_task["fts-ocds-export-seeder"]
   to   = aws_sfn_state_machine.ecs_run_task["fts-ocds-export-seeder"]
 }
+# One-off task module indexing (introduced `count` to conditionally provision the seeder task).
+moved {
+  from = module.ecs_task_fts_ocds_export_seeder.aws_ecs_task_definition.this
+  to   = module.ecs_task_fts_ocds_export_seeder[0].aws_ecs_task_definition.this
+}
+
+moved {
+  from = module.ecs_task_fts_ocds_export_seeder.time_sleep.listener_rule_propagation
+  to   = module.ecs_task_fts_ocds_export_seeder[0].time_sleep.listener_rule_propagation
+}
 
 # Existing migration task definition moves (historical refactor)
 moved {

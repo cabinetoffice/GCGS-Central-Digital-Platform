@@ -1,6 +1,8 @@
 module "ecs_task_fts_ocds_export_seeder" {
   source = "../ecs-service"
 
+  count = var.service_configs.ocds_export_seeder.desired_count == 0 ? 0 : 1
+
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.ocds_export_seeder.name}.json.tftpl",
     merge(
