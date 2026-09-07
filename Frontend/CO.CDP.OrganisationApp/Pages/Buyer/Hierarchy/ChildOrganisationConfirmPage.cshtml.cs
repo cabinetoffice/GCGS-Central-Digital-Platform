@@ -99,6 +99,13 @@ public class ChildOrganisationConfirmPage(
                 WarningMessage = @StaticTextResource
                     .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsParent;
             }
+            else if (await IsChildConnectedAsChild())
+            {
+                WarningTagMessage = @StaticTextResource
+                    .BuyerParentChildRelationship_ConfirmPage_Tag_ChildConnectedAsChild;
+                WarningMessage = @StaticTextResource
+                    .BuyerParentChildRelationship_ConfirmPage_Warning_ChildConnectedAsChild;
+            }
         }
         catch (Exception ex)
         {
@@ -126,6 +133,27 @@ public class ChildOrganisationConfirmPage(
 
         return false;
     }
+
+    private async Task<bool> IsChildConnectedAsChild()
+    {
+        var connectedChildren = await _organisationClient.GetChildOrganisationsAsync(Id);
+        if (connectedChildren == null || connectedChildren.Count == 0)
+        {
+            return false;
+        }
+
+        var childOrganisationMatch = connectedChildren.FirstOrDefault(x => x.Id == ChildId);
+        if (childOrganisationMatch == null)
+        {
+            return false;
+        }
+
+        _logger.LogInformation("Child organisation {ChildId} is already assigned to parent {ParentId}",
+            ChildId, Id);
+
+        return true;
+    }
+
     private async Task<bool> IsChildConnectedAsParent()
     {
         var connectedParents = await _organisationClient.GetParentOrganisationsAsync(Id);
