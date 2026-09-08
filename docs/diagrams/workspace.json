@@ -5,11 +5,10 @@
   "description" : "Description",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2024-10-03T15:37:07Z",
+  "lastModifiedDate" : "2026-09-08T09:59:34Z",
   "model" : {
     "people" : [ {
       "id" : "1",
-      "location" : "Unspecified",
       "name" : "Supplier",
       "properties" : {
         "structurizr.dsl.identifier" : "supplier"
@@ -18,9 +17,6 @@
         "description" : "Uses",
         "destinationId" : "103",
         "id" : "104",
-        "properties" : {
-          "structurizr.dsl.identifier" : "c4ecbbf3-7f6e-4e2a-8776-9b7f9c1aa1da"
-        },
         "sourceId" : "1",
         "tags" : "Relationship",
         "technology" : "HTTPS"
@@ -42,7 +38,6 @@
       "tags" : "Element,Person"
     }, {
       "id" : "2",
-      "location" : "Unspecified",
       "name" : "Buyer",
       "properties" : {
         "structurizr.dsl.identifier" : "buyer"
@@ -51,9 +46,6 @@
         "description" : "Uses",
         "destinationId" : "103",
         "id" : "107",
-        "properties" : {
-          "structurizr.dsl.identifier" : "ea09b758-5ff7-4da8-95ce-270ec42d825d"
-        },
         "sourceId" : "2",
         "tags" : "Relationship",
         "technology" : "HTTPS"
@@ -75,9 +67,6 @@
         "description" : "Uses",
         "destinationId" : "3",
         "id" : "157",
-        "properties" : {
-          "structurizr.dsl.identifier" : "fe4cd8ce-c857-49c8-bcd0-3e9f6947c666"
-        },
         "sourceId" : "2",
         "tags" : "Relationship"
       } ],
@@ -87,18 +76,14 @@
       "description" : "Commercial Software that Buyers use to manage tender processes",
       "documentation" : { },
       "id" : "3",
-      "location" : "Unspecified",
       "name" : "eSender",
       "properties" : {
-        "structurizr.dsl.identifier" : "esender"
+        "structurizr.dsl.identifier" : "eSender"
       },
       "relationships" : [ {
         "description" : "Looks up supplier information",
         "destinationId" : "88",
         "id" : "154",
-        "properties" : {
-          "structurizr.dsl.identifier" : "d406ad2e-ac2f-4f97-a938-f0fc4d21f3c3"
-        },
         "sourceId" : "3",
         "tags" : "Relationship",
         "technology" : "HTTPS/json"
@@ -122,36 +107,32 @@
       "description" : "Let users sign in and prove their identities to use your service",
       "documentation" : { },
       "id" : "4",
-      "location" : "Unspecified",
       "name" : "Gov.uk One Login",
       "properties" : {
-        "structurizr.dsl.identifier" : "onelogin"
+        "structurizr.dsl.identifier" : "oneLogin"
       },
       "tags" : "Element,Software System"
     }, {
       "description" : "Sends emails, text messages and letters",
       "documentation" : { },
       "id" : "5",
-      "location" : "Unspecified",
       "name" : "Gov.uk Notify",
       "properties" : {
-        "structurizr.dsl.identifier" : "govuknotify"
+        "structurizr.dsl.identifier" : "govUkNotify"
       },
       "tags" : "Element,Software System"
     }, {
       "description" : "Provides registered company details",
       "documentation" : { },
       "id" : "6",
-      "location" : "Unspecified",
       "name" : "Companies House",
       "properties" : {
-        "structurizr.dsl.identifier" : "companieshouse"
+        "structurizr.dsl.identifier" : "companiesHouse"
       },
       "tags" : "Element,Software System"
     }, {
       "documentation" : { },
       "id" : "7",
-      "location" : "Unspecified",
       "name" : "Find a Tender",
       "properties" : {
         "structurizr.dsl.identifier" : "fts"
@@ -160,18 +141,12 @@
         "description" : "Authenticates with",
         "destinationId" : "4",
         "id" : "158",
-        "properties" : {
-          "structurizr.dsl.identifier" : "8cd5f5c5-4ce1-44a4-a5c9-28ba2fa0cd76"
-        },
         "sourceId" : "7",
         "tags" : "Relationship"
       }, {
         "description" : "Authenticates with",
         "destinationId" : "34",
         "id" : "159",
-        "properties" : {
-          "structurizr.dsl.identifier" : "d88b242c-b918-45df-9b2f-122e659e8dcc"
-        },
         "sourceId" : "7",
         "tags" : "Relationship"
       }, {
@@ -190,27 +165,18 @@
         "description" : "Retrieves OpenID configuration from",
         "destinationId" : "32",
         "id" : "162",
-        "properties" : {
-          "structurizr.dsl.identifier" : "97557f1b-a54d-4ec3-8589-d179ec4faf3f"
-        },
         "sourceId" : "7",
         "tags" : "Relationship"
       }, {
         "description" : "Retrieves Json Web Key Set from",
         "destinationId" : "33",
         "id" : "163",
-        "properties" : {
-          "structurizr.dsl.identifier" : "e17a1acb-6547-4b83-8d8d-85fe2b0606cc"
-        },
         "sourceId" : "7",
         "tags" : "Relationship"
       }, {
         "description" : "Calls",
         "destinationId" : "60",
         "id" : "164",
-        "properties" : {
-          "structurizr.dsl.identifier" : "a30bcfa8-8853-4621-85d4-676749c937f9"
-        },
         "sourceId" : "7",
         "tags" : "Relationship",
         "technology" : "HTTPS/json"
@@ -224,53 +190,41 @@
       } ],
       "tags" : "Element,Software System"
     }, {
+      "description" : "Centralises all the central digital platform data for analytics.",
       "documentation" : { },
       "id" : "8",
-      "location" : "Unspecified",
-      "name" : "Supplier Information and Contracts Finder",
+      "name" : "Data Analytics Platform",
       "properties" : {
-        "structurizr.dsl.identifier" : "cfs"
+        "structurizr.dsl.identifier" : "dataPlatform"
       },
       "relationships" : [ {
-        "description" : "Authenticates with",
-        "destinationId" : "30",
+        "description" : "Pulls data from",
+        "destinationId" : "7",
         "id" : "166",
-        "properties" : {
-          "structurizr.dsl.identifier" : "21d6178a-24d5-4db5-b03b-39d84065a878"
-        },
         "sourceId" : "8",
         "tags" : "Relationship"
       }, {
-        "description" : "Authenticates with",
+        "description" : "Pulls data from",
         "destinationId" : "10",
         "id" : "167",
-        "linkedRelationshipId" : "166",
-        "sourceId" : "8"
+        "sourceId" : "8",
+        "tags" : "Relationship"
       } ],
       "tags" : "Element,Software System"
     }, {
+      "description" : "Payment reporting.",
       "documentation" : { },
       "id" : "9",
-      "location" : "Unspecified",
-      "name" : "Public Procurement Gateway",
+      "name" : "Payments System",
       "properties" : {
-        "structurizr.dsl.identifier" : "ppg"
+        "structurizr.dsl.identifier" : "payments"
       },
       "relationships" : [ {
         "description" : "Authenticates with",
-        "destinationId" : "30",
+        "destinationId" : "10",
         "id" : "168",
-        "properties" : {
-          "structurizr.dsl.identifier" : "2414017a-eb31-4726-86e9-70116cc08b9a"
-        },
         "sourceId" : "9",
         "tags" : "Relationship"
-      }, {
-        "description" : "Authenticates with",
-        "destinationId" : "10",
-        "id" : "169",
-        "linkedRelationshipId" : "168",
-        "sourceId" : "9"
       } ],
       "tags" : "Element,Software System"
     }, {
@@ -279,7 +233,7 @@
         "id" : "11",
         "name" : "Message Queue",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.messagequeue"
+          "structurizr.dsl.identifier" : "sirsi.messageQueue"
         },
         "tags" : "Element,Container,Message Queue",
         "technology" : "SQS"
@@ -289,7 +243,7 @@
         "id" : "12",
         "name" : "Entity Verification Database",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.entityverificationdatabase"
+          "structurizr.dsl.identifier" : "sirsi.entityVerificationDatabase"
         },
         "tags" : "Element,Container,Database",
         "technology" : "PostgreSQL"
@@ -301,15 +255,12 @@
           "id" : "14",
           "name" : "MQ",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.entityverification.mq"
+            "structurizr.dsl.identifier" : "sirsi.entityVerification.mq"
           },
           "relationships" : [ {
             "description" : "publishes to / listens to",
             "destinationId" : "11",
             "id" : "23",
-            "properties" : {
-              "structurizr.dsl.identifier" : "78e98285-5119-4094-b169-a5712b7e0d0f"
-            },
             "sourceId" : "14",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -317,9 +268,6 @@
             "description" : "Calls",
             "destinationId" : "17",
             "id" : "25",
-            "properties" : {
-              "structurizr.dsl.identifier" : "c468e1e2-78fa-4f51-bf31-8c9d7c11835c"
-            },
             "sourceId" : "14",
             "tags" : "Relationship"
           } ],
@@ -331,15 +279,12 @@
           "id" : "15",
           "name" : "Entity Verification Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.entityverification.entityverificationendpoint"
+            "structurizr.dsl.identifier" : "sirsi.entityVerification.entityVerificationEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "16",
             "id" : "19",
-            "properties" : {
-              "structurizr.dsl.identifier" : "dc17813f-23e0-4e9c-a45d-754b3be45197"
-            },
             "sourceId" : "15",
             "tags" : "Relationship"
           } ],
@@ -350,24 +295,18 @@
           "id" : "16",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.entityverification.usecase"
+            "structurizr.dsl.identifier" : "sirsi.entityVerification.useCase"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "18",
             "id" : "20",
-            "properties" : {
-              "structurizr.dsl.identifier" : "a35d0254-1aaa-438b-9e79-eb74355cdaa3"
-            },
             "sourceId" : "16",
             "tags" : "Relationship"
           }, {
             "description" : "Calls",
             "destinationId" : "14",
             "id" : "22",
-            "properties" : {
-              "structurizr.dsl.identifier" : "2ac17e00-c8ba-4695-a441-e43301591c0c"
-            },
             "sourceId" : "16",
             "tags" : "Relationship"
           } ],
@@ -377,15 +316,12 @@
           "id" : "17",
           "name" : "Message Subscriber",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.entityverification.mqsubscriber"
+            "structurizr.dsl.identifier" : "sirsi.entityVerification.mqSubscriber"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "18",
             "id" : "21",
-            "properties" : {
-              "structurizr.dsl.identifier" : "3dde2c3d-1c99-416f-8412-0964c461e73b"
-            },
             "sourceId" : "17",
             "tags" : "Relationship"
           } ],
@@ -396,15 +332,12 @@
           "id" : "18",
           "name" : "Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.entityverification.persistence"
+            "structurizr.dsl.identifier" : "sirsi.entityVerification.persistence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "12",
             "id" : "26",
-            "properties" : {
-              "structurizr.dsl.identifier" : "c7e76a6d-4b7a-43fd-a760-e738b7cbf116"
-            },
             "sourceId" : "18",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -417,7 +350,7 @@
         "id" : "13",
         "name" : "Entity Verification",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.entityverification"
+          "structurizr.dsl.identifier" : "sirsi.entityVerification"
         },
         "relationships" : [ {
           "description" : "publishes to / listens to",
@@ -442,7 +375,7 @@
         "id" : "28",
         "name" : "Organisation Information Database",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.organisationinformationdatabase"
+          "structurizr.dsl.identifier" : "sirsi.organisationInformationDatabase"
         },
         "tags" : "Element,Container,Database",
         "technology" : "PostgreSQL"
@@ -452,7 +385,7 @@
         "id" : "29",
         "name" : "File Storage",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.filestorage"
+          "structurizr.dsl.identifier" : "sirsi.fileStorage"
         },
         "tags" : "Element,Container,File Storage",
         "technology" : "S3"
@@ -464,15 +397,12 @@
           "id" : "31",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.authority.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.authority.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "38",
-            "properties" : {
-              "structurizr.dsl.identifier" : "2eb1bb39-7167-4002-805e-34ff30622ea7"
-            },
             "sourceId" : "31",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -485,7 +415,7 @@
           "id" : "32",
           "name" : "OpenID Well-Known Configuration Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.authority.openidconfigurationendpoint"
+            "structurizr.dsl.identifier" : "sirsi.authority.openIdConfigurationEndpoint"
           },
           "tags" : "Element,Component",
           "technology" : "Asp.Net Core Web API"
@@ -495,7 +425,7 @@
           "id" : "33",
           "name" : "OpenID Well-Known JWKS Configuration Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.authority.openidjwksconfigurationendpoint"
+            "structurizr.dsl.identifier" : "sirsi.authority.openIdJwksConfigurationEndpoint"
           },
           "tags" : "Element,Component",
           "technology" : "Asp.Net Core Web API"
@@ -505,15 +435,12 @@
           "id" : "34",
           "name" : "Token endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.authority.tokenendpoint"
+            "structurizr.dsl.identifier" : "sirsi.authority.tokenEndpoint"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "35",
             "id" : "36",
-            "properties" : {
-              "structurizr.dsl.identifier" : "85b0367f-237f-44bf-bb21-391c5df09531"
-            },
             "sourceId" : "34",
             "tags" : "Relationship"
           } ],
@@ -525,15 +452,12 @@
           "id" : "35",
           "name" : "Token Service",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.authority.tokenservice"
+            "structurizr.dsl.identifier" : "sirsi.authority.tokenService"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "31",
             "id" : "37",
-            "properties" : {
-              "structurizr.dsl.identifier" : "75353b92-91f6-42d5-9158-e9fd365a5688"
-            },
             "sourceId" : "35",
             "tags" : "Relationship"
           } ],
@@ -544,7 +468,7 @@
         "id" : "30",
         "name" : "Authority",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.authority"
+          "structurizr.dsl.identifier" : "sirsi.authority"
         },
         "relationships" : [ {
           "description" : "reads/writes",
@@ -564,15 +488,12 @@
           "id" : "41",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.tenantapi.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.tenantApi.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "46",
-            "properties" : {
-              "structurizr.dsl.identifier" : "36e9209b-f5e8-4d89-86ec-48b62314aa9a"
-            },
             "sourceId" : "41",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -584,15 +505,12 @@
           "id" : "42",
           "name" : "Tenant Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.tenantapi.tenantendpoint"
+            "structurizr.dsl.identifier" : "sirsi.tenantApi.tenantEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "43",
             "id" : "44",
-            "properties" : {
-              "structurizr.dsl.identifier" : "29c9cbb6-3dd7-4030-81db-4d9a2678f39f"
-            },
             "sourceId" : "42",
             "tags" : "Relationship"
           } ],
@@ -603,15 +521,12 @@
           "id" : "43",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.tenantapi.usecase"
+            "structurizr.dsl.identifier" : "sirsi.tenantApi.useCase"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "41",
             "id" : "45",
-            "properties" : {
-              "structurizr.dsl.identifier" : "1d26b5cd-2ca3-43de-b9b5-418405fce1ff"
-            },
             "sourceId" : "43",
             "tags" : "Relationship"
           } ],
@@ -622,7 +537,7 @@
         "id" : "40",
         "name" : "Tenant API",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.tenantapi"
+          "structurizr.dsl.identifier" : "sirsi.tenantApi"
         },
         "relationships" : [ {
           "description" : "reads/writes",
@@ -642,15 +557,12 @@
           "id" : "49",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.personapi.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.personApi.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "54",
-            "properties" : {
-              "structurizr.dsl.identifier" : "cb2a1993-823d-450b-9efc-4bc778e7e292"
-            },
             "sourceId" : "49",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -662,15 +574,12 @@
           "id" : "50",
           "name" : "Person Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.personapi.personendpoint"
+            "structurizr.dsl.identifier" : "sirsi.personApi.personEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "51",
             "id" : "52",
-            "properties" : {
-              "structurizr.dsl.identifier" : "70ca01ad-0c07-4a79-8638-ce2114c3b935"
-            },
             "sourceId" : "50",
             "tags" : "Relationship"
           } ],
@@ -681,15 +590,12 @@
           "id" : "51",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.personapi.usecase"
+            "structurizr.dsl.identifier" : "sirsi.personApi.useCase"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "49",
             "id" : "53",
-            "properties" : {
-              "structurizr.dsl.identifier" : "aa2b5854-dc21-4faa-8828-0eca69ad75c1"
-            },
             "sourceId" : "51",
             "tags" : "Relationship"
           } ],
@@ -700,7 +606,7 @@
         "id" : "48",
         "name" : "Person API",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.personapi"
+          "structurizr.dsl.identifier" : "sirsi.personApi"
         },
         "relationships" : [ {
           "description" : "reads/writes",
@@ -720,15 +626,12 @@
           "id" : "57",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "68",
-            "properties" : {
-              "structurizr.dsl.identifier" : "501d29a5-6d5a-4fa1-aa3b-98587e7659cf"
-            },
             "sourceId" : "57",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -742,15 +645,12 @@
           "id" : "58",
           "name" : "MQ",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.mq"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.mq"
           },
           "relationships" : [ {
             "description" : "publishes to / listens to",
             "destinationId" : "11",
             "id" : "70",
-            "properties" : {
-              "structurizr.dsl.identifier" : "efc5d958-f3c1-441e-b5a3-5e04902be2a0"
-            },
             "sourceId" : "58",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -758,9 +658,6 @@
             "description" : "Calls",
             "destinationId" : "62",
             "id" : "72",
-            "properties" : {
-              "structurizr.dsl.identifier" : "3264ba9c-6ccb-430d-b561-dba185c871f8"
-            },
             "sourceId" : "58",
             "tags" : "Relationship"
           } ],
@@ -773,15 +670,12 @@
           "id" : "59",
           "name" : "Gov.uk Notify",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.govuknotifyclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.govUkNotifyClient"
           },
           "relationships" : [ {
             "description" : "sends notifications with",
             "destinationId" : "5",
             "id" : "73",
-            "properties" : {
-              "structurizr.dsl.identifier" : "76da6df8-59e4-4708-bdd3-301f87e310fa"
-            },
             "sourceId" : "59",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -793,15 +687,12 @@
           "id" : "60",
           "name" : "Organisation Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.organisationendpoint"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.organisationEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "61",
             "id" : "63",
-            "properties" : {
-              "structurizr.dsl.identifier" : "378aef01-e616-4b2d-a53f-ed4f53f89f6d"
-            },
             "sourceId" : "60",
             "tags" : "Relationship"
           } ],
@@ -812,33 +703,24 @@
           "id" : "61",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.usecase"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.useCase"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "57",
             "id" : "64",
-            "properties" : {
-              "structurizr.dsl.identifier" : "0a32c3cb-ecdc-4528-b168-97d4184cf9ba"
-            },
             "sourceId" : "61",
             "tags" : "Relationship"
           }, {
             "description" : "Calls",
             "destinationId" : "58",
             "id" : "65",
-            "properties" : {
-              "structurizr.dsl.identifier" : "2199a1f1-d68a-4b3d-b0a5-e8a938faae30"
-            },
             "sourceId" : "61",
             "tags" : "Relationship"
           }, {
             "description" : "Calls",
             "destinationId" : "59",
             "id" : "66",
-            "properties" : {
-              "structurizr.dsl.identifier" : "d31222b2-b470-45c9-a42d-9fd19f23ea78"
-            },
             "sourceId" : "61",
             "tags" : "Relationship"
           } ],
@@ -848,15 +730,12 @@
           "id" : "62",
           "name" : "Message Subscriber",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapi.mqsubscriber"
+            "structurizr.dsl.identifier" : "sirsi.organisationApi.mqSubscriber"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "57",
             "id" : "67",
-            "properties" : {
-              "structurizr.dsl.identifier" : "928a45c6-1cf5-4a7e-a24e-05576a914a5f"
-            },
             "sourceId" : "62",
             "tags" : "Relationship"
           } ],
@@ -867,7 +746,7 @@
         "id" : "56",
         "name" : "Organisation API",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.organisationapi"
+          "structurizr.dsl.identifier" : "sirsi.organisationApi"
         },
         "relationships" : [ {
           "description" : "reads/writes",
@@ -901,15 +780,12 @@
           "id" : "77",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.formsapi.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.formsApi.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "84",
-            "properties" : {
-              "structurizr.dsl.identifier" : "e2e2ffff-156a-4f95-bf48-d1001fa71268"
-            },
             "sourceId" : "77",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -921,15 +797,12 @@
           "id" : "78",
           "name" : "Forms Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.formsapi.formsendpoint"
+            "structurizr.dsl.identifier" : "sirsi.formsApi.formsEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "79",
             "id" : "80",
-            "properties" : {
-              "structurizr.dsl.identifier" : "42bbbf16-60b4-4f4d-ab6a-1e36d315fa3b"
-            },
             "sourceId" : "78",
             "tags" : "Relationship"
           } ],
@@ -940,15 +813,12 @@
           "id" : "79",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.formsapi.usecase"
+            "structurizr.dsl.identifier" : "sirsi.formsApi.useCase"
           },
           "relationships" : [ {
             "description" : "writes to",
             "destinationId" : "29",
             "id" : "81",
-            "properties" : {
-              "structurizr.dsl.identifier" : "26f059f8-12dc-442f-9b30-f877e627dd5e"
-            },
             "sourceId" : "79",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -956,9 +826,6 @@
             "description" : "Calls",
             "destinationId" : "77",
             "id" : "83",
-            "properties" : {
-              "structurizr.dsl.identifier" : "f5b11871-4fd3-4167-99d2-2ac80a12ed61"
-            },
             "sourceId" : "79",
             "tags" : "Relationship"
           } ],
@@ -969,7 +836,7 @@
         "id" : "76",
         "name" : "Forms API",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.formsapi"
+          "structurizr.dsl.identifier" : "sirsi.formsApi"
         },
         "relationships" : [ {
           "description" : "writes to",
@@ -996,15 +863,12 @@
           "id" : "87",
           "name" : "Organisation Information Persistence",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.datasharingapi.organisationinformationpersisence"
+            "structurizr.dsl.identifier" : "sirsi.dataSharingApi.organisationInformationPersisence"
           },
           "relationships" : [ {
             "description" : "reads/writes",
             "destinationId" : "28",
             "id" : "94",
-            "properties" : {
-              "structurizr.dsl.identifier" : "e150cb3d-c29f-4102-8a2f-0baef2fb6f88"
-            },
             "sourceId" : "87",
             "tags" : "Relationship",
             "technology" : "SQL"
@@ -1016,15 +880,12 @@
           "id" : "88",
           "name" : "Data Sharing Endpoint",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.datasharingapi.datasharingendpoint"
+            "structurizr.dsl.identifier" : "sirsi.dataSharingApi.dataSharingEndpoint"
           },
           "relationships" : [ {
             "description" : "Executes",
             "destinationId" : "89",
             "id" : "90",
-            "properties" : {
-              "structurizr.dsl.identifier" : "83ee26c6-8d54-469d-bc9e-5194700aa1cc"
-            },
             "sourceId" : "88",
             "tags" : "Relationship"
           } ],
@@ -1035,15 +896,12 @@
           "id" : "89",
           "name" : "Use Case",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.datasharingapi.usecase"
+            "structurizr.dsl.identifier" : "sirsi.dataSharingApi.useCase"
           },
           "relationships" : [ {
             "description" : "writes to / reads from",
             "destinationId" : "29",
             "id" : "91",
-            "properties" : {
-              "structurizr.dsl.identifier" : "b63a7d89-5cdb-468a-b147-0d419a20b574"
-            },
             "sourceId" : "89",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -1051,9 +909,6 @@
             "description" : "Calls",
             "destinationId" : "87",
             "id" : "93",
-            "properties" : {
-              "structurizr.dsl.identifier" : "aa276de4-001a-4bcd-82a8-586831182960"
-            },
             "sourceId" : "89",
             "tags" : "Relationship"
           } ],
@@ -1064,7 +919,7 @@
         "id" : "86",
         "name" : "Data Sharing API",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.datasharingapi"
+          "structurizr.dsl.identifier" : "sirsi.dataSharingApi"
         },
         "relationships" : [ {
           "description" : "writes to / reads from",
@@ -1091,15 +946,12 @@
           "id" : "97",
           "name" : "Tenant Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.tenantclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.tenantClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "42",
             "id" : "128",
-            "properties" : {
-              "structurizr.dsl.identifier" : "9c1421b8-7d0e-446e-bd88-da72662a3fd8"
-            },
             "sourceId" : "97",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1120,15 +972,12 @@
           "id" : "98",
           "name" : "Person Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.personclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.personClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "50",
             "id" : "132",
-            "properties" : {
-              "structurizr.dsl.identifier" : "924f0ef3-5533-4e44-b668-057db71f9126"
-            },
             "sourceId" : "98",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1149,15 +998,12 @@
           "id" : "99",
           "name" : "Organisation Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.organisationclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.organisationClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "60",
             "id" : "136",
-            "properties" : {
-              "structurizr.dsl.identifier" : "d960b26c-8cff-4e7a-9f00-b033888d3f88"
-            },
             "sourceId" : "99",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1178,15 +1024,12 @@
           "id" : "100",
           "name" : "Forms Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.formsclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.formsClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "78",
             "id" : "140",
-            "properties" : {
-              "structurizr.dsl.identifier" : "7a844e55-912a-4588-8698-7deb50229e8b"
-            },
             "sourceId" : "100",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1207,15 +1050,12 @@
           "id" : "101",
           "name" : "Data Sharing Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.datasharingclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.dataSharingClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "88",
             "id" : "144",
-            "properties" : {
-              "structurizr.dsl.identifier" : "f72734e2-d463-4bb9-91b5-eb657aa77944"
-            },
             "sourceId" : "101",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1236,15 +1076,12 @@
           "id" : "102",
           "name" : "Entity Verification Client",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.entityverificationclient"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.entityVerificationClient"
           },
           "relationships" : [ {
             "description" : "Calls",
             "destinationId" : "15",
             "id" : "148",
-            "properties" : {
-              "structurizr.dsl.identifier" : "dab44bef-01d7-4a73-af18-4444a6cf7ae1"
-            },
             "sourceId" : "102",
             "tags" : "Relationship",
             "technology" : "HTTPS/json"
@@ -1264,15 +1101,12 @@
           "id" : "103",
           "name" : "MVC Controller",
           "properties" : {
-            "structurizr.dsl.identifier" : "cdp.organisationapp.mvccontroller"
+            "structurizr.dsl.identifier" : "sirsi.organisationApp.mvcController"
           },
           "relationships" : [ {
             "description" : "Authenticates with",
             "destinationId" : "4",
             "id" : "110",
-            "properties" : {
-              "structurizr.dsl.identifier" : "e4a7109b-f660-4e85-8294-40bd0c30a277"
-            },
             "sourceId" : "103",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -1280,9 +1114,6 @@
             "description" : "Pulls company details from",
             "destinationId" : "6",
             "id" : "113",
-            "properties" : {
-              "structurizr.dsl.identifier" : "948617eb-f526-4da6-8274-f6104bb164a0"
-            },
             "sourceId" : "103",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -1290,9 +1121,6 @@
             "description" : "Authenticates and authorises with",
             "destinationId" : "34",
             "id" : "116",
-            "properties" : {
-              "structurizr.dsl.identifier" : "39f027ac-07b2-4843-93e0-cf92faa60244"
-            },
             "sourceId" : "103",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -1307,63 +1135,42 @@
             "description" : "Uses",
             "destinationId" : "97",
             "id" : "120",
-            "properties" : {
-              "structurizr.dsl.identifier" : "55f70219-3d5e-438f-a62d-e5546c42c13a"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
             "destinationId" : "98",
             "id" : "121",
-            "properties" : {
-              "structurizr.dsl.identifier" : "78aa8454-d0e3-4864-bbec-3d1efbfc09a4"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
             "destinationId" : "99",
             "id" : "122",
-            "properties" : {
-              "structurizr.dsl.identifier" : "6b6a21be-1c83-4ce2-a0f9-bdc6c6509a56"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
             "destinationId" : "100",
             "id" : "123",
-            "properties" : {
-              "structurizr.dsl.identifier" : "e2510b33-bef1-4693-9bdb-cdbb3ad565eb"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
             "destinationId" : "101",
             "id" : "124",
-            "properties" : {
-              "structurizr.dsl.identifier" : "0907768c-fb2f-4ea3-b145-dea02f9706bf"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "Uses",
             "destinationId" : "102",
             "id" : "125",
-            "properties" : {
-              "structurizr.dsl.identifier" : "c96d0e02-5703-45a9-b4ff-ce8243b43a51"
-            },
             "sourceId" : "103",
             "tags" : "Relationship"
           }, {
             "description" : "writes to",
             "destinationId" : "29",
             "id" : "126",
-            "properties" : {
-              "structurizr.dsl.identifier" : "64e582d5-aa55-4146-b081-7e4fdd5da171"
-            },
             "sourceId" : "103",
             "tags" : "Relationship",
             "technology" : "HTTPS"
@@ -1377,7 +1184,7 @@
         "id" : "96",
         "name" : "Organisation App",
         "properties" : {
-          "structurizr.dsl.identifier" : "cdp.organisationapp"
+          "structurizr.dsl.identifier" : "sirsi.organisationApp"
         },
         "relationships" : [ {
           "description" : "Authenticates with",
@@ -1502,31 +1309,24 @@
           "description" : "Retrieves OpenID configuration from",
           "destinationId" : "32",
           "id" : "152",
-          "properties" : {
-            "structurizr.dsl.identifier" : "8a683f3f-9606-48dd-8198-a9e069e016e5"
-          },
           "sourceId" : "96",
           "tags" : "Relationship"
         }, {
           "description" : "Retrieves Json Web Key Set from",
           "destinationId" : "33",
           "id" : "153",
-          "properties" : {
-            "structurizr.dsl.identifier" : "39559002-db20-4a3b-812a-db7ef35585de"
-          },
           "sourceId" : "96",
           "tags" : "Relationship"
         } ],
         "tags" : "Element,Container,WebApp",
         "technology" : "Asp.Net Core MVC"
       } ],
-      "description" : "Supports procurement",
+      "description" : "Supplier Information, Registration and Sign-In. Supports procurement.",
       "documentation" : { },
       "id" : "10",
-      "location" : "Unspecified",
-      "name" : "Central Digital Platform",
+      "name" : "SIRSI",
       "properties" : {
-        "structurizr.dsl.identifier" : "cdp"
+        "structurizr.dsl.identifier" : "sirsi"
       },
       "relationships" : [ {
         "description" : "sends notifications with",
@@ -1555,7 +1355,10 @@
   },
   "name" : "Central Digital Platform",
   "properties" : {
-    "structurizr.dsl" : "d29ya3NwYWNlICJDZW50cmFsIERpZ2l0YWwgUGxhdGZvcm0iIHsKCiAgICAhaWRlbnRpZmllcnMgaGllcmFyY2hpY2FsCgogICAgbW9kZWwgewogICAgICAgIHN1cHBsaWVyID0gcGVyc29uICJTdXBwbGllciIKICAgICAgICBidXllciA9IHBlcnNvbiAiQnV5ZXIiCiAgICAgICAgZVNlbmRlciA9IHNvZnR3YXJlU3lzdGVtICJlU2VuZGVyIiAiQ29tbWVyY2lhbCBTb2Z0d2FyZSB0aGF0IEJ1eWVycyB1c2UgdG8gbWFuYWdlIHRlbmRlciBwcm9jZXNzZXMiCiAgICAgICAgb25lTG9naW4gPSBzb2Z0d2FyZVN5c3RlbSAiR292LnVrIE9uZSBMb2dpbiIgIkxldCB1c2VycyBzaWduIGluIGFuZCBwcm92ZSB0aGVpciBpZGVudGl0aWVzIHRvIHVzZSB5b3VyIHNlcnZpY2UiCiAgICAgICAgZ292VWtOb3RpZnkgPSBzb2Z0d2FyZVN5c3RlbSAiR292LnVrIE5vdGlmeSIgIlNlbmRzIGVtYWlscywgdGV4dCBtZXNzYWdlcyBhbmQgbGV0dGVycyIKICAgICAgICBjb21wYW5pZXNIb3VzZSA9IHNvZnR3YXJlU3lzdGVtICJDb21wYW5pZXMgSG91c2UiICJQcm92aWRlcyByZWdpc3RlcmVkIGNvbXBhbnkgZGV0YWlscyIKICAgICAgICBmdHMgPSBzb2Z0d2FyZVN5c3RlbSAiRmluZCBhIFRlbmRlciIKICAgICAgICBjZnMgPSBzb2Z0d2FyZVN5c3RlbSAiU3VwcGxpZXIgSW5mb3JtYXRpb24gYW5kIENvbnRyYWN0cyBGaW5kZXIiCiAgICAgICAgcHBnID0gc29mdHdhcmVTeXN0ZW0gIlB1YmxpYyBQcm9jdXJlbWVudCBHYXRld2F5IgogICAgICAgIGNkcCA9IHNvZnR3YXJlU3lzdGVtICJDZW50cmFsIERpZ2l0YWwgUGxhdGZvcm0iICJTdXBwb3J0cyBwcm9jdXJlbWVudCIgewoKICAgICAgICAgICAgbWVzc2FnZVF1ZXVlID0gY29udGFpbmVyICJNZXNzYWdlIFF1ZXVlIiAiIiBTUVMgIk1lc3NhZ2UgUXVldWUiIHsKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZ3JvdXAgIkVudGl0eSBWZXJpZmljYXRpb24iIHsKICAgICAgICAgICAgICAgIGVudGl0eVZlcmlmaWNhdGlvbkRhdGFiYXNlID0gY29udGFpbmVyICJFbnRpdHkgVmVyaWZpY2F0aW9uIERhdGFiYXNlIiAiIiBQb3N0Z3JlU1FMIERhdGFiYXNlIHsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGVudGl0eVZlcmlmaWNhdGlvbiA9IGNvbnRhaW5lciAiRW50aXR5IFZlcmlmaWNhdGlvbiIgIiIgIkFzcC5OZXQgQ29yZSIgV2ViQXBpIHsKICAgICAgICAgICAgICAgICAgICBncm91cCAiTGlicmFyaWVzIiB7CiAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICBtcSA9IGNvbXBvbmVudCAiTVEiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiTWVzc2FnZSBRdWV1ZSBjbGllbnQiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIGVudGl0eVZlcmlmaWNhdGlvbkVuZHBvaW50ID0gY29tcG9uZW50ICJFbnRpdHkgVmVyaWZpY2F0aW9uIEVuZHBvaW50IiAiUXVlcmllcyBrbm93biBpZGVudGlmZXJzLiIgIkFzcC5OZXQgQ29yZSBXZWIgQVBJIgogICAgICAgICAgICAgICAgICAgIHVzZUNhc2UgPSBjb21wb25lbnQgIlVzZSBDYXNlIgogICAgICAgICAgICAgICAgICAgIG1xU3Vic2NyaWJlciA9IGNvbXBvbmVudCAiTWVzc2FnZSBTdWJzY3JpYmVyIgogICAgICAgICAgICAgICAgICAgIHBlcnNpc3RlbmNlID0gY29tcG9uZW50ICJQZXJzaXN0ZW5jZSIgIkVudGl0eUZyYW1ld29yayBDb3JlIG1vZGVsIGFuZCByZXBvc2l0b3JpZXMiICJDIyBOYW1lc3BhY2UiCiAgICAgICAgICAgICAgICAgICAgZW50aXR5VmVyaWZpY2F0aW9uRW5kcG9pbnQgLT4gdXNlQ2FzZSAiRXhlY3V0ZXMiCiAgICAgICAgICAgICAgICAgICAgdXNlQ2FzZSAtPiBwZXJzaXN0ZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgbXFTdWJzY3JpYmVyIC0+IHBlcnNpc3RlbmNlICJDYWxscyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IG1xICJDYWxscyIKICAgICAgICAgICAgICAgICAgICBtcSAtPiBtZXNzYWdlUXVldWUgInB1Ymxpc2hlcyB0byAvIGxpc3RlbnMgdG8iICJIVFRQUyIKICAgICAgICAgICAgICAgICAgICBtcSAtPiBtcVN1YnNjcmliZXIgIkNhbGxzIgogICAgICAgICAgICAgICAgICAgIHBlcnNpc3RlbmNlIC0+IGVudGl0eVZlcmlmaWNhdGlvbkRhdGFiYXNlICJyZWFkcy93cml0ZXMiICJTUUwiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGdyb3VwICJPcmdhbmlzYXRpb24gSW5mb3JtYXRpb24iIHsKICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uRGF0YWJhc2UgPSBjb250YWluZXIgIk9yZ2FuaXNhdGlvbiBJbmZvcm1hdGlvbiBEYXRhYmFzZSIgIiIgUG9zdGdyZVNRTCBEYXRhYmFzZSB7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBmaWxlU3RvcmFnZSA9IGNvbnRhaW5lciAiRmlsZSBTdG9yYWdlIiAiIiBTMyAiRmlsZSBTdG9yYWdlIiB7CiAgICAgICAgICAgICAgICB9CgogICAgICAgICAgICAgICAgYXV0aG9yaXR5ID0gY29udGFpbmVyICJBdXRob3JpdHkiICIiICJBc3AuTmV0IENvcmUiIFdlYkFwaSB7CiAgICAgICAgICAgICAgICAgICAgZ3JvdXAgIkxpYnJhcmllcyIgewogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlID0gY29tcG9uZW50ICJPcmdhbmlzYXRpb24gSW5mb3JtYXRpb24gUGVyc2lzdGVuY2UiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiRXhwb3NlcyB0aGUgZGF0YWJhc2UgbW9kZWwsIHF1ZXJpZXMsIGFuZCBwZXJzaXN0ZW5jZSBvcGVyYXRpb25zIHdpdGggRW50aXR5RnJhbWV3b3JrIENvcmUiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIG9wZW5JZENvbmZpZ3VyYXRpb25FbmRwb2ludCA9IGNvbXBvbmVudCAiT3BlbklEIFdlbGwtS25vd24gQ29uZmlndXJhdGlvbiBFbmRwb2ludCIgIkV4cG9zZXMgT3BlbklEIGNvbmZpZ3VyYXRpb24iICJBc3AuTmV0IENvcmUgV2ViIEFQSSIKICAgICAgICAgICAgICAgICAgICBvcGVuSWRKd2tzQ29uZmlndXJhdGlvbkVuZHBvaW50ID0gY29tcG9uZW50ICJPcGVuSUQgV2VsbC1Lbm93biBKV0tTIENvbmZpZ3VyYXRpb24gRW5kcG9pbnQiICJFeHBvc2VzIEpzb24gV2ViIEtleSBTZXQiICJBc3AuTmV0IENvcmUgV2ViIEFQSSIKICAgICAgICAgICAgICAgICAgICB0b2tlbkVuZHBvaW50ID0gY29tcG9uZW50ICJUb2tlbiBlbmRwb2ludCIgIkV4Y2hhbmdlcyBhIHZhbGlkIE9uZSBMb2dpbiB0b2tlbiB0byBhIGxvbmdlci1saXZlZCB0b2tlbiB3aXRoIGFkZGl0aW9uYWwgY2xhaW1zLiIgIkFzcC5OZXQgQ29yZSBXZWIgQVBJIgogICAgICAgICAgICAgICAgICAgIHRva2VuU2VydmljZSA9IGNvbXBvbmVudCAiVG9rZW4gU2VydmljZSIgIkNyZWF0ZXMgYW5kIHZhbGlkYXRlcyBhdXRoZW50aWNhdGlvbiB0b2tlbnMiCiAgICAgICAgICAgICAgICAgICAgdG9rZW5FbmRwb2ludCAtPiB0b2tlblNlcnZpY2UgIkNhbGxzIgogICAgICAgICAgICAgICAgICAgIHRva2VuU2VydmljZSAtPiBvcmdhbmlzYXRpb25JbmZvcm1hdGlvblBlcnNpc2VuY2UgIkNhbGxzIgogICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAtPiBvcmdhbmlzYXRpb25JbmZvcm1hdGlvbkRhdGFiYXNlICJyZWFkcy93cml0ZXMiICJTUUwiCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB0ZW5hbnRBcGkgPSBjb250YWluZXIgIlRlbmFudCBBUEkiICIiICJBc3AuTmV0IENvcmUiIFdlYkFwaSB7CiAgICAgICAgICAgICAgICAgICAgZ3JvdXAgIkxpYnJhcmllcyIgewogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlID0gY29tcG9uZW50ICJPcmdhbmlzYXRpb24gSW5mb3JtYXRpb24gUGVyc2lzdGVuY2UiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiRXhwb3NlcyB0aGUgZGF0YWJhc2UgbW9kZWwsIHF1ZXJpZXMsIGFuZCBwZXJzaXN0ZW5jZSBvcGVyYXRpb25zIHdpdGggRW50aXR5RnJhbWV3b3JrIENvcmUiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIHRlbmFudEVuZHBvaW50ID0gY29tcG9uZW50ICJUZW5hbnQgRW5kcG9pbnQiICIiICJBc3AuTmV0IENvcmUgV2ViIEFQSSIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlID0gY29tcG9uZW50ICJVc2UgQ2FzZSIKICAgICAgICAgICAgICAgICAgICB0ZW5hbnRFbmRwb2ludCAtPiB1c2VDYXNlICJFeGVjdXRlcyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uRGF0YWJhc2UgInJlYWRzL3dyaXRlcyIgIlNRTCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHBlcnNvbkFwaSA9IGNvbnRhaW5lciAiUGVyc29uIEFQSSIgIiIgIkFzcC5OZXQgQ29yZSIgV2ViQXBpIHsKICAgICAgICAgICAgICAgICAgICBncm91cCAiTGlicmFyaWVzIiB7CiAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICBvcmdhbmlzYXRpb25JbmZvcm1hdGlvblBlcnNpc2VuY2UgPSBjb21wb25lbnQgIk9yZ2FuaXNhdGlvbiBJbmZvcm1hdGlvbiBQZXJzaXN0ZW5jZSIgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiQyMgcHJvamVjdCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJFeHBvc2VzIHRoZSBkYXRhYmFzZSBtb2RlbCwgcXVlcmllcywgYW5kIHBlcnNpc3RlbmNlIG9wZXJhdGlvbnMgd2l0aCBFbnRpdHlGcmFtZXdvcmsgQ29yZSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCBDb21wb25lbnQiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgcGVyc29uRW5kcG9pbnQgPSBjb21wb25lbnQgIlBlcnNvbiBFbmRwb2ludCIgIiIgIkFzcC5OZXQgQ29yZSBXZWIgQVBJIgogICAgICAgICAgICAgICAgICAgIHVzZUNhc2UgPSBjb21wb25lbnQgIlVzZSBDYXNlIgogICAgICAgICAgICAgICAgICAgIHBlcnNvbkVuZHBvaW50IC0+IHVzZUNhc2UgIkV4ZWN1dGVzIgogICAgICAgICAgICAgICAgICAgIHVzZUNhc2UgLT4gb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlICJDYWxscyIKICAgICAgICAgICAgICAgICAgICBvcmdhbmlzYXRpb25JbmZvcm1hdGlvblBlcnNpc2VuY2UgLT4gb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25EYXRhYmFzZSAicmVhZHMvd3JpdGVzIiAiU1FMIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uQXBpID0gY29udGFpbmVyICJPcmdhbmlzYXRpb24gQVBJIiAiIiAiQXNwLk5ldCBDb3JlIiBXZWJBcGkgewogICAgICAgICAgICAgICAgICAgIGdyb3VwICJMaWJyYXJpZXMiIHsKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSA9IGNvbXBvbmVudCAiT3JnYW5pc2F0aW9uIEluZm9ybWF0aW9uIFBlcnNpc3RlbmNlIiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkV4cG9zZXMgdGhlIGRhdGFiYXNlIG1vZGVsLCBxdWVyaWVzLCBhbmQgcGVyc2lzdGVuY2Ugb3BlcmF0aW9ucyB3aXRoIEVudGl0eUZyYW1ld29yayBDb3JlIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIENvbXBvbmVudCIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgbXEgPSBjb21wb25lbnQgIk1RIiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIk1lc3NhZ2UgUXVldWUgY2xpZW50IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIENvbXBvbmVudCIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgZ292VWtOb3RpZnlDbGllbnQgPSBjb21wb25lbnQgIkdvdi51ayBOb3RpZnkiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiR292LnVrIE5vdGlmeSBjbGllbnQiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkVuZHBvaW50ID0gY29tcG9uZW50ICJPcmdhbmlzYXRpb24gRW5kcG9pbnQiICIiICJBc3AuTmV0IENvcmUgV2ViIEFQSSIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlID0gY29tcG9uZW50ICJVc2UgQ2FzZSIKICAgICAgICAgICAgICAgICAgICBtcVN1YnNjcmliZXIgPSBjb21wb25lbnQgIk1lc3NhZ2UgU3Vic2NyaWJlciIKICAgICAgICAgICAgICAgICAgICBvcmdhbmlzYXRpb25FbmRwb2ludCAtPiB1c2VDYXNlICJFeGVjdXRlcyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgdXNlQ2FzZSAtPiBtcSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgdXNlQ2FzZSAtPiBnb3ZVa05vdGlmeUNsaWVudCAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgbXFTdWJzY3JpYmVyIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uRGF0YWJhc2UgInJlYWRzL3dyaXRlcyIgIlNRTCIKICAgICAgICAgICAgICAgICAgICBtcSAtPiBtZXNzYWdlUXVldWUgInB1Ymxpc2hlcyB0byAvIGxpc3RlbnMgdG8iICJIVFRQUyIKICAgICAgICAgICAgICAgICAgICBtcSAtPiBtcVN1YnNjcmliZXIgIkNhbGxzIgogICAgICAgICAgICAgICAgICAgIGdvdlVrTm90aWZ5Q2xpZW50IC0+IGdvdlVrTm90aWZ5ICJzZW5kcyBub3RpZmljYXRpb25zIHdpdGgiICJIVFRQUyIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGZvcm1zQXBpID0gY29udGFpbmVyICJGb3JtcyBBUEkiICIiICJBc3AuTmV0IENvcmUiIFdlYkFwaSB7CiAgICAgICAgICAgICAgICAgICAgZ3JvdXAgIkxpYnJhcmllcyIgewogICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlID0gY29tcG9uZW50ICJPcmdhbmlzYXRpb24gSW5mb3JtYXRpb24gUGVyc2lzdGVuY2UiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiRXhwb3NlcyB0aGUgZGF0YWJhc2UgbW9kZWwsIHF1ZXJpZXMsIGFuZCBwZXJzaXN0ZW5jZSBvcGVyYXRpb25zIHdpdGggRW50aXR5RnJhbWV3b3JrIENvcmUiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIGZvcm1zRW5kcG9pbnQgPSBjb21wb25lbnQgIkZvcm1zIEVuZHBvaW50IiAiIiAiQXNwLk5ldCBDb3JlIFdlYiBBUEkiCiAgICAgICAgICAgICAgICAgICAgdXNlQ2FzZSA9IGNvbXBvbmVudCAiVXNlIENhc2UiCiAgICAgICAgICAgICAgICAgICAgZm9ybXNFbmRwb2ludCAtPiB1c2VDYXNlICJFeGVjdXRlcyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IGZpbGVTdG9yYWdlICJ3cml0ZXMgdG8iICJIVFRQUyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uRGF0YWJhc2UgInJlYWRzL3dyaXRlcyIgIlNRTCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGRhdGFTaGFyaW5nQXBpID0gY29udGFpbmVyICJEYXRhIFNoYXJpbmcgQVBJIiAiIiAiQXNwLk5ldCBDb3JlIiBXZWJBcGkgewogICAgICAgICAgICAgICAgICAgIGdyb3VwICJMaWJyYXJpZXMiIHsKICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSA9IGNvbXBvbmVudCAiT3JnYW5pc2F0aW9uIEluZm9ybWF0aW9uIFBlcnNpc3RlbmNlIiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIkV4cG9zZXMgdGhlIGRhdGFiYXNlIG1vZGVsLCBxdWVyaWVzLCBhbmQgcGVyc2lzdGVuY2Ugb3BlcmF0aW9ucyB3aXRoIEVudGl0eUZyYW1ld29yayBDb3JlIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIENvbXBvbmVudCIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICBkYXRhU2hhcmluZ0VuZHBvaW50ID0gY29tcG9uZW50ICJEYXRhIFNoYXJpbmcgRW5kcG9pbnQiICIiICJBc3AuTmV0IENvcmUgV2ViIEFQSSIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlID0gY29tcG9uZW50ICJVc2UgQ2FzZSIKICAgICAgICAgICAgICAgICAgICBkYXRhU2hhcmluZ0VuZHBvaW50IC0+IHVzZUNhc2UgIkV4ZWN1dGVzIgogICAgICAgICAgICAgICAgICAgIHVzZUNhc2UgLT4gZmlsZVN0b3JhZ2UgIndyaXRlcyB0byAvIHJlYWRzIGZyb20iICJIVFRQUyIKICAgICAgICAgICAgICAgICAgICB1c2VDYXNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uUGVyc2lzZW5jZSAiQ2FsbHMiCiAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uSW5mb3JtYXRpb25QZXJzaXNlbmNlIC0+IG9yZ2FuaXNhdGlvbkluZm9ybWF0aW9uRGF0YWJhc2UgInJlYWRzL3dyaXRlcyIgIlNRTCIKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIG9yZ2FuaXNhdGlvbkFwcCA9IGNvbnRhaW5lciAiT3JnYW5pc2F0aW9uIEFwcCIgIkFjY291bnQgJiBkYXRhIGNhcHR1cmUgZnJvbnRlbmQiICJBc3AuTmV0IENvcmUgTVZDIiBXZWJBcHAgewogICAgICAgICAgICAgICAgICAgIGdyb3VwICJMaWJyYXJpZXMiIHsKICAgICAgICAgICAgICAgICAgICAgICAgdGVuYW50Q2xpZW50ID0gY29tcG9uZW50ICJUZW5hbnQgQ2xpZW50IiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIk1ha2VzIEFQSSBjYWxscyB0byB0aGUgVGVuYW50IEFQSSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCBDb21wb25lbnQiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgcGVyc29uQ2xpZW50ID0gY29tcG9uZW50ICJQZXJzb24gQ2xpZW50IiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIk1ha2VzIEFQSSBjYWxscyB0byB0aGUgUGVyc29uIEFQSSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCBDb21wb25lbnQiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgb3JnYW5pc2F0aW9uQ2xpZW50ID0gY29tcG9uZW50ICJPcmdhbmlzYXRpb24gQ2xpZW50IiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIk1ha2VzIEFQSSBjYWxscyB0byB0aGUgT3JnYW5pc2F0aW9uIEFQSSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCBDb21wb25lbnQiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgZm9ybXNDbGllbnQgPSBjb21wb25lbnQgIkZvcm1zIENsaWVudCIgewogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGVjaG5vbG9neSAiQyMgcHJvamVjdCIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlc2NyaXB0aW9uICJNYWtlcyBBUEkgY2FsbHMgdG8gdGhlIEZvcm1zIEFQSSIKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRhZ3MgIlNoYXJlZCBDb21wb25lbnQiCiAgICAgICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgICAgICAgICAgZGF0YVNoYXJpbmdDbGllbnQgPSBjb21wb25lbnQgIkRhdGEgU2hhcmluZyBDbGllbnQiIHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRlY2hub2xvZ3kgIkMjIHByb2plY3QiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNjcmlwdGlvbiAiTWFrZXMgQVBJIGNhbGxzIHRvIHRoZSBEYXRhIFNoYXJpbmcgQVBJIgogICAgICAgICAgICAgICAgICAgICAgICAgICAgdGFncyAiU2hhcmVkIENvbXBvbmVudCIKICAgICAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgICAgICAgICBlbnRpdHlWZXJpZmljYXRpb25DbGllbnQgPSBjb21wb25lbnQgIkVudGl0eSBWZXJpZmljYXRpb24gQ2xpZW50IiB7CiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0ZWNobm9sb2d5ICJDIyBwcm9qZWN0IgogICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzY3JpcHRpb24gIk1ha2VzIEFQSSBjYWxscyB0byB0aGUgRW50aXR5IFZlcmlmaWNhdGlvbiBBUEkiCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0YWdzICJTaGFyZWQgQ29tcG9uZW50IgogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgICAgICBtdmNDb250cm9sbGVyID0gY29tcG9uZW50ICJNVkMgQ29udHJvbGxlciIgIkVuYWJsZXMgd2ViIHVzZXJzIHRvIHBlcmZvcm0gdGFza3MuIiAiQXNwLk5ldCBDb3JlIE1WQyBDb250cm9sbGVyIgoKICAgICAgICAgICAgICAgICAgICBzdXBwbGllciAtPiBtdmNDb250cm9sbGVyICJVc2VzIiAiSFRUUFMiCiAgICAgICAgICAgICAgICAgICAgYnV5ZXIgLT4gbXZjQ29udHJvbGxlciAiVXNlcyIgIkhUVFBTIgoKICAgICAgICAgICAgICAgICAgICBtdmNDb250cm9sbGVyIC0+IG9uZUxvZ2luICJBdXRoZW50aWNhdGVzIHdpdGgiICJIVFRQUyIKICAgICAgICAgICAgICAgICAgICBtdmNDb250cm9sbGVyIC0+IGNvbXBhbmllc0hvdXNlICJQdWxscyBjb21wYW55IGRldGFpbHMgZnJvbSIgIkhUVFBTIgogICAgICAgICAgICAgICAgICAgIG12Y0NvbnRyb2xsZXIgLT4gYXV0aG9yaXR5LnRva2VuRW5kcG9pbnQgIkF1dGhlbnRpY2F0ZXMgYW5kIGF1dGhvcmlzZXMgd2l0aCIgIkhUVFBTIgogICAgICAgICAgICAgICAgICAgIG12Y0NvbnRyb2xsZXIgLT4gdGVuYW50Q2xpZW50ICJVc2VzIgogICAgICAgICAgICAgICAgICAgIG12Y0NvbnRyb2xsZXIgLT4gcGVyc29uQ2xpZW50ICJVc2VzIgogICAgICAgICAgICAgICAgICAgIG12Y0NvbnRyb2xsZXIgLT4gb3JnYW5pc2F0aW9uQ2xpZW50ICJVc2VzIgogICAgICAgICAgICAgICAgICAgIG12Y0NvbnRyb2xsZXIgLT4gZm9ybXNDbGllbnQgIlVzZXMiCiAgICAgICAgICAgICAgICAgICAgbXZjQ29udHJvbGxlciAtPiBkYXRhU2hhcmluZ0NsaWVudCAiVXNlcyIKICAgICAgICAgICAgICAgICAgICBtdmNDb250cm9sbGVyIC0+IGVudGl0eVZlcmlmaWNhdGlvbkNsaWVudCAiVXNlcyIKICAgICAgICAgICAgICAgICAgICBtdmNDb250cm9sbGVyIC0+IGZpbGVTdG9yYWdlICJ3cml0ZXMgdG8iICJIVFRQUyIKCiAgICAgICAgICAgICAgICAgICAgdGVuYW50Q2xpZW50IC0+IHRlbmFudEFwaS50ZW5hbnRFbmRwb2ludCAiQ2FsbHMiICJIVFRQUy9qc29uIgogICAgICAgICAgICAgICAgICAgIHBlcnNvbkNsaWVudCAtPiBwZXJzb25BcGkucGVyc29uRW5kcG9pbnQgIkNhbGxzIiAiSFRUUFMvanNvbiIKICAgICAgICAgICAgICAgICAgICBvcmdhbmlzYXRpb25DbGllbnQgLT4gb3JnYW5pc2F0aW9uQXBpLm9yZ2FuaXNhdGlvbkVuZHBvaW50ICJDYWxscyIgIkhUVFBTL2pzb24iCiAgICAgICAgICAgICAgICAgICAgZm9ybXNDbGllbnQgLT4gZm9ybXNBcGkuZm9ybXNFbmRwb2ludCAiQ2FsbHMiICJIVFRQUy9qc29uIgogICAgICAgICAgICAgICAgICAgIGRhdGFTaGFyaW5nQ2xpZW50IC0+IGRhdGFTaGFyaW5nQXBpLmRhdGFTaGFyaW5nRW5kcG9pbnQgIkNhbGxzIiAiSFRUUFMvanNvbiIKICAgICAgICAgICAgICAgICAgICBlbnRpdHlWZXJpZmljYXRpb25DbGllbnQgLT4gZW50aXR5VmVyaWZpY2F0aW9uLmVudGl0eVZlcmlmaWNhdGlvbkVuZHBvaW50ICJDYWxscyIgIkhUVFBTL2pzb24iCgogICAgICAgICAgICAgICAgICAgIC0+IGNkcC5hdXRob3JpdHkub3BlbklkQ29uZmlndXJhdGlvbkVuZHBvaW50ICJSZXRyaWV2ZXMgT3BlbklEIGNvbmZpZ3VyYXRpb24gZnJvbSIKICAgICAgICAgICAgICAgICAgICAtPiBjZHAuYXV0aG9yaXR5Lm9wZW5JZEp3a3NDb25maWd1cmF0aW9uRW5kcG9pbnQgIlJldHJpZXZlcyBKc29uIFdlYiBLZXkgU2V0IGZyb20iCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIGVTZW5kZXIgLT4gY2RwLmRhdGFTaGFyaW5nQXBpLmRhdGFTaGFyaW5nRW5kcG9pbnQgIkxvb2tzIHVwIHN1cHBsaWVyIGluZm9ybWF0aW9uIiAiSFRUUFMvanNvbiIKICAgICAgICBidXllciAtPiBlU2VuZGVyICJVc2VzIgoKICAgICAgICBmdHMgLT4gb25lTG9naW4gIkF1dGhlbnRpY2F0ZXMgd2l0aCIKICAgICAgICBmdHMgLT4gY2RwLmF1dGhvcml0eS50b2tlbkVuZHBvaW50ICJBdXRoZW50aWNhdGVzIHdpdGgiCiAgICAgICAgZnRzIC0+IGNkcC5hdXRob3JpdHkub3BlbklkQ29uZmlndXJhdGlvbkVuZHBvaW50ICJSZXRyaWV2ZXMgT3BlbklEIGNvbmZpZ3VyYXRpb24gZnJvbSIKICAgICAgICBmdHMgLT4gY2RwLmF1dGhvcml0eS5vcGVuSWRKd2tzQ29uZmlndXJhdGlvbkVuZHBvaW50ICJSZXRyaWV2ZXMgSnNvbiBXZWIgS2V5IFNldCBmcm9tIgogICAgICAgIGZ0cyAtPiBjZHAub3JnYW5pc2F0aW9uQXBpLm9yZ2FuaXNhdGlvbkVuZHBvaW50ICJDYWxscyIgIkhUVFBTL2pzb24iCiAgICAgICAgY2ZzIC0+IGNkcC5hdXRob3JpdHkgIkF1dGhlbnRpY2F0ZXMgd2l0aCIKICAgICAgICBwcGcgLT4gY2RwLmF1dGhvcml0eSAiQXV0aGVudGljYXRlcyB3aXRoIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1Db250ZXh0IGNkcCAiQ0RQLTEtU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBzeXN0ZW0gY29udGV4dCBkaWFncmFtIGZvciB0aGUgQ2VudHJhbCBEaWdpdGFsIFBsYXRmb3JtLiIKICAgICAgICB9CiAgICAgICAgY29udGFpbmVyIGNkcCAiQ0RQLTItQ29udGFpbmVyVmlldyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb250YWluZXIgZGlhZ3JhbSBmb3IgdGhlIENlbnRyYWwgRGlnaXRhbCBQbGF0Zm9ybS4iCiAgICAgICAgfQogICAgICAgIGNvbXBvbmVudCBjZHAuYXV0aG9yaXR5ICJDRFAtMy1BdXRob3JpdHktQ29tcG9uZW50cyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb21wb25lbnQgZGlhZ3JhbSBmb3IgdGhlIEF1dGhvcml0eSBzZXJ2aWNlLiIKICAgICAgICB9CiAgICAgICAgY29tcG9uZW50IGNkcC5vcmdhbmlzYXRpb25BcHAgIkNEUC0zLU9yZ2FuaXNhdGlvbkFwcC1Db21wb25lbnRzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVGhlIGNvbXBvbmVudCBkaWFncmFtIGZvciB0aGUgV2ViIEFwcGxpY2F0aW9uLiIKICAgICAgICB9CiAgICAgICAgY29tcG9uZW50IGNkcC50ZW5hbnRBcGkgIkNEUC00LVRlbmFudEFwaS1Db21wb25lbnRzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVGhlIGNvbXBvbmVudCBkaWFncmFtIGZvciB0aGUgVGVuYW50IEFQSS4iCiAgICAgICAgfQogICAgICAgIGNvbXBvbmVudCBjZHAucGVyc29uQXBpICJDRFAtNS1QZXJzb25BcGktQ29tcG9uZW50cyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb21wb25lbnQgZGlhZ3JhbSBmb3IgdGhlIFBlcnNvbiBBUEkuIgogICAgICAgIH0KICAgICAgICBjb21wb25lbnQgY2RwLm9yZ2FuaXNhdGlvbkFwaSAiQ0RQLTYtT3JnYW5pc2F0aW9uQXBpLUNvbXBvbmVudHMiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJUaGUgY29tcG9uZW50IGRpYWdyYW0gZm9yIHRoZSBPcmdhbmlzYXRpb24gQVBJLiIKICAgICAgICB9CiAgICAgICAgY29tcG9uZW50IGNkcC5mb3Jtc0FwaSAiQ0RQLTctRm9ybXNBcGktQ29tcG9uZW50cyIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlRoZSBjb21wb25lbnQgZGlhZ3JhbSBmb3IgdGhlIEZvcm1zIEFQSS4iCiAgICAgICAgfQogICAgICAgIGNvbXBvbmVudCBjZHAuZGF0YVNoYXJpbmdBcGkgIkNEUC04LURhdGFTaGFyaW5nQXBpLUNvbXBvbmVudHMiIHsKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJUaGUgY29tcG9uZW50IGRpYWdyYW0gZm9yIHRoZSBEYXRhIFNoYXJpbmcgQVBJLiIKICAgICAgICB9CiAgICAgICAgY29tcG9uZW50IGNkcC5lbnRpdHlWZXJpZmljYXRpb24gIkNEUC05LUVudGl0eVZlcmlmaWNhdGlvbi1Db21wb25lbnRzIiB7CiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVGhlIGNvbXBvbmVudCBkaWFncmFtIGZvciB0aGUgRW50aXR5IFZlcmlmaWNhdGlvbi4iCiAgICAgICAgfQogICAgICAgIHRoZW1lIGRlZmF1bHQKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50IERhdGFiYXNlIHsKICAgICAgICAgICAgICAgIHNoYXBlIEN5bGluZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCAiTWVzc2FnZSBRdWV1ZSIgewogICAgICAgICAgICAgICAgc2hhcGUgUGlwZQogICAgICAgICAgICB9CiAgICAgICAgICAgIGVsZW1lbnQgIkZpbGUgU3RvcmFnZSIgewogICAgICAgICAgICAgICAgc2hhcGUgRm9sZGVyCiAgICAgICAgICAgIH0KICAgICAgICAgICAgZWxlbWVudCBXZWJBcHAgewogICAgICAgICAgICAgICAgc2hhcGUgV2ViQnJvd3NlcgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIGNvbmZpZ3VyYXRpb24gewogICAgICAgIHNjb3BlIHNvZnR3YXJlc3lzdGVtCiAgICB9Cgp9"
+    "structurizr.inspection.error" : "81",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "componentViews" : [ {
@@ -1600,6 +1403,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-3-Authority-Components",
+      "name" : "Component View: SIRSI - Authority",
       "order" : 3,
       "relationships" : [ {
         "id" : "118"
@@ -1706,6 +1510,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-3-OrganisationApp-Components",
+      "name" : "Component View: SIRSI - Organisation App",
       "order" : 4,
       "relationships" : [ {
         "id" : "104"
@@ -1785,6 +1590,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-4-TenantApi-Components",
+      "name" : "Component View: SIRSI - Tenant API",
       "order" : 5,
       "relationships" : [ {
         "id" : "130"
@@ -1825,6 +1631,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-5-PersonApi-Components",
+      "name" : "Component View: SIRSI - Person API",
       "order" : 6,
       "relationships" : [ {
         "id" : "134"
@@ -1889,6 +1696,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-6-OrganisationApi-Components",
+      "name" : "Component View: SIRSI - Organisation API",
       "order" : 7,
       "relationships" : [ {
         "id" : "138"
@@ -1947,6 +1755,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-7-FormsApi-Components",
+      "name" : "Component View: SIRSI - Forms API",
       "order" : 8,
       "relationships" : [ {
         "id" : "127"
@@ -1999,6 +1808,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-8-DataSharingApi-Components",
+      "name" : "Component View: SIRSI - Data Sharing API",
       "order" : 9,
       "relationships" : [ {
         "id" : "127"
@@ -2057,6 +1867,7 @@
       } ],
       "externalContainerBoundariesVisible" : false,
       "key" : "CDP-9-EntityVerification-Components",
+      "name" : "Component View: SIRSI - Entity Verification",
       "order" : 10,
       "relationships" : [ {
         "id" : "150"
@@ -2077,18 +1888,17 @@
       } ]
     } ],
     "configuration" : {
-      "branding" : { },
-      "lastSavedView" : "CDP-9-EntityVerification-Components",
+      "lastSavedView" : "CDP-1-SystemContext",
       "styles" : {
         "elements" : [ {
           "shape" : "Cylinder",
           "tag" : "Database"
         }, {
-          "shape" : "Pipe",
-          "tag" : "Message Queue"
-        }, {
           "shape" : "Folder",
           "tag" : "File Storage"
+        }, {
+          "shape" : "Pipe",
+          "tag" : "Message Queue"
         }, {
           "shape" : "WebBrowser",
           "tag" : "WebApp"
@@ -2130,14 +1940,6 @@
       }, {
         "id" : "7",
         "x" : 3105,
-        "y" : 110
-      }, {
-        "id" : "8",
-        "x" : 4118,
-        "y" : 110
-      }, {
-        "id" : "9",
-        "x" : 3615,
         "y" : 110
       }, {
         "id" : "11",
@@ -2190,6 +1992,7 @@
       } ],
       "externalSoftwareSystemBoundariesVisible" : false,
       "key" : "CDP-2-ContainerView",
+      "name" : "Container View: SIRSI",
       "order" : 2,
       "relationships" : [ {
         "id" : "105"
@@ -2230,10 +2033,6 @@
       }, {
         "id" : "165"
       }, {
-        "id" : "166"
-      }, {
-        "id" : "168"
-      }, {
         "id" : "24"
       }, {
         "id" : "27"
@@ -2273,11 +2072,11 @@
       }, {
         "id" : "2",
         "x" : 2705,
-        "y" : 1575
+        "y" : 1550
       }, {
         "id" : "3",
         "x" : 1520,
-        "y" : 1620
+        "y" : 1600
       }, {
         "id" : "4",
         "x" : 200,
@@ -2297,11 +2096,11 @@
       }, {
         "id" : "8",
         "x" : 200,
-        "y" : 1282
+        "y" : 1600
       }, {
         "id" : "9",
-        "x" : 200,
-        "y" : 1615
+        "x" : 860,
+        "y" : 1610
       }, {
         "id" : "10",
         "x" : 1520,
@@ -2309,6 +2108,7 @@
       } ],
       "enterpriseBoundaryVisible" : true,
       "key" : "CDP-1-SystemContext",
+      "name" : "System Context View: SIRSI",
       "order" : 1,
       "relationships" : [ {
         "id" : "106"
@@ -2327,9 +2127,11 @@
       }, {
         "id" : "161"
       }, {
+        "id" : "166"
+      }, {
         "id" : "167"
       }, {
-        "id" : "169"
+        "id" : "168"
       }, {
         "id" : "75"
       } ],
