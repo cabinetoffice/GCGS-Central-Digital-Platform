@@ -10,9 +10,9 @@ workspace "Central Digital Platform" {
         govUkNotify = softwareSystem "Gov.uk Notify" "Sends emails, text messages and letters"
         companiesHouse = softwareSystem "Companies House" "Provides registered company details"
         fts = softwareSystem "Find a Tender"
-        cfs = softwareSystem "Supplier Information and Contracts Finder"
-        ppg = softwareSystem "Public Procurement Gateway"
-        cdp = softwareSystem "Central Digital Platform" "Supports procurement" {
+        dataPlatform = softwareSystem "Data Analytics Platform" "Centralises all the central digital platform data for analytics."
+        payments = softwareSystem "Payments System" "Payment reporting."
+        sirsi = softwareSystem "SIRSI" "Supplier Information, Registration and Sign-In. Supports procurement." {
 
             messageQueue = container "Message Queue" "" SQS "Message Queue" {
             }
@@ -145,62 +145,63 @@ workspace "Central Digital Platform" {
                     dataSharingClient -> dataSharingApi.dataSharingEndpoint "Calls" "HTTPS/json"
                     entityVerificationClient -> entityVerification.entityVerificationEndpoint "Calls" "HTTPS/json"
 
-                    -> cdp.authority.openIdConfigurationEndpoint "Retrieves OpenID configuration from"
-                    -> cdp.authority.openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
+                    -> sirsi.authority.openIdConfigurationEndpoint "Retrieves OpenID configuration from"
+                    -> sirsi.authority.openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
                 }
             }
         }
 
-        eSender -> cdp.dataSharingApi.dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
+        eSender -> sirsi.dataSharingApi.dataSharingEndpoint "Looks up supplier information" "HTTPS/json"
         buyer -> eSender "Uses"
 
         fts -> oneLogin "Authenticates with"
-        fts -> cdp.authority.tokenEndpoint "Authenticates with"
-        fts -> cdp.authority.openIdConfigurationEndpoint "Retrieves OpenID configuration from"
-        fts -> cdp.authority.openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
-        fts -> cdp.organisationApi.organisationEndpoint "Calls" "HTTPS/json"
-        cfs -> cdp.authority "Authenticates with"
-        ppg -> cdp.authority "Authenticates with"
+        fts -> sirsi.authority.tokenEndpoint "Authenticates with"
+        fts -> sirsi.authority.openIdConfigurationEndpoint "Retrieves OpenID configuration from"
+        fts -> sirsi.authority.openIdJwksConfigurationEndpoint "Retrieves Json Web Key Set from"
+        fts -> sirsi.organisationApi.organisationEndpoint "Calls" "HTTPS/json"
+        dataPlatform -> fts "Pulls data from"
+        dataPlatform -> sirsi "Pulls data from"
+        payments -> sirsi "Authenticates with"
     }
 
     views {
-        systemContext cdp "CDP-1-SystemContext" {
+        systemContext sirsi "CDP-1-SystemContext" {
             include *
             description "The system context diagram for the Central Digital Platform."
         }
-        container cdp "CDP-2-ContainerView" {
+        container sirsi "CDP-2-ContainerView" {
             include *
             description "The container diagram for the Central Digital Platform."
         }
-        component cdp.authority "CDP-3-Authority-Components" {
+        component sirsi.authority "CDP-3-Authority-Components" {
             include *
             description "The component diagram for the Authority service."
         }
-        component cdp.organisationApp "CDP-3-OrganisationApp-Components" {
+        component sirsi.organisationApp "CDP-3-OrganisationApp-Components" {
             include *
             description "The component diagram for the Web Application."
         }
-        component cdp.tenantApi "CDP-4-TenantApi-Components" {
+        component sirsi.tenantApi "CDP-4-TenantApi-Components" {
             include *
             description "The component diagram for the Tenant API."
         }
-        component cdp.personApi "CDP-5-PersonApi-Components" {
+        component sirsi.personApi "CDP-5-PersonApi-Components" {
             include *
             description "The component diagram for the Person API."
         }
-        component cdp.organisationApi "CDP-6-OrganisationApi-Components" {
+        component sirsi.organisationApi "CDP-6-OrganisationApi-Components" {
             include *
             description "The component diagram for the Organisation API."
         }
-        component cdp.formsApi "CDP-7-FormsApi-Components" {
+        component sirsi.formsApi "CDP-7-FormsApi-Components" {
             include *
             description "The component diagram for the Forms API."
         }
-        component cdp.dataSharingApi "CDP-8-DataSharingApi-Components" {
+        component sirsi.dataSharingApi "CDP-8-DataSharingApi-Components" {
             include *
             description "The component diagram for the Data Sharing API."
         }
-        component cdp.entityVerification "CDP-9-EntityVerification-Components" {
+        component sirsi.entityVerification "CDP-9-EntityVerification-Components" {
             include *
             description "The component diagram for the Entity Verification."
         }
