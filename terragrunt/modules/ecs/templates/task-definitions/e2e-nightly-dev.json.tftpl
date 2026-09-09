@@ -14,6 +14,17 @@
       }
     },
     "environment": [
+      { "name" : "RUN_ONCE", "value" : "${run_once}"},
+      { "name" : "TestSettings__FTSPHPUrl", "value" : "https://fts.${public_domain}"},
+      { "name" : "TestSettings__OrganisationApiUrl", "value" : "https://organisation.${public_domain}"},
+      { "name" : "TestSettings__SearchAPIUrl", "value" : "https://fts-search-api.${public_domain}/"},
+      { "name" : "TestSettings__FTSDotnetSearchUrl", "value" : "https://fts-app.${public_domain}/search"},
+      { "name" : "TestSettings__TenantApiUrl", "value" : "https://tenant.${public_domain}"},
+      { "name" : "TestSettings__UserApiUrl", "value" : "https://fts-user-api.${public_domain}/"},
+      { "name" : "TestSettings__SirsiDomain", "value" : "${public_domain}"},
+      { "name" : "TestSettings__Headed", "value" : "${test_settings_headed}"},
+      { "name" : "TEST_TIMEOUT_SECONDS", "value" : "${test_timeout_seconds}"},
+      { "name" : "KILL_AFTER_SECONDS", "value" : "${kill_after_seconds}"},
       { "name" : "TEAMS_NOTIFICATION_ENABLED", "value" : "${teams_notification_enabled}"},
       { "name" : "CLOUDWATCH_METRICS_ENABLED", "value" : "${cloudwatch_metrics_enabled}"}
     ],
@@ -23,6 +34,7 @@
       { "name" : "E2E_SECRET_KEY", "valueFrom" : "${e2e_env_secret_arn}:E2E_SECRET_KEY::"},
       { "name" : "E2E_BASIC_AUTH_USERNAME", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"},
       { "name" : "E2E_BASIC_AUTH_PASSWORD", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"},
+      { "name" : "TestSettings__FTSHttpBasicAuthEnabled", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"},
       { "name" : "E2E_COGNITO_USERNAME", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_USERNAME::"},
       { "name" : "E2E_COGNITO_PASSWORD", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_PASSWORD::"},
       { "name" : "TEAMS_WEBHOOK_URL", "valueFrom" : "${e2e_env_secret_arn}:TEAMS_WEBHOOK_URL::"}
