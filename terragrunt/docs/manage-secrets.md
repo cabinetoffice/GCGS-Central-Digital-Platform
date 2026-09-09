@@ -13,6 +13,7 @@
 - [Update Authority Secrets](#update-authority-secrets)
 - [Update Charity Commission Secrets](#update-charity-commission-secrets)
 - [Update Companies House Secrets](#update-companies-house-secrets)
+- [Update E2E Nightly Dev Secret](#update-e2e-nightly-dev-secret)
 - [Update FtsService URL](#update-ftsservice-url)
 - [Update GOVUKNotify ApiKey](#update-govuknotify-apikey)
 - [Update GOVUKNotify Support Admin Email](#update-govuknotify-support-admin-email)
@@ -99,6 +100,58 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-companies-house-cr
 ```
 
 3. Redeploy the `organisation-app` service.
+
+---
+
+## Update E2E Nightly Dev Secret
+
+The `e2e-nightly-dev` ECS task (development account only) reads its required environment variables from a single AWS Secrets Manager secret:
+
+- Secret ID: `cdp-sirsi-e2e-nightly-dev-env`
+
+The secret value should be a JSON object with the following keys:
+
+- `E2E_EMAIL`
+- `E2E_PASSWORD`
+- `E2E_SECRET_KEY`
+- `E2E_COGNITO_USERNAME`
+- `E2E_COGNITO_PASSWORD`
+- `TEAMS_WEBHOOK_URL`
+
+1. Create a JSON file (do not commit it) with the required keys, for example:
+
+```json
+{
+  "E2E_EMAIL": "REPLACE_ME",
+  "E2E_PASSWORD": "REPLACE_ME",
+  "E2E_SECRET_KEY": "REPLACE_ME",
+  "E2E_COGNITO_USERNAME": "REPLACE_ME",
+  "E2E_COGNITO_PASSWORD": "REPLACE_ME",
+  "TEAMS_WEBHOOK_URL": "REPLACE_ME"
+}
+```
+
+2. Assume the **development** account role and create/update the secret:
+
+```shell
+cd ~/Projects/secrets-sirsi/E2ENightlyDev
+
+SECRET_ID=cdp-sirsi-e2e-nightly-dev-env
+DESC="Environment variables for the e2e-nightly-dev ECS task (development only)."
+
+aws-switch-to-cdp-sirsi-development-goaco-terraform
+if ! ave aws secretsmanager describe-secret --secret-id "$SECRET_ID" >/dev/null 2>&1; then
+  ave aws secretsmanager create-secret \
+    --name "$SECRET_ID" \
+    --description "$DESC" \
+    --secret-string file://~/Projects/secrets-sirsi/E2ENightlyDev/e2e-nightly-dev-env-development.json \
+    --tags Key=component,Value=ecs Key=component_root,Value=service Key=environment,Value=development Key=managed_by,Value=terragrunt | jq .
+else
+  ave aws secretsmanager put-secret-value \
+    --secret-id "$SECRET_ID" \
+    --secret-string file://~/Projects/secrets-sirsi/E2ENightlyDev/e2e-nightly-dev-env-development.json | jq .
+fi
+```
 
 ---
 

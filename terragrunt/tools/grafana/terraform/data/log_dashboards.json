@@ -71,6 +71,12 @@
     "type": "multi",
     "warning_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Warning\" \n| sort @timestamp desc \n| limit 5"
   },
+  "e2e-nightly-dev": {
+    "expression": "fields @timestamp, @message \n| sort @timestamp desc",
+    "log_group_name": "/ecs/e2e-nightly-dev",
+    "title": "E2E Nightly Dev",
+    "type": "single"
+  },
   "entity-verification": {
     "all_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| sort @timestamp desc",
     "error_expression": "fields @timestamp, @@m as Message, @@l as level, Version, RequestPath, RequestId, ConnectionId, EventId, @@tr as TR, @@sp as SP, @@t as T, @message  \n| filter level = \"Error\" \n| sort @timestamp desc \n| limit 5",

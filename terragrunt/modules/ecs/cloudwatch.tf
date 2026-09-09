@@ -49,3 +49,25 @@ resource "aws_cloudwatch_log_group" "tasks" {
 
   tags = var.tags
 }
+
+resource "aws_cloudwatch_event_rule" "e2e_nightly_dev" {
+  count = local.e2e_nightly_dev_enabled ? 1 : 0
+
+  name                = "${local.name_prefix}-e2e-nightly-dev"
+  schedule_expression = "cron(1 1 * * ? *)" # 01:01 UTC daily
+  tags                = var.tags
+}
+
+resource "aws_cloudwatch_event_target" "e2e_nightly_dev" {
+  count = local.e2e_nightly_dev_enabled ? 1 : 0
+
+  rule      = aws_cloudwatch_event_rule.e2e_nightly_dev[0].name
+  target_id = "e2e-nightly-dev"
+  arn       = aws_sfn_state_machine.ecs_run_task[var.service_configs.e2e_nightly_dev.name].arn
+  role_arn  = var.role_cloudwatch_events_arn
+
+  depends_on = [
+    aws_iam_role_policy_attachment.cloudwatch_event_invoke_deployer_step_function_attachment
+  ]
+}
+

@@ -81,6 +81,11 @@ data "aws_secretsmanager_secret" "user_management_servicekey_apikey" {
   name = "${local.name_prefix}-user-management-servicekey-apikey"
 }
 
+data "aws_secretsmanager_secret" "e2e_nightly_dev_env" {
+  count = var.service_configs.e2e_nightly_dev.desired_count == 0 ? 0 : 1
+  name  = "${local.name_prefix}-e2e-nightly-dev-env"
+}
+
 data "aws_iam_policy_document" "ecs_task_access_secrets" {
   statement {
     sid    = "AllowAccessToProductSecrets"

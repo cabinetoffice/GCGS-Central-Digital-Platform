@@ -70,10 +70,16 @@ locals {
 
   # Map one-off task names to their ECS task definition ARNs (used by Step Functions runners).
   ocds_export_seeder_enabled = var.service_configs.ocds_export_seeder.desired_count > 0
+  e2e_nightly_dev_enabled    = var.service_configs.e2e_nightly_dev.desired_count > 0
 
-  one_off_task_definition_arns = local.ocds_export_seeder_enabled ? {
-    (var.service_configs.ocds_export_seeder.name) = module.ecs_task_fts_ocds_export_seeder[0].task_definition_arn
-  } : {}
+  one_off_task_definition_arns = merge(
+    local.ocds_export_seeder_enabled ? {
+      (var.service_configs.ocds_export_seeder.name) = module.ecs_task_fts_ocds_export_seeder[0].task_definition_arn
+    } : {},
+    local.e2e_nightly_dev_enabled ? {
+      (var.service_configs.e2e_nightly_dev.name) = module.ecs_task_e2e_nightly_dev[0].task_definition_arn
+    } : {},
+  )
 
   # Restrict to only the one-off tasks we can map to a task definition.
   one_off_task_configs_mapped = {
