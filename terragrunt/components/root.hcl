@@ -282,7 +282,7 @@ locals {
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
     data_sharing                         = {}
-    e2e_nightly_dev                      = { desired_count = 0 }
+    e2e_nightly_dev                      = { desired_count = local.environment == "development" ? 1 : 0 }
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
@@ -350,7 +350,7 @@ locals {
     commercial_tools_api                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api", listener_priority = 113 }
     commercial_tools_app                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app", listener_priority = 111 }
     data_sharing                         = { cluster = "sirsi",     type = "web-service",  name = "data-sharing", listener_priority = 114 }
-    e2e_nightly_dev                      = { cluster = "sirsi-php", type = "service",      name = "e2e-nightly-dev" }
+    e2e_nightly_dev                      = { cluster = "sirsi-php", type = "one-off-task", name = "e2e-nightly-dev" }
     entity_verification                  = { cluster = "sirsi",     type = "web-service",  name = "entity-verification", listener_priority = 115 }
     entity_verification_migrations       = { cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations" }
     forms                                = { cluster = "sirsi",     type = "web-service",  name = "forms", listener_priority = 116 }
