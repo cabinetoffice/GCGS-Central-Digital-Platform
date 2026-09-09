@@ -16,7 +16,7 @@ module "ecs_task_e2e_nightly_dev" {
       lg_region                  = data.aws_region.current.region
       memory                     = var.service_configs.e2e_nightly_dev.memory
       name                       = var.service_configs.e2e_nightly_dev.name
-      service_version            = local.service_version_sirsi
+      service_version            = local.service_version_fts
       teams_notification_enabled = "true"
     }
   )
