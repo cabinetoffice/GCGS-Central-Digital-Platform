@@ -4,6 +4,7 @@
     "image" : "${image}:${service_version}",
     "cpu": ${cpu},
     "memory": ${memory},
+    "command": ["--filter", "TestCategory=SearchSmokeTests|TestCategory=NoticesSmokeTest"],
     "portMappings": [],
     "logConfiguration": {
       "logDriver" : "awslogs",
