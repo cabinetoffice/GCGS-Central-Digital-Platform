@@ -20,6 +20,7 @@ module "ecs_task_e2e_nightly_dev" {
       public_domain              = var.public_domain
       run_once                   = "true"
       service_version            = local.service_version_fts
+      test_env                   = var.environment
       test_settings_headed       = "0"
       test_timeout_seconds       = "5400"
       teams_notification_enabled = "true"
