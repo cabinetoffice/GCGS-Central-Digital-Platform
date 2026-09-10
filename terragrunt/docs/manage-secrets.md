@@ -111,6 +111,8 @@ The `e2e-nightly-dev` ECS task (development account only) reads its required env
 
 The secret value should be a JSON object with the following keys:
 
+> Note: these are the *secret JSON keys*. The ECS task maps them into `TestSettings__*` environment variables inside the container.
+
 - `E2E_EMAIL`
 - `E2E_PASSWORD`
 - `E2E_SECRET_KEY`
