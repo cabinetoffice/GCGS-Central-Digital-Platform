@@ -31,14 +31,14 @@
       { "name" : "CLOUDWATCH_METRICS_ENABLED", "value" : "${cloudwatch_metrics_enabled}"}
     ],
     "secrets": [
-      { "name" : "E2E_EMAIL", "valueFrom" : "${e2e_env_secret_arn}:E2E_EMAIL::"},
-      { "name" : "E2E_PASSWORD", "valueFrom" : "${e2e_env_secret_arn}:E2E_PASSWORD::"},
-      { "name" : "E2E_SECRET_KEY", "valueFrom" : "${e2e_env_secret_arn}:E2E_SECRET_KEY::"},
-      { "name" : "E2E_BASIC_AUTH_USERNAME", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"},
-      { "name" : "E2E_BASIC_AUTH_PASSWORD", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"},
+      { "name" : "TestSettings__Email", "valueFrom" : "${e2e_env_secret_arn}:E2E_EMAIL::"},
+      { "name" : "TestSettings__Password", "valueFrom" : "${e2e_env_secret_arn}:E2E_PASSWORD::"},
+      { "name" : "TestSettings__SecretKey", "valueFrom" : "${e2e_env_secret_arn}:E2E_SECRET_KEY::"},
+      { "name" : "TestSettings__FTSHttpBasicAuthUsername", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"},
+      { "name" : "TestSettings__FTSHttpBasicAuthPassword", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"},
       { "name" : "TestSettings__FTSHttpBasicAuthEnabled", "valueFrom" : "${fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"},
-      { "name" : "E2E_COGNITO_USERNAME", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_USERNAME::"},
-      { "name" : "E2E_COGNITO_PASSWORD", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_PASSWORD::"},
+      { "name" : "TestSettings__SIRSICognitoUsername", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_USERNAME::"},
+      { "name" : "TestSettings__SIRSICognitoPassword", "valueFrom" : "${e2e_env_secret_arn}:E2E_COGNITO_PASSWORD::"},
       { "name" : "TEAMS_WEBHOOK_URL", "valueFrom" : "${e2e_env_secret_arn}:TEAMS_WEBHOOK_URL::"}
     ],
     "volumesFrom": [],
