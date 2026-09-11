@@ -409,7 +409,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"CpuUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 4096",
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"CpuUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 2048",
           "hide": false,
           "id": "",
           "label": "CPU %",
@@ -551,7 +551,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"MemoryUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 8192",
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"MemoryUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 16384",
           "hide": false,
           "id": "",
           "label": "Memory %",
