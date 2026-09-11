@@ -282,7 +282,7 @@ locals {
     commercial_tools_app                 = {}
     commercial_tools_api                 = {}
     data_sharing                         = {}
-    e2e_nightly_dev                      = { desired_count = local.environment == "development" ? 1 : 0 }
+    e2e_nightly_dev                      = { desired_count = local.environment == "development" ? 1 : 0, cpu = 2048, memory = 16384 }
     entity_verification                  = {}
     entity_verification_migrations       = { cpu = 256, memory = 512 }
     forms                                = {}
