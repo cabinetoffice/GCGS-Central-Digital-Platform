@@ -83,7 +83,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 10
+        "y": 0
       },
       "id": 1,
       "options": {
@@ -184,7 +184,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 10
+        "y": 0
       },
       "id": 2,
       "options": {
@@ -285,7 +285,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 8
       },
       "id": 3,
       "options": {
@@ -323,6 +323,290 @@
       ],
       "title": "Matched Events",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"CpuUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 4096",
+          "hide": false,
+          "id": "",
+          "label": "CPU %",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 1,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "ECS/ContainerInsights",
+          "period": "60",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "ECS/ContainerInsights",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [],
+              "type": "and"
+            },
+            "orderBy": {
+              "property": {
+                "name": "",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "expressions": [],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [],
+              "type": "and"
+            },
+            "window": {
+              "property": {
+                "name": "60",
+                "type": "string"
+              },
+              "type": "property"
+            }
+          },
+          "sqlExpression": "",
+          "statistic": ""
+        }
+      ],
+      "title": "CPU Used (%) [ e2e-nightly-dev ]",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max",
+            "min"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {},
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"MemoryUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 8192",
+          "hide": false,
+          "id": "",
+          "label": "Memory %",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 1,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "ECS/ContainerInsights",
+          "period": "60",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sql": {
+            "from": {
+              "property": {
+                "name": "ECS/ContainerInsights",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [],
+              "type": "and"
+            },
+            "orderBy": {
+              "property": {
+                "name": "",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "select": {
+              "expressions": [],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [],
+              "type": "and"
+            },
+            "window": {
+              "property": {
+                "name": "60",
+                "type": "string"
+              },
+              "type": "property"
+            }
+          },
+          "sqlExpression": "",
+          "statistic": ""
+        }
+      ],
+      "title": "Memory Used (%) [ e2e-nightly-dev ]",
+      "type": "timeseries"
     }
   ],
   "refresh": "",
@@ -335,7 +619,7 @@
     "list": []
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
@@ -343,4 +627,3 @@
   "title": "E2E Nightly Dev (Scheduled)",
   "weekStart": ""
 }
-
