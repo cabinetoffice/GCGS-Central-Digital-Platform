@@ -32,6 +32,7 @@
       { "name" : "CLOUDWATCH_METRICS_ENABLED", "value" : "${cloudwatch_metrics_enabled}"}
     ],
     "secrets": [
+      { "name" : "TestSettings__DiagnosticUrl", "valueFrom" : "${diagnostic_path_arn}"},
       { "name" : "TestSettings__Email", "valueFrom" : "${e2e_env_secret_arn}:E2E_EMAIL::"},
       { "name" : "TestSettings__Password", "valueFrom" : "${e2e_env_secret_arn}:E2E_PASSWORD::"},
       { "name" : "TestSettings__SecretKey", "valueFrom" : "${e2e_env_secret_arn}:E2E_SECRET_KEY::"},

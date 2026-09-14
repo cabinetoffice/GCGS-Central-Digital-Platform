@@ -8,6 +8,7 @@ module "ecs_task_e2e_nightly_dev" {
     {
       cpu                        = var.service_configs.e2e_nightly_dev.cpu
       cloudwatch_metrics_enabled = "true"
+      diagnostic_path_arn        = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
       e2e_env_secret_arn         = data.aws_secretsmanager_secret.e2e_nightly_dev_env[0].arn
       fts_secrets_arn            = data.aws_secretsmanager_secret.fts_secrets.arn
       image                      = local.ecr_urls[var.service_configs.e2e_nightly_dev.name]
