@@ -29,24 +29,24 @@ resource "grafana_rule_group" "ecs_memory_high" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "MemoryUtilized"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "mem_used"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "MemoryUtilized"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "mem_used"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 
@@ -63,24 +63,24 @@ resource "grafana_rule_group" "ecs_memory_high" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "MemoryReserved"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "mem_reserved"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "MemoryReserved"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "mem_reserved"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 

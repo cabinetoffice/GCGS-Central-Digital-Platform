@@ -28,8 +28,8 @@ locals {
   dashboard_uid = {
     for file_path in local.dashboard_files :
     file_path => length(local.dashboard_uid_raw[file_path]) > 40
-      ? "${local.dashboard_folder_short_map[split("/", file_path)[0]]}-${substr(local.dashboard_base_name[file_path], 0, 40 - length(local.dashboard_folder_short_map[split("/", file_path)[0]]) - 1)}"
-      : local.dashboard_uid_raw[file_path]
+    ? "${local.dashboard_folder_short_map[split("/", file_path)[0]]}-${substr(local.dashboard_base_name[file_path], 0, 40 - length(local.dashboard_folder_short_map[split("/", file_path)[0]]) - 1)}"
+    : local.dashboard_uid_raw[file_path]
   }
   dashboard_content_raw = {
     for file_path in local.dashboard_files : file_path => replace(
@@ -88,46 +88,46 @@ locals {
     multi  = "${path.module}/dashboards/templates/logs-multi.json.tftpl"
   }
   rds_log_dashboard_template = "${path.module}/dashboards/templates/logs-single-db.json.tftpl"
-  log_health_filter = "\n| filter RequestPath != \"/health\""
+  log_health_filter          = "\n| filter RequestPath != \"/health\""
   log_expression_filtered = {
     for service, cfg in local.log_dashboard_defs : service => (
       length(regexall("RequestPath", cfg.type == "multi" ? cfg.all_expression : cfg.expression)) > 0
-        ? (
-            length(regexall("\n\\| sort", cfg.type == "multi" ? cfg.all_expression : cfg.expression)) > 0
-              ? replace(cfg.type == "multi" ? cfg.all_expression : cfg.expression, "\n| sort", "${local.log_health_filter}\n| sort")
-              : "${cfg.type == "multi" ? cfg.all_expression : cfg.expression}${local.log_health_filter}"
-          )
-        : (cfg.type == "multi" ? cfg.all_expression : cfg.expression)
+      ? (
+        length(regexall("\n\\| sort", cfg.type == "multi" ? cfg.all_expression : cfg.expression)) > 0
+        ? replace(cfg.type == "multi" ? cfg.all_expression : cfg.expression, "\n| sort", "${local.log_health_filter}\n| sort")
+        : "${cfg.type == "multi" ? cfg.all_expression : cfg.expression}${local.log_health_filter}"
+      )
+      : (cfg.type == "multi" ? cfg.all_expression : cfg.expression)
     )
   }
   log_expression_filtered_multi = {
     for service, cfg in local.log_dashboard_defs : service => {
       all = (
         length(regexall("RequestPath", cfg.all_expression)) > 0
-          ? (
-              length(regexall("\n\\| sort", cfg.all_expression)) > 0
-                ? replace(cfg.all_expression, "\n| sort", "${local.log_health_filter}\n| sort")
-                : "${cfg.all_expression}${local.log_health_filter}"
-            )
-          : cfg.all_expression
+        ? (
+          length(regexall("\n\\| sort", cfg.all_expression)) > 0
+          ? replace(cfg.all_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+          : "${cfg.all_expression}${local.log_health_filter}"
+        )
+        : cfg.all_expression
       )
       error = (
         length(regexall("RequestPath", cfg.error_expression)) > 0
-          ? (
-              length(regexall("\n\\| sort", cfg.error_expression)) > 0
-                ? replace(cfg.error_expression, "\n| sort", "${local.log_health_filter}\n| sort")
-                : "${cfg.error_expression}${local.log_health_filter}"
-            )
-          : cfg.error_expression
+        ? (
+          length(regexall("\n\\| sort", cfg.error_expression)) > 0
+          ? replace(cfg.error_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+          : "${cfg.error_expression}${local.log_health_filter}"
+        )
+        : cfg.error_expression
       )
       warning = (
         length(regexall("RequestPath", cfg.warning_expression)) > 0
-          ? (
-              length(regexall("\n\\| sort", cfg.warning_expression)) > 0
-                ? replace(cfg.warning_expression, "\n| sort", "${local.log_health_filter}\n| sort")
-                : "${cfg.warning_expression}${local.log_health_filter}"
-            )
-          : cfg.warning_expression
+        ? (
+          length(regexall("\n\\| sort", cfg.warning_expression)) > 0
+          ? replace(cfg.warning_expression, "\n| sort", "${local.log_health_filter}\n| sort")
+          : "${cfg.warning_expression}${local.log_health_filter}"
+        )
+        : cfg.warning_expression
       )
     } if cfg.type == "multi"
   }
@@ -141,26 +141,26 @@ locals {
   log_dashboard_rendered = {
     for service, cfg in local.log_dashboard_defs : service => (
       cfg.type == "multi"
-        ? templatefile(
-            local.log_dashboard_templates["multi"],
-            {
-              title                 = jsonencode(cfg.title)
-              log_group_name        = cfg.log_group_name
-              cloudwatch_account_id = var.cloudwatch_account_id
-              all_expression        = jsonencode(local.log_expression_filtered_multi[service].all)
-              error_expression      = jsonencode(local.log_expression_filtered_multi[service].error)
-              warning_expression    = jsonencode(local.log_expression_filtered_multi[service].warning)
-            }
-          )
-        : templatefile(
-            local.log_dashboard_templates["single"],
-            {
-              title                 = jsonencode(cfg.title)
-              log_group_name        = cfg.log_group_name
-              cloudwatch_account_id = var.cloudwatch_account_id
-              expression            = jsonencode(local.log_expression_filtered[service])
-            }
-          )
+      ? templatefile(
+        local.log_dashboard_templates["multi"],
+        {
+          title                 = jsonencode(cfg.title)
+          log_group_name        = cfg.log_group_name
+          cloudwatch_account_id = var.cloudwatch_account_id
+          all_expression        = jsonencode(local.log_expression_filtered_multi[service].all)
+          error_expression      = jsonencode(local.log_expression_filtered_multi[service].error)
+          warning_expression    = jsonencode(local.log_expression_filtered_multi[service].warning)
+        }
+      )
+      : templatefile(
+        local.log_dashboard_templates["single"],
+        {
+          title                 = jsonencode(cfg.title)
+          log_group_name        = cfg.log_group_name
+          cloudwatch_account_id = var.cloudwatch_account_id
+          expression            = jsonencode(local.log_expression_filtered[service])
+        }
+      )
     )
   }
   log_dashboard_content = {
@@ -239,6 +239,7 @@ resource "grafana_dashboard" "dashboards" {
   overwrite   = true
 
   depends_on = [
+    grafana_data_source.cloudwatch,
     grafana_folder.application,
     grafana_folder.infrastructure,
     grafana_folder.overview,
@@ -255,6 +256,7 @@ resource "grafana_dashboard" "log_dashboards" {
   overwrite   = true
 
   depends_on = [
+    grafana_data_source.cloudwatch,
     grafana_folder.application,
   ]
 }
@@ -265,6 +267,7 @@ resource "grafana_dashboard" "logs_investigation" {
   overwrite   = true
 
   depends_on = [
+    grafana_data_source.cloudwatch,
     grafana_folder.application,
   ]
 }
@@ -277,6 +280,7 @@ resource "grafana_dashboard" "rds_log_dashboards" {
   overwrite   = true
 
   depends_on = [
+    grafana_data_source.cloudwatch,
     grafana_folder.infrastructure,
   ]
 }

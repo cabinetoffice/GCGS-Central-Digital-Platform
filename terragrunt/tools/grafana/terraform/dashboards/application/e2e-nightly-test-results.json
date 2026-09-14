@@ -107,9 +107,17 @@
           "dimensions": {
             "Environment": "CDP_SIRSI_ENVIRONMENT"
           },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
           "metricName": "TestsTotal",
+          "metricQueryType": 0,
           "namespace": "FTS/E2ETests",
           "period": "86400",
+          "queryMode": "Metrics",
           "refId": "A",
           "region": "default",
           "statistic": "Maximum"
@@ -122,9 +130,17 @@
           "dimensions": {
             "Environment": "CDP_SIRSI_ENVIRONMENT"
           },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
           "metricName": "TestsPassed",
+          "metricQueryType": 0,
           "namespace": "FTS/E2ETests",
           "period": "86400",
+          "queryMode": "Metrics",
           "refId": "B",
           "region": "default",
           "statistic": "Maximum"
@@ -137,9 +153,17 @@
           "dimensions": {
             "Environment": "CDP_SIRSI_ENVIRONMENT"
           },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "logGroups": [],
+          "matchExact": true,
+          "metricEditorMode": 0,
           "metricName": "TestsFailed",
+          "metricQueryType": 0,
           "namespace": "FTS/E2ETests",
           "period": "86400",
+          "queryMode": "Metrics",
           "refId": "C",
           "region": "default",
           "statistic": "Maximum"
@@ -159,6 +183,7 @@
     "from": "now-14d",
     "to": "now"
   },
-  "timezone": "",
+  "timepicker": {},
+  "timezone": "browser",
   "title": "E2E Nightly Test Results"
 }

@@ -4,8 +4,8 @@ resource "grafana_contact_point" "teams" {
   name = var.alert_contact_point_name
 
   teams {
-    url = local.teams_webhook_url
-    title = <<-EOT
+    url     = local.teams_webhook_url
+    title   = <<-EOT
 {{- $env := or (index .CommonLabels "environment") (index .CommonLabels "env") (index .CommonLabels "cdp_sirsi_environment") (index .CommonLabels "ClusterName") -}}
 [{{ .Status | toUpper }}] {{ .CommonLabels.alertname }}{{ if $env }} ({{ $env }}){{ end }}
 EOT
