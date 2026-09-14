@@ -28,24 +28,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "CPUUtilization"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "cpu_util"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "CPUUtilization"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "cpu_util"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 
@@ -159,24 +159,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "FreeStorageSpace"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "free_storage"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Minimum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "FreeStorageSpace"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "free_storage"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Minimum"
       })
     }
 
@@ -290,24 +290,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "FreeableMemory"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "freeable_mem"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Minimum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "FreeableMemory"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "freeable_mem"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Minimum"
       })
     }
 
@@ -421,24 +421,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "DatabaseConnections"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "db_conns"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "DatabaseConnections"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "db_conns"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 
@@ -552,24 +552,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "ReadLatency"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "read_latency"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "ReadLatency"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "read_latency"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 
@@ -683,24 +683,24 @@ resource "grafana_rule_group" "rds_health" {
         dimensions = {
           DBInstanceIdentifier = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "WriteLatency"
-        metricQueryType   = 0
-        namespace         = "AWS/RDS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "write_latency"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "WriteLatency"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "write_latency"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 

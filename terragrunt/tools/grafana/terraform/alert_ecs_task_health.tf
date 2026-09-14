@@ -29,24 +29,24 @@ resource "grafana_rule_group" "ecs_task_health" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "DesiredTaskCount"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "1m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "desired_tasks"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Maximum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "DesiredTaskCount"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "1m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "desired_tasks"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Maximum"
       })
     }
 
@@ -63,24 +63,24 @@ resource "grafana_rule_group" "ecs_task_health" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "RunningTaskCount"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "1m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "running_tasks"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Maximum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "RunningTaskCount"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "1m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "running_tasks"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Maximum"
       })
     }
 
@@ -255,24 +255,24 @@ resource "grafana_rule_group" "ecs_task_health" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "PendingTaskCount"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "1m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "pending_tasks"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Maximum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "PendingTaskCount"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "1m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "pending_tasks"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Maximum"
       })
     }
 
@@ -370,24 +370,24 @@ resource "grafana_rule_group" "ecs_task_health" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "TaskStoppedCount"
-        metricQueryType   = 0
-        namespace         = "ECS/ContainerInsights"
-        period            = "1m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "tasks_stopped"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Sum"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "TaskStoppedCount"
+        metricQueryType  = 0
+        namespace        = "ECS/ContainerInsights"
+        period           = "1m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "tasks_stopped"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Sum"
       })
     }
 

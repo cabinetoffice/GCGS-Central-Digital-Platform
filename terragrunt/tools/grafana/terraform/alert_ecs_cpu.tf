@@ -29,24 +29,24 @@ resource "grafana_rule_group" "ecs_cpu_high" {
           ClusterName = "*"
           ServiceName = "*"
         }
-        expression        = ""
-        id                = ""
-        intervalMs        = 1000
-        label             = ""
-        logGroups         = []
-        matchExact        = true
-        maxDataPoints     = 43200
-        metricEditorMode  = 0
-        metricName        = "CPUUtilization"
-        metricQueryType   = 0
-        namespace         = "AWS/ECS"
-        period            = "5m"
-        queryLanguage     = "CWLI"
-        queryMode         = "Metrics"
-        refId             = "cpu_util"
-        region            = "default"
-        sqlExpression     = ""
-        statistic         = "Average"
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "CPUUtilization"
+        metricQueryType  = 0
+        namespace        = "AWS/ECS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "cpu_util"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
       })
     }
 
