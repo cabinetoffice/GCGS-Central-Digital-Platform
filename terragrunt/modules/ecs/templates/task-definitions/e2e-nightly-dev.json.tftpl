@@ -23,6 +23,7 @@
       { "name" : "TestSettings__FTSDotnetSearchUrl", "value" : "https://fts-app.${public_domain}/search"},
       { "name" : "TestSettings__TenantApiUrl", "value" : "https://tenant.${public_domain}"},
       { "name" : "TestSettings__UserApiUrl", "value" : "https://fts-user-api.${public_domain}/"},
+      { "name" : "TestSettings__SignIntoCognitoLink", "value" : "https://${user_pool_domain}.auth.${lg_region}.amazoncognito.com/"},
       { "name" : "TestSettings__SirsiDomain", "value" : "${public_domain}"},
       { "name" : "TestSettings__Headed", "value" : "${test_settings_headed}"},
       { "name" : "TEST_TIMEOUT_SECONDS", "value" : "${test_timeout_seconds}"},
@@ -31,6 +32,7 @@
       { "name" : "CLOUDWATCH_METRICS_ENABLED", "value" : "${cloudwatch_metrics_enabled}"}
     ],
     "secrets": [
+      { "name" : "TestSettings__DiagnosticUrl", "valueFrom" : "${diagnostic_path_arn}"},
       { "name" : "TestSettings__Email", "valueFrom" : "${e2e_env_secret_arn}:E2E_EMAIL::"},
       { "name" : "TestSettings__Password", "valueFrom" : "${e2e_env_secret_arn}:E2E_PASSWORD::"},
       { "name" : "TestSettings__SecretKey", "valueFrom" : "${e2e_env_secret_arn}:E2E_SECRET_KEY::"},
