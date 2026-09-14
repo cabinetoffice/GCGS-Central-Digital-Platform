@@ -108,8 +108,6 @@ locals {
     notice_render_cache_debug_marker      = true
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
-    notices_rebuild_enabled               = contains(["development", "staging"], var.environment) ? "UK1,UK2,UK3,UK6" : ""
-    notices_dotnet_default                = ""
     render_cache_purge_on_migrate         = contains(["development", "staging", "integration"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
@@ -123,10 +121,6 @@ locals {
     uk11_240_enabled                      = true
     uk17_enable_current_reporting_periods = !contains(["development", "production"], var.environment)
     uk17_enabled                          = true
-    uk1_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
-    uk2_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
-    uk3_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
-    uk6_notices_rebuild_enabled           = contains(["development", "staging"], var.environment)
     uk9_enabled                           = true
     use_srsi                              = true
     use_srsi_for_api                      = true
