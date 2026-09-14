@@ -24,6 +24,7 @@ module "ecs_task_e2e_nightly_dev" {
       test_settings_headed       = "0"
       test_timeout_seconds       = "5400"
       teams_notification_enabled = "true"
+      user_pool_domain           = var.user_pool_domain
     }
   )
 
