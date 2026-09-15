@@ -19,6 +19,7 @@ module "ecs_task_e2e_nightly_dev" {
       memory                     = var.service_configs.e2e_nightly_dev.memory
       name                       = var.service_configs.e2e_nightly_dev.name
       public_domain              = var.public_domain
+      reports_bucket_name        = module.s3_bucket_e2e_nightly_dev_reports[0].bucket
       run_once                   = "true"
       service_version            = local.service_version_fts
       test_env                   = var.environment
