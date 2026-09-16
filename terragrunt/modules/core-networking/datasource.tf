@@ -41,3 +41,7 @@ data "aws_secretsmanager_secret_version" "waf_allowed_ips_tools" {
 data "aws_secretsmanager_secret_version" "waf_blocked_ips" {
   secret_id = "${local.name_prefix}-waf-blocked-ip-set"
 }
+
+data "aws_secretsmanager_secret_version" "waf_php_bot_ua_lists" {
+  secret_id = "${local.name_prefix}-waf-php-bot-ua-lists"
+}
