@@ -9,6 +9,7 @@
 > You are welcome to use any profile manager or tool you are more comfortable with.
 
 ## Table of Contents
+> Keep this list in alphabetical order.
 - [Retrieve Diagnostic URI](#retrieve-diagnostic-uri)
 - [Update Authority Secrets](#update-authority-secrets)
 - [Update Charity Commission Secrets](#update-charity-commission-secrets)
@@ -22,9 +23,9 @@
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
-- [Update Production Database Users](#update-production-database-users)
-- [Update Slack Configuration](#update-slack-configuration)
+- [Update Teams Webhook](#update-teams-webhook)
 - [Update Terraform Operators](#update-terraform-operators)
+- [Update User Journey Monitoring Test Settings Secret](#update-user-journey-monitoring-test-settings-secret)
 - [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update WAF Allowed IP Set](#update-waf-allowed-ip-set)
 - [Update WAF Blocked IP Set](#update-waf-blocked-ip-set)
@@ -266,6 +267,31 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-odi-data-platform 
 
 ---
 
+## Update OneLogin Forward Logout Notification API Key
+
+1. Use `uuidgen` or a similar tool to generate a new API key and store it in the target environment's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new API key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+# Or update an existing API key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+```
+
+2. Retrieve the stored API key from Secrets Manager and share it securely with the relevant teams using a secure medium (e.g., encrypted email, password manager).
+
+```shell
+ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key | jq .SecretString
+
+```
+
+3. Redeploy the `organisation-app` service.
+
+---
+
 ## Update OneLogin Secrets
 
 1. Create a JSON file in the `./secrets` folder with the following attributes, e.g., **onelogin-secrets-development.json**:
@@ -289,31 +315,6 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-odi-data-platform 
 # ave aws secretsmanager create-secret --name cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
 # Or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-credentials --secret-string file://secrets/onelogin-secrets-development.json | jq .
-```
-
-3. Redeploy the `organisation-app` service.
-
----
-
-## Update OneLogin Forward Logout Notification API Key
-
-1. Use `uuidgen` or a similar tool to generate a new API key and store it in the target environment's Secrets Manager.
-
-```shell
-# Assume the appropriate role for the target environment and...
-# Add a new API key:
-# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
-
-# Or update an existing API key:
-ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
-
-```
-
-2. Retrieve the stored API key from Secrets Manager and share it securely with the relevant teams using a secure medium (e.g., encrypted email, password manager).
-
-```shell
-ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key | jq .SecretString
-
 ```
 
 3. Redeploy the `organisation-app` service.
@@ -398,6 +399,54 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operator
 ```
 
 3. Plan and apply Terraform to the `core/iam` component.
+
+---
+
+## Update User Journey Monitoring Test Settings Secret
+
+The `user-journey-monitoring` ECS service reads its E2E test credentials from a single AWS Secrets Manager secret:
+
+- Secret ID: `cdp-sirsi-user-journey-monitoring-test-settings`
+
+The secret value should be a JSON object with the following keys:
+
+> Note: these are the *secret JSON keys*. The ECS service maps them directly into `TestSettings__*` environment variables inside the container.
+
+- `Email`
+- `Password`
+- `SecretKey`
+
+1. Create a JSON file (do not commit it) with the required keys, for example:
+
+```json
+{
+  "Email": "e2etesting@goaco.com",
+  "Password": "REPLACE_ME",
+  "SecretKey": "REPLACE_ME"
+}
+```
+
+2. Assume the appropriate account role and create/update the secret:
+
+```shell
+cd ~/Projects/secrets-sirsi/UserJourneyMonitoring
+
+SECRET_ID=cdp-sirsi-user-journey-monitoring-test-settings
+DESC="E2E test credentials for the user-journey-monitoring ECS service (production)."
+
+aws-switch-to-cdp-sirsi-production-goaco-terraform
+if ! ave aws secretsmanager describe-secret --secret-id "$SECRET_ID" >/dev/null 2>&1; then
+  ave aws secretsmanager create-secret \
+    --name "$SECRET_ID" \
+    --description "$DESC" \
+    --secret-string file://~/Projects/secrets-sirsi/UserJourneyMonitoring/user-journey-monitoring-test-settings-production.json \
+    --tags Key=component,Value=ecs Key=component_root,Value=service Key=environment,Value=production Key=managed_by,Value=terragrunt | jq .
+else
+  ave aws secretsmanager put-secret-value \
+    --secret-id "$SECRET_ID" \
+    --secret-string file://~/Projects/secrets-sirsi/UserJourneyMonitoring/user-journey-monitoring-test-settings-production.json | jq .
+fi
+```
 
 ---
 

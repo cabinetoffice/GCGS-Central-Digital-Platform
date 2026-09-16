@@ -6,6 +6,7 @@ module "ecs_service_user_journey_monitoring" {
     {
       betterstack_secret_arn       = data.aws_secretsmanager_secret.betterstack_user_journey_monitoring.arn
       fts_secrets_arn              = data.aws_secretsmanager_secret.fts_secrets.arn
+      test_settings_secret_arn     = data.aws_secretsmanager_secret.user_journey_monitoring_test_settings.arn
       cpu                          = var.service_configs.user_journey_monitoring.cpu
       desired_count                = var.service_configs.user_journey_monitoring.desired_count
       image                        = local.ecr_urls[var.service_configs.user_journey_monitoring.name]
@@ -29,8 +30,8 @@ module "ecs_service_user_journey_monitoring" {
   name                   = var.service_configs.user_journey_monitoring.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  role_ecs_task_arn       = var.role_ecs_task_arn
-  role_ecs_task_exec_arn  = var.role_ecs_task_exec_arn
+  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }
