@@ -22,6 +22,9 @@
       { "name": "BETTERSTACK_HEARTBEAT_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_HEARTBEAT_URL::"},
       { "name": "BETTERSTACK_INGEST_URL", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_INGEST_URL::"},
       { "name": "BETTERSTACK_SOURCE_TOKEN", "valueFrom": "${betterstack_secret_arn}:BETTERSTACK_SOURCE_TOKEN::"},
+      { "name": "TestSettings__Email", "valueFrom": "${test_settings_secret_arn}:Email::"},
+      { "name": "TestSettings__Password", "valueFrom": "${test_settings_secret_arn}:Password::"},
+      { "name": "TestSettings__SecretKey", "valueFrom": "${test_settings_secret_arn}:SecretKey::"},
       { "name": "TestSettings__FTSHttpBasicAuthEnabled", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_ENABLED::"},
       { "name": "TestSettings__FTSHttpBasicAuthPassword", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_PASS::"},
       { "name": "TestSettings__FTSHttpBasicAuthUsername", "valueFrom": "${fts_secrets_arn}:HTTP_BASIC_AUTH_USER::"}
