@@ -76,29 +76,14 @@ locals {
     ]
   )
 
-  waf_php_bot_block_ua_list = [
-    "amazonbot",
-    "bun/\\d",
-    "chatgpt-user",
-    "deno",
-    "findtender-ai-agent",
-    "gptbot",
-    "meta-externalagent",
-    "oai-searchbot",
-    "procurementextractor",
-    "shapbot",
-    "supabase",
-    "supabaseedgeruntime",
-    "vinnikov-analytics",
-  ]
+  waf_php_bot_ua_lists_raw = try(jsondecode(data.aws_secretsmanager_secret_version.waf_php_bot_ua_lists.secret_string), {})
 
-  waf_php_bot_block_ua_regex = ".*(${join("|", local.waf_php_bot_block_ua_list)}).*"
+  waf_php_bot_block_ua_list            = try(local.waf_php_bot_ua_lists_raw.bot_block_ua_list, [])
+  waf_php_bot_block_ua_exempt_prefixes = try(local.waf_php_bot_ua_lists_raw.bot_block_ua_exempt_prefixes, [])
 
-  waf_php_bot_block_ua_exempt_prefixes = [
-    "tenderbender/",
-  ]
+  waf_php_bot_block_ua_regex = length(local.waf_php_bot_block_ua_list) > 0 ? ".*(${join("|", local.waf_php_bot_block_ua_list)}).*" : "a^"
 
-  waf_php_bot_block_ua_exempt_prefix_regex = "^(${join("|", local.waf_php_bot_block_ua_exempt_prefixes)})"
+  waf_php_bot_block_ua_exempt_prefix_regex = length(local.waf_php_bot_block_ua_exempt_prefixes) > 0 ? "^(${join("|", local.waf_php_bot_block_ua_exempt_prefixes)})" : "a^"
 
   waf_raw_ip_set_json_tools = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips_tools.secret_string), [])
   waf_allowed_ip_list_tools_secret = length(local.waf_raw_ip_set_json_tools) > 0 ? [

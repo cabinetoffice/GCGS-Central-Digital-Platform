@@ -29,6 +29,7 @@
 - [Update User Management Service Key API Key](#update-user-management-service-key-api-key)
 - [Update WAF Allowed IP Set](#update-waf-allowed-ip-set)
 - [Update WAF Blocked IP Set](#update-waf-blocked-ip-set)
+- [Update WAF PHP Bot User-Agent Lists](#update-waf-php-bot-user-agent-lists)
 
 ---
 
@@ -265,6 +266,29 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-odi-data-platform 
 
 3. Redeploy the `service-commercial-tools-app` and 'service-commercial-tools-api' services.
 
+## Update OneLogin Forward Logout Notification API Key
+
+1. Use `uuidgen` or a similar tool to generate a new API key and store it in the target environment's Secrets Manager.
+
+```shell
+# Assume the appropriate role for the target environment and...
+# Add a new API key:
+# ave aws secretsmanager create-secret --name cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+# Or update an existing API key:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key --secret-string $(uuidgen) | jq .
+
+```
+
+2. Retrieve the stored API key from Secrets Manager and share it securely with the relevant teams using a secure medium (e.g., encrypted email, password manager).
+
+```shell
+ave aws secretsmanager get-secret-value --secret-id cdp-sirsi-one-login-forward-logout-notification-api-key | jq .SecretString
+
+```
+
+3. Redeploy the `organisation-app` service.
+
 ---
 
 ## Update OneLogin Forward Logout Notification API Key
@@ -485,10 +509,12 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-user-management-se
 
 ```shell
 # Add for services using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
+# ave aws secretsmanager create-secret --name cdp-sirsi-waf-allowed-ip-set --description "WAF allowed IP set." --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
 # OR for tools
-# ave aws secretsmanager create-secret --name cdp-sirsi-tools-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development-tools.json | jq .
-cdp-sirsi-tools-waf-allowed-ip-set
+# ave aws secretsmanager create-secret --name cdp-sirsi-tools-waf-allowed-ip-set --description "WAF allowed IP set (tools)." --secret-string file://secrets/waf-allowed-ip-set-development-tools.json | jq .
+# Optionally ensure the description is set/updated:
+# ave aws secretsmanager update-secret --secret-id cdp-sirsi-waf-allowed-ip-set --description "WAF allowed IP set." | jq .
+# ave aws secretsmanager update-secret --secret-id cdp-sirsi-tools-waf-allowed-ip-set --description "WAF allowed IP set (tools)." | jq .
 # Or update for services using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set --secret-string file://secrets/waf-allowed-ip-set-development.json | jq .
 # OR for tools
@@ -518,9 +544,50 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-allowed-ip-set
 
 ```shell
 # Add using:
-# ave aws secretsmanager create-secret --name cdp-sirsi-waf-blocked-ip-set --secret-string file://secrets/waf-blocked-ip-set-development.json | jq .
+# ave aws secretsmanager create-secret --name cdp-sirsi-waf-blocked-ip-set --description "WAF blocked IP set." --secret-string file://secrets/waf-blocked-ip-set-development.json | jq .
+# Optionally ensure the description is set/updated:
+# ave aws secretsmanager update-secret --secret-id cdp-sirsi-waf-blocked-ip-set --description "WAF blocked IP set." | jq .
 # Or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-waf-blocked-ip-set --secret-string file://secrets/waf-blocked-ip-set-development.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/networking` component.
+
+---
+
+## Update WAF PHP Bot User-Agent Lists
+
+The PHP WAF contains a custom User-Agent block rule that reads its patterns and exemptions from a Secrets Manager secret so the matching logic is not visible in this repository.
+
+- Secret ID: `cdp-sirsi-waf-php-bot-ua-lists`
+
+The secret value should be a JSON object with these keys:
+
+- `bot_block_ua_list` (array of strings)
+- `bot_block_ua_exempt_prefixes` (array of strings; prefixes only)
+
+1. Create/update the per-environment JSON file under `~/Projects/secrets-sirsi/WAF` (do not commit it here).
+
+2. Assume the appropriate role for the target environment and create/update the secret:
+
+```shell
+cd ~/Projects/secrets-sirsi/WAF
+
+SECRET_ID=cdp-sirsi-waf-php-bot-ua-lists
+DESC="WAF PHP bot User-Agent patterns and exemptions (used by the custom block-bots-ua rule)."
+
+# Example (development):
+aws-switch-to-cdp-sirsi-development-goaco-terraform
+ave aws secretsmanager create-secret \
+  --name "$SECRET_ID" \
+  --description "$DESC" \
+  --secret-string file://~/Projects/secrets-sirsi/WAF/waf-php-bot-ua-lists-development.json || \
+ave aws secretsmanager update-secret \
+  --secret-id "$SECRET_ID" \
+  --description "$DESC" && \
+ave aws secretsmanager put-secret-value \
+  --secret-id "$SECRET_ID" \
+  --secret-string file://~/Projects/secrets-sirsi/WAF/waf-php-bot-ua-lists-development.json | jq .
 ```
 
 3. Plan and apply Terraform to the `core/networking` component.
