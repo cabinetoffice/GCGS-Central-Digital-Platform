@@ -82,18 +82,43 @@ resource "aws_wafv2_web_acl" "php" {
     }
 
     statement {
-      regex_match_statement {
-        regex_string = local.waf_php_bot_block_ua_regex
+      and_statement {
+        statement {
+          regex_match_statement {
+            regex_string = local.waf_php_bot_block_ua_regex
 
-        field_to_match {
-          single_header {
-            name = "user-agent"
+            field_to_match {
+              single_header {
+                name = "user-agent"
+              }
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
           }
         }
 
-        text_transformation {
-          priority = 0
-          type     = "LOWERCASE"
+        statement {
+          not_statement {
+            statement {
+              regex_match_statement {
+                regex_string = local.waf_php_bot_block_ua_exempt_prefix_regex
+
+                field_to_match {
+                  single_header {
+                    name = "user-agent"
+                  }
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "LOWERCASE"
+                }
+              }
+            }
+          }
         }
       }
     }

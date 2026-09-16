@@ -94,6 +94,12 @@ locals {
 
   waf_php_bot_block_ua_regex = ".*(${join("|", local.waf_php_bot_block_ua_list)}).*"
 
+  waf_php_bot_block_ua_exempt_prefixes = [
+    "tenderbender/",
+  ]
+
+  waf_php_bot_block_ua_exempt_prefix_regex = "^(${join("|", local.waf_php_bot_block_ua_exempt_prefixes)})"
+
   waf_raw_ip_set_json_tools = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips_tools.secret_string), [])
   waf_allowed_ip_list_tools_secret = length(local.waf_raw_ip_set_json_tools) > 0 ? [
     for item in local.waf_raw_ip_set_json_tools : item.value if can(item.value)
