@@ -74,8 +74,6 @@ resource "aws_route53_record" "s3_uploader" {
 }
 
 resource "aws_route53_record" "filestash" {
-  count = var.filestash_config != null ? 1 : 0
-
   zone_id = var.public_hosted_zone_id
   name    = var.filestash_config.name
   type    = "CNAME"

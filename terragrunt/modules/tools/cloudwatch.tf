@@ -47,7 +47,6 @@ resource "aws_cloudwatch_log_group" "s3_uploader" {
 }
 
 resource "aws_cloudwatch_log_group" "filestash" {
-  count             = var.filestash_config != null ? 1 : 0
   name              = "/ecs/${var.filestash_config.name}"
   retention_in_days = var.environment == "production" ? 0 : 90
   tags              = var.tags

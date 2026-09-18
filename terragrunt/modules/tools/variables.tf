@@ -147,14 +147,13 @@ variable "environment" {
 }
 
 variable "filestash_config" {
-  description = "Filestash service configuration (development only)"
+  description = "Filestash service configuration"
   type = object({
     cpu    = number
     memory = number
     name   = string
     port   = number
   })
-  default = null
 }
 
 variable "filestash_reports_bucket_arn" {

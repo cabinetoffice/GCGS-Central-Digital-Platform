@@ -145,7 +145,7 @@ dependency service_queue {
 inputs = {
   account_ids                 = local.global_vars.locals.account_ids
   cloud_beaver_config         = local.global_vars.locals.tools_configs.cloud_beaver
-  filestash_config            = try(local.global_vars.locals.tools_configs.filestash, null)
+  filestash_config            = local.global_vars.locals.tools_configs.filestash
   healthcheck_config          = local.global_vars.locals.tools_configs.healthcheck
   opensearch_admin_config     = local.global_vars.locals.tools_configs.opensearch_admin
   opensearch_gateway_config   = local.global_vars.locals.tools_configs.opensearch_gateway

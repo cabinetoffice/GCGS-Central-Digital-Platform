@@ -49,8 +49,6 @@ data "aws_iam_policy_document" "filestash_s3_readonly" {
 }
 
 resource "aws_iam_policy" "filestash_s3_readonly" {
-  count = var.filestash_config != null ? 1 : 0
-
   name        = "${local.name_prefix}-${var.filestash_config.name}-s3-readonly"
   description = "Read-only access for Filestash to browse the E2E nightly reports bucket"
   policy      = data.aws_iam_policy_document.filestash_s3_readonly.json
@@ -58,8 +56,6 @@ resource "aws_iam_policy" "filestash_s3_readonly" {
 }
 
 resource "aws_iam_role_policy_attachment" "filestash_s3_readonly" {
-  count = var.filestash_config != null ? 1 : 0
-
   role       = var.role_filestash_task_name
-  policy_arn = aws_iam_policy.filestash_s3_readonly[0].arn
+  policy_arn = aws_iam_policy.filestash_s3_readonly.arn
 }

@@ -28,15 +28,13 @@ resource "random_string" "filestash_admin_password" {
 }
 
 resource "aws_secretsmanager_secret" "filestash_credentials" {
-  count       = var.filestash_config != null ? 1 : 0
   name        = "${local.name_prefix}-${var.filestash_config.name}-credentials"
   description = "Filestash (e2e-reports) admin credentials"
   tags        = var.tags
 }
 
 resource "aws_secretsmanager_secret_version" "filestash_credentials_version" {
-  count     = var.filestash_config != null ? 1 : 0
-  secret_id = aws_secretsmanager_secret.filestash_credentials[0].id
+  secret_id = aws_secretsmanager_secret.filestash_credentials.id
   secret_string = jsonencode({
     ADMIN_PASSWORD = random_string.filestash_admin_password.result,
   })
