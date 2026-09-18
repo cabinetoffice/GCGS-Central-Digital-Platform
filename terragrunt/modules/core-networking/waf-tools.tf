@@ -30,9 +30,75 @@ resource "aws_wafv2_web_acl" "tools" {
     content_type = "TEXT_PLAIN"
   }
 
+  dynamic "rule" {
+    for_each = length(local.tools_waf_bypass_ip_restriction_hosts) > 0 ? [1] : []
+
+    content {
+      name     = "${local.name_prefix}-tools-allow-public-hosts"
+      priority = 0
+
+      action {
+        allow {}
+      }
+
+      statement {
+        dynamic "byte_match_statement" {
+          for_each = length(local.tools_waf_bypass_ip_restriction_hosts) == 1 ? [local.tools_waf_bypass_ip_restriction_hosts[0]] : []
+          content {
+            positional_constraint = "EXACTLY"
+            search_string         = byte_match_statement.value
+
+            field_to_match {
+              single_header {
+                name = "host"
+              }
+            }
+
+            text_transformation {
+              priority = 0
+              type     = "LOWERCASE"
+            }
+          }
+        }
+
+        dynamic "or_statement" {
+          for_each = length(local.tools_waf_bypass_ip_restriction_hosts) > 1 ? [1] : []
+          content {
+            dynamic "statement" {
+              for_each = toset(local.tools_waf_bypass_ip_restriction_hosts)
+              content {
+                byte_match_statement {
+                  positional_constraint = "EXACTLY"
+                  search_string         = statement.value
+
+                  field_to_match {
+                    single_header {
+                      name = "host"
+                    }
+                  }
+
+                  text_transformation {
+                    priority = 0
+                    type     = "LOWERCASE"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = "${local.name_prefix}-allow-public-hosts"
+        sampled_requests_enabled   = true
+      }
+    }
+  }
+
   rule {
     name     = "${local.name_prefix}-tools-allow-known-ips"
-    priority = 0
+    priority = 1
 
     action {
       allow {}

@@ -5,6 +5,12 @@ locals {
 
   tags = merge(var.tags, { Name = var.product.resource_name })
 
+  public_domain = trimsuffix(aws_route53_zone.public.name, ".")
+
+  tools_waf_bypass_ip_restriction_hosts = [
+    "e2e-reports.${local.public_domain}",
+  ]
+
   waf_raw_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_allowed_ips.secret_string), [])
   waf_allowed_ip_list_secret = length(local.waf_raw_ip_set_json) > 0 ? [
     for item in local.waf_raw_ip_set_json : item.value if can(item.value)
