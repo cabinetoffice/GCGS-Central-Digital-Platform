@@ -46,6 +46,7 @@ module "ecs_service_filestash" {
   role_ecs_task_exec_arn  = var.role_ecs_task_exec_arn
   service_port            = var.filestash_config.port
   tags                    = var.tags
+  tg_suffix               = "v2"
   user_pool_arn           = var.user_pool_arn_tools
   user_pool_client_id     = var.user_pool_client_id_tools_filestash
   user_pool_domain        = var.user_pool_domain_tools
