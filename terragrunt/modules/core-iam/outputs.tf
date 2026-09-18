@@ -94,6 +94,14 @@ output "ecs_task_opensearch_gateway_name" {
   value = aws_iam_role.ecs_task_opensearch_gateway.name
 }
 
+output "filestash_task_arn" {
+  value = aws_iam_role.filestash_task.arn
+}
+
+output "filestash_task_name" {
+  value = aws_iam_role.filestash_task.name
+}
+
 output "notification_step_function_arn" {
   value = aws_iam_role.notification_step_function.arn
 }
@@ -156,14 +164,6 @@ output "terraform_arn" {
 
 output "terraform_name" {
   value = aws_iam_role.terraform.name
-}
-
-output "filestash_task_arn" {
-  value = aws_iam_role.filestash_task.arn
-}
-
-output "filestash_task_name" {
-  value = aws_iam_role.filestash_task.name
 }
 
 output "tools_arn" {

@@ -18,6 +18,12 @@ variable "allowed_unauthenticated_paths" {
   default     = []
 }
 
+variable "auth_session_cookie_name" {
+  description = "Optional override for the Cognito auth session cookie name to avoid collisions across multiple authenticated services behind the same ALB."
+  type        = string
+  default     = "AWSELBAuthSessionCookie"
+}
+
 variable "cluster_id" {
   description = "Cluster ID of which the service will be part of"
   type        = string
@@ -87,6 +93,11 @@ variable "extra_host_headers" {
   default     = []
 }
 
+variable "family" {
+  description = "A unique name for the task definition"
+  type        = string
+}
+
 variable "fixed_response_rules" {
   description = "Optional additional ALB listener rules that return a fixed response (for example to block sensitive paths)."
   type = list(object({
@@ -98,11 +109,6 @@ variable "fixed_response_rules" {
     message_body  = optional(string, "Forbidden")
   }))
   default = []
-}
-
-variable "family" {
-  description = "A unique name for the task definition"
-  type        = string
 }
 
 variable "force_new_deployment" {
@@ -282,12 +288,6 @@ variable "user_pool_client_id" {
 variable "user_pool_domain" {
   default = null
   type    = string
-}
-
-variable "auth_session_cookie_name" {
-  description = "Optional override for the Cognito auth session cookie name to avoid collisions across multiple authenticated services behind the same ALB."
-  type        = string
-  default     = "AWSELBAuthSessionCookie"
 }
 
 variable "vpc_id" {

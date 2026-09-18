@@ -36,7 +36,7 @@ If objects are encrypted with a customer-managed KMS key, the task role also inc
 - Update process:
   1. Choose a stable upstream Filestash tag + digest.
   2. Mirror it to orchestrator ECR (see “Mirror to ECR (optional)”).
-  3. Update the pinned digest (and tag if needed) in `modules/tools/service-filestash.tf` (or set `filestash_image` to override).
+  3. Update `filestash_image` (tag + digest) in `modules/tools/variables.tf`.
   4. Run plans to confirm only the intended environments change.
 
 ### Mirror to ECR (optional)

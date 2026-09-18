@@ -1,40 +1,3 @@
-locals {
-  filestash_image = var.filestash_image != null ? var.filestash_image : "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.filestash_config.name}:lowa@sha256:3ed5bf29eebe1a672124265bf1604a10e8c84ee9a58d7630ffad174c9d5b796a"
-
-  filestash_storage_label = "e2e-reports"
-  filestash_s3_mapping = {
-    (local.filestash_storage_label) = {
-      type   = "s3"
-      region = data.aws_region.current.region
-      path   = "/${local.filestash_reports_bucket_name}/"
-    }
-  }
-
-  filestash_config_json = jsonencode({
-    general = {
-      host = "${var.filestash_config.name}.${var.public_domain}"
-    }
-    connections = [
-      {
-        type  = "s3"
-        label = local.filestash_storage_label
-      }
-    ]
-    middleware = {
-      identity_provider = {
-        type   = "passthrough"
-        params = jsonencode({ strategy = "direct" })
-      }
-      attribute_mapping = {
-        related_backend = local.filestash_storage_label
-        params          = jsonencode(local.filestash_s3_mapping)
-      }
-    }
-  })
-
-  filestash_config_b64 = base64encode(local.filestash_config_json)
-}
-
 module "ecs_service_filestash" {
   count  = var.filestash_config != null ? 1 : 0
   source = "../ecs-service"
@@ -45,7 +8,7 @@ module "ecs_service_filestash" {
       admin_password         = "${aws_secretsmanager_secret.filestash_credentials[0].arn}:ADMIN_PASSWORD::"
       cpu                    = var.filestash_config.cpu
       filestash_config_b64   = local.filestash_config_b64
-      image                  = local.filestash_image
+      image                  = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-e2e-reports:lowa@sha256:3ed5bf29eebe1a672124265bf1604a10e8c84ee9a58d7630ffad174c9d5b796a"
       lg_name                = aws_cloudwatch_log_group.filestash[0].name
       lg_prefix              = "tools"
       lg_region              = data.aws_region.current.region

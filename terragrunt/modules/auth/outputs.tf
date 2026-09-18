@@ -118,12 +118,12 @@ output "tools_user_pool_arn" {
   value = aws_cognito_user_pool.tools.arn
 }
 
-output "tools_user_pool_client_id_s3_uploader" {
-  value = aws_cognito_user_pool_client.s3_uploader.id
-}
-
 output "tools_user_pool_client_id_filestash" {
   value = aws_cognito_user_pool_client.filestash.id
+}
+
+output "tools_user_pool_client_id_s3_uploader" {
+  value = aws_cognito_user_pool_client.s3_uploader.id
 }
 
 output "tools_user_pool_domain" {

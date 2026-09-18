@@ -14,6 +14,10 @@ output "cfs_cluster_name" {
   value = module.cluster_cfs.db_name
 }
 
+output "cfs_proxy_endpoint" {
+  value = aws_db_proxy.cfs.endpoint
+}
+
 output "cluster_ids" {
   value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id, module.cluster_find_a_tender.cluster_id]
 }
@@ -68,10 +72,6 @@ output "fts_cluster_name" {
 
 output "fts_proxy_endpoint" {
   value = aws_db_proxy.fts.endpoint
-}
-
-output "cfs_proxy_endpoint" {
-  value = aws_db_proxy.cfs.endpoint
 }
 
 output "import_instance_private_key_pem" {

@@ -43,14 +43,13 @@ variable "commercial_tools_session_timeout" {
   default     = 30
 }
 
-variable "use_rds_proxy" {
-  description = "When true, use the RDS Proxy endpoints (if provided) instead of direct RDS cluster endpoints"
-  type        = bool
-  default     = false
-}
-
 variable "db_cfs_cluster_address" {
   description = "CFS DB address"
+  type        = string
+}
+
+variable "db_cfs_cluster_name" {
+  description = "CFS DB name"
   type        = string
 }
 
@@ -58,11 +57,6 @@ variable "db_cfs_proxy_endpoint" {
   description = "CFS RDS Proxy endpoint (if provisioned)"
   type        = string
   default     = null
-}
-
-variable "db_cfs_cluster_name" {
-  description = "CFS DB name"
-  type        = string
 }
 
 variable "db_ev_cluster_address" {
@@ -110,12 +104,6 @@ variable "db_fts_cluster_address" {
   type        = string
 }
 
-variable "db_fts_proxy_endpoint" {
-  description = "FTS RDS Proxy endpoint (if provisioned)"
-  type        = string
-  default     = null
-}
-
 variable "db_fts_cluster_credentials_arn" {
   description = "ARN of the secret holding FTS DB credentials"
   type        = string
@@ -124,6 +112,12 @@ variable "db_fts_cluster_credentials_arn" {
 variable "db_fts_cluster_name" {
   description = "FTS DB name"
   type        = string
+}
+
+variable "db_fts_proxy_endpoint" {
+  description = "FTS RDS Proxy endpoint (if provisioned)"
+  type        = string
+  default     = null
 }
 
 variable "db_mysql_sg_id" {
@@ -194,8 +188,6 @@ variable "manage_alb_ecs_sg_rules" {
   default     = true
 }
 
-# OCDS exports: we always provision the Azure OIDC reader role/provider in every environment.
-# Configuration comes from Secrets Manager (see ocds-exports-ey-oidc-params secret).
 variable "ocds_exports_prefix" {
   description = "S3 prefix for exported documents. External consumers are restricted to this prefix."
   type        = string
@@ -474,6 +466,12 @@ variable "use_internal_service_urls" {
   description = "Whether to use internal service URLs for service-to-service calls (null defaults to environment-based behavior)"
   type        = bool
   default     = null
+}
+
+variable "use_rds_proxy" {
+  description = "When true, use the RDS Proxy endpoints (if provided) instead of direct RDS cluster endpoints"
+  type        = bool
+  default     = false
 }
 
 variable "user_pool_arn" {
