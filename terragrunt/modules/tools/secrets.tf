@@ -22,6 +22,24 @@ resource "aws_secretsmanager_secret" "cloud_beaver_data_sources" {
   tags = var.tags
 }
 
+resource "random_string" "filestash_admin_password" {
+  length  = 32
+  special = true
+}
+
+resource "aws_secretsmanager_secret" "filestash_credentials" {
+  name        = "${local.name_prefix}-${var.filestash_config.name}-credentials"
+  description = "Filestash (e2e-reports) admin credentials"
+  tags        = var.tags
+}
+
+resource "aws_secretsmanager_secret_version" "filestash_credentials_version" {
+  secret_id = aws_secretsmanager_secret.filestash_credentials.id
+  secret_string = jsonencode({
+    ADMIN_PASSWORD = random_string.filestash_admin_password.result,
+  })
+}
+
 data "aws_secretsmanager_secret_version" "rds_creds_sirsi" {
   secret_id = var.db_sirsi_cluster_credentials_arn
 }

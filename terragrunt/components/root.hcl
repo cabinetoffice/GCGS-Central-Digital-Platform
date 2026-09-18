@@ -445,6 +445,12 @@ locals {
       name = "s3-uploader"
       port = 8000
     }
+    filestash = {
+      name   = "e2e-reports"
+      port   = 8334
+      cpu    = 256
+      memory = 512
+    }
   }
 
   tools_configs = {

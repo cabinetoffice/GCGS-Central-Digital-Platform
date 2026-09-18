@@ -86,7 +86,8 @@ resource "time_sleep" "listener_rule_propagation" {
   depends_on = [
     aws_lb_listener_rule.external,
     aws_lb_listener_rule.internal,
-    aws_lb_listener_rule.this_allowed_unauthenticated_paths
+    aws_lb_listener_rule.this_allowed_unauthenticated_paths,
+    aws_lb_listener_rule.external_fixed_response
   ]
 
   create_duration = var.listener_rule_propagation_delay

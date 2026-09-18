@@ -30,6 +30,7 @@ dependency core_iam {
     ecs_task_exec_arn                   = "mock"
     ecs_task_exec_name                  = "mock"
     ecs_task_name                       = "mock"
+    filestash_task_arn                  = "mock"
     service_deployer_step_function_arn  = "mock"
     service_deployer_step_function_name = "mock"
     terraform_arn                       = "mock"
@@ -192,6 +193,7 @@ inputs = {
   role_ecs_task_name                       = dependency.core_iam.outputs.ecs_task_name
   role_ecs_task_exec_arn                   = dependency.core_iam.outputs.ecs_task_exec_arn
   role_ecs_task_exec_name                  = dependency.core_iam.outputs.ecs_task_exec_name
+  role_filestash_task_arn                  = dependency.core_iam.outputs.filestash_task_arn
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
   role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
   role_terraform_arn                       = dependency.core_iam.outputs.terraform_arn
