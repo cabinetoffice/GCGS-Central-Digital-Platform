@@ -18,13 +18,19 @@ locals {
   cloud_beaver_container_path = "/opt/cloudbeaver/workspace"
   cloud_beaver_volume_name    = "workspace"
 
+  filestash_reports_bucket_name = coalesce(
+    var.filestash_reports_bucket_name,
+    "${local.name_prefix}-${var.environment}-e2e-nightly-dev-reports-${data.aws_caller_identity.current.account_id}"
+  )
+  filestash_reports_bucket_arn = coalesce(
+    var.filestash_reports_bucket_arn,
+    "arn:aws:s3:::${local.filestash_reports_bucket_name}"
+  )
+  filestash_reports_bucket_kms_key_arn = var.filestash_reports_bucket_kms_key_arn
+
   tools_alb_ports = distinct([
     for name, config in var.tools_configs :
     config.port if config.name != "k6"
   ])
 
-  rds_creds_sirsi = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_sirsi.secret_string)
-  rds_creds_ev    = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_ev.secret_string)
-  rds_creds_cfs   = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_cfs.secret_string)
-  rds_creds_fts   = jsondecode(data.aws_secretsmanager_secret_version.rds_creds_fts.secret_string)
 }

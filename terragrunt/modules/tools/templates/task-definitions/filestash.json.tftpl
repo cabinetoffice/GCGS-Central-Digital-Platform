@@ -1,0 +1,41 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "cpu": ${cpu},
+    "memory": ${memory},
+    "portMappings": [
+      {
+        "containerPort": ${service_port},
+        "protocol": "tcp"
+      }
+    ],
+    "linuxParameters": {
+      "capabilities": {
+        "drop": ["ALL"]
+      }
+    },
+    "user": "1000",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    },
+    "environment": [
+      {"name": "APPLICATION_URL", "value": "${public_hostname}"},
+      {"name": "FILESTASH_CONFIG_B64", "value": "${filestash_config_b64}"}
+    ],
+    "secrets": [
+      {"name": "ADMIN_PASSWORD", "valueFrom": "${admin_password}"}
+    ],
+    "command": [
+      "/bin/sh",
+      "-lc",
+      "set -e; mkdir -p /app/data/state/config; printf '%s' $FILESTASH_CONFIG_B64 | base64 -d > /app/data/state/config/config.json; exec /app/filestash"
+    ],
+    "essential": true
+  }
+]

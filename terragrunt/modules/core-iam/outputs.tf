@@ -158,6 +158,14 @@ output "terraform_name" {
   value = aws_iam_role.terraform.name
 }
 
+output "filestash_task_arn" {
+  value = aws_iam_role.filestash_task.arn
+}
+
+output "filestash_task_name" {
+  value = aws_iam_role.filestash_task.name
+}
+
 output "tools_arn" {
   value = aws_iam_role.tools.arn
 }

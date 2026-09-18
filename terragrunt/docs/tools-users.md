@@ -103,13 +103,12 @@ Creates a user and sends an email invite with a temporary password. The user set
 ### Shared tools pool
 
 ```shell
+EMAIL="ali.bahman@goaco.com"
+
 POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
   --query 'UserPools[?Name==`cdp-sirsi-tools`].Id' --output text)
 echo "POOL_ID=${POOL_ID}"
 
-EMAIL="ali.bahman@goaco.com"
-
-# Shared tools pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${POOL_ID}" \
   --username "${EMAIL}" \
@@ -119,13 +118,12 @@ ave aws cognito-idp admin-create-user \
 ### OpenSearch admin pool
 
 ```shell
+EMAIL="ali.bahman@goaco.com"
+
 OPENSEARCH_ADMIN_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
   --query 'UserPools[?Name==`cdp-sirsi-opensearch-admin`].Id' --output text)
 echo "OPENSEARCH_ADMIN_POOL_ID=${OPENSEARCH_ADMIN_POOL_ID}"
 
-EMAIL="ali.bahman@goaco.com"
-
-# OpenSearch admin pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_ADMIN_POOL_ID}" \
   --username "${EMAIL}" \
@@ -135,13 +133,12 @@ ave aws cognito-idp admin-create-user \
 ### OpenSearch gateway pool
 
 ```shell
+EMAIL="ali.bahman@goaco.com"
+
 OPENSEARCH_GATEWAY_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
   --query 'UserPools[?Name==`cdp-sirsi-opensearch-gateway`].Id' --output text)
 echo "OPENSEARCH_GATEWAY_POOL_ID=${OPENSEARCH_GATEWAY_POOL_ID}"
 
-EMAIL="ali.bahman@goaco.com"
-
-# OpenSearch gateway pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_GATEWAY_POOL_ID}" \
   --username "${EMAIL}" \
@@ -151,13 +148,12 @@ ave aws cognito-idp admin-create-user \
 ### OpenSearch debugtask pool
 
 ```shell
+EMAIL="ali.bahman@goaco.com"
+
 OPENSEARCH_DEBUGTASK_POOL_ID=$(ave aws cognito-idp list-user-pools --max-results 60 \
   --query 'UserPools[?Name==`cdp-sirsi-opensearch-debugtask`].Id' --output text)
 echo "OPENSEARCH_DEBUGTASK_POOL_ID=${OPENSEARCH_DEBUGTASK_POOL_ID}"
 
-EMAIL="ali.bahman@goaco.com"
-
-# OpenSearch debugtask pool
 ave aws cognito-idp admin-create-user \
   --user-pool-id "${OPENSEARCH_DEBUGTASK_POOL_ID}" \
   --username "${EMAIL}" \

@@ -414,6 +414,12 @@ variable "role_ecs_task_name" {
   type        = string
 }
 
+variable "role_filestash_task_arn" {
+  description = "Optional Filestash dedicated task role ARN (development only)"
+  type        = string
+  default     = null
+}
+
 variable "role_service_deployer_step_function_arn" {
   description = "ARN of the IAM role used by the Service Deployer Step Function"
   type        = string

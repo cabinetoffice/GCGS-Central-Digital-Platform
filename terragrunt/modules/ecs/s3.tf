@@ -84,7 +84,7 @@ module "s3_bucket_e2e_nightly_dev_reports" {
 
   bucket_name        = "${local.name_prefix}-${var.environment}-e2e-nightly-dev-reports-${data.aws_caller_identity.current.account_id}"
   kms_key_admin_role = var.role_terraform_arn
-  read_roles         = [var.role_terraform_arn]
+  read_roles         = compact([var.role_terraform_arn, var.role_filestash_task_arn])
   write_roles        = [var.role_ecs_task_arn]
 
   tags = var.tags

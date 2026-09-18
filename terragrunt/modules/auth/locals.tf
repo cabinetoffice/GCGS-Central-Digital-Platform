@@ -59,6 +59,9 @@ locals {
   commercial_tools_app_domain = "${local.auth_domain}-commercial_tools_app"
   commercial_tools_app_url    = "https://commercial-tools-app.${var.public_domain}"
 
+  filestash_domain = "${local.tools_pool_name}-e2e-reports"
+  filestash_url = "https://e2e-reports.${var.public_domain}"
+
   tools_pool_name = "${local.name_prefix}-tools"
   tools_domain    = "${local.auth_domain}-tools"
   tools_url       = "https://s3-uploader.${var.public_domain}"

@@ -138,7 +138,7 @@ resource "aws_lb_listener_rule" "external" {
         user_pool_arn              = var.user_pool_arn
         user_pool_client_id        = var.user_pool_client_id
         user_pool_domain           = var.user_pool_domain
-        session_cookie_name        = "AWSELBAuthSessionCookie"
+        session_cookie_name        = var.auth_session_cookie_name
         scope                      = "openid"
         on_unauthenticated_request = "authenticate"
       }
@@ -195,6 +195,38 @@ resource "aws_lb_listener_rule" "external_path_routing" {
   }
 
   tags = merge(var.tags, { Name : "${var.name}-path-${each.key}" })
+}
+
+resource "aws_lb_listener_rule" "external_fixed_response" {
+  for_each = var.alb_enabled ? { for rule in var.fixed_response_rules : tostring(rule.priority) => rule } : {}
+
+  listener_arn = var.ecs_listener_arn
+  priority     = each.value.priority
+
+  action {
+    type  = "fixed-response"
+    order = 1
+
+    fixed_response {
+      content_type = each.value.content_type
+      status_code  = each.value.status_code
+      message_body = each.value.message_body
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = each.value.path_patterns
+    }
+  }
+
+  condition {
+    host_header {
+      values = coalesce(each.value.host_headers, local.host_headers)
+    }
+  }
+
+  tags = merge(var.tags, { Name : "${var.name}-fixed-${each.key}" })
 }
 
 resource "aws_lb_listener_rule" "internal" {

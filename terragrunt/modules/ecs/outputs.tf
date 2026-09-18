@@ -102,6 +102,18 @@ output "s3_fts_bucket" {
   value = module.s3_bucket_fts.bucket
 }
 
+output "e2e_nightly_dev_reports_bucket" {
+  value = length(module.s3_bucket_e2e_nightly_dev_reports) > 0 ? module.s3_bucket_e2e_nightly_dev_reports[0].bucket : null
+}
+
+output "e2e_nightly_dev_reports_bucket_arn" {
+  value = length(module.s3_bucket_e2e_nightly_dev_reports) > 0 ? module.s3_bucket_e2e_nightly_dev_reports[0].arn : null
+}
+
+output "e2e_nightly_dev_reports_bucket_kms_key_arn" {
+  value = length(module.s3_bucket_e2e_nightly_dev_reports) > 0 ? module.s3_bucket_e2e_nightly_dev_reports[0].key_arn : null
+}
+
 output "service_configs" {
   value = {
     for name, config in local.service_configs :

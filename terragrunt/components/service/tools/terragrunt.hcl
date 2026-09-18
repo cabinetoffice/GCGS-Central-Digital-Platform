@@ -31,6 +31,8 @@ dependency core_iam {
     ecs_task_name                       = "mock"
     ecs_task_opensearch_admin_arn       = "mock"
     ecs_task_opensearch_gateway_arn     = "mock"
+    filestash_task_arn                  = "mock"
+    filestash_task_name                 = "mock"
     rds_cloudwatch_arn                  = "mock"
     service_deployer_step_function_arn  = "mock"
     service_deployer_step_function_name = "mock"
@@ -75,6 +77,7 @@ dependency service_auth {
     opensearch_admin_user_pool_domain        = "mock"
     opensearch_gateway_user_pool_domain      = "mock"
     opensearch_debugtask_user_pool_domain    = "mock"
+    tools_user_pool_client_id_filestash      = "mock"
     user_pool_domain                         = "mock"
   }
 }
@@ -91,11 +94,14 @@ dependency service_cache {
 dependency service_ecs {
   config_path = "../../service/ecs"
   mock_outputs = {
-    certificate_arn  = "mock"
-    ecs_alb_dns_name = "mock"
-    ecs_cluster_id   = "mock"
-    ecs_cluster_name = "mock"
-    s3_fts_bucket    = "mock"
+    certificate_arn                            = "mock"
+    ecs_alb_dns_name                           = "mock"
+    ecs_cluster_id                             = "mock"
+    ecs_cluster_name                           = "mock"
+    e2e_nightly_dev_reports_bucket             = "mock"
+    e2e_nightly_dev_reports_bucket_arn         = "mock"
+    e2e_nightly_dev_reports_bucket_kms_key_arn = "mock"
+    s3_fts_bucket                              = "mock"
   }
 }
 
@@ -139,6 +145,7 @@ dependency service_queue {
 inputs = {
   account_ids                 = local.global_vars.locals.account_ids
   cloud_beaver_config         = local.global_vars.locals.tools_configs.cloud_beaver
+  filestash_config            = try(local.global_vars.locals.tools_configs.filestash, null)
   healthcheck_config          = local.global_vars.locals.tools_configs.healthcheck
   opensearch_admin_config     = local.global_vars.locals.tools_configs.opensearch_admin
   opensearch_gateway_config   = local.global_vars.locals.tools_configs.opensearch_gateway
@@ -159,6 +166,8 @@ inputs = {
   role_service_deployer_step_function_arn  = dependency.core_iam.outputs.service_deployer_step_function_arn
   role_service_deployer_step_function_name = dependency.core_iam.outputs.service_deployer_step_function_name
   role_terraform_arn                       = dependency.core_iam.outputs.terraform_arn
+  role_filestash_task_arn                  = dependency.core_iam.outputs.filestash_task_arn
+  role_filestash_task_name                 = dependency.core_iam.outputs.filestash_task_name
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain
@@ -191,14 +200,18 @@ inputs = {
   user_pool_domain_opensearch_debugtask    = dependency.service_auth.outputs.opensearch_debugtask_user_pool_domain
 
   user_pool_arn_tools                   = dependency.service_auth.outputs.tools_user_pool_arn
+  user_pool_client_id_tools_filestash   = dependency.service_auth.outputs.tools_user_pool_client_id_filestash
   user_pool_client_id_tools_s3_uploader = dependency.service_auth.outputs.tools_user_pool_client_id_s3_uploader
   user_pool_domain_tools                = dependency.service_auth.outputs.tools_user_pool_domain
 
-  certificate_arn  = dependency.service_ecs.outputs.certificate_arn
-  ecs_cluster_id   = dependency.service_ecs.outputs.ecs_cluster_id
-  ecs_cluster_name = dependency.service_ecs.outputs.ecs_cluster_name
-  ecs_alb_dns_name = dependency.service_ecs.outputs.ecs_alb_dns_name
-  s3_fts_bucket    = dependency.service_ecs.outputs.s3_fts_bucket
+  certificate_arn                      = dependency.service_ecs.outputs.certificate_arn
+  ecs_cluster_id                       = dependency.service_ecs.outputs.ecs_cluster_id
+  ecs_cluster_name                     = dependency.service_ecs.outputs.ecs_cluster_name
+  ecs_alb_dns_name                     = dependency.service_ecs.outputs.ecs_alb_dns_name
+  filestash_reports_bucket_name        = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket
+  filestash_reports_bucket_arn         = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_arn
+  filestash_reports_bucket_kms_key_arn = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_kms_key_arn
+  s3_fts_bucket                        = dependency.service_ecs.outputs.s3_fts_bucket
 
   db_cfs_cluster_address           = dependency.service_database.outputs.cfs_cluster_address
   db_cfs_cluster_credentials_arn   = dependency.service_database.outputs.cfs_cluster_credentials_arn

@@ -22,6 +22,41 @@ variable "cloud_beaver_config" {
   })
 }
 
+variable "filestash_config" {
+  description = "Filestash service configuration (development only)"
+  type = object({
+    cpu    = number
+    memory = number
+    name   = string
+    port   = number
+  })
+  default = null
+}
+
+variable "filestash_reports_bucket_name" {
+  description = "S3 bucket name to be exposed by Filestash (development only)"
+  type        = string
+  default     = null
+}
+
+variable "filestash_reports_bucket_arn" {
+  description = "S3 bucket ARN to be exposed by Filestash (development only)"
+  type        = string
+  default     = null
+}
+
+variable "filestash_reports_bucket_kms_key_arn" {
+  description = "Optional KMS key ARN if the exposed bucket uses SSE-KMS (development only)"
+  type        = string
+  default     = null
+}
+
+variable "filestash_image" {
+  description = "Optional container image reference for Filestash (tag and digest recommended). When null, defaults to the orchestrator ECR repository for this tool."
+  type        = string
+  default     = null
+}
+
 variable "db_cfs_cluster_address" {
   description = "CFS database endpoint address"
   type        = string
@@ -134,6 +169,26 @@ variable "ecs_cluster_name" {
 variable "ecs_sg_id" {
   description = "ECS security group ID"
   type        = string
+}
+
+variable "role_filestash_task_arn" {
+  description = "Filestash dedicated task role ARN (development only)"
+  type        = string
+  default     = null
+  validation {
+    condition     = var.filestash_config == null || var.role_filestash_task_arn != null
+    error_message = "role_filestash_task_arn must be set when filestash_config is enabled."
+  }
+}
+
+variable "role_filestash_task_name" {
+  description = "Filestash dedicated task role name (development only)"
+  type        = string
+  default     = null
+  validation {
+    condition     = var.filestash_config == null || var.role_filestash_task_name != null
+    error_message = "role_filestash_task_name must be set when filestash_config is enabled."
+  }
 }
 
 variable "efs_sg_id" {
@@ -377,6 +432,11 @@ variable "user_pool_client_id_opensearch_gateway" {
 }
 
 variable "user_pool_client_id_tools_s3_uploader" {
+  default = null
+  type    = string
+}
+
+variable "user_pool_client_id_tools_filestash" {
   default = null
   type    = string
 }
