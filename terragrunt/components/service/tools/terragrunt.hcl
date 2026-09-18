@@ -208,9 +208,9 @@ inputs = {
   ecs_cluster_id                       = dependency.service_ecs.outputs.ecs_cluster_id
   ecs_cluster_name                     = dependency.service_ecs.outputs.ecs_cluster_name
   ecs_alb_dns_name                     = dependency.service_ecs.outputs.ecs_alb_dns_name
-  filestash_reports_bucket_name        = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket
-  filestash_reports_bucket_arn         = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_arn
-  filestash_reports_bucket_kms_key_arn = dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_kms_key_arn
+  filestash_reports_bucket_name        = try(dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket, null)
+  filestash_reports_bucket_arn         = try(dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_arn, null)
+  filestash_reports_bucket_kms_key_arn = try(dependency.service_ecs.outputs.e2e_nightly_dev_reports_bucket_kms_key_arn, null)
   s3_fts_bucket                        = dependency.service_ecs.outputs.s3_fts_bucket
 
   db_cfs_cluster_address           = dependency.service_database.outputs.cfs_cluster_address
