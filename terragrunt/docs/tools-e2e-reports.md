@@ -36,7 +36,7 @@ If objects are encrypted with a customer-managed KMS key, the task role also inc
 - Update process:
   1. Choose a stable upstream Filestash tag + digest.
   2. Mirror it to orchestrator ECR (see “Mirror to ECR (optional)”).
-  3. Update `filestash_image` (tag + digest) in `modules/tools/variables.tf`.
+  3. Update the pinned image reference (tag + digest) in `modules/tools/service-filestash.tf`.
   4. Run plans to confirm only the intended environments change.
 
 ### Mirror to ECR (optional)
@@ -44,7 +44,7 @@ If objects are encrypted with a customer-managed KMS key, the task role also inc
 If you prefer not to pull directly from Docker Hub in AWS, you can mirror the pinned upstream image to the **orchestrator account ECR**.
 The repository is created by the existing orchestrator ECR component, named `cdp-e2e-reports`.
 
-The Tools module defaults to using the orchestrator ECR image reference (tag + digest). If you need to override it, set the `filestash_image` input for the Tools module.
+The Tools module is pinned to the orchestrator ECR image reference (tag + digest). Update it in Terraform when you update the mirrored image.
 
 Example workflow (run in the **orchestrator** AWS account), following the same conventions as other tool images (for example CloudBeaver):
 

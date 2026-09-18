@@ -7,7 +7,7 @@ module "ecs_service_filestash" {
       admin_password       = "${aws_secretsmanager_secret.filestash_credentials.arn}:ADMIN_PASSWORD::"
       cpu                  = var.filestash_config.cpu
       filestash_config_b64 = local.filestash_config_b64
-      image                = var.filestash_image
+      image                = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.filestash_config.name}:lowa@sha256:3ed5bf29eebe1a672124265bf1604a10e8c84ee9a58d7630ffad174c9d5b796a"
       lg_name              = aws_cloudwatch_log_group.filestash.name
       lg_prefix            = "tools"
       lg_region            = data.aws_region.current.region
