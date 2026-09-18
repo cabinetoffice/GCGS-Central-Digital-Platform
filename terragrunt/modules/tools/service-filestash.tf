@@ -1,39 +1,3 @@
-locals {
-  filestash_storage_label = "e2e-reports"
-
-  filestash_s3_mapping = {
-    (local.filestash_storage_label) = {
-      type   = "s3"
-      region = data.aws_region.current.region
-      path   = "/${local.filestash_reports_bucket_name}/"
-    }
-  }
-
-  filestash_config_json = jsonencode({
-    general = {
-      host = "${var.filestash_config.name}.${var.public_domain}"
-    }
-    connections = [
-      {
-        type  = "s3"
-        label = local.filestash_storage_label
-      }
-    ]
-    middleware = {
-      identity_provider = {
-        type   = "passthrough"
-        params = jsonencode({ strategy = "direct" })
-      }
-      attribute_mapping = {
-        related_backend = local.filestash_storage_label
-        params          = jsonencode(local.filestash_s3_mapping)
-      }
-    }
-  })
-
-  filestash_config_b64 = base64encode(local.filestash_config_json)
-}
-
 module "ecs_service_filestash" {
   source = "../ecs-service"
 
@@ -87,4 +51,3 @@ module "ecs_service_filestash" {
   user_pool_domain        = var.user_pool_domain_tools
   vpc_id                  = var.vpc_id
 }
-
