@@ -92,7 +92,7 @@ locals {
                                                 development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7"
                                                 staging     = "UK1,UK2,UK3,UK6"
                                                 integration = "UK1,UK2,UK3"
-                                                production = "UK1,UK2,UK3"
+                                                production  = "UK1,UK2,UK3"
                                               },
                                               var.environment,
                                               ""
@@ -139,24 +139,26 @@ locals {
   fts_dotnet_fts_app = merge(
     local.fts_dotnet_common,
     {
-      fts_service_url             = local.fts_service_url
-      onelogin_authority          = local.one_login.credential_locations.authority
-      onelogin_client_id          = local.one_login.credential_locations.client_id
-      onelogin_private_key        = local.one_login.credential_locations.private_key
-      db_pg_address               = var.db_find_a_tender_cluster_address
-      db_pg_name                  = var.db_find_a_tender_cluster_name
-      db_pg_password              = local.db_find_a_tender_password
-      db_pg_port                  = 5432
-      db_pg_username              = local.db_find_a_tender_username
-      db_mysql_address            = local.fts_db_address
-      db_mysql_name               = var.db_fts_cluster_name
-      db_mysql_password           = local.db_fts_password
-      db_mysql_port               = 3306
-      db_mysql_username           = local.db_fts_username
-      notice_publish_internal_key = local.fts_notice_publish_internal_key_arn
-      public_domain               = var.public_domain
-      fts_sirsi_api_key           = "${local.fts_secrets_arn}:FTS_SIRSI_API_KEY::"
-      vpc_cidr                    = var.vpc_cider
+      fts_service_url               = local.fts_service_url
+      fts_legacy_database_user_host = try(local.fts_parameters.database_user_host_address, local.fts_parameters.app_host_address)
+      fts_legacy_sso_password       = local.fts_secrets.sso_password
+      onelogin_authority            = local.one_login.credential_locations.authority
+      onelogin_client_id            = local.one_login.credential_locations.client_id
+      onelogin_private_key          = local.one_login.credential_locations.private_key
+      db_pg_address                 = var.db_find_a_tender_cluster_address
+      db_pg_name                    = var.db_find_a_tender_cluster_name
+      db_pg_password                = local.db_find_a_tender_password
+      db_pg_port                    = 5432
+      db_pg_username                = local.db_find_a_tender_username
+      db_mysql_address              = local.fts_db_address
+      db_mysql_name                 = var.db_fts_cluster_name
+      db_mysql_password             = local.db_fts_password
+      db_mysql_port                 = 3306
+      db_mysql_username             = local.db_fts_username
+      notice_publish_internal_key   = local.fts_notice_publish_internal_key_arn
+      public_domain                 = var.public_domain
+      fts_sirsi_api_key             = "${local.fts_secrets_arn}:FTS_SIRSI_API_KEY::"
+      vpc_cidr                      = var.vpc_cider
     }
   )
 
