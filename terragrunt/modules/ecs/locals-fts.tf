@@ -89,7 +89,7 @@ locals {
     notice_edit_rebuild_by_default        = contains(["integration", "production"], var.environment) ? "UK1,UK2,UK3" : ""
     notice_edit_rebuild_form_codes        = lookup(
                                               {
-                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7"
+                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK16"
                                                 staging     = "UK1,UK2,UK3,UK6"
                                                 integration = "UK1,UK2,UK3"
                                                 production  = "UK1,UK2,UK3"
