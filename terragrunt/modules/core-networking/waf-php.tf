@@ -32,12 +32,12 @@ resource "aws_wafv2_web_acl" "php" {
     priority = 1
 
     action {
-      allow {}
+      count {}
     }
 
     statement {
       ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.this.arn
+        arn = aws_wafv2_ip_set.known_ips.arn
       }
     }
 
@@ -83,6 +83,16 @@ resource "aws_wafv2_web_acl" "php" {
 
     statement {
       and_statement {
+        statement {
+          not_statement {
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.known_ips.arn
+              }
+            }
+          }
+        }
+
         statement {
           regex_match_statement {
             regex_string = local.waf_php_bot_block_ua_regex
@@ -229,16 +239,30 @@ resource "aws_wafv2_web_acl" "php" {
         }
 
         scope_down_statement {
-          regex_match_statement {
-            regex_string = local.waf_php_notice_paths_all
-
-            field_to_match {
-              uri_path {}
+          and_statement {
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
             }
 
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
+            statement {
+              regex_match_statement {
+                regex_string = local.waf_php_notice_paths_all
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "LOWERCASE"
+                }
+              }
             }
           }
         }
@@ -262,6 +286,16 @@ resource "aws_wafv2_web_acl" "php" {
 
     statement {
       and_statement {
+        statement {
+          not_statement {
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.known_ips.arn
+              }
+            }
+          }
+        }
+
         statement {
           regex_match_statement {
             regex_string = local.waf_php_notice_paths_all
@@ -385,6 +419,16 @@ resource "aws_wafv2_web_acl" "php" {
         managed_rule_group_statement {
           name        = rule.key
           vendor_name = "AWS"
+
+          scope_down_statement {
+            not_statement {
+              statement {
+                ip_set_reference_statement {
+                  arn = aws_wafv2_ip_set.known_ips.arn
+                }
+              }
+            }
+          }
         }
       }
 
@@ -410,6 +454,16 @@ resource "aws_wafv2_web_acl" "php" {
         managed_rule_group_statement {
           name        = rule.key
           vendor_name = "AWS"
+
+          scope_down_statement {
+            not_statement {
+              statement {
+                ip_set_reference_statement {
+                  arn = aws_wafv2_ip_set.known_ips.arn
+                }
+              }
+            }
+          }
         }
       }
 
