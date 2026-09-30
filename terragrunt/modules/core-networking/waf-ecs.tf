@@ -25,7 +25,7 @@ resource "aws_wafv2_web_acl" "this" {
 
     statement {
       ip_set_reference_statement {
-        arn = aws_wafv2_ip_set.this.arn
+        arn = aws_wafv2_ip_set.known_ips.arn
       }
     }
 
@@ -99,7 +99,7 @@ resource "aws_wafv2_web_acl" "this" {
 
 }
 
-resource "aws_wafv2_ip_set" "this" {
+resource "aws_wafv2_ip_set" "known_ips" {
   name               = "${local.name_prefix}-known-ips"
   description        = "IP Set to explicitly allow known trusted IPs, even if flagged as anonymous by AWS Managed Rules."
   scope              = "REGIONAL"
