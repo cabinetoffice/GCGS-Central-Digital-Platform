@@ -40,6 +40,19 @@ data "aws_iam_policy_document" "ecr_push_policy" {
     effect = "Allow"
   }
 
+  # Listing repositories is authorised against repository/*, so it can't be limited to cdp-*.
+  # Used by the FTS build to find the images to re-tag when promoting a release candidate.
+  statement {
+    sid = "ListRepos"
+    actions = [
+      "ecr:DescribeRepositories",
+    ]
+    resources = [
+      "arn:aws:ecr:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:repository/*"
+    ]
+    effect = "Allow"
+  }
+
   statement {
     actions = [
       "ecr:GetAuthorizationToken",
