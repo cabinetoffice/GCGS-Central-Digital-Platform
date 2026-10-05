@@ -18,10 +18,20 @@ locals {
 
   waf_allowed_ip_list = concat(local.waf_allowed_ip_list_secret, [aws_vpc.this.cidr_block, "${aws_nat_gateway.this.public_ip}/32"])
 
+  waf_protected_ips = [
+    aws_vpc.this.cidr_block,
+    "${aws_nat_gateway.this.public_ip}/32",
+  ]
+
   waf_raw_blocked_ip_set_json = try(jsondecode(data.aws_secretsmanager_secret_version.waf_blocked_ips.secret_string), [])
-  waf_blocked_ip_list = length(local.waf_raw_blocked_ip_set_json) > 0 ? [
+  waf_blocked_ip_list_raw = length(local.waf_raw_blocked_ip_set_json) > 0 ? [
     for item in local.waf_raw_blocked_ip_set_json : item.value if can(item.value)
   ] : []
+
+  # Never block internal/VPC and NAT egress IPs
+  waf_blocked_ip_list = [
+    for ip in local.waf_blocked_ip_list_raw : ip if !contains(local.waf_protected_ips, ip)
+  ]
 
   waf_rule_sets_priority_blockers = {
     AWSManagedRulesAmazonIpReputationList : 4

@@ -117,16 +117,30 @@ resource "aws_wafv2_web_acl" "fts" {
         aggregate_key_type    = "IP"
 
         scope_down_statement {
-          regex_match_statement {
-            regex_string = "^/api/[^/]+/ocdsReleasePackages.*$"
-
-            field_to_match {
-              uri_path {}
+          and_statement {
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
             }
 
-            text_transformation {
-              priority = 0
-              type     = "NONE"
+            statement {
+              regex_match_statement {
+                regex_string = "^/api/[^/]+/ocdsReleasePackages.*$"
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "NONE"
+                }
+              }
             }
           }
         }
