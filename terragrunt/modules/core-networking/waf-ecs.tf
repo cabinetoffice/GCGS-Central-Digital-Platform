@@ -112,6 +112,19 @@ resource "aws_wafv2_ip_set" "known_ips" {
   )
 }
 
+resource "aws_wafv2_ip_set" "internal_egress" {
+  name               = "${local.name_prefix}-internal-egress-ips"
+  description        = "IP Set for internal egress e.g. NAT Gateway public IP that should not be subject to WAF rate limiting."
+  scope              = "REGIONAL"
+  ip_address_version = "IPV4"
+  addresses          = ["${aws_nat_gateway.this.public_ip}/32"]
+
+  tags = merge(
+    { Name = "${local.name_prefix}-internal-egress-ips" },
+    var.tags
+  )
+}
+
 resource "aws_wafv2_ip_set" "blocked" {
   count = length(local.waf_blocked_ip_list) > 0 ? 1 : 0
 

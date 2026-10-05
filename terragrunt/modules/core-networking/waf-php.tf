@@ -502,16 +502,30 @@ resource "aws_wafv2_web_acl" "php" {
           aggregate_key_type    = "IP"
 
           scope_down_statement {
-            regex_match_statement {
-              regex_string = rule.value.regex
-
-              field_to_match {
-                uri_path {}
+            and_statement {
+              statement {
+                not_statement {
+                  statement {
+                    ip_set_reference_statement {
+                      arn = aws_wafv2_ip_set.internal_egress.arn
+                    }
+                  }
+                }
               }
 
-              text_transformation {
-                priority = 0
-                type     = "NONE"
+              statement {
+                regex_match_statement {
+                  regex_string = rule.value.regex
+
+                  field_to_match {
+                    uri_path {}
+                  }
+
+                  text_transformation {
+                    priority = 0
+                    type     = "NONE"
+                  }
+                }
               }
             }
           }
@@ -551,16 +565,30 @@ resource "aws_wafv2_web_acl" "php" {
         aggregate_key_type    = "IP"
 
         scope_down_statement {
-          regex_match_statement {
-            regex_string = local.waf_php_rate_limit_paths
-
-            field_to_match {
-              uri_path {}
+          and_statement {
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
             }
 
-            text_transformation {
-              priority = 0
-              type     = "LOWERCASE"
+            statement {
+              regex_match_statement {
+                regex_string = local.waf_php_rate_limit_paths
+
+                field_to_match {
+                  uri_path {}
+                }
+
+                text_transformation {
+                  priority = 0
+                  type     = "LOWERCASE"
+                }
+              }
             }
           }
         }
@@ -597,6 +625,16 @@ resource "aws_wafv2_web_acl" "php" {
         limit                 = local.rate_limit_global_count
         evaluation_window_sec = local.rate_limit_window_seconds
         aggregate_key_type    = "IP"
+
+        scope_down_statement {
+          not_statement {
+            statement {
+              ip_set_reference_statement {
+                arn = aws_wafv2_ip_set.internal_egress.arn
+              }
+            }
+          }
+        }
       }
     }
 
