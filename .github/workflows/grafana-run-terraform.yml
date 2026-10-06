@@ -3,6 +3,10 @@ name: Grafana Run Terraform
 on:
   workflow_call:
     inputs:
+      aws_role_name:
+        type: string
+        required: false
+        default: cdp-sirsi-grafana-terraform
       terraform_action:
         type: string
         required: true
@@ -51,7 +55,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/cdp-sirsi-terraform
+          role-to-assume: arn:aws:iam::${{ env.ACCOUNT_ID }}:role/${{ inputs.aws_role_name }}
           aws-region: eu-west-2
           role-session-name: grafana-terraform-${{ env.ENV_NAME }}
 

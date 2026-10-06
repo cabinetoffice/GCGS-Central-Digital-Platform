@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "rds:CreateDBProxy",
       "rds:CreateDBProxyEndpoint",
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
     condition {
       test     = "StringEquals"
@@ -112,9 +112,9 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "rds:RemoveTagsFromResource",
       "rds:ListTagsForResource",
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
-    sid = "TagRDSProxyResources"
+    sid       = "TagRDSProxyResources"
   }
 
   statement {
@@ -124,9 +124,9 @@ data "aws_iam_policy_document" "terraform_product_data" {
       "rds:DescribeDBProxyTargetGroups",
       "rds:DescribeDBProxyTargets",
     ]
-    effect = "Allow"
+    effect    = "Allow"
     resources = ["*"]
-    sid = "DescribeRDSProxy"
+    sid       = "DescribeRDSProxy"
   }
 
   statement {

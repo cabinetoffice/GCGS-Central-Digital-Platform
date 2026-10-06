@@ -8,7 +8,7 @@ resource "aws_iam_openid_connect_provider" "github_actions" {
   thumbprint_list = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
 }
 
-data "aws_iam_policy_document" "github_actions_assume_role" {
+data "aws_iam_policy_document" "github_actions_assume_role_grafana" {
   statement {
     effect = "Allow"
 
@@ -30,26 +30,25 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
       variable = "token.actions.githubusercontent.com:sub"
       values = [
         "repo:cabinetoffice/GCGS-Central-Digital-Platform:ref:refs/heads/main",
-        "repo:cabinetoffice/GCGS-Central-Digital-Platform:ref:refs/heads/*-grafana-*",
         "repo:cabinetoffice/GCGS-Central-Digital-Platform:pull_request",
       ]
     }
   }
 }
 
-resource "aws_iam_role" "github_actions_terraform" {
-  name               = "${local.name_prefix}-terraform"
-  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role.json
+resource "aws_iam_role" "github_actions_grafana_terraform" {
+  name               = "${local.name_prefix}-grafana-terraform"
+  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role_grafana.json
   tags               = var.tags
 }
 
-resource "aws_iam_policy" "github_actions_terraform" {
-  name   = "${local.name_prefix}-terraform-github-oidc"
-  policy = data.aws_iam_policy_document.github_actions_terraform.json
+resource "aws_iam_policy" "github_actions_grafana_terraform" {
+  name   = "${local.name_prefix}-grafana-terraform-github-oidc"
+  policy = data.aws_iam_policy_document.github_actions_grafana_terraform.json
   tags   = var.tags
 }
 
-resource "aws_iam_role_policy_attachment" "github_actions_terraform" {
-  role       = aws_iam_role.github_actions_terraform.name
-  policy_arn = aws_iam_policy.github_actions_terraform.arn
+resource "aws_iam_role_policy_attachment" "github_actions_grafana_terraform" {
+  role       = aws_iam_role.github_actions_grafana_terraform.name
+  policy_arn = aws_iam_policy.github_actions_grafana_terraform.arn
 }

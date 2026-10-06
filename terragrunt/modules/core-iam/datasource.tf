@@ -18,10 +18,10 @@ data "aws_secretsmanager_secret_version" "terraform_operators" {
   secret_id = data.aws_secretsmanager_secret.terraform_operators.id
 }
 
-data "aws_iam_policy_document" "github_actions_terraform" {
+data "aws_iam_policy_document" "github_actions_grafana_terraform" {
   statement {
-    sid     = "ReadGrafanaSecrets"
-    effect  = "Allow"
+    sid    = "ReadGrafanaSecrets"
+    effect = "Allow"
     actions = [
       "secretsmanager:DescribeSecret",
       "secretsmanager:GetSecretValue",
@@ -33,9 +33,9 @@ data "aws_iam_policy_document" "github_actions_terraform" {
   }
 
   statement {
-    sid     = "KmsDecryptSecrets"
-    effect  = "Allow"
-    actions = ["kms:Decrypt"]
+    sid       = "KmsDecryptSecrets"
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
     resources = ["*"]
     condition {
       test     = "StringEquals"
@@ -45,23 +45,37 @@ data "aws_iam_policy_document" "github_actions_terraform" {
   }
 
   statement {
-    sid     = "TerraformStateAccess"
-    effect  = "Allow"
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:ListBucket",
-    ]
+    sid       = "TerraformStateBucketLocation"
+    effect    = "Allow"
+    actions   = ["s3:GetBucketLocation"]
     resources = ["arn:aws:s3:::${local.terraform_state_bucket}"]
   }
 
   statement {
-    sid     = "TerraformStateObjects"
-    effect  = "Allow"
+    sid    = "TerraformStateList"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+    ]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}"]
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+      values = [
+        "tools/grafana/terraform",
+        "tools/grafana/terraform/*",
+      ]
+    }
+  }
+
+  statement {
+    sid    = "TerraformStateObjects"
+    effect = "Allow"
     actions = [
       "s3:GetObject",
       "s3:PutObject",
       "s3:DeleteObject",
     ]
-    resources = ["arn:aws:s3:::${local.terraform_state_bucket}/*"]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}/tools/grafana/terraform/*"]
   }
 }
