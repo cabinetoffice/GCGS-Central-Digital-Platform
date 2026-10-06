@@ -57,4 +57,4 @@ source terragrunt/tools/scripts/grafana-env.sh
 GitHub Actions workflow: `.github/workflows/grafana-*.yml`
 
 - Runs on `main` when files under `terragrunt/tools/grafana/**` change
-- Uses OIDC to assume role `cdp-sirsi-terraform` in each account
+- Uses OIDC to assume role `cdp-sirsi-grafana-terraform` in each account

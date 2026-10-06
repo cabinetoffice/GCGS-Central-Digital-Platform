@@ -1,6 +1,6 @@
 data "aws_iam_policy_document" "cloudfront_realtime_logs_assume" {
   statement {
-    effect = "Allow"
+    effect  = "Allow"
     actions = ["sts:AssumeRole"]
     principals {
       type        = "Service"
