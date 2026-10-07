@@ -30,7 +30,6 @@ data "aws_iam_policy_document" "github_actions_assume_role_grafana" {
       variable = "token.actions.githubusercontent.com:sub"
       values = [
         "repo:cabinetoffice/GCGS-Central-Digital-Platform:ref:refs/heads/main",
-        "repo:cabinetoffice/GCGS-Central-Digital-Platform:pull_request",
       ]
     }
   }
@@ -42,6 +41,33 @@ resource "aws_iam_role" "github_actions_grafana_terraform" {
   tags               = var.tags
 }
 
+data "aws_iam_policy_document" "github_actions_assume_role_grafana_plan" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.github_actions.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "token.actions.githubusercontent.com:sub"
+      values = [
+        "repo:cabinetoffice/GCGS-Central-Digital-Platform:pull_request",
+      ]
+    }
+  }
+}
+
 resource "aws_iam_policy" "github_actions_grafana_terraform" {
   name   = "${local.name_prefix}-grafana-terraform-github-oidc"
   policy = data.aws_iam_policy_document.github_actions_grafana_terraform.json
@@ -51,4 +77,21 @@ resource "aws_iam_policy" "github_actions_grafana_terraform" {
 resource "aws_iam_role_policy_attachment" "github_actions_grafana_terraform" {
   role       = aws_iam_role.github_actions_grafana_terraform.name
   policy_arn = aws_iam_policy.github_actions_grafana_terraform.arn
+}
+
+resource "aws_iam_role" "github_actions_grafana_terraform_plan" {
+  name               = "${local.name_prefix}-grafana-terraform-plan"
+  assume_role_policy = data.aws_iam_policy_document.github_actions_assume_role_grafana_plan.json
+  tags               = var.tags
+}
+
+resource "aws_iam_policy" "github_actions_grafana_terraform_plan" {
+  name   = "${local.name_prefix}-grafana-terraform-plan-github-oidc"
+  policy = data.aws_iam_policy_document.github_actions_grafana_terraform_plan.json
+  tags   = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "github_actions_grafana_terraform_plan" {
+  role       = aws_iam_role.github_actions_grafana_terraform_plan.name
+  policy_arn = aws_iam_policy.github_actions_grafana_terraform_plan.arn
 }
