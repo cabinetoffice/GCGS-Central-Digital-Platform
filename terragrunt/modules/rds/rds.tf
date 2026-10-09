@@ -27,7 +27,7 @@ resource "aws_db_parameter_group" "this" {
 
 resource "aws_db_instance" "this" {
   allocated_storage                   = 20
-  apply_immediately                   = true
+  apply_immediately                   = var.apply_immediately
   auto_minor_version_upgrade          = false
   backup_retention_period             = var.backup_retention_period
   character_set_name                  = ""

@@ -19,7 +19,7 @@ module "cluster_fts" {
   monitoring_role_arn             = var.role_rds_cloudwatch_arn
   performance_insights_enabled    = true
   private_subnet_ids              = var.private_subnet_ids
-  publicly_accessible             = true
+  publicly_accessible             = false
   restore_from_snapshot           = var.fts_restore_from_snapshot
   role_terraform_arn              = var.role_terraform_arn
   snapshot_identifier             = var.fts_snapshot_identifier

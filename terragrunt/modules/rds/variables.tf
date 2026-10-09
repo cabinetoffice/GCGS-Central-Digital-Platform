@@ -4,6 +4,12 @@ variable "backup_retention_period" {
   default     = 7
 }
 
+variable "apply_immediately" {
+  description = "Specifies whether any database modifications are applied immediately, or during the next maintenance window"
+  type        = bool
+  default     = false
+}
+
 variable "copy_tags_to_snapshot" {
   description = "Whether copy all Instance tags to snapshots"
   type        = bool
