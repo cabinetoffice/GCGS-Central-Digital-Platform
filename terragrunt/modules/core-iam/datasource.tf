@@ -79,3 +79,75 @@ data "aws_iam_policy_document" "github_actions_grafana_terraform" {
     resources = ["arn:aws:s3:::${local.terraform_state_bucket}/tools/grafana/terraform/*"]
   }
 }
+
+data "aws_iam_policy_document" "github_actions_grafana_terraform_plan" {
+  statement {
+    sid    = "ReadGrafanaSecrets"
+    effect = "Allow"
+    actions = [
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:GetSecretValue",
+    ]
+    resources = [
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-grafana-api-token*",
+      "arn:aws:secretsmanager:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:secret:${local.name_prefix}-grafana-alerting*",
+    ]
+  }
+
+  statement {
+    sid       = "KmsDecryptSecrets"
+    effect    = "Allow"
+    actions   = ["kms:Decrypt"]
+    resources = ["*"]
+    condition {
+      test     = "StringEquals"
+      variable = "kms:ViaService"
+      values   = ["secretsmanager.${data.aws_region.current.region}.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid       = "TerraformStateBucketLocation"
+    effect    = "Allow"
+    actions   = ["s3:GetBucketLocation"]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}"]
+  }
+
+  statement {
+    sid    = "TerraformStateList"
+    effect = "Allow"
+    actions = [
+      "s3:ListBucket",
+    ]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}"]
+    condition {
+      test     = "StringLike"
+      variable = "s3:prefix"
+      values = [
+        "tools/grafana/terraform",
+        "tools/grafana/terraform/*",
+      ]
+    }
+  }
+
+  statement {
+    sid    = "TerraformStateReadObjects"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+    ]
+    resources = ["arn:aws:s3:::${local.terraform_state_bucket}/tools/grafana/terraform/*"]
+  }
+
+  statement {
+    sid    = "TerraformStateLockObjects"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:DeleteObject",
+    ]
+    resources = [
+      "arn:aws:s3:::${local.terraform_state_bucket}/tools/grafana/terraform/terraform.tfstate.tflock*",
+    ]
+  }
+}

@@ -16,6 +16,7 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: plan
+      aws_role_name: cdp-sirsi-grafana-terraform-plan
       grafana_env: development
       grafana_account_id: "471112892058"
       grafana_base_domain: supplier-information.find-tender.service.gov.uk
@@ -26,6 +27,7 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: plan
+      aws_role_name: cdp-sirsi-grafana-terraform-plan
       grafana_env: staging
       grafana_account_id: "905418042182"
       grafana_base_domain: supplier-information.find-tender.service.gov.uk
@@ -36,6 +38,7 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: plan
+      aws_role_name: cdp-sirsi-grafana-terraform-plan
       grafana_env: integration
       grafana_account_id: "767397666448"
       grafana_base_domain: supplier-information.find-tender.service.gov.uk
@@ -46,6 +49,7 @@ jobs:
     uses: ./.github/workflows/grafana-run-terraform.yml
     with:
       terraform_action: plan
+      aws_role_name: cdp-sirsi-grafana-terraform-plan
       grafana_env: production
       grafana_account_id: "471112843276"
       grafana_base_domain: supplier-information.find-tender.service.gov.uk
