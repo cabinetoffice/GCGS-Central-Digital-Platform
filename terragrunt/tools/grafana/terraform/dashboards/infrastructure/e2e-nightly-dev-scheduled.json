@@ -332,7 +332,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "last"
           },
           "custom": {
             "axisBorderShow": false,
@@ -342,21 +343,26 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "drawStyle": "bars",
+            "fillOpacity": 17,
+            "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 4,
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 3,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -375,6 +381,8 @@
               }
             ]
           },
+          "max": 100,
+          "min": 0,
           "unit": "percent"
         }
       },
@@ -409,7 +417,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"CpuUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 2048",
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"CpuUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 4096",
           "hide": false,
           "id": "",
           "label": "CPU %",
@@ -474,7 +482,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "mode": "continuous-GrYlRd",
+            "seriesBy": "last"
           },
           "custom": {
             "axisBorderShow": false,
@@ -484,21 +493,26 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "barWidthFactor": 0.6,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
+            "drawStyle": "bars",
+            "fillOpacity": 17,
+            "gradientMode": "scheme",
             "hideFrom": {
               "legend": false,
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 4,
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 3,
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "auto",
+            "showValues": false,
             "spanNulls": false,
             "stacking": {
               "group": "A",
@@ -517,6 +531,8 @@
               }
             ]
           },
+          "max": 100,
+          "min": 0,
           "unit": "percent"
         }
       },
@@ -551,7 +567,7 @@
             "uid": "CLOUDWATCH"
           },
           "dimensions": {},
-          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"MemoryUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 16384",
+          "expression": "100 * SEARCH('{ECS/ContainerInsights,ClusterName,TaskDefinitionFamily} MetricName=\"MemoryUtilized\" ClusterName=\"cdp-sirsi-php\" TaskDefinitionFamily=\"standalone-e2e-nightly-dev\"', 'Maximum', 60) / 30720",
           "hide": false,
           "id": "",
           "label": "Memory %",
