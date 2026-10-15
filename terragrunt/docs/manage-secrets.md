@@ -23,6 +23,7 @@
 - [Update OneLogin Forward Logout Notification API Key](#update-onelogin-forward-logout-notification-api-key)
 - [Update OneLogin Secrets](#update-onelogin-secrets)
 - [Update Pen Testing Configuration](#update-pen-testing-configuration)
+- [Update Read-only Operators](#update-read-only-operators)
 - [Update Teams Webhook](#update-teams-webhook)
 - [Update Terraform Operators](#update-terraform-operators)
 - [Update User Journey Monitoring Test Settings Secret](#update-user-journey-monitoring-test-settings-secret)
@@ -420,6 +421,42 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-teams-webhook-url 
 # ave aws secretsmanager create-secret --name cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
 # Or update using:
 ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-terraform-operators --secret-string file://secrets/terraform-operators.json | jq .
+```
+
+3. Plan and apply Terraform to the `core/iam` component.
+
+---
+
+## Update Read-only Operators
+
+The `core/iam` component provisions a per-environment read-only role named:
+
+- `cdp-sirsi-<environment>-read-only`
+
+Access to assume this role is controlled by a per-account AWS Secrets Manager secret:
+
+- Secret ID: `cdp-sirsi-read-only-operators`
+
+1. Create a JSON file in the `./secrets` folder with the list of IAM user ARNs (from other AWS accounts) who should be allowed to assume the read-only role, e.g., **read-only-operators.json**:
+
+```json
+{
+  "operators": [
+    "arn:aws:iam::123456789999:user/user1",
+    "arn:aws:iam::123456789999:user/user2"
+  ]
+}
+```
+
+*Note: The `./secrets` folder is set to ignore all files to ensure no sensitive information is committed.*
+
+2. Assume the appropriate role for the target environment (including `orchestrator`) and create/update the secret:
+
+```shell
+# Add using:
+# ave aws secretsmanager create-secret --name cdp-sirsi-read-only-operators --secret-string file://secrets/read-only-operators.json | jq .
+# Or update using:
+ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-read-only-operators --secret-string file://secrets/read-only-operators.json | jq .
 ```
 
 3. Plan and apply Terraform to the `core/iam` component.

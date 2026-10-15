@@ -173,3 +173,11 @@ output "tools_arn" {
 output "tools_name" {
   value = aws_iam_role.tools.name
 }
+
+output "read_only_arn" {
+  value = aws_iam_role.read_only.arn
+}
+
+output "read_only_name" {
+  value = aws_iam_role.read_only.name
+}
