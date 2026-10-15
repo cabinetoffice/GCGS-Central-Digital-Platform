@@ -2,6 +2,14 @@ data "aws_caller_identity" "current" {}
 
 data "aws_region" "current" {}
 
+data "aws_secretsmanager_secret" "read_only_operators" {
+  name = "${local.name_prefix}-read-only-operators"
+}
+
+data "aws_secretsmanager_secret_version" "read_only_operators" {
+  secret_id = data.aws_secretsmanager_secret.read_only_operators.id
+}
+
 data "aws_iam_role" "terraform" {
   name = "${local.name_prefix}-${var.environment}-terraform"
 }
