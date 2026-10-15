@@ -1,23 +1,26 @@
+using System.Net;
+using Amazon.SimpleSystemsManagement;
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.Person.WebApiClient;
 using CO.CDP.Tenant.WebApiClient;
+using CO.CDP.TestKit.Mvc;
 using FluentAssertions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using System.Net;
-using Amazon.SimpleSystemsManagement;
-using CO.CDP.TestKit.Mvc;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Moq;
+using OrganisationType = CO.CDP.Tenant.WebApiClient.OrganisationType;
+using PartyRole = CO.CDP.Tenant.WebApiClient.PartyRole;
 
 namespace CO.CDP.OrganisationApp.Tests;
+
 public class AuthorizationTests
 {
     private static readonly Mock<TenantClient> TenantClient = new("https://whatever", new HttpClient());
@@ -31,18 +34,18 @@ public class AuthorizationTests
     private HttpClient BuildHttpClient(List<string> userOrganisationScopes, List<string> userScopes)
     {
         var organisation = new UserOrganisation(
-                                    id: OrganisationId,
-                                    name: "Org name",
-                                    type: Tenant.WebApiClient.OrganisationType.Organisation,
-                                    roles:
-                                    [
-                                        Tenant.WebApiClient.PartyRole.Supplier,
-                                        Tenant.WebApiClient.PartyRole.Tenderer
-                                    ],
-                                    pendingRoles: [],
-                                    scopes: userOrganisationScopes,
-                                    uri: new Uri("https://example.com")
-                                );
+            id: OrganisationId,
+            name: "Org name",
+            type: OrganisationType.Organisation,
+            roles:
+            [
+                PartyRole.Supplier,
+                PartyRole.Tenderer
+            ],
+            pendingRoles: [],
+            scopes: userOrganisationScopes,
+            uri: new Uri("https://example.com")
+        );
 
         var person = new Person.WebApiClient.Person("a@b.com", "First name", PersonId, "Last name", userScopes);
 
@@ -53,7 +56,7 @@ public class AuthorizationTests
                         new UserTenant(
                             new Guid(),
                             "Tenant name",
-                            [ organisation ]
+                            [organisation]
                         )
                     ],
                     new UserDetails(email: "a@b.com", name: "User name", scopes: userScopes, urn: "urn")
@@ -62,17 +65,20 @@ public class AuthorizationTests
         OrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
-                    new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ])
+                    new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name",
+                        [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor])
                 ]
             );
 
         OrganisationClient.Setup(client => client.GetAnnouncementsAsync(It.IsAny<string>()))
-            .ReturnsAsync(new List<Organisation.WebApiClient.Announcement>());
+            .ReturnsAsync(new List<Announcement>());
 
         OrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
             .ReturnsAsync(
                 [
-                    new PersonInviteModel(email: "a@b.com", firstName: "Person invite", id: PersonInviteGuid, lastName: "Last name", scopes: [ OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor ], expiresOn: null)
+                    new PersonInviteModel(email: "a@b.com", firstName: "Person invite", id: PersonInviteGuid,
+                        lastName: "Last name",
+                        scopes: [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor], expiresOn: null)
                 ]
             );
 
@@ -87,18 +93,22 @@ public class AuthorizationTests
                     name: "Org name",
                     type: Organisation.WebApiClient.OrganisationType.Organisation,
                     roles: [Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer],
-                    details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+                    details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                        publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
                 )
             );
 
         OrganisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
             .ReturnsAsync(
                 [
-                    new JoinRequestLookUp(new Guid(),new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []) , OrganisationJoinRequestStatus.Pending)
+                    new JoinRequestLookUp(new Guid(),
+                        new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []),
+                        OrganisationJoinRequestStatus.Pending)
                 ]
             );
 
-        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(person);
+        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(person);
 
         Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
             .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
@@ -123,7 +133,121 @@ public class AuthorizationTests
             });
             builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
                 [
-                    new KeyValuePair<string, string?>("Features:SharedSessions", "false")
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false"),
+                    new KeyValuePair<string, string?>("Features:UserManagement", "false")
+                ]
+            ));
+        });
+
+        return factory.CreateClient();
+    }
+
+    private HttpClient BuildHttpClientWithUserManagementEnabled(List<string> userOrganisationScopes,
+        List<string> userScopes, string umBaseUrl)
+    {
+        var organisation = new UserOrganisation(
+            id: OrganisationId,
+            name: "Org name",
+            type: OrganisationType.Organisation,
+            roles:
+            [
+                PartyRole.Supplier,
+                PartyRole.Tenderer
+            ],
+            pendingRoles: [],
+            scopes: userOrganisationScopes,
+            uri: new Uri("https://example.com")
+        );
+
+        var person = new Person.WebApiClient.Person("a@b.com", "First name", PersonId, "Last name", userScopes);
+
+        TenantClient.Setup(client => client.LookupTenantAsync())
+            .ReturnsAsync(
+                new TenantLookup(
+                    [
+                        new UserTenant(
+                            new Guid(),
+                            "Tenant name",
+                            [organisation]
+                        )
+                    ],
+                    new UserDetails(email: "a@b.com", name: "User name", scopes: userScopes, urn: "urn")
+                ));
+
+        OrganisationClient.Setup(client => client.GetOrganisationPersonsAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(
+                [
+                    new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name",
+                        [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor])
+                ]
+            );
+
+        OrganisationClient.Setup(client => client.GetAnnouncementsAsync(It.IsAny<string>()))
+            .ReturnsAsync(new List<Announcement>());
+
+        OrganisationClient.Setup(client => client.GetOrganisationPersonInvitesAsync(It.IsAny<Guid>()))
+            .ReturnsAsync(
+                [
+                    new PersonInviteModel(email: "a@b.com", firstName: "Person invite", id: PersonInviteGuid,
+                        lastName: "Last name",
+                        scopes: [OrganisationPersonScopes.Admin, OrganisationPersonScopes.Editor], expiresOn: null)
+                ]
+            );
+
+        OrganisationClient.Setup(client => client.GetOrganisationAsync(OrganisationId))
+            .ReturnsAsync(
+                new Organisation.WebApiClient.Organisation(
+                    additionalIdentifiers: [],
+                    addresses: [],
+                    contactPoint: new ContactPoint("a@b.com", "Contact", "123", new Uri("http://whatever")),
+                    id: OrganisationId,
+                    identifier: new Identifier("asd", "asd", "asd", new Uri("http://whatever")),
+                    name: "Org name",
+                    type: Organisation.WebApiClient.OrganisationType.Organisation,
+                    roles: [Organisation.WebApiClient.PartyRole.Supplier, Organisation.WebApiClient.PartyRole.Tenderer],
+                    details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                        publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+                )
+            );
+
+        OrganisationClient.Setup(client => client.GetOrganisationJoinRequestsAsync(It.IsAny<Guid>(), null))
+            .ReturnsAsync(
+                [
+                    new JoinRequestLookUp(new Guid(),
+                        new Organisation.WebApiClient.Person("a@b.com", "First name", person.Id, "Last name", []),
+                        OrganisationJoinRequestStatus.Pending)
+                ]
+            );
+
+        PersonClient.Setup(client => client.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(person);
+
+        Session.Setup(s => s.Get<Models.UserDetails>(OrganisationApp.Session.UserDetailsKey))
+            .Returns(new Models.UserDetails() { Email = "a@b.com", UserUrn = "urn", PersonId = person.Id });
+
+        var factory = new TestWebApplicationFactory<Program>(builder =>
+        {
+            builder.ConfigureServices(services =>
+            {
+                services.AddTransient<ITenantClient, TenantClient>(_ => TenantClient.Object);
+                services.AddTransient<IOrganisationClient, OrganisationClient>(_ => OrganisationClient.Object);
+                services.AddTransient<IPersonClient, PersonClient>(_ => PersonClient.Object);
+                services.AddSingleton(Session.Object);
+                services.AddTransient<IAuthenticationSchemeProvider, FakeSchemeProvider>();
+                services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+                {
+                    options.ClientId = "123";
+                    options.Authority = "https://whatever";
+                });
+                services.RemoveAll<IAmazonSimpleSystemsManagement>();
+                services.RemoveAll<IConfigureOptions<KeyManagementOptions>>();
+                services.AddDataProtection().DisableAutomaticKeyGeneration();
+            });
+            builder.ConfigureHostConfiguration(c => c.AddInMemoryCollection(
+                [
+                    new KeyValuePair<string, string?>("Features:SharedSessions", "false"),
+                    new KeyValuePair<string, string?>("Features:UserManagement", "true"),
+                    new KeyValuePair<string, string?>("UserManagementApp:ServiceBaseUrl", umBaseUrl)
                 ]
             ));
         });
@@ -133,13 +257,19 @@ public class AuthorizationTests
 
     public static IEnumerable<object[]> TestCases()
     {
-        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new[] { "Organisation has 2 users" } };
-        yield return new object[] { $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite", new[] { "Person invite Last name", "Select user role" } };
+        yield return new object[]
+            { $"/organisation/{OrganisationId}/users/user-summary", new[] { "Organisation has 2 users" } };
+        yield return new object[]
+        {
+            $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite",
+            new[] { "Person invite Last name", "Select user role" }
+        };
     }
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url, string[] expectedTexts)
+    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsAdminUser(string url,
+        string[] expectedTexts)
     {
         var httpClient = BuildHttpClient([OrganisationPersonScopes.Admin], []);
 
@@ -159,7 +289,8 @@ public class AuthorizationTests
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsEditorUser(string url, string[] _)
+    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsEditorUser(string url,
+        string[] _)
     {
         var httpClient = BuildHttpClient([OrganisationPersonScopes.Editor], []);
 
@@ -176,7 +307,8 @@ public class AuthorizationTests
 
     [Theory]
     [MemberData(nameof(TestCases))]
-    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsUserWithoutPermissions(string url, string[] _)
+    public async Task TestAuthorizationIsUnsuccessful_WhenUserIsNotAllowedToAccessResourceAsUserWithoutPermissions(
+        string url, string[] _)
     {
         using var httpClient = BuildHttpClient([], []);
 
@@ -229,14 +361,31 @@ public class AuthorizationTests
 
     public static IEnumerable<object[]> SupportAdminAccessTestCases()
     {
-        yield return new object[] { $"/organisation/{OrganisationId}", new[] { "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information" }, new[] { "Users" }, HttpStatusCode.OK };
-        yield return new object[] { $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
-        yield return new object[] { $"/organisation/{OrganisationId}/users/user-summary", new string[] { }, new string[] { }, HttpStatusCode.NotFound };
+        yield return new object[]
+        {
+            $"/organisation/{OrganisationId}",
+            new[]
+            {
+                "Organisation name", "Organisation identifier", "Organisation email", "Complete supplier information"
+            },
+            new[] { "Users" }, HttpStatusCode.OK
+        };
+        yield return new object[]
+        {
+            $"/organisation/{OrganisationId}/address/uk?frm-overview", new string[] { }, new string[] { },
+            HttpStatusCode.NotFound
+        };
+        yield return new object[]
+        {
+            $"/organisation/{OrganisationId}/users/user-summary", new string[] { }, new string[] { },
+            HttpStatusCode.NotFound
+        };
     }
 
     [Theory]
     [MemberData(nameof(SupportAdminAccessTestCases))]
-    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url, string[] shouldContain, string[] shouldNotContain, HttpStatusCode expectedStatusCode)
+    public async Task TestAuthorizationIsSuccessful_WhenUserIsAllowedToAccessResourceAsSupportAdminUser(string url,
+        string[] shouldContain, string[] shouldNotContain, HttpStatusCode expectedStatusCode)
     {
         var httpClient = BuildHttpClient([], [PersonScopes.SupportAdmin]);
 
@@ -257,5 +406,52 @@ public class AuthorizationTests
         {
             responseBody.Should().NotContain(expectedText);
         }
+    }
+
+    [Fact]
+    public async Task TestManageUsersLinkPointsToUserManagementApp_WhenUserManagementEnabled()
+    {
+        const string umBaseUrl = "https://um.example.com";
+        var httpClient =
+            BuildHttpClientWithUserManagementEnabled([OrganisationPersonScopes.Admin, OrganisationPersonScopes.Viewer],
+                [], umBaseUrl);
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}");
+
+        var response = await httpClient.SendAsync(request);
+
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        responseBody.Should().NotBeNull();
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        responseBody.Should().Contain("Organisation details");
+        responseBody.Should().Contain($"href=\"{umBaseUrl}/organisation/{OrganisationId}\">Manage users</a>");
+    }
+
+    [Fact]
+    public async Task TestUserSummaryReturns404_WhenUserManagementEnabled()
+    {
+        var httpClient =
+            BuildHttpClientWithUserManagementEnabled([OrganisationPersonScopes.Admin], [], "https://um.example.com");
+
+        var request = new HttpRequestMessage(HttpMethod.Get, $"/organisation/{OrganisationId}/users/user-summary");
+
+        var response = await httpClient.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+    }
+
+    [Fact]
+    public async Task TestChangeUserRoleReturns404_WhenUserManagementEnabled()
+    {
+        var httpClient =
+            BuildHttpClientWithUserManagementEnabled([OrganisationPersonScopes.Admin], [], "https://um.example.com");
+
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            $"/organisation/{OrganisationId}/users/{PersonInviteGuid}/change-role?handler=personInvite");
+
+        var response = await httpClient.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

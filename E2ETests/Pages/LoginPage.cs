@@ -37,8 +37,10 @@ public class LoginPage
 
             await _page.ClickAsync(SignInToAccountLink);
             await _page.ClickAsync(OneLoginSignInButton);
+            await _page.WaitForSelectorAsync(OneLoginEmailAddressInputBox);
             await _page.FillAsync(OneLoginEmailAddressInputBox, email);
             await _page.ClickAsync(ContinueButton);
+            await _page.WaitForSelectorAsync(OneLoginPasswordTextBox);
             await _page.FillAsync(OneLoginPasswordTextBox, password);
             await _page.ClickAsync(ContinueButton);
 

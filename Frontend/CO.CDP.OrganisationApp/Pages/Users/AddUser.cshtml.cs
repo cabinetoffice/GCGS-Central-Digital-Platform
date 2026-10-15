@@ -13,6 +13,7 @@ using CO.CDP.OrganisationApp.Models;
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
 [Authorize(Policy = OrgScopeRequirement.Admin)]
+[DisabledByFeature(FeatureFlags.UserManagement)]
 public class AddUserModel(
     ISession session,
     IOrganisationClient organisationClient) : PageModel

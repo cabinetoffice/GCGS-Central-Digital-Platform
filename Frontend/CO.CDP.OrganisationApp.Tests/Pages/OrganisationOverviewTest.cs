@@ -1,6 +1,7 @@
 using CO.CDP.Organisation.WebApiClient;
 using CO.CDP.OrganisationApp.Constants;
 using CO.CDP.OrganisationApp.Pages.Organisation;
+using CO.CDP.UI.Foundation.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.FeatureManagement;
@@ -15,6 +16,7 @@ public class OrganisationOverviewTest
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<EntityVerificationClient.IPponClient> _pponClient = new();
     private readonly Mock<IFeatureManager> _featureManagerMock = new();
+    private readonly Mock<IUserManagementUrlService> _userManagementUrlServiceMock = new();
     private readonly OrganisationOverviewModel _model;
 
     public OrganisationOverviewTest()
@@ -23,7 +25,8 @@ public class OrganisationOverviewTest
         _model = new OrganisationOverviewModel(
             _organisationClientMock.Object,
             _pponClient.Object,
-            _featureManagerMock.Object);
+            _featureManagerMock.Object,
+            _userManagementUrlServiceMock.Object);
     }
 
     [Fact]
@@ -374,6 +377,44 @@ public class OrganisationOverviewTest
         await _model.OnGet();
 
         _model.BackLinkUrl.Should().Be($"/organisation/{id}/home");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenUserManagementFlagDisabled_ManageUsersUrlIsLegacyPath()
+    {
+        var id = Guid.NewGuid();
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.UserManagement))
+            .ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.UserManagementEnabled.Should().BeFalse();
+        _model.ManageUsersUrl.Should().Be($"/organisation/{id}/users/user-summary");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenUserManagementFlagEnabled_ManageUsersUrlIsExternalServiceUrl()
+    {
+        var id = Guid.NewGuid();
+        var expectedUrl = $"http://usermanagement.example.com/organisation/{id}";
+        _model.Id = id;
+
+        _organisationClientMock.Setup(o => o.GetOrganisationAsync(id))
+            .ReturnsAsync(GivenOrganisationClientModel(id));
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.UserManagement))
+            .ReturnsAsync(true);
+        _userManagementUrlServiceMock.Setup(s => s.BuildOrganisationUrl(id))
+            .Returns(expectedUrl);
+
+        await _model.OnGet();
+
+        _model.UserManagementEnabled.Should().BeTrue();
+        _model.ManageUsersUrl.Should().Be(expectedUrl);
+        _userManagementUrlServiceMock.Verify(s => s.BuildOrganisationUrl(id), Times.Once);
     }
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(

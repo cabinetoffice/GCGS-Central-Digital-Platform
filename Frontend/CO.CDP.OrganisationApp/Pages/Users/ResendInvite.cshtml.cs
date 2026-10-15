@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using CO.CDP.Organisation.WebApiClient;
+using CO.CDP.OrganisationApp.Constants;
 
 namespace CO.CDP.OrganisationApp.Pages.Users;
 
+[DisabledByFeature(FeatureFlags.UserManagement)]
 public class ResendInviteModel(ISession session, IOrganisationClient organisationClient) : PageModel
 {
     [BindProperty(SupportsGet = true)]
