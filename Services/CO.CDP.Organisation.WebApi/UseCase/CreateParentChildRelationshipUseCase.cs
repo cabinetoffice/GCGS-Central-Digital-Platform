@@ -1,6 +1,6 @@
+using CO.CDP.Authentication;
 using CO.CDP.Organisation.WebApi.Model;
 using CO.CDP.OrganisationInformation.Persistence.Interfaces;
-using CO.CDP.OrganisationInformation;
 
 namespace CO.CDP.Organisation.WebApi.UseCase;
 
@@ -18,6 +18,7 @@ public interface
 /// </summary>
 public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationshipUseCase
 {
+    private readonly IClaimService _claimService;
     private readonly ILogger<CreateParentChildRelationshipUseCase> _logger;
     private readonly IOrganisationHierarchyRepository _repository;
 
@@ -26,12 +27,15 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
     /// </summary>
     /// <param name="logger">Logger instance</param>
     /// <param name="repository">Organisation hierarchy repository</param>
+    /// <param name="claimService">Claim service for resolving the current user</param>
     public CreateParentChildRelationshipUseCase(
         ILogger<CreateParentChildRelationshipUseCase> logger,
-        IOrganisationHierarchyRepository repository)
+        IOrganisationHierarchyRepository repository,
+        IClaimService claimService)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _claimService = claimService ?? throw new ArgumentNullException(nameof(claimService));
     }
 
     /// <summary>
@@ -55,13 +59,16 @@ public class CreateParentChildRelationshipUseCase : ICreateParentChildRelationsh
                 return new CreateParentChildRelationshipResult { Success = false };
             }
 
+            var createdBy = _claimService.GetUserUrn();
+
             var relationshipId = await _repository.CreateRelationshipAsync(
                 request.ParentId,
-                request.ChildId);
+                request.ChildId,
+                createdBy);
 
             _logger.LogInformation(
-                "Created parent-child relationship {RelationshipId} between {ParentId} and {ChildId}",
-                relationshipId, request.ParentId, request.ChildId);
+                "Created parent-child relationship {RelationshipId} between {ParentId} and {ChildId} by {CreatedBy}",
+                relationshipId, request.ParentId, request.ChildId, createdBy);
 
             return new CreateParentChildRelationshipResult
             {
