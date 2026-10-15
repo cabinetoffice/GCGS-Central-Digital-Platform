@@ -18,6 +18,14 @@ data "aws_secretsmanager_secret_version" "terraform_operators" {
   secret_id = data.aws_secretsmanager_secret.terraform_operators.id
 }
 
+data "aws_secretsmanager_secret" "read_only_operators" {
+  name = "${local.name_prefix}-read-only-operators"
+}
+
+data "aws_secretsmanager_secret_version" "read_only_operators" {
+  secret_id = data.aws_secretsmanager_secret.read_only_operators.id
+}
+
 data "aws_iam_policy_document" "github_actions_grafana_terraform" {
   statement {
     sid    = "ReadGrafanaSecrets"

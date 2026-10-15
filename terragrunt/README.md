@@ -33,6 +33,7 @@ This code base is responsible for provisioning the AWS infrastructure needed to 
    - [Update Production Database Users](./docs/manage-secrets.md#update-production-database-users)
    - [Update Teams Webhook](./docs/manage-secrets.md#update-teams-webhook)
    - [Update Terraform Operators](./docs/manage-secrets.md#update-terraform-operators)
+   - [Update Read-only Operators](./docs/manage-secrets.md#update-read-only-operators)
    - [Update WAF Allowed IP Set](./docs/manage-secrets.md#update-waf-allowed-ip-set)
 - [Pin Application/Service Version](./docs/bootstap-new-account.md#pin-applicationservice-version)
 - [Run Databases' Migrations](./docs/bootstap-new-account.md#run-databases-migrations)
