@@ -86,7 +86,6 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
-    procurement_transfer_enabled          = local.procurement_transfer_enabled
     notice_edit_rebuild_by_default        = contains(["integration", "production"], var.environment) ? "UK1,UK2,UK3" : ""
     notice_edit_rebuild_form_codes        = lookup(
                                               {
@@ -109,6 +108,7 @@ locals {
     notice_render_cache_debug_marker      = true
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
+    procurement_transfer_enabled          = local.procurement_transfer_enabled
     render_cache_purge_on_migrate         = contains(["development", "staging", "integration"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
