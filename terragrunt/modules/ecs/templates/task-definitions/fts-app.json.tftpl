@@ -29,6 +29,9 @@
 %{ if dynamic_contracting_authority_enabled ~}
       { "name" : "Features__DynamicContractingAuthority", "value" : "true"},
 %{ endif ~}
+%{ if procurement_transfer_enabled ~}
+      { "name" : "Features__ProcurementTransfer", "value" : "true"},
+%{ endif ~}
       { "name" : "FtsService", "value" : "${fts_service_url}"},
       { "name" : "FtsDatabase__Server", "value" : "${db_mysql_address}"},
       { "name" : "FtsDatabase__Port", "value" : "${db_mysql_port}"},

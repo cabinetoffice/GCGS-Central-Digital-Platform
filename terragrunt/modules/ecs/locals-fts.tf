@@ -86,6 +86,7 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
+    procurement_transfer_enabled          = local.procurement_transfer_enabled
     notice_edit_rebuild_by_default        = contains(["integration", "production"], var.environment) ? "UK1,UK2,UK3" : ""
     notice_edit_rebuild_form_codes        = lookup(
                                               {
