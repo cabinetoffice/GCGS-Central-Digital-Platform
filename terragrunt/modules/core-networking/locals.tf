@@ -5,6 +5,11 @@ locals {
 
   tags = merge(var.tags, { Name = var.product.resource_name })
 
+  waf_log_redacted_header_names = [
+    "cdp-api-key",
+    "authorization",
+  ]
+
   public_domain = trimsuffix(aws_route53_zone.public.name, ".")
 
   tools_waf_bypass_ip_restriction_hosts = [
