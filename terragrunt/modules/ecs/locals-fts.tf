@@ -89,7 +89,7 @@ locals {
     notice_edit_rebuild_by_default        = lookup(
                                               {
                                                 development = "UK1,UK2,UK3"
-                                                staging     = ""
+                                                staging     = "UK1,UK2,UK3"
                                                 integration = "UK1,UK2,UK3"
                                                 production  = "UK1,UK2,UK3"
                                               },
