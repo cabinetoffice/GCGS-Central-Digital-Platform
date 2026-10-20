@@ -86,7 +86,16 @@ locals {
     modernised_landing_page               = true
     summarised_search_enabled             = true
     pa23_enabled                          = true
-    notice_edit_rebuild_by_default        = contains(["integration", "production"], var.environment) ? "UK1,UK2,UK3" : ""
+    notice_edit_rebuild_by_default        = lookup(
+                                              {
+                                                development = "UK1,UK2,UK3"
+                                                staging     = "UK1,UK2,UK3"
+                                                integration = "UK1,UK2,UK3"
+                                                production  = "UK1,UK2,UK3"
+                                              },
+                                              var.environment,
+                                              ""
+                                            )
     notice_edit_rebuild_form_codes        = lookup(
                                               {
                                                 development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK16"
