@@ -24,6 +24,9 @@ locals {
   fts_host_headers = distinct(compact(concat(["${var.service_configs.fts.name}.${var.public_domain}"], var.fts_extra_host_headers)))
 
   dynamic_contracting_authority_enabled = contains(["development", "staging"], var.environment)
+  # Off in every AWS environment until fts-app has a real procurement transfer service
+  # (Program.cs only allows the stub in Development). Local docker enables it via .env.
+  procurement_transfer_enabled          = false
 
   db_ev_password              = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn            = var.db_ev_cluster_credentials_arn
