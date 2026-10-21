@@ -98,7 +98,7 @@ locals {
                                             )
     notice_edit_rebuild_form_codes        = lookup(
                                               {
-                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK16"
+                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK16,UK17"
                                                 staging     = "UK1,UK2,UK3,UK6"
                                                 integration = "UK1,UK2,UK3"
                                                 production  = "UK1,UK2,UK3"
