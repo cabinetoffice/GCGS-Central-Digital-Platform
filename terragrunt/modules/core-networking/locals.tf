@@ -43,6 +43,9 @@ locals {
     AWSManagedRulesKnownBadInputsRuleSet : 2
   }
 
+  # Multipart requests are blocked while the PHP multipart parsing CVEs are unpatched; false = count only
+  waf_block_multipart_enforce = false
+
   rate_limit_count                      = var.environment == "development" ? 120 : 12
   rate_limit_window_seconds             = 120
   rate_limit_global_count               = var.environment == "development" ? 1200 : 240
