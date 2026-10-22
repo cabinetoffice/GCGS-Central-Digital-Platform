@@ -38,6 +38,16 @@ public class OutboxProcessorBackgroundServiceTest
     [Fact]
     public async Task ItContinuesExecutingTheOutboxProcessorInRegularIntervals()
     {
+        var secondExecution = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var calls = 0;
+        _outboxProcessor
+            .Setup(d => d.ExecuteAsync(3))
+            .Callback(() =>
+            {
+                if (Interlocked.Increment(ref calls) >= 2) secondExecution.TrySetResult();
+            })
+            .ReturnsAsync(0);
+
         GivenOutboxProcessorIsAvailableInServiceProvider();
         GivenServiceScopeFactoryIsAvailableInServiceContainer();
 
@@ -49,7 +59,7 @@ public class OutboxProcessorBackgroundServiceTest
             },
             _logger);
         await backgroundService.StartAsync(CancellationToken.None);
-        await Task.Delay(TimeSpan.FromMilliseconds(10));
+        await secondExecution.Task.WaitAsync(TimeSpan.FromSeconds(10));
         await backgroundService.StopAsync(CancellationToken.None);
 
         _outboxProcessor.Verify(d => d.ExecuteAsync(3), Times.AtLeast(2));
