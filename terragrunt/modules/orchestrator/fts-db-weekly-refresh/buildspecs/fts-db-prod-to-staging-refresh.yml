@@ -383,10 +383,12 @@ phases:
             TOOL_USERS_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-tool-user-passwords"
             terragrunt init -non-interactive
             if aws secretsmanager describe-secret --secret-id "${TOOL_USERS_SECRET_NAME}" >/dev/null 2>&1; then
-              if ! terragrunt state list 2>/dev/null | grep -qx 'aws_secretsmanager_secret\.fts_tool_user_passwords\[0\]'; then
-                echo "==> Staging: importing existing secret ${TOOL_USERS_SECRET_NAME} into state"
+              if terragrunt state show 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' >/dev/null 2>&1; then
+                echo "==> Staging: secret already managed in state (${TOOL_USERS_SECRET_NAME})"
+              else
+                echo "==> Staging: importing existing secret ${TOOL_USERS_SECRET_NAME} into state (best-effort)"
                 TOOL_USERS_SECRET_ARN="$(aws secretsmanager describe-secret --secret-id "${TOOL_USERS_SECRET_NAME}" --query ARN --output text)"
-                terragrunt import -non-interactive 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' "${TOOL_USERS_SECRET_ARN}"
+                terragrunt import -non-interactive 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' "${TOOL_USERS_SECRET_ARN}" || true
               fi
             fi
 
