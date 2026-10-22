@@ -373,6 +373,18 @@ phases:
             echo "==> Staging: terragrunt apply (database component)"
             export TG_ENVIRONMENT=staging
             cd "${CODEBUILD_SRC_DIR}/terragrunt/components/service/database"
+
+            # Import an existing tool-user secret if it already exists but isn't in state yet.
+            # This can happen if the secret was created out-of-band in the account.
+            TOOL_USERS_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-tool-user-passwords"
+            terragrunt init -non-interactive
+            if aws secretsmanager describe-secret --secret-id "${TOOL_USERS_SECRET_NAME}" >/dev/null 2>&1; then
+              if ! terragrunt state list 2>/dev/null | grep -qx 'aws_secretsmanager_secret\.fts_tool_user_passwords\[0\]'; then
+                echo "==> Staging: importing existing secret ${TOOL_USERS_SECRET_NAME} into state"
+                terragrunt import -non-interactive 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' "${TOOL_USERS_SECRET_NAME}"
+              fi
+            fi
+
             terragrunt apply -non-interactive -- -auto-approve
           fi
 
