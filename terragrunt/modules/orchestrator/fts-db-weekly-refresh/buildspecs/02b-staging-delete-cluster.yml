@@ -1,0 +1,173 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          # Ensure the artifact path always exists (CodeBuild fails uploads if the file is missing).
+          mkdir -p context
+          printf '%s\n' '{"status":"started"}' > context/delete_context.json
+
+          RESTORE_MODE="${FTS_REFRESH_RESTORE_MODE:-main}" # main|scratch
+          DELETE_MAIN_CLUSTER="${FTS_REFRESH_DELETE_MAIN_CLUSTER:-true}" # true|false
+
+          MAIN_CLUSTER_ID="${PRODUCT_RESOURCE_NAME}-fts-cluster"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          assume_role() {
+            local account_id="$1"
+            local env_name="$2"
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+          wait_rds_cluster_deleted() {
+            local cluster_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed
+            start_epoch="$(date +%s)"
+            while true; do
+              if ! aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" >/dev/null 2>&1; then
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+                echo "==> RDS cluster ${cluster_id} is deleted (waited ${elapsed}s)"
+                return 0
+              fi
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster ${cluster_id} to be deleted after ${elapsed}s" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+              echo "==> Waiting for RDS cluster ${cluster_id} to be deleted (elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          wait_rds_instance_deleted() {
+            local instance_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed
+            start_epoch="$(date +%s)"
+            while true; do
+              if ! aws rds describe-db-instances --db-instance-identifier "${instance_id}" >/dev/null 2>&1; then
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+                echo "==> RDS instance ${instance_id} is deleted (waited ${elapsed}s)"
+                return 0
+              fi
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS instance ${instance_id} to be deleted after ${elapsed}s" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+              echo "==> Waiting for RDS instance ${instance_id} to be deleted (elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          delete_rds_cluster_and_instances_if_exists() {
+            local cluster_id="$1"
+
+            if ! aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" >/dev/null 2>&1; then
+              echo "==> Staging: cluster ${cluster_id} does not exist; skipping delete"
+              return 0
+            fi
+
+            echo "==> Staging: disabling deletion protection on ${cluster_id}"
+            aws rds modify-db-cluster \
+              --db-cluster-identifier "${cluster_id}" \
+              --no-deletion-protection \
+              --apply-immediately >/dev/null
+
+            echo "==> Staging: waiting for deletion protection to be disabled on ${cluster_id}"
+            local start_epoch now_epoch elapsed dp
+            start_epoch="$(date +%s)"
+            while true; do
+              dp="$(aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --query 'DBClusters[0].DeletionProtection' --output text 2>/dev/null || true)"
+              if [ "${dp}" = "False" ] || [ "${dp}" = "false" ]; then
+                break
+              fi
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge 1800 ]; then
+                echo "ERROR: Timed out waiting for deletion protection to be disabled on ${cluster_id} after ${elapsed}s" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+              echo "==> Still waiting for deletion protection disable on ${cluster_id} (value=${dp}, elapsed=${elapsed}s)"
+              sleep 30
+            done
+
+            CLUSTER_INSTANCE_IDS="$(aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --query 'DBClusters[0].DBClusterMembers[].DBInstanceIdentifier' --output text)"
+            if [ -n "${CLUSTER_INSTANCE_IDS}" ]; then
+              for instance_id in ${CLUSTER_INSTANCE_IDS}; do
+                echo "==> Staging: deleting cluster member instance ${instance_id}"
+                aws rds delete-db-instance \
+                  --db-instance-identifier "${instance_id}" \
+                  --skip-final-snapshot \
+                  --delete-automated-backups >/dev/null || true
+                wait_rds_instance_deleted "${instance_id}"
+              done
+            fi
+
+            echo "==> Staging: deleting cluster ${cluster_id} (skip final snapshot)"
+            aws rds delete-db-cluster \
+              --db-cluster-identifier "${cluster_id}" \
+              --skip-final-snapshot \
+              --delete-automated-backups >/dev/null || true
+            wait_rds_cluster_deleted "${cluster_id}"
+          }
+
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          if [ "${RESTORE_MODE}" != "main" ]; then
+            echo "==> Staging: restore mode is ${RESTORE_MODE}; skipping delete of main cluster ${MAIN_CLUSTER_ID}"
+          elif [ "${DELETE_MAIN_CLUSTER}" != "true" ]; then
+            echo "==> Staging: skipping delete of main cluster ${MAIN_CLUSTER_ID} (FTS_REFRESH_DELETE_MAIN_CLUSTER=${DELETE_MAIN_CLUSTER})"
+          else
+            echo "==> Staging: delete existing main cluster ${MAIN_CLUSTER_ID} before restore"
+            delete_rds_cluster_and_instances_if_exists "${MAIN_CLUSTER_ID}"
+          fi
+
+          jq -n \
+            --arg restore_mode "${RESTORE_MODE}" \
+            --arg main_cluster_id "${MAIN_CLUSTER_ID}" \
+            --arg delete_main_cluster "${DELETE_MAIN_CLUSTER}" \
+            '{restore_mode:$restore_mode,main_cluster_id:$main_cluster_id,delete_main_cluster:$delete_main_cluster}' \
+            > context/delete_context.json
+
+          echo "==> Wrote context/delete_context.json"
+
+artifacts:
+  files:
+    - context/delete_context.json
+

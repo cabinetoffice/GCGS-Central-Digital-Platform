@@ -46,18 +46,53 @@ resource "aws_codepipeline" "weekly_refresh" {
   }
 
   stage {
-    name = "Staging-Copy-Restore"
+    name = "Staging-Copy-Snapshot"
 
     action {
       category         = "Build"
       input_artifacts  = ["source_output", "PROD_CONTEXT"]
-      name             = "${local.name_prefix}-fts-db-staging-copy-restore"
+      name             = "${local.name_prefix}-fts-db-staging-copy-snapshot"
+      owner            = "AWS"
+      provider         = "CodeBuild"
+      version          = "1"
+      output_artifacts = ["STAGING_SNAPSHOT_CONTEXT"]
+      configuration = {
+        ProjectName   = aws_codebuild_project.staging_copy_snapshot.name
+        PrimarySource = "source_output"
+      }
+    }
+  }
+
+  stage {
+    name = "Staging-Delete-Cluster"
+
+    action {
+      category        = "Build"
+      input_artifacts = ["source_output", "PROD_CONTEXT", "STAGING_SNAPSHOT_CONTEXT"]
+      name            = "${local.name_prefix}-fts-db-staging-delete-cluster"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      configuration = {
+        ProjectName   = aws_codebuild_project.staging_delete_cluster.name
+        PrimarySource = "source_output"
+      }
+    }
+  }
+
+  stage {
+    name = "Staging-Restore"
+
+    action {
+      category         = "Build"
+      input_artifacts  = ["source_output", "PROD_CONTEXT", "STAGING_SNAPSHOT_CONTEXT"]
+      name             = "${local.name_prefix}-fts-db-staging-restore"
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
       output_artifacts = ["RESTORE_CONTEXT"]
       configuration = {
-        ProjectName   = aws_codebuild_project.staging_copy_restore.name
+        ProjectName   = aws_codebuild_project.staging_restore.name
         PrimarySource = "source_output"
       }
     }
