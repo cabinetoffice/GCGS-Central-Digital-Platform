@@ -26,6 +26,9 @@
       { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
       { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
       { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
+%{ if dynamic_contracting_authority_enabled ~}
+      { "name" : "Features__DynamicContractingAuthority", "value" : "true"},
+%{ endif ~}
       { "name" : "FtsService", "value" : "${fts_service_url}"},
       { "name" : "FtsDatabase__Server", "value" : "${db_mysql_address}"},
       { "name" : "FtsDatabase__Port", "value" : "${db_mysql_port}"},
