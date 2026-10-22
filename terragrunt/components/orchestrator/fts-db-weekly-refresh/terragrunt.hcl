@@ -64,6 +64,10 @@ inputs = {
 
   repository_urls = dependency.orchestrator_ecr.outputs.repository_urls
 
+  # Pre-merge testing: point the pipeline Source stage at this feature branch.
+  # Switch back to "main" before merging.
+  source_branch_name = "FC-2422-FTS-staging-db-restore-prep"
+
   # Main mode deletes and recreates the staging FTS cluster from the copied production snapshot.
   fts_refresh_restore_mode        = "main"
   fts_refresh_delete_main_cluster = true

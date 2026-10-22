@@ -75,3 +75,9 @@ variable "fts_refresh_delete_main_cluster" {
   default     = true
   description = "If true and fts_refresh_restore_mode=main, delete the existing staging FTS cluster before restoring from the production snapshot (so the restored cluster keeps the same identifier)."
 }
+
+variable "source_branch_name" {
+  type        = string
+  default     = "main"
+  description = "Git branch for the CodePipeline source stage (temporary override supported for pre-merge testing)."
+}

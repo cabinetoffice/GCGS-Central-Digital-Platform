@@ -23,7 +23,7 @@ resource "aws_codepipeline" "weekly_refresh" {
         ConnectionArn    = data.aws_codestarconnections_connection.cabinet_office.arn
         DetectChanges    = false
         FullRepositoryId = "cabinetoffice/GCGS-Central-Digital-Platform"
-        BranchName       = "main"
+        BranchName       = var.source_branch_name
       }
     }
   }
