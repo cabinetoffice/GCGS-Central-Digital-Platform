@@ -397,6 +397,9 @@ phases:
 
           echo "==> Staging: reset DB users used by CloudBeaver/tools"
 
+          # We `cd` into the database component above; ensure the remainder runs from the repo root.
+          cd "${CODEBUILD_SRC_DIR}"
+
           wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
 
           STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"

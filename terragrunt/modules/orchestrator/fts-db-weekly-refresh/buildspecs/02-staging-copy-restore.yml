@@ -380,6 +380,9 @@ phases:
             terragrunt apply -non-interactive -- -auto-approve
           fi
 
+          # Ensure we write artifacts from the primary source root (we `cd` into the database component above).
+          cd "${CODEBUILD_SRC_DIR}"
+
           wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
           STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
 
