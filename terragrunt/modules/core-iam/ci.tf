@@ -50,6 +50,31 @@ resource "aws_iam_role_policy_attachment" "terraform_product_codebuild_policy" {
   role       = aws_iam_role.ci_build.name
 }
 
+resource "aws_iam_role_policy_attachment" "terraform_product_observability_codebuild_policy" {
+  policy_arn = aws_iam_policy.terraform_product_observability.arn
+  role       = aws_iam_role.ci_build.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_infra_codebuild_policy" {
+  policy_arn = aws_iam_policy.terraform_product_infra.arn
+  role       = aws_iam_role.ci_build.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_integrations_codebuild_policy" {
+  policy_arn = aws_iam_policy.terraform_product_integrations.arn
+  role       = aws_iam_role.ci_build.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_secrets_codebuild_policy" {
+  policy_arn = aws_iam_policy.terraform_product_secrets.arn
+  role       = aws_iam_role.ci_build.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_ci_codebuild_policy" {
+  policy_arn = aws_iam_policy.terraform_product_ci.arn
+  role       = aws_iam_role.ci_build.name
+}
+
 import {
   to = aws_iam_role.ci_pipeline
   id = local.pipeline_iam_name
@@ -94,5 +119,30 @@ resource "aws_iam_role_policy_attachment" "terraform_global_efs_pipeline_policy"
 
 resource "aws_iam_role_policy_attachment" "terraform_product_global_pipeline_policy" {
   policy_arn = aws_iam_policy.terraform_product.arn
+  role       = aws_iam_role.ci_pipeline.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_observability_pipeline_policy" {
+  policy_arn = aws_iam_policy.terraform_product_observability.arn
+  role       = aws_iam_role.ci_pipeline.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_infra_pipeline_policy" {
+  policy_arn = aws_iam_policy.terraform_product_infra.arn
+  role       = aws_iam_role.ci_pipeline.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_integrations_pipeline_policy" {
+  policy_arn = aws_iam_policy.terraform_product_integrations.arn
+  role       = aws_iam_role.ci_pipeline.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_secrets_pipeline_policy" {
+  policy_arn = aws_iam_policy.terraform_product_secrets.arn
+  role       = aws_iam_role.ci_pipeline.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_ci_pipeline_policy" {
+  policy_arn = aws_iam_policy.terraform_product_ci.arn
   role       = aws_iam_role.ci_pipeline.name
 }

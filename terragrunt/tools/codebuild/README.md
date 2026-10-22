@@ -1,6 +1,7 @@
 # Coldbuild
 
 This configuration is to build custom CodeBuild image to be used by CodeBuild jobs in different accounts.
+It includes common tooling (Terraform/Terragrunt/AWS CLI/JQ) and a MySQL client (MariaDB) for RDS automation scripts.
 
 > In the following examples ave is alias for `aws-vault exec` command. aws-switch-to-* commands are custom functions to set profiler.\
 Feel free to use any convenient AWS profiler instead.

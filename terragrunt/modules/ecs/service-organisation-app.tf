@@ -37,7 +37,7 @@ module "ecs_service_organisation_app" {
       cpu                                 = var.service_configs.organisation_app.cpu
       diagnostic_page_enabled             = !var.is_production || var.environment == "integration"
       diagnostic_page_path_arn            = aws_secretsmanager_secret.cdp_sirsi_diagnostic_path.arn
-      fts_service_allowed_origins = join(",", local.fts_service_allowed_origins[var.environment])
+      fts_service_allowed_origins         = join(",", local.fts_service_allowed_origins[var.environment])
       fts_service_url                     = local.fts_service_url
       image                               = local.ecr_urls[var.service_configs.organisation_app.name]
       internal_service_urls               = local.internal_service_urls

@@ -7,8 +7,8 @@ include {
 }
 
 locals {
-  global_vars       = read_terragrunt_config(find_in_parent_folders("root.hcl"))
-  service_vars      = read_terragrunt_config(find_in_parent_folders("service.hcl"))
+  global_vars  = read_terragrunt_config(find_in_parent_folders("root.hcl"))
+  service_vars = read_terragrunt_config(find_in_parent_folders("service.hcl"))
 
   tags = merge(
     local.global_vars.inputs.tags,
@@ -113,8 +113,8 @@ dependency service_database {
     fts_cluster_credentials_arn                        = "mock"
     fts_cluster_credentials_kms_key_id                 = "mock"
     fts_cluster_name                                   = "mock"
-    fts_proxy_endpoint                                = "mock"
-    cfs_proxy_endpoint                                = "mock"
+    fts_proxy_endpoint                                 = "mock"
+    cfs_proxy_endpoint                                 = "mock"
     sirsi_cluster_address                              = "mock"
     sirsi_cluster_credentials_arn                      = "mock"
     sirsi_cluster_credentials_kms_key_id               = "mock"

@@ -14,7 +14,8 @@ RUN yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux
 RUN yum install -y terraform-${TERRAFORM_VERSION}
 
 # Install necessary tools
-RUN yum install -y wget unzip jq
+RUN yum install -y wget unzip jq \
+  && (yum install -y mariadb105 || yum install -y mariadb || yum install -y mysql)
 
 # Download and install Terragrunt
 RUN wget https://github.com/gruntwork-io/terragrunt/releases/download/v${TERRAGRUNT_VERSION}/terragrunt_linux_amd64
@@ -33,3 +34,5 @@ RUN terraform --version
 RUN terragrunt --version
 RUN aws --version
 RUN jq -V
+RUN (command -v mysql && mysql --version) || true
+RUN (command -v mariadb && mariadb --version) || true

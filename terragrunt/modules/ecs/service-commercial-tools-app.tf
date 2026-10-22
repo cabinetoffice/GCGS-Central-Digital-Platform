@@ -58,17 +58,17 @@ module "ecs_service_commercial_tools_app" {
     }
   ]
   additional_external_target_groups = []
-  memory                        = var.service_configs.commercial_tools_app.memory
-  name                          = var.service_configs.commercial_tools_app.name
-  private_subnet_ids            = var.private_subnet_ids
-  product                       = var.product
-  public_domain                 = var.public_domain
-  role_ecs_task_arn             = var.role_ecs_task_arn
-  role_ecs_task_exec_arn        = var.role_ecs_task_exec_arn
-  service_port                  = local.service_ports_by_service[var.service_configs.commercial_tools_app.name]
-  tags                          = var.tags
-  user_pool_arn                 = local.cognito_enabled ? var.user_pool_arn : null
-  user_pool_client_id           = local.cognito_enabled ? var.user_pool_commercial_tools_client_id : null
-  user_pool_domain              = local.cognito_enabled ? var.user_pool_domain : null
-  vpc_id                        = var.vpc_id
+  memory                            = var.service_configs.commercial_tools_app.memory
+  name                              = var.service_configs.commercial_tools_app.name
+  private_subnet_ids                = var.private_subnet_ids
+  product                           = var.product
+  public_domain                     = var.public_domain
+  role_ecs_task_arn                 = var.role_ecs_task_arn
+  role_ecs_task_exec_arn            = var.role_ecs_task_exec_arn
+  service_port                      = local.service_ports_by_service[var.service_configs.commercial_tools_app.name]
+  tags                              = var.tags
+  user_pool_arn                     = local.cognito_enabled ? var.user_pool_arn : null
+  user_pool_client_id               = local.cognito_enabled ? var.user_pool_commercial_tools_client_id : null
+  user_pool_domain                  = local.cognito_enabled ? var.user_pool_domain : null
+  vpc_id                            = var.vpc_id
 }

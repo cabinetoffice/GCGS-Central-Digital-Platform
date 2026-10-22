@@ -93,3 +93,48 @@ Adjust names/paths per environment.
 - Staging RDS clusters may still have deletion protection or final snapshot requirements depending on module settings.
 - If a destroy fails due to final snapshot requirements, ensure `skip_final_snapshot` is true for staging in Terraform or delete manually with `--skip-final-snapshot`.
 - If deletion protection blocks a destroy, disable it first (AWS Console or CLI) before re-running apply.
+
+
+## Automated weekly prod->staging refresh (FTS)
+This repo provisions a weekly refresh for the **FTS Aurora MySQL** cluster from production to staging.
+
+- Scheduler: Thursday 21:21 Europe/London
+- Orchestrator pipeline: `cdp-sirsi-fts-db-weekly-refresh`
+- Staging snapshot SSM parameter: `/cdp-sirsi/staging/fts/weekly_refresh_snapshot_id`
+
+During testing, the pipeline can run in **scratch** mode to avoid impacting the real staging DB/services:
+- Scratch cluster id: `cdp-sirsi-fts-cluster-refresh-test`
+- Scratch mode skips the Terragrunt restore, Step Functions migrations, and ECS redeploys
+- Switch back to **main** mode to restore the real staging cluster
+
+If the SSM parameter is set to a snapshot identifier, the staging DB module restores from it.
+
+**Main mode is destructive:** it deletes the existing staging FTS cluster (`cdp-sirsi-fts-cluster`) and recreates it from the copied production snapshot so the restored cluster keeps the same identifier. Expect downtime during the delete/restore.
+
+
+### Staging post-restore password reset (CloudBeaver/tool users)
+After the staging FTS cluster is restored from the production snapshot, the pipeline runs SQL to reset internal DB user passwords so tools (e.g., CloudBeaver) keep working.
+
+It reads the passwords from this staging secret:
+- Secret name: `rds-db-cdp-sirsi-fts-cluster-tool-user-passwords`
+- Secret JSON keys: `cb_ro_fts`, `cb_da_fts`
+
+Example secret value:
+```json
+{
+  "cb_ro_fts": "<password>",
+  "cb_da_fts": "<password>"
+}
+```
+
+The SQL executed is:
+```sql
+ALTER USER 'cb_ro_fts'@'%' IDENTIFIED BY '<from secret>';
+ALTER USER 'cb_da_fts'@'%' IDENTIFIED BY '<from secret>';
+GRANT CREATE USER, ALTER USER ON *.* TO 'cb_da_fts'@'%';
+GRANT SELECT ON mysql.* TO 'cb_da_fts'@'%';
+ALTER USER 'cdp_sirsi_fts_cluster_migrator'@'%' IDENTIFIED BY '<RUN_MIGRATOR_TOKEN from cdp-sirsi-fts/secrets>';
+FLUSH PRIVILEGES;
+```
+
+> TBC: More queries to be identified and executed to reestablish user-organisation links allowing successful login 

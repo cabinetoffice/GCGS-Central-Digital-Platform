@@ -1,0 +1,122 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          # Ensure the artifact path always exists (CodeBuild fails uploads if the file is missing).
+          mkdir -p context
+          printf '%s\n' '{"status":"started"}' > context/staging_snapshot_context.json
+
+          PROD_CONTEXT_FILE="${CODEBUILD_SRC_DIR_PROD_CONTEXT}/context/prod_context.json"
+          if [ ! -f "${PROD_CONTEXT_FILE}" ]; then
+            echo "ERROR: Missing prod context file at ${PROD_CONTEXT_FILE}" >&2
+            ls -la "${CODEBUILD_SRC_DIR_PROD_CONTEXT}" >&2 || true
+            exit 1
+          fi
+
+          SNAPSHOT_TS="$(jq -r '.snapshot_ts' "${PROD_CONTEXT_FILE}")"
+          PRODUCT_RESOURCE_NAME="$(jq -r '.product_resource_name' "${PROD_CONTEXT_FILE}")"
+          STAGING_ACCOUNT_ID="$(jq -r '.staging_account_id' "${PROD_CONTEXT_FILE}")"
+          PROD_SHARE_SNAPSHOT_ARN="$(jq -r '.prod_share_snapshot_arn' "${PROD_CONTEXT_FILE}")"
+
+          STAGING_SNAPSHOT_ID="${PRODUCT_RESOURCE_NAME}-fts-staging-${SNAPSHOT_TS}"
+          STAGING_KMS_KEY_ID="alias/rds-storage-${PRODUCT_RESOURCE_NAME}-fts-cluster"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          assume_role() {
+            local account_id="$1"
+            local env_name="$2"
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+          wait_rds_cluster_snapshot_available() {
+            local snapshot_id_or_arn="$1"
+            local timeout_seconds="${2:-10800}" # 3h (matches CodeBuild timeout)
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-cluster-snapshots \
+                --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" \
+                --query 'DBClusterSnapshots[0].Status' \
+                --output text 2>/dev/null || true)"
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS cluster snapshot ${snapshot_id_or_arn} is available (waited ${elapsed}s)"
+                return 0
+              fi
+
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS cluster snapshot ${snapshot_id_or_arn} entered failed status" >&2
+                aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster snapshot ${snapshot_id_or_arn} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS cluster snapshot ${snapshot_id_or_arn} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          echo "==> Staging: ensure copied snapshot exists ${STAGING_SNAPSHOT_ID} (source: ${PROD_SHARE_SNAPSHOT_ARN})"
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          if aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" >/dev/null 2>&1; then
+            echo "==> Staging: snapshot ${STAGING_SNAPSHOT_ID} already exists; reusing"
+          else
+            echo "==> Staging: copy shared snapshot ${PROD_SHARE_SNAPSHOT_ARN} to ${STAGING_SNAPSHOT_ID}"
+            aws rds copy-db-cluster-snapshot \
+              --source-db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ARN}" \
+              --target-db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
+              --kms-key-id "${STAGING_KMS_KEY_ID}"
+          fi
+
+          wait_rds_cluster_snapshot_available "${STAGING_SNAPSHOT_ID}"
+
+          jq -n \
+            --arg snapshot_ts "${SNAPSHOT_TS}" \
+            --arg product_resource_name "${PRODUCT_RESOURCE_NAME}" \
+            --arg staging_snapshot_id "${STAGING_SNAPSHOT_ID}" \
+            '{snapshot_ts:$snapshot_ts,product_resource_name:$product_resource_name,staging_snapshot_id:$staging_snapshot_id}' \
+            > context/staging_snapshot_context.json
+
+          echo "==> Wrote context/staging_snapshot_context.json"
+
+artifacts:
+  files:
+    - context/staging_snapshot_context.json
+
