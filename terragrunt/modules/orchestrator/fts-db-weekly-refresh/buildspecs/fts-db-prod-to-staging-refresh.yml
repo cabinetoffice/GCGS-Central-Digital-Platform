@@ -301,10 +301,14 @@ phases:
 
           PROD_SHARE_SNAPSHOT_ARN="arn:aws:rds:${AWS_REGION}:${PROD_ACCOUNT_ID}:cluster-snapshot:${PROD_SHARE_SNAPSHOT_ID}"
 
-          aws rds copy-db-cluster-snapshot \
-            --source-db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ARN}" \
-            --target-db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
-            --kms-key-id "${STAGING_KMS_KEY_ID}"
+          if aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" >/dev/null 2>&1; then
+            echo "==> Staging: snapshot ${STAGING_SNAPSHOT_ID} already exists; reusing"
+          else
+            aws rds copy-db-cluster-snapshot \
+              --source-db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ARN}" \
+              --target-db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
+              --kms-key-id "${STAGING_KMS_KEY_ID}"
+          fi
           wait_rds_cluster_snapshot_available "${STAGING_SNAPSHOT_ID}"
 
           RESTORE_MODE="${FTS_REFRESH_RESTORE_MODE:-main}" # main|scratch
