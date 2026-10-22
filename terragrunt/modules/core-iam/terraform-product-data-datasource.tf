@@ -45,6 +45,7 @@ data "aws_iam_policy_document" "terraform_product_data" {
     resources = [
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-pg:cdp-*",
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster:cdp-*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-snapshot:cdp-*",
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db-proxy:cdp-*",
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db-proxy:*",
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:cdp-*",

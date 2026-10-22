@@ -191,6 +191,50 @@ def _format_duration(start_epoch, end_epoch):
     return f"{minutes}:{secs:02d}"
 
 
+def _is_deployment_pipeline(pipeline):
+    expected = os.environ.get("DEPLOYMENT_PIPELINE_NAME")
+    if not expected or not pipeline:
+        return False
+    return str(pipeline) == str(expected)
+
+
+def _build_generic_html(event, detail, pipeline, execution_id, link, commit_url, commit_id, commit_message):
+    state = (_pick_state(detail) or "UNKNOWN").upper()
+    emoji = STATE_EMOJI.get(state, STATE_EMOJI["UNKNOWN"])
+
+    title = html.escape(str(pipeline or "Pipeline event"))
+    stage = detail.get("stage")
+    action = detail.get("action")
+    region = (event.get("region") or "eu-west-2").strip()
+    when = event.get("time")
+
+    lines = [f"<b>{emoji} {title}</b>"]
+    if stage or action:
+        stage_part = html.escape(str(stage)) if stage else "-"
+        action_part = html.escape(str(action)) if action else "-"
+        lines.append(f"<b>Stage:</b> {stage_part} <b>Action:</b> {action_part}")
+    lines.append(f"<b>State:</b> {html.escape(state)}")
+    if when:
+        lines.append(f"<b>When:</b> {html.escape(str(when))}")
+    if region:
+        lines.append(f"<b>Region:</b> {html.escape(region)}")
+
+    if execution_id and link:
+        lines.append(f'<b>Execution:</b> <a href="{link}">{html.escape(str(execution_id))}</a>')
+    elif execution_id:
+        lines.append(f"<b>Execution:</b> {html.escape(str(execution_id))}")
+
+    if commit_url:
+        label = html.escape(str(commit_id)[:7] if commit_id else "Open commit")
+        lines.append(f'<b>Revision:</b> <a href="{commit_url}">{label}</a>')
+
+    if commit_message:
+        msg_html = html.escape(str(commit_message)).replace("\n", "<br/>")
+        lines.append("<br/><b>Commit message:</b><br/>" + msg_html)
+
+    return "<br/>".join(lines)
+
+
 def _execution_key(event, detail):
     pipeline = detail.get("pipeline")
     execution_id = detail.get("execution-id") or detail.get("executionId") or detail.get("execution_id")
@@ -414,6 +458,43 @@ def handler(event, _context):
         commit_id = github_commit or commit_id
     if commit_message:
         item["commit_message"] = commit_message
+
+    if not _is_deployment_pipeline(pipeline):
+        html_content = _build_generic_html(event, detail, pipeline, execution_id, link, commit_url, commit_id, commit_message)
+        message_id = item.get("message_id")
+
+        if message_id:
+            url = f"{graph_base}/teams/{team_id}/channels/{channel_id}/messages/{message_id}"
+            status, body = _graph_request("PATCH", url, token, _build_message_payload(html_content))
+            if status == 404:
+                message_id = None
+            elif status >= 400:
+                return {"status": status, "error": body, "execution_key": execution_key}
+
+        if not message_id:
+            url = f"{graph_base}/teams/{team_id}/channels/{channel_id}/messages"
+            status, body = _graph_request("POST", url, token, _build_message_payload(html_content))
+            if status >= 400:
+                return {"status": status, "error": body, "execution_key": execution_key}
+            message_id = body.get("id")
+
+        if message_id:
+            table.update_item(
+                Key={"execution_key": execution_key},
+                UpdateExpression="SET message_id = :message_id, pipeline = :pipeline, execution_id = :execution_id, updated_at = :updated_at",
+                ExpressionAttributeValues={
+                    ":message_id": message_id,
+                    ":pipeline": pipeline or "unknown",
+                    ":execution_id": execution_id or "unknown",
+                    ":updated_at": int(time.time()),
+                },
+            )
+
+        return {
+            "status": 200,
+            "execution_key": execution_key,
+            "message_id": message_id,
+        }
 
     stage_key = _stage_from_event(detail)
     state = _pick_state(detail)

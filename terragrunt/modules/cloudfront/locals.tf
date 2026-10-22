@@ -1,5 +1,5 @@
 locals {
-  name_prefix    = var.product.resource_name
+  name_prefix = var.product.resource_name
   cf_name_prefix = "${local.name_prefix}-${var.cloudfront_name}"
 
   origin_bucket_name = var.cloudfront_origin_bucket_name != null ? var.cloudfront_origin_bucket_name : "${local.name_prefix}-cloudfront-origin-${data.aws_caller_identity.current.account_id}"
@@ -26,8 +26,8 @@ locals {
   }
 
   waf_rule_sets_priority_observers = {
-    AWSManagedRulesSQLiRuleSet     = 6
-    AWSManagedRulesAnonymousIpList = 8
+    AWSManagedRulesSQLiRuleSet      = 6
+    AWSManagedRulesAnonymousIpList  = 8
   }
 
   waf_bot_control_priority = 10
@@ -35,9 +35,4 @@ locals {
   realtime_log_name_suffix = var.cloudfront_realtime_log_name_suffix != null ? var.cloudfront_realtime_log_name_suffix : var.cloudfront_name
   realtime_log_base_name   = "${local.name_prefix}-${local.realtime_log_name_suffix}-rt-logs"
   realtime_log_stream_name = substr(local.realtime_log_base_name, 0, 128)
-
-  waf_log_redacted_header_names = [
-    "cdp-api-key",
-    "authorization",
-  ]
 }

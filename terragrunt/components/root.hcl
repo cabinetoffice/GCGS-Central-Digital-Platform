@@ -232,16 +232,24 @@ locals {
     }
   }
 
-  aurora_mysql_engine_version         = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
-  aurora_mysql_family                 = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
-  aurora_mysql_instance_type          = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
-  aurora_postgres_instance_type       = try(local.environments[local.environment].postgres_aurora_instance_type, null)
-  aurora_postgres_instance_type_ev    = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
-  cfs_extra_domains                   = try(local.environments[local.environment].cfs_extra_domains, [])
-  fts_apply_master_password           = try(local.environments[local.environment].fts_apply_master_password, false)
+  aurora_mysql_engine_version      = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
+  aurora_mysql_family              = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
+  aurora_mysql_instance_type       = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
+  aurora_postgres_instance_type    = try(local.environments[local.environment].postgres_aurora_instance_type, null)
+  aurora_postgres_instance_type_ev = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
+  cfs_extra_domains                = try(local.environments[local.environment].cfs_extra_domains, [])
+
+  # Staging weekly refresh uses an SSM parameter to drive the snapshot restore without requiring code changes.
+  # The scheduled job sets this parameter before running `terragrunt apply`.
+  fts_weekly_refresh_snapshot_parameter_name = "/cdp-sirsi/${local.environment}/fts/weekly_refresh_snapshot_id"
+  fts_weekly_refresh_snapshot_identifier_raw = local.environment == "staging" ? trimspace(run_cmd("bash", "-lc", "aws ssm get-parameter --name \"${local.fts_weekly_refresh_snapshot_parameter_name}\" --query Parameter.Value --output text 2>/dev/null || true")) : ""
+  fts_snapshot_identifier_env                = local.environment == "staging" ? trimspace(get_env("FTS_SNAPSHOT_IDENTIFIER", "")) : ""
+  fts_weekly_refresh_enabled                 = local.environment == "staging" && local.fts_weekly_refresh_snapshot_identifier_raw != ""
+
+  fts_apply_master_password           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_apply_master_password, false))
   fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
-  fts_restore_from_snapshot           = try(local.environments[local.environment].fts_restore_from_snapshot, false)
-  fts_snapshot_identifier             = try(local.environments[local.environment].fts_snapshot_identifier, null)
+  fts_restore_from_snapshot           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_restore_from_snapshot, false))
+  fts_snapshot_identifier             = local.fts_snapshot_identifier_env != "" ? local.fts_snapshot_identifier_env : (local.fts_weekly_refresh_enabled ? local.fts_weekly_refresh_snapshot_identifier_raw : try(local.environments[local.environment].fts_snapshot_identifier, null))
   sirsi_restore_from_snapshot         = try(local.environments[local.environment].sirsi_restore_from_snapshot, false)
   sirsi_snapshot_identifier           = try(local.environments[local.environment].sirsi_snapshot_identifier, null)
   ev_restore_from_snapshot            = try(local.environments[local.environment].ev_restore_from_snapshot, false)
@@ -342,46 +350,46 @@ locals {
   }
 
   service_configs_common = {
-    authority                            = { cluster = "sirsi",     type = "web-service",  name = "authority", listener_priority = 118 }
-    av_scanner_app                       = { cluster = "sirsi",     type = "web-service",  name = "av-scanner-app", listener_priority = 112 }
-    cfs                                  = { cluster = "sirsi-php", type = "web-service",  name = "cfs", listener_priority = 310 }
+    authority                            = { cluster = "sirsi", type = "web-service", name = "authority", listener_priority = 118 }
+    av_scanner_app                       = { cluster = "sirsi", type = "web-service", name = "av-scanner-app", listener_priority = 112 }
+    cfs                                  = { cluster = "sirsi-php", type = "web-service", name = "cfs", listener_priority = 310 }
     cfs_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "cfs-migrations" }
-    cfs_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "cfs-scheduler" }
-    commercial_tools_api                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-api", listener_priority = 113 }
-    commercial_tools_app                 = { cluster = "sirsi",     type = "web-service",  name = "commercial-tools-app", listener_priority = 111 }
-    data_sharing                         = { cluster = "sirsi",     type = "web-service",  name = "data-sharing", listener_priority = 114 }
+    cfs_scheduler                        = { cluster = "sirsi-php", type = "service", name = "cfs-scheduler" }
+    commercial_tools_api                 = { cluster = "sirsi", type = "web-service", name = "commercial-tools-api", listener_priority = 113 }
+    commercial_tools_app                 = { cluster = "sirsi", type = "web-service", name = "commercial-tools-app", listener_priority = 111 }
+    data_sharing                         = { cluster = "sirsi", type = "web-service", name = "data-sharing", listener_priority = 114 }
     e2e_nightly_dev                      = { cluster = "sirsi-php", type = "one-off-task", name = "e2e-nightly-dev" }
-    entity_verification                  = { cluster = "sirsi",     type = "web-service",  name = "entity-verification", listener_priority = 115 }
-    entity_verification_migrations       = { cluster = "sirsi",     type = "db-migration", name = "entity-verification-migrations" }
-    forms                                = { cluster = "sirsi",     type = "web-service",  name = "forms", listener_priority = 116 }
-    fts                                  = { cluster = "sirsi-php", type = "web-service",  name = "fts", listener_priority = 311 }
-    fts_app                              = { cluster = "fts",       type = "service",      name = "fts-app", listener_priority = 210 }
-    fts_healthcheck                      = { cluster = "sirsi-php", type = "web-service",  name = "fts-healthcheck", listener_priority = 312 }
+    entity_verification                  = { cluster = "sirsi", type = "web-service", name = "entity-verification", listener_priority = 115 }
+    entity_verification_migrations       = { cluster = "sirsi", type = "db-migration", name = "entity-verification-migrations" }
+    forms                                = { cluster = "sirsi", type = "web-service", name = "forms", listener_priority = 116 }
+    fts                                  = { cluster = "sirsi-php", type = "web-service", name = "fts", listener_priority = 311 }
+    fts_app                              = { cluster = "fts", type = "service", name = "fts-app", listener_priority = 210 }
+    fts_healthcheck                      = { cluster = "sirsi-php", type = "web-service", name = "fts-healthcheck", listener_priority = 312 }
     fts_migrations                       = { cluster = "sirsi-php", type = "db-migration", name = "fts-migrations" }
-    fts_findtender_migrations            = { cluster = "fts",       type = "db-migration", name = "fts-findtender-migrations" }
-    fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service",      name = "fts-notice-publish-worker" }
-    fts_notice_publish_worker_dotnet     = { cluster = "fts",       type = "service",      name = "fts-notice-publish-worker-dotnet" }
-    fts_notice_render_worker             = { cluster = "sirsi-php", type = "service",      name = "fts-notice-render-worker" }
-    fts_pdf_render_service               = { cluster = "sirsi-php", type = "service",      name = "fts-pdf-render-service", listener_priority = 313 }
-    fts_job_scheduler                    = { cluster = "sirsi-php", type = "service",      name = "fts-job-scheduler" }
-    fts_scheduler                        = { cluster = "sirsi-php", type = "service",      name = "fts-scheduler" }
-    fts_search_api                       = { cluster = "fts",       type = "service",      name = "fts-search-api", listener_priority = 211 }
-    fts_search_indexer                   = { cluster = "fts",       type = "service",      name = "fts-search-indexer" }
-    fts_user_api                         = { cluster = "fts",       type = "service",      name = "fts-user-api", listener_priority = 212 }
-    ocds_export_seeder                   = { cluster = "fts",       type = "one-off-task", name = "fts-ocds-export-seeder" }
-    ocds_exporter                        = { cluster = "fts",       type = "service",      name = "fts-ocds-exporter" }
-    organisation                         = { cluster = "sirsi",     type = "web-service",  name = "organisation", listener_priority = 117 }
-    organisation_app                     = { cluster = "sirsi",     type = "web-service",  name = "organisation-app", listener_priority = 110 }
-    organisation_information_migrations  = { cluster = "sirsi",     type = "db-migration", name = "organisation-information-migrations" }
-    outbox_processor_entity_verification = { cluster = "sirsi",     type = "service",      name = "outbox-processor-entity-verification", listener_priority = 119 }
-    outbox_processor_organisation        = { cluster = "sirsi",     type = "service",      name = "outbox-processor-organisation", listener_priority = 120 }
-    person                               = { cluster = "sirsi",     type = "web-service",  name = "person", listener_priority = 121 }
-    scheduled_worker                     = { cluster = "sirsi",     type = "service",      name = "scheduled-worker", listener_priority = 122 }
-    tenant                               = { cluster = "sirsi",     type = "web-service",  name = "tenant", listener_priority = 123 }
-    user_journey_monitoring              = { cluster = "sirsi-php", type = "service",      name = "user-journey-monitoring" }
-    user_management_api                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-api", listener_priority = 130 }
-    user_management_app                  = { cluster = "sirsi",     type = "web-service",  name = "user-management-app", listener_priority = 131 }
-    user_management_migrations           = { cluster = "sirsi",     type = "db-migration", name = "user-management-migrations" }
+    fts_findtender_migrations            = { cluster = "fts", type = "db-migration", name = "fts-findtender-migrations" }
+    fts_notice_publish_worker            = { cluster = "sirsi-php", type = "service", name = "fts-notice-publish-worker" }
+    fts_notice_publish_worker_dotnet     = { cluster = "fts", type = "service", name = "fts-notice-publish-worker-dotnet" }
+    fts_notice_render_worker             = { cluster = "sirsi-php", type = "service", name = "fts-notice-render-worker" }
+    fts_pdf_render_service               = { cluster = "sirsi-php", type = "service", name = "fts-pdf-render-service", listener_priority = 313 }
+    fts_job_scheduler                    = { cluster = "sirsi-php", type = "service", name = "fts-job-scheduler" }
+    fts_scheduler                        = { cluster = "sirsi-php", type = "service", name = "fts-scheduler" }
+    fts_search_api                       = { cluster = "fts", type = "service", name = "fts-search-api", listener_priority = 211 }
+    fts_search_indexer                   = { cluster = "fts", type = "service", name = "fts-search-indexer" }
+    fts_user_api                         = { cluster = "fts", type = "service", name = "fts-user-api", listener_priority = 212 }
+    ocds_export_seeder                   = { cluster = "fts", type = "one-off-task", name = "fts-ocds-export-seeder" }
+    ocds_exporter                        = { cluster = "fts", type = "service", name = "fts-ocds-exporter" }
+    organisation                         = { cluster = "sirsi", type = "web-service", name = "organisation", listener_priority = 117 }
+    organisation_app                     = { cluster = "sirsi", type = "web-service", name = "organisation-app", listener_priority = 110 }
+    organisation_information_migrations  = { cluster = "sirsi", type = "db-migration", name = "organisation-information-migrations" }
+    outbox_processor_entity_verification = { cluster = "sirsi", type = "service", name = "outbox-processor-entity-verification", listener_priority = 119 }
+    outbox_processor_organisation        = { cluster = "sirsi", type = "service", name = "outbox-processor-organisation", listener_priority = 120 }
+    person                               = { cluster = "sirsi", type = "web-service", name = "person", listener_priority = 121 }
+    scheduled_worker                     = { cluster = "sirsi", type = "service", name = "scheduled-worker", listener_priority = 122 }
+    tenant                               = { cluster = "sirsi", type = "web-service", name = "tenant", listener_priority = 123 }
+    user_journey_monitoring              = { cluster = "sirsi-php", type = "service", name = "user-journey-monitoring" }
+    user_management_api                  = { cluster = "sirsi", type = "web-service", name = "user-management-api", listener_priority = 130 }
+    user_management_app                  = { cluster = "sirsi", type = "web-service", name = "user-management-app", listener_priority = 131 }
+    user_management_migrations           = { cluster = "sirsi", type = "db-migration", name = "user-management-migrations" }
   }
 
   service_configs = {
@@ -462,7 +470,7 @@ locals {
   }
 
   tg = {
-    state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${get_aws_account_id()}"
+    state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${local.account_ids[local.environment]}"
     state_key    = "${path_relative_to_include()}/terraform.tfstate"
   }
 

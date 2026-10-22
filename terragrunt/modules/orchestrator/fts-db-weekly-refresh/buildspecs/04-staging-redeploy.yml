@@ -1,0 +1,130 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          RESTORE_CONTEXT_FILE="${CODEBUILD_SRC_DIR_RESTORE_CONTEXT}/context/restore_context.json"
+          if [ ! -f "${RESTORE_CONTEXT_FILE}" ]; then
+            echo "ERROR: Missing restore context file at ${RESTORE_CONTEXT_FILE}" >&2
+            ls -la "${CODEBUILD_SRC_DIR_RESTORE_CONTEXT}" >&2 || true
+            exit 1
+          fi
+
+          PRODUCT_RESOURCE_NAME="$(jq -r '.product_resource_name' "${RESTORE_CONTEXT_FILE}")"
+          RESTORE_MODE="$(jq -r '.restore_mode' "${RESTORE_CONTEXT_FILE}")"
+          TARGET_CLUSTER_ID="$(jq -r '.target_cluster_id' "${RESTORE_CONTEXT_FILE}")"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          assume_role() {
+            local account_id="$1"
+            local env_name="$2"
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+            wait_sfn_execution() {
+              local execution_arn="$1"
+              local timeout_seconds="${2:-1800}" # 30m
+              local sleep_seconds="${3:-10}"
+              local start_epoch now_epoch elapsed status desc_json
+
+              start_epoch="$(date +%s)"
+              while true; do
+                if ! desc_json="$(aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json 2>&1)"; then
+                  echo "ERROR: Failed to describe Step Function execution: ${execution_arn}" >&2
+                  echo "${desc_json}" >&2
+                  return 1
+                fi
+                status="$(jq -r '.status' <<<"${desc_json}")"
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "SUCCEEDED" ]; then
+                return 0
+              fi
+              if [ "${status}" = "FAILED" ] || [ "${status}" = "TIMED_OUT" ] || [ "${status}" = "ABORTED" ]; then
+                echo "ERROR: Step Function ended with status=${status}: ${execution_arn}" >&2
+                aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json >&2 || true
+                return 1
+              fi
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for Step Function execution after ${elapsed}s: ${execution_arn}" >&2
+                aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          start_force_deploy() {
+            local service="$1"
+            local sm_arn="arn:aws:states:${AWS_REGION}:${STAGING_ACCOUNT_ID}:stateMachine:${PRODUCT_RESOURCE_NAME}-deploy-${service}"
+            local output
+
+            if output="$(aws stepfunctions start-execution --state-machine-arn "${sm_arn}" --query executionArn --output text 2>&1)"; then
+              echo "==> Forced redeploy started: ${service}"
+              wait_sfn_execution "${output}" 1800 10
+              echo "==> Forced redeploy completed: ${service}"
+              return 0
+            fi
+
+            if echo "${output}" | grep -q "StateMachineDoesNotExist"; then
+              echo "WARN: Missing Step Function for service ${service} (${sm_arn}); skipping" >&2
+              return 0
+            fi
+
+            echo "ERROR: Failed to start Step Function for service ${service} (${sm_arn})" >&2
+            echo "${output}" >&2
+            return 1
+          }
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: scratch mode - skipping ECS redeploys"
+            echo "Scratch cluster id: ${TARGET_CLUSTER_ID}"
+            exit 0
+          fi
+
+          echo "==> Staging: force ECS redeploys (via Step Functions)"
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          # Services known to use the FTS Aurora cluster (ported from the previous monolithic pipeline script).
+          for svc in \
+            fts \
+            fts-healthcheck \
+            fts-scheduler \
+            fts-job-scheduler \
+            fts-notice-publish-worker \
+            fts-notice-render-worker \
+            fts-pdf-render-service \
+            fts-app \
+            fts-search-api \
+            fts-search-indexer \
+            fts-user-api \
+            fts-notice-publish-worker-dotnet \
+            fts-ocds-exporter
+          do
+            start_force_deploy "${svc}"
+          done

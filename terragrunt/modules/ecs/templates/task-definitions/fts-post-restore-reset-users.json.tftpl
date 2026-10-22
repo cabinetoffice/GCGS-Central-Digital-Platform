@@ -1,0 +1,28 @@
+[
+  {
+    "name": "${name}",
+    "image": "${image}",
+    "essential": true,
+    "command": [
+      "sh",
+      "-lc",
+      "set -eu; for v in DB_HOST MASTER_USERNAME MASTER_PASSWORD CB_RO_PW CB_DA_PW MIGRATOR_PW; do val=\"$(printenv \"$v\" 2>/dev/null || true)\"; if [ -z \"$val\" ]; then echo \"ERROR: missing env var $v\" >&2; exit 1; fi; done; sql_escape(){ printf \"%s\" \"$1\" | sed \"s/'/''/g\"; }; CB_RO_ESC=\"$(sql_escape \"$CB_RO_PW\")\"; CB_DA_ESC=\"$(sql_escape \"$CB_DA_PW\")\"; MIGRATOR_ESC=\"$(sql_escape \"$MIGRATOR_PW\")\"; echo \"Waiting for DB connectivity to $DB_HOST:3306\"; i=0; until MYSQL_PWD=\"$MASTER_PASSWORD\" mysql --ssl-mode=REQUIRED -h \"$DB_HOST\" -u \"$MASTER_USERNAME\" -e \"SELECT 1\" >/dev/null 2>&1; do i=$((i+1)); if [ \"$i\" -ge 45 ]; then echo \"ERROR: timed out waiting for MySQL connectivity\" >&2; exit 1; fi; sleep 20; done; umask 077; cat > /tmp/reset.sql <<SQL\nCREATE USER IF NOT EXISTS 'cb_ro_fts'@'%' IDENTIFIED BY '$CB_RO_ESC';\nCREATE USER IF NOT EXISTS 'cb_da_fts'@'%' IDENTIFIED BY '$CB_DA_ESC';\nCREATE USER IF NOT EXISTS 'cdp_sirsi_fts_cluster_migrator'@'%' IDENTIFIED BY '$MIGRATOR_ESC';\nALTER USER 'cb_ro_fts'@'%' IDENTIFIED BY '$CB_RO_ESC';\nALTER USER 'cb_da_fts'@'%' IDENTIFIED BY '$CB_DA_ESC';\nGRANT SELECT ON mysql.* TO 'cb_da_fts'@'%';\nALTER USER 'cdp_sirsi_fts_cluster_migrator'@'%' IDENTIFIED BY '$MIGRATOR_ESC';\nFLUSH PRIVILEGES;\nSQL\nMYSQL_PWD=\"$MASTER_PASSWORD\" mysql --ssl-mode=REQUIRED -h \"$DB_HOST\" -u \"$MASTER_USERNAME\" < /tmp/reset.sql; rm -f /tmp/reset.sql; echo \"Post-restore DB user reset complete\""
+    ],
+    "environment": [],
+    "secrets": [
+      { "name": "MASTER_USERNAME", "valueFrom": "${master_secret_arn}:username::" },
+      { "name": "MASTER_PASSWORD", "valueFrom": "${master_secret_arn}:password::" },
+      { "name": "CB_RO_PW", "valueFrom": "${tool_users_secret_arn}:cb_ro_fts::" },
+      { "name": "CB_DA_PW", "valueFrom": "${tool_users_secret_arn}:cb_da_fts::" },
+      { "name": "MIGRATOR_PW", "valueFrom": "${fts_app_secrets_arn}:RUN_MIGRATOR_TOKEN::" }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${lg_name}",
+        "awslogs-region": "${lg_region}",
+        "awslogs-stream-prefix": "${lg_prefix}"
+      }
+    }
+  }
+]

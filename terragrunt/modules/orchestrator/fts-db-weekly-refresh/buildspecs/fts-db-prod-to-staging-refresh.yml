@@ -1,0 +1,609 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          SNAPSHOT_TS="$(date -u +%Y%m%d%H%M)"
+          PRODUCT_RESOURCE_NAME="${PRODUCT_RESOURCE_NAME:-cdp-sirsi}"
+
+          PROD_CLUSTER_ID="${PRODUCT_RESOURCE_NAME}-fts-cluster"
+          PROD_SNAPSHOT_ID="${PRODUCT_RESOURCE_NAME}-fts-prod-${SNAPSHOT_TS}"
+          PROD_SHARE_SNAPSHOT_ID="${PRODUCT_RESOURCE_NAME}-fts-prod-share-${SNAPSHOT_TS}"
+          STAGING_SNAPSHOT_ID="${PRODUCT_RESOURCE_NAME}-fts-staging-${SNAPSHOT_TS}"
+
+          PROD_KMS_KEY_ID="alias/rds-snapshot-copy-cdp-sirsi-production"
+          STAGING_KMS_KEY_ID="alias/rds-storage-${PRODUCT_RESOURCE_NAME}-fts-cluster"
+          STAGING_SSM_PARAM_NAME="/${PRODUCT_RESOURCE_NAME}/staging/fts/weekly_refresh_snapshot_id"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          wait_rds_cluster_available() {
+            local cluster_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-clusters \
+                --db-cluster-identifier "${cluster_id}" \
+                --query 'DBClusters[0].Status' \
+                --output text 2>/dev/null || true)"
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS cluster ${cluster_id} is available (waited ${elapsed}s)"
+                return 0
+              fi
+
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS cluster ${cluster_id} entered failed status" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster ${cluster_id} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS cluster ${cluster_id} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          wait_rds_cluster_snapshot_available() {
+            local snapshot_id_or_arn="$1"
+            local timeout_seconds="${2:-10800}" # 3h (matches CodeBuild timeout)
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-cluster-snapshots \
+                --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" \
+                --query 'DBClusterSnapshots[0].Status' \
+                --output text 2>/dev/null || true)"
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS cluster snapshot ${snapshot_id_or_arn} is available (waited ${elapsed}s)"
+                return 0
+              fi
+
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS cluster snapshot ${snapshot_id_or_arn} entered failed status" >&2
+                aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster snapshot ${snapshot_id_or_arn} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-cluster-snapshots --db-cluster-snapshot-identifier "${snapshot_id_or_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS cluster snapshot ${snapshot_id_or_arn} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          wait_rds_instance_available() {
+            local instance_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-instances \
+                --db-instance-identifier "${instance_id}" \
+                --query 'DBInstances[0].DBInstanceStatus' \
+                --output text 2>/dev/null || true)"
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS instance ${instance_id} is available (waited ${elapsed}s)"
+                return 0
+              fi
+
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS instance ${instance_id} entered failed status" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS instance ${instance_id} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS instance ${instance_id} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          assume_role() {
+            local account_id="$1";
+            local env_name="$2";
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+          wait_rds_cluster_deleted() {
+            local cluster_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed
+
+            start_epoch="$(date +%s)"
+            while true; do
+              if ! aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" >/dev/null 2>&1; then
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+                echo "==> RDS cluster ${cluster_id} is deleted (waited ${elapsed}s)"
+                return 0
+              fi
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster ${cluster_id} to be deleted after ${elapsed}s" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS cluster ${cluster_id} to be deleted (elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          wait_rds_instance_deleted() {
+            local instance_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed
+
+            start_epoch="$(date +%s)"
+            while true; do
+              if ! aws rds describe-db-instances --db-instance-identifier "${instance_id}" >/dev/null 2>&1; then
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+                echo "==> RDS instance ${instance_id} is deleted (waited ${elapsed}s)"
+                return 0
+              fi
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS instance ${instance_id} to be deleted after ${elapsed}s" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS instance ${instance_id} to be deleted (elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          delete_rds_cluster_and_instances_if_exists() {
+            local cluster_id="$1"
+
+            if ! aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" >/dev/null 2>&1; then
+              echo "==> Staging: cluster ${cluster_id} does not exist; skipping delete"
+              return 0
+            fi
+
+            echo "==> Staging: disabling deletion protection on ${cluster_id}"
+            aws rds modify-db-cluster \
+              --db-cluster-identifier "${cluster_id}" \
+              --no-deletion-protection \
+              --apply-immediately >/dev/null
+
+            echo "==> Staging: waiting for deletion protection to be disabled on ${cluster_id}"
+            local start_epoch now_epoch elapsed dp
+            start_epoch="$(date +%s)"
+            while true; do
+              dp="$(aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --query 'DBClusters[0].DeletionProtection' --output text 2>/dev/null || true)"
+              if [ "${dp}" = "False" ] || [ "${dp}" = "false" ]; then
+                break
+              fi
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${elapsed}" -ge 1800 ]; then
+                echo "ERROR: Timed out waiting for deletion protection to be disabled on ${cluster_id} after ${elapsed}s" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Still waiting for deletion protection disable on ${cluster_id} (value=${dp}, elapsed=${elapsed}s)"
+              sleep 30
+            done
+
+            CLUSTER_INSTANCE_IDS="$(aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --query 'DBClusters[0].DBClusterMembers[].DBInstanceIdentifier' --output text)"
+            if [ -n "${CLUSTER_INSTANCE_IDS}" ]; then
+              for instance_id in ${CLUSTER_INSTANCE_IDS}; do
+                echo "==> Staging: deleting cluster member instance ${instance_id}"
+                aws rds delete-db-instance \
+                  --db-instance-identifier "${instance_id}" \
+                  --skip-final-snapshot \
+                  --delete-automated-backups >/dev/null || true
+                wait_rds_instance_deleted "${instance_id}"
+              done
+            fi
+
+            echo "==> Staging: deleting cluster ${cluster_id} (skip final snapshot)"
+            aws rds delete-db-cluster \
+              --db-cluster-identifier "${cluster_id}" \
+              --skip-final-snapshot \
+              --delete-automated-backups >/dev/null || true
+            wait_rds_cluster_deleted "${cluster_id}"
+          }
+
+          echo "==> Production: create snapshot ${PROD_SNAPSHOT_ID} from ${PROD_CLUSTER_ID}"
+          use_execution_role_creds
+          assume_role "${PROD_ACCOUNT_ID}" "production"
+          aws sts get-caller-identity
+
+          aws rds create-db-cluster-snapshot \
+            --db-cluster-identifier "${PROD_CLUSTER_ID}" \
+            --db-cluster-snapshot-identifier "${PROD_SNAPSHOT_ID}"
+          wait_rds_cluster_snapshot_available "${PROD_SNAPSHOT_ID}"
+
+          echo "==> Production: copy snapshot with share KMS (${PROD_KMS_KEY_ID}) to ${PROD_SHARE_SNAPSHOT_ID}"
+          aws rds copy-db-cluster-snapshot \
+            --source-db-cluster-snapshot-identifier "${PROD_SNAPSHOT_ID}" \
+            --target-db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ID}" \
+            --kms-key-id "${PROD_KMS_KEY_ID}" \
+            --copy-tags
+          wait_rds_cluster_snapshot_available "${PROD_SHARE_SNAPSHOT_ID}"
+
+          echo "==> Production: share snapshot with staging account ${STAGING_ACCOUNT_ID}"
+          aws rds modify-db-cluster-snapshot-attribute \
+            --db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ID}" \
+            --attribute-name restore \
+            --values-to-add "${STAGING_ACCOUNT_ID}"
+
+          echo "==> Staging: copy shared snapshot and restore"
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          PROD_SHARE_SNAPSHOT_ARN="arn:aws:rds:${AWS_REGION}:${PROD_ACCOUNT_ID}:cluster-snapshot:${PROD_SHARE_SNAPSHOT_ID}"
+
+          aws rds copy-db-cluster-snapshot \
+            --source-db-cluster-snapshot-identifier "${PROD_SHARE_SNAPSHOT_ARN}" \
+            --target-db-cluster-snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
+            --kms-key-id "${STAGING_KMS_KEY_ID}"
+          wait_rds_cluster_snapshot_available "${STAGING_SNAPSHOT_ID}"
+
+          RESTORE_MODE="${FTS_REFRESH_RESTORE_MODE:-main}" # main|scratch
+          KEEP_SCRATCH="${KEEP_SCRATCH:-true}" # only used for scratch runs (defaults to keep)
+
+          MAIN_CLUSTER_ID="${PRODUCT_RESOURCE_NAME}-fts-cluster"
+          SCRATCH_CLUSTER_ID="${MAIN_CLUSTER_ID}-refresh-test"
+          TARGET_CLUSTER_ID="${MAIN_CLUSTER_ID}"
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: scratch restore mode enabled (cluster: ${SCRATCH_CLUSTER_ID})"
+
+            if aws rds describe-db-clusters --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" >/dev/null 2>&1; then
+              echo "ERROR: Scratch cluster ${SCRATCH_CLUSTER_ID} already exists. Delete it (or choose a different name) before re-running." >&2
+              exit 1
+            fi
+
+            echo "==> Staging: restore snapshot ${STAGING_SNAPSHOT_ID} into scratch cluster ${SCRATCH_CLUSTER_ID}"
+            MAIN_SUBNET_GROUP="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBSubnetGroup' --output text)"
+            MAIN_SG_IDS="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].VpcSecurityGroups[].VpcSecurityGroupId' --output text)"
+            MAIN_ENGINE="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].Engine' --output text)"
+            MAIN_CLUSTER_PG="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBClusterParameterGroup' --output text)"
+            MAIN_MEMBER_INSTANCE_ID="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBClusterMembers[0].DBInstanceIdentifier' --output text)"
+            MAIN_INSTANCE_CLASS="$(aws rds describe-db-instances --db-instance-identifier "${MAIN_MEMBER_INSTANCE_ID}" --query 'DBInstances[0].DBInstanceClass' --output text)"
+            MAIN_INSTANCE_PG="$(aws rds describe-db-instances --db-instance-identifier "${MAIN_MEMBER_INSTANCE_ID}" --query 'DBInstances[0].DBParameterGroups[0].DBParameterGroupName' --output text)"
+
+            aws rds restore-db-cluster-from-snapshot \
+              --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" \
+              --snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
+              --engine "${MAIN_ENGINE}" \
+              --db-subnet-group-name "${MAIN_SUBNET_GROUP}" \
+              --vpc-security-group-ids ${MAIN_SG_IDS} \
+              --db-cluster-parameter-group-name "${MAIN_CLUSTER_PG}" \
+              --no-deletion-protection
+
+            wait_rds_cluster_available "${SCRATCH_CLUSTER_ID}"
+
+            SCRATCH_INSTANCE_ID="${SCRATCH_CLUSTER_ID}-0"
+            aws rds create-db-instance \
+              --db-instance-identifier "${SCRATCH_INSTANCE_ID}" \
+              --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" \
+              --engine "${MAIN_ENGINE}" \
+              --db-instance-class "${MAIN_INSTANCE_CLASS}" \
+              --db-parameter-group-name "${MAIN_INSTANCE_PG}"
+
+            wait_rds_instance_available "${SCRATCH_INSTANCE_ID}"
+
+            TARGET_CLUSTER_ID="${SCRATCH_CLUSTER_ID}"
+            echo "==> Staging: scratch restore complete. Target cluster: ${TARGET_CLUSTER_ID}"
+          else
+            DELETE_MAIN_CLUSTER="${FTS_REFRESH_DELETE_MAIN_CLUSTER:-true}" # true|false
+            if [ "${DELETE_MAIN_CLUSTER}" = "true" ]; then
+              echo "==> Staging: delete existing main cluster ${MAIN_CLUSTER_ID} before restore"
+              delete_rds_cluster_and_instances_if_exists "${MAIN_CLUSTER_ID}"
+            else
+              echo "==> Staging: skipping delete of main cluster ${MAIN_CLUSTER_ID} (FTS_REFRESH_DELETE_MAIN_CLUSTER=${DELETE_MAIN_CLUSTER})"
+            fi
+
+            echo "==> Staging: set snapshot identifier param ${STAGING_SSM_PARAM_NAME}=${STAGING_SNAPSHOT_ID}"
+            aws ssm put-parameter \
+              --name "${STAGING_SSM_PARAM_NAME}" \
+              --type "String" \
+              --value "${STAGING_SNAPSHOT_ID}" \
+              --overwrite
+
+            echo "==> Staging: terragrunt apply (database component)"
+            export TG_ENVIRONMENT=staging
+            cd "${CODEBUILD_SRC_DIR}/terragrunt/components/service/database"
+            terragrunt apply -non-interactive -- -auto-approve
+          fi
+
+          echo "==> Staging: reset DB users used by CloudBeaver/tools"
+
+          wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
+
+          STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
+
+          MASTER_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-master-password"
+          TOOL_USERS_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-tool-user-passwords"
+
+          MASTER_SECRET_JSON="$(aws secretsmanager get-secret-value --secret-id "${MASTER_SECRET_NAME}" --query SecretString --output text)"
+          MASTER_USERNAME="$(jq -r '.username' <<<"${MASTER_SECRET_JSON}")"
+          MASTER_PASSWORD="$(jq -r '.password' <<<"${MASTER_SECRET_JSON}")"
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: set master password on ${TARGET_CLUSTER_ID} to staging value"
+
+            aws rds modify-db-cluster \
+              --db-cluster-identifier "${TARGET_CLUSTER_ID}" \
+              --master-user-password "${MASTER_PASSWORD}" \
+              --apply-immediately
+
+            wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
+
+            STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
+
+            echo "Scratch cluster endpoint: ${STAGING_DB_ENDPOINT}"
+
+            if [ "${KEEP_SCRATCH}" != "true" ]; then
+              echo "NOTE: KEEP_SCRATCH is not true, but cleanup is not implemented yet; leaving scratch cluster in place."
+
+            fi
+          fi
+
+          TOOL_USERS_SECRET_JSON="$(aws secretsmanager get-secret-value --secret-id "${TOOL_USERS_SECRET_NAME}" --query SecretString --output text)"
+          CB_RO_PW="$(jq -r '.cb_ro_fts' <<<"${TOOL_USERS_SECRET_JSON}")"
+          CB_DA_PW="$(jq -r '.cb_da_fts' <<<"${TOOL_USERS_SECRET_JSON}")"
+
+          FTS_APP_SECRETS_NAME="${PRODUCT_RESOURCE_NAME}-fts/secrets"
+          FTS_APP_SECRETS_JSON="$(aws secretsmanager get-secret-value --secret-id "${FTS_APP_SECRETS_NAME}" --query SecretString --output text)"
+          MIGRATOR_PW="$(jq -er '.RUN_MIGRATOR_TOKEN // empty' <<<"${FTS_APP_SECRETS_JSON}" 2>/dev/null || true)"
+
+          if [ -z "${CB_RO_PW}" ] || [ "${CB_RO_PW}" = "null" ]; then
+            echo "ERROR: Missing key cb_ro_fts in Secrets Manager secret ${TOOL_USERS_SECRET_NAME}" >&2
+            exit 1
+          fi
+
+          if [ -z "${CB_DA_PW}" ] || [ "${CB_DA_PW}" = "null" ]; then
+            echo "ERROR: Missing key cb_da_fts in Secrets Manager secret ${TOOL_USERS_SECRET_NAME}" >&2
+            exit 1
+          fi
+
+          if [ -z "${MIGRATOR_PW}" ] || [ "${MIGRATOR_PW}" = "null" ]; then
+            echo "ERROR: Missing key RUN_MIGRATOR_TOKEN in Secrets Manager secret ${FTS_APP_SECRETS_NAME}" >&2
+            echo "Secret keys (no values):" >&2
+            jq -r 'keys[]' <<<"${FTS_APP_SECRETS_JSON}" >&2 || true
+            echo "Keys matching /MIGRATOR/ (no values):" >&2
+            jq -r 'keys[] | select(test(\"MIGRATOR\"))' <<<"${FTS_APP_SECRETS_JSON}" >&2 || true
+            exit 1
+          fi
+
+          sql_escape() {
+            local s="$1"
+            s="${s//\'/\'\'}"
+            printf '%s' "${s}"
+          }
+
+          ensure_mysql_client() {
+            MYSQL_CLI=""
+            MYSQL_SSL_ARGS=()
+
+            if command -v mysql >/dev/null 2>&1; then
+              # On Amazon Linux, the `mysql` command is often provided by MariaDB packages.
+              # `--ssl-mode=REQUIRED` is not supported by MariaDB's client.
+              if mysql --version 2>/dev/null | grep -qi mariadb; then
+                if command -v mariadb >/dev/null 2>&1; then
+                  MYSQL_CLI="mariadb"
+                  MYSQL_SSL_ARGS=(--ssl)
+                else
+                  MYSQL_CLI="mysql"
+                  MYSQL_SSL_ARGS=(--ssl)
+                fi
+              else
+                MYSQL_CLI="mysql"
+                MYSQL_SSL_ARGS=(--ssl-mode=REQUIRED)
+              fi
+              return 0
+            fi
+
+            if command -v mariadb >/dev/null 2>&1; then
+              MYSQL_CLI="mariadb"
+              MYSQL_SSL_ARGS=(--ssl)
+              return 0
+            fi
+
+            echo "==> Installing MySQL client (mysql/mariadb) in CodeBuild image"
+            if command -v dnf >/dev/null 2>&1; then
+              dnf -y install mariadb105 || dnf -y install mariadb || dnf -y install mysql || dnf -y install community-mysql
+            elif command -v yum >/dev/null 2>&1; then
+              yum -y install mariadb || yum -y install mysql
+            elif command -v apt-get >/dev/null 2>&1; then
+              export DEBIAN_FRONTEND=noninteractive
+              apt-get update -y
+              apt-get install -y default-mysql-client || apt-get install -y mariadb-client || apt-get install -y mysql-client
+            elif command -v apk >/dev/null 2>&1; then
+              apk add --no-cache mariadb-client || apk add --no-cache mysql-client
+            else
+              echo "ERROR: No supported package manager found to install mysql client." >&2
+              return 1
+            fi
+
+            if command -v mysql >/dev/null 2>&1; then
+              if mysql --version 2>/dev/null | grep -qi mariadb; then
+                if command -v mariadb >/dev/null 2>&1; then
+                  MYSQL_CLI="mariadb"
+                  MYSQL_SSL_ARGS=(--ssl)
+                else
+                  MYSQL_CLI="mysql"
+                  MYSQL_SSL_ARGS=(--ssl)
+                fi
+              else
+                MYSQL_CLI="mysql"
+                MYSQL_SSL_ARGS=(--ssl-mode=REQUIRED)
+              fi
+              return 0
+            fi
+
+            if command -v mariadb >/dev/null 2>&1; then
+              MYSQL_CLI="mariadb"
+              MYSQL_SSL_ARGS=(--ssl)
+              return 0
+            fi
+
+            echo "ERROR: Failed to install a mysql client (mysql/mariadb) in the CodeBuild image." >&2
+            return 1
+          }
+
+          umask 077
+
+          RESET_SQL="/tmp/fts_post_restore_reset_users.sql"
+          : > "${RESET_SQL}"
+          printf "ALTER USER 'cb_ro_fts'@'%%' IDENTIFIED BY '%s';\n" "$(sql_escape "${CB_RO_PW}")" >> "${RESET_SQL}"
+          printf "ALTER USER 'cb_da_fts'@'%%' IDENTIFIED BY '%s';\n" "$(sql_escape "${CB_DA_PW}")" >> "${RESET_SQL}"
+          printf "GRANT CREATE USER, ALTER USER ON *.* TO 'cb_da_fts'@'%%';\n" >> "${RESET_SQL}"
+          printf "GRANT SELECT ON mysql.* TO 'cb_da_fts'@'%%';\n" >> "${RESET_SQL}"
+          printf "ALTER USER 'cdp_sirsi_fts_cluster_migrator'@'%%' IDENTIFIED BY '%s';\n" "$(sql_escape "${MIGRATOR_PW}")" >> "${RESET_SQL}"
+          printf "FLUSH PRIVILEGES;\n" >> "${RESET_SQL}"
+
+          ensure_mysql_client
+          XTRACE_WAS_ON="false"
+          if [[ "${-}" == *x* ]]; then
+            XTRACE_WAS_ON="true"
+            set +x
+          fi
+          if ! MYSQL_PWD="${MASTER_PASSWORD}" "${MYSQL_CLI}" \
+              "${MYSQL_SSL_ARGS[@]}" \
+              -h "${STAGING_DB_ENDPOINT}" \
+              -u "${MASTER_USERNAME}" \
+              < "${RESET_SQL}"; then
+            if [ "${MYSQL_SSL_ARGS[*]}" = "--ssl-mode=REQUIRED" ]; then
+              echo "WARN: mysql client does not support --ssl-mode; retrying with --ssl" >&2
+              MYSQL_SSL_ARGS=(--ssl)
+              MYSQL_PWD="${MASTER_PASSWORD}" "${MYSQL_CLI}" \
+                "${MYSQL_SSL_ARGS[@]}" \
+                -h "${STAGING_DB_ENDPOINT}" \
+                -u "${MASTER_USERNAME}" \
+                < "${RESET_SQL}"
+            else
+              exit 1
+            fi
+          fi
+          if [ "${XTRACE_WAS_ON}" = "true" ]; then
+            set -x
+          fi
+
+          rm -f "${RESET_SQL}"
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: scratch mode - skipping migrations and ECS redeploys"
+            echo "Scratch cluster id: ${TARGET_CLUSTER_ID}"
+            echo "Scratch cluster endpoint: ${STAGING_DB_ENDPOINT}"
+            exit 0
+          fi
+
+          echo "==> Staging: trigger migrations and force ECS redeploys"
+          STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${STAGING_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-migrations";
+          aws stepfunctions start-execution --state-machine-arn "${STEP_FUNCTION_ARN}" || true;
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
+
+          STEP_FUNCTION_ARN="arn:aws:states:${AWS_REGION}:${STAGING_ACCOUNT_ID}:stateMachine:cdp-sirsi-run-fts-findtender-migrations";
+          aws stepfunctions start-execution --state-machine-arn "${STEP_FUNCTION_ARN}" || true;
+          echo "Started Step Function: ${STEP_FUNCTION_ARN}";
+
+            force_redeploy() {
+              local cluster="$1";
+              local service="$2";
+              local output
+              if output="$(aws ecs update-service --cluster "${cluster}" --service "${service}" --force-new-deployment --output text 2>&1)"; then
+                echo "Forced redeploy: ${cluster}/${service}"
+                return 0
+              fi
+
+              echo "WARN: Failed to force redeploy ${cluster}/${service}" >&2
+              echo "${output}" >&2
+              return 0
+            }
+
+          PHP_CLUSTER="${PRODUCT_RESOURCE_NAME}-php"
+          FTS_CLUSTER="${PRODUCT_RESOURCE_NAME}-fts"
+
+          for svc in \
+            fts \
+            fts-healthcheck \
+            fts-scheduler \
+            fts-job-scheduler \
+            fts-notice-publish-worker \
+            fts-notice-render-worker \
+            fts-pdf-render-service
+          do
+            force_redeploy "${PHP_CLUSTER}" "${svc}" || true
+          done
+
+          for svc in \
+            fts-app \
+            fts-search-api \
+            fts-search-indexer \
+            fts-user-api \
+            fts-notice-publish-worker-dotnet \
+            fts-ocds-exporter
+          do
+            force_redeploy "${FTS_CLUSTER}" "${svc}" || true
+          done

@@ -173,12 +173,4 @@ resource "aws_wafv2_web_acl_logging_configuration" "fts" {
   log_destination_configs = [aws_cloudwatch_log_group.waf_fts.arn]
   resource_arn            = aws_wafv2_web_acl.fts[0].arn
 
-  dynamic "redacted_fields" {
-    for_each = toset(local.waf_log_redacted_header_names)
-    content {
-      single_header {
-        name = redacted_fields.value
-      }
-    }
-  }
 }

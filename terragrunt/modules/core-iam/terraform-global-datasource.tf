@@ -142,6 +142,7 @@ data "aws_iam_policy_document" "terraform_global" {
       "logs:DescribeResourcePolicies",
       "logs:GetLogDelivery",
       "logs:ListLogDeliveries",
+      "logs:ListTagsForResource",
       "logs:PutResourcePolicy",
       "logs:UpdateLogDelivery",
     ]
@@ -155,15 +156,23 @@ data "aws_iam_policy_document" "terraform_global" {
   statement {
     actions = [
       "rds:AddTagsToResource",
+      "rds:CopyDBClusterSnapshot",
+      "rds:CreateDBClusterSnapshot",
       "rds:CreateDBInstanceReadReplica",
+      "rds:DescribeDBClusters",
+      "rds:DescribeDBClusterSnapshots",
       "rds:DescribeDBInstances",
+      "rds:ModifyDBClusterSnapshotAttribute",
       "rds:RemoveTagsFromResource",
       "rds:RestoreDBClusterFromSnapshot",
     ]
     effect = "Allow"
     resources = [
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:db:*",
+      "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster:*",
       "arn:aws:rds:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:cluster-snapshot:*",
+      # Allow staging to copy shared snapshots from production (source ARN is in the production account).
+      "arn:aws:rds:${data.aws_region.current.region}:${var.account_ids.production}:cluster-snapshot:${local.name_prefix}-*",
     ]
     sid = "ManageRDS"
   }

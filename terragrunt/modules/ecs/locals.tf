@@ -2,6 +2,7 @@ locals {
 
   aspcore_environment          = "Aws${title(var.environment)}"
   cognito_enabled              = contains(["development", "staging"], var.environment)
+  fts_main_cluster_id          = "${var.product.resource_name}-fts-cluster"
   fts_cluster_id               = aws_ecs_cluster.fts.id
   fts_cluster_name             = aws_ecs_cluster.fts.name
   fts_ecs_listener_arn         = aws_lb_listener.ecs_fts.arn
@@ -24,8 +25,6 @@ locals {
   fts_host_headers = distinct(compact(concat(["${var.service_configs.fts.name}.${var.public_domain}"], var.fts_extra_host_headers)))
 
   dynamic_contracting_authority_enabled = contains(["development", "staging"], var.environment)
-  procurement_transfer_enabled          = contains(["development"], var.environment)
-  features_procurement_transfer         = contains(["development"], var.environment)
 
   db_ev_password              = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn            = var.db_ev_cluster_credentials_arn
