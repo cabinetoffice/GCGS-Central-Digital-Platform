@@ -38,11 +38,6 @@ locals {
     for ip in local.waf_blocked_ip_list_raw : ip if !contains(local.waf_protected_ips, ip)
   ]
 
-  waf_rule_sets_priority_blockers = {
-    AWSManagedRulesAmazonIpReputationList : 4
-    AWSManagedRulesKnownBadInputsRuleSet : 2
-  }
-
   rate_limit_count                      = var.environment == "development" ? 120 : 12
   rate_limit_window_seconds             = 120
   rate_limit_global_count               = var.environment == "development" ? 1200 : 240
@@ -52,9 +47,40 @@ locals {
 
   waf_php_old_chrome_notice_challenge_enabled = contains(["development", "staging"], var.environment)
 
+  waf_supplier_information_zone = var.environment == "production" ? "supplier-information.find-tender.service.gov.uk" : "${var.environment}.supplier-information.find-tender.service.gov.uk"
+
+  waf_php_allowed_host_headers = var.environment == "production" ? [
+    "www.find-tender.service.gov.uk",
+    "find-tender.service.gov.uk",
+    "www.contractsfinder.service.gov.uk",
+    "contractsfinder.service.gov.uk",
+    "fts.supplier-information.find-tender.service.gov.uk",
+    "cfs.supplier-information.find-tender.service.gov.uk",
+    ] : distinct([
+      local.hosted_zones.fts[var.environment],
+      local.hosted_zones.cfs[var.environment],
+      "fts.${local.waf_supplier_information_zone}",
+      "cfs.${local.waf_supplier_information_zone}",
+  ])
+
+  waf_rule_sets_priority_blockers = {
+    AWSManagedRulesAmazonIpReputationList : 4
+    AWSManagedRulesKnownBadInputsRuleSet : 2
+  }
+
   waf_rule_sets_priority_observers = {
     AWSManagedRulesSQLiRuleSet : 6
     AWSManagedRulesAnonymousIpList : 8
+  }
+
+  waf_php_rule_sets_priority_blockers = {
+    AWSManagedRulesAmazonIpReputationList : 21
+    AWSManagedRulesKnownBadInputsRuleSet : 20
+  }
+
+  waf_php_rule_sets_priority_observers = {
+    AWSManagedRulesSQLiRuleSet : 22
+    AWSManagedRulesAnonymousIpList : 23
   }
 
   waf_php_notice_paths_all = join(
