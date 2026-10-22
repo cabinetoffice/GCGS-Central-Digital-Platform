@@ -48,6 +48,51 @@ resource "aws_wafv2_web_acl" "php" {
     }
   }
 
+  rule {
+    name     = "Block-Unknown-Host-Header"
+    priority = 2
+
+    action {
+      count {}
+    }
+
+    statement {
+      not_statement {
+        statement {
+          or_statement {
+            dynamic "statement" {
+              for_each = local.waf_php_allowed_host_headers
+
+              content {
+                byte_match_statement {
+                  search_string         = statement.value
+                  positional_constraint = "EXACTLY"
+
+                  field_to_match {
+                    single_header {
+                      name = "host"
+                    }
+                  }
+
+                  text_transformation {
+                    priority = 0
+                    type     = "LOWERCASE"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "BlockUnknownHostHeader"
+      sampled_requests_enabled   = true
+    }
+  }
+
   dynamic "rule" {
     for_each = length(local.waf_blocked_ip_list) > 0 ? [1] : []
 
@@ -406,7 +451,7 @@ resource "aws_wafv2_web_acl" "php" {
   }
 
   dynamic "rule" {
-    for_each = local.waf_rule_sets_priority_blockers
+    for_each = local.waf_php_rule_sets_priority_blockers
     content {
       name     = "${local.name_prefix_php}-${rule.key}"
       priority = rule.value
@@ -441,7 +486,7 @@ resource "aws_wafv2_web_acl" "php" {
   }
 
   dynamic "rule" {
-    for_each = local.waf_rule_sets_priority_observers
+    for_each = local.waf_php_rule_sets_priority_observers
     content {
       name     = "${local.name_prefix_php}-${rule.key}"
       priority = rule.value
