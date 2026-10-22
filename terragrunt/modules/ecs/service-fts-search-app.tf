@@ -13,7 +13,7 @@ module "ecs_service_fts_app" {
         lg_name                               = aws_cloudwatch_log_group.tasks[var.service_configs.fts_app.name].name
         memory                                = var.service_configs.fts_app.memory
         name                                  = var.service_configs.fts_app.name
-        procurement_transfer_enabled          = local.procurement_transfer_enabled
+        features_procurement_transfer         = local.features_procurement_transfer
         public_service_urls                   = local.public_service_urls
         redis_auth_token_arn                  = var.redis_auth_token_arn
         redis_port                            = var.redis_port

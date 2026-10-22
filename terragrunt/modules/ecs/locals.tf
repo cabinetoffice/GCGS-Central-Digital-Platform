@@ -24,9 +24,8 @@ locals {
   fts_host_headers = distinct(compact(concat(["${var.service_configs.fts.name}.${var.public_domain}"], var.fts_extra_host_headers)))
 
   dynamic_contracting_authority_enabled = contains(["development", "staging"], var.environment)
-  # Drives both the PHP PROCUREMENT_TRANSFER_ENABLED button and fts-app Features__ProcurementTransfer.
-  # Local docker is configured separately: .env for PHP, appsettings.Development.json for .NET.
   procurement_transfer_enabled          = contains(["development"], var.environment)
+  features_procurement_transfer         = contains(["development"], var.environment)
 
   db_ev_password              = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn            = var.db_ev_cluster_credentials_arn
