@@ -212,20 +212,26 @@ locals {
   fts_dotnet_job_scheduler = merge(
     local.fts_dotnet_common,
     {
-      db_address                      = var.db_find_a_tender_cluster_address
-      db_name                         = var.db_find_a_tender_cluster_name
-      db_password                     = local.db_find_a_tender_password
-      db_port                         = 5432
-      db_username                     = local.db_find_a_tender_username
-      fts_legacy_app_base_url         = "https://${local.fts_site_domains[var.environment]}"
-      job_refresh_interval_in_minutes = 5
-      onelogin_authority              = local.one_login.credential_locations.authority
-      onelogin_client_id              = local.one_login.credential_locations.client_id
-      onelogin_private_key            = local.one_login.credential_locations.private_key
-      opensearch_default_index        = "fts_procurements"
-      opensearch_endpoint             = "https://${var.opensearch_endpoint}"
-      pg_command_timeout              = 10800
-      search_api_base_url             = local.use_internal_service_urls ? local.internal_service_urls["fts-search-api"] : local.public_service_urls["fts-search-api"]
+      db_address                               = var.db_find_a_tender_cluster_address
+      db_mysql_address                         = local.fts_db_address
+      db_mysql_name                            = var.db_fts_cluster_name
+      db_mysql_password                        = local.db_fts_password
+      db_mysql_port                            = 3306
+      db_mysql_username                        = local.db_fts_username
+      db_name                                  = var.db_find_a_tender_cluster_name
+      db_password                              = local.db_find_a_tender_password
+      db_port                                  = 5432
+      db_username                              = local.db_find_a_tender_username
+      fts_legacy_app_base_url                  = "https://${local.fts_site_domains[var.environment]}"
+      job_refresh_interval_in_minutes          = 5
+      onelogin_authority                       = local.one_login.credential_locations.authority
+      onelogin_client_id                       = local.one_login.credential_locations.client_id
+      onelogin_private_key                     = local.one_login.credential_locations.private_key
+      opensearch_default_index                 = "fts_procurements"
+      opensearch_endpoint                      = "https://${var.opensearch_endpoint}"
+      pg_command_timeout                       = 10800
+      procurement_transfer_policy_go_live_date = local.procurement_transfer_policy_go_live_date
+      search_api_base_url                      = local.use_internal_service_urls ? local.internal_service_urls["fts-search-api"] : local.public_service_urls["fts-search-api"]
     }
   )
 
