@@ -3,7 +3,7 @@ data "aws_iam_policy_document" "telemetry_assume" {
     actions = ["sts:AssumeRole"]
     principals {
       type        = "AWS"
-      identifiers = [aws_iam_role.ecs_task.arn]
+      identifiers = [aws_iam_role.ecs_task_grafana.arn]
     }
   }
 }

@@ -5,6 +5,13 @@ resource "aws_iam_role" "ecs_task" {
   tags = var.tags
 }
 
+resource "aws_iam_role" "ecs_task_grafana" {
+  name               = "${local.name_prefix}-ecs-task-grafana"
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
+
+  tags = var.tags
+}
+
 resource "aws_iam_role" "ecs_task_exec" {
   name               = "${local.name_prefix}-ecs-task-exec"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json

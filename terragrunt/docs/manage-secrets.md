@@ -215,6 +215,27 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-govuknotify-suppor
 These secrets are required for Grafana provisioning and alerting. Make sure you
 target the correct environment account before updating secrets.
 
+### Update Grafana admin credentials
+
+Grafana reads admin credentials from AWS Secrets Manager secret:
+`cdp-sirsi-grafana-credentials` (JSON with `ADMIN_USERNAME` and `ADMIN_PASSWORD`).
+
+After updating the secret, re-deploy the Grafana ECS service (force new
+deployment) so new tasks pick up the rotated secret value.
+
+```shell
+GRAFANA_ADMIN_USERNAME="${TG_ENVIRONMENT}-grafana-admin"
+GRAFANA_ADMIN_PASSWORD="REPLACE_ME"
+
+ave aws secretsmanager create-secret \
+  --name cdp-sirsi-grafana-credentials \
+  --description "Grafana admin credentials" \
+  --secret-string "{\"ADMIN_USERNAME\":\"${GRAFANA_ADMIN_USERNAME}\",\"ADMIN_PASSWORD\":\"${GRAFANA_ADMIN_PASSWORD}\"}" \
+  || ave aws secretsmanager put-secret-value \
+    --secret-id cdp-sirsi-grafana-credentials \
+    --secret-string "{\"ADMIN_USERNAME\":\"${GRAFANA_ADMIN_USERNAME}\",\"ADMIN_PASSWORD\":\"${GRAFANA_ADMIN_PASSWORD}\"}"
+```
+
 ### Update Grafana API token
 
 ```shell

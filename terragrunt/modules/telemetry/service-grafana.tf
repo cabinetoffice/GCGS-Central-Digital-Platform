@@ -4,32 +4,32 @@ module "ecs_service_grafana" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.grafana_config.name}.json.tftpl",
     {
-      account_id            = data.aws_caller_identity.current.account_id
-      cdp_sirsi_environment = "${local.name_prefix}-${var.environment}"
-      cpu                   = var.grafana_config.cpu
-      gf_admin_password     = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
-      gf_admin_user         = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
-      grafana_api_token     = "${data.aws_secretsmanager_secret.grafana_api_token.arn}:API_TOKEN::"
-      grafana_db_address    = module.grafana_db.db_address
-      grafana_db_name       = module.grafana_db.db_name
-      grafana_db_password   = "${module.grafana_db.db_credentials_arn}:password::"
-      grafana_db_username   = "${module.grafana_db.db_credentials_arn}:username::"
-      grafana_domain        = "grafana.${var.public_domain}"
-      grafana_entra_id_arn  = var.grafana_azuread_enabled ? data.aws_secretsmanager_secret.grafana_entra_id[0].arn : ""
-      grafana_root_url      = "https://grafana.${var.public_domain}/"
-      grafana_azuread_enabled = var.grafana_azuread_enabled ? "true" : "false"
-      grafana_azuread_scopes = "openid email profile"
-      grafana_azuread_allowed_domains = local.grafana_allowed_domains
+      account_id                               = data.aws_caller_identity.current.account_id
+      cdp_sirsi_environment                    = "${local.name_prefix}-${var.environment}"
+      cpu                                      = var.grafana_config.cpu
+      gf_admin_password                        = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_PASSWORD::"
+      gf_admin_user                            = "${aws_secretsmanager_secret.grafana_credentials.arn}:ADMIN_USERNAME::"
+      grafana_api_token                        = "${data.aws_secretsmanager_secret.grafana_api_token.arn}:API_TOKEN::"
+      grafana_db_address                       = module.grafana_db.db_address
+      grafana_db_name                          = module.grafana_db.db_name
+      grafana_db_password                      = "${module.grafana_db.db_credentials_arn}:password::"
+      grafana_db_username                      = "${module.grafana_db.db_credentials_arn}:username::"
+      grafana_domain                           = "grafana.${var.public_domain}"
+      grafana_entra_id_arn                     = var.grafana_azuread_enabled ? data.aws_secretsmanager_secret.grafana_entra_id[0].arn : ""
+      grafana_root_url                         = "https://grafana.${var.public_domain}/"
+      grafana_azuread_enabled                  = var.grafana_azuread_enabled ? "true" : "false"
+      grafana_azuread_scopes                   = "openid email profile"
+      grafana_azuread_allowed_domains          = local.grafana_allowed_domains
       grafana_azuread_role_attribute_path_json = local.grafana_admin_role_attribute_path_json
-      teams_webhook_url     = "${data.aws_secretsmanager_secret.grafana_alerting.arn}:TEAMS_WEBHOOK_URL::"
-      image                 = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.grafana_config.name}:${local.grafana_image_tag}"
-      lg_name               = aws_cloudwatch_log_group.grafana.name
-      lg_prefix             = "telemetry"
-      lg_region             = data.aws_region.current.region
-      memory                = var.grafana_config.memory
-      name                  = var.grafana_config.name
-      role_telemetry_arn    = var.role_telemetry_arn
-      service_port          = var.grafana_config.port
+      teams_webhook_url                        = "${data.aws_secretsmanager_secret.grafana_alerting.arn}:TEAMS_WEBHOOK_URL::"
+      image                                    = "${local.orchestrator_account_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com/cdp-${var.grafana_config.name}:${local.grafana_image_tag}"
+      lg_name                                  = aws_cloudwatch_log_group.grafana.name
+      lg_prefix                                = "telemetry"
+      lg_region                                = data.aws_region.current.region
+      memory                                   = var.grafana_config.memory
+      name                                     = var.grafana_config.name
+      role_telemetry_arn                       = var.role_telemetry_arn
+      service_port                             = var.grafana_config.port
     }
   )
 
@@ -45,12 +45,12 @@ module "ecs_service_grafana" {
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
   public_domain          = var.public_domain
-  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_arn      = var.role_ecs_task_grafana_arn
   role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   service_port           = var.grafana_config.port
   tags                   = var.tags
   user_pool_arn          = null
   user_pool_client_id    = null
   user_pool_domain       = null
-  vpc_id = var.vpc_id
+  vpc_id                 = var.vpc_id
 }

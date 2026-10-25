@@ -111,8 +111,8 @@ variable "public_hosted_zone_id" {
   type        = string
 }
 
-variable "role_ecs_task_arn" {
-  description = "Task IAM role ARN"
+variable "role_ecs_task_grafana_arn" {
+  description = "Grafana ECS task IAM role ARN (used only by Grafana tasks)"
   type        = string
 }
 
@@ -126,8 +126,8 @@ variable "role_ecs_task_exec_name" {
   type        = string
 }
 
-variable "role_ecs_task_name" {
-  description = "Task IAM role Name"
+variable "role_ecs_task_grafana_name" {
+  description = "Grafana ECS task IAM role name (used only by Grafana tasks)"
   type        = string
 }
 
