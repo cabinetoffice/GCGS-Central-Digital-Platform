@@ -6,7 +6,7 @@ resource "aws_iam_policy" "ecs_assume_telemetry" {
 
 resource "aws_iam_role_policy_attachment" "ecs_assume_telemetry" {
   policy_arn = aws_iam_policy.ecs_assume_telemetry.arn
-  role       = var.role_ecs_task_name
+  role       = var.role_ecs_task_grafana_name
 }
 
 resource "aws_iam_policy" "grafana_db_kms_decrypt" {
@@ -31,9 +31,4 @@ resource "aws_iam_policy" "grafana_generic" {
 resource "aws_iam_role_policy_attachment" "grafana_generic" {
   policy_arn = aws_iam_policy.grafana_generic.arn
   role       = var.role_telemetry_name
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_task_grafana_generic" {
-  policy_arn = aws_iam_policy.grafana_generic.arn
-  role       = var.role_ecs_task_name
 }

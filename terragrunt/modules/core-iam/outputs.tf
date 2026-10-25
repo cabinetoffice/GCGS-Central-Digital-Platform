@@ -66,6 +66,14 @@ output "ecs_task_arn" {
   value = aws_iam_role.ecs_task.arn
 }
 
+output "ecs_task_grafana_arn" {
+  value = aws_iam_role.ecs_task_grafana.arn
+}
+
+output "ecs_task_grafana_name" {
+  value = aws_iam_role.ecs_task_grafana.name
+}
+
 output "ecs_task_exec_arn" {
   value = aws_iam_role.ecs_task_exec.arn
 }

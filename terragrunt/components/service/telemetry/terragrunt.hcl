@@ -23,12 +23,12 @@ locals {
 dependency core_iam {
   config_path = "../../core/iam"
   mock_outputs = {
-    ecs_task_arn       = "mock"
-    ecs_task_name      = "mock"
-    ecs_task_exec_arn  = "mock"
-    ecs_task_exec_name = "mock"
-    telemetry_arn      = "mock"
-    telemetry_name     = "mock"
+    ecs_task_exec_arn       = "mock"
+    ecs_task_exec_name      = "mock"
+    ecs_task_grafana_arn    = "mock"
+    ecs_task_grafana_name   = "mock"
+    telemetry_arn           = "mock"
+    telemetry_name          = "mock"
   }
 }
 
@@ -77,13 +77,13 @@ inputs = {
   service_configs              = local.global_vars.locals.service_configs
   tags                         = local.tags
 
-  role_ecs_task_arn       = dependency.core_iam.outputs.ecs_task_arn
-  role_ecs_task_name      = dependency.core_iam.outputs.ecs_task_name
-  role_ecs_task_exec_arn  = dependency.core_iam.outputs.ecs_task_exec_arn
-  role_ecs_task_exec_name = dependency.core_iam.outputs.ecs_task_exec_name
-  role_terraform_arn      = dependency.core_iam.outputs.terraform_arn
-  role_telemetry_arn      = dependency.core_iam.outputs.telemetry_arn
-  role_telemetry_name     = dependency.core_iam.outputs.telemetry_name
+  role_ecs_task_exec_arn     = dependency.core_iam.outputs.ecs_task_exec_arn
+  role_ecs_task_exec_name    = dependency.core_iam.outputs.ecs_task_exec_name
+  role_ecs_task_grafana_arn  = dependency.core_iam.outputs.ecs_task_grafana_arn
+  role_ecs_task_grafana_name = dependency.core_iam.outputs.ecs_task_grafana_name
+  role_terraform_arn         = dependency.core_iam.outputs.terraform_arn
+  role_telemetry_arn         = dependency.core_iam.outputs.telemetry_arn
+  role_telemetry_name        = dependency.core_iam.outputs.telemetry_name
 
   private_subnet_ids    = dependency.core_networking.outputs.private_subnet_ids
   public_domain         = dependency.core_networking.outputs.public_domain
