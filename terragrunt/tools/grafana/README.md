@@ -7,6 +7,11 @@ Primary docs:
 - `terragrunt/docs/grafana.md` (build/deploy + Terraform config)
 - `terragrunt/docs/manage-secrets.md` (secrets setup)
 
+## Admin credentials secret
+
+Grafana reads its admin credentials from AWS Secrets Manager secret
+`cdp-sirsi-grafana-credentials` (managed/rotated manually per environment).
+
 ## Entra ID SSO secret
 
 Grafana SSO expects an AWS Secrets Manager secret named:
