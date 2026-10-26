@@ -11,15 +11,20 @@ sync_admin_password_from_env() {
 
   local -a cli
   if command -v grafana >/dev/null 2>&1; then
-    cli=(grafana cli --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
+    cli=("$(command -v grafana)" cli --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
   elif command -v grafana-cli >/dev/null 2>&1; then
-    cli=(grafana-cli --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
+    cli=("$(command -v grafana-cli)" --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
+  elif [[ -x "${GRAFANA_HOME}/bin/grafana" ]]; then
+    cli=("${GRAFANA_HOME}/bin/grafana" cli --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
+  elif [[ -x "${GRAFANA_HOME}/bin/grafana-cli" ]]; then
+    cli=("${GRAFANA_HOME}/bin/grafana-cli" --homepath "${GRAFANA_HOME}" --config "${GRAFANA_CONFIG}")
   else
     echo "WARN: grafana CLI not found; cannot sync admin password from Secrets Manager env var." >&2
     return 0
   fi
 
   echo "Syncing Grafana admin password from ECS secret (GF_SECURITY_ADMIN_PASSWORD)..." >&2
+  echo "Using CLI: ${cli[*]}" >&2
 
   local attempts="${GRAFANA_ADMIN_PASSWORD_SYNC_ATTEMPTS:-20}"
   local sleep_seconds="${GRAFANA_ADMIN_PASSWORD_SYNC_SLEEP_SECONDS:-5}"

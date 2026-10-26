@@ -7,6 +7,30 @@ Primary docs:
 - `terragrunt/docs/grafana.md` (build/deploy + Terraform config)
 - `terragrunt/docs/manage-secrets.md` (secrets setup)
 
+## Build + push image
+
+From `terragrunt/tools/grafana/`:
+
+```sh
+docker compose build
+```
+
+Push `:latest` to ECR (orchestrator account):
+
+```sh
+aws-switch-to-cdp-sirsi-orchestrator-goaco-terraform
+ACCOUNT_ID=$(ave aws sts get-caller-identity | jq -r '.Account')
+ave aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com
+docker tag cabinetoffice/cdp-grafana:latest ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
+docker push ${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/cdp-grafana:latest
+```
+
+Then force a re-deploy in the target environment account:
+
+```sh
+ave aws ecs update-service --cluster cdp-sirsi --service grafana --force-new-deployment | jq -r '.'
+```
+
 ## Admin credentials secret
 
 Grafana reads its admin credentials from AWS Secrets Manager secret
