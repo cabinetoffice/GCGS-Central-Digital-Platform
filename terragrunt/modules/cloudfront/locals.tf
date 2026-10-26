@@ -39,5 +39,6 @@ locals {
   waf_log_redacted_header_names = [
     "cdp-api-key",
     "authorization",
+    "sirsi-logout-api-key",
   ]
 }
