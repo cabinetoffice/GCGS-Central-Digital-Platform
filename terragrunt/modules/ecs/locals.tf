@@ -26,6 +26,7 @@ locals {
   dynamic_contracting_authority_enabled    = contains(["development", "staging"], var.environment)
   procurement_transfer_enabled             = contains(["development", "staging"], var.environment)
   features_procurement_transfer            = contains(["development", "staging"], var.environment)
+  uk6_direct_award_justification           = contains(["development", "staging", "integration"], var.environment)
   procurement_transfer_policy_go_live_date = contains(["development", "staging"], var.environment) ? "2026-10-23" : "2026-11-01"
 
   db_ev_password              = "${local.db_ev_secret_arn}:password::"

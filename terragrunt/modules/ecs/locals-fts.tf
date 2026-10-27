@@ -118,6 +118,7 @@ locals {
     notice_render_cache_enabled           = true
     notice_render_worker_enabled          = true
     procurement_transfer_enabled          = local.procurement_transfer_enabled
+    uk6_direct_award_justification        = local.uk6_direct_award_justification
     render_cache_purge_on_migrate         = contains(["development", "staging", "integration"], var.environment)
     session_name_default                  = "SRSI_FT_AUTH"
     site_domain                           = local.fts_site_domains[var.environment]
@@ -381,6 +382,7 @@ locals {
       notice_render_queue_url         = var.queue_fts_notice_render_url
       sirsi_organisation_api_baseurl  = local.use_internal_service_urls ? local.internal_service_urls["organisation"] : local.public_service_urls["organisation"]
       site_url                        = "https://${local.fts_site_domains[var.environment]}"
+      uk6_direct_award_justification  = local.uk6_direct_award_justification
     }
   )
 
