@@ -48,7 +48,8 @@ locals {
 
   waf_php_old_chrome_notice_challenge_enabled = contains(["development", "staging"], var.environment)
 
-  waf_supplier_information_zone = var.environment == "production" ? "supplier-information.find-tender.service.gov.uk" : "${var.environment}.supplier-information.find-tender.service.gov.uk"
+  waf_supplier_information_env_prefix = var.environment == "development" ? "dev" : var.environment
+  waf_supplier_information_zone       = var.environment == "production" ? "supplier-information.find-tender.service.gov.uk" : "${local.waf_supplier_information_env_prefix}.supplier-information.find-tender.service.gov.uk"
 
   waf_php_allowed_host_headers = var.environment == "production" ? [
     "www.find-tender.service.gov.uk",
