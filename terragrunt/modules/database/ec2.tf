@@ -37,7 +37,7 @@ resource "aws_ec2_instance_state" "fts_db_import" {
 }
 
 resource "aws_ebs_volume" "import_data_disk" {
-  count = local.has_import_instance ? 1 : 0
+  count = local.has_import_data_disk ? 1 : 0
 
   availability_zone = data.aws_subnet.first_public_subnet.availability_zone
   iops              = 64000
@@ -49,7 +49,7 @@ resource "aws_ebs_volume" "import_data_disk" {
 }
 
 resource "aws_volume_attachment" "import_data_attach" {
-  count = local.has_import_instance ? 1 : 0
+  count = local.has_import_data_disk ? 1 : 0
 
   device_name = "/dev/sdf" # Will show up as /dev/xvdf
   volume_id   = aws_ebs_volume.import_data_disk[0].id

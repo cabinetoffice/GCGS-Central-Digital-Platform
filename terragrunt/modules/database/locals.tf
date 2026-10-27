@@ -57,6 +57,7 @@ locals {
   allowed_ips = nonsensitive(jsondecode(data.aws_secretsmanager_secret_version.allowed_ips.secret_string))
 
   has_import_instance   = true
+  has_import_data_disk  = local.has_import_instance && var.environment != "development"
   import_instance_state = contains(["production"], var.environment) ? "running" : "stopped"
   import_instance_tags  = merge(var.tags, { Name = "fts-db-import" })
 
