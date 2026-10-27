@@ -18,6 +18,8 @@ ssh -i ~/.ssh/fts_db_import.pem ubuntu@fts-import.<env-name>.supplier-informatio
 
 ## 2. Mount the EBS data volume
 
+> Note: the persistent EBS data volume has been removed in `development` under FC-2614
+
 Run the following commands inside the EC2 instance **if it’s the first time**:
 
 ```shell
