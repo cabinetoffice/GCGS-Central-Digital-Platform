@@ -6,12 +6,13 @@ module "ecs_service_fts_job_scheduler" {
     merge(
       local.fts_dotnet_job_scheduler,
       {
-        cpu       = var.service_configs.fts_job_scheduler.cpu
-        image     = local.ecr_urls[var.service_configs.fts_job_scheduler.name]
-        lg_name   = aws_cloudwatch_log_group.tasks[var.service_configs.fts_job_scheduler.name].name
-        lg_prefix = "app"
-        memory    = var.service_configs.fts_job_scheduler.memory
-        name      = var.service_configs.fts_job_scheduler.name
+        cpu                = var.service_configs.fts_job_scheduler.cpu
+        govuknotify_apikey = data.aws_secretsmanager_secret_version.govuknotify_apikey.arn
+        image              = local.ecr_urls[var.service_configs.fts_job_scheduler.name]
+        lg_name            = aws_cloudwatch_log_group.tasks[var.service_configs.fts_job_scheduler.name].name
+        lg_prefix          = "app"
+        memory             = var.service_configs.fts_job_scheduler.memory
+        name               = var.service_configs.fts_job_scheduler.name
       }
     )
   )
