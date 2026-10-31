@@ -26,11 +26,13 @@ data "aws_iam_policy_document" "terraform_product_integrations" {
   statement {
     actions = [
       "states:CreateStateMachine",
-      "states:Delete*",
-      "states:Describe*",
-      "states:List*",
+      "states:DeleteStateMachine",
+      "states:DescribeStateMachine",
+      "states:ListStateMachines",
+      "states:ListTagsForResource",
       "states:StartExecution",
       "states:TagResource",
+      "states:UntagResource",
       "states:UpdateStateMachine",
     ]
     effect = "Allow"
