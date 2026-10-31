@@ -1,0 +1,34 @@
+{
+  "Comment": "Reset DB users after an FTS DB restore (runs inside the VPC via ECS so it can reach private RDS endpoints).",
+  "StartAt": "ECS RunTask",
+  "TimeoutSeconds": 3600,
+  "States": {
+    "ECS RunTask": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "${cluster}",
+        "LaunchType": "FARGATE",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "SecurityGroups": ["${security_groups}"],
+            "Subnets": ["${subnet}"]
+          }
+        },
+        "TaskDefinition": "${task_definition}",
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "${container_name}",
+              "Environment": [
+                { "Name": "DB_HOST", "Value.$": "$.db_host" }
+              ]
+            }
+          ]
+        }
+      },
+      "End": true
+    }
+  }
+}
+

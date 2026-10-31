@@ -16,8 +16,8 @@ module "ecs_service_fts_notice_publish_worker" {
   name                   = var.service_configs.fts_notice_publish_worker.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
-  role_ecs_task_arn       = var.role_ecs_task_arn
-  role_ecs_task_exec_arn  = var.role_ecs_task_exec_arn
+  role_ecs_task_arn      = var.role_ecs_task_arn
+  role_ecs_task_exec_arn = var.role_ecs_task_exec_arn
   tags                   = var.tags
   vpc_id                 = var.vpc_id
 }

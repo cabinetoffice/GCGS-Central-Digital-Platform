@@ -238,10 +238,10 @@ locals {
   aurora_postgres_instance_type       = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev    = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_extra_domains                   = try(local.environments[local.environment].cfs_extra_domains, [])
-  fts_apply_master_password           = try(local.environments[local.environment].fts_apply_master_password, false)
+  fts_apply_master_password           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_apply_master_password, false))
   fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
-  fts_restore_from_snapshot           = try(local.environments[local.environment].fts_restore_from_snapshot, false)
-  fts_snapshot_identifier             = try(local.environments[local.environment].fts_snapshot_identifier, null)
+  fts_restore_from_snapshot           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_restore_from_snapshot, false))
+  fts_snapshot_identifier             = local.fts_snapshot_identifier_env != "" ? local.fts_snapshot_identifier_env : (local.fts_weekly_refresh_enabled ? local.fts_weekly_refresh_snapshot_identifier_raw : try(local.environments[local.environment].fts_snapshot_identifier, null))
   sirsi_restore_from_snapshot         = try(local.environments[local.environment].sirsi_restore_from_snapshot, false)
   sirsi_snapshot_identifier           = try(local.environments[local.environment].sirsi_snapshot_identifier, null)
   ev_restore_from_snapshot            = try(local.environments[local.environment].ev_restore_from_snapshot, false)
@@ -258,6 +258,13 @@ locals {
   pinned_service_version_cfs          = try(local.environments[local.environment].pinned_service_version_cfs, null)
   pinned_service_version_fts          = try(local.environments[local.environment].pinned_service_version_fts, null)
   redis_node_type                     = try(local.environments[local.environment].redis_node_type, null)
+
+  # Staging weekly refresh uses an SSM parameter to drive the snapshot restore without requiring code changes.
+  # The scheduled job sets this parameter before running `terragrunt apply`.
+  fts_weekly_refresh_snapshot_parameter_name = "/cdp-sirsi/${local.environment}/fts/weekly_refresh_snapshot_id"
+  fts_weekly_refresh_snapshot_identifier_raw = local.environment == "staging" ? trimspace(run_cmd("bash", "-lc", "aws ssm get-parameter --name \"${local.fts_weekly_refresh_snapshot_parameter_name}\" --query Parameter.Value --output text 2>/dev/null || true")) : ""
+  fts_snapshot_identifier_env                = local.environment == "staging" ? trimspace(get_env("FTS_SNAPSHOT_IDENTIFIER", "")) : ""
+  fts_weekly_refresh_enabled                 = local.environment == "staging" && local.fts_weekly_refresh_snapshot_identifier_raw != ""
 
   top_level_domain = "supplier-information.find-tender.service.gov.uk"
 
@@ -462,7 +469,7 @@ locals {
   }
 
   tg = {
-    state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${get_aws_account_id()}"
+    state_bucket = "tfstate-${local.product.resource_name}-${local.environment}-${local.account_ids[local.environment]}"
     state_key    = "${path_relative_to_include()}/terraform.tfstate"
   }
 

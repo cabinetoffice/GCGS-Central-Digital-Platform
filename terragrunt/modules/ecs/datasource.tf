@@ -53,6 +53,16 @@ data "aws_secretsmanager_secret" "fts_secrets" {
   name = "${local.name_prefix}-fts/secrets"
 }
 
+data "aws_secretsmanager_secret" "fts_db_master_password" {
+  count = var.environment == "staging" ? 1 : 0
+  name  = "rds-db-${local.fts_main_cluster_id}-master-password"
+}
+
+data "aws_secretsmanager_secret" "fts_db_tool_user_passwords" {
+  count = var.environment == "staging" ? 1 : 0
+  name  = "rds-db-${local.fts_main_cluster_id}-tool-user-passwords"
+}
+
 data "aws_secretsmanager_secret" "betterstack_user_journey_monitoring" {
   name = "${local.name_prefix}-betterstack-user-journey-monitoring"
 }

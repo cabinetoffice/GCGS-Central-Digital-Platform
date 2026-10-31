@@ -19,6 +19,7 @@ resource "aws_lambda_function" "teams_notifier" {
       TEAMS_SECRET_ARN           = data.aws_secretsmanager_secret.teams_notifier.arn
       TEAMS_MESSAGE_TABLE        = aws_dynamodb_table.teams_notifier.name
       GRAPH_BASE                 = "https://graph.microsoft.com/v1.0"
+      DEPLOYMENT_PIPELINE_NAME   = "${local.name_prefix}-deployment"
       SIRSI_VERSIONS_PARAM       = var.sirsi_versions_param_name
       FTS_VERSIONS_PARAM         = var.fts_versions_param_name
       CFS_VERSIONS_PARAM         = var.cfs_versions_param_name

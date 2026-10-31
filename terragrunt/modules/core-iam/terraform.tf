@@ -99,6 +99,41 @@ resource "aws_iam_policy" "terraform_product_telemetry" {
   tags        = var.tags
 }
 
+resource "aws_iam_policy" "terraform_product_observability" {
+  name        = "${local.name_prefix}-terraform-product-observability"
+  description = "Product observability policy (CloudWatch/Logs)"
+  policy      = data.aws_iam_policy_document.terraform_product_observability.json
+  tags        = var.tags
+}
+
+resource "aws_iam_policy" "terraform_product_infra" {
+  name        = "${local.name_prefix}-terraform-product-infra"
+  description = "Product infrastructure policy (EC2/ELB/WAF)"
+  policy      = data.aws_iam_policy_document.terraform_product_infra.json
+  tags        = var.tags
+}
+
+resource "aws_iam_policy" "terraform_product_integrations" {
+  name        = "${local.name_prefix}-terraform-product-integrations"
+  description = "Product integrations policy (Events/States/Scheduler/SNS)"
+  policy      = data.aws_iam_policy_document.terraform_product_integrations.json
+  tags        = var.tags
+}
+
+resource "aws_iam_policy" "terraform_product_secrets" {
+  name        = "${local.name_prefix}-terraform-product-secrets"
+  description = "Product secrets policy (Secrets Manager/KMS)"
+  policy      = data.aws_iam_policy_document.terraform_product_secrets.json
+  tags        = var.tags
+}
+
+resource "aws_iam_policy" "terraform_product_ci" {
+  name        = "${local.name_prefix}-terraform-product-ci"
+  description = "Product CI policy (CodeBuild/CodePipeline)"
+  policy      = data.aws_iam_policy_document.terraform_product_ci.json
+  tags        = var.tags
+}
+
 import {
   to = aws_iam_policy.terraform_assume_orchestrator_role
   id = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/${local.name_prefix}-terraform-assume-orchestrator-role"
@@ -169,6 +204,31 @@ resource "aws_iam_role_policy_attachment" "terraform_product_ecs" {
 
 resource "aws_iam_role_policy_attachment" "terraform_product_telemetry" {
   policy_arn = aws_iam_policy.terraform_product_telemetry.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_observability" {
+  policy_arn = aws_iam_policy.terraform_product_observability.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_infra" {
+  policy_arn = aws_iam_policy.terraform_product_infra.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_integrations" {
+  policy_arn = aws_iam_policy.terraform_product_integrations.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_secrets" {
+  policy_arn = aws_iam_policy.terraform_product_secrets.arn
+  role       = aws_iam_role.terraform.name
+}
+
+resource "aws_iam_role_policy_attachment" "terraform_product_ci" {
+  policy_arn = aws_iam_policy.terraform_product_ci.arn
   role       = aws_iam_role.terraform.name
 }
 

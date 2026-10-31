@@ -1,0 +1,164 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          RESTORE_CONTEXT_FILE="${CODEBUILD_SRC_DIR_RESTORE_CONTEXT}/context/restore_context.json"
+          if [ ! -f "${RESTORE_CONTEXT_FILE}" ]; then
+            echo "ERROR: Missing restore context file at ${RESTORE_CONTEXT_FILE}" >&2
+            ls -la "${CODEBUILD_SRC_DIR_RESTORE_CONTEXT}" >&2 || true
+            exit 1
+          fi
+
+          PRODUCT_RESOURCE_NAME="$(jq -r '.product_resource_name' "${RESTORE_CONTEXT_FILE}")"
+          RESTORE_MODE="$(jq -r '.restore_mode' "${RESTORE_CONTEXT_FILE}")"
+          MAIN_CLUSTER_ID="$(jq -r '.main_cluster_id' "${RESTORE_CONTEXT_FILE}")"
+          TARGET_CLUSTER_ID="$(jq -r '.target_cluster_id' "${RESTORE_CONTEXT_FILE}")"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          assume_role() {
+            local account_id="$1"
+            local env_name="$2"
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+          wait_rds_cluster_available() {
+            local cluster_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-clusters \
+                --db-cluster-identifier "${cluster_id}" \
+                --query 'DBClusters[0].Status' \
+                --output text 2>/dev/null || true)"
+
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS cluster ${cluster_id} is available (waited ${elapsed}s)"
+                return 0
+              fi
+
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS cluster ${cluster_id} entered failed status" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster ${cluster_id} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for RDS cluster ${cluster_id} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          # NOTE: This stage intentionally does NOT connect to the database directly from CodeBuild,
+          # because the DB endpoint is private to the staging VPC. Instead we trigger a Step Function
+          # that runs an ECS task inside the VPC to perform the SQL.
+
+            wait_sfn_execution() {
+              local execution_arn="$1"
+              local timeout_seconds="${2:-3600}"
+              local sleep_seconds="${3:-10}"
+              local start_epoch now_epoch elapsed status desc_json
+
+              start_epoch="$(date +%s)"
+              while true; do
+                if ! desc_json="$(aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json 2>&1)"; then
+                  echo "ERROR: Failed to describe Step Function execution: ${execution_arn}" >&2
+                  echo "${desc_json}" >&2
+                  return 1
+                fi
+                status="$(jq -r '.status' <<<"${desc_json}")"
+                now_epoch="$(date +%s)"
+                elapsed="$((now_epoch - start_epoch))"
+
+              if [ "${status}" = "SUCCEEDED" ]; then
+                echo "==> Step Function succeeded: ${execution_arn}"
+                return 0
+              fi
+              if [ "${status}" = "FAILED" ] || [ "${status}" = "TIMED_OUT" ] || [ "${status}" = "ABORTED" ]; then
+                echo "ERROR: Step Function ended with status=${status}: ${execution_arn}" >&2
+                aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json >&2 || true
+                return 1
+              fi
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for Step Function execution after ${elapsed}s: ${execution_arn}" >&2
+                aws stepfunctions describe-execution --execution-arn "${execution_arn}" --output json >&2 || true
+                return 1
+              fi
+
+              echo "==> Waiting for Step Function (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          echo "==> Staging: post-restore password reset"
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
+          STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
+
+          MASTER_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-master-password"
+          TOOL_USERS_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-tool-user-passwords"
+
+          MASTER_SECRET_JSON="$(aws secretsmanager get-secret-value --secret-id "${MASTER_SECRET_NAME}" --query SecretString --output text)"
+          MASTER_USERNAME="$(jq -r '.username' <<<"${MASTER_SECRET_JSON}")"
+          MASTER_PASSWORD="$(jq -r '.password' <<<"${MASTER_SECRET_JSON}")"
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: set master password on ${TARGET_CLUSTER_ID} to staging value"
+            aws rds modify-db-cluster \
+              --db-cluster-identifier "${TARGET_CLUSTER_ID}" \
+              --master-user-password "${MASTER_PASSWORD}" \
+              --apply-immediately
+            wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
+            STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
+            echo "Scratch cluster endpoint: ${STAGING_DB_ENDPOINT}"
+          fi
+
+          echo "==> Staging: reset DB users (via Step Function ECS task in VPC)"
+          RESET_SFN_ARN="arn:aws:states:${AWS_REGION}:${STAGING_ACCOUNT_ID}:stateMachine:${PRODUCT_RESOURCE_NAME}-run-fts-post-restore-reset-users"
+          RESET_INPUT="$(jq -cn --arg db_host "${STAGING_DB_ENDPOINT}" --arg cluster_id "${TARGET_CLUSTER_ID}" '{db_host:$db_host,target_cluster_id:$cluster_id}')"
+          EXEC_ARN="$(aws stepfunctions start-execution --state-machine-arn "${RESET_SFN_ARN}" --input "${RESET_INPUT}" --query executionArn --output text)"
+          wait_sfn_execution "${EXEC_ARN}" 3600 10
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: scratch mode - skipping migrations and ECS redeploys"
+            echo "Scratch cluster id: ${TARGET_CLUSTER_ID}"
+            echo "Scratch cluster endpoint: ${STAGING_DB_ENDPOINT}"
+            exit 0
+          fi
+
+          echo "==> Staging: post-restore password reset complete (migrations/redeploys run in later pipeline stages)"

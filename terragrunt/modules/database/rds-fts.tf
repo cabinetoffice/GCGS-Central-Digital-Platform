@@ -9,7 +9,7 @@ module "cluster_fts" {
   db_parameters_cluster           = local.fts_db_parameters_cluster
   db_parameters_instance          = local.fts_db_parameters_instance
   db_sg_id                        = var.db_mysql_sg_id
-  deletion_protection             = true
+  deletion_protection             = var.fts_restore_from_snapshot ? false : true
   engine_version                  = var.aurora_mysql_engine_version
   enabled_cloudwatch_logs_exports = local.fts_log_exports
   family                          = var.aurora_mysql_family

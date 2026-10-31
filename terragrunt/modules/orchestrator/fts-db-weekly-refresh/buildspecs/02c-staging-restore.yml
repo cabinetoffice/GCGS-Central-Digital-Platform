@@ -1,0 +1,225 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - terraform version
+      - terragrunt --version
+      - jq --version
+      - aws --version
+
+  build:
+    commands:
+      - |
+          set -euo pipefail
+          trap 'rc=$?; echo "ERROR (rc=${rc}) at line ${LINENO}: ${BASH_COMMAND}" >&2' ERR
+          if [ "${DEBUG:-false}" = "true" ]; then set -x; fi
+
+          # Ensure the artifact path always exists (CodeBuild fails uploads if the file is missing).
+          mkdir -p context
+          printf '%s\n' '{"status":"started"}' > context/restore_context.json
+
+          PROD_CONTEXT_FILE="${CODEBUILD_SRC_DIR_PROD_CONTEXT}/context/prod_context.json"
+          if [ ! -f "${PROD_CONTEXT_FILE}" ]; then
+            echo "ERROR: Missing prod context file at ${PROD_CONTEXT_FILE}" >&2
+            ls -la "${CODEBUILD_SRC_DIR_PROD_CONTEXT}" >&2 || true
+            exit 1
+          fi
+
+          STAGING_SNAPSHOT_CONTEXT_FILE="${CODEBUILD_SRC_DIR_STAGING_SNAPSHOT_CONTEXT}/context/staging_snapshot_context.json"
+          if [ ! -f "${STAGING_SNAPSHOT_CONTEXT_FILE}" ]; then
+            echo "ERROR: Missing staging snapshot context file at ${STAGING_SNAPSHOT_CONTEXT_FILE}" >&2
+            ls -la "${CODEBUILD_SRC_DIR_STAGING_SNAPSHOT_CONTEXT}" >&2 || true
+            exit 1
+          fi
+
+          SNAPSHOT_TS="$(jq -r '.snapshot_ts' "${PROD_CONTEXT_FILE}")"
+          PRODUCT_RESOURCE_NAME="$(jq -r '.product_resource_name' "${PROD_CONTEXT_FILE}")"
+          STAGING_ACCOUNT_ID="$(jq -r '.staging_account_id' "${PROD_CONTEXT_FILE}")"
+
+          STAGING_SNAPSHOT_ID="$(jq -r '.staging_snapshot_id' "${STAGING_SNAPSHOT_CONTEXT_FILE}")"
+          STAGING_SSM_PARAM_NAME="/${PRODUCT_RESOURCE_NAME}/staging/fts/weekly_refresh_snapshot_id"
+
+          use_execution_role_creds() {
+            unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+          }
+
+          assume_role() {
+            local account_id="$1"
+            local env_name="$2"
+
+            aws sts assume-role \
+              --role-arn "arn:aws:iam::${account_id}:role/${PRODUCT_RESOURCE_NAME}-${env_name}-terraform" \
+              --role-session-name "CodeBuild-${env_name}-fts-db-weekly-refresh" \
+              > /tmp/assumed_role.json
+
+            export AWS_ACCESS_KEY_ID="$(jq -r '.Credentials.AccessKeyId' /tmp/assumed_role.json)"
+            export AWS_SECRET_ACCESS_KEY="$(jq -r '.Credentials.SecretAccessKey' /tmp/assumed_role.json)"
+            export AWS_SESSION_TOKEN="$(jq -r '.Credentials.SessionToken' /tmp/assumed_role.json)"
+          }
+
+          wait_rds_cluster_available() {
+            local cluster_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-clusters \
+                --db-cluster-identifier "${cluster_id}" \
+                --query 'DBClusters[0].Status' \
+                --output text 2>/dev/null || true)"
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS cluster ${cluster_id} is available (waited ${elapsed}s)"
+                return 0
+              fi
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS cluster ${cluster_id} entered failed status" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS cluster ${cluster_id} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-clusters --db-cluster-identifier "${cluster_id}" --output json >&2 || true
+                return 1
+              fi
+              echo "==> Waiting for RDS cluster ${cluster_id} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          wait_rds_instance_available() {
+            local instance_id="$1"
+            local timeout_seconds="${2:-10800}" # 3h
+            local sleep_seconds="${3:-60}"
+            local start_epoch now_epoch elapsed status
+            start_epoch="$(date +%s)"
+            while true; do
+              status="$(aws rds describe-db-instances \
+                --db-instance-identifier "${instance_id}" \
+                --query 'DBInstances[0].DBInstanceStatus' \
+                --output text 2>/dev/null || true)"
+              now_epoch="$(date +%s)"
+              elapsed="$((now_epoch - start_epoch))"
+              if [ "${status}" = "available" ]; then
+                echo "==> RDS instance ${instance_id} is available (waited ${elapsed}s)"
+                return 0
+              fi
+              if [ "${status}" = "failed" ]; then
+                echo "ERROR: RDS instance ${instance_id} entered failed status" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+              if [ "${elapsed}" -ge "${timeout_seconds}" ]; then
+                echo "ERROR: Timed out waiting for RDS instance ${instance_id} to become available after ${elapsed}s (status=${status})" >&2
+                aws rds describe-db-instances --db-instance-identifier "${instance_id}" --output json >&2 || true
+                return 1
+              fi
+              echo "==> Waiting for RDS instance ${instance_id} (status=${status}, elapsed=${elapsed}s)"
+              sleep "${sleep_seconds}"
+            done
+          }
+
+          RESTORE_MODE="${FTS_REFRESH_RESTORE_MODE:-main}" # main|scratch
+          KEEP_SCRATCH="${KEEP_SCRATCH:-true}" # only used for scratch runs (defaults to keep)
+
+          MAIN_CLUSTER_ID="${PRODUCT_RESOURCE_NAME}-fts-cluster"
+          SCRATCH_CLUSTER_ID="${MAIN_CLUSTER_ID}-refresh-test"
+          TARGET_CLUSTER_ID="${MAIN_CLUSTER_ID}"
+
+          use_execution_role_creds
+          assume_role "${STAGING_ACCOUNT_ID}" "staging"
+          aws sts get-caller-identity
+
+          if [ "${RESTORE_MODE}" = "scratch" ]; then
+            echo "==> Staging: scratch restore mode enabled (cluster: ${SCRATCH_CLUSTER_ID})"
+
+            if aws rds describe-db-clusters --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" >/dev/null 2>&1; then
+              echo "ERROR: Scratch cluster ${SCRATCH_CLUSTER_ID} already exists. Delete it (or choose a different name) before re-running." >&2
+              exit 1
+            fi
+
+            echo "==> Staging: restore snapshot ${STAGING_SNAPSHOT_ID} into scratch cluster ${SCRATCH_CLUSTER_ID}"
+            MAIN_SUBNET_GROUP="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBSubnetGroup' --output text)"
+            MAIN_SG_IDS="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].VpcSecurityGroups[].VpcSecurityGroupId' --output text)"
+            MAIN_ENGINE="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].Engine' --output text)"
+            MAIN_CLUSTER_PG="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBClusterParameterGroup' --output text)"
+            MAIN_MEMBER_INSTANCE_ID="$(aws rds describe-db-clusters --db-cluster-identifier "${MAIN_CLUSTER_ID}" --query 'DBClusters[0].DBClusterMembers[0].DBInstanceIdentifier' --output text)"
+            MAIN_INSTANCE_CLASS="$(aws rds describe-db-instances --db-instance-identifier "${MAIN_MEMBER_INSTANCE_ID}" --query 'DBInstances[0].DBInstanceClass' --output text)"
+            MAIN_INSTANCE_PG="$(aws rds describe-db-instances --db-instance-identifier "${MAIN_MEMBER_INSTANCE_ID}" --query 'DBInstances[0].DBParameterGroups[0].DBParameterGroupName' --output text)"
+
+            aws rds restore-db-cluster-from-snapshot \
+              --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" \
+              --snapshot-identifier "${STAGING_SNAPSHOT_ID}" \
+              --engine "${MAIN_ENGINE}" \
+              --db-subnet-group-name "${MAIN_SUBNET_GROUP}" \
+              --vpc-security-group-ids ${MAIN_SG_IDS} \
+              --db-cluster-parameter-group-name "${MAIN_CLUSTER_PG}" \
+              --no-deletion-protection
+
+            wait_rds_cluster_available "${SCRATCH_CLUSTER_ID}"
+
+            SCRATCH_INSTANCE_ID="${SCRATCH_CLUSTER_ID}-0"
+            aws rds create-db-instance \
+              --db-instance-identifier "${SCRATCH_INSTANCE_ID}" \
+              --db-cluster-identifier "${SCRATCH_CLUSTER_ID}" \
+              --engine "${MAIN_ENGINE}" \
+              --db-instance-class "${MAIN_INSTANCE_CLASS}" \
+              --db-parameter-group-name "${MAIN_INSTANCE_PG}"
+            wait_rds_instance_available "${SCRATCH_INSTANCE_ID}"
+
+            TARGET_CLUSTER_ID="${SCRATCH_CLUSTER_ID}"
+            echo "==> Staging: scratch restore complete. Target cluster: ${TARGET_CLUSTER_ID}"
+          else
+            echo "==> Staging: set snapshot identifier param ${STAGING_SSM_PARAM_NAME}=${STAGING_SNAPSHOT_ID}"
+            aws ssm put-parameter \
+              --name "${STAGING_SSM_PARAM_NAME}" \
+              --type "String" \
+              --value "${STAGING_SNAPSHOT_ID}" \
+              --overwrite
+
+            echo "==> Staging: terragrunt apply (database component)"
+            export TG_ENVIRONMENT=staging
+            cd "${CODEBUILD_SRC_DIR}/terragrunt/components/service/database"
+
+            # Import an existing tool-user secret if it already exists but isn't in state yet.
+            # This can happen if the secret was created out-of-band in the account.
+            TOOL_USERS_SECRET_NAME="rds-db-${MAIN_CLUSTER_ID}-tool-user-passwords"
+            terragrunt init -non-interactive
+            if aws secretsmanager describe-secret --secret-id "${TOOL_USERS_SECRET_NAME}" >/dev/null 2>&1; then
+              if terragrunt state show 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' >/dev/null 2>&1; then
+                echo "==> Staging: secret already managed in state (${TOOL_USERS_SECRET_NAME})"
+              else
+                echo "==> Staging: importing existing secret ${TOOL_USERS_SECRET_NAME} into state (best-effort)"
+                TOOL_USERS_SECRET_ARN="$(aws secretsmanager describe-secret --secret-id "${TOOL_USERS_SECRET_NAME}" --query ARN --output text)"
+                terragrunt import -non-interactive 'aws_secretsmanager_secret.fts_tool_user_passwords[0]' "${TOOL_USERS_SECRET_ARN}" || true
+              fi
+            fi
+
+            terragrunt apply -non-interactive -- -auto-approve
+          fi
+
+          # Ensure we write artifacts from the primary source root (we `cd` into the database component above).
+          cd "${CODEBUILD_SRC_DIR}"
+
+          wait_rds_cluster_available "${TARGET_CLUSTER_ID}"
+          STAGING_DB_ENDPOINT="$(aws rds describe-db-clusters --db-cluster-identifier "${TARGET_CLUSTER_ID}" --query 'DBClusters[0].Endpoint' --output text)"
+
+          jq -n \
+            --arg snapshot_ts "${SNAPSHOT_TS}" \
+            --arg product_resource_name "${PRODUCT_RESOURCE_NAME}" \
+            --arg restore_mode "${RESTORE_MODE}" \
+            --arg main_cluster_id "${MAIN_CLUSTER_ID}" \
+            --arg staging_snapshot_id "${STAGING_SNAPSHOT_ID}" \
+            --arg target_cluster_id "${TARGET_CLUSTER_ID}" \
+            --arg staging_db_endpoint "${STAGING_DB_ENDPOINT}" \
+            '{snapshot_ts:$snapshot_ts,product_resource_name:$product_resource_name,restore_mode:$restore_mode,main_cluster_id:$main_cluster_id,staging_snapshot_id:$staging_snapshot_id,target_cluster_id:$target_cluster_id,staging_db_endpoint:$staging_db_endpoint}' \
+            > context/restore_context.json
+
+          echo "==> Wrote context/restore_context.json"
+
+artifacts:
+  files:
+    - context/restore_context.json

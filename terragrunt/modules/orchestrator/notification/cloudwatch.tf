@@ -61,6 +61,9 @@ resource "aws_cloudwatch_event_rule" "deployment_pipeline" {
   event_pattern = jsonencode({
     "source" : ["aws.codepipeline"],
     "detail-type" : ["CodePipeline Action Execution State Change"],
+    "detail" : {
+      "pipeline" : ["${local.name_prefix}-deployment"],
+    },
   })
 
   tags = var.tags
@@ -70,4 +73,27 @@ resource "aws_cloudwatch_event_target" "deployment_pipeline_teams_notification" 
   arn      = aws_sfn_state_machine.teams_notification_middleman.arn
   role_arn = var.role_cloudwatch_events_arn
   rule     = aws_cloudwatch_event_rule.deployment_pipeline.name
+}
+
+resource "aws_cloudwatch_event_rule" "fts_db_weekly_refresh_pipeline" {
+
+  name        = "${local.name_prefix}-fts-db-weekly-refresh-pipeline-failures"
+  description = "CloudWatch Event rule to detect FTS DB weekly refresh pipeline failures"
+
+  event_pattern = jsonencode({
+    "source" : ["aws.codepipeline"],
+    "detail-type" : ["CodePipeline Action Execution State Change"],
+    "detail" : {
+      "pipeline" : ["${local.name_prefix}-fts-db-weekly-refresh"],
+      "state" : ["FAILED", "STOPPED", "CANCELED", "CANCELLED"],
+    },
+  })
+
+  tags = var.tags
+}
+
+resource "aws_cloudwatch_event_target" "fts_db_weekly_refresh_pipeline_teams_notification" {
+  arn      = aws_sfn_state_machine.teams_notification_middleman.arn
+  role_arn = var.role_cloudwatch_events_arn
+  rule     = aws_cloudwatch_event_rule.fts_db_weekly_refresh_pipeline.name
 }
