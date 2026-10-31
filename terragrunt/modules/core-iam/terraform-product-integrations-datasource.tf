@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "terraform_product_integrations" {
       "states:DeleteStateMachine",
       "states:DescribeStateMachine",
       "states:ListStateMachines",
+      "states:ListStateMachineVersions",
       "states:ListTagsForResource",
       "states:StartExecution",
       "states:TagResource",
