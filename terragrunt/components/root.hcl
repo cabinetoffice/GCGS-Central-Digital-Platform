@@ -51,6 +51,7 @@ locals {
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.large"
+      import_data_disk_enabled    = false
       name                        = "dev"
       onelogin_logout_notification_urls = [
         "https://test-findtender.nqc.com/auth/backchannellogout"
@@ -99,6 +100,7 @@ locals {
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.8xlarge"
+      import_data_disk_enabled    = false
       onelogin_logout_notification_urls = [
         "https://www-staging.find-tender.service.gov.uk/auth/backchannellogout",
         "https://fts.staging.supplier-information.find-tender.service.gov.uk/auth/backchannellogout"
@@ -147,6 +149,7 @@ locals {
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.xlarge"
+      import_data_disk_enabled    = false
       name                        = "integration"
       onelogin_logout_notification_urls = [
         "https://truk-alpha.nqc.com/auth/backchannellogout",
@@ -199,6 +202,7 @@ locals {
       mysql_aurora_engine_version = "5.7.mysql_aurora.2.12.5"
       mysql_aurora_family         = "aurora-mysql5.7"
       mysql_aurora_instance_type  = "db.r5.8xlarge"
+      import_data_disk_enabled    = false
       name                        = "production"
       onelogin_logout_notification_urls = [
         "https://www.find-tender.service.gov.uk/auth/backchannellogout",
@@ -235,6 +239,7 @@ locals {
   aurora_mysql_engine_version         = try(local.environments[local.environment].mysql_aurora_engine_version, "8.0.mysql_aurora.3.07.1")
   aurora_mysql_family                 = try(local.environments[local.environment].mysql_aurora_family, "aurora-mysql8.0")
   aurora_mysql_instance_type          = try(local.environments[local.environment].mysql_aurora_instance_type, local.aurora_postgres_instance_type)
+  import_data_disk_enabled            = try(local.environments[local.environment].import_data_disk_enabled, false)
   aurora_postgres_instance_type       = try(local.environments[local.environment].postgres_aurora_instance_type, null)
   aurora_postgres_instance_type_ev    = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_extra_domains                   = try(local.environments[local.environment].cfs_extra_domains, [])

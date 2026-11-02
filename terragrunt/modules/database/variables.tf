@@ -82,6 +82,12 @@ variable "fts_snapshot_identifier" {
   default     = null
 }
 
+variable "import_data_disk_enabled" {
+  description = "Whether to provision the EBS data disk used by the legacy FTS DB import EC2 instance."
+  type        = bool
+  default     = false
+}
+
 variable "is_production" {
   description = "Indicates whether the target account is configured with production-level settings"
   type        = bool

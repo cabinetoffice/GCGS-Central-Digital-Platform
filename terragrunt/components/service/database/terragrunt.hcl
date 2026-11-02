@@ -57,6 +57,7 @@ inputs = {
   aurora_mysql_engine_version      = local.global_vars.locals.aurora_mysql_engine_version
   aurora_mysql_family              = local.global_vars.locals.aurora_mysql_family
   aurora_mysql_instance_type       = local.global_vars.locals.aurora_mysql_instance_type
+  import_data_disk_enabled         = local.global_vars.locals.import_data_disk_enabled
   tags                             = local.tags
 
   fts_snapshot_identifier     = local.global_vars.locals.fts_snapshot_identifier
