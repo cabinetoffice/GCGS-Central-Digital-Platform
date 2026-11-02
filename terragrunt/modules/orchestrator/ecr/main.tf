@@ -10,3 +10,10 @@ resource "aws_ecr_repository" "this" {
 
   tags = var.tags
 }
+
+resource "aws_ecr_lifecycle_policy" "this" {
+  for_each = aws_ecr_repository.this
+
+  repository = each.value.name
+  policy     = local.lifecycle_policy
+}
