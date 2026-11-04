@@ -114,7 +114,7 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
       pinned_service_version_cfs          = "1.1.1"
-      pinned_service_version_fts          = "3.4.0-rc.8"
+      pinned_service_version_fts          = "3.4.0-rc.9"
       pinned_service_version              = "1.4.0"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.8xlarge"
@@ -168,7 +168,7 @@ locals {
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.1.1"
-      pinned_service_version_fts          = "fc-2325-esender-1"
+      pinned_service_version_fts          = "fc-2325-esender-2"
       pinned_service_version              = "1.3.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
