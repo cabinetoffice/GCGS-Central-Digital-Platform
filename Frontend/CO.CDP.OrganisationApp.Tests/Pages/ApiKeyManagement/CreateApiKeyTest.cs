@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using System.Net;
 using ProblemDetails = CO.CDP.Organisation.WebApiClient.ProblemDetails;
@@ -19,7 +20,10 @@ public class CreateApiKeyTest
     private readonly CreateApiKeyModel _model;
     public CreateApiKeyTest()
     {
-        _model = new CreateApiKeyModel(_mockOrganisationClient.Object);
+        _model = new CreateApiKeyModel(_mockOrganisationClient.Object)
+        {
+            TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
+        };
     }
 
     [Fact]
@@ -62,6 +66,26 @@ public class CreateApiKeyTest
         _mockOrganisationClient.Verify(c => c.CreateAuthenticationKeyAsync(It.IsAny<Guid>(), It.IsAny<RegisterAuthenticationKey>()), Times.Once());
 
         redirectToPageResult.PageName.Should().Be("NewApiKeyDetails");
+    }
+
+    [Fact]
+    public async Task OnPost_WhenKeyCreated_ShouldPassKeyViaTempDataAndNotInRouteValues()
+    {
+        _model.Id = Guid.NewGuid();
+        _model.ApiKeyName = "TestApiKey";
+
+        RegisterAuthenticationKey? registered = null;
+        _mockOrganisationClient
+            .Setup(c => c.CreateAuthenticationKeyAsync(It.IsAny<Guid>(), It.IsAny<RegisterAuthenticationKey>()))
+            .Callback<Guid, RegisterAuthenticationKey>((_, key) => registered = key);
+
+        var result = await _model.OnPost();
+
+        var redirect = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirect.RouteValues.Should().ContainKey("Id");
+        redirect.RouteValues!.Keys.Should().NotContain(k => k.Equals("apiKey", StringComparison.OrdinalIgnoreCase));
+        registered.Should().NotBeNull();
+        _model.TempData[NewApiKeyDetailsModel.TempDataKey].Should().Be(registered!.Key);
     }
 
     [Fact]

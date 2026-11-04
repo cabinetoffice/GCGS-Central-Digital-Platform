@@ -35,7 +35,9 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
 
             await organisationClient.CreateAuthenticationKey(Id, registerApiKey);
 
-            return RedirectToPage("NewApiKeyDetails", new { Id, apiKey });
+            TempData[NewApiKeyDetailsModel.TempDataKey] = apiKey;
+
+            return RedirectToPage("NewApiKeyDetails", new { Id });
         }        
         catch (ApiException<OrganisationWebApiClient.ProblemDetails> aex)
         {
