@@ -90,7 +90,7 @@ locals {
                                               {
                                                 development = "UK1,UK2,UK3"
                                                 staging     = "UK1,UK2,UK3"
-                                                integration = "UK1,UK2,UK3"
+                                                integration = "UK1,UK2,UK3,UK6"
                                                 production  = "UK1,UK2,UK3"
                                               },
                                               var.environment,
