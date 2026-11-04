@@ -15,11 +15,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.ApiKeyManagement;
 public class CreateApiKeyTest
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient = new();
+    private readonly Mock<ISession> _mockSession = new();
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly CreateApiKeyModel _model;
     public CreateApiKeyTest()
     {
-        _model = new CreateApiKeyModel(_mockOrganisationClient.Object);
+        _model = new CreateApiKeyModel(_mockOrganisationClient.Object, _mockSession.Object);
     }
 
     [Fact]
@@ -65,9 +66,29 @@ public class CreateApiKeyTest
     }
 
     [Fact]
+    public async Task OnPost_WhenKeyCreated_ShouldPassKeyViaSessionAndNotInRouteValues()
+    {
+        _model.Id = Guid.NewGuid();
+        _model.ApiKeyName = "TestApiKey";
+
+        RegisterAuthenticationKey? registered = null;
+        _mockOrganisationClient
+            .Setup(c => c.CreateAuthenticationKeyAsync(It.IsAny<Guid>(), It.IsAny<RegisterAuthenticationKey>()))
+            .Callback<Guid, RegisterAuthenticationKey>((_, key) => registered = key);
+
+        var result = await _model.OnPost();
+
+        var redirect = result.Should().BeOfType<RedirectToPageResult>().Subject;
+        redirect.RouteValues.Should().ContainKey("Id");
+        redirect.RouteValues!.Keys.Should().NotContain(k => k.Equals("apiKey", StringComparison.OrdinalIgnoreCase));
+        registered.Should().NotBeNull();
+        _mockSession.Verify(s => s.Set(Session.NewApiKeyKey, registered!.Key), Times.Once);
+    }
+
+    [Fact]
     public async Task OnPost_ShouldReturnPage_WhenCreateApiKeyModelStateIsInvalid()
     {
-        var model = new CreateApiKeyModel(_mockOrganisationClient.Object);
+        var model = new CreateApiKeyModel(_mockOrganisationClient.Object, _mockSession.Object);
 
         model.ModelState.AddModelError("ApiKeyName", "Enter the api key name");
 

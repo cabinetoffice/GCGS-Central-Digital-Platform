@@ -15,20 +15,13 @@ public class NewApiKeyDetailsPage
         _page = page;
         _baseUrl = ConfigUtility.GetBaseUrl(); // Retrieve base URL from ConfigUtility
     }
-    /// Navigates to the Manage API Key page using stored Organisation ID.
-    public async Task NavigateTo(string storageKey, string apiKeyName)
+    /// Reads the newly created API key from the confirmation page we were redirected to
+    /// (the key is no longer in the URL, so we cannot navigate to this page directly) and stores it.
+    public async Task CaptureApiKey(string apiKeyName)
     {
-        string organisationId = StorageUtility.Retrieve(storageKey);
-        if (string.IsNullOrEmpty(organisationId))
-        {
-            throw new System.Exception($"❌ Organisation ID not found for key: {storageKey}");
-        }
         string apiKeyId = await GetApiKeyId();
-        string url = $"{_baseUrl}/organisation/{organisationId}/manage-api-key/{apiKeyId}/details";
         StorageUtility.Store(apiKeyName, apiKeyId);
-        await _page.GotoAsync(url);
-        Console.WriteLine($"📌 Navigated to Manage API Key Page: {url}");
-        await _page.WaitForSelectorAsync(PageTitleSelector);
+        Console.WriteLine($"📌 Captured API key for '{apiKeyName}' from confirmation page: {_page.Url}");
     }
     public async Task<string> GetApiKeyId()
     {
