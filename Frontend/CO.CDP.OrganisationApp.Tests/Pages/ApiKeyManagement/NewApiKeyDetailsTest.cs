@@ -1,38 +1,35 @@
 using CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 using FluentAssertions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 
 namespace CO.CDP.OrganisationApp.Tests.Pages.ApiKeyManagement;
 
 public class NewApiKeyDetailsTest
 {
-    private static NewApiKeyDetailsModel CreateModel(Guid id) => new()
-    {
-        Id = id,
-        TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
-    };
+    private readonly Mock<ISession> _session = new();
+
+    private NewApiKeyDetailsModel CreateModel(Guid id) => new(_session.Object) { Id = id };
 
     [Fact]
-    public void OnGet_WhenKeyInTempData_ShouldReturnPageWithKeyAndRemoveItFromTempData()
+    public void OnGet_WhenKeyInSession_ShouldReturnPageWithKeyAndRemoveItFromSession()
     {
+        _session.Setup(s => s.Get<string>(Session.NewApiKeyKey)).Returns("test-api-key");
         var pageModel = CreateModel(Guid.NewGuid());
-        pageModel.TempData[NewApiKeyDetailsModel.TempDataKey] = "test-api-key";
 
         var result = pageModel.OnGet();
 
         result.Should().BeOfType<PageResult>();
         pageModel.ApiKey.Should().Be("test-api-key");
-        pageModel.TempData.ContainsKey(NewApiKeyDetailsModel.TempDataKey).Should().BeFalse();
+        _session.Verify(s => s.Remove(Session.NewApiKeyKey), Times.Once);
     }
 
     [Fact]
-    public void OnGet_WhenKeyNotInTempData_ShouldRedirectToManageApiKeys()
+    public void OnGet_WhenKeyNotInSession_ShouldRedirectToManageApiKeys()
     {
         var id = Guid.NewGuid();
+        _session.Setup(s => s.Get<string>(Session.NewApiKeyKey)).Returns((string?)null);
         var pageModel = CreateModel(id);
 
         var result = pageModel.OnGet();
@@ -40,15 +37,6 @@ public class NewApiKeyDetailsTest
         result.Should().BeOfType<RedirectResult>()
             .Which.Url.Should().Be($"/organisation/{id}/manage-api-keys");
         pageModel.ApiKey.Should().BeNull();
-    }
-
-    [Fact]
-    public void OnGet_WhenCalledTwice_ShouldOnlyShowKeyOnce()
-    {
-        var pageModel = CreateModel(Guid.NewGuid());
-        pageModel.TempData[NewApiKeyDetailsModel.TempDataKey] = "test-api-key";
-
-        pageModel.OnGet().Should().BeOfType<PageResult>();
-        pageModel.OnGet().Should().BeOfType<RedirectResult>();
+        _session.Verify(s => s.Remove(It.IsAny<string>()), Times.Never);
     }
 }

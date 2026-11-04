@@ -11,7 +11,7 @@ using OrganisationWebApiClient = CO.CDP.Organisation.WebApiClient;
 namespace CO.CDP.OrganisationApp.Pages.ApiKeyManagement;
 
 [Authorize(Policy = OrgScopeRequirement.Editor)]
-public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageModel
+public class CreateApiKeyModel(IOrganisationClient organisationClient, ISession session) : PageModel
 {
     [BindProperty(SupportsGet = true)]
     public Guid Id { get; set; }
@@ -35,7 +35,7 @@ public class CreateApiKeyModel(IOrganisationClient organisationClient) : PageMod
 
             await organisationClient.CreateAuthenticationKey(Id, registerApiKey);
 
-            TempData[NewApiKeyDetailsModel.TempDataKey] = apiKey;
+            session.Set(Session.NewApiKeyKey, apiKey);
 
             return RedirectToPage("NewApiKeyDetails", new { Id });
         }        

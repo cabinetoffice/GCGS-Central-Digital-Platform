@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using System.Net;
 using ProblemDetails = CO.CDP.Organisation.WebApiClient.ProblemDetails;
@@ -16,14 +15,12 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.ApiKeyManagement;
 public class CreateApiKeyTest
 {
     private readonly Mock<IOrganisationClient> _mockOrganisationClient = new();
+    private readonly Mock<ISession> _mockSession = new();
     private readonly Guid _organisationId = Guid.NewGuid();
     private readonly CreateApiKeyModel _model;
     public CreateApiKeyTest()
     {
-        _model = new CreateApiKeyModel(_mockOrganisationClient.Object)
-        {
-            TempData = new TempDataDictionary(new DefaultHttpContext(), Mock.Of<ITempDataProvider>())
-        };
+        _model = new CreateApiKeyModel(_mockOrganisationClient.Object, _mockSession.Object);
     }
 
     [Fact]
@@ -69,7 +66,7 @@ public class CreateApiKeyTest
     }
 
     [Fact]
-    public async Task OnPost_WhenKeyCreated_ShouldPassKeyViaTempDataAndNotInRouteValues()
+    public async Task OnPost_WhenKeyCreated_ShouldPassKeyViaSessionAndNotInRouteValues()
     {
         _model.Id = Guid.NewGuid();
         _model.ApiKeyName = "TestApiKey";
@@ -85,13 +82,13 @@ public class CreateApiKeyTest
         redirect.RouteValues.Should().ContainKey("Id");
         redirect.RouteValues!.Keys.Should().NotContain(k => k.Equals("apiKey", StringComparison.OrdinalIgnoreCase));
         registered.Should().NotBeNull();
-        _model.TempData[NewApiKeyDetailsModel.TempDataKey].Should().Be(registered!.Key);
+        _mockSession.Verify(s => s.Set(Session.NewApiKeyKey, registered!.Key), Times.Once);
     }
 
     [Fact]
     public async Task OnPost_ShouldReturnPage_WhenCreateApiKeyModelStateIsInvalid()
     {
-        var model = new CreateApiKeyModel(_mockOrganisationClient.Object);
+        var model = new CreateApiKeyModel(_mockOrganisationClient.Object, _mockSession.Object);
 
         model.ModelState.AddModelError("ApiKeyName", "Enter the api key name");
 

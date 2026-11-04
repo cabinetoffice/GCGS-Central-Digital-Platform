@@ -11,6 +11,7 @@ public class Session(IHttpContextAccessor httpContextAccessor) : ISession
     public const string FtsServiceOrigin = "FtsServiceOrigin";
     public const string UserAuthTokens = "UserAuthTokens";
     public const string JoinOrganisationRequest = "JoinOrganisationRequest";
+    public const string NewApiKeyKey = "NewApiKey";
 
     public T? Get<T>(string key)
     {
