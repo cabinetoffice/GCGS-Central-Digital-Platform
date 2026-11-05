@@ -83,3 +83,9 @@ variable "rds_write_latency_threshold_seconds" {
   type        = number
   default     = 0.2
 }
+
+variable "alb_target_response_time_p95_threshold_seconds" {
+  description = "ALB target response time p95 threshold (seconds)"
+  type        = number
+  default     = 0.5
+}

@@ -17,3 +17,7 @@ output "db_master_user_secret_kms_key_id" {
 output "db_name" {
   value = aws_rds_cluster.this.database_name
 }
+
+output "instance_ids" {
+  value = aws_rds_cluster_instance.this[*].id
+}

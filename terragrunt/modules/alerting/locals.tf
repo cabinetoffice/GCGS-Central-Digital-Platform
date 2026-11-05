@@ -13,8 +13,11 @@ locals {
   ecs_threshold_5xx            = 0
 
   rds_threshold_cup_percent         = 80
-  rds_threshold_freeable_storage_gb = 2.4
-  rds_threshold_connections         = 9000
+  rds_threshold_freeable_memory_gb  = 4
+  rds_threshold_connections         = 700
+  rds_threshold_replica_lag_seconds = 60
+
+  alb_threshold_target_response_time_p95_seconds = 1
 
   redis_threshold_cpu_percent             = 80
   redis_threshold_database_memory_percent = 80

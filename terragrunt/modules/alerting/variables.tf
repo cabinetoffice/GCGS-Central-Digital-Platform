@@ -42,6 +42,11 @@ variable "rds_cluster_ids" {
   type        = list(string)
 }
 
+variable "rds_instance_ids" {
+  description = "List of RDS instance IDs"
+  type        = list(string)
+}
+
 variable "redis_cluster_node_ids" {
   description = "List of ElastiCache Redis node IDs"
   type        = list(string)

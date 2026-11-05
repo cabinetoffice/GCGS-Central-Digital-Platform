@@ -21,4 +21,11 @@ resource "grafana_folder" "traffic" {
 resource "grafana_folder" "alerts" {
   uid   = "alerts"
   title = "Alerts"
+
+  lifecycle {
+    precondition {
+      condition     = var.environment != "production" || local.teams_webhook_url != ""
+      error_message = "Grafana production alerting requires secret `cdp-sirsi-grafana-alerting-webhook` with JSON key `TEAMS_WEBHOOK_URL`."
+    }
+  }
 }

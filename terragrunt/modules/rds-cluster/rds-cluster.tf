@@ -12,7 +12,7 @@ resource "aws_rds_cluster" "this" {
   skip_final_snapshot              = var.deletion_protection ? false : true
   engine                           = var.engine
   engine_version                   = var.engine_version
-  snapshot_identifier            = var.snapshot_identifier
+  snapshot_identifier              = var.snapshot_identifier
   # kms_key_id                       = module.storage_encryption_key.key_arn
   master_password   = (var.restore_from_snapshot && !var.apply_master_password) ? null : jsondecode(data.aws_secretsmanager_secret_version.fetched_password.secret_string)["password"]
   master_username   = var.restore_from_snapshot ? null : "${replace(var.db_name, "-", "_")}_user"
