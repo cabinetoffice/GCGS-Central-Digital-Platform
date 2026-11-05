@@ -19,7 +19,23 @@ output "cfs_proxy_endpoint" {
 }
 
 output "cluster_ids" {
-  value = [module.cluster_entity_verification.cluster_id, module.cluster_fts.cluster_id, module.cluster_sirsi.cluster_id, module.cluster_find_a_tender.cluster_id]
+  value = [
+    module.cluster_cfs.cluster_id,
+    module.cluster_entity_verification.cluster_id,
+    module.cluster_fts.cluster_id,
+    module.cluster_sirsi.cluster_id,
+    module.cluster_find_a_tender.cluster_id,
+  ]
+}
+
+output "instance_ids" {
+  value = flatten([
+    module.cluster_cfs.instance_ids,
+    module.cluster_entity_verification.instance_ids,
+    module.cluster_fts.instance_ids,
+    module.cluster_sirsi.instance_ids,
+    module.cluster_find_a_tender.instance_ids,
+  ])
 }
 
 output "entity_verification_cluster_address" {

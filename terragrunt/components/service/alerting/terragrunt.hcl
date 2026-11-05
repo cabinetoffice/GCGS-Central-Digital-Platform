@@ -30,7 +30,8 @@ dependency service_cache {
 dependency service_database {
   config_path = "../../service/database"
   mock_outputs = {
-    cluster_ids = "mock"
+    cluster_ids  = "mock"
+    instance_ids = "mock"
   }
 }
 
@@ -58,7 +59,8 @@ inputs = {
 
   redis_cluster_node_ids = dependency.service_cache.outputs.redis_cluster_node_ids
 
-  rds_cluster_ids = dependency.service_database.outputs.cluster_ids
+  rds_cluster_ids  = dependency.service_database.outputs.cluster_ids
+  rds_instance_ids = dependency.service_database.outputs.instance_ids
 
   ecs_alb_arn_suffix                           = dependency.service_ecs.outputs.ecs_alb_arn_suffix
   ecs_cluster_name                             = dependency.service_ecs.outputs.ecs_cluster_name
