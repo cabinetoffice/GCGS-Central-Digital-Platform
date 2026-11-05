@@ -24,7 +24,7 @@ locals {
 
   fts_host_headers = distinct(compact(concat(["${var.service_configs.fts.name}.${var.public_domain}"], var.fts_extra_host_headers)))
 
-  dynamic_contracting_authority_enabled    = contains(["development", "staging", "integration"], var.environment)
+  dynamic_contracting_authority_enabled    = contains(["development"], var.environment)
   procurement_transfer_enabled             = contains(["development", "staging", "integration"], var.environment)
   features_procurement_transfer            = contains(["development", "staging", "integration"], var.environment)
   uk6_direct_award_justification           = contains(["development", "staging", "integration"], var.environment)
