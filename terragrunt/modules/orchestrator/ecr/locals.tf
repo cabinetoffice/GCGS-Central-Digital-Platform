@@ -17,12 +17,9 @@ locals {
 
   repositories = concat(local.service_repositories, local.tools_repositories)
 
-  lifecycle_policy_delete_after_not_pulled_days = 7
-  lifecycle_policy_delete_after_archived_days   = 90
-
   lifecycle_policy = templatefile("${path.module}/templates/lifecycle-policy.json.tftpl", {
-    not_pulled_days = local.lifecycle_policy_delete_after_not_pulled_days
-    archived_days   = local.lifecycle_policy_delete_after_archived_days
+    not_pulled_days = var.lifecycle_policy_archive_after_not_pulled_days
+    archived_days   = var.lifecycle_policy_expire_after_archived_days
   })
 
 }

@@ -25,5 +25,7 @@ inputs = {
   account_ids     = local.global_vars.locals.account_ids
   service_configs = local.global_vars.locals.service_configs
   tools_configs   = local.global_vars.locals.tools_configs
+  lifecycle_policy_archive_after_not_pulled_days = 90
+  lifecycle_policy_expire_after_archived_days = 365
   tags            = local.tags
 }
