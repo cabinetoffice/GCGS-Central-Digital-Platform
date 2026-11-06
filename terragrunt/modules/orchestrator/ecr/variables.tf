@@ -41,3 +41,15 @@ variable "tools_configs" {
     port   = optional(number)
   }))
 }
+
+variable "lifecycle_policy_archive_after_not_pulled_days" {
+  description = "Number of days since last recorded pull before transitioning an image to ECR Archive. Set high enough to avoid archiving images used by long-running ECS tasks."
+  type        = number
+  default     = 180
+}
+
+variable "lifecycle_policy_expire_after_archived_days" {
+  description = "Number of days an image can remain in ECR Archive before being expired (deleted)."
+  type        = number
+  default     = 365
+}
