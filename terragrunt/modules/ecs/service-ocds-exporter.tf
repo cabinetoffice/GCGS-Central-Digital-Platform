@@ -21,7 +21,6 @@ module "ecs_service_ocds_exporter" {
         name                  = var.service_configs.ocds_exporter.name
         ocds_export_queue_url = var.queue_ocds_export_url
         ocds_exports_bucket   = module.s3_bucket_ocds_exports.bucket
-        service_version       = "2.9.3" # @TODO (FC-2059) Unpin once the same version was released
       }
     )
   )
