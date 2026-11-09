@@ -49,7 +49,7 @@ jobs:
           unzip -q /tmp/awscliv2.zip -d /tmp
           sudo /tmp/aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
 
-          curl -sSLo /usr/local/bin/jq "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64"
+          sudo curl -fsSL -o /usr/local/bin/jq "https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64"
           sudo chmod +x /usr/local/bin/jq
 
       - name: Configure AWS credentials (OIDC)
