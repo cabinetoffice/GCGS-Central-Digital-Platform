@@ -62,7 +62,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by country, action\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, country, httpRequest.country\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(country, httpRequest.country) as waf_country\n| stats count() as requests by waf_country, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -80,12 +80,9 @@
               "Time": true
             },
             "indexByName": {
-              "country": 4,
-              "action": 2,
               "requests": 0,
-              "Requests": 1,
-              "Action": 3,
-              "Country": 5
+              "action": 1,
+              "waf_country": 2
             }
           }
         }
@@ -146,7 +143,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "country"
+              "options": "waf_country"
             },
             "properties": [
               {
@@ -322,7 +319,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ip, action\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, clientIp, httpRequest.clientIp\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(clientIp, httpRequest.clientIp) as waf_ip\n| stats count() as requests by waf_ip, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -340,12 +337,9 @@
               "Time": true
             },
             "indexByName": {
-              "ip": 4,
-              "action": 2,
               "requests": 0,
-              "Requests": 1,
-              "Action": 3,
-              "ClientIP": 5
+              "action": 1,
+              "waf_ip": 2
             }
           }
         }
@@ -582,7 +576,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by uri, action\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, uri, httpRequest.uri\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(uri, httpRequest.uri) as waf_uri\n| stats count() as requests by waf_uri, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -600,12 +594,9 @@
               "Time": true
             },
             "indexByName": {
-              "uri": 4,
-              "action": 2,
               "requests": 0,
-              "Requests": 1,
-              "Action": 3,
-              "URI": 5
+              "action": 1,
+              "waf_uri": 2
             }
           }
         }
@@ -842,7 +833,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"httpMethod\":\"(?<method>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by method, action\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, httpMethod, httpRequest.httpMethod\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(httpMethod, httpRequest.httpMethod) as waf_method\n| stats count() as requests by waf_method, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -860,12 +851,9 @@
               "Time": true
             },
             "indexByName": {
-              "method": 4,
-              "action": 2,
               "requests": 0,
-              "Requests": 1,
-              "Action": 3,
-              "Method": 5
+              "action": 1,
+              "waf_method": 2
             }
           }
         }
@@ -1102,13 +1090,13 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"name\":\"User-Agent\",\"value\":\"(?<ua>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by ua, action\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, httpSourceName, httpSourceId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by httpSourceName, httpSourceId, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
         }
       ],
-      "title": "Top User Agents (all actions)",
+      "title": "Top Sources (all actions)",
       "type": "table",
       "transformations": [
         {
@@ -1120,12 +1108,10 @@
               "Time": true
             },
             "indexByName": {
-              "ua": 4,
-              "action": 2,
               "requests": 0,
-              "Requests": 1,
-              "Action": 3,
-              "UserAgent": 5
+              "action": 1,
+              "httpSourceName": 2,
+              "httpSourceId": 3
             }
           }
         }
@@ -1362,7 +1348,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| filter @log like /$waf_log_group/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc",
+          "expression": "fields @timestamp, @log, webaclId, action, terminatingRuleId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -1380,13 +1366,9 @@
               "Time": true
             },
             "indexByName": {
-              "action": 2,
-              "terminatingRuleId": 4,
               "hits": 0,
-              "rule": 5,
-              "Hits": 1,
-              "Action": 3,
-              "Rule": 6
+              "action": 1,
+              "terminatingRuleId": 2
             }
           }
         }
@@ -1597,7 +1579,7 @@
         "type": "custom",
         "includeAll": true,
         "allValue": ".*",
-        "query": "ALLOW,BLOCK,COUNT",
+        "query": "ALLOW,BLOCK",
         "options": [
           {
             "selected": false,
@@ -1608,11 +1590,6 @@
             "selected": false,
             "text": "BLOCK",
             "value": "BLOCK"
-          },
-          {
-            "selected": false,
-            "text": "COUNT",
-            "value": "COUNT"
           }
         ],
         "current": {
