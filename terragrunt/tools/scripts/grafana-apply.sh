@@ -44,6 +44,38 @@ Likely causes:
 EOF
     exit 1
   fi
+
+  set +e
+  HEALTH_OUT="$(curl -sS -o /tmp/grafana-health-check.json -w "%{http_code}" \
+    -H "$(auth_header)" \
+    "${TF_VAR_grafana_url%/}/api/health")"
+  HEALTH_STATUS=$?
+  set -e
+
+  if [ "${HEALTH_STATUS}" -ne 0 ] || [ "${HEALTH_OUT}" -ge 400 ]; then
+    echo "ERROR: Grafana health check failed (http=${HEALTH_OUT}, curl_exit=${HEALTH_STATUS})." >&2
+    if [ -f /tmp/grafana-health-check.json ]; then
+      echo "Response:" >&2
+      sed -n '1,80p' /tmp/grafana-health-check.json >&2 || true
+    fi
+    exit 1
+  fi
+
+  if [ -f /tmp/grafana-health-check.json ] && ! grep -Eq '"database"[[:space:]]*:[[:space:]]*"ok"' /tmp/grafana-health-check.json; then
+    echo "ERROR: Grafana is responding but its database health is not OK." >&2
+    echo "Response:" >&2
+    sed -n '1,80p' /tmp/grafana-health-check.json >&2 || true
+    cat >&2 <<'EOF'
+
+Likely causes:
+  - Grafana cannot connect to its Postgres database (common after DB password rotation or failed DB restore).
+  - The DB credentials secret and the actual DB user password are out of sync.
+
+Fix:
+  - Restore DB connectivity / credentials and restart the Grafana service (ECS) so it re-reads the secret.
+EOF
+    exit 1
+  fi
 fi
 
 cd "${ROOT_DIR}"
