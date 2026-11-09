@@ -27,6 +27,166 @@
       },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [
+            {
+              "options": [
+                {
+                  "text": "-",
+                  "value": "Default_Action"
+                }
+              ],
+              "type": "value"
+            },
+            {
+              "options": {
+                "pattern": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
+                "result": "$1"
+              },
+              "type": "regex"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CLOUDWATCH"
+          },
+          "dimensions": {
+            "Rule": "*",
+            "WebACL": "$web_acl"
+          },
+          "expression": "",
+          "id": "",
+          "label": "COUNTED ${PROP('Dim.Rule')} ",
+          "logGroups": [
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi:*",
+              "name": "aws-waf-logs-cdp-sirsi"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-php:*",
+              "name": "aws-waf-logs-cdp-sirsi-php"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-fts:*",
+              "name": "aws-waf-logs-cdp-sirsi-fts"
+            },
+            {
+              "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
+              "arn": "arn:aws:logs:eu-west-2:GRAFANA_CLOUDWATCH_ACCOUNT_ID:log-group:aws-waf-logs-cdp-sirsi-tools:*",
+              "name": "aws-waf-logs-cdp-sirsi-tools"
+            }
+          ],
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "CountedRequests",
+          "metricQueryType": 0,
+          "namespace": "AWS/WAFV2",
+          "period": "",
+          "queryLanguage": "CWLI",
+          "queryMode": "Metrics",
+          "refId": "A",
+          "region": "default",
+          "sqlExpression": "",
+          "statistic": "Sum"
+        }
+      ],
+      "title": "CountedRequests (all rules)",
+      "transformations": [
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "cdp-.*-AWS(.*)",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CLOUDWATCH"
+      },
+      "fieldConfig": {
+        "defaults": {
           "custom": {
             "align": "auto",
             "cellOptions": {
@@ -77,7 +237,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "ip"
+              "options": "waf_ip"
             },
             "properties": [
               {
@@ -107,7 +267,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "country"
+              "options": "waf_country"
             },
             "properties": [
               {
@@ -167,7 +327,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "uri"
+              "options": "waf_uri"
             },
             "properties": [
               {
@@ -191,7 +351,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "rule"
+              "options": "terminatingRuleId"
             },
             "properties": [
               {
@@ -206,7 +366,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 6
       },
       "id": 1,
       "options": {
@@ -226,7 +386,7 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"country\":\"(?<country>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"terminatingRuleId\":\"(?<terminatingRuleId>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by ip, country, action, terminatingRuleId\n| limit 200\n| sort requests desc",
+          "expression": "fields @timestamp, @log, webaclId, action, terminatingRuleId, clientIp, httpRequest.clientIp, country, httpRequest.country\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| fields coalesce(clientIp, httpRequest.clientIp) as waf_ip, coalesce(country, httpRequest.country) as waf_country\n| filter waf_ip like /$ip_filter/\n| filter waf_country like /$country_filter/\n| stats count() as requests, min(@timestamp) as first_seen, max(@timestamp) as last_seen by waf_ip, waf_country, action, terminatingRuleId\n| limit 200\n| sort requests desc",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -267,12 +427,11 @@
             },
             "indexByName": {
               "action": 1,
-              "country": 2,
+              "waf_country": 2,
               "first_seen": 5,
-              "ip": 4,
+              "waf_ip": 4,
               "last_seen": 6,
               "requests": 0,
-              "rule": 3,
               "terminatingRuleId": 3
             }
           }
@@ -296,13 +455,6 @@
             ],
             "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
             "renamePattern": "$1"
-          }
-        },
-        {
-          "id": "renameByRegex",
-          "options": {
-            "regex": "^terminatingRuleId$",
-            "renamePattern": "rule"
           }
         }
       ],
@@ -367,18 +519,18 @@
               }
             ]
           },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "country"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 80
-              }
-            ]
-          },
+                  {
+                    "matcher": {
+                      "id": "byName",
+                      "options": "waf_country"
+                    },
+                    "properties": [
+                      {
+                        "id": "custom.width",
+                        "value": 80
+                      }
+                    ]
+                  },
           {
             "matcher": {
               "id": "byName",
@@ -481,7 +633,7 @@
         "h": 10,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 16
       },
       "id": 2,
       "options": {
@@ -495,7 +647,7 @@
             "type": "cloudwatch",
             "uid": "CLOUDWATCH"
           },
-          "expression": "fields @timestamp\n| parse @message /\"webaclId\":\"(?<webaclId>[^\"]+)\"/\n| parse @message /\"clientIp\":\"(?<ip>[^\"]+)\"/\n| parse @message /\"uri\":\"(?<uri>[^\"]+)\"/\n| parse @message /\"action\":\"(?<action>[^\"]+)\"/\n| parse @message /\"rule\":\"(?<rule>[^\"]+)\"/\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| filter ip like /$ip_filter/\n| filter uri like /$uri_filter/\n| stats count() as requests, fromMillis(latest(@timestamp)) as last by uri, action, rule\n| sort requests desc\n# | display requests, action, uri, fromMillis(last_seen_ms) as last_seen\n| limit 100",
+          "expression": "fields @timestamp, @log, webaclId, action, terminatingRuleId, clientIp, httpRequest.clientIp, uri, httpRequest.uri\n| filter webaclId like /$web_acl/\n| filter @log like /$waf_log_group/\n| filter action like /$action_filter/\n| fields coalesce(clientIp, httpRequest.clientIp) as waf_ip, coalesce(uri, httpRequest.uri) as waf_uri\n| filter waf_ip like /$ip_filter/\n| filter waf_uri like /$uri_filter/\n| stats count() as requests, fromMillis(latest(@timestamp)) as last by waf_uri, action, terminatingRuleId\n| sort requests desc\n| limit 100",
           "logGroups": [
             {
               "accountId": "GRAFANA_CLOUDWATCH_ACCOUNT_ID",
@@ -523,9 +675,9 @@
           "refId": "A",
           "region": "default",
           "statsGroups": [
-            "uri",
+            "waf_uri",
             "action",
-            "rule"
+            "terminatingRuleId"
           ]
         }
       ],
@@ -535,7 +687,7 @@
           "id": "renameByRegex",
           "options": {
             "fields": [
-              "rule"
+              "terminatingRuleId"
             ],
             "regex": "^(?:cdp-sirsi-)?(?:php-|fts-|tools-|cfs-)?(.*)$",
             "renamePattern": "$1"
@@ -649,7 +801,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "country"
+              "options": "waf_country"
             },
             "properties": []
           },
@@ -684,7 +836,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "uri"
+              "options": "waf_uri"
             },
             "properties": []
           },
@@ -708,7 +860,7 @@
         "h": 6,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 26
       },
       "id": 3,
       "options": {
@@ -897,7 +1049,7 @@
         "label": "WAF Action",
         "name": "action_filter",
         "options": [],
-        "query": "ALLOW,BLOCK,COUNT",
+        "query": "ALLOW,BLOCK",
         "skipUrlSync": true,
         "type": "custom",
         "valuesFormat": "csv"
