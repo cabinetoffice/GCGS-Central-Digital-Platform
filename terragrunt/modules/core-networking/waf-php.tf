@@ -52,18 +52,8 @@ resource "aws_wafv2_web_acl" "php" {
     name     = "Block-Unknown-Host-Header"
     priority = 2
 
-    dynamic "action" {
-      for_each = var.environment == "production" ? [1] : []
-      content {
-        count {}
-      }
-    }
-
-    dynamic "action" {
-      for_each = var.environment == "production" ? [] : [1]
-      content {
-        block {}
-      }
+    action {
+      block {}
     }
 
     statement {
