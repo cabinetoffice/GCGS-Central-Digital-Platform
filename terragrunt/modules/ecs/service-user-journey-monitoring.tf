@@ -15,7 +15,7 @@ module "ecs_service_user_journey_monitoring" {
       lg_region                    = data.aws_region.current.region
       memory                       = var.service_configs.user_journey_monitoring.memory
       name                         = var.service_configs.user_journey_monitoring.name
-      service_version              = local.orchestrator_fts_service_version
+      service_version              = local.service_version_fts
       test_env                     = var.environment
       test_settings_fts_public_url = "https://${local.fts_site_domains[var.environment]}"
     }
