@@ -44,6 +44,10 @@ locals {
   rate_limit_global_count               = var.environment == "development" ? 1200 : 240
   rate_limit_old_chrome_notice_ua_count = 100
 
+  # Additional burst protection (keep existing limits as-is; add a stricter limit on top).
+  rate_limit_strict_count          = var.environment == "development" ? 300 : 30
+  rate_limit_strict_window_seconds = 300
+
   waf_php_old_chrome_notice_ua_regex = ".*chrome/(9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-6])\\..*"
 
   waf_php_old_chrome_notice_challenge_enabled = contains(["development", "staging"], var.environment)

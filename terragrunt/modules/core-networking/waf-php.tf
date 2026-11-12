@@ -27,6 +27,12 @@ resource "aws_wafv2_web_acl" "php" {
     content_type = "TEXT_PLAIN"
   }
 
+  custom_response_body {
+    key          = "${local.name_prefix_php}_rate_limit_strict_exceeded"
+    content      = "Rate limit of ${local.rate_limit_strict_count} exceeded. Please retry after ${local.rate_limit_strict_window_seconds} seconds."
+    content_type = "TEXT_PLAIN"
+  }
+
   rule {
     name     = "${local.name_prefix_php}-allow-known-ips"
     priority = 1
@@ -44,6 +50,63 @@ resource "aws_wafv2_web_acl" "php" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name_prefix_php}-allow-known-ips"
+      sampled_requests_enabled   = true
+    }
+  }
+
+  rule {
+    name     = "${local.name_prefix_php}-RateLimitAllPathsStrict"
+    priority = 9
+
+    action {
+      block {
+        custom_response {
+          response_code            = 429
+          custom_response_body_key = "${local.name_prefix_php}_rate_limit_strict_exceeded"
+
+          response_header {
+            name  = "Retry-After"
+            value = local.rate_limit_strict_window_seconds
+          }
+        }
+      }
+    }
+
+    statement {
+      rate_based_statement {
+        limit                 = local.rate_limit_strict_count
+        evaluation_window_sec = local.rate_limit_strict_window_seconds
+        aggregate_key_type    = "IP"
+
+        scope_down_statement {
+          and_statement {
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    visibility_config {
+      cloudwatch_metrics_enabled = true
+      metric_name                = "${local.name_prefix_php}-RateLimitAllPathsStrict"
       sampled_requests_enabled   = true
     }
   }
@@ -408,6 +471,26 @@ resource "aws_wafv2_web_acl" "php" {
         scope_down_statement {
           and_statement {
             statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            statement {
               regex_match_statement {
                 regex_string = local.waf_php_notice_paths_all
 
@@ -559,6 +642,16 @@ resource "aws_wafv2_web_acl" "php" {
               }
 
               statement {
+                not_statement {
+                  statement {
+                    ip_set_reference_statement {
+                      arn = aws_wafv2_ip_set.known_ips.arn
+                    }
+                  }
+                }
+              }
+
+              statement {
                 regex_match_statement {
                   regex_string = rule.value.regex
 
@@ -622,6 +715,16 @@ resource "aws_wafv2_web_acl" "php" {
             }
 
             statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            statement {
               regex_match_statement {
                 regex_string = local.waf_php_rate_limit_paths
 
@@ -672,10 +775,24 @@ resource "aws_wafv2_web_acl" "php" {
         aggregate_key_type    = "IP"
 
         scope_down_statement {
-          not_statement {
+          and_statement {
             statement {
-              ip_set_reference_statement {
-                arn = aws_wafv2_ip_set.internal_egress.arn
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
               }
             }
           }
