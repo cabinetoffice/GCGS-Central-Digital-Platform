@@ -21,12 +21,6 @@ resource "aws_wafv2_web_acl" "fts" {
     content_type = "TEXT_PLAIN"
   }
 
-  custom_response_body {
-    key          = "${local.name_prefix_fts}_rate_limit_strict_exceeded"
-    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_strict_window_seconds / 60))
-    content_type = "TEXT_PLAIN"
-  }
-
   rule {
     name     = "${local.name_prefix_fts}-allow-known-ips"
     priority = 1
@@ -44,63 +38,6 @@ resource "aws_wafv2_web_acl" "fts" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name_prefix_fts}-allow-known-ips"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  rule {
-    name     = "${local.name_prefix_fts}-RateLimitAllPathsStrict"
-    priority = 3
-
-    action {
-      block {
-        custom_response {
-          response_code            = 429
-          custom_response_body_key = "${local.name_prefix_fts}_rate_limit_strict_exceeded"
-
-          response_header {
-            name  = "Retry-After"
-            value = local.rate_limit_strict_window_seconds
-          }
-        }
-      }
-    }
-
-    statement {
-      rate_based_statement {
-        limit                 = local.rate_limit_strict_count
-        evaluation_window_sec = local.rate_limit_strict_window_seconds
-        aggregate_key_type    = "IP"
-
-        scope_down_statement {
-          and_statement {
-            statement {
-              not_statement {
-                statement {
-                  ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.internal_egress.arn
-                  }
-                }
-              }
-            }
-
-            statement {
-              not_statement {
-                statement {
-                  ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.known_ips.arn
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_fts}-RateLimitAllPathsStrict"
       sampled_requests_enabled   = true
     }
   }

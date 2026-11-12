@@ -23,13 +23,7 @@ resource "aws_wafv2_web_acl" "php" {
 
   custom_response_body {
     key          = "${local.name_prefix_php}_rate_limit_global_exceeded"
-    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_window_seconds / 60))
-    content_type = "TEXT_PLAIN"
-  }
-
-  custom_response_body {
-    key          = "${local.name_prefix_php}_rate_limit_strict_exceeded"
-    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_strict_window_seconds / 60))
+    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_global_window_seconds / 60))
     content_type = "TEXT_PLAIN"
   }
 
@@ -50,63 +44,6 @@ resource "aws_wafv2_web_acl" "php" {
     visibility_config {
       cloudwatch_metrics_enabled = true
       metric_name                = "${local.name_prefix_php}-allow-known-ips"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  rule {
-    name     = "${local.name_prefix_php}-RateLimitAllPathsStrict"
-    priority = 9
-
-    action {
-      block {
-        custom_response {
-          response_code            = 429
-          custom_response_body_key = "${local.name_prefix_php}_rate_limit_strict_exceeded"
-
-          response_header {
-            name  = "Retry-After"
-            value = local.rate_limit_strict_window_seconds
-          }
-        }
-      }
-    }
-
-    statement {
-      rate_based_statement {
-        limit                 = local.rate_limit_strict_count
-        evaluation_window_sec = local.rate_limit_strict_window_seconds
-        aggregate_key_type    = "IP"
-
-        scope_down_statement {
-          and_statement {
-            statement {
-              not_statement {
-                statement {
-                  ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.internal_egress.arn
-                  }
-                }
-              }
-            }
-
-            statement {
-              not_statement {
-                statement {
-                  ip_set_reference_statement {
-                    arn = aws_wafv2_ip_set.known_ips.arn
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "${local.name_prefix_php}-RateLimitAllPathsStrict"
       sampled_requests_enabled   = true
     }
   }
@@ -762,7 +699,7 @@ resource "aws_wafv2_web_acl" "php" {
 
           response_header {
             name  = "Retry-After"
-            value = local.rate_limit_window_seconds
+            value = local.rate_limit_global_window_seconds
           }
         }
       }
@@ -771,7 +708,7 @@ resource "aws_wafv2_web_acl" "php" {
     statement {
       rate_based_statement {
         limit                 = local.rate_limit_global_count
-        evaluation_window_sec = local.rate_limit_window_seconds
+        evaluation_window_sec = local.rate_limit_global_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {
@@ -791,6 +728,46 @@ resource "aws_wafv2_web_acl" "php" {
                 statement {
                   ip_set_reference_statement {
                     arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            # Avoid double-counting endpoints that already have stricter per-path rate limiting.
+            statement {
+              not_statement {
+                statement {
+                  regex_match_statement {
+                    regex_string = local.waf_php_rate_limit_paths
+
+                    field_to_match {
+                      uri_path {}
+                    }
+
+                    text_transformation {
+                      priority = 0
+                      type     = "LOWERCASE"
+                    }
+                  }
+                }
+              }
+            }
+
+            # Avoid counting static assets towards the global burst limiter.
+            statement {
+              not_statement {
+                statement {
+                  regex_match_statement {
+                    regex_string = local.waf_rate_limit_static_assets_path_regex
+
+                    field_to_match {
+                      uri_path {}
+                    }
+
+                    text_transformation {
+                      priority = 0
+                      type     = "LOWERCASE"
+                    }
                   }
                 }
               }

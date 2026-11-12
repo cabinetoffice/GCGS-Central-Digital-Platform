@@ -41,12 +41,12 @@ locals {
 
   rate_limit_count                      = var.environment == "development" ? 120 : 12
   rate_limit_window_seconds             = 120
-  rate_limit_global_count               = var.environment == "development" ? 1200 : 240
+  rate_limit_global_count               = var.environment == "development" ? 600 : 50
+  rate_limit_global_window_seconds      = 300
   rate_limit_old_chrome_notice_ua_count = 100
 
-  # Additional burst protection (keep existing limits as-is; add a stricter limit on top).
-  rate_limit_strict_count          = var.environment == "development" ? 300 : 30
-  rate_limit_strict_window_seconds = 300
+  # Exclude static assets from global burst rate limiting (page refreshes can generate many asset requests).
+  waf_rate_limit_static_assets_path_regex = "^/(?:assets|static|build|packs)/.*$|^/favicon\\.ico$|^/.*\\.(?:css|js|map|png|jpe?g|gif|svg|ico|webp|woff2?|ttf|eot)$"
 
   waf_php_old_chrome_notice_ua_regex = ".*chrome/(9[0-9]|10[0-9]|11[0-9]|12[0-9]|13[0-6])\\..*"
 
@@ -103,6 +103,7 @@ locals {
       "^/api/[^/]+/ocdsreleasepackages.*$",
       "^/published/notice/.*",
       "^/published/notices/ocds/.*",
+      "^/search$",
       "^/search/results$",
       "^/search/.*",
       "^/notice$",
@@ -123,6 +124,7 @@ locals {
     [
       "^/notice$",
       "^/notice/.*",
+      "^/search$",
       "^/search/results$",
       "^/search/.*",
       "^/procurement/.*",
