@@ -16,17 +16,17 @@ locals {
       validator_records = ["_e4df106351612a9a8edcb3fc873c7d58.jkddzztszm.acm-validations.aws."]
     }
     production = {
-      name              = "commercial-ai"
-      records           = ["wdq6jpemgg.eu-west-2.awsapprunner.com"]
-      validator_name    = "_7fe1a72107ce559d9bf4cd43164da019"
-      validator_records = ["_1616d9f5d97e70042aafc1b4ecb98fab.xlfgrmvvlj.acm-validations.aws."]
+      name              = "ai"
+      records           = ["cdp-daps-cai-ecs-1579077999.eu-west-2.elb.amazonaws.com"]
+      validator_name    = "_fabe052abb75897e3404b103e505d485.ai.supplier-information.find-tender.service.gov.uk."
+      validator_records = ["_465eaabbdbcae786f5a781bf4fc388bc.wzccmgtwzk.acm-validations.aws."]
     }
   }
 
   payments_records = {
     oechestrator = {}
-    development = {}
-    staging     = {
+    development  = {}
+    staging      = {
       payments = {
         name              = "payments"
         records           = ["cdp-payments-alb-staging-1243004017.eu-west-2.elb.amazonaws.com"]
