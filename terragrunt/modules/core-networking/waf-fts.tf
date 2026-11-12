@@ -17,7 +17,7 @@ resource "aws_wafv2_web_acl" "fts" {
 
   custom_response_body {
     key          = "${local.name_prefix_fts}_rate_limit_exceeded"
-    content      = "Rate limit of ${local.rate_limit_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
+    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_window_seconds / 60))
     content_type = "TEXT_PLAIN"
   }
 
@@ -123,6 +123,16 @@ resource "aws_wafv2_web_acl" "fts" {
                 statement {
                   ip_set_reference_statement {
                     arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
                   }
                 }
               }

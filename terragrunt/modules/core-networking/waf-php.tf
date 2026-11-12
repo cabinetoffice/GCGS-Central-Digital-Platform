@@ -17,13 +17,13 @@ resource "aws_wafv2_web_acl" "php" {
 
   custom_response_body {
     key          = "${local.name_prefix_php}_rate_limit_exceeded"
-    content      = "Rate limit of ${local.rate_limit_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
+    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_window_seconds / 60))
     content_type = "TEXT_PLAIN"
   }
 
   custom_response_body {
     key          = "${local.name_prefix_php}_rate_limit_global_exceeded"
-    content      = "Rate limit of ${local.rate_limit_global_count} exceeded. Please retry after ${local.rate_limit_window_seconds} seconds."
+    content      = format("The rate limit has been exceeded. Please try again in %d minutes.", ceil(local.rate_limit_global_window_seconds / 60))
     content_type = "TEXT_PLAIN"
   }
 
@@ -408,6 +408,26 @@ resource "aws_wafv2_web_acl" "php" {
         scope_down_statement {
           and_statement {
             statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            statement {
               regex_match_statement {
                 regex_string = local.waf_php_notice_paths_all
 
@@ -559,6 +579,16 @@ resource "aws_wafv2_web_acl" "php" {
               }
 
               statement {
+                not_statement {
+                  statement {
+                    ip_set_reference_statement {
+                      arn = aws_wafv2_ip_set.known_ips.arn
+                    }
+                  }
+                }
+              }
+
+              statement {
                 regex_match_statement {
                   regex_string = rule.value.regex
 
@@ -622,6 +652,16 @@ resource "aws_wafv2_web_acl" "php" {
             }
 
             statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            statement {
               regex_match_statement {
                 regex_string = local.waf_php_rate_limit_paths
 
@@ -659,7 +699,7 @@ resource "aws_wafv2_web_acl" "php" {
 
           response_header {
             name  = "Retry-After"
-            value = local.rate_limit_window_seconds
+            value = local.rate_limit_global_window_seconds
           }
         }
       }
@@ -668,14 +708,68 @@ resource "aws_wafv2_web_acl" "php" {
     statement {
       rate_based_statement {
         limit                 = local.rate_limit_global_count
-        evaluation_window_sec = local.rate_limit_window_seconds
+        evaluation_window_sec = local.rate_limit_global_window_seconds
         aggregate_key_type    = "IP"
 
         scope_down_statement {
-          not_statement {
+          and_statement {
             statement {
-              ip_set_reference_statement {
-                arn = aws_wafv2_ip_set.internal_egress.arn
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.internal_egress.arn
+                  }
+                }
+              }
+            }
+
+            statement {
+              not_statement {
+                statement {
+                  ip_set_reference_statement {
+                    arn = aws_wafv2_ip_set.known_ips.arn
+                  }
+                }
+              }
+            }
+
+            # Avoid double-counting endpoints that already have stricter per-path rate limiting.
+            statement {
+              not_statement {
+                statement {
+                  regex_match_statement {
+                    regex_string = local.waf_php_rate_limit_paths
+
+                    field_to_match {
+                      uri_path {}
+                    }
+
+                    text_transformation {
+                      priority = 0
+                      type     = "LOWERCASE"
+                    }
+                  }
+                }
+              }
+            }
+
+            # Avoid counting static assets towards the global burst limiter.
+            statement {
+              not_statement {
+                statement {
+                  regex_match_statement {
+                    regex_string = local.waf_rate_limit_static_assets_path_regex
+
+                    field_to_match {
+                      uri_path {}
+                    }
+
+                    text_transformation {
+                      priority = 0
+                      type     = "LOWERCASE"
+                    }
+                  }
+                }
               }
             }
           }
