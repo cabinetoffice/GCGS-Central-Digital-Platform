@@ -2,12 +2,11 @@
   "rules": [
     {
       "rulePriority": 1,
-      "description": "Archive images not pulled in ${not_pulled_days} days",
+      "description": "Archive images beyond the most recent ${retain_images} images",
       "selection": {
         "tagStatus": "any",
-        "countType": "sinceImagePulled",
-        "countUnit": "days",
-        "countNumber": ${not_pulled_days}
+        "countType": "imageCountMoreThan",
+        "countNumber": ${retain_images}
       },
       "action": {
         "type": "transition",

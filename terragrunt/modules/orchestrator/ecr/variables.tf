@@ -48,6 +48,12 @@ variable "lifecycle_policy_archive_after_not_pulled_days" {
   default     = 180
 }
 
+variable "lifecycle_policy_retain_images" {
+  description = "Number of most-recent images to always keep in standard ECR storage (never archived by lifecycle policy)."
+  type        = number
+  default     = 20
+}
+
 variable "lifecycle_policy_expire_after_archived_days" {
   description = "Number of days an image can remain in ECR Archive before being expired (deleted)."
   type        = number
