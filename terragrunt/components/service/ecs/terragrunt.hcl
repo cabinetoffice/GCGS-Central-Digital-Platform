@@ -185,7 +185,7 @@ inputs = {
   pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
   service_configs                   = local.global_vars.locals.service_configs
   tags                              = local.tags
-  use_rds_proxy                     = local.global_vars.locals.environment == "development"
+  use_rds_proxy                     = false # local.global_vars.locals.environment == "development"
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
