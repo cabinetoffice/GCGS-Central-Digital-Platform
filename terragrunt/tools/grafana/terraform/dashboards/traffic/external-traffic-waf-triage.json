@@ -159,13 +159,13 @@
           "metricName": "CountedRequests",
           "metricQueryType": 0,
           "namespace": "AWS/WAFV2",
-          "period": "",
+          "period": "300",
           "queryLanguage": "CWLI",
           "queryMode": "Metrics",
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "statistic": "Sum"
+          "statistic": "Average"
         }
       ],
       "title": "CountedRequests (all rules)",
