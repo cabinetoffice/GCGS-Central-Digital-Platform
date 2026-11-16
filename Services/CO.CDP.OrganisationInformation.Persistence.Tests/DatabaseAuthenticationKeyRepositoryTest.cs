@@ -1,5 +1,6 @@
 using CO.CDP.Testcontainers.PostgreSql;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using static CO.CDP.OrganisationInformation.Persistence.Tests.EntityFactory;
 
 namespace CO.CDP.OrganisationInformation.Persistence.Tests;
@@ -12,12 +13,14 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
-        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
+        var key = Guid.NewGuid().ToString();
+        var authenticationKey = GivenAuthenticationKey(key: key, organisation: organisation);
         await repository.Save(authenticationKey);
 
-        var found = await repository.Find(authenticationKey.Key);
+        var found = await repository.Find(key);
         found.As<AuthenticationKey>().Id.Should().BePositive();
         found.As<AuthenticationKey>().OrganisationId.Should().BePositive();
+        found.As<AuthenticationKey>().KeyHash.Should().Be(ApiKeyHasher.Hash(key)).And.NotBe(key);
     }
 
     [Fact]
@@ -35,11 +38,12 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
     {
         using var repository = AuthenticationKeyRepository();
         var organisation = GivenOrganisation();
-        var authenticationKey = GivenAuthenticationKey(key: Guid.NewGuid().ToString(), organisation: organisation);
+        var key = Guid.NewGuid().ToString();
+        var authenticationKey = GivenAuthenticationKey(key: key, organisation: organisation);
 
         await repository.Save(authenticationKey);
 
-        var found = await repository.Find(authenticationKey.Key);
+        var found = await repository.Find(key);
         found.As<AuthenticationKey>().OrganisationId.Should().NotBeNull();
         found.As<AuthenticationKey>().OrganisationId.Should().Be(authenticationKey.Organisation?.Id);
     }
@@ -68,7 +72,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
 
         var found = await repository.FindByKeyNameAndOrganisationId("fts-key", organisation.Guid);
         found.As<AuthenticationKey>().Should().NotBeNull();
-        found.As<AuthenticationKey>().Key.Should().BeSameAs(key);
+        found.As<AuthenticationKey>().KeyHash.Should().Be(ApiKeyHasher.Hash(key));
     }
 
     [Fact]
@@ -78,13 +82,25 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         var organisation = GivenOrganisation();
         var key = Guid.NewGuid().ToString();
         var authenticationKey1 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
-        var authenticationKey2 = GivenAuthenticationKey(name: "fts", key: key, organisation: organisation);
+        var authenticationKey2 = GivenAuthenticationKey(name: "fts", key: Guid.NewGuid().ToString(), organisation: organisation);
 
         await repository.Save(authenticationKey1);
 
         await repository.Invoking(async r => await r.Save(authenticationKey2))
             .Should().ThrowAsync<IAuthenticationKeyRepository.AuthenticationKeyRepositoryException.DuplicateAuthenticationKeyNameException>()
             .WithMessage($"Authentication Key with name `fts` already exists.");
+    }
+
+    [Fact]
+    public void ApiKeyHasherMatchesTheSqlHashUsedByTheMigration()
+    {
+        var key = $"Ünïcode-{Guid.NewGuid()}";
+
+        var sqlHash = GetDbContext().Database
+            .SqlQuery<string>($"SELECT encode(sha256(convert_to({key}, 'UTF8')), 'hex') AS \"Value\"")
+            .Single();
+
+        sqlHash.Should().Be(ApiKeyHasher.Hash(key));
     }
 
     private static AuthenticationKey GivenAuthenticationKey(
@@ -97,7 +113,7 @@ public class DatabaseAuthenticationKeyRepositoryTest(PostgreSqlFixture postgreSq
         return new AuthenticationKey
         {
             Name = name ?? $"key {Guid.NewGuid()}",
-            Key = key ?? Guid.NewGuid().ToString(),
+            KeyHash = ApiKeyHasher.Hash(key ?? Guid.NewGuid().ToString()),
             Organisation = organisation,
             Scopes = scopes ?? []
         };

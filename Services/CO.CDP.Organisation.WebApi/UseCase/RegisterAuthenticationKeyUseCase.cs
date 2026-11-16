@@ -16,7 +16,8 @@ public class RegisterAuthenticationKeyUseCase(
 
         await keyRepository.Save(new OrganisationInformation.Persistence.AuthenticationKey
         {
-            Key = authenticationKey.Key,
+            KeyHash = ApiKeyHasher.Hash(authenticationKey.Key),
+            KeyHint = ApiKeyHasher.Hint(authenticationKey.Key),
             Name = authenticationKey.Name,
             OrganisationId = organisation.Id,
         });

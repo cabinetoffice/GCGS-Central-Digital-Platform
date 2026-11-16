@@ -31,7 +31,7 @@ public class ApiKeyValidatorTest
     public async Task Validate_ValidApiKey_ReturnsTrue()
     {
         _repository.Setup(r => r.Find(It.IsAny<string>()))
-            .ReturnsAsync(new AuthenticationKey { Name = "FTS", Key = ValidApiKey, Scopes = ["ADMIN"] });
+            .ReturnsAsync(new AuthenticationKey { Name = "FTS", KeyHash = ApiKeyHasher.Hash(ValidApiKey), Scopes = ["ADMIN"] });
 
         var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
 
@@ -47,7 +47,7 @@ public class ApiKeyValidatorTest
         _repository.Setup(r => r.Find(It.IsAny<string>()))
             .ReturnsAsync(new AuthenticationKey {
                 Name = "FTS",
-                Key = ValidApiKey,
+                KeyHash = ApiKeyHasher.Hash(ValidApiKey),
                 OrganisationId = 42,
                 Organisation = new CO.CDP.OrganisationInformation.Persistence.Organisation {
                     Guid = orgId, Name = "",
@@ -79,7 +79,7 @@ public class ApiKeyValidatorTest
     public async Task Validate_RevokedApiKey_ReturnsFalse()
     {
         _repository.Setup(r => r.Find(It.IsAny<string>()))
-            .ReturnsAsync(new AuthenticationKey { Name = "FTS", Key = ValidApiKey, Scopes = ["ADMIN"], Revoked = true });
+            .ReturnsAsync(new AuthenticationKey { Name = "FTS", KeyHash = ApiKeyHasher.Hash(ValidApiKey), Scopes = ["ADMIN"], Revoked = true });
 
         var (valid, organisation, scopes) = await _validator.Validate(ValidApiKey);
 
@@ -96,7 +96,7 @@ public class ApiKeyValidatorTest
             .ReturnsAsync(new AuthenticationKey
             {
                 Name = "FTS",
-                Key = ValidApiKey,
+                KeyHash = ApiKeyHasher.Hash(ValidApiKey),
                 OrganisationId = 42,
                 Organisation = new CO.CDP.OrganisationInformation.Persistence.Organisation
                 {
