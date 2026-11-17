@@ -232,6 +232,8 @@ locals {
       opensearch_endpoint                      = "https://${var.opensearch_endpoint}"
       pg_command_timeout                       = 10800
       procurement_transfer_policy_go_live_date = local.procurement_transfer_policy_go_live_date
+      procurement_transfer_queue_url           = var.queue_fts_procurement_transfer_url
+      procurement_transfer_use_queue           = local.procurement_transfer_use_queue
       search_api_base_url                      = local.use_internal_service_urls ? local.internal_service_urls["fts-search-api"] : local.public_service_urls["fts-search-api"]
     }
   )

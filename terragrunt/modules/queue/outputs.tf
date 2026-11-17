@@ -58,6 +58,16 @@ output "fts_notice_render_queue_url" {
   value       = module.fts_notice_render_queue.queue_url
 }
 
+output "fts_procurement_transfer_queue_arn" {
+  description = "ARN of the FTS procurement transfer SQS queue"
+  value       = module.fts_procurement_transfer_queue.queue_arn
+}
+
+output "fts_procurement_transfer_queue_url" {
+  description = "URL of the FTS procurement transfer SQS queue"
+  value       = module.fts_procurement_transfer_queue.queue_url
+}
+
 output "ocds_export_queue_arn" {
   description = "ARN of the OCDS export SQS queue"
   value       = module.ocds_export_queue.queue_arn

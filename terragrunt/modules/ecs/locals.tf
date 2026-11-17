@@ -29,6 +29,7 @@ locals {
   features_procurement_transfer            = contains(["development", "staging", "integration"], var.environment)
   uk6_direct_award_justification           = contains(["development", "staging", "integration"], var.environment)
   procurement_transfer_policy_go_live_date = contains(["development", "staging"], var.environment) ? "2026-10-23" : "2026-12-03"
+  procurement_transfer_use_queue           = false
 
   db_ev_password              = "${local.db_ev_secret_arn}:password::"
   db_ev_secret_arn            = var.db_ev_cluster_credentials_arn
