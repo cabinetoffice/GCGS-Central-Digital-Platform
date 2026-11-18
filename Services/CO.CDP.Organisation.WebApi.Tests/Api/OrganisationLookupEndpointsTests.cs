@@ -25,7 +25,7 @@ public class OrganisationLookupEndpointsTests
         _getMyOrganisationUseCase.Setup(useCase => useCase.Execute())
                                     .ReturnsAsync(OrganisationEndpointsTests.GivenOrganisation(Guid.NewGuid()));
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, serviceCollection: s => s.AddScoped(_ => _getMyOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();
 
@@ -46,7 +46,7 @@ public class OrganisationLookupEndpointsTests
         _lookupOrganisationUseCase.Setup(useCase => useCase.Execute(command))
                                     .ReturnsAsync(OrganisationEndpointsTests.GivenOrganisation(Guid.NewGuid()));
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel,
             serviceCollection: s => s.AddScoped(_ => _lookupOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();

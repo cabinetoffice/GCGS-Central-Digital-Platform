@@ -32,7 +32,7 @@ public class BuyerInformationEndpointsTests
 
         _updateBuyerInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updateBuyerInformationUseCase.Object));
 

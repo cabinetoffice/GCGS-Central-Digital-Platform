@@ -35,7 +35,7 @@ public class PersonsEndpointsTests
 
         _getPersonsUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getPersonsUseCase.Object));
 
@@ -62,7 +62,7 @@ public class PersonsEndpointsTests
 
         _getOrganisationPersonsUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getOrganisationPersonsUseCase.Object),
             assignedPersonScopes: personScope);
@@ -90,7 +90,7 @@ public class PersonsEndpointsTests
 
         _updatePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updatePersonToOrganisationUseCase.Object));
 
@@ -116,7 +116,7 @@ public class PersonsEndpointsTests
 
         _removePersonFromOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _removePersonFromOrganisationUseCase.Object));
 

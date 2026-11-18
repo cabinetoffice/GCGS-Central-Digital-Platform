@@ -34,7 +34,7 @@ public class ConnectedEntityEndpointsTests
 
         _getConnectedEntitiesUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getConnectedEntitiesUseCase.Object));
 
@@ -61,7 +61,7 @@ public class ConnectedEntityEndpointsTests
         _getConnectedEntityUseCase.Setup(uc => uc.Execute(command))
             .ReturnsAsync(new ConnectedEntity { EntityType = ConnectedEntityType.Organisation });
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getConnectedEntityUseCase.Object));
 
@@ -87,7 +87,7 @@ public class ConnectedEntityEndpointsTests
 
         _registerConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _registerConnectedEntityUseCase.Object));
 
@@ -114,7 +114,7 @@ public class ConnectedEntityEndpointsTests
 
         _updateConnectedEntityUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updateConnectedEntityUseCase.Object));
 
@@ -141,7 +141,7 @@ public class ConnectedEntityEndpointsTests
         _deleteConnectedEntityUseCase.Setup(uc => uc.Execute(command))
             .ReturnsAsync(new DeleteConnectedEntityResult() { Success = true, FormGuid = Guid.NewGuid(), SectionGuid = Guid.NewGuid() });
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             serviceCollection: s => s.AddScoped(_ => _deleteConnectedEntityUseCase.Object));
 

@@ -34,7 +34,7 @@ public class OrganisationPartiesEndpointsTests
         _getOrganisationPartiesUseCase.Setup(uc => uc.Execute(organisationId))
             .ReturnsAsync(new OrganisationParties { Parties = [] });
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getOrganisationPartiesUseCase.Object), personScope);
 
@@ -66,7 +66,7 @@ public class OrganisationPartiesEndpointsTests
         _addOrganisationPartyUseCase.Setup(uc => uc.Execute(command))
             .ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _addOrganisationPartyUseCase.Object));
 
@@ -96,7 +96,7 @@ public class OrganisationPartiesEndpointsTests
         _removeOrganisationPartyUseCase.Setup(uc => uc.Execute(command))
             .ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _removeOrganisationPartyUseCase.Object));
 
