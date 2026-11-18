@@ -79,7 +79,7 @@ public class RevokeAuthenticationKeyUseCaseTest()
         var organisationId = Guid.NewGuid();
         var command = (organisationId, _authKeyName);
         var organisation = GivenOrganisationExist(organisationId);
-        var authKey = new Persistence.AuthenticationKey { Key = "k1", Name = _authKeyName, Revoked = false };
+        var authKey = new Persistence.AuthenticationKey { KeyHash = "h1", Name = _authKeyName, Revoked = false };
 
         _organisationRepo.Setup(repo => repo.Find(organisationId)).ReturnsAsync(organisation);
         _keyRepo.Setup(repo => repo.FindByKeyNameAndOrganisationId(_authKeyName, organisationId)).ReturnsAsync(authKey);

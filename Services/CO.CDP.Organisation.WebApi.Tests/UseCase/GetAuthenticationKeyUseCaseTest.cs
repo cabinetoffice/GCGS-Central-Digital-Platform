@@ -29,8 +29,8 @@ public class GetAuthenticationKeyUseCaseTest(AutoMapperFixture mapperFixture) : 
 
         var persistenceAuthorityKeys = new List<AuthenticationKey>
                         {
-                            new AuthenticationKey { Key = "k1", Name = "key-1", OrganisationId = 1, Organisation = org },
-                            new AuthenticationKey { Key = "k2", Name = "key-2", OrganisationId = 1, Organisation = org }
+                            new AuthenticationKey { KeyHash = "h1", Name = "key-1", OrganisationId = 1, Organisation = org },
+                            new AuthenticationKey { KeyHash = "h2", Name = "key-2", OrganisationId = 1, Organisation = org }
                         };
 
         _repository.Setup(r => r.GetAuthenticationKeys(organisationId)).ReturnsAsync(persistenceAuthorityKeys);

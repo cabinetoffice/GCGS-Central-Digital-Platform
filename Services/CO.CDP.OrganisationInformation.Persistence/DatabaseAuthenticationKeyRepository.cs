@@ -6,7 +6,9 @@ public class DatabaseAuthenticationKeyRepository(OrganisationInformationContext 
 {
     public async Task<AuthenticationKey?> Find(string key)
     {
-        return await context.AuthenticationKeys.Include(a => a.Organisation).FirstOrDefaultAsync(t => t.Key == key && t.Revoked == false);
+        var keyHash = ApiKeyHasher.Hash(key);
+
+        return await context.AuthenticationKeys.Include(a => a.Organisation).FirstOrDefaultAsync(t => t.KeyHash == keyHash && t.Revoked == false);
     }
 
     public async Task Save(AuthenticationKey authenticationKey)

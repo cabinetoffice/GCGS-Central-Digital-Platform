@@ -7,7 +7,10 @@ public class AuthenticationKey : IEntityDate
 {
     public int Id { get; set; }
     public required string Name { get; set; }
-    public required string Key { get; set; }
+    /// <summary>SHA-256 (lowercase hex) of the API key. The plaintext key is never stored.</summary>
+    public required string KeyHash { get; set; }
+    /// <summary>Last characters of the key, to help users recognise it.</summary>
+    public string? KeyHint { get; set; }
 
     [ForeignKey(nameof(Organisation))]
     public int? OrganisationId { get; set; }

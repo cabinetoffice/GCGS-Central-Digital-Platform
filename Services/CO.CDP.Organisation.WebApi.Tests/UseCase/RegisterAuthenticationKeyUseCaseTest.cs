@@ -74,7 +74,7 @@ public class RegisterAuthenticationKeyUseCaseTest()
 
         persistanceAuthenticationKey.Should().NotBeNull();
         persistanceAuthenticationKey.As<Persistence.AuthenticationKey>().OrganisationId.Should().Be(1);
-        persistanceAuthenticationKey.As<Persistence.AuthenticationKey>().Key.Should().Be("Key1");
+        persistanceAuthenticationKey.As<Persistence.AuthenticationKey>().KeyHash.Should().Be(Persistence.ApiKeyHasher.Hash("Key1"));
     }
 
     private Persistence.Organisation GivenOrganisationExist(Guid organisationId)
