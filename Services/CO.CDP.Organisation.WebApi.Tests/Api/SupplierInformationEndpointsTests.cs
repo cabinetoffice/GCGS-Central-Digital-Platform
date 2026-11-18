@@ -15,15 +15,16 @@ using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
 
-public class SupplierInformationEndpointsTests
+public class SupplierInformationEndpointsTests : IDisposable
 {
+    private readonly TestWebApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<Guid, SupplierInformation?>> _getSupplierInformationUseCase = new();
     private readonly Mock<IUseCase<(Guid, UpdateSupplierInformation), bool>> _updatesSupplierInformationUseCase = new();
 
     public SupplierInformationEndpointsTests()
     {
-        TestWebApplicationFactory<Program> factory = new(builder =>
+        _factory = new(builder =>
         {
             builder.ConfigureServices(services =>
             {
@@ -37,7 +38,13 @@ public class SupplierInformationEndpointsTests
                 services.ConfigureFakePolicyEvaluator();
             });
         });
-        _httpClient = factory.CreateClient();
+        _httpClient = _factory.CreateClient();
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        _factory.Dispose();
     }
 
     [Fact]
@@ -120,7 +127,7 @@ public class SupplierInformationEndpointsTests
         _getSupplierInformationUseCase.Setup(uc => uc.Execute(organisationId))
             .ReturnsAsync(new SupplierInformation { OrganisationName = "FakeOrg" });
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getSupplierInformationUseCase.Object));
 
@@ -150,7 +157,7 @@ public class SupplierInformationEndpointsTests
 
         _updatesSupplierInformationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updatesSupplierInformationUseCase.Object));
 

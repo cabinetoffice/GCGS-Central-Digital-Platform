@@ -58,7 +58,9 @@ jobs:
 
   test:
     needs: pipeline_check
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04, where Testcontainers 3.9 cannot start the LocalStack image
+    # ("No such image") and the default inotify limits are exhausted. Unpin after upgrading Testcontainers.
+    runs-on: ubuntu-24.04
     name: Tests
     strategy:
       matrix:
@@ -85,6 +87,12 @@ jobs:
       - name: Build
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make build OpenAPI
+      - name: Raise inotify limits
+        if: needs.pipeline_check.outputs.skip_pipeline != 'true'
+        run: |
+          # Test hosts watch config files via inotify; the runner default (128 instances) is easily exhausted
+          sudo sysctl -w fs.inotify.max_user_instances=1024
+          sudo sysctl -w fs.inotify.max_user_watches=524288
       - name: Test
         if: needs.pipeline_check.outputs.skip_pipeline != 'true'
         run: make test TEST_OPTIONS="--logger trx --results-directory 'TestResults-${{ matrix.dotnet-version }}'"
