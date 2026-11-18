@@ -14,7 +14,7 @@ using static System.Net.HttpStatusCode;
 
 namespace CO.CDP.Organisation.WebApi.Tests.Api;
 
-public class OrganisationEndpointsTests
+public class OrganisationEndpointsTests : IDisposable
 {
     private readonly Mock<IUseCase<(Guid, OrganisationJoinRequestStatus?), IEnumerable<JoinRequestLookUp>>>
         _getOrganisationJoinRequestsUseCase = new();
@@ -24,6 +24,7 @@ public class OrganisationEndpointsTests
 
     private readonly Mock<IUseCase<Guid, Model.Organisation>> _getOrganisationUseCase = new();
     private readonly Mock<IUseCase<Guid, IEnumerable<Review>>> _getReviewsUseCase = new();
+    private readonly TestWebApplicationFactory<Program> _factory;
     private readonly HttpClient _httpClient;
     private readonly Mock<IUseCase<RegisterOrganisation, Model.Organisation>> _registerOrganisationUseCase = new();
 
@@ -38,7 +39,7 @@ public class OrganisationEndpointsTests
 
     public OrganisationEndpointsTests()
     {
-        TestWebApplicationFactory<Program> factory = new(builder =>
+        _factory = new(builder =>
         {
             builder.ConfigureServices(services =>
             {
@@ -53,7 +54,13 @@ public class OrganisationEndpointsTests
                 services.ConfigureFakePolicyEvaluator();
             });
         });
-        _httpClient = factory.CreateClient();
+        _httpClient = _factory.CreateClient();
+    }
+
+    public void Dispose()
+    {
+        _httpClient.Dispose();
+        _factory.Dispose();
     }
 
     [Fact]
@@ -128,7 +135,7 @@ public class OrganisationEndpointsTests
         _getOrganisationsUseCase.Setup(uc => uc.Execute(It.IsAny<PaginatedOrganisationQuery>()))
             .ReturnsAsync(new Tuple<IEnumerable<OrganisationDto>, int>([], 0));
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel,
             serviceCollection: s => s.AddScoped(_ => _getOrganisationsUseCase.Object),
             assignedPersonScopes: personScope);
@@ -148,7 +155,7 @@ public class OrganisationEndpointsTests
     {
         var command = GivenRegisterOrganisationCommand();
         SetupRegisterOrganisationUseCaseMock(command);
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, serviceCollection: s => s.AddScoped(_ => _registerOrganisationUseCase.Object));
         var httpClient = factory.CreateClient();
 
@@ -176,7 +183,7 @@ public class OrganisationEndpointsTests
         _getOrganisationUseCase.Setup(useCase => useCase.Execute(organisationId))
             .ReturnsAsync(GivenOrganisation(organisationId));
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, organisationPersonScope,
             services => services.AddScoped(_ => _getOrganisationUseCase.Object), personScope, apiKeyScope);
 
@@ -203,7 +210,7 @@ public class OrganisationEndpointsTests
 
         _updatesOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updatesOrganisationUseCase.Object));
 
@@ -230,7 +237,7 @@ public class OrganisationEndpointsTests
 
         _getOrganisationJoinRequestsUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getOrganisationJoinRequestsUseCase.Object));
 
@@ -259,7 +266,7 @@ public class OrganisationEndpointsTests
 
         _updateJoinRequestUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updateJoinRequestUseCase.Object));
 
@@ -296,7 +303,7 @@ public class OrganisationEndpointsTests
         _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
             .ReturnsAsync(reviews);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getReviewsUseCase.Object));
 
@@ -319,7 +326,7 @@ public class OrganisationEndpointsTests
         _getReviewsUseCase.Setup(uc => uc.Execute(organisationId))
             .ReturnsAsync(new List<Review>());
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Editor,
             services => services.AddScoped(_ => _getReviewsUseCase.Object));
 
@@ -365,7 +372,7 @@ public class OrganisationEndpointsTests
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
             .ReturnsAsync(searchResults);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
 
@@ -389,7 +396,7 @@ public class OrganisationEndpointsTests
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
             .ReturnsAsync(new List<OrganisationSearchResult>());
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
             services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
 
@@ -406,7 +413,7 @@ public class OrganisationEndpointsTests
         _searchOrganisationUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchQuery>()))
             .ReturnsAsync(new List<OrganisationSearchResult>());
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Viewer,
             services => services.AddScoped(_ => _searchOrganisationUseCase.Object));
 
@@ -466,7 +473,7 @@ public class OrganisationEndpointsTests
         _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
             .ReturnsAsync(searchResponse);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
@@ -495,7 +502,7 @@ public class OrganisationEndpointsTests
         _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
             .ReturnsAsync(searchResponse);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
@@ -510,7 +517,7 @@ public class OrganisationEndpointsTests
     {
         var organisationId = Guid.NewGuid();
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 
@@ -556,7 +563,7 @@ public class OrganisationEndpointsTests
         _searchByNameOrPponUseCase.Setup(uc => uc.Execute(It.IsAny<OrganisationSearchByPponQuery>()))
             .ReturnsAsync(searchResponse);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             Channel.OneLogin, organisationId, OrganisationPersonScope.Admin,
             services => services.AddScoped(_ => _searchByNameOrPponUseCase.Object));
 

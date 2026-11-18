@@ -54,7 +54,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task CreateParentChildRelationship_WithValidRoles_ReturnsCreated(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var childOrganisationId = Guid.NewGuid();
@@ -86,7 +86,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task CreateParentChildRelationship_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var childOrganisationId = Guid.NewGuid();
@@ -106,7 +106,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task CreateParentChildRelationship_WhenUseCaseFails_ReturnsBadRequest()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        using var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         var childOrganisationId = Guid.NewGuid();
@@ -134,7 +134,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task CreateParentChildRelationship_WhenChildAlreadyHasParent_ReturnsConflict()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(
+        using var factory = CreateTestFactory(
             Constants.Channel.OneLogin,
             organisationId,
             Constants.OrganisationPersonScope.Admin);
@@ -186,7 +186,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetChildOrganisations_WithValidRoles_ReturnsOk(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var childOrganisations = new List<OrganisationSummary>
@@ -215,7 +215,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetChildOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var response = await client.GetAsync($"/organisations/{organisationId}/hierarchy/children");
@@ -227,7 +227,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetChildOrganisations_WhenUseCaseFails_ReturnsInternalServerError()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        using var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         _mockGetChildOrganisationsUseCase
@@ -265,7 +265,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task SupersedeChildOrganisation_WithValidRoles_ReturnsNoContent(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var childOrganisationId = Guid.NewGuid();
@@ -290,7 +290,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task SupersedeChildOrganisation_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
         var childOrganisationId = Guid.NewGuid();
 
@@ -307,7 +307,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task SupersedeChildOrganisation_WhenRelationshipNotFound_ReturnsNotFound()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        using var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
         var childOrganisationId = Guid.NewGuid();
 
@@ -327,7 +327,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task SupersedeChildOrganisation_WhenUseCaseFails_ReturnsBadRequest()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        using var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
         var childOrganisationId = Guid.NewGuid();
 
@@ -367,7 +367,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetParentOrganisations_WithValidRoles_ReturnsOk(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var parentOrganisations = new List<OrganisationSummary>
@@ -396,7 +396,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetParentOrganisations_WithInvalidRoles_ReturnsForbidden(string authChannel, string organisationPersonScope)
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
+        using var factory = CreateTestFactory(authChannel, organisationId, organisationPersonScope);
         var client = factory.CreateClient();
 
         var response = await client.GetAsync($"/organisations/{organisationId}/hierarchy/parent");
@@ -408,7 +408,7 @@ public class OrganisationHierarchyEndpointsTests
     public async Task GetParentOrganisations_WhenUseCaseFails_ReturnsInternalServerError()
     {
         var organisationId = Guid.NewGuid();
-        var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
+        using var factory = CreateTestFactory(Constants.Channel.OneLogin, organisationId, Constants.OrganisationPersonScope.Admin);
         var client = factory.CreateClient();
 
         _mockGetParentOrganisationsUseCase

@@ -32,7 +32,7 @@ public class ManageApiKeyEndpointsTests
 
         _getAuthenticationKeyUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getAuthenticationKeyUseCase.Object));
 
@@ -58,7 +58,7 @@ public class ManageApiKeyEndpointsTests
 
         _registerAuthenticationKeyUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _registerAuthenticationKeyUseCase.Object));
 
@@ -84,7 +84,7 @@ public class ManageApiKeyEndpointsTests
 
         _revokeAuthenticationKeyUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _revokeAuthenticationKeyUseCase.Object));
 

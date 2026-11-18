@@ -35,7 +35,7 @@ public class PersonInvitesEndpointsTests
 
         _getPersonInvitesUseCase.Setup(uc => uc.Execute(organisationId)).ReturnsAsync([]);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _getPersonInvitesUseCase.Object),
             assignedApiKeyScopes: apiKeyScope);
@@ -70,7 +70,7 @@ public class PersonInvitesEndpointsTests
 
         _invitePersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _invitePersonToOrganisationUseCase.Object),
             assignedApiKeyScopes: apiKeyScope);
@@ -100,7 +100,7 @@ public class PersonInvitesEndpointsTests
 
         _updateInvitedPersonToOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _updateInvitedPersonToOrganisationUseCase.Object),
             assignedApiKeyScopes: apiKeyScope);
@@ -129,7 +129,7 @@ public class PersonInvitesEndpointsTests
 
         _removePersonInviteFromOrganisationUseCase.Setup(uc => uc.Execute(command)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, scope,
             services => services.AddScoped(_ => _removePersonInviteFromOrganisationUseCase.Object),
             assignedApiKeyScopes: apiKeyScope);

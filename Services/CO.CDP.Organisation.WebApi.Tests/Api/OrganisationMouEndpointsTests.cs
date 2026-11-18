@@ -40,7 +40,7 @@ public class OrganisationMouEndpointsTests
                 CreatedBy = null!
             });
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel,
             organisationId,
             organisationPersonScope,

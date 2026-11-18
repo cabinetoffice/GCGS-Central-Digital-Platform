@@ -38,7 +38,7 @@ public class SupportEndpointsTests
 
         _supportUpdateOrganisationUseCase.Setup(useCase => useCase.Execute(tuple)).ReturnsAsync(true);
 
-        var factory = new TestAuthorizationWebApplicationFactory<Program>(
+        using var factory = new TestAuthorizationWebApplicationFactory<Program>(
             channel, organisationId, organisationPersonScope,
             services => services.AddScoped(_ => _supportUpdateOrganisationUseCase.Object), personScope);
 

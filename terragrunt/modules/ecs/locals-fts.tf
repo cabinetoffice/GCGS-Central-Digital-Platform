@@ -98,7 +98,7 @@ locals {
                                             )
     notice_edit_rebuild_form_codes        = lookup(
                                               {
-                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK15,UK16,UK17"
+                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14,UK15,UK16,UK17"
                                                 staging     = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK16,UK17"
                                                 integration = "UK1,UK2,UK3,UK6"
                                                 production  = "UK1,UK2,UK3"
@@ -107,7 +107,7 @@ locals {
                                               ""
                                             )
     notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
-    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK11,UK12" : ""
+    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14" : ""
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
@@ -362,7 +362,7 @@ locals {
       notice_render_pdf_enabled         = true
       notice_render_idle_threshold      = 1
       notice_render_worker_wait_seconds = 10
-      pdf_render_service_url            = contains(["development", "staging"], var.environment) ? local.internal_service_urls[var.service_configs.fts_pdf_render_service.name] : ""
+      pdf_render_service_url            = contains(["development", "staging", "integration", "production"], var.environment) ? local.internal_service_urls[var.service_configs.fts_pdf_render_service.name] : ""
     }
   )
 
