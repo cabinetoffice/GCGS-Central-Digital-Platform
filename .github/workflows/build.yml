@@ -58,7 +58,9 @@ jobs:
 
   test:
     needs: pipeline_check
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest moved to 26.04, where Testcontainers 3.9 cannot start the LocalStack image
+    # ("No such image") and the default inotify limits are exhausted. Unpin after upgrading Testcontainers.
+    runs-on: ubuntu-24.04
     name: Tests
     strategy:
       matrix:
