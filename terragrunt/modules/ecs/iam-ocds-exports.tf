@@ -61,6 +61,26 @@ data "aws_iam_policy_document" "ocds_exports_oidc_assume_role" {
     # And ideally also:
     # - oid (service principal object id) and/or sub patterns
   }
+
+  dynamic "statement" {
+    for_each = var.unity_catalog_assume_role_principal_arn != null ? [1] : []
+    content {
+      sid     = "AllowUnityCatalogAssumeRole"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      principals {
+        type        = "AWS"
+        identifiers = [var.unity_catalog_assume_role_principal_arn]
+      }
+
+      condition {
+        test     = "StringEquals"
+        variable = "sts:ExternalId"
+        values   = [var.unity_catalog_assume_role_external_id]
+      }
+    }
+  }
 }
 
 resource "aws_iam_role" "ocds_exports_reader_oidc" {
