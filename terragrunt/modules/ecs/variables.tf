@@ -199,6 +199,26 @@ variable "ocds_exports_prefix" {
   }
 }
 
+variable "unity_catalog_assume_role_principal_arn" {
+  description = "Optional AWS principal role ARN (e.g. Databricks Unity Catalog role) allowed to assume the OCDS exports reader role via sts:AssumeRole."
+  type        = string
+  default     = null
+}
+
+variable "unity_catalog_assume_role_external_id" {
+  description = "Optional sts:ExternalId required when unity_catalog_assume_role_principal_arn assumes the OCDS exports reader role."
+  type        = string
+  default     = null
+
+  validation {
+    condition = (
+      (var.unity_catalog_assume_role_principal_arn == null && var.unity_catalog_assume_role_external_id == null) ||
+      (var.unity_catalog_assume_role_principal_arn != null && var.unity_catalog_assume_role_external_id != null)
+    )
+    error_message = "unity_catalog_assume_role_principal_arn and unity_catalog_assume_role_external_id must be set together (both null or both non-null)."
+  }
+}
+
 variable "onelogin_logout_notification_urls" {
   description = "A list of URLs that the organisation app will call to notify other services of a logout event"
   type        = list(string)

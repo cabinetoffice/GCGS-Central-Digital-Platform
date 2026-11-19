@@ -172,20 +172,22 @@ dependency service_notification {
 
 inputs = {
 
-  account_ids                       = local.global_vars.locals.account_ids
-  cfs_extra_domains                 = local.global_vars.locals.cfs_extra_domains
-  cfs_extra_host_headers            = local.global_vars.locals.cfs_extra_domains
-  cloudfront_downloads_enabled      = true
-  cloudfront_realtime_logs_role_arn = dependency.core_iam.outputs.cloudfront_realtime_logs_role_arn
-  fts_extra_domains                 = local.global_vars.locals.fts_extra_domains
-  fts_extra_host_headers            = local.global_vars.locals.fts_extra_domains
-  onelogin_logout_notification_urls = local.global_vars.locals.onelogin_logout_notification_urls
-  pinned_service_version_cfs        = local.global_vars.locals.pinned_service_version_cfs
-  pinned_service_version_fts        = local.global_vars.locals.pinned_service_version_fts
-  pinned_service_version_sirsi      = local.global_vars.locals.pinned_service_version
-  service_configs                   = local.global_vars.locals.service_configs
-  tags                              = local.tags
-  use_rds_proxy                     = false # local.global_vars.locals.environment == "development"
+  account_ids                             = local.global_vars.locals.account_ids
+  cfs_extra_domains                       = local.global_vars.locals.cfs_extra_domains
+  cfs_extra_host_headers                  = local.global_vars.locals.cfs_extra_domains
+  cloudfront_downloads_enabled            = true
+  cloudfront_realtime_logs_role_arn       = dependency.core_iam.outputs.cloudfront_realtime_logs_role_arn
+  fts_extra_domains                       = local.global_vars.locals.fts_extra_domains
+  fts_extra_host_headers                  = local.global_vars.locals.fts_extra_domains
+  onelogin_logout_notification_urls       = local.global_vars.locals.onelogin_logout_notification_urls
+  pinned_service_version_cfs              = local.global_vars.locals.pinned_service_version_cfs
+  pinned_service_version_fts              = local.global_vars.locals.pinned_service_version_fts
+  pinned_service_version_sirsi            = local.global_vars.locals.pinned_service_version
+  service_configs                         = local.global_vars.locals.service_configs
+  tags                                    = local.tags
+  unity_catalog_assume_role_principal_arn = local.global_vars.locals.is_production ? "arn:aws:iam::414351767826:role/unity-catalog-prod-UCAzureMainRole-1AJ6UQSSB8F0Q" : null
+  unity_catalog_assume_role_external_id   = local.global_vars.locals.is_production ? "5fb565c7-0b82-4800-8a43-9e2cd314db69" : null
+  use_rds_proxy                           = false # local.global_vars.locals.environment == "development"
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
