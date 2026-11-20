@@ -187,7 +187,7 @@ inputs = {
   tags                                    = local.tags
   unity_catalog_assume_role_principal_arn = local.global_vars.locals.is_production ? "arn:aws:iam::414351767826:role/unity-catalog-prod-UCAzureMainRole-1AJ6UQSSB8F0Q" : null
   unity_catalog_assume_role_external_id   = local.global_vars.locals.is_production ? "5fb565c7-0b82-4800-8a43-9e2cd314db69" : null
-  use_rds_proxy                           = local.global_vars.locals.environment == "development"
+  use_rds_proxy                           = false # local.global_vars.locals.environment == "development"
 
   role_cloudwatch_events_arn               = dependency.core_iam.outputs.cloudwatch_events_arn
   role_cloudwatch_events_name              = dependency.core_iam.outputs.cloudwatch_events_name
