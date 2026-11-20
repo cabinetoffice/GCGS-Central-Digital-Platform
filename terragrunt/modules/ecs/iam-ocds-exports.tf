@@ -1,8 +1,13 @@
+locals {
+  ocds_exports_reader_oidc_role_name = "${local.name_prefix}-ocds-exports-reader-oidc"
+  ocds_exports_reader_oidc_role_arn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${local.ocds_exports_reader_oidc_role_name}"
+}
+
 data "aws_iam_policy_document" "ocds_exports_external_read" {
   statement {
     sid     = "ListExportsPrefix"
     effect  = "Allow"
-    actions = ["s3:ListBucket"]
+    actions = ["s3:GetBucketLocation", "s3:ListBucket"]
 
     resources = [module.s3_bucket_ocds_exports.arn]
 
@@ -24,6 +29,17 @@ data "aws_iam_policy_document" "ocds_exports_external_read" {
     actions = ["s3:GetObject", "s3:GetObjectVersion"]
 
     resources = ["${module.s3_bucket_ocds_exports.arn}/${var.ocds_exports_prefix}*"]
+  }
+
+  dynamic "statement" {
+    for_each = var.unity_catalog_assume_role_principal_arn != null ? [1] : []
+    content {
+      sid     = "AllowSelfAssumeRole"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      resources = [local.ocds_exports_reader_oidc_role_arn]
+    }
   }
 }
 
@@ -81,10 +97,24 @@ data "aws_iam_policy_document" "ocds_exports_oidc_assume_role" {
       }
     }
   }
+
+  dynamic "statement" {
+    for_each = var.unity_catalog_assume_role_principal_arn != null ? [1] : []
+    content {
+      sid     = "AllowSelfAssumeRole"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      principals {
+        type        = "AWS"
+        identifiers = [local.ocds_exports_reader_oidc_role_arn]
+      }
+    }
+  }
 }
 
 resource "aws_iam_role" "ocds_exports_reader_oidc" {
-  name               = "${local.name_prefix}-ocds-exports-reader-oidc"
+  name               = local.ocds_exports_reader_oidc_role_name
   assume_role_policy = data.aws_iam_policy_document.ocds_exports_oidc_assume_role.json
   tags               = var.tags
 }
