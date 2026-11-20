@@ -346,6 +346,16 @@ variable "queue_fts_notice_render_url" {
   type        = string
 }
 
+variable "queue_fts_procurement_transfer_arn" {
+  description = "ARN of the FTS procurement transfer SQS queue"
+  type        = string
+}
+
+variable "queue_fts_procurement_transfer_url" {
+  description = "URL of the FTS procurement transfer SQS queue"
+  type        = string
+}
+
 variable "queue_ocds_export_arn" {
   description = "ARN of the OCDS export SQS queue"
   type        = string
