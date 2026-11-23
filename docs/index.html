@@ -1753,8 +1753,102 @@ return string.Format(count &gt; 1 ? StaticTextResource.Supplier_SupplierInformat
 <div class="sect5">
 <h6 id="_styling">Styling</h6>
 <div class="paragraph">
-<p>The pagination component follows GOV.UK design standards and is styled using the <code>govuk-pagination</code> class to ensure consistency across the application.</p>
+<p>The pagination component follows GOV.UK design standards and is styled using the <code>govuk-pagination</code> class to ensure consistency across the application.
+= How to grant organisation features</p>
 </div>
+<div class="paragraph">
+<p>Some features are only available to specific organisations.
+Access is stored per organisation in the <code>organisation_features</code> table and returned by the Organisation API
+as <code>details.features</code> on <code>GET /organisations/{organisationId}</code>.</p>
+</div>
+<div class="paragraph">
+<p>There is deliberately no API endpoint to grant, revoke or edit features. Changes are made with SQL, per environment.</p>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_known_features">Known features</h5>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 75%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature key</th>
+<th class="tableblock halign-left valign-top">Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ai-tool</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Shows the AI tool tile on the Organisation App home page (<code>/organisation/{id}/home</code>).
+The tile is only shown when <strong>all</strong> of the following are true:
+the <code>Features:AiTool</code> flag is enabled in the Organisation App configuration (master switch),
+the organisation is a buyer, and the organisation has the <code>ai-tool</code> feature.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Feature keys are defined in <code>CO.CDP.OrganisationInformation.OrganisationFeatures</code> (API)
+and <code>CO.CDP.OrganisationApp.Constants.OrganisationFeatures</code> (Organisation App). Keep them in sync.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_grant_a_feature">Grant a feature</h5>
+<div class="paragraph">
+<p>Use the organisation GUID (the <code>id</code> shown in Organisation App URLs). The statement is idempotent.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="sql"><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">organisation_features</span> <span class="p">(</span><span class="n">organisation_id</span><span class="p">,</span> <span class="n">feature</span><span class="p">,</span> <span class="n">created_on</span><span class="p">,</span> <span class="n">updated_on</span><span class="p">)</span>
+<span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="s1">'ai-tool'</span><span class="p">,</span> <span class="n">now</span><span class="p">(),</span> <span class="n">now</span><span class="p">()</span>
+<span class="k">FROM</span> <span class="n">organisations</span>
+<span class="k">WHERE</span> <span class="n">guid</span> <span class="o">=</span> <span class="s1">'&lt;organisation-guid&gt;'</span>
+<span class="k">ON</span> <span class="n">CONFLICT</span> <span class="p">(</span><span class="n">organisation_id</span><span class="p">,</span> <span class="n">feature</span><span class="p">)</span> <span class="k">DO</span> <span class="k">NOTHING</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check that exactly one row was inserted (<code>INSERT 0 1</code>). <code>INSERT 0 0</code> means the organisation GUID was not found,
+or the organisation already had the feature.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_revoke_a_feature">Revoke a feature</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="sql"><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">organisation_features</span>
+<span class="k">WHERE</span> <span class="n">feature</span> <span class="o">=</span> <span class="s1">'ai-tool'</span>
+  <span class="k">AND</span> <span class="n">organisation_id</span> <span class="o">=</span> <span class="p">(</span><span class="k">SELECT</span> <span class="n">id</span> <span class="k">FROM</span> <span class="n">organisations</span> <span class="k">WHERE</span> <span class="n">guid</span> <span class="o">=</span> <span class="s1">'&lt;organisation-guid&gt;'</span><span class="p">);</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_list_organisations_with_a_feature">List organisations with a feature</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="sql"><span class="k">SELECT</span> <span class="n">o</span><span class="p">.</span><span class="n">guid</span><span class="p">,</span> <span class="n">o</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="p">.</span><span class="n">feature</span><span class="p">,</span> <span class="n">f</span><span class="p">.</span><span class="n">created_on</span>
+<span class="k">FROM</span> <span class="n">organisation_features</span> <span class="n">f</span>
+<span class="k">JOIN</span> <span class="n">organisations</span> <span class="n">o</span> <span class="k">ON</span> <span class="n">o</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">f</span><span class="p">.</span><span class="n">organisation_id</span>
+<span class="k">WHERE</span> <span class="n">f</span><span class="p">.</span><span class="n">feature</span> <span class="o">=</span> <span class="s1">'ai-tool'</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">o</span><span class="p">.</span><span class="n">name</span><span class="p">;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_notes">Notes</h5>
+<div class="ulist">
+<ul>
+<li>
+<p>Changes take effect on the next page load; the Organisation App does not cache organisation details for the home page.</p>
+</li>
+<li>
+<p>Rows are deleted automatically when the organisation is deleted (<code>ON DELETE CASCADE</code>).</p>
+</li>
+<li>
+<p>Rollout order for a new feature: deploy the database migration and API first, then the frontend, then run the grant SQL.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -3573,7 +3667,7 @@ more <code>OutboxRoutes</code> entries, and should be recorded as a separate ADR
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2026-11-23 11:39:58 UTC
+Last updated 2026-11-23 13:42:12 UTC
 </div>
 </div>
 </body>
