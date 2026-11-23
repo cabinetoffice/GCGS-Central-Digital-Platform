@@ -513,7 +513,7 @@ public class FormsEngineTests
             .ReturnsAsync(new Organisation.WebApiClient.Organisation(additionalIdentifiers: [], addresses: [],
                 contactPoint: null, id: organisationId, identifier: null, name: "User's current organisation",
                 type: OrganisationType.Organisation, roles: [],
-                details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+                details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                     publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)));
         _userInfoServiceMock.Setup(u => u.GetOrganisationId()).Returns(organisationId);
         _tempDataServiceMock.Setup(t => t.Peek<SectionQuestionsResponse>(sessionKey))

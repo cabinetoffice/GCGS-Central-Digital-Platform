@@ -11,6 +11,12 @@ public record Details
     public bool? ShelteredWorkshop { get; set; }
     public bool? PublicServiceMissionOrganization { get; set; }
     public BuyerInformation? BuyerInformation { get; init; }
+
+    /// <summary>
+    /// Features enabled for this organisation, for example "ai-tool".
+    /// See <see cref="OrganisationFeatures"/> for known keys.
+    /// </summary>
+    public List<string> Features { get; init; } = [];
 }
 
 public record Approval

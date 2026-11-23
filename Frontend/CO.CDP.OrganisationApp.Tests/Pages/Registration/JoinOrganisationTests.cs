@@ -270,7 +270,7 @@ public class JoinOrganisationModelTests
                   additionalIdentifiers: null,
                   addresses: null,
                   contactPoint: null,
-                  details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+                  details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
                   id: _organisationId,
                   identifier: null,
                   name: "Test Org",

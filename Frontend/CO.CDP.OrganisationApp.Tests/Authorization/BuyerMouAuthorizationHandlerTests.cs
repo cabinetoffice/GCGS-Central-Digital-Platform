@@ -130,6 +130,7 @@ public class BuyerMouAuthorizationHandlerTests
             details: new Details(
                 null,
                 null,
+                null,
                 [CO.CDP.Organisation.WebApiClient.PartyRole.Buyer], // Buyer role is pending
                 null,
                 null,
@@ -280,6 +281,7 @@ public class BuyerMouAuthorizationHandlerTests
             roles: [CO.CDP.Organisation.WebApiClient.PartyRole.Buyer],
             details: new Details(
                 null, // No approval object needed - approval comes from having buyer role
+                null,
                 null,
                 [], // Empty pending roles means the buyer role is approved
                 null,

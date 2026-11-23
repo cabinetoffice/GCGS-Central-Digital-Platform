@@ -15,6 +15,11 @@ public static class OrganisationExtensions
         return organisation.Roles.Contains(PartyRole.Buyer);
     }
 
+    public static bool HasFeature(this Organisation.WebApiClient.Organisation organisation, string feature)
+    {
+        return organisation.Details?.Features?.Contains(feature) == true;
+    }
+
     public static bool IsPendingBuyer(this Organisation.WebApiClient.Organisation organisation)
     {
         return organisation.Details.PendingRoles.Contains(PartyRole.Buyer);

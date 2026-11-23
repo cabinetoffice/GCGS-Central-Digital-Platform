@@ -1637,6 +1637,75 @@ public class DatabaseOrganisationRepositoryTest(OrganisationInformationPostgreSq
         results.Should().Contain(o => o.Name == "FilterOrg5" && o.PendingRoles.Count == 0);
     }
 
+    [Fact]
+    public async Task FindLoadsOrganisationFeatures()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation(roles: [PartyRole.Buyer]);
+        organisation.Features.Add(new OrganisationFeature { Feature = OrganisationFeatures.AiTool });
+        repository.Save(organisation);
+
+        await using var freshContext = postgreSql.OrganisationInformationContext();
+        using var freshRepository = new DatabaseOrganisationRepository(freshContext);
+        var found = await freshRepository.Find(organisation.Guid);
+
+        found.Should().NotBeNull();
+        found!.Features.Select(f => f.Feature).Should().Equal(OrganisationFeatures.AiTool);
+        found.Features.Single().CreatedOn.Should().NotBe(default);
+    }
+
+    [Fact]
+    public async Task FindReturnsEmptyFeaturesWhenOrganisationHasNone()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation(roles: [PartyRole.Buyer]);
+        repository.Save(organisation);
+
+        await using var freshContext = postgreSql.OrganisationInformationContext();
+        using var freshRepository = new DatabaseOrganisationRepository(freshContext);
+        var found = await freshRepository.Find(organisation.Guid);
+
+        found.Should().NotBeNull();
+        found!.Features.Should().BeEmpty();
+    }
+
+    [Fact]
+    public async Task SavingTheSameFeatureTwiceForAnOrganisationFails()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation = GivenOrganisation(roles: [PartyRole.Buyer]);
+        organisation.Features.Add(new OrganisationFeature { Feature = OrganisationFeatures.AiTool });
+        repository.Save(organisation);
+
+        await using var context = postgreSql.OrganisationInformationContext();
+        context.Add(new OrganisationFeature { OrganisationId = organisation.Id, Feature = OrganisationFeatures.AiTool });
+
+        var act = async () => await context.SaveChangesAsync();
+
+        (await act.Should().ThrowAsync<DbUpdateException>())
+            .WithInnerException<Npgsql.PostgresException>()
+            .Which.SqlState.Should().Be(Npgsql.PostgresErrorCodes.UniqueViolation);
+    }
+
+    [Fact]
+    public async Task TheSameFeatureCanBeGrantedToDifferentOrganisations()
+    {
+        using var repository = OrganisationRepository();
+
+        var organisation1 = GivenOrganisation(roles: [PartyRole.Buyer]);
+        organisation1.Features.Add(new OrganisationFeature { Feature = OrganisationFeatures.AiTool });
+        var organisation2 = GivenOrganisation(roles: [PartyRole.Buyer]);
+        organisation2.Features.Add(new OrganisationFeature { Feature = OrganisationFeatures.AiTool });
+
+        repository.Save(organisation1);
+        var act = () => repository.Save(organisation2);
+
+        act.Should().NotThrow();
+    }
+
     private DatabaseOrganisationRepository OrganisationRepository()
         => new(GetDbContext());
 

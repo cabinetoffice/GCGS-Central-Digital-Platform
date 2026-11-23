@@ -360,7 +360,7 @@ public class OrganisationApprovalModelTests
                     name: "Test Organisation",
                     type: OrganisationType.Organisation,
                     roles: new List<PartyRole>(),
-                    details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+                    details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
                 );
     }
 

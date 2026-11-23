@@ -898,7 +898,7 @@ public class FormsQuestionPageModelTest
                 additionalIdentifiers: [], addresses: [],
                 contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null,
                     url: null),
-                details: new Details(null, null, null, null, null, null, null), roles: [],
+                details: new Details(null, null, null, null, null, null, null, null), roles: [],
                 type: OrganisationType.Organisation
             ));
 
@@ -1218,7 +1218,7 @@ public class FormsQuestionPageModelTest
                 additionalIdentifiers: [], addresses: [],
                 contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null,
                     url: null),
-                details: new Details(null, null, null, null, null, null, null), roles: [],
+                details: new Details(null, null, null, null, null, null, null, null), roles: [],
                 type: OrganisationType.Organisation
             ));
         _userInfoServiceMock.Setup(uis => uis.GetUserInfo())
@@ -1548,7 +1548,7 @@ public class FormsQuestionPageModelTest
                 additionalIdentifiers: [], addresses: [],
                 contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null,
                     url: null),
-                details: new Details(null, null, null, null, null, null, null), roles: [],
+                details: new Details(null, null, null, null, null, null, null, null), roles: [],
                 type: OrganisationType.Organisation
             ));
         _userInfoServiceMock.Setup(uis => uis.GetUserInfo())
@@ -1892,7 +1892,7 @@ public class FormsQuestionPageModelTest
                 additionalIdentifiers: [], addresses: [],
                 contactPoint: new ContactPoint(name: "Test Contact", email: "test@example.com", telephone: null,
                     url: null),
-                details: new Details(null, null, null, null, null, null, null), roles: [],
+                details: new Details(null, null, null, null, null, null, null, null), roles: [],
                 type: OrganisationType.Organisation
             ));
         _userInfoServiceMock.Setup(uis => uis.GetUserInfo())

@@ -146,7 +146,7 @@ public class SupplierToBuyerSelectDevolvedRegulationTest
                 buyerInformation: new BuyerInformation(
                     buyerType: "Buyer Type",
                     devolvedRegulations: [CDP.Organisation.WebApiClient.DevolvedRegulation.Wales]),
-                pendingRoles: pendingRoles,
+                features: [], pendingRoles: pendingRoles,
                 publicServiceMissionOrganization: null,
                 scale: null,
                 shelteredWorkshop: null,

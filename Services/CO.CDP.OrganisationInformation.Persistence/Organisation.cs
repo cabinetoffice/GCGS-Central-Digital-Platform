@@ -17,6 +17,7 @@ public class Organisation : IEntityDate
     public IList<Identifier> Identifiers { get; set; } = [];
     public ICollection<OrganisationAddress> Addresses { get; set; } = [];
     public ICollection<ContactPoint> ContactPoints { get; set; } = [];
+    public ICollection<OrganisationFeature> Features { get; set; } = [];
     public List<PartyRole> Roles { get; init; } = [];
     public List<PartyRole> PendingRoles { get; init; } = [];
     public List<Person> Persons => OrganisationPersons.Select(p => p.Person).ToList();
@@ -75,6 +76,21 @@ public record Identifier : IEntityDate
     public required string LegalName { get; set; }
     public string? Uri { get; set; }
     public required bool Primary { get; set; }
+    public DateTimeOffset CreatedOn { get; set; }
+    public DateTimeOffset UpdatedOn { get; set; }
+}
+
+public record OrganisationFeature : IEntityDate
+{
+    [Key]
+    public int Id { get; set; }
+
+    [ForeignKey(nameof(Organisation))]
+    public int OrganisationId { get; set; }
+    public Organisation? Organisation { get; set; }
+
+    [MaxLength(100)]
+    public required string Feature { get; set; }
     public DateTimeOffset CreatedOn { get; set; }
     public DateTimeOffset UpdatedOn { get; set; }
 }

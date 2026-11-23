@@ -158,7 +158,7 @@ public class SupplierToBuyerDevolvedRegulationTest
                 buyerInformation: new BuyerInformation(
                     buyerType: "Buyer Type",
                     devolvedRegulations: devolvedRegulations),
-                pendingRoles: pendingRoles,
+                features: [], pendingRoles: pendingRoles,
                 publicServiceMissionOrganization: null,
                 scale: null,
                 shelteredWorkshop: null,

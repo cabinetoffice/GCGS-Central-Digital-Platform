@@ -133,7 +133,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -182,7 +182,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -221,7 +221,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -278,7 +278,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -329,7 +329,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
 
         _mockOrganisationClient
@@ -375,7 +375,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [PartyRole.Buyer],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [PartyRole.Buyer],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -410,7 +410,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
@@ -451,7 +451,7 @@ public class ChildOrganisationConfirmPageTests
             name: "Test Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Buyer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 

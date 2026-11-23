@@ -23,6 +23,7 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.Details, o => o.MapFrom(m => new Details
             {
                 PendingRoles = m.PendingRoles,
+                Features = m.Features.Select(f => f.Feature).ToList(),
                 BuyerInformation = m.BuyerInfo != null
                                     ? new BuyerInformation { BuyerType = m.BuyerInfo.BuyerType, DevolvedRegulations = m.BuyerInfo.DevolvedRegulations } : null,
 
@@ -176,7 +177,8 @@ public class WebApiToPersistenceProfile : Profile
             .ForMember(m => m.ReviewedBy, o => o.Ignore())
             .ForMember(m => m.ReviewComment, o => o.Ignore())
             .ForMember(m => m.ApprovedOn, o => o.Ignore())
-            .ForMember(m => m.ReviewedById, o => o.Ignore());
+            .ForMember(m => m.ReviewedById, o => o.Ignore())
+            .ForMember(m => m.Features, o => o.Ignore());
 
         CreateMap<Persistence.SupplierInformation, SupplierInformation>()
             .ForMember(m => m.OrganisationName, o => o.Ignore());

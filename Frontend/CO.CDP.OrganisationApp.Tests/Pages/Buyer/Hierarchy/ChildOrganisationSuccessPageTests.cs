@@ -39,7 +39,7 @@ public class ChildOrganisationSuccessPageTests
             name: "Test Ppon Organisation",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier, PartyRole.Tenderer],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 
