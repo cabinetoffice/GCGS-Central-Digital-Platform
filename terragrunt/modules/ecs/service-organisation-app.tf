@@ -26,7 +26,7 @@ module "ecs_service_organisation_app" {
   container_definitions = templatefile(
     "${path.module}/templates/task-definitions/${var.service_configs.organisation_app.name}.json.tftpl",
     {
-      ai_tool_enabled                     = contains(["development", "integration"], var.environment) ? true : false
+      ai_tool_enabled                     = contains(["development", "integration", "staging"], var.environment) ? true : false
       payments_enabled                    = true
       payments_service_base_url           = var.is_production ? "https://publish-payments.supplier-information.find-tender.service.gov.uk" : "https://aipgmgsy4v.eu-west-2.awsapprunner.com"
       aspcore_environment                 = local.aspcore_environment

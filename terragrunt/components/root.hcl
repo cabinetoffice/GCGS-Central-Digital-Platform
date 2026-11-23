@@ -169,7 +169,7 @@ locals {
       grafana_db_multi_az                 = false
       pinned_service_version_cfs          = "1.1.1"
       pinned_service_version_fts          = "3.5.0-fc-2325-esender.3"
-      pinned_service_version              = "1.4.0"
+      pinned_service_version              = "1.4.1"
       postgres_instance_type              = "db.t4g.micro"
       postgres_aurora_instance_type       = "db.r5.large"
       private_subnets = [
