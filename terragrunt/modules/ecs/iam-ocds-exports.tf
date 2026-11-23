@@ -5,9 +5,25 @@ locals {
 
 data "aws_iam_policy_document" "ocds_exports_external_read" {
   statement {
+    sid     = "GetExportsBucketLocation"
+    effect  = "Allow"
+    actions = ["s3:GetBucketLocation"]
+
+    resources = [module.s3_bucket_ocds_exports.arn]
+  }
+
+  statement {
+    sid     = "GetExportsBucketVersioning"
+    effect  = "Allow"
+    actions = ["s3:GetBucketVersioning"]
+
+    resources = [module.s3_bucket_ocds_exports.arn]
+  }
+
+  statement {
     sid     = "ListExportsPrefix"
     effect  = "Allow"
-    actions = ["s3:GetBucketLocation", "s3:ListBucket"]
+    actions = ["s3:ListBucket"]
 
     resources = [module.s3_bucket_ocds_exports.arn]
 
@@ -23,10 +39,30 @@ data "aws_iam_policy_document" "ocds_exports_external_read" {
     }
   }
 
+  # Some S3 clients issue ListBucket without a prefix during validation/browsing.
+  statement {
+    sid     = "ListExportsNoPrefix"
+    effect  = "Allow"
+    actions = ["s3:ListBucket"]
+
+    resources = [module.s3_bucket_ocds_exports.arn]
+
+    condition {
+      test     = "Null"
+      variable = "s3:prefix"
+      values   = ["true"]
+    }
+  }
+
   statement {
     sid     = "ReadExportsObjects"
     effect  = "Allow"
-    actions = ["s3:GetObject", "s3:GetObjectVersion"]
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectAttributes",
+      "s3:GetObjectTagging",
+      "s3:GetObjectVersion"
+    ]
 
     resources = ["${module.s3_bucket_ocds_exports.arn}/${var.ocds_exports_prefix}*"]
   }
