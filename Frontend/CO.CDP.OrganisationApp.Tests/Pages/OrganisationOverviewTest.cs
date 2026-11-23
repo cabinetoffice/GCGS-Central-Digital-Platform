@@ -390,7 +390,7 @@ public class OrganisationOverviewTest
             type: organisationType ?? OrganisationType.Organisation,
             roles: roles ?? new List<PartyRole>(),
             details: new Details(approval: null, buyerInformation: null,
-                pendingRoles: pendingRoles ?? new List<PartyRole>(), publicServiceMissionOrganization: null,
+                features: [], pendingRoles: pendingRoles ?? new List<PartyRole>(), publicServiceMissionOrganization: null,
                 scale: null, shelteredWorkshop: null, vcse: null)
         );
     }

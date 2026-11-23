@@ -13,7 +13,8 @@ internal static class OrganisationFactory
         ICollection<Address>? addresses = null,
         ContactPoint? contactPoint = null,
         Details? details = null,
-        OrganisationType? type = null)
+        OrganisationType? type = null,
+        ICollection<string>? features = null)
     {
         return new CO.CDP.Organisation.WebApiClient.Organisation(
             additionalIdentifiers: additionalIdentifiers ?? [],
@@ -45,7 +46,7 @@ internal static class OrganisationFactory
             name: name ?? "Test Organisation",
             type: type ?? OrganisationType.Organisation,
             roles: roles ?? [PartyRole.Buyer, PartyRole.Supplier],
-            details: details ?? new Details(null, null, [], null, null, null, null)
+            details: details ?? new Details(null, null, features ?? [], [], null, null, null, null)
         );
     }
 }

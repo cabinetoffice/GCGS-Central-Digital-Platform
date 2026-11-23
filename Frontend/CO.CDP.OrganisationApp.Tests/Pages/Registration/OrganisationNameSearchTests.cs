@@ -296,7 +296,7 @@ public class OrganisationNameSearchModelTests
                   additionalIdentifiers: null,
                   addresses: null,
                   contactPoint: null,
-                  details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+                  details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
                   id: _givenOrganisationId,
                   identifier: new Identifier("123", "Acme", "scheme", new Uri("http://www.acme.org")),
                   name: "Test Org",

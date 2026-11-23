@@ -188,7 +188,7 @@ public class OrganisationInternationalIdentificationModelTest
                additionalIdentifiers: additionalIdentifiers,
                addresses: null,
                contactPoint: null,
-               details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
+               details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null),
                id: _organisationId,
                identifier: identifier,
                name: "Test Org",

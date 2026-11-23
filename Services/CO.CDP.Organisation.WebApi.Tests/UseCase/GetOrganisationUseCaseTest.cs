@@ -130,4 +130,48 @@ public class GetOrganisationUseCaseTest(AutoMapperFixture mapperFixture) : IClas
 
         found.Should().BeEquivalentTo(expectedModelOrganisation, options => options.ComparingByMembers<Model.Organisation>());
     }
+
+    [Fact]
+    public async Task ItReturnsTheOrganisationFeatures()
+    {
+        var organisationId = Guid.NewGuid();
+        var persistenceOrganisation = GivenPersistenceOrganisation(organisationId);
+        persistenceOrganisation.Features =
+        [
+            new OrganisationFeature { Feature = OrganisationFeatures.AiTool },
+            new OrganisationFeature { Feature = "another-feature" }
+        ];
+        _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(persistenceOrganisation);
+
+        var found = await UseCase.Execute(organisationId);
+
+        found!.Details.Features.Should().BeEquivalentTo(OrganisationFeatures.AiTool, "another-feature");
+    }
+
+    [Fact]
+    public async Task ItReturnsEmptyFeaturesWhenOrganisationHasNone()
+    {
+        var organisationId = Guid.NewGuid();
+        _repository.Setup(r => r.Find(organisationId)).ReturnsAsync(GivenPersistenceOrganisation(organisationId));
+
+        var found = await UseCase.Execute(organisationId);
+
+        found!.Details.Features.Should().NotBeNull().And.BeEmpty();
+    }
+
+    private static OrganisationInformation.Persistence.Organisation GivenPersistenceOrganisation(Guid organisationId) =>
+        new()
+        {
+            Id = 1,
+            Guid = organisationId,
+            Name = "Test Organisation",
+            Type = OrganisationType.Organisation,
+            Tenant = new Tenant
+            {
+                Id = 101,
+                Guid = Guid.NewGuid(),
+                Name = "Tenant 101"
+            },
+            Roles = [PartyRole.Buyer]
+        };
 }

@@ -100,6 +100,15 @@ public class OrganisationInformationContext(DbContextOptions<OrganisationInforma
 
         modelBuilder.Entity<Identifier>().ToTable("identifiers");
         modelBuilder.Entity<ContactPoint>().ToTable("contact_points");
+        modelBuilder.Entity<OrganisationFeature>(entity =>
+        {
+            entity.ToTable("organisation_features");
+            entity.HasIndex(e => new { e.OrganisationId, e.Feature }).IsUnique();
+            entity.HasOne(e => e.Organisation)
+                .WithMany(o => o.Features)
+                .HasForeignKey(e => e.OrganisationId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
         modelBuilder.Entity<SupplierInformation>(a =>
         {
             a.OwnsOne(x => x.LegalForm, y =>

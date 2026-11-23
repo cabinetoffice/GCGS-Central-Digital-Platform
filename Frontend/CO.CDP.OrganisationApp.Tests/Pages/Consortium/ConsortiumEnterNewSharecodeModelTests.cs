@@ -119,7 +119,7 @@ public class ConsortiumEnterNewSharecodeModelTests
 
     private static CO.CDP.Organisation.WebApiClient.Organisation GivenOrganisationClientModel(Guid id, string name = "Test Consortium")
     {
-        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id, identifier: null, name: name, type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
+        return new CO.CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id, identifier: null, name: name, type: CDP.Organisation.WebApiClient.OrganisationType.InformalConsortium, roles: [], details: new CO.CDP.Organisation.WebApiClient.Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private static DataSharing.WebApiClient.SupplierInformation GetSupplierInfo()

@@ -357,7 +357,7 @@ public class OrganisationIdentificationModelTest
             details: new Details(
                 approval: null,
                 buyerInformation: null,
-                pendingRoles: [],
+                features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null,
                 scale: null,
                 shelteredWorkshop: null,

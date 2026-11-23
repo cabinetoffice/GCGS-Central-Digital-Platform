@@ -68,7 +68,7 @@ public class BuyerRoleAuthorizationHandlerTests
             id: orgId,
             roles: [],
             details: new Details(approval: null, buyerInformation: null,
-                pendingRoles: [],
+                features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
         var handler = CreateHandler();
@@ -222,7 +222,7 @@ public class BuyerRoleAuthorizationHandlerTests
         var organisation = OrganisationFactory.CreateOrganisation(
             id: orgId,
             roles: [PartyRole.Buyer],
-            details: new Details(null, null, [PartyRole.Buyer], null, null, null, null)
+            details: new Details(null, null, null, [PartyRole.Buyer], null, null, null, null)
         );
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
 
@@ -255,7 +255,7 @@ public class BuyerRoleAuthorizationHandlerTests
         var organisation = OrganisationFactory.CreateOrganisation(
             id: orgId,
             roles: [PartyRole.Supplier],
-            details: new Details(null, null, [PartyRole.Buyer], null, null, null, null)
+            details: new Details(null, null, null, [PartyRole.Buyer], null, null, null, null)
         );
         _organisationClientMock.Setup(c => c.GetOrganisationAsync(orgId)).ReturnsAsync(organisation);
 

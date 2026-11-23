@@ -151,7 +151,7 @@ public class OrganisationHomeModel(
             });
         }
 
-        if (featureConfig.AiToolEnabled)
+        if (featureConfig.AiToolEnabled && OrganisationDetails!.HasFeature(OrganisationFeatures.AiTool))
         {
             tiles.Add(new Tile
             {

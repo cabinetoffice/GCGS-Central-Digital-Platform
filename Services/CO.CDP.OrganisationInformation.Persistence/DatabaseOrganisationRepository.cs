@@ -22,6 +22,7 @@ public class DatabaseOrganisationRepository(OrganisationInformationContext conte
                 .Include(b => b.BuyerInfo)
                 .Include(s => s.SupplierInfo)
                 .Include(p => p.Addresses).ThenInclude(p => p.Address)
+                .Include(o => o.Features)
                 .AsSingleQuery()
                 .FirstOrDefaultAsync(t => t.Guid == organisationId);
     }

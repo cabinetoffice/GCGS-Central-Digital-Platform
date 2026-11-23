@@ -1,0 +1,65 @@
+= How to grant organisation features
+
+Some features are only available to specific organisations.
+Access is stored per organisation in the `organisation_features` table and returned by the Organisation API
+as `details.features` on `GET /organisations/{organisationId}`.
+
+There is deliberately no API endpoint to grant, revoke or edit features. Changes are made with SQL, per environment.
+
+== Known features
+
+[cols="1,3"]
+|===
+|Feature key |Effect
+
+|`ai-tool`
+|Shows the AI tool tile on the Organisation App home page (`/organisation/{id}/home`).
+The tile is only shown when *all* of the following are true:
+the `Features:AiTool` flag is enabled in the Organisation App configuration (master switch),
+the organisation is a buyer, and the organisation has the `ai-tool` feature.
+|===
+
+Feature keys are defined in `CO.CDP.OrganisationInformation.OrganisationFeatures` (API)
+and `CO.CDP.OrganisationApp.Constants.OrganisationFeatures` (Organisation App). Keep them in sync.
+
+== Grant a feature
+
+Use the organisation GUID (the `id` shown in Organisation App URLs). The statement is idempotent.
+
+[source,sql]
+----
+INSERT INTO organisation_features (organisation_id, feature, created_on, updated_on)
+SELECT id, 'ai-tool', now(), now()
+FROM organisations
+WHERE guid = '<organisation-guid>'
+ON CONFLICT (organisation_id, feature) DO NOTHING;
+----
+
+Check that exactly one row was inserted (`INSERT 0 1`). `INSERT 0 0` means the organisation GUID was not found,
+or the organisation already had the feature.
+
+== Revoke a feature
+
+[source,sql]
+----
+DELETE FROM organisation_features
+WHERE feature = 'ai-tool'
+  AND organisation_id = (SELECT id FROM organisations WHERE guid = '<organisation-guid>');
+----
+
+== List organisations with a feature
+
+[source,sql]
+----
+SELECT o.guid, o.name, f.feature, f.created_on
+FROM organisation_features f
+JOIN organisations o ON o.id = f.organisation_id
+WHERE f.feature = 'ai-tool'
+ORDER BY o.name;
+----
+
+== Notes
+
+* Changes take effect on the next page load; the Organisation App does not cache organisation details for the home page.
+* Rows are deleted automatically when the organisation is deleted (`ON DELETE CASCADE`).
+* Rollout order for a new feature: deploy the database migration and API first, then the frontend, then run the grant SQL.

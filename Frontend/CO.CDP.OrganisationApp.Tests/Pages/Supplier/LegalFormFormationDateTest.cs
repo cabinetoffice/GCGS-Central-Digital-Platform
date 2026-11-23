@@ -218,7 +218,7 @@ public class LegalFormFormationDateTest
 
     private static OrganisationWebApiClient.Organisation GivenOrganisationClientModel(Guid? id)
     {
-        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", type: OrganisationWebApiClient.OrganisationType.Organisation, roles: [], details: new OrganisationWebApiClient.Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
+        return new OrganisationWebApiClient.Organisation(additionalIdentifiers: null, addresses: null, contactPoint: null, id: id ?? Guid.NewGuid(), identifier: null, name: "Test Org", type: OrganisationWebApiClient.OrganisationType.Organisation, roles: [], details: new OrganisationWebApiClient.Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 
     private void SetupTempService()

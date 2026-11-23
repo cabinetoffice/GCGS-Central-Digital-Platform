@@ -361,7 +361,7 @@ public class OrganisationDetailsSummaryModelTest
             name: name,
             type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [PartyRole.Buyer],
             details: new Details(approval: null, buyerInformation: null,
-                                pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
+                                features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
                                 shelteredWorkshop: null, vcse: null));
     }
 
@@ -373,7 +373,7 @@ public class OrganisationDetailsSummaryModelTest
             name: "Test Org",
             type: CDP.Organisation.WebApiClient.OrganisationType.Organisation, roles: [],
             details: new Details(approval: null, buyerInformation: null,
-                                pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
+                                features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null,
                                 shelteredWorkshop: null, vcse: null));
     }
 

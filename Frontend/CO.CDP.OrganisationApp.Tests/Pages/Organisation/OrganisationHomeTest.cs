@@ -228,9 +228,9 @@ public class OrganisationHomeTest
     }
 
     [Fact]
-    public async Task OnGet_WhenBuyerWithAiTool_PopulatesTileThree()
+    public async Task OnGet_WhenBuyerWithAiToolFlagAndFeature_PopulatesTileThree()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
@@ -252,6 +252,71 @@ public class OrganisationHomeTest
         var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolFlagOnButOrganisationLacksFeature_DoesNotPopulateTileThree()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: []);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+        _externalServiceUrlBuilderMock.Verify(c => c.BuildUrl(
+            ExternalService.AiTool, It.IsAny<string>(), It.IsAny<Guid?>(), It.IsAny<string?>(), It.IsAny<bool?>(),
+            It.IsAny<Dictionary<string, string?>>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolFlagOnAndOrganisationHasOtherFeaturesOnly_DoesNotPopulateTileThree()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: ["some-other-feature"]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolFlagOnAndFeaturesMissingFromApiResponse_DoesNotPopulateTileThree()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(
+            roles: [PartyRole.Buyer],
+            details: new Details(null, null, null, [], null, null, null, null));
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenAiToolFlagOffAndOrganisationHasFeature_DoesNotPopulateTileThree()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(false);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(tile => tile.Title == StaticTextResource.OrganisationHome_TileThree_Title);
+    }
+
+    [Fact]
+    public async Task OnGet_WhenNotBuyerButHasAiToolFeatureAndFlagOn_DoesNotPopulateTileThree()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer], features: [OrganisationFeatures.AiTool]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
 
         await _model.OnGet();
 
@@ -339,7 +404,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_WhenNotBuyer_DoesNotPopulateBuyerTiles()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Tenderer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.SearchRegistryPpon)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
@@ -371,7 +436,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_WhenCookiesAccepted_PassesTrueToExternalServices()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
@@ -389,7 +454,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_WhenCookiesRejected_PassesFalseToExternalServices()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Reject);
@@ -407,7 +472,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_WhenCookiesUnknown_PassesNullToExternalServices()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Unknown);
@@ -425,7 +490,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_PassesOriginParameterToExternalServices()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.AiTool)).ReturnsAsync(true);
         _cookiePreferencesServiceMock.Setup(c => c.GetValue()).Returns(CookieAcceptanceValues.Accept);
@@ -448,7 +513,7 @@ public class OrganisationHomeTest
     [Fact]
     public async Task OnGet_WhenBuyerAndSupplier_PopulatesBothBuyerAndSupplierTiles()
     {
-        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer, PartyRole.Tenderer]);
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer, PartyRole.Tenderer], features: [OrganisationFeatures.AiTool]);
         _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolBuyer)).ReturnsAsync(true);
         _featureManagerMock.Setup(fm => fm.IsEnabledAsync(FeatureFlags.FvraToolSupplier)).ReturnsAsync(true);

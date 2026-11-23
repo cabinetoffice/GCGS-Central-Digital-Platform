@@ -147,6 +147,6 @@ public class ChangePersonUserRoleTests
             name: "Test Org",
             type: OrganisationType.Organisation,
             roles: [PartyRole.Supplier],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [], publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null)
         );
 }

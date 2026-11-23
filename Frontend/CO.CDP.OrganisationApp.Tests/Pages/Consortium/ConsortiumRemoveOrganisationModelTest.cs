@@ -119,7 +119,7 @@ public class ConsortiumRemoveOrganisationModelTests
         return new CDP.Organisation.WebApiClient.Organisation(additionalIdentifiers: null, addresses: null,
             contactPoint: null, id: _orgId, identifier: null, name: "Test Consortium",
             type: OrganisationType.InformalConsortium, roles: [],
-            details: new Details(approval: null, buyerInformation: null, pendingRoles: [],
+            details: new Details(approval: null, buyerInformation: null, features: [], pendingRoles: [],
                 publicServiceMissionOrganization: null, scale: null, shelteredWorkshop: null, vcse: null));
     }
 }
