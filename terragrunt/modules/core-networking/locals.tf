@@ -39,9 +39,9 @@ locals {
     for ip in local.waf_blocked_ip_list_raw : ip if !contains(local.waf_protected_ips, ip)
   ]
 
-  rate_limit_count                      = var.environment == "development" ? 120 : 12
+  rate_limit_count                      = var.environment == "development" ? 120 : 18
   rate_limit_window_seconds             = 120
-  rate_limit_global_count               = var.environment == "development" ? 600 : 50
+  rate_limit_global_count               = var.environment == "development" ? 600 : 500
   rate_limit_global_window_seconds      = 300
   rate_limit_old_chrome_notice_ua_count = 100
 
