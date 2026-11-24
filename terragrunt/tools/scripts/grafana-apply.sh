@@ -55,4 +55,11 @@ terraform init -input=false -reconfigure \
   -backend-config="encrypt=true" \
   -backend-config="use_lockfile=true"
 
-terraform apply -input=false -var-file="env/${ENVIRONMENT}.tfvars"
+PLAN_FILE="/tmp/grafana-${ENVIRONMENT}-${ACCOUNT_ID}-$$.tfplan"
+cleanup() {
+  rm -f "${PLAN_FILE}" >/dev/null 2>&1 || true
+}
+trap cleanup EXIT
+
+terraform plan -input=false -out="${PLAN_FILE}" -var-file="env/${ENVIRONMENT}.tfvars"
+terraform apply -input=false "${PLAN_FILE}"
