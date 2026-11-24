@@ -107,7 +107,7 @@ locals {
                                               ""
                                             )
     notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
-    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14" : ""
+    notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14,UK15,UK16" : ""
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url
     notice_publish_internal_key           = local.fts_notice_publish_internal_key_arn
     notice_publish_queue_url              = var.queue_fts_notice_publish_url
@@ -232,6 +232,8 @@ locals {
       opensearch_endpoint                      = "https://${var.opensearch_endpoint}"
       pg_command_timeout                       = 10800
       procurement_transfer_policy_go_live_date = local.procurement_transfer_policy_go_live_date
+      procurement_transfer_queue_url           = var.queue_fts_procurement_transfer_url
+      procurement_transfer_use_queue           = local.procurement_transfer_use_queue
       search_api_base_url                      = local.use_internal_service_urls ? local.internal_service_urls["fts-search-api"] : local.public_service_urls["fts-search-api"]
     }
   )
