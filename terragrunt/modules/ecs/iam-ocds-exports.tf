@@ -32,6 +32,7 @@ data "aws_iam_policy_document" "ocds_exports_external_read" {
       variable = "s3:prefix"
       values = [
         # Some clients use prefix=exports (no trailing slash). Allow both forms.
+        "",
         trimsuffix(var.ocds_exports_prefix, "/"),
         var.ocds_exports_prefix,
         "${var.ocds_exports_prefix}*",
@@ -55,8 +56,8 @@ data "aws_iam_policy_document" "ocds_exports_external_read" {
   }
 
   statement {
-    sid     = "ReadExportsObjects"
-    effect  = "Allow"
+    sid    = "ReadExportsObjects"
+    effect = "Allow"
     actions = [
       "s3:GetObject",
       "s3:GetObjectAttributes",
