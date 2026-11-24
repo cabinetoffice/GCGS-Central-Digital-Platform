@@ -211,4 +211,4 @@ Cyfeiriad e-bost Swyddog Diogelu Data'r rheolydd data yw:
 
 Mae'r Swyddog Diogelu Data yn darparu cyngor annibynnol ac yn monitro defnydd Swyddfa'r Cabinet o wybodaeth bersonol. 
 
-Diweddarwyd ddiwethaf xx 
+Diweddarwyd ddiwethaf 01/12/2026 
