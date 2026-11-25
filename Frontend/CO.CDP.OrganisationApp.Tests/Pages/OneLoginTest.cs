@@ -154,6 +154,37 @@ public class OneLoginTest
     }
 
     [Fact]
+    public async Task OnGetUserInfo_WhenApplicationRegistryEnabled_ShouldRedirectToTheApplicationRegistry()
+    {
+        var model = GivenOneLoginModel("user-info");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.ApplicationRegistry)).ReturnsAsync(true);
+        configMock.Setup(c => c["ApplicationRegistry:WebUrl"]).Returns("https://registry.example/application-registry");
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
+
+        var result = await model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectResult>()
+            .Which.Url.Should().Be("https://registry.example/application-registry/");
+    }
+
+    [Fact]
+    public async Task OnGetUserInfo_WhenApplicationRegistryEnabledWithoutUrl_ShouldRedirectToOrganisationSelection()
+    {
+        var model = GivenOneLoginModel("user-info");
+        featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.ApplicationRegistry)).ReturnsAsync(true);
+
+        personClientMock.Setup(t => t.LookupPersonAsync(It.IsAny<string>(), It.IsAny<string>()))
+            .ReturnsAsync(dummyPerson);
+
+        var result = await model.OnGetAsync();
+
+        result.Should().BeOfType<RedirectToPageResult>()
+            .Which.PageName.Should().Be("Organisation/OrganisationSelection");
+    }
+
+    [Fact]
     public async Task OnGetUserInfo_WhenPersonAlreadyRegisteredAndRelativeRedirectUrlProvided_ShouldRedirectToRedirectUrl()
     {
         var model = GivenOneLoginModel("user-info");

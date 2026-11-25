@@ -148,6 +148,11 @@ builder.Services
 builder.Services.AddScoped<IUseCase<Guid, GetChildOrganisationsResponse>, GetChildOrganisationsUseCase>();
 builder.Services.AddScoped<ISupersedeChildOrganisationUseCase, SupersedeChildOrganisationUseCase>();
 builder.Services.AddScoped<IUseCase<Guid, GetParentOrganisationsResponse>, GetParentOrganisationsUseCase>();
+// cdp_claims application roles come from the DAPS Application Registry (client credentials).
+builder.Services.AddSingleton(builder.Configuration.GetSection(CO.CDP.Organisation.WebApi.DapsRegistry.DapsRegistryOptions.Section)
+    .Get<CO.CDP.Organisation.WebApi.DapsRegistry.DapsRegistryOptions>() ?? new CO.CDP.Organisation.WebApi.DapsRegistry.DapsRegistryOptions());
+builder.Services.AddHttpClient(CO.CDP.Organisation.WebApi.DapsRegistry.DapsRegistryClaimsClient.HttpClientName);
+builder.Services.AddSingleton<CO.CDP.Organisation.WebApi.DapsRegistry.IDapsRegistryClaimsClient, CO.CDP.Organisation.WebApi.DapsRegistry.DapsRegistryClaimsClient>();
 builder.Services.AddScoped<IUseCase<string, UserClaimsResponse?>, GetUserClaimsUseCase>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 

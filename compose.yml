@@ -185,6 +185,8 @@ services:
       OrganisationInformationDatabase__Password: 'cdp123'
       Issuer: *organisation-authority
       OrganisationApiService: 'http://organisation:8080'
+      # Enrich CDP tokens with cdp_claims (organisations, org role, application roles).
+      Features__ClaimsApiEnabled: 'true'
 
   tenant:
     container_name: co-cdp-tenant
