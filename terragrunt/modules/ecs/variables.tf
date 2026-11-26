@@ -504,6 +504,18 @@ variable "use_rds_proxy" {
   default     = false
 }
 
+variable "use_rds_proxy_cfs" {
+  description = "Optional override for CFS DB connectivity: when set, takes precedence over use_rds_proxy"
+  type        = bool
+  default     = null
+}
+
+variable "use_rds_proxy_fts" {
+  description = "Optional override for FTS DB connectivity: when set, takes precedence over use_rds_proxy"
+  type        = bool
+  default     = null
+}
+
 variable "user_pool_arn" {
   type = string
 }

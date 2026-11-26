@@ -1,5 +1,7 @@
 locals {
 
+  use_rds_proxy_cfs_effective = var.use_rds_proxy_cfs == null ? var.use_rds_proxy : var.use_rds_proxy_cfs
+
   orchestrator_cfs_service_version = data.aws_ssm_parameter.orchestrator_cfs_service_version.value
 
   service_version_cfs = var.pinned_service_version_cfs == null ? local.orchestrator_cfs_service_version : var.pinned_service_version_cfs
@@ -47,7 +49,7 @@ locals {
     buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.cabinetoffice.gov.uk"
     cookie_domain                       = local.cfs_site_domains[var.environment]
     data_harvester_folder_format        = ""
-    db_host                             = var.use_rds_proxy ? var.db_cfs_proxy_endpoint : var.db_cfs_cluster_address
+    db_host                             = local.use_rds_proxy_cfs_effective ? var.db_cfs_proxy_endpoint : var.db_cfs_cluster_address
     db_name                             = var.db_cfs_cluster_name
     db_port                             = 3306
     database_user_host_address          = "%"
