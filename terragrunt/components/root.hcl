@@ -113,7 +113,7 @@ locals {
       opensearch_instance_type            = "m6g.large.search"
       grafana_db_instance_type            = "db.t4g.small"
       grafana_db_multi_az                 = true
-      pinned_service_version_cfs          = "1.1.1"
+      pinned_service_version_cfs          = "1.2.0-rc.1"
       pinned_service_version_fts          = "3.6.0-rc.3"
       pinned_service_version              = "1.4.2"
       postgres_instance_type              = "db.t4g.micro"
