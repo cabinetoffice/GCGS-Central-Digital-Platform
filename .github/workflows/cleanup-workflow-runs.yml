@@ -1,0 +1,77 @@
+# Deletes old GitHub Actions workflow runs (with their logs and artifacts) so they don't pile up:
+#   - runs on branches that have been merged or deleted, once more than 7 days old
+#   - runs on main and gh-pages (docs deployments), once more than 30 days old
+# Runs for tags, branches with an open PR, unfinished runs and fork runs are always kept.
+# Also deletes Actions caches that can no longer be used: caches from closed/merged PRs and from
+# deleted branches. See .github/scripts/Remove-StaleWorkflowRuns.ps1 for the full rules.
+#
+# Manual runs default to a dry run, which only lists what would be deleted (see the job summary
+# and the uploaded plan CSV).
+
+name: Clean up old workflow runs
+
+on:
+  schedule:
+    - cron: "0 22 * * *" # 22:00 UTC daily (10-11pm UK time either side of BST/GMT)
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Dry run - only list what would be deleted
+        type: boolean
+        default: true
+      min_age_days:
+        description: Delete merged/deleted-branch runs older than this many days
+        type: number
+        default: 7
+      main_min_age_days:
+        description: Delete main and gh-pages runs older than this many days
+        type: number
+        default: 30
+
+permissions:
+  actions: write       # list and delete workflow runs and caches
+  contents: read       # list branches and tags
+  pull-requests: read  # find merged and open PR branches
+
+concurrency:
+  group: cleanup-workflow-runs
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    # Restricted to main so a modified branch can't run its own copy of the script with this token.
+    if: github.ref == 'refs/heads/main' && github.repository_owner == 'cabinetoffice'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          sparse-checkout: .github/scripts
+          persist-credentials: false # nothing is pushed; the script gets its token via GH_TOKEN
+
+      - name: Remove stale workflow runs
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Scheduled runs always delete; manual runs follow the dry_run input.
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+          MIN_AGE_DAYS: ${{ inputs.min_age_days || 7 }}
+          MAIN_MIN_AGE_DAYS: ${{ inputs.main_min_age_days || 30 }}
+        run: |
+          $params = @{
+            MinAgeDays     = [int]$env:MIN_AGE_DAYS
+            MainMinAgeDays = [int]$env:MAIN_MIN_AGE_DAYS
+          }
+          if ($env:DRY_RUN -ne 'true') { $params.Delete = $true }
+          ./.github/scripts/Remove-StaleWorkflowRuns.ps1 @params
+
+      - name: Upload plan and log
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: workflow-run-cleanup-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/stale_workflow_runs_*.csv
+            ${{ runner.temp }}/stale_workflow_runs_*.log
+          if-no-files-found: ignore
+          retention-days: 14
