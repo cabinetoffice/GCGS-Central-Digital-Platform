@@ -1,5 +1,7 @@
 locals {
 
+  use_rds_proxy_fts_effective = var.use_rds_proxy_fts == null ? var.use_rds_proxy : var.use_rds_proxy_fts
+
   orchestrator_fts_service_version = data.aws_ssm_parameter.orchestrator_fts_service_version.value
 
   service_version_fts = var.pinned_service_version_fts == null ? local.orchestrator_fts_service_version : var.pinned_service_version_fts
@@ -8,7 +10,7 @@ locals {
 
   fts_notice_publish_internal_key_arn = aws_secretsmanager_secret.fts_notice_publish_internal_key.arn
 
-  fts_db_address = var.use_rds_proxy ? var.db_fts_proxy_endpoint : var.db_fts_cluster_address
+  fts_db_address = local.use_rds_proxy_fts_effective ? var.db_fts_proxy_endpoint : var.db_fts_cluster_address
 
   fts_site_domains = {
     development = "fts.${var.public_domain}"
@@ -63,49 +65,49 @@ locals {
   }
 
   fts_parameters = {
-    app_host_address                      = "%"
-    async_enabled                         = true
-    buyer_corporate_identifier_prefixes   = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
-    cookie_domain                         = local.fts_site_domains[var.environment]
-    database_schema                       = "cdp_sirsi_fts_cluster"
-    database_server_address               = local.fts_db_address
-    database_server_port                  = 3306
-    database_ssl                          = false
-    db_host                               = local.fts_db_address
-    db_name                               = var.db_fts_cluster_name
-    dev_email                             = "${local.fts_secrets_arn}:DEV_EMAIL::"
-    dotnet_ui_app_url                     = "https://${local.fts_redirect_domains[var.environment]}"
-    email_support                         = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
-    environment                           = upper(var.environment)
-    fts_allowed_target_email_domains      = join(",", local.fts_allowed_target_email_domains[var.environment])
-    fts_client_assertion_type             = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-    fts_one_login_logout_redirect_uri     = "https://${local.fts_site_domains[var.environment]}/auth/logout"
-    fts_one_login_redirect_uri            = "https://${local.fts_site_domains[var.environment]}/auth/callback"
-    licenced_to                           = "No-one"
-    local_version                         = 1100
-    modernised_landing_page               = true
-    summarised_search_enabled             = true
-    pa23_enabled                          = true
-    notice_edit_rebuild_by_default        = lookup(
-                                              {
-                                                development = "UK1,UK2,UK3"
-                                                staging     = "UK1,UK2,UK3"
-                                                integration = "UK1,UK2,UK3"
-                                                production  = "UK1,UK2,UK3"
-                                              },
-                                              var.environment,
-                                              ""
-                                            )
-    notice_edit_rebuild_form_codes        = lookup(
-                                              {
-                                                development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14,UK15,UK16,UK17"
-                                                staging     = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK16,UK17"
-                                                integration = "UK1,UK2,UK3,UK6"
-                                                production  = "UK1,UK2,UK3"
-                                              },
-                                              var.environment,
-                                              ""
-                                            )
+    app_host_address                    = "%"
+    async_enabled                       = true
+    buyer_corporate_identifier_prefixes = "sid4gov.cabinetoffice.gov.uk|supplierregistration.service.xgov.uk|test-idp-intra.nqc.com"
+    cookie_domain                       = local.fts_site_domains[var.environment]
+    database_schema                     = "cdp_sirsi_fts_cluster"
+    database_server_address             = local.fts_db_address
+    database_server_port                = 3306
+    database_ssl                        = false
+    db_host                             = local.fts_db_address
+    db_name                             = var.db_fts_cluster_name
+    dev_email                           = "${local.fts_secrets_arn}:DEV_EMAIL::"
+    dotnet_ui_app_url                   = "https://${local.fts_redirect_domains[var.environment]}"
+    email_support                       = var.is_production ? "noreply@find-tender.service.gov.uk" : "noreply@${var.public_domain}"
+    environment                         = upper(var.environment)
+    fts_allowed_target_email_domains    = join(",", local.fts_allowed_target_email_domains[var.environment])
+    fts_client_assertion_type           = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+    fts_one_login_logout_redirect_uri   = "https://${local.fts_site_domains[var.environment]}/auth/logout"
+    fts_one_login_redirect_uri          = "https://${local.fts_site_domains[var.environment]}/auth/callback"
+    licenced_to                         = "No-one"
+    local_version                       = 1100
+    modernised_landing_page             = true
+    summarised_search_enabled           = true
+    pa23_enabled                        = true
+    notice_edit_rebuild_by_default = lookup(
+      {
+        development = "UK1,UK2,UK3"
+        staging     = "UK1,UK2,UK3"
+        integration = "UK1,UK2,UK3"
+        production  = "UK1,UK2,UK3"
+      },
+      var.environment,
+      ""
+    )
+    notice_edit_rebuild_form_codes = lookup(
+      {
+        development = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14,UK15,UK16,UK17"
+        staging     = "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK16,UK17"
+        integration = "UK1,UK2,UK3,UK6"
+        production  = "UK1,UK2,UK3"
+      },
+      var.environment,
+      ""
+    )
     notice_publish_dotnet_enabled         = contains(["development"], var.environment) # @TODO FC-1840 Remove once the notice publish api port / migration is out of the development phase
     notice_publish_dotnet_forms           = contains(["development"], var.environment) ? "UK1,UK2,UK3,UK4,UK5,UK6,UK7,UK9,UK10,UK11,UK12,UK13,UK14,UK15,UK16" : ""
     notice_publish_dotnet_queue_url       = var.queue_fts_notice_publish_dotnet_url

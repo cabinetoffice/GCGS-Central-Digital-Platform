@@ -62,7 +62,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, country, httpRequest.country\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(country, httpRequest.country) as waf_country\n| stats count() as requests by waf_country, action\n| sort requests desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, country, httpRequest.country\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| fields coalesce(country, httpRequest.country) as waf_country\n| stats count() as requests by waf_country, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -319,7 +319,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, clientIp, httpRequest.clientIp\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(clientIp, httpRequest.clientIp) as waf_ip\n| stats count() as requests by waf_ip, action\n| sort requests desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, clientIp, httpRequest.clientIp\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| fields coalesce(clientIp, httpRequest.clientIp) as waf_ip\n| stats count() as requests by waf_ip, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -576,7 +576,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, uri, httpRequest.uri\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(uri, httpRequest.uri) as waf_uri\n| stats count() as requests by waf_uri, action\n| sort requests desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, uri, httpRequest.uri\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| fields coalesce(uri, httpRequest.uri) as waf_uri\n| stats count() as requests by waf_uri, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -833,7 +833,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, httpMethod, httpRequest.httpMethod\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| fields coalesce(httpMethod, httpRequest.httpMethod) as waf_method\n| stats count() as requests by waf_method, action\n| sort requests desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, httpMethod, httpRequest.httpMethod\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| fields coalesce(httpMethod, httpRequest.httpMethod) as waf_method\n| stats count() as requests by waf_method, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -1090,7 +1090,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, httpSourceName, httpSourceId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as requests by httpSourceName, httpSourceId, action\n| sort requests desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, httpSourceName, httpSourceId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| stats count() as requests by httpSourceName, httpSourceId, action\n| sort requests desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -1348,7 +1348,7 @@
           "refId": "A",
           "region": "default",
           "sqlExpression": "",
-          "expression": "fields @timestamp, @log, webaclId, action, terminatingRuleId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc\n| limit 200",
+          "expression": "fields @timestamp, @log, webaclId, action, terminatingRuleId\n| filter @log like /$waf_log_group/\n| filter webaclId like /$web_acl/\n| filter action like /$action_filter/\n| filter coalesce(clientIp, httpRequest.clientIp) like /$ip_filter/\n| stats count() as hits by action, terminatingRuleId\n| sort hits desc\n| limit 200",
           "queryLanguage": "CWLI",
           "metricName": "",
           "statistic": "Average"
@@ -1600,6 +1600,23 @@
             "$__all"
           ]
         }
+      },
+      {
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
+        "label": "Client IP Filter (regex)",
+        "name": "ip_filter",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "query": ".*",
+        "type": "textbox"
       },
       {
         "name": "web_acl",
