@@ -402,7 +402,37 @@ ave aws secretsmanager put-secret-value --secret-id cdp-sirsi-pen-testing-config
 
 ## Update Teams Webhook
 
-When the orchestrator's notification component is enabled, the system will notify a Microsoft Teams channel about important CI/CD events. The Teams webhook URL must be stored as a secret.
+When the orchestrator's notification component is enabled, the system will notify a Microsoft Teams channel about important CI/CD events.
+
+There are two separate integrations:
+
+- **Deployment pipeline notifications (orchestrator):** sent via the Microsoft Graph API by the `cdp-sirsi-teams-notifier` Lambda, using an Entra ID App Registration and the `sirsi-bot` user.
+- **Grafana alerting:** configured separately (see [Update Grafana Secrets](#update-grafana-secrets)); this uses `cdp-sirsi-grafana-alerting-webhook` / `TEAMS_WEBHOOK_URL`.
+
+### Rotate the Entra ID app client secret (deployment notifications)
+
+If deployment notifications stop working and Entra ID sign-ins show error `7000222` (“client secret keys ... are expired”), rotate the App Registration secret and update AWS Secrets Manager.
+
+1. In the **GOACO Entra ID tenant**, find the App Registration used for the deployment bot (currently shown in Entra ID as **“SIRSI Ops Bot”**).
+2. Create a new **Client secret** in **Certificates & secrets** (copy the secret value immediately; you won't be able to view it again).
+3. Update the orchestrator secret in AWS Secrets Manager:
+
+- Secret ID (orchestrator account): `cdp-sirsi-teams-notification-secrets`
+- Expected JSON keys (at minimum):
+  - `TENANT_ID`
+  - `CLIENT_ID`
+  - `CLIENT_SECRET` (rotate this)
+  - `USERNAME` (e.g. `sirsi-bot@goaco.com`)
+  - `PASSWORD`
+  - `TEAM_ID`
+  - `CHANNEL_ID`
+  - (optional) `HANDLER_AAD_ID`, `HANDLER_DISPLAY_NAME`
+
+Once the AWS secret is updated, the next pipeline event should succeed (no redeploy is usually required unless the secret name/ARN changes).
+
+### Legacy webhook secret (not used for message delivery)
+
+The orchestrator notification Terraform still references a secret named `cdp-sirsi-teams-webhook-url` for historical reasons. It is **not** used by the current message delivery mechanism (Graph + Lambda), but it may still need to exist to avoid Terraform/data-source errors.
 
 1. Add a file named `cdp-sirsi-teams-webhook-url.txt` under the `secrets` directory, containing the webhook URL as plain text.
 
