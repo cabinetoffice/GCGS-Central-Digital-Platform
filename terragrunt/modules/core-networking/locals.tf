@@ -41,7 +41,7 @@ locals {
 
   rate_limit_count                      = var.environment == "development" ? 120 : 18
   rate_limit_window_seconds             = 120
-  rate_limit_global_count               = var.environment == "development" ? 600 : 500
+  rate_limit_global_count               = var.environment == "development" ? 600 : 80
   rate_limit_global_window_seconds      = 300
   rate_limit_old_chrome_notice_ua_count = 100
 

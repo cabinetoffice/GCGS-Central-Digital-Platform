@@ -84,6 +84,18 @@ variable "rds_write_latency_threshold_seconds" {
   default     = 0.2
 }
 
+variable "rds_db_load_threshold" {
+  description = "DBLoad threshold for RDS/Aurora (Average Active Sessions, requires Performance Insights metrics)"
+  type        = number
+  default     = 50
+}
+
+variable "rds_aborted_connections_threshold" {
+  description = "Aborted connections threshold for RDS/Aurora MySQL (AbortedClients + AbortedConnects)"
+  type        = number
+  default     = 5
+}
+
 variable "alb_target_response_time_p95_threshold_seconds" {
   description = "ALB target response time p95 threshold (seconds)"
   type        = number
