@@ -10,3 +10,5 @@ rds_free_storage_threshold_bytes    = 5368709120
 rds_freeable_memory_threshold_bytes = 536870912
 rds_read_latency_threshold_seconds  = 0.2
 rds_write_latency_threshold_seconds = 0.2
+rds_db_load_threshold               = 50
+rds_aborted_connections_threshold   = 5

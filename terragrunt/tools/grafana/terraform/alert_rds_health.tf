@@ -789,6 +789,361 @@ resource "grafana_rule_group" "rds_health" {
     }
   }
 
+  rule {
+    name           = "RDS DBLoad high"
+    condition      = "db_load_gt"
+    for            = "10m"
+    no_data_state  = "OK"
+    exec_err_state = "Error"
+    is_paused      = false
+
+    annotations = {}
+    labels = {
+      severity = "warning"
+    }
+
+    data {
+      ref_id         = "db_load"
+      datasource_uid = grafana_data_source.cloudwatch.uid
+      relative_time_range {
+        from = 600
+        to   = 0
+      }
+
+      model = jsonencode({
+        dimensions = {
+          DBInstanceIdentifier = "*"
+        }
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "DBLoad"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "db_load"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Average"
+      })
+    }
+
+    data {
+      ref_id         = "db_load_last"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        conditions = [{
+          evaluator = {
+            params = []
+            type   = "gt"
+          }
+          operator = {
+            type = "and"
+          }
+          query = {
+            params = []
+          }
+          reducer = {
+            params = []
+            type   = "last"
+          }
+          type = "query"
+        }]
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "db_load"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        reducer       = "last"
+        refId         = "db_load_last"
+        type          = "reduce"
+      })
+    }
+
+    data {
+      ref_id         = "db_load_gt"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        conditions = [{
+          evaluator = {
+            params = [var.rds_db_load_threshold]
+            type   = "gt"
+          }
+          operator = {
+            type = "and"
+          }
+          query = {
+            params = []
+          }
+          reducer = {
+            params = []
+            type   = "last"
+          }
+          type = "query"
+        }]
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "db_load_last"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        refId         = "db_load_gt"
+        type          = "threshold"
+      })
+    }
+
+    dynamic "notification_settings" {
+      for_each = local.teams_webhook_url != "" ? [1] : []
+      content {
+        contact_point = grafana_contact_point.teams[0].name
+      }
+    }
+  }
+
+  rule {
+    name           = "RDS aborted connections high"
+    condition      = "aborted_total_gt"
+    for            = "10m"
+    no_data_state  = "OK"
+    exec_err_state = "Error"
+    is_paused      = false
+
+    annotations = {}
+    labels = {
+      severity = "warning"
+    }
+
+    data {
+      ref_id         = "aborted_clients"
+      datasource_uid = grafana_data_source.cloudwatch.uid
+      relative_time_range {
+        from = 600
+        to   = 0
+      }
+
+      model = jsonencode({
+        dimensions = {
+          DBInstanceIdentifier = "*"
+        }
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "AbortedClients"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "aborted_clients"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Sum"
+      })
+    }
+
+    data {
+      ref_id         = "aborted_clients_last"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        conditions = [{
+          evaluator = {
+            params = []
+            type   = "gt"
+          }
+          operator = {
+            type = "and"
+          }
+          query = {
+            params = []
+          }
+          reducer = {
+            params = []
+            type   = "last"
+          }
+          type = "query"
+        }]
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "aborted_clients"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        reducer       = "last"
+        refId         = "aborted_clients_last"
+        type          = "reduce"
+      })
+    }
+
+    data {
+      ref_id         = "aborted_connects"
+      datasource_uid = grafana_data_source.cloudwatch.uid
+      relative_time_range {
+        from = 600
+        to   = 0
+      }
+
+      model = jsonencode({
+        dimensions = {
+          DBInstanceIdentifier = "*"
+        }
+        expression       = ""
+        id               = ""
+        intervalMs       = 1000
+        label            = ""
+        logGroups        = []
+        matchExact       = true
+        maxDataPoints    = 43200
+        metricEditorMode = 0
+        metricName       = "AbortedConnects"
+        metricQueryType  = 0
+        namespace        = "AWS/RDS"
+        period           = "5m"
+        queryLanguage    = "CWLI"
+        queryMode        = "Metrics"
+        refId            = "aborted_connects"
+        region           = "default"
+        sqlExpression    = ""
+        statistic        = "Sum"
+      })
+    }
+
+    data {
+      ref_id         = "aborted_connects_last"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        conditions = [{
+          evaluator = {
+            params = []
+            type   = "gt"
+          }
+          operator = {
+            type = "and"
+          }
+          query = {
+            params = []
+          }
+          reducer = {
+            params = []
+            type   = "last"
+          }
+          type = "query"
+        }]
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "aborted_connects"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        reducer       = "last"
+        refId         = "aborted_connects_last"
+        type          = "reduce"
+      })
+    }
+
+    data {
+      ref_id         = "aborted_total"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "$aborted_clients_last + $aborted_connects_last"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        refId         = "aborted_total"
+        type          = "math"
+      })
+    }
+
+    data {
+      ref_id         = "aborted_total_gt"
+      datasource_uid = "__expr__"
+      relative_time_range {
+        from = 0
+        to   = 0
+      }
+
+      model = jsonencode({
+        conditions = [{
+          evaluator = {
+            params = [var.rds_aborted_connections_threshold]
+            type   = "gt"
+          }
+          operator = {
+            type = "and"
+          }
+          query = {
+            params = []
+          }
+          reducer = {
+            params = []
+            type   = "last"
+          }
+          type = "query"
+        }]
+        datasource = {
+          type = "__expr__"
+          uid  = "__expr__"
+        }
+        expression    = "aborted_total"
+        intervalMs    = 1000
+        maxDataPoints = 43200
+        refId         = "aborted_total_gt"
+        type          = "threshold"
+      })
+    }
+
+    dynamic "notification_settings" {
+      for_each = local.teams_webhook_url != "" ? [1] : []
+      content {
+        contact_point = grafana_contact_point.teams[0].name
+      }
+    }
+  }
+
   depends_on = [
     grafana_data_source.cloudwatch,
     grafana_dashboard.dashboards,
