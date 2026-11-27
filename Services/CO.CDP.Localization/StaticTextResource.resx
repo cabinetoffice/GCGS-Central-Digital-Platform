@@ -4588,4 +4588,10 @@
   <data name="FindAndApply_RelatedContent_Spotlight_Description" xml:space="preserve">
     <value>Allows users to easily risk assess a grant applicant (Due diligence).</value>
   </data>
+  <data name="OrganisationHome_ApplicationRegistry_Title" xml:space="preserve">
+    <value>Applications</value>
+  </data>
+  <data name="OrganisationHome_ApplicationRegistry_Body" xml:space="preserve">
+    <value>Find the applications your organisation uses. Organisation administrators can also manage who can use them and their roles.</value>
+  </data>
 </root>

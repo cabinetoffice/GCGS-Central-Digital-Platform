@@ -145,6 +145,14 @@ public class OneLoginModel(
                 return RedirectToPage("Support/Organisations", new Dictionary<string, string> { { "type", "buyer" } });
             }
 
+            // Hand over to the DAPS Application Registry: organisation ADMINs land on its
+            // dashboard, everyone else on the application catalogue.
+            if (await featureManager.IsEnabledAsync(FeatureFlags.ApplicationRegistry)
+                && ApplicationRegistryLinks.Build(config) is { } registryUrl)
+            {
+                return Redirect(registryUrl);
+            }
+
             return RedirectToPage("Organisation/OrganisationSelection");
         }
         catch (ApiException ex) when (ex.StatusCode == 404)

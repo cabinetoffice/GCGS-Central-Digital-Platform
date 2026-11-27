@@ -7,6 +7,7 @@ using CO.CDP.UI.Foundation.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.FeatureManagement;
 using Moq;
@@ -15,6 +16,7 @@ namespace CO.CDP.OrganisationApp.Tests.Pages.Organisation;
 
 public class OrganisationHomeTest
 {
+    private readonly IConfiguration _configuration;
     private readonly Mock<IFeatureManager> _featureManagerMock;
     private readonly Mock<IOrganisationClient> _organisationClientMock;
     private readonly Mock<IExternalServiceUrlBuilder> _externalServiceUrlBuilderMock;
@@ -31,6 +33,9 @@ public class OrganisationHomeTest
         _cookiePreferencesServiceMock = new Mock<ICookiePreferencesService>();
         _ftsUrlServiceMock = new Mock<IFtsUrlService>();
         _loggerMock = new Mock<ILogger<OrganisationHomeModel>>();
+        _configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["ApplicationRegistry:WebUrl"] = "https://registry.example/application-registry" })
+            .Build();
 
         _model = new OrganisationHomeModel(
             _featureManagerMock.Object,
@@ -38,7 +43,8 @@ public class OrganisationHomeTest
             _cookiePreferencesServiceMock.Object,
             _organisationClientMock.Object,
             _ftsUrlServiceMock.Object,
-            _loggerMock.Object)
+            _loggerMock.Object,
+            _configuration)
         {
             Id = Guid.NewGuid()
         };
@@ -53,6 +59,30 @@ public class OrganisationHomeTest
         var result = await _model.OnGet();
 
         result.Should().BeOfType<PageResult>();
+    }
+
+    [Fact]
+    public async Task OnGet_WhenApplicationRegistryEnabled_AddsApplicationsTileLinkingToTheRegistryForThisOrganisation()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+        _featureManagerMock.Setup(f => f.IsEnabledAsync(FeatureFlags.ApplicationRegistry)).ReturnsAsync(true);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().ContainSingle(t => t.Title == StaticTextResource.OrganisationHome_ApplicationRegistry_Title)
+            .Which.Href.Should().Be($"https://registry.example/application-registry/?cdp_organisation_id={_model.Id}");
+    }
+
+    [Fact]
+    public async Task OnGet_WhenApplicationRegistryDisabled_HasNoApplicationsTile()
+    {
+        var organisation = OrganisationFactory.CreateOrganisation(roles: [PartyRole.Buyer]);
+        _organisationClientMock.Setup(oc => oc.GetOrganisationAsync(_model.Id)).ReturnsAsync(organisation);
+
+        await _model.OnGet();
+
+        _model.Tiles.Should().NotContain(t => t.Title == StaticTextResource.OrganisationHome_ApplicationRegistry_Title);
     }
 
     [Fact]

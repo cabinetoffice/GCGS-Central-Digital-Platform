@@ -21,7 +21,8 @@ public class OrganisationHomeModel(
     ICookiePreferencesService cookiePreferencesService,
     IOrganisationClient organisationClient,
     IFtsUrlService ftsUrlService,
-    ILogger<OrganisationHomeModel> logger)
+    ILogger<OrganisationHomeModel> logger,
+    IConfiguration configuration)
     : PageModel
 {
     [BindProperty(SupportsGet = true)]
@@ -63,7 +64,8 @@ public class OrganisationHomeModel(
             PaymentsEnabled: await featureManager.IsEnabledAsync(FeatureFlags.Payments),
             FvraToolBuyerEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolBuyer),
             FvraToolSupplierEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FvraToolSupplier),
-            FindAndApplyEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FindAndApply)
+            FindAndApplyEnabled: await featureManager.IsEnabledAsync(FeatureFlags.FindAndApply),
+            ApplicationRegistryEnabled: await featureManager.IsEnabledAsync(FeatureFlags.ApplicationRegistry)
         );
 
         Tiles = BuildTiles(featureConfig);
@@ -99,6 +101,17 @@ public class OrganisationHomeModel(
                 Href = $"/organisation/{Id}?origin=organisation-home"
             }
         };
+
+        if (featureConfig.ApplicationRegistryEnabled
+            && ApplicationRegistryLinks.Build(configuration, Id) is { } registryUrl)
+        {
+            tiles.Add(new Tile
+            {
+                Title = StaticTextResource.OrganisationHome_ApplicationRegistry_Title,
+                Body = StaticTextResource.OrganisationHome_ApplicationRegistry_Body,
+                Href = registryUrl
+            });
+        }
 
         if (featureConfig.FindAndApplyEnabled)
         {
@@ -211,5 +224,6 @@ public class OrganisationHomeModel(
         bool PaymentsEnabled,
         bool FvraToolBuyerEnabled,
         bool FvraToolSupplierEnabled,
-        bool FindAndApplyEnabled);
+        bool FindAndApplyEnabled,
+        bool ApplicationRegistryEnabled);
 }
