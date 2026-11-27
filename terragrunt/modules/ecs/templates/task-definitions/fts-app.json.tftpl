@@ -24,7 +24,10 @@
       { "name" : "Aws__CloudWatch__LogStream", "value" : "${lg_prefix}-serilog"},
       { "name" : "Aws__ElastiCache__Hostname", "value" : "${redis_primary_endpoint_address}"},
       { "name" : "Aws__ElastiCache__Port", "value" : "${redis_port}"},
-      { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},
+      { "name" : "AWS__SystemManager__DataProtectionPrefix", "value" : "${ssm_data_protection_prefix}"},%{ if clamav_enabled }
+      { "name" : "ClamAv__Enabled", "value" : "true"},
+      { "name" : "ClamAv__Host", "value" : "127.0.0.1"},
+      { "name" : "ClamAv__Port", "value" : "${clamav_port}"},%{ endif }
       { "name" : "ForwardedHeaders__KnownNetwork", "value" : "${vpc_cidr}"},
       { "name" : "Features__DynamicContractingAuthority", "value" : "${dynamic_contracting_authority_enabled}"},
       { "name" : "Features__ProcurementTransfer", "value" : "${features_procurement_transfer}"},
@@ -54,6 +57,36 @@
     ],
     "volumesFrom": [],
     "mountPoints": [],
+    "essential": true%{ if clamav_enabled },
+    "dependsOn": [
+      { "containerName" : "clamav", "condition" : "HEALTHY" }
+    ]%{ endif }
+  }%{ if clamav_enabled },
+  {
+    "name" : "clamav",
+    "image" : "${clamav_image}",
+    "cpu": ${clamav_cpu},
+    "memory": ${clamav_memory},
+    "logConfiguration": {
+      "logDriver" : "awslogs",
+      "options": {
+        "awslogs-group" : "${lg_name}",
+        "awslogs-region" : "${lg_region}",
+        "awslogs-stream-prefix" : "clamav"
+      }
+    },
+    "environment": [
+      { "name" : "FRESHCLAM_CHECKS", "value" : "12"}
+    ],
+    "healthCheck": {
+      "command": ["CMD-SHELL", "echo PING | nc 127.0.0.1 ${clamav_port} | grep -q PONG"],
+      "interval": 30,
+      "timeout": 5,
+      "retries": 3,
+      "startPeriod": 120
+    },
+    "volumesFrom": [],
+    "mountPoints": [],
     "essential": true
-  }
+  }%{ endif }
 ]

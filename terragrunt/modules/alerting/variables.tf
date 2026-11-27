@@ -28,6 +28,12 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_clamav_enabled" {
+  description = "When true, alert on fts-app uploads rejected because the ClamAV scan could not complete"
+  type        = bool
+  default     = false
+}
+
 variable "product" {
   description = "product's common attributes"
   type = object({
