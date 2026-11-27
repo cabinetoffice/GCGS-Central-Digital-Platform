@@ -27,6 +27,8 @@ locals {
   dynamic_contracting_authority_enabled    = contains(["development"], var.environment)
   procurement_transfer_enabled             = contains(["development", "staging", "integration", "production"], var.environment)
   features_procurement_transfer            = contains(["development", "staging", "integration", "production"], var.environment)
+  procurement_dashboards_enabled           = var.environment != "production"
+  features_procurement_dashboards          = var.environment != "production"
   uk6_direct_award_justification           = contains(["development", "staging", "integration"], var.environment)
   procurement_transfer_policy_go_live_date = contains(["development", "staging"], var.environment) ? "2026-10-23" : "2026-12-03"
   procurement_transfer_use_queue           = false
