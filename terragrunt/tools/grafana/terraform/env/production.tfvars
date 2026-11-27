@@ -4,7 +4,7 @@ ecs_task_stopped_threshold = 0
 
 environment = "production"
 
-rds_connections_threshold           = 200
+rds_connections_threshold           = 800
 rds_cpu_threshold                   = 80
 rds_free_storage_threshold_bytes    = 5368709120
 rds_freeable_memory_threshold_bytes = 536870912
