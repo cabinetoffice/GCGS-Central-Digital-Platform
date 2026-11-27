@@ -19,6 +19,9 @@ locals {
 
   alb_threshold_target_response_time_p95_seconds = 1
 
+  fts_clamav_threshold_malware_detected = 1
+  fts_clamav_threshold_scan_failures    = 1
+
   redis_threshold_cpu_percent             = 80
   redis_threshold_database_memory_percent = 80
   redis_threshold_evictions               = 1000

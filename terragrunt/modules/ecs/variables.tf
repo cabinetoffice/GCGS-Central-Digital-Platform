@@ -160,6 +160,12 @@ variable "environment" {
   type        = string
 }
 
+variable "fts_clamav_enabled" {
+  description = "When true, fts-app runs a clamd sidecar and scans uploaded files with it (ClamAv__Enabled)"
+  type        = bool
+  default     = false
+}
+
 variable "fts_extra_domains" {
   description = "Optional list of additional host headers to be added for FTS service"
   type        = list(string)

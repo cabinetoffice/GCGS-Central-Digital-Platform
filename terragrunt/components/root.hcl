@@ -40,6 +40,7 @@ locals {
       canary_schedule_expression  = "rate(30 minutes)" # "cron(15 7,11,15 ? * MON-FRI)" # UTC+0
       cfs_extra_domains           = ["www-development.contractsfinder.service.gov.uk"]
       fts_apply_master_password   = false
+      fts_clamav_enabled          = true
       fts_extra_domains           = ["www-development.find-tender.service.gov.uk"]
       fts_restore_from_snapshot   = false
       fts_snapshot_identifier     = null
@@ -244,6 +245,7 @@ locals {
   aurora_postgres_instance_type_ev    = try(local.environments[local.environment].postgres_aurora_instance_type_ev, local.aurora_postgres_instance_type)
   cfs_extra_domains                   = try(local.environments[local.environment].cfs_extra_domains, [])
   fts_apply_master_password           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_apply_master_password, false))
+  fts_clamav_enabled                  = try(local.environments[local.environment].fts_clamav_enabled, false)
   fts_extra_domains                   = try(local.environments[local.environment].fts_extra_domains, [])
   fts_restore_from_snapshot           = local.fts_snapshot_identifier_env != "" ? true : (local.fts_weekly_refresh_enabled ? true : try(local.environments[local.environment].fts_restore_from_snapshot, false))
   fts_snapshot_identifier             = local.fts_snapshot_identifier_env != "" ? local.fts_snapshot_identifier_env : (local.fts_weekly_refresh_enabled ? local.fts_weekly_refresh_snapshot_identifier_raw : try(local.environments[local.environment].fts_snapshot_identifier, null))
@@ -510,6 +512,7 @@ inputs = {
   aurora_postgres_engine_version      = local.versions.postgres_engine
   environment                         = local.environment
   externals_product                   = local.external_product
+  fts_clamav_enabled                  = local.fts_clamav_enabled
   is_production                       = local.is_production
   opensearch_availability_zone_count  = local.opensearch_availability_zone_count
   opensearch_dedicated_master_count   = local.opensearch_dedicated_master_count

@@ -175,6 +175,21 @@ locals {
     }
   )
 
+  # ClamAV (clamd) sidecar in the fts-app task. The app scans uploads over INSTREAM to
+  # 127.0.0.1:3310 and fails closed, so clamd is essential and the app waits for it to be healthy.
+  # Image built from tools/clamav (see its README). Bump the tag there and here together.
+  fts_clamav_image = "${local.orchestrator_account_id}.dkr.ecr.eu-west-2.amazonaws.com/cdp-clamav:1.5.5-1"
+  fts_clamav_port  = 3310
+
+  # clamd's cpu/memory per environment, added to the fts-app container's own cpu/memory to give the
+  # task size, so each sum must be a valid Fargate combination. clamd holds the signature set in
+  # memory (~1.5GB) and briefly holds two copies during a concurrent reload. Enabling ClamAV in an
+  # environment without an entry here fails the plan on purpose: size it when promoting.
+  fts_clamav_sidecar_sizes = {
+    development = { cpu = 768, memory = 3584 }
+  }
+  fts_clamav_sidecar = var.fts_clamav_enabled ? local.fts_clamav_sidecar_sizes[var.environment] : { cpu = 0, memory = 0 }
+
   fts_dotnet_search_api = merge(
     local.fts_dotnet_common,
     {

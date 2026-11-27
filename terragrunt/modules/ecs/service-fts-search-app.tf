@@ -6,6 +6,11 @@ module "ecs_service_fts_app" {
     merge(
       local.fts_dotnet_fts_app,
       {
+        clamav_cpu                            = local.fts_clamav_sidecar.cpu
+        clamav_enabled                        = var.fts_clamav_enabled
+        clamav_image                          = local.fts_clamav_image
+        clamav_memory                         = local.fts_clamav_sidecar.memory
+        clamav_port                           = local.fts_clamav_port
         cpu                                   = var.service_configs.fts_app.cpu
         dynamic_contracting_authority_enabled = local.dynamic_contracting_authority_enabled
         image                                 = local.ecr_urls[var.service_configs.fts_app.name]
@@ -28,7 +33,7 @@ module "ecs_service_fts_app" {
   )
 
   cluster_id             = local.fts_cluster_id
-  cpu                    = var.service_configs.fts_app.cpu
+  cpu                    = var.service_configs.fts_app.cpu + local.fts_clamav_sidecar.cpu
   desired_count          = var.service_configs.fts_app.desired_count
   ecs_alb_sg_id          = var.alb_sg_id
   ecs_listener_arn       = local.fts_ecs_listener_arn
@@ -52,7 +57,7 @@ module "ecs_service_fts_app" {
       name_suffix = "ov1"
     }
   ]
-  memory                 = var.service_configs.fts_app.memory
+  memory                 = var.service_configs.fts_app.memory + local.fts_clamav_sidecar.memory
   name                   = var.service_configs.fts_app.name
   private_subnet_ids     = var.private_subnet_ids
   product                = var.product
@@ -65,4 +70,8 @@ module "ecs_service_fts_app" {
   user_pool_client_id    = contains(["staging"], var.environment) ? var.user_pool_fts_client_id : null
   user_pool_domain       = contains(["staging"], var.environment) ? var.user_pool_fts_domain : null
   vpc_id                 = var.vpc_id
+
+  # With ClamAV the app container only starts once clamd is healthy (signatures loaded), so give
+  # the new task longer before ALB health checks can fail it.
+  health_check_grace_period_seconds = var.fts_clamav_enabled ? 300 : 60
 }
